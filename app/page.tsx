@@ -329,7 +329,7 @@ export default function Home() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V0.3</p>
+            <p className="eyebrow">READING EDITION · V0.4</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
               从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径。
@@ -340,16 +340,6 @@ export default function Home() {
               <a className="textButton" href="#map">浏览完整框架 <span>↘</span></a>
             </div>
           </div>
-          <aside className="briefCard" aria-label="知识库定义">
-            <dl>
-              <div><dt>读者</dt><dd>有 Python / API 基础的售前人员</dd></div>
-              <div><dt>重点</dt><dd>概念 → 判断 → 证据 → 客户回答</dd></div>
-              <div><dt>载体</dt><dd>阅读型 HTML，可扩展为模块库</dd></div>
-              <div><dt>语言</dt><dd>中文主版本，专业术语中英对照</dd></div>
-              <div><dt>示范</dt><dd>RAG：原理、检索、云服务、工程与售前</dd></div>
-            </dl>
-            <p className="statusLine"><span /> 当前 RAG 模块已纳入 {sources.length} 份核验来源</p>
-          </aside>
         </div>
       </header>
 
@@ -365,11 +355,6 @@ export default function Home() {
             <article><span>02</span><h3>怎么判断？</h3><p>架构模式、关键变量、选型矩阵与反例。</p></article>
             <article><span>03</span><h3>如何证明？</h3><p>数据、评测、来源等级与验收门槛。</p></article>
             <article><span>04</span><h3>现场怎么说？</h3><p>客户问题、短答、深答、追问和风险提示。</p></article>
-          </div>
-          <p className="editorialRule"><strong>编辑原则：</strong>图、表、代码、案例和问答均按理解需要使用；不设数量配额，不为了形式堆内容。</p>
-          <div className="languageRule">
-            <strong>语言规范 / Language Standard</strong>
-            <p>正文以中文为主；专业术语首次出现采用“中文（English，缩写）”，后续按语境使用中文或缩写。未来英文版沿用同一知识结构，但独立编写并按术语表、标准与原始来源逐项校审，不采用逐句机器翻译直接发布。</p>
           </div>
         </div>
       </section>
@@ -457,12 +442,6 @@ export default function Home() {
                 </article>
               ))}
             </div>
-            <div className="linkRule">
-              <strong>跨模块阅读规则</strong>
-              <span>本地解释：不跳转也能读懂</span>
-              <span>主模块：完整原理与实现</span>
-              <span>返回路径：继续当前学习任务</span>
-            </div>
           </div>
 
           <div className="subsection foundationSection" id="rag-principle">
@@ -491,12 +470,15 @@ export default function Home() {
             <div className="workedExample">
               <div className="exampleQuestion"><span>客户问题</span><strong>“企业版产品的数据保留期是多少？”</strong></div>
               <div className="exampleSteps">
-                <article><span>01</span><h4>检索</h4><p>从产品文档、合同条款和最新公告中找候选证据，并按身份过滤。</p></article>
-                <article><span>02</span><h4>增强</h4><p>把有效日期、产品版本、原文片段和引用要求组装成上下文。</p></article>
-                <article><span>03</span><h4>生成</h4><p>模型比较证据、说明适用范围；证据不足或冲突时拒答并提示人工确认。</p></article>
+                <article><span>01</span><h4>检索<small>Retrieval</small></h4><p>从产品文档、合同条款和最新公告中找候选证据，并按身份过滤。</p></article>
+                <article><span>02</span><h4>增强<small>Augmentation</small></h4><p>把有效日期、产品版本、原文片段和引用要求组装成上下文。</p></article>
+                <article><span>03</span><h4>生成<small>Generation</small></h4><p>模型比较证据、说明适用范围；证据不足或冲突时拒答并提示人工确认。</p></article>
               </div>
             </div>
-            <aside className="callout"><strong>重要边界</strong><p>RAG 不会把检索内容永久写入模型参数，也不保证检索到的内容真实。它提供的是可控证据通道，正确性仍依赖数据治理、检索质量、生成约束和评估。</p></aside>
+            <aside className="callout" aria-label="重要边界">
+              <div className="calloutTitle"><span>必须记住</span><strong>重要边界</strong><small>Critical Boundary</small></div>
+              <p>RAG 不会把检索内容永久写入模型参数，也不保证检索到的内容真实。它提供的是可控证据通道，正确性仍依赖数据治理、检索质量、生成约束和评估。</p>
+            </aside>
           </div>
 
           <div className="subsection" id="retrieval-basics">
@@ -717,7 +699,7 @@ export default function Home() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>知识地图 + RAG 样板模块 V0.3 · 2026-07-17</p>
+        <p>知识地图 + RAG 样板模块 V0.4 · 2026-07-17</p>
         <a href="#top">返回顶部 ↑</a>
       </footer>
     </main>
