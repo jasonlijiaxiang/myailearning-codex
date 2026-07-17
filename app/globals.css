@@ -210,9 +210,9 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .calloutTitle small { margin-top: 5px; color: rgba(255,255,255,.58); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .callout > p { margin: 0; padding: 30px 34px; align-self: center; color: var(--ink); font-size: 15px; font-weight: 600; line-height: 1.8; }
 
-.mechanicGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); border: 1px solid var(--line); }
-.mechanicGrid article { padding: 26px; min-height: 285px; border-right: 1px solid var(--line); }
-.mechanicGrid article:last-child { border-right: 0; }
+.mechanicGrid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); border: 1px solid var(--line); }
+.mechanicGrid article { grid-column: span var(--mechanic-span); padding: 26px; min-height: 285px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.mechanicGrid article.mechanicRowEnd { border-right: 0; }
 .mechanicGrid h4 { margin: 34px 0 10px; font-size: 18px; }
 .mechanicGrid p { margin: 0 0 20px; color: var(--muted); font-size: 13px; }
 .mechanicGrid small { display: block; border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: 10px; }
@@ -390,6 +390,11 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .engineeringPipeline { grid-template-columns: 1fr 1fr; }
   .engineeringPipeline article { border-bottom: 1px solid var(--line); }
   .engineeringPipeline article:nth-child(2) { border-right: 0; }
+  .mechanicGrid article { grid-column: span 6; }
+  .mechanicGrid article:nth-child(even) { border-right: 0; }
+  .mechanicGrid[data-odd="true"] article:last-child { grid-column: span 12; }
+  .variantList article { grid-template-columns: 1fr 1.4fr; }
+  .variantList article > p:last-child { grid-column: 1 / -1; }
   .qaBasisList a { grid-column: span 6; }
   .qaBasisList[data-odd="true"] a:last-child { grid-column: span 12; }
   .relatedModuleGrid a, .referenceModuleLink { grid-column: span 6; }
@@ -409,7 +414,7 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .section { grid-template-columns: 44px minmax(0,1fr); }
   .sectionNumber { padding: 56px 12px; }
   .sectionIntro, .subsection, .decisionBanner { padding-left: 22px; padding-right: 22px; }
-  .splitIntro, .fitGrid, .architectureNotes, .qaAnswer, .curriculum, .callout { grid-template-columns: 1fr; }
+  .splitIntro, .fitGrid, .architectureNotes, .qaAnswer, .curriculum, .callout, .memoryCompare, .exampleSteps { grid-template-columns: 1fr; }
   .principleGrid { grid-template-columns: 1fr; }
   .conceptGrid article, .conceptGrid[data-odd="true"] article:last-child { grid-column: span 12; }
   .ragMechanism, .engineeringBridgeHead, .principleLimits { grid-template-columns: 1fr; }
@@ -419,6 +424,12 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .paperBoundary { margin-left: 18px; margin-right: 18px; }
   .engineeringPipeline { grid-template-columns: 1fr; }
   .engineeringPipeline article { min-height: auto; border-right: 0; }
+  .memoryCompare article + article { border-left: 0; border-top: 1px solid var(--line); }
+  .exampleSteps article { border-right: 0; border-bottom: 1px solid var(--line); }
+  .exampleSteps article:last-child { border-bottom: 0; }
+  .mechanicGrid article, .mechanicGrid[data-odd="true"] article:last-child { grid-column: span 12; min-height: auto; border-right: 0; }
+  .variantList article { grid-template-columns: 1fr; gap: 12px; }
+  .variantList article > p:last-child { grid-column: auto; }
   .principleLimits article { border-right: 0; border-bottom: 1px solid var(--line); }
   .principleLimits article:last-child { border-bottom: 0; }
   .mapStats { gap: 8px 12px; }

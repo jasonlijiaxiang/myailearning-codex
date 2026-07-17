@@ -18,6 +18,12 @@ const evidenceLegend = [
     note: "标准机构或公共机构发布的规范、架构与风险管理材料。",
   },
   {
+    grade: "P",
+    zh: "官方产品与技术文档",
+    en: "Official Product & Technical Documentation",
+    note: "厂商官方发布的 API、平台能力与工程说明；功能、地域、配额、价格和发布阶段需按采购时点复核。",
+  },
+  {
     grade: "A",
     zh: "学术研究与权威教材",
     en: "Academic Research & Authoritative Textbooks",
@@ -25,9 +31,9 @@ const evidenceLegend = [
   },
   {
     grade: "B",
-    zh: "可复核厂商实验",
-    en: "Reproducible Vendor Evidence",
-    note: "厂商公开的方法与实验结果；用于提出 PoC 假设，不直接作为客户承诺。",
+    zh: "厂商工程指南与实验",
+    en: "Vendor Engineering Guidance & Evidence",
+    note: "厂商公开的工程方法、实践指南与实验结果；用于形成方案判断或 PoC 假设，不直接作为客户承诺。",
   },
   {
     grade: "G",
@@ -38,6 +44,13 @@ const evidenceLegend = [
 ];
 
 const referenceModuleRows = balanceRows(referenceModules, 4);
+const sourceAnchorOwner = new Map<string, string>();
+
+for (const referenceModule of referenceModules) {
+  for (const sourceId of referenceModule.sourceIds) {
+    if (!sourceAnchorOwner.has(sourceId)) sourceAnchorOwner.set(sourceId, referenceModule.id);
+  }
+}
 
 export default function ReferencesPage() {
   return (
@@ -50,7 +63,7 @@ export default function ReferencesPage() {
           </Link>
           <div className="toplinks">
             <Link href="/">知识库首页 / Home</Link>
-            <Link href="/modules/rag">RAG 模块 / Module</Link>
+            <a href="#reference-modules">模块来源目录 / Modules</a>
           </div>
         </nav>
 
@@ -59,12 +72,12 @@ export default function ReferencesPage() {
             <p className="eyebrow">REFERENCE LEDGER · 来源与证据</p>
             <h1>统一来源台账<br />Reference Library</h1>
             <p className="heroLead">
-              所有模块的论文、标准、教材、厂商实验与行业指南集中在这里维护。
+              所有模块的论文、标准、教材、官方产品文档、厂商实验与行业指南集中在这里维护。
               正文只引用稳定的来源标识；本页统一呈现来源原文、证据类别、适用边界和最近核验日期。
             </p>
             <div className="heroActions">
-              <a className="primaryButton" href="#module-rag">查看 RAG 来源</a>
-              <Link className="textButton" href="/modules/rag">返回 RAG 模块 <span>↗</span></Link>
+              <a className="primaryButton" href="#reference-modules">按模块查看来源</a>
+              <Link className="textButton" href="/#map">返回知识地图 <span>↗</span></Link>
             </div>
           </div>
         </div>
@@ -101,6 +114,7 @@ export default function ReferencesPage() {
 
             <nav
               className="referenceModuleNav"
+              id="reference-modules"
               aria-label="来源模块目录"
               data-count={referenceModules.length}
               data-odd={referenceModules.length % 2 === 1 ? "true" : "false"}
@@ -153,7 +167,7 @@ export default function ReferencesPage() {
                   return (
                     <a
                       className="sourceItem"
-                      id={`source-${sourceId}`}
+                      id={sourceAnchorOwner.get(sourceId) === module.id ? `source-${sourceId}` : undefined}
                       href={source.href}
                       target="_blank"
                       rel="noreferrer"

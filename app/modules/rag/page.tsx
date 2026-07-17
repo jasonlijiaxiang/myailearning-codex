@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceRows } from "../../layout-utils.mjs";
+import { ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import { referenceModules, sourceLedger } from "../../reference-content.mjs";
 import { evidenceCards, ragQa } from "../../rag-content.mjs";
 
@@ -59,7 +60,6 @@ const servingFlow = [
 ];
 
 const sourceCount = referenceModules.find((module) => module.id === "rag")?.sourceIds.length ?? 0;
-const evidenceRows = balanceRows(evidenceCards, 4);
 const ragOriginalSource = sourceLedger["rag-original-2020"];
 
 
@@ -80,7 +80,7 @@ export default function RagModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V0.8</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN · V0.9</p>
             <h2 id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h2>
           </div>
           <div className="ragDefinition">
@@ -302,26 +302,7 @@ export default function RagModulePage() {
 
           <div className="subsection" id="evidence">
             <div className="subHead"><span>2.8</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
-            <div className="evidenceGrid" data-count={evidenceCards.length} data-odd={evidenceCards.length % 2 === 1 ? "true" : "false"}>
-              {evidenceRows.flatMap((row) =>
-                row.map((card) => {
-                  const source = sourceLedger[card.sourceId as keyof typeof sourceLedger];
-                  return (
-                    <article
-                      className={`metricCard${card.accent ? " accent" : ""}`}
-                      key={card.title}
-                      style={{ "--evidence-span": 12 / row.length } as CSSProperties}
-                    >
-                      <p className="metric">{card.metric}</p>
-                      <h4>{card.title}</h4>
-                      <p className="metricFinding">{card.finding}</p>
-                      <p className="metricBoundary"><strong>适用边界</strong>{card.boundary}</p>
-                      <Link href={`/references#source-${card.sourceId}`}>对应来源 · {source.shortTitle} ↓</Link>
-                    </article>
-                  );
-                }),
-              )}
-            </div>
+            <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities">
@@ -368,42 +349,7 @@ export default function RagModulePage() {
           <div className="subsection qaSection" id="qa">
             <div className="subHead"><span>2.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时标出具体依据、证据支持范围和售前必须确认的下一问。</p>
-            <div className="qaList">
-              {ragQa.map((item, index) => (
-                <details key={item.q} open={index === 0}>
-                  <summary><span className="qaNo">Q{String(index + 1).padStart(2, '0')}</span><strong>{item.q}</strong><span className="qaTag">{item.tag}</span><span className="plus">＋</span></summary>
-                  <div className="qaAnswer">
-                    <div><p className="answerLabel">结论短答</p><p>{item.a}</p></div>
-                    <div><p className="answerLabel">深一层</p><p>{item.depth}</p></div>
-                    <div className="qaBasis" aria-label="本题依据">
-                      <div className="qaBasisHead">
-                        <p className="answerLabel">本题依据 / Evidence</p>
-                        <span>{item.basis}</span>
-                      </div>
-                      <div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>
-                        {balanceRows(item.evidence, 3).flatMap((row) =>
-                          row.map((reference) => {
-                            const source = sourceLedger[reference.sourceId as keyof typeof sourceLedger];
-                            return (
-                              <Link
-                                href={`/references#source-${reference.sourceId}`}
-                                key={reference.sourceId}
-                                style={{ "--qa-evidence-span": 12 / row.length } as CSSProperties}
-                              >
-                                <span className="qaEvidenceMeta">{source.grade} · {source.kind}</span>
-                                <strong>{source.shortTitle}</strong>
-                                <small>{reference.supports}</small>
-                              </Link>
-                            );
-                          }),
-                        )}
-                      </div>
-                    </div>
-                    <div className="ask"><p className="answerLabel">售前下一问</p><p>{item.ask}</p></div>
-                  </div>
-                </details>
-              ))}
-            </div>
+            <ModuleQaList items={ragQa} sourceLedger={sourceLedger} />
           </div>
 
         </div>
@@ -411,7 +357,7 @@ export default function RagModulePage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>RAG 独立模块 V0.8 · 2026-07-17</p>
+        <p>RAG 独立模块 V0.9 · 2026-07-17</p>
         <a href="#rag">返回顶部 ↑</a>
       </footer>
     </main>

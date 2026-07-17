@@ -10,9 +10,11 @@ type ModulePageProps = {
   params: Promise<{ slug: string }>;
 };
 
+const dedicatedModuleSlugs = new Set(["rag", "ai-agent", "prompt-engineering"]);
+
 export function generateStaticParams() {
   return moduleList
-    .filter((module) => module.slug !== "rag")
+    .filter((module) => !dedicatedModuleSlugs.has(module.slug))
     .map((module) => ({ slug: module.slug }));
 }
 
@@ -32,7 +34,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const { slug } = await params;
   const currentModule = getModuleBySlug(slug);
 
-  if (!currentModule || slug === "rag") notFound();
+  if (!currentModule || dedicatedModuleSlugs.has(slug)) notFound();
 
   const relatedModules = moduleList.filter(
     (candidate) => candidate.layerNo === currentModule.layerNo && candidate.slug !== currentModule.slug,
@@ -98,7 +100,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <footer>
         <Link href="/#map">返回知识地图</Link>
-        <span>V0.8 · 独立模块页</span>
+        <span>V0.9 · 独立模块页</span>
       </footer>
     </main>
   );
