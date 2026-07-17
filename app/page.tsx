@@ -4,7 +4,12 @@ const layers = [
     name: "解决方案层",
     en: "Solution Plays",
     purpose: "把技术能力翻译成客户价值、路线与采购边界。",
-    modules: ["场景方案库", "模型选型格局", "行业蓝图", "商业价值与 TCO"],
+    modules: [
+      { zh: "场景方案库", en: "Scenario Solution Library" },
+      { zh: "模型选型格局", en: "Model Selection Landscape" },
+      { zh: "行业蓝图", en: "Industry Blueprint" },
+      { zh: "商业价值与 TCO", en: "Business Value & TCO" },
+    ],
     presales: "先回答为什么做、做什么，再谈怎么做。",
   },
   {
@@ -12,7 +17,12 @@ const layers = [
     name: "应用模式层",
     en: "Application Patterns",
     purpose: "掌握用模型解决问题的主流模式与组合方式。",
-    modules: ["RAG", "Agent", "多模态", "工作流与结构化生成"],
+    modules: [
+      { zh: "RAG · 检索增强生成", en: "Retrieval-Augmented Generation", href: "#rag" },
+      { zh: "Agent · 智能体", en: "AI Agent" },
+      { zh: "多模态", en: "Multimodality" },
+      { zh: "工作流与结构化生成", en: "Workflow & Structured Generation" },
+    ],
     presales: "识别需求适合检索、生成、行动，还是它们的组合。",
   },
   {
@@ -20,7 +30,12 @@ const layers = [
     name: "协议与互操作层",
     en: "Protocols & Interoperability",
     purpose: "理解模型、工具、Agent 与系统间如何发现、协作和治理。",
-    modules: ["MCP", "A2A", "API / Event", "身份与授权边界"],
+    modules: [
+      { zh: "MCP · 模型上下文协议", en: "Model Context Protocol" },
+      { zh: "A2A · 智能体间协议", en: "Agent2Agent Protocol" },
+      { zh: "API / 事件", en: "API / Event" },
+      { zh: "身份与授权边界", en: "Identity & Authorization Boundaries" },
+    ],
     presales: "避免把协议能力误说成完整平台能力。",
   },
   {
@@ -28,7 +43,12 @@ const layers = [
     name: "工程保障层",
     en: "Engineering Assurance",
     purpose: "让 PoC 从“能回答”走向“可上线、可治理、可运营”。",
-    modules: ["评估 Eval", "安全与治理", "推理与 AI 网关", "可观测与 FinOps"],
+    modules: [
+      { zh: "评估", en: "Evaluation" },
+      { zh: "安全与治理", en: "Safety & Governance" },
+      { zh: "推理与 AI 网关", en: "Inference & AI Gateway" },
+      { zh: "可观测与 FinOps", en: "Observability & FinOps" },
+    ],
     presales: "把准确率、SLA、风险、成本一起写入验收。",
   },
   {
@@ -36,7 +56,12 @@ const layers = [
     name: "模型基础层",
     en: "Model Foundations",
     purpose: "建立解释模型能力、局限与优化手段所需的理论底座。",
-    modules: ["模型原理", "提示词工程", "训练与微调", "模型压缩与对齐"],
+    modules: [
+      { zh: "模型原理", en: "Model Principles" },
+      { zh: "提示词工程", en: "Prompt Engineering" },
+      { zh: "训练与微调", en: "Training & Fine-tuning" },
+      { zh: "模型压缩与对齐", en: "Model Compression & Alignment" },
+    ],
     presales: "懂原理，但不陷入与客户目标无关的算法细节。",
   },
   {
@@ -44,7 +69,12 @@ const layers = [
     name: "数据底座层",
     en: "Data Foundation",
     purpose: "把非结构化与结构化数据转成可信、可检索、可运营的知识。",
-    modules: ["解析 / OCR", "同步 / CDC", "向量库与检索", "质量与知识运营"],
+    modules: [
+      { zh: "解析 / OCR", en: "Parsing & OCR" },
+      { zh: "同步 / CDC", en: "Synchronization & CDC" },
+      { zh: "向量库与检索", en: "Vector Database & Retrieval" },
+      { zh: "质量与知识运营", en: "Quality & Knowledge Operations" },
+    ],
     presales: "多数 RAG 问题首先是数据与权限问题。",
   },
   {
@@ -52,7 +82,12 @@ const layers = [
     name: "算力底座层",
     en: "Compute Foundation",
     purpose: "理解模型以下的硬件、集群、存储、网络与平台能力。",
-    modules: ["加速器与异构算力", "集群与调度", "推理栈", "存储与网络"],
+    modules: [
+      { zh: "加速器与异构算力", en: "Accelerators & Heterogeneous Compute" },
+      { zh: "集群与调度", en: "Clusters & Scheduling" },
+      { zh: "推理栈", en: "Inference Stack" },
+      { zh: "存储与网络", en: "Storage & Networking" },
+    ],
     presales: "把吞吐、时延、可用性和成本放在同一张容量表里。",
   },
 ];
@@ -173,6 +208,22 @@ const cloudHooks = [
   { stage: "运营优化", services: "日志、Tracing、APM、评估平台、告警、FinOps", value: "定位失败、持续评测并核算每个成功回答成本", discover: "谁运营质量？如何发现退化并形成改进闭环？" },
 ];
 
+const knowledgeFlow = [
+  { zh: "源系统", en: "Source Systems" },
+  { zh: "解析 / OCR", en: "Parsing & OCR" },
+  { zh: "切块与元数据", en: "Chunking & Metadata" },
+  { zh: "权限映射", en: "Access Mapping" },
+  { zh: "稀疏 + 向量索引", en: "Sparse + Vector Indexing" },
+];
+
+const servingFlow = [
+  { zh: "查询理解", en: "Query Understanding" },
+  { zh: "混合召回", en: "Hybrid Retrieval" },
+  { zh: "过滤与重排", en: "Filtering & Reranking" },
+  { zh: "上下文组装", en: "Context Assembly" },
+  { zh: "生成 / 引用 / 拒答", en: "Generation / Citation / Abstention" },
+];
+
 const sources = [
   {
     level: "A / 教材",
@@ -278,7 +329,7 @@ export default function Home() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V0.2</p>
+            <p className="eyebrow">READING EDITION · V0.3</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
               从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径。
@@ -290,13 +341,11 @@ export default function Home() {
             </div>
           </div>
           <aside className="briefCard" aria-label="知识库定义">
-            <div className="briefTop">
-              <span>BUILD BRIEF</span><span>2026.07</span>
-            </div>
             <dl>
               <div><dt>读者</dt><dd>有 Python / API 基础的售前人员</dd></div>
               <div><dt>重点</dt><dd>概念 → 判断 → 证据 → 客户回答</dd></div>
               <div><dt>载体</dt><dd>阅读型 HTML，可扩展为模块库</dd></div>
+              <div><dt>语言</dt><dd>中文主版本，专业术语中英对照</dd></div>
               <div><dt>示范</dt><dd>RAG：原理、检索、云服务、工程与售前</dd></div>
             </dl>
             <p className="statusLine"><span /> 当前 RAG 模块已纳入 {sources.length} 份核验来源</p>
@@ -318,6 +367,10 @@ export default function Home() {
             <article><span>04</span><h3>现场怎么说？</h3><p>客户问题、短答、深答、追问和风险提示。</p></article>
           </div>
           <p className="editorialRule"><strong>编辑原则：</strong>图、表、代码、案例和问答均按理解需要使用；不设数量配额，不为了形式堆内容。</p>
+          <div className="languageRule">
+            <strong>语言规范 / Language Standard</strong>
+            <p>正文以中文为主；专业术语首次出现采用“中文（English，缩写）”，后续按语境使用中文或缩写。未来英文版沿用同一知识结构，但独立编写并按术语表、标准与原始来源逐项校审，不采用逐句机器翻译直接发布。</p>
+          </div>
         </div>
       </section>
 
@@ -343,7 +396,12 @@ export default function Home() {
                 <div className="layerContent">
                   <p className="layerPurpose">{layer.purpose}</p>
                   <div className="chips">
-                    {layer.modules.map((module) => <span key={module}>{module}</span>)}
+                    {layer.modules.map((module) => {
+                      const content = <><strong>{module.zh}</strong><small>{module.en}</small></>;
+                      return module.href
+                        ? <a key={module.zh} href={module.href} aria-label={`${module.zh}：跳转到对应模块`}>{content}</a>
+                        : <span key={module.zh}>{content}</span>;
+                    })}
                   </div>
                 </div>
                 <p className="layerNote">{layer.presales}</p>
@@ -369,7 +427,7 @@ export default function Home() {
         <div className="ragHeader">
           <div>
             <p className="kicker light">MODULE SAMPLE · APPLICATION PATTERN</p>
-            <h2 id="rag-title">RAG<br /><span>Retrieval-Augmented Generation</span></h2>
+            <h2 id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h2>
           </div>
           <div className="ragDefinition">
             <p>用可更新、可追溯的外部证据增强模型回答；核心不是“接一个向量库”，而是建立一条可评估、可授权、可运营的知识供应链。</p>
@@ -514,11 +572,11 @@ export default function Home() {
             <div className="chainWrap">
               <div className="chainLabel"><strong>离线知识链</strong><span>Knowledge pipeline</span></div>
               <div className="flow">
-                {['源系统', '解析 / OCR', '切块与元数据', '权限映射', '稀疏 + 向量索引'].map((x, i) => <div className="flowStep" key={x}><span>{String(i+1).padStart(2,'0')}</span>{x}</div>)}
+                {knowledgeFlow.map((step, i) => <div className="flowStep" key={step.zh}><span className="flowNo">{String(i+1).padStart(2,'0')}</span><div className="flowTerm"><strong>{step.zh}</strong><small>{step.en}</small></div></div>)}
               </div>
               <div className="chainLabel runtime"><strong>在线问答链</strong><span>Serving pipeline</span></div>
               <div className="flow runtimeFlow">
-                {['查询理解', '混合召回', '过滤与重排', '上下文组装', '生成 / 引用 / 拒答'].map((x, i) => <div className="flowStep" key={x}><span>{String(i+1).padStart(2,'0')}</span>{x}</div>)}
+                {servingFlow.map((step, i) => <div className="flowStep" key={step.zh}><span className="flowNo">{String(i+1).padStart(2,'0')}</span><div className="flowTerm"><strong>{step.zh}</strong><small>{step.en}</small></div></div>)}
               </div>
             </div>
             <div className="architectureNotes">
@@ -659,7 +717,7 @@ export default function Home() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>知识地图 + RAG 样板模块 V0.2 · 2026-07-17</p>
+        <p>知识地图 + RAG 样板模块 V0.3 · 2026-07-17</p>
         <a href="#top">返回顶部 ↑</a>
       </footer>
     </main>

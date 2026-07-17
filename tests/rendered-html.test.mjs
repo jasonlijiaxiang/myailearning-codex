@@ -24,6 +24,12 @@ test("server-renders the complete presales knowledge base", async () => {
   assert.match(html, /<title>云计算 × AI 平台售前知识库<\/title>/i);
   assert.match(html, /知识地图：7 层、28 个细分模块/);
   assert.match(html, /Retrieval-Augmented Generation/);
+  assert.match(html, /语言规范 \/ Language Standard/);
+  assert.match(html, /MCP · 模型上下文协议/);
+  assert.match(html, /Model Context Protocol/);
+  assert.match(html, /Chunking &amp; Metadata/);
+  assert.match(html, /href="#rag"[^>]*aria-label="RAG · 检索增强生成：跳转到对应模块"/);
+  assert.doesNotMatch(html, /BUILD BRIEF/);
   assert.match(html, /给模型增加可查的外部记忆/);
   assert.match(html, /PARAMETRIC MEMORY/);
   assert.match(html, /BM25 \/ Sparse/);
