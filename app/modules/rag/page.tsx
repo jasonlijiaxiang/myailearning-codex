@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceRows } from "../../layout-utils.mjs";
-import { ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
-import { referenceModules, sourceLedger } from "../../reference-content.mjs";
+import { BalancedGrid, CriticalBoundary, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { sourceLedger } from "../../reference-content.mjs";
 import { evidenceCards, ragQa } from "../../rag-content.mjs";
 
 export const metadata: Metadata = {
@@ -59,7 +59,6 @@ const servingFlow = [
   { zh: "生成 / 引用 / 拒答", en: "Generation / Citation / Abstention" },
 ];
 
-const sourceCount = referenceModules.find((module) => module.id === "rag")?.sourceIds.length ?? 0;
 const ragOriginalSource = sourceLedger["rag-original-2020"];
 
 
@@ -81,11 +80,10 @@ export default function RagModulePage() {
         <div className="ragHeader">
           <div>
             <p className="kicker light">MODULE · APPLICATION PATTERN · V0.9</p>
-            <h2 id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h2>
+            <h1 className="moduleHeroTitle" id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h1>
           </div>
           <div className="ragDefinition">
             <p>用可更新、可追溯的外部证据增强模型回答；核心不是“接一个向量库”，而是建立一条可评估、可授权、可运营的知识供应链。</p>
-            <div className="moduleMeta"><span>基础原理 + 工程 + 售前</span><span>跨模块知识串联</span><span>{sourceCount} 份核验来源</span></div>
           </div>
         </div>
       </section>
@@ -99,7 +97,7 @@ export default function RagModulePage() {
             <p>客户要的不是一个“会聊天的搜索框”，而是一套能在正确权限下找到正确证据、生成可核验回答，并持续知道哪里做错了的系统。</p>
           </div>
 
-          <div className="subsection" id="concept-map">
+          <div className="subsection" id="concept-map" data-quality-section="related-modules">
             <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>RAG 在知识地图中的位置与相关模块</h3></div></div>
             <p className="sectionLead">RAG 模块聚焦“检索增强生成的组合逻辑”。底层概念各有唯一的主要归属；本节提供理解 RAG 所需的局部解释，并将完整知识链接至对应主模块，以减少重复和版本漂移。</p>
             {conceptRows.length > 0 && (
@@ -122,7 +120,7 @@ export default function RagModulePage() {
             )}
           </div>
 
-          <div className="subsection foundationSection" id="rag-principle">
+          <div className="subsection foundationSection" id="rag-principle" data-quality-section="principle">
             <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION &amp; MECHANICS</p><h3>RAG 的工作原理与工程机制</h3></div></div>
             <div className="memoryCompare">
               <article>
@@ -193,18 +191,15 @@ export default function RagModulePage() {
                 <article><span>03</span><h4>生成<small>Generation</small></h4><p>模型比较证据、说明适用范围；证据不足或冲突时拒答并提示人工确认。</p></article>
               </div>
             </div>
-            <aside className="callout" aria-label="重要边界">
-              <div className="calloutTitle"><span>必须记住</span><strong>重要边界</strong><small>Critical Boundary</small></div>
-              <p>RAG 的质量不是一个模型分数，而是一条证据链：找得到、排得准、装得下、用得对、引得出。任何一段失效，都可能得到流畅但不可核验的回答。</p>
-            </aside>
+            <CriticalBoundary>RAG 的质量不是一个模型分数，而是一条证据链：找得到、排得准、装得下、用得对、引得出。任何一段失效，都可能得到流畅但不可核验的回答。</CriticalBoundary>
           </div>
 
           <div className="subsection" id="retrieval-basics">
             <div className="subHead"><span>2.3</span><div><p className="kicker">RETRIEVAL MECHANICS</p><h3>检索链的证据形成与失效机制</h3></div></div>
             <div className="mechanicGrid">
               <article><span className="mechanicNo">A</span><h4>解析与切块</h4><p>解析保留文字、表格、标题、页码和版面关系；切块把文档变成可召回单元。块太小会丢上下文，太大则稀释相关信息并增加 token。</p><small>主归属：数据解析 / OCR / 质量运营</small></article>
-              <article><span className="mechanicNo">B</span><h4>稀疏检索</h4><p>BM25 根据查询词在文档中的出现、稀有程度和文档长度评分。对编号、专有名词、错误码、日期和精确短语通常很强。</p><small>主归属：搜索与索引</small></article>
-              <article><span className="mechanicNo">C</span><h4>稠密检索</h4><p>双编码器把查询与文档映射为向量，以距离寻找语义相近内容。能跨同义表达，但会混淆“语义相似”和“事实相关”。</p><small>主归属：Embedding / 向量数据库</small></article>
+              <article><span className="mechanicNo">B</span><h4>稀疏检索 · Sparse Retrieval</h4><p>BM25 根据查询词在文档中的出现、稀有程度和文档长度评分。对编号、专有名词、错误码、日期和精确短语通常很强。</p><small>主归属：搜索与索引</small></article>
+              <article><span className="mechanicNo">C</span><h4>稠密检索 · Dense Retrieval</h4><p>双编码器把查询与文档映射为向量，以距离寻找语义相近内容。能跨同义表达，但会混淆“语义相似”和“事实相关”。</p><small>主归属：Embedding / 向量数据库</small></article>
               <article><span className="mechanicNo">D</span><h4>过滤与重排</h4><p>先用高吞吐检索取候选，再用更精细模型比较问题与候选；权限、时间、产品和地区过滤必须在上下文组装前生效。</p><small>主归属：检索工程 / 安全</small></article>
             </div>
 
@@ -220,11 +215,11 @@ export default function RagModulePage() {
               </table>
             </div>
 
-            <div className="technicalNotes">
+            <BalancedGrid className="technicalNotes" maxColumns={3}>
               <article><p className="miniLabel">VECTOR SIMILARITY</p><h4>余弦相似度 · Cosine Similarity</h4><p>直观理解是比较查询向量与文档向量的方向是否接近；分数越高通常表示语义越相近。但分数只在同一 Embedding、同一任务和同一索引配置下有意义，不能跨模型直接比较。</p></article>
               <article><p className="miniLabel">APPROXIMATE SEARCH</p><h4>ANN / HNSW</h4><p>大规模向量库不会逐条精确比较。HNSW 通过分层近邻图快速逼近最近向量，用索引内存、构建时间和召回率换取查询速度。</p></article>
               <article><p className="miniLabel">CHUNKING</p><h4>Chunk Size 的任务依赖性</h4><p>固定长度、按标题、语义切分、父子块各适合不同文档。参数必须用真实问题集同时测召回、上下文完整性、时延和 token。</p></article>
-            </div>
+            </BalancedGrid>
           </div>
 
           <div className="subsection" id="rag-variants">
@@ -300,12 +295,12 @@ export default function RagModulePage() {
             </div>
           </div>
 
-          <div className="subsection" id="evidence">
+          <div className="subsection" id="evidence" data-quality-section="evidence">
             <div className="subHead"><span>2.8</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
           </div>
 
-          <div className="subsection cloudSection" id="cloud-opportunities">
+          <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
             <div className="subHead"><span>2.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>RAG 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro">
               <p>先用厂商中立能力描述问题，再映射到实际销售的产品。云服务不是附录：它贯穿数据进入、知识处理、模型调用、在线运行、安全和持续运营。</p>
@@ -321,11 +316,11 @@ export default function RagModulePage() {
                 </tbody>
               </table>
             </div>
-            <div className="solutionBundles">
+            <BalancedGrid className="solutionBundles" maxColumns={3}>
               <article><p className="miniLabel">BUNDLE A</p><h4>安全企业知识助手</h4><p>对象存储 / 文档智能 + 托管搜索 / 向量库 + 模型服务 + API 网关 + IAM / KMS + 可观测。</p><small>购买角色：业务部门、数据负责人、安全与应用团队</small></article>
               <article><p className="miniLabel">BUNDLE B</p><h4>实时知识同步</h4><p>数据库 / SaaS + CDC / 事件总线 + Serverless 处理 + 增量索引 + 缓存失效 + 审计。</p><small>购买角色：数据平台、集成团队、业务运营</small></article>
               <article><p className="miniLabel">BUNDLE C</p><h4>私有化规模运行</h4><p>Kubernetes / GPU 推理 + 私网模型网关 + 向量检索 + 弹性缓存 + APM / FinOps。</p><small>购买角色：平台团队、基础设施、信息安全与采购</small></article>
-            </div>
+            </BalancedGrid>
             <p className="sectionFootnote">后续可在不改正文的情况下，为目标云厂商增加“能力 → 产品名称 → 限制 → 计费单位”映射表；表中应显式标注产品版本、适用地域与核验日期。</p>
           </div>
 
@@ -346,7 +341,7 @@ export default function RagModulePage() {
             </div>
           </div>
 
-          <div className="subsection qaSection" id="qa">
+          <div className="subsection qaSection" id="qa" data-quality-section="qa">
             <div className="subHead"><span>2.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时标出具体依据、证据支持范围和售前必须确认的下一问。</p>
             <ModuleQaList items={ragQa} sourceLedger={sourceLedger} />

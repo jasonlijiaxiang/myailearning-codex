@@ -4,8 +4,8 @@ import Link from "next/link";
 
 import { agentEvidenceCards, agentQa } from "../../agent-content.mjs";
 import { balanceRows } from "../../layout-utils.mjs";
-import { ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
-import { referenceModules, sourceLedger } from "../../reference-content.mjs";
+import { BalancedGrid, CriticalBoundary, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { sourceLedger } from "../../reference-content.mjs";
 
 export const metadata: Metadata = {
   title: "Agent · 智能体 | 云计算 × AI 平台售前知识库",
@@ -137,7 +137,6 @@ const cloudHooks = [
   { stage: "运营与 FinOps", services: "预算、配额、成本分析、缓存、容量与发布平台", value: "控制轮次、工具消耗和每个成功任务成本", discover: "P95、并发、任务预算和回滚要求是什么？" },
 ];
 
-const sourceCount = referenceModules.find((module) => module.id === "ai-agent")?.sourceIds.length ?? 0;
 export default function AgentModulePage() {
   return (
     <main>
@@ -156,11 +155,14 @@ export default function AgentModulePage() {
         <div className="ragHeader">
           <div>
             <p className="kicker light">MODULE · APPLICATION PATTERN · V0.9</p>
-            <h2 id="agent-title">Agent<br /><span>智能体 · AI Agent</span></h2>
+            <h1
+              className="moduleHeroTitle"
+              id="agent-title"
+              style={{ "--module-title-size": "clamp(76px,10vw,148px)", "--module-title-mobile-size": "clamp(68px,22vw,88px)" } as CSSProperties}
+            >Agent<br /><span>智能体 · AI Agent</span></h1>
           </div>
           <div className="ragDefinition">
             <p>让模型在受控边界内，根据环境反馈选择下一步并调用工具完成任务；核心不是“更自主”，而是把动态判断、确定性控制和业务授权正确分层。</p>
-            <div className="moduleMeta"><span>基础概念 + 工程 + 售前</span><span>云服务机会串联</span><span>{sourceCount} 份核验来源</span></div>
           </div>
         </div>
       </section>
@@ -174,7 +176,7 @@ export default function AgentModulePage() {
             <p>客户购买的不是“会自己想办法的模型”，而是一套能识别目标、调用获准工具、验证结果，并在失败或高风险时停下来交还人工的任务执行系统。</p>
           </div>
 
-          <div className="subsection" id="concept-map">
+          <div className="subsection" id="concept-map" data-quality-section="related-modules">
             <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>Agent 在知识地图中的位置与相关模块</h3></div></div>
             <p className="sectionLead">Agent 聚焦“由模型动态管理任务执行”。模型、Prompt、RAG、协议、身份与评估各有独立主模块；这里解释它们如何在一个可执行系统中协作。</p>
             <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
@@ -189,7 +191,7 @@ export default function AgentModulePage() {
             </div>
           </div>
 
-          <div className="subsection foundationSection" id="agent-principle">
+          <div className="subsection foundationSection" id="agent-principle" data-quality-section="principle">
             <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION &amp; LOOP</p><h3>Agent 的基础概念与工作循环</h3></div></div>
             <div className="memoryCompare">
               <article>
@@ -250,10 +252,7 @@ export default function AgentModulePage() {
                 <article><span>03</span><h4>观察与闭环<small>Observe &amp; Close</small></h4><p>回读工单和退款状态；有操作编号才确认完成，冲突、超限或失败则进入下一轮或交还人工。</p></article>
               </div>
             </div>
-            <aside className="callout" aria-label="重要边界">
-              <div className="calloutTitle"><span>必须记住</span><strong>重要边界</strong><small>Critical Boundary</small></div>
-              <p>Agent 的“思考”不能替代业务控制。身份、权限、金额、审批、幂等、补偿和审计必须由确定性系统执行；Prompt 不是授权策略，模型输出也不是系统事实。</p>
-            </aside>
+            <CriticalBoundary>Agent 的“思考”不能替代业务控制。身份、权限、金额、审批、幂等、补偿和审计必须由确定性系统执行；Prompt 不是授权策略，模型输出也不是系统事实。</CriticalBoundary>
           </div>
 
           <div className="subsection" id="boundaries">
@@ -301,11 +300,11 @@ export default function AgentModulePage() {
                 <p>RAG 从外部知识库取回可更新证据，回答“组织知道什么”；Memory 保存与主体和历史交互相关的信息，回答“这个 Agent 需要为谁记住什么”。二者都需要来源、权限和时效控制，但写入责任与生命周期不同。</p>
               </article>
             </div>
-            <div className="technicalNotes">
+            <BalancedGrid className="technicalNotes" maxColumns={3}>
               <article><p className="miniLabel">DATA TOOLS</p><h4>数据工具 · Data Tools</h4><p>搜索、RAG、数据库查询和文件读取为判断提供证据，通常只读，但返回内容仍可能过期、越权或包含注入指令。</p></article>
               <article><p className="miniLabel">ACTION TOOLS</p><h4>动作工具 · Action Tools</h4><p>创建工单、修改订单、发消息或执行代码会改变外部状态，必须强化身份、幂等、审批、回读与补偿。</p></article>
               <article><p className="miniLabel">ORCHESTRATION TOOLS</p><h4>编排工具 · Orchestration Tools</h4><p>工作流、队列、子 Agent 和任务调度负责长任务、并行与交接；需要明确输入输出、超时、所有权和聚合验证。</p></article>
-            </div>
+            </BalancedGrid>
           </div>
 
           <div className="subsection" id="patterns">
@@ -339,7 +338,7 @@ export default function AgentModulePage() {
             </div>
           </div>
 
-          <div className="subsection cloudSection" id="cloud-opportunities">
+          <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
             <div className="subHead"><span>2.7</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro"><p>Agent 会把模型服务延伸成跨运行时、API、身份、数据、安全和运维的整体方案。售前应先用厂商中立能力拆解，再映射当期云产品、地域、配额和计费。</p><span>模型不是全部</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
             <div className="cloudTable tableWrap">
@@ -347,11 +346,11 @@ export default function AgentModulePage() {
                 {cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
               </tbody></table>
             </div>
-            <div className="solutionBundles">
+            <BalancedGrid className="solutionBundles" maxColumns={3}>
               <article><p className="miniLabel">BUNDLE A</p><h4>企业服务 Agent</h4><p>模型服务 + RAG / 搜索 + CRM / 工单工具 + API 网关 + 用户身份 + 审批流 + Trace。</p><small>价值：从回答问题延伸到受控地完成服务流程</small></article>
               <article><p className="miniLabel">BUNDLE B</p><h4>Agent 工具与身份平台</h4><p>托管 Runtime + MCP / API Gateway + 工作负载身份 + 密钥 + 策略引擎 + 沙箱。</p><small>价值：把零散 API 变成可发现、可授权、可审计的工具面</small></article>
               <article><p className="miniLabel">BUNDLE C</p><h4>AgentOps 控制面</h4><p>Tracing / APM + 评估平台 + 日志 / SIEM + 发布回滚 + 配额预算 + FinOps。</p><small>价值：把长轨迹失败、风险和成本变成持续运营指标</small></article>
-            </div>
+            </BalancedGrid>
           </div>
 
           <div className="subsection" id="poc">
@@ -365,12 +364,12 @@ export default function AgentModulePage() {
             <div className="gates"><h4>建议的 Go / No-Go 门槛结构</h4><div className="gateList"><span>端到端任务成功率</span><span>关键步骤完成率</span><span>策略违规 = 0</span><span>高风险误执行 = 0</span><span>人工接管率</span><span>P95 / 完成时长</span><span>每个成功任务成本</span><span>可恢复 / 可回滚</span></div><p>具体数值按业务风险、人工基线与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
           </div>
 
-          <div className="subsection" id="evidence">
+          <div className="subsection" id="evidence" data-quality-section="evidence">
             <div className="subHead"><span>2.9</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={agentEvidenceCards} sourceLedger={sourceLedger} />
           </div>
 
-          <div className="subsection qaSection" id="qa">
+          <div className="subsection qaSection" id="qa" data-quality-section="qa">
             <div className="subHead"><span>2.10</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时标出具体依据、证据支持范围和售前必须确认的下一问。</p>
             <ModuleQaList items={agentQa} sourceLedger={sourceLedger} />

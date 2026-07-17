@@ -3,11 +3,11 @@ import Link from "next/link";
 
 import { balanceRows } from "./layout-utils.mjs";
 import { layers, moduleList } from "./knowledge-map.mjs";
+import { publishedModuleSlugs } from "./module-publication.mjs";
 
 const layerCount = layers.length;
 const moduleCount = moduleList.length;
-const availableModuleSlugs = ["rag", "ai-agent", "prompt-engineering"];
-const availableModules = availableModuleSlugs.map((slug) => {
+const availableModules = publishedModuleSlugs.map((slug) => {
   const selectedModule = moduleList.find((item) => item.slug === slug);
 
   if (!selectedModule) {
@@ -38,8 +38,8 @@ export default function Home() {
             <p className="eyebrow">READING EDITION · V0.9</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
-              从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径。
-              中文为主，关键术语中英对照；兼顾理论深度与客户现场可用性。
+              从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径；
+              每个主题都可以独立阅读、直接分享并回到完整知识地图。
             </p>
             <div className="heroActions">
               <a className="primaryButton" href="#available-modules">选择学习模块</a>
@@ -148,7 +148,7 @@ export default function Home() {
 
       <footer>
         <span>Cloud × AI Presales Fieldbook</span>
-        <span>V0.9 · 中文主版本 · 模块化阅读</span>
+        <span>V0.9 · 模块化阅读</span>
       </footer>
     </main>
   );

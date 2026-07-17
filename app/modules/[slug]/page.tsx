@@ -5,16 +5,15 @@ import { notFound } from "next/navigation";
 
 import { getModuleBySlug, moduleList } from "../../knowledge-map.mjs";
 import { balanceRows } from "../../layout-utils.mjs";
+import { isPublishedModule } from "../../module-publication.mjs";
 
 type ModulePageProps = {
   params: Promise<{ slug: string }>;
 };
 
-const dedicatedModuleSlugs = new Set(["rag", "ai-agent", "prompt-engineering"]);
-
 export function generateStaticParams() {
   return moduleList
-    .filter((module) => !dedicatedModuleSlugs.has(module.slug))
+    .filter((module) => !isPublishedModule(module.slug))
     .map((module) => ({ slug: module.slug }));
 }
 
@@ -34,7 +33,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const { slug } = await params;
   const currentModule = getModuleBySlug(slug);
 
-  if (!currentModule || dedicatedModuleSlugs.has(slug)) notFound();
+  if (!currentModule || isPublishedModule(slug)) notFound();
 
   const relatedModules = moduleList.filter(
     (candidate) => candidate.layerNo === currentModule.layerNo && candidate.slug !== currentModule.slug,
@@ -50,8 +49,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
             <span>Cloud × AI / Presales Fieldbook</span>
           </Link>
           <div className="toplinks">
+            <Link href="/#available-modules">学习模块</Link>
             <Link href="/#map">知识地图</Link>
-            <Link href="/modules/rag">RAG</Link>
             <Link href="/references">Reference</Link>
           </div>
         </nav>
@@ -60,17 +59,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
           <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn}</p>
           <h1>{currentModule.zh}</h1>
           <p className="moduleEnglish">{currentModule.en}</p>
-          <p className="moduleLayerPurpose">{currentModule.layerPurpose}</p>
         </div>
       </header>
-
-      <section className="moduleStatus" aria-labelledby="module-status-title">
-        <div>
-          <p className="kicker">CONTENT STATUS</p>
-          <h2 id="module-status-title">正文建设中</h2>
-        </div>
-        <p>当前页面已进入知识地图；后续版本将补齐基础概念、云服务连接、售前实战问答与核验来源。</p>
-      </section>
 
       <section className="relatedModules" aria-labelledby="related-modules-title">
         <div className="relatedModulesHead">
@@ -100,7 +90,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <footer>
         <Link href="/#map">返回知识地图</Link>
-        <span>V0.9 · 独立模块页</span>
+        <Link href="/references">查看统一来源台账</Link>
       </footer>
     </main>
   );

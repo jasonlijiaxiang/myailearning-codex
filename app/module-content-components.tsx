@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Children, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 
 import { balanceRows } from "./layout-utils.mjs";
@@ -43,6 +43,54 @@ function requireSource(sourceLedger: SourceLedger, sourceId: string) {
   }
 
   return source;
+}
+
+export function BalancedGrid({
+  children,
+  className,
+  maxColumns = 4,
+}: {
+  children: ReactNode;
+  className?: string;
+  maxColumns?: number;
+}) {
+  const items = Children.toArray(children);
+  if (items.length === 0) return null;
+
+  const rows = balanceRows(items, maxColumns);
+
+  return (
+    <div
+      className={`balancedGrid${className ? ` ${className}` : ""}`}
+      data-count={items.length}
+      data-odd={items.length % 2 === 1 ? "true" : "false"}
+    >
+      {rows.flatMap((row, rowIndex) =>
+        row.map((item, index) => (
+          <div
+            className="balancedGridCell"
+            key={`${rowIndex}-${index}`}
+            style={{ "--balanced-span": 12 / row.length } as CSSProperties}
+          >
+            {item}
+          </div>
+        )),
+      )}
+    </div>
+  );
+}
+
+export function CriticalBoundary({ children }: { children: ReactNode }) {
+  return (
+    <aside className="callout" aria-label="重要边界" data-importance="critical">
+      <div className="calloutTitle">
+        <span>高影响限制</span>
+        <strong>重要边界</strong>
+        <small>Critical Boundary</small>
+      </div>
+      <p>{children}</p>
+    </aside>
+  );
 }
 
 export function ModuleEvidenceGrid({

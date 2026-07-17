@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceRows } from "../../layout-utils.mjs";
-import { ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import { promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
-import { referenceModules, sourceLedger } from "../../reference-content.mjs";
+import { sourceLedger } from "../../reference-content.mjs";
 
 export const metadata: Metadata = {
   title: "提示词工程 · Prompt Engineering | 云计算 × AI 平台售前知识库",
@@ -18,7 +18,7 @@ const conceptLinks = [
   { concept: "Agent 与工具调用", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "行动扩展", local: "工具定义进入上下文；授权、执行和状态由应用控制。" },
   { concept: "工作流与结构化生成", owner: "工作流与结构化生成", href: "/modules/workflow-structured-generation", relation: "输出消费", local: "把自然语言结果约束为可被下游系统可靠处理的结构。" },
   { concept: "评估", owner: "评估", href: "/modules/evaluation", relation: "质量门槛", local: "提示版本必须用固定任务集回归，不能凭演示观感发布。" },
-  { concept: "安全与治理", owner: "安全与治理", href: "/modules/safety-governance", relation: "风险控制", local: "提示注入、数据泄漏和越权不能只靠系统提示（System Prompt）防御。" },
+  { concept: "安全与治理", owner: "安全与治理", href: "/modules/safety-governance", relation: "风险控制", local: "提示注入（Prompt Injection）、数据泄漏和越权不能只靠系统提示（System Prompt）防御。" },
   { concept: "推理与 AI 网关", owner: "推理与 AI 网关", href: "/modules/inference-ai-gateway", relation: "生产入口", local: "承载多模型路由、限流、密钥、策略、回滚与成本控制。" },
   { concept: "可观测与 FinOps", owner: "可观测与 FinOps", href: "/modules/observability-finops", relation: "运营闭环", local: "关联提示版本、模型、输入、输出、时延、质量和单次成功成本。" },
 ];
@@ -52,7 +52,6 @@ const cloudHooks = [
   { stage: "观测运营", services: "Tracing、APM、日志、告警、成本分析、提示缓存（Prompt Cache）", value: "定位退化并核算每个成功任务成本", discover: "需要保存哪些输入输出？保留期和脱敏要求是什么？" },
 ];
 
-const sourceCount = referenceModules.find((module) => module.id === "prompt-engineering")?.sourceIds.length ?? 0;
 export default function PromptEngineeringModulePage() {
   return (
     <main>
@@ -71,11 +70,14 @@ export default function PromptEngineeringModulePage() {
         <div className="ragHeader">
           <div>
             <p className="kicker light">MODULE · MODEL FOUNDATION · V0.9</p>
-            <h2 id="prompt-title">提示词工程<br /><span>Prompt Engineering</span></h2>
+            <h1
+              className="moduleHeroTitle"
+              id="prompt-title"
+              style={{ "--module-title-size": "clamp(64px,7vw,106px)", "--module-title-mobile-size": "clamp(48px,15vw,62px)" } as CSSProperties}
+            >提示词工程<br /><span>Prompt Engineering</span></h1>
           </div>
           <div className="ragDefinition">
             <p>把业务目标、上下文、约束与输出契约翻译成模型可执行的输入，并通过版本、评估和安全控制持续验证；它是系统工程的一部分，不是寻找一句“万能咒语”。</p>
-            <div className="moduleMeta"><span>基础机制 + 工程 + 售前</span><span>云服务机会串联</span><span>{sourceCount} 份核验来源</span></div>
           </div>
         </div>
       </section>
@@ -89,7 +91,7 @@ export default function PromptEngineeringModulePage() {
             <p>客户需要的不是“更会写 Prompt 的个人”，而是一套能把提示、模型、上下文和工具作为同一发布单元进行测试、审计、回滚和运营的能力。</p>
           </div>
 
-          <div className="subsection" id="concept-map">
+          <div className="subsection" id="concept-map" data-quality-section="related-modules">
             <div className="subHead"><span>5.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>提示词工程在知识地图中的位置与相关模块</h3></div></div>
             <p className="sectionLead">本模块聚焦“如何表达任务并治理模型输入”。知识检索、Agent 规划、API 授权、模型推理和评估各有独立主模块；这里给出必要连接，避免把整个 AI 应用都误称为 Prompt Engineering。</p>
             <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
@@ -105,7 +107,7 @@ export default function PromptEngineeringModulePage() {
             </div>
           </div>
 
-          <div className="subsection foundationSection" id="prompt-foundation">
+          <div className="subsection foundationSection" id="prompt-foundation" data-quality-section="principle">
             <div className="subHead"><span>5.2</span><div><p className="kicker">FOUNDATION &amp; BOUNDARY</p><h3>Prompt 是什么，以及 Context Engineering 的边界</h3></div></div>
             <div className="memoryCompare">
               <article>
@@ -131,7 +133,7 @@ export default function PromptEngineeringModulePage() {
                 <article><span>02</span><h5>动态上下文 · Context</h5><p>用户问题、身份、会话、检索证据和业务状态；每次调用都可能不同，必须做权限、长度和来源控制。</p></article>
                 <article><span>03</span><h5>能力接口 · Tools &amp; Schema</h5><p>工具定义告诉模型可提出哪些调用；Schema 约束结果形状。真正授权、执行与业务校验仍在应用侧。</p></article>
               </div>
-              <p className="paperBoundary"><strong>必须记住：</strong>消息角色与指令层级能帮助模型区分来源，却不是通用安全协议。不同模型 API 的角色、优先级与能力并不完全一致；<strong>必须执行的规则应落在模型外</strong>。</p>
+              <CriticalBoundary>消息角色与指令层级能帮助模型区分来源，却不是通用安全协议。不同模型 API 的角色、优先级与能力并不完全一致；<strong>必须执行的规则应落在模型外</strong>。</CriticalBoundary>
             </div>
           </div>
 
@@ -173,11 +175,11 @@ export default function PromptEngineeringModulePage() {
                 </tbody>
               </table>
             </div>
-            <div className="technicalNotes">
+            <BalancedGrid className="technicalNotes" maxColumns={3}>
               <article><p className="miniLabel">SEPARATION</p><h4>指令与数据分离</h4><p>使用清晰字段、标签或消息边界标记指令、示例和外部数据；分隔有助理解，但本身不能阻止提示注入。</p></article>
               <article><p className="miniLabel">TYPED INPUT</p><h4>变量先校验再注入</h4><p>动态值应经过类型、长度、权限和敏感级别校验；不要让模板字符串拼接成为隐蔽的数据入口。</p></article>
               <article><p className="miniLabel">REUSABLE PREFIX</p><h4>稳定前缀便于缓存</h4><p>把稳定指令和常用示例放在前部、动态数据放在后部，既便于维护，也可能利用模型服务的提示缓存（Prompt Caching）。</p></article>
-            </div>
+            </BalancedGrid>
           </div>
 
           <div className="subsection" id="fit-check">
@@ -211,12 +213,12 @@ export default function PromptEngineeringModulePage() {
             <p className="sectionFootnote">Prompt 的可迁移部分是业务意图与测试集；角色名称、工具协议、结构化输出和模型特有技巧应放在薄适配层，不应假设跨模型逐字复制仍然等价。</p>
           </div>
 
-          <div className="subsection" id="evidence">
+          <div className="subsection" id="evidence" data-quality-section="evidence">
             <div className="subHead"><span>5.8</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={promptEvidenceCards} sourceLedger={sourceLedger} maxColumns={3} />
           </div>
 
-          <div className="subsection cloudSection" id="cloud-opportunities">
+          <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
             <div className="subHead"><span>5.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
             <div className="cloudIntro">
               <p>Prompt 是整体方案中的一个配置面。真正可销售、可验收的能力来自模型接入、上下文供给、工具编排、安全、发布和持续运营的组合。</p>
@@ -228,11 +230,11 @@ export default function PromptEngineeringModulePage() {
                 <tbody>{cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}</tbody>
               </table>
             </div>
-            <div className="solutionBundles">
+            <BalancedGrid className="solutionBundles" maxColumns={3}>
               <article><p className="miniLabel">BUNDLE A</p><h4>生产级模型接入</h4><p>模型服务 + AI 网关 + Prompt / 配置管理 + 密钥 + 限流 + Tracing。</p><small>购买角色：应用平台、云平台、安全与架构团队</small></article>
               <article><p className="miniLabel">BUNDLE B</p><h4>可评估发布流水线</h4><p>评估集 + CI/CD + 模型 / Prompt 注册 + 灰度 + 回滚 + 质量告警。</p><small>购买角色：AI 平台、测试、产品与业务负责人</small></article>
               <article><p className="miniLabel">BUNDLE C</p><h4>安全工具与数据连接</h4><p>API 网关 + IAM + 工作流 / 函数 + DLP + 审批 + 审计 + 私网连接。</p><small>购买角色：集成团队、安全、数据与业务系统负责人</small></article>
-            </div>
+            </BalancedGrid>
           </div>
 
           <div className="subsection" id="poc">
@@ -250,7 +252,7 @@ export default function PromptEngineeringModulePage() {
             </div>
           </div>
 
-          <div className="subsection qaSection" id="qa">
+          <div className="subsection qaSection" id="qa" data-quality-section="qa">
             <div className="subHead"><span>5.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时给出证据边界和售前下一问。</p>
             <ModuleQaList items={promptQa} sourceLedger={sourceLedger} />

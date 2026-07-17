@@ -37,6 +37,7 @@ npm run lint
 - `tests/rendered-html.test.mjs`：内容、导航和构图规则检查
 - `docs/CONTENT-DESIGN-STANDARD.md`：后续模块必须遵守的内容与构图规范
 - `docs/MODULE-BUILD-STANDARD.md`：由 RAG 提炼的模块建设、证据、云服务与验收标准
+- `docs/MODULE-QUALITY-GATES.md`：历史问题追溯、防复发机制与新模块 Definition of Done
 - `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则
 - `.openai/hosting.json`：公开站点发布配置
 
