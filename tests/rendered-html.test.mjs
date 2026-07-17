@@ -35,7 +35,7 @@ test("server-renders the complete presales knowledge base", async () => {
   assert.match(html, /href="#rag"[^>]*aria-label="RAG · 检索增强生成：跳转到对应模块"/);
   assert.doesNotMatch(html, /BUILD BRIEF/);
   assert.match(html, /RAG 在知识地图中的位置与相关模块/);
-  assert.match(html, /RAG 的外部记忆机制/);
+  assert.match(html, /RAG 的概率模型与工程机制/);
   assert.match(html, /检索<small>Retrieval<\/small>/);
   assert.match(html, /增强<small>Augmentation<\/small>/);
   assert.match(html, /生成<small>Generation<\/small>/);
@@ -45,18 +45,31 @@ test("server-renders the complete presales knowledge base", async () => {
   assert.match(html, /BM25 \/ Sparse/);
   assert.match(html, /ANN \/ HNSW/);
   assert.match(html, /RAG 技术环节与云服务机会/);
-  assert.match(html, /内容优先，载体后置/);
   assert.match(html, /客户高频问题与深度回答/);
-  assert.match(html, /时效性不是页脚日期/);
+  assert.match(html, /潜变量/);
+  assert.match(html, /边缘化/);
+  assert.match(html, /RAG-Sequence/);
+  assert.match(html, /RAG-Token/);
+  assert.match(html, /RAG-SEQUENCE · LATENT-DOCUMENT MARGINALIZATION/);
+  assert.match(html, /不是所有现代 RAG 实现的统一公式/);
+  assert.match(html, /Candidate Retrieval/);
+  assert.match(html, /Context Assembly/);
+  assert.match(html, /召回是证据可用性的上限/);
+  assert.match(html, /增强发生在上下文/);
   assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);
+  assert.doesNotMatch(
+    html,
+    /MAINTENANCE BY DESIGN|时效性不是页脚日期|claim_id|review_by|layerNote|href="#maintenance"|30 天时效等级|复核节奏|事实最小单元/,
+  );
   assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
 });
 
 test("enforces the reusable content and composition rules", async () => {
-  const [page, styles, standard] = await Promise.all([
+  const [page, styles, standard, maintenance] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../docs/CONTENT-DESIGN-STANDARD.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/CONTENT-MAINTENANCE.md", import.meta.url), "utf8"),
   ]);
 
   const headings = [...page.matchAll(/<h[1-3]\b[^>]*>([\s\S]*?)<\/h[1-3]>/g)]
@@ -82,8 +95,38 @@ test("enforces the reusable content and composition rules", async () => {
   assert.doesNotMatch(page, /<i aria-hidden="true">／<\/i>/);
   assert.match(styles, /\.mapStat\s*\{[^}]*flex:\s*0 0 auto;[^}]*white-space:\s*nowrap;/s);
   assert.match(styles, /\.mapStat \+ \.mapStat::before\s*\{[^}]*content:\s*"／";/s);
+  assert.match(page, /balanceRows\(layer\.modules, 4\)/);
+  assert.match(page, /"--module-span": 12 \/ row\.length/);
+  assert.match(page, /data-count=\{layer\.modules\.length\}/);
+  assert.match(page, /data-odd=\{layer\.modules\.length % 2 === 1/);
+  assert.match(styles, /\.chips\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(
+    styles,
+    /\.chips > span, \.chips > a\s*\{[^}]*grid-column:\s*span var\(--module-span\);/s,
+  );
+  assert.match(styles, /@media \(max-width: 1050px\)[\s\S]*?\.chips > span, \.chips > a\s*\{\s*grid-column:\s*span 6;/);
+  assert.match(styles, /\.chips\[data-odd="true"\] > :last-child\s*\{\s*grid-column:\s*span 12;/);
+  assert.doesNotMatch(page, /layerNote|id="maintenance"|href="#maintenance"/);
+  assert.doesNotMatch(styles, /\.layerNote\b|\.maintenance(?:Head|Grid)?\b/);
   assert.match(standard, /动态均衡卡片/);
   assert.match(standard, /客观陈述/);
+  assert.match(maintenance, /不进入读者页面/);
+  for (const field of [
+    "claim_id",
+    "claim",
+    "scope",
+    "source_url",
+    "evidence_grade",
+    "verified_at",
+    "review_by",
+    "owner",
+    "status",
+  ]) {
+    assert.match(maintenance, new RegExp(`\\b${field}\\b`));
+  }
+  assert.match(maintenance, /30 天/);
+  assert.match(maintenance, /90 天/);
+  assert.match(maintenance, /180 天/);
 });
 
 test("balances arbitrary concept-card counts without hard-coding eight", () => {

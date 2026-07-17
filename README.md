@@ -25,6 +25,7 @@ npm run lint
 - `app/globals.css`：阅读版视觉系统与响应式布局
 - `tests/rendered-html.test.mjs`：内容、导航和构图规则检查
 - `docs/CONTENT-DESIGN-STANDARD.md`：后续模块必须遵守的内容与构图规范
+- `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则
 - `.openai/hosting.json`：公开站点发布配置
 
 ## 内容维护原则

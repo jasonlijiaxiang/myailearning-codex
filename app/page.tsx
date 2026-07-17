@@ -14,7 +14,6 @@ const layers = [
       { zh: "行业蓝图", en: "Industry Blueprint" },
       { zh: "商业价值与 TCO", en: "Business Value & TCO" },
     ],
-    presales: "先回答为什么做、做什么，再谈怎么做。",
   },
   {
     no: "02",
@@ -27,7 +26,6 @@ const layers = [
       { zh: "多模态", en: "Multimodality" },
       { zh: "工作流与结构化生成", en: "Workflow & Structured Generation" },
     ],
-    presales: "识别需求适合检索、生成、行动，还是它们的组合。",
   },
   {
     no: "03",
@@ -40,7 +38,6 @@ const layers = [
       { zh: "API / 事件", en: "API / Event" },
       { zh: "身份与授权边界", en: "Identity & Authorization Boundaries" },
     ],
-    presales: "避免把协议能力误说成完整平台能力。",
   },
   {
     no: "04",
@@ -53,7 +50,6 @@ const layers = [
       { zh: "推理与 AI 网关", en: "Inference & AI Gateway" },
       { zh: "可观测与 FinOps", en: "Observability & FinOps" },
     ],
-    presales: "把准确率、SLA、风险、成本一起写入验收。",
   },
   {
     no: "05",
@@ -66,7 +62,6 @@ const layers = [
       { zh: "训练与微调", en: "Training & Fine-tuning" },
       { zh: "模型压缩与对齐", en: "Model Compression & Alignment" },
     ],
-    presales: "懂原理，但不陷入与客户目标无关的算法细节。",
   },
   {
     no: "06",
@@ -79,7 +74,6 @@ const layers = [
       { zh: "向量库与检索", en: "Vector Database & Retrieval" },
       { zh: "质量与知识运营", en: "Quality & Knowledge Operations" },
     ],
-    presales: "多数 RAG 问题首先是数据与权限问题。",
   },
   {
     no: "07",
@@ -92,7 +86,6 @@ const layers = [
       { zh: "推理栈", en: "Inference Stack" },
       { zh: "存储与网络", en: "Storage & Networking" },
     ],
-    presales: "把吞吐、时延、可用性和成本放在同一张容量表里。",
   },
 ];
 
@@ -276,9 +269,37 @@ const sources = [
   {
     level: "A / 论文",
     title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-    note: "RAG 原始研究脉络；论文在当时 3 个开放域问答任务上取得 SOTA。",
+    note: "RAG 原始概率模型、潜变量文档、RAG-Sequence / RAG-Token 与端到端训练。",
     date: "核验：2026-07-17",
     href: "https://arxiv.org/abs/2005.11401",
+  },
+  {
+    level: "A / 论文",
+    title: "Passage Re-ranking with BERT",
+    note: "查询—段落联合重排的经典方法；说明高召回候选之后为何还需要精排。",
+    date: "核验：2026-07-17",
+    href: "https://arxiv.org/abs/1901.04085",
+  },
+  {
+    level: "A / 论文",
+    title: "Leveraging Passage Retrieval with Generative Models for Open Domain QA",
+    note: "Fusion-in-Decoder 说明多段证据如何被独立编码并在生成阶段聚合。",
+    date: "核验：2026-07-17",
+    href: "https://aclanthology.org/2021.eacl-main.74/",
+  },
+  {
+    level: "A / 论文",
+    title: "REPLUG: Retrieval-Augmented Black-Box Language Models",
+    note: "验证冻结黑盒大模型、在模型外部训练和运行检索器的模块化路线。",
+    date: "核验：2026-07-17",
+    href: "https://aclanthology.org/2024.naacl-long.463/",
+  },
+  {
+    level: "A / 论文",
+    title: "Self-RAG: Learning to Retrieve, Generate, and Critique",
+    note: "强调相关证据被检索到后，生成仍需判断、引用与自我校验。",
+    date: "核验：2026-07-17",
+    href: "https://arxiv.org/abs/2310.11511",
   },
   {
     level: "A / 论文",
@@ -329,13 +350,13 @@ export default function Home() {
           <div className="toplinks">
             <a href="#map">知识地图</a>
             <a href="#rag">RAG 实战包</a>
-            <a href="#maintenance">维护机制</a>
+            <a href="#rag-principle">RAG 原理</a>
           </div>
         </nav>
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V0.6</p>
+            <p className="eyebrow">READING EDITION · V0.7</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
               从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径。
@@ -377,7 +398,7 @@ export default function Home() {
                 <span className="mapStat"><strong>28</strong><span>个细分模块</span></span>
               </div>
             </div>
-            <p>目录按售前对话的自然顺序自上而下；学习时可从底座向上补齐。层与层之间用“能力依赖”和“客户证据”交叉链接。</p>
+            <p>目录按售前对话的自然顺序自上而下；学习时可从底座向上补齐。层与层之间通过相关能力与客户证据交叉链接。</p>
           </div>
 
           <div className="layerStack">
@@ -390,16 +411,22 @@ export default function Home() {
                 </div>
                 <div className="layerContent">
                   <p className="layerPurpose">{layer.purpose}</p>
-                  <div className="chips">
-                    {layer.modules.map((module) => {
-                      const content = <><strong>{module.zh}</strong><small>{module.en}</small></>;
-                      return module.href
-                        ? <a key={module.zh} href={module.href} aria-label={`${module.zh}：跳转到对应模块`}>{content}</a>
-                        : <span key={module.zh}>{content}</span>;
-                    })}
+                  <div
+                    className="chips"
+                    data-count={layer.modules.length}
+                    data-odd={layer.modules.length % 2 === 1 ? "true" : "false"}
+                  >
+                    {balanceRows(layer.modules, 4).flatMap((row) =>
+                      row.map((module) => {
+                        const content = <><strong>{module.zh}</strong><small>{module.en}</small></>;
+                        const style = { "--module-span": 12 / row.length } as CSSProperties;
+                        return module.href
+                          ? <a key={module.zh} href={module.href} style={style} aria-label={`${module.zh}：跳转到对应模块`}>{content}</a>
+                          : <span key={module.zh} style={style}>{content}</span>;
+                      }),
+                    )}
                   </div>
                 </div>
-                <p className="layerNote">{layer.presales}</p>
               </article>
             ))}
           </div>
@@ -464,7 +491,7 @@ export default function Home() {
           </div>
 
           <div className="subsection foundationSection" id="rag-principle">
-            <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION</p><h3>RAG 的外部记忆机制</h3></div></div>
+            <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION &amp; MECHANICS</p><h3>RAG 的概率模型与工程机制</h3></div></div>
             <div className="memoryCompare">
               <article>
                 <p className="miniLabel">PARAMETRIC MEMORY</p>
@@ -478,12 +505,83 @@ export default function Home() {
               </article>
             </div>
 
-            <div className="formulaCard">
-              <div>
-                <p className="miniLabel">CONCEPTUAL FORM</p>
-                <p className="formula">P(y | x) ≈ Σ<sub>z ∈ Top-K</sub> P<sub>retriever</sub>(z | x) · P<sub>generator</sub>(y | x, z)</p>
+            <div className="principleDepth">
+              <header className="principleDepthIntro">
+                <p className="miniLabel">ORIGINAL PROBABILISTIC VIEW</p>
+                <h4>从概率模型理解 RAG</h4>
+                <p>原始 RAG 把检索到的文档 <strong>z</strong> 视为潜变量（Latent Variable）：系统不先认定某一条文档就是真相，而是让检索器给候选证据分配相关性概率，再让生成器估计“在该证据条件下生成答案”的概率，最后对候选证据做边缘化（Marginalization）。下式先用序列级的 RAG-Sequence 解释这一思想，随后再与 RAG-Token 对照。</p>
+              </header>
+
+              <div className="probabilityModel">
+                <div className="probabilityFormula">
+                  <p className="miniLabel">RAG-SEQUENCE · LATENT-DOCUMENT MARGINALIZATION</p>
+                  <p className="formula">p(y | x) ≈ Σ<sub>z ∈ Top-K</sub> p<sub>η</sub>(z | x) · p<sub>θ</sub>(y | x, z)</p>
+                  <p>这里的 <strong>y</strong> 是完整输出序列；Top-K 是对“遍历整个知识库并求和”的计算近似，而不是把第一条检索结果直接当成答案。它是原始 RAG-Sequence 的序列级形式，不是所有现代 RAG 实现的统一公式。</p>
+                </div>
+                <div className="probabilityTerms">
+                  <div><strong>x</strong><span>输入 / 查询<br /><small>Input / Query</small></span></div>
+                  <div><strong>z</strong><span>检索证据<br /><small>Retrieved Evidence</small></span></div>
+                  <div><strong>y</strong><span>输出序列<br /><small>Output Sequence</small></span></div>
+                </div>
               </div>
-              <p><strong>x</strong> 是问题，<strong>z</strong> 是检索到的证据，<strong>y</strong> 是回答。直观上：先估计哪些证据与问题相关，再让模型在问题和证据条件下生成答案。现代工程实现通常不联合训练，但分解思路仍然有用。</p>
+
+              <div className="componentTheory">
+                <article>
+                  <p className="miniLabel">RETRIEVER · pη(z | x)</p>
+                  <h5>检索器决定“看什么”</h5>
+                  <p className="deepFormula">p<sub>η</sub>(z | x) = softmax(q<sub>η</sub>(x) · d(z))</p>
+                  <p>原始论文使用 DPR 双编码器（Bi-encoder）：查询向量与文档向量做最大内积搜索（MIPS），形成 Top-K 候选。这个概率表示<strong>任务相关性</strong>，不表示文档真实、权威或仍然有效。</p>
+                </article>
+                <article>
+                  <p className="miniLabel">GENERATOR · pθ(y | x,z)</p>
+                  <h5>生成器决定“怎么说”</h5>
+                  <p className="deepFormula">p<sub>θ</sub>(y | x,z) = ∏<sub>i</sub> p<sub>θ</sub>(y<sub>i</sub> | x,z,y&lt;i)</p>
+                  <p>生成器仍然逐 token 自回归预测。检索证据只是新的条件输入；模型可能正确使用、忽略、误读或与参数化记忆混合，因此“检到了”不等于“答对了”。</p>
+                </article>
+              </div>
+
+              <div className="marginalizationIntro">
+                <p className="miniLabel">TWO ORIGINAL FORMULATIONS</p>
+                <h5>RAG-Sequence 与 RAG-Token 的差别在“何时对文档求和”</h5>
+              </div>
+              <div className="marginalizationGrid">
+                <article>
+                  <span>01</span><h5>RAG-Sequence</h5>
+                  <p className="deepFormula">Σ<sub>z</sub> p<sub>η</sub>(z|x) · ∏<sub>i</sub> p<sub>θ</sub>(y<sub>i</sub>|x,z,y&lt;i)</p>
+                  <p>整段输出共享同一个潜在文档假设；先分别计算每个文档条件下的完整序列概率，再在文档维度求和。</p>
+                </article>
+                <article>
+                  <span>02</span><h5>RAG-Token</h5>
+                  <p className="deepFormula">∏<sub>i</sub> Σ<sub>z</sub> p<sub>η</sub>(z|x) · p<sub>θ</sub>(y<sub>i</sub>|x,z,y&lt;i)</p>
+                  <p>每个输出 token 都可以由不同文档影响；先在当前 token 上对文档求和，再进入下一个 token。</p>
+                </article>
+              </div>
+              <p className="paperBoundary"><strong>论文边界：</strong>两者是 2020 年原始论文的概率建模方式，不是今天云平台上两种通用部署模板。常见的“检索多段内容—拼装 Prompt—调用大模型 API”通常没有显式计算上述边缘概率。</p>
+
+              <div className="engineeringBridge">
+                <div className="engineeringBridgeHead">
+                  <div><p className="miniLabel">MODERN ENGINEERING VIEW</p><h5>企业 RAG 为什么通常拆成四段</h5></div>
+                  <p>这不是为了多摆组件，而是为了让每类失败都有独立指标、责任边界和云服务落点。</p>
+                </div>
+                <div className="engineeringPipeline">
+                  <article><span>01</span><h6>候选召回<small>Candidate Retrieval</small></h6><p>优先找全可能支持回答的证据；核心观察 Recall@K 与权限过滤后的召回。</p></article>
+                  <article><span>02</span><h6>过滤与重排<small>Filtering & Reranking</small></h6><p>把真正可用的证据排到前面；观察排序质量、过滤正确率与新增时延。</p></article>
+                  <article><span>03</span><h6>上下文组装<small>Context Assembly</small></h6><p>处理去重、版本、冲突、顺序、token 预算和来源 ID；不是简单拼接 Top-K。</p></article>
+                  <article><span>04</span><h6>有据生成<small>Grounded Generation</small></h6><p>区分事实、推断和建议；证据不足时拒答，重要结论必须能回到原文。</p></article>
+                </div>
+                <div className="trainingCompare">
+                  <article><strong>原始论文</strong><p>查询编码器与 BART 生成器联合微调；文档编码器和索引保持固定，避免反复重建索引。</p></article>
+                  <article><strong>企业工程</strong><p>Embedding、搜索、Reranker 与大模型通常来自独立服务，分阶段评估、升级和回滚；权限也必须在模型外执行。</p></article>
+                </div>
+              </div>
+
+              <div className="principleLimits">
+                <article><span>A</span><h5>召回是证据可用性的上限</h5><p>标准证据没有进入候选集，生成器就无法形成可核验引用；即使凭参数记忆猜对，也不能算证据链成功。</p></article>
+                <article><span>B</span><h5>相关性不等于真实性</h5><p>检索分数回答“像不像当前问题”，不能证明来源正确、最新或适用于当前客户范围。</p></article>
+                <article><span>C</span><h5>增强发生在上下文，不在权重</h5><p>常见企业 RAG 把证据序列化为输入 token，改变本次生成条件；它不会因此把知识永久写入模型参数。</p></article>
+              </div>
+
+              <a className="paperAnchor" href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noreferrer">原始模型来源：Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks ↗</a>
             </div>
 
             <div className="workedExample">
@@ -496,7 +594,7 @@ export default function Home() {
             </div>
             <aside className="callout" aria-label="重要边界">
               <div className="calloutTitle"><span>必须记住</span><strong>重要边界</strong><small>Critical Boundary</small></div>
-              <p>RAG 不会把检索内容永久写入模型参数，也不保证检索到的内容真实。它提供的是可控证据通道，正确性仍依赖数据治理、检索质量、生成约束和评估。</p>
+              <p>RAG 的质量不是一个模型分数，而是一条证据链：找得到、排得准、装得下、用得对、引得出。任何一段失效，都可能得到流畅但不可核验的回答。</p>
             </aside>
           </div>
 
@@ -632,7 +730,7 @@ export default function Home() {
               <article><p className="miniLabel">BUNDLE B</p><h4>实时知识同步</h4><p>数据库 / SaaS + CDC / 事件总线 + Serverless 处理 + 增量索引 + 缓存失效 + 审计。</p><small>购买角色：数据平台、集成团队、业务运营</small></article>
               <article><p className="miniLabel">BUNDLE C</p><h4>私有化规模运行</h4><p>Kubernetes / GPU 推理 + 私网模型网关 + 向量检索 + 弹性缓存 + APM / FinOps。</p><small>购买角色：平台团队、基础设施、信息安全与采购</small></article>
             </div>
-            <p className="sectionFootnote">后续可在不改正文的情况下，为目标云厂商增加一张“能力 → 产品名称 → 限制 → 计费单位”映射表，并按 30 天时效等级维护。</p>
+            <p className="sectionFootnote">后续可在不改正文的情况下，为目标云厂商增加“能力 → 产品名称 → 限制 → 计费单位”映射表；表中应显式标注产品版本、适用地域与核验日期。</p>
           </div>
 
           <div className="subsection" id="poc">
@@ -684,41 +782,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="maintenance" id="maintenance" aria-labelledby="maintenance-title">
-        <div className="maintenanceHead">
-          <p className="kicker light">MAINTENANCE BY DESIGN</p>
-          <h2 id="maintenance-title">时效性不是页脚日期，<br />而是一套内容供应链。</h2>
-        </div>
-        <div className="maintenanceGrid">
-          <article>
-            <span className="maintNo">A</span><h3>事实最小单元</h3>
-            <p>每条时效性事实记录：结论、适用范围、来源、证据等级、核验日、下次复核日、负责人、替代历史。</p>
-          </article>
-          <article>
-            <span className="maintNo">B</span><h3>三档复核节奏</h3>
-            <p><strong>30 天</strong>：模型目录、价格、配额、产品规格<br /><strong>90 天</strong>：协议、平台能力、安全清单、基准<br /><strong>180 天</strong>：原理、方法论、稳定架构模式</p>
-          </article>
-          <article>
-            <span className="maintNo">C</span><h3>只核验变化项</h3>
-            <p>先离线筛选超期事实，再只对变化项联网核验；巡检只出报告，不直接改成品。确认影响后再发布新版本，旧结论进入历史。</p>
-          </article>
-          <article>
-            <span className="maintNo">D</span><h3>模块发布门槛</h3>
-            <p>不按图表、案例或问答数量验收；以概念是否讲清、关联是否完整、云机会是否明确、证据是否可追溯为准。</p>
-          </article>
-          <article>
-            <span className="maintNo">E</span><h3>内容优先，载体后置</h3>
-            <p>先把内容深度和概念关系做完整，不为控制交付包大小删减知识。内容稳定后再生成在线 HTML、离线 HTML、PPT 或 PDF。</p>
-          </article>
-        </div>
-        <div className="schema">
-          <span>claim_id</span><span>claim</span><span>scope</span><span>source_url</span><span>evidence_grade</span><span>verified_at</span><span>review_by</span><span>owner</span><span>status</span>
-        </div>
-      </section>
-
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>知识地图 + RAG 样板模块 V0.6 · 2026-07-17</p>
+        <p>知识地图 + RAG 样板模块 V0.7 · 2026-07-17</p>
         <a href="#top">返回顶部 ↑</a>
       </footer>
     </main>
