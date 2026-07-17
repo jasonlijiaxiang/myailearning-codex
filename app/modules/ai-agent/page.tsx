@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 };
 
 const conceptLinks = [
-  { concept: "模型与推理", owner: "模型原理", href: "/modules/model-principles", relation: "能力底座", local: "模型负责理解状态和选择下一步，但不应直接获得业务权限。" },
+  { concept: "模型与推理", owner: "大语言模型原理", href: "/modules/llm", relation: "能力底座", local: "模型负责理解状态和选择下一步，但不应直接获得业务权限。" },
   { concept: "指令与上下文", owner: "提示词工程", href: "/modules/prompt-engineering", relation: "行为约束", local: "把角色、目标、边界、工具规则和输出契约组织为可版本化指令。" },
   { concept: "RAG 与知识", owner: "RAG · 检索增强生成", href: "/modules/rag", relation: "数据工具", local: "为 Agent 提供可更新证据；检索只是任务链中的一种工具能力。" },
-  { concept: "工作流 · Workflow", owner: "工作流与结构化生成", href: "/modules/workflow-structured-generation", relation: "确定性骨架", local: "固定规则负责可预测路径，Agent 只处理真正需要动态判断的节点。" },
+  { concept: "工作流 · Workflow", owner: "场景解决方案", href: "/modules/solution-patterns", relation: "确定性骨架", local: "固定规则负责可预测路径，Agent 只处理真正需要动态判断的节点。" },
   { concept: "MCP", owner: "模型上下文协议", href: "/modules/mcp", relation: "工具互操作", local: "标准化工具与上下文的连接方式，不替代身份、授权和业务审批。" },
   { concept: "A2A", owner: "A2A · 智能体间协议", href: "/modules/a2a", relation: "Agent 协作", local: "面向 Agent 发现、委派与结果交换；不等于多 Agent 架构本身。" },
   { concept: "评估与治理", owner: "评估", href: "/modules/evaluation", relation: "上线门槛", local: "用可验证终态衡量任务成功，并检查轨迹、安全、时延与成本。" },
-  { concept: "身份与授权", owner: "身份与授权边界", href: "/modules/identity-authorization-boundaries", relation: "执行边界", local: "应用在每次工具调用前绑定主体、验证权限、执行策略并留下审计证据。" },
+  { concept: "身份与授权", owner: "AI 安全", href: "/modules/security", relation: "执行边界", local: "应用在每次工具调用前绑定主体、验证权限、执行策略并留下审计证据。" },
 ];
 
 const conceptRows = balanceRows(conceptLinks, 4);
@@ -127,6 +127,20 @@ const coreCapabilities = [
 
 const coreCapabilityRows = balanceRows(coreCapabilities, 4);
 
+const memoryLayers = [
+  { layer: "当前任务状态", en: "Work State", stores: "目标、当前步骤、工具结果、预算、停止原因", read: "每一轮", write: "运行时在检查点更新", boundary: "任务结束后按审计与恢复要求保留；不能冒充业务事实源。" },
+  { layer: "会话状态", en: "Session State", stores: "本次会话历史、临时偏好、未完成事项", read: "当前会话", write: "对话或事件触发", boundary: "应有 TTL、用户与租户隔离，避免无限累积。" },
+  { layer: "长期记忆", en: "Long-term Memory", stores: "经确认的偏好、情节摘要、可复用经验", read: "与主体和任务相关时", write: "提取、去重、校验后", boundary: "允许纠正与删除；模型总结不能自动成为长期真相。" },
+  { layer: "权威业务事实", en: "Authoritative Facts", stores: "订单、余额、政策、权限、资源真实状态", read: "需要做决定或验收时", write: "只由业务系统和获授权流程", boundary: "Agent 可以读取或提出变更，但不能把 Memory 当作权威记录。" },
+];
+
+const interactionBoundaries = [
+  { capability: "Function Calling", purpose: "表达一次工具调用意图和结构化参数", owns: "模型 ↔ 应用", boundary: "应用仍负责授权、执行、幂等、回读与审批。" },
+  { capability: "MCP", purpose: "统一发现并连接工具、资源与提示原语", owns: "Agent / AI 应用 ↔ 工具与数据", boundary: "不是 Agent 编排器，也不提供天然安全认证。" },
+  { capability: "A2A", purpose: "发现其他 Agent、委派任务并交换任务状态与产物", owns: "Agent ↔ Agent", boundary: "单系统内部编排不必为了使用协议而拆成分布式协作。" },
+  { capability: "API / RPA / Computer Use", purpose: "把决策变成外部系统动作", owns: "应用控制面 ↔ 目标系统", boundary: "有稳定 API 时优先 API；界面操作需隔离环境、最小权限与回放证据。" },
+];
+
 const cloudHooks = [
   { stage: "模型与路由", services: "模型即服务、模型目录、推理端点、AI 网关、内容安全", value: "按任务复杂度选择模型并统一限流、版本和策略", discover: "哪些决策需要强模型？是否允许跨地域或多模型？" },
   { stage: "Agent Runtime", services: "托管 Agent 运行时、Serverless、容器、Kubernetes、任务队列", value: "承载循环、状态、超时、重试、弹性和长任务", discover: "任务持续多久？同步还是异步？失败如何恢复？" },
@@ -154,7 +168,7 @@ export default function AgentModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V0.9</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.0</p>
             <h1
               className="moduleHeroTitle"
               id="agent-title"
@@ -307,8 +321,26 @@ export default function AgentModulePage() {
             </BalancedGrid>
           </div>
 
+          <div className="subsection" id="memory-interaction">
+            <div className="subHead"><span>2.5</span><div><p className="kicker">MEMORY &amp; INTERACTION</p><h3>记忆分层与外部交互边界</h3></div></div>
+            <p className="sectionLead">Agent 的 Memory 不是一个不断增长的聊天框。任务状态、会话、长期记忆和权威事实有不同的写入责任、保留期和授权方式；工具调用、MCP、A2A 与 Computer Use 也解决不同连接问题。</p>
+            <div className="tableWrap">
+              <table>
+                <thead><tr><th>状态层</th><th>保存什么</th><th>何时读取</th><th>谁能写入</th><th>重要边界</th></tr></thead>
+                <tbody>{memoryLayers.map((item) => <tr key={item.en}><th>{item.layer}<small>{item.en}</small></th><td>{item.stores}</td><td>{item.read}</td><td>{item.write}</td><td>{item.boundary}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <div className="tableWrap" style={{ marginTop: 18 }}>
+              <table>
+                <thead><tr><th>连接能力</th><th>主要解决什么</th><th>责任边界</th><th>不能替代什么</th></tr></thead>
+                <tbody>{interactionBoundaries.map((item) => <tr key={item.capability}><th>{item.capability}</th><td>{item.purpose}</td><td>{item.owns}</td><td>{item.boundary}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <CriticalBoundary>RAG 主要提供组织知识，Memory 主要保存任务与主体相关状态，权威业务事实仍应回到事实源读取。连接协议能降低集成成本，却不会自动赋予身份、权限或生产可靠性。</CriticalBoundary>
+          </div>
+
           <div className="subsection" id="patterns">
-            <div className="subHead"><span>2.5</span><div><p className="kicker">ARCHITECTURE PATTERNS</p><h3>从确定性到动态编排的四种模式</h3></div></div>
+            <div className="subHead"><span>2.6</span><div><p className="kicker">ARCHITECTURE PATTERNS</p><h3>从确定性到动态编排的四种模式</h3></div></div>
             <div className="variantList">
               {architecturePatterns.map((item) => (
                 <article key={item.name}><div><p className="miniLabel">{item.cue}</p><h4>{item.name}</h4></div><p className="variantPipeline">{item.pipeline}</p><p>{item.boundary}</p></article>
@@ -321,7 +353,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="architecture">
-            <div className="subHead"><span>2.6</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>Agent 生产参考架构</h3></div></div>
+            <div className="subHead"><span>2.7</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>Agent 生产参考架构</h3></div></div>
             <div className="chainWrap">
               <div className="chainLabel"><strong>设计与治理链</strong><span>Design &amp; governance</span></div>
               <div className="flow">
@@ -339,7 +371,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>2.7</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
+            <div className="subHead"><span>2.8</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro"><p>Agent 会把模型服务延伸成跨运行时、API、身份、数据、安全和运维的整体方案。售前应先用厂商中立能力拆解，再映射当期云产品、地域、配额和计费。</p><span>模型不是全部</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
             <div className="cloudTable tableWrap">
               <table><thead><tr><th>Agent 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
@@ -354,7 +386,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.8</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 Agent PoC 验证包</h3></div></div>
+            <div className="subHead"><span>2.9</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 Agent PoC 验证包</h3></div></div>
             <div className="pocGrid">
               <article><span>D1–2</span><h4>任务与终态</h4><p>选 2–3 个高价值任务；冻结初始数据、可验证终态、风险等级和人工基线。</p></article>
               <article><span>D3–5</span><h4>最小工具闭环</h4><p>先用单 Agent 接入最少工具；实现结构化参数、身份、超时、停止和审计。</p></article>
@@ -365,19 +397,18 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>2.9</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
+            <div className="subHead"><span>2.10</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={agentEvidenceCards} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>2.10</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-            <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时标出具体依据、证据支持范围和售前必须确认的下一问。</p>
+            <div className="subHead"><span>2.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <ModuleQaList items={agentQa} sourceLedger={sourceLedger} />
           </div>
         </div>
       </section>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V0.9 · 2026-07-17</p><a href="#agent">返回顶部 ↑</a></footer>
+      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V1.0 · 2026-07-17</p><a href="#agent">返回顶部 ↑</a></footer>
     </main>
   );
 }

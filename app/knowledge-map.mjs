@@ -1,226 +1,83 @@
+/**
+ * 面向读者的 19 模块知识地图。
+ *
+ * 模块边界与 external_reference/CC-20260717 的 19 册讲义保持一一对应，
+ * 讲义只作为内容蓝图；公开事实仍由 Reference 台账中的一手来源核验。
+ */
 export const layers = [
   {
     no: "01",
-    name: "解决方案层",
-    en: "Solution Plays",
-    purpose: "把技术能力翻译成客户价值、路线与采购边界。",
+    name: "方案与选型层",
+    en: "Solution & Selection",
+    purpose: "把客户目标转成可比较、可采购、可验收的方案。",
     modules: [
-      {
-        zh: "场景方案库",
-        en: "Scenario Solution Library",
-        slug: "scenario-solution-library",
-        href: "/modules/scenario-solution-library",
-      },
-      {
-        zh: "模型选型格局",
-        en: "Model Selection Landscape",
-        slug: "model-selection-landscape",
-        href: "/modules/model-selection-landscape",
-      },
-      {
-        zh: "行业蓝图",
-        en: "Industry Blueprint",
-        slug: "industry-blueprint",
-        href: "/modules/industry-blueprint",
-      },
-      {
-        zh: "商业价值与 TCO",
-        en: "Business Value & TCO",
-        slug: "business-value-tco",
-        href: "/modules/business-value-tco",
-      },
+      { zh: "场景解决方案", en: "Solution Patterns", slug: "solution-patterns", href: "/modules/solution-patterns" },
+      { zh: "模型格局与选型", en: "Model Landscape", slug: "model-landscape", href: "/modules/model-landscape" },
     ],
   },
   {
     no: "02",
     name: "应用模式层",
     en: "Application Patterns",
-    purpose: "掌握用模型解决问题的主流模式与组合方式。",
+    purpose: "选择检索、行动与多模态理解的正确组合。",
     modules: [
-      {
-        zh: "RAG · 检索增强生成",
-        en: "Retrieval-Augmented Generation",
-        slug: "rag",
-        href: "/modules/rag",
-      },
-      {
-        zh: "Agent · 智能体",
-        en: "AI Agent",
-        slug: "ai-agent",
-        href: "/modules/ai-agent",
-      },
-      {
-        zh: "多模态",
-        en: "Multimodality",
-        slug: "multimodality",
-        href: "/modules/multimodality",
-      },
-      {
-        zh: "工作流与结构化生成",
-        en: "Workflow & Structured Generation",
-        slug: "workflow-structured-generation",
-        href: "/modules/workflow-structured-generation",
-      },
+      { zh: "RAG · 检索增强生成", en: "Retrieval-Augmented Generation", slug: "rag", href: "/modules/rag" },
+      { zh: "Agent · 智能体", en: "AI Agent", slug: "ai-agent", href: "/modules/ai-agent" },
+      { zh: "多模态", en: "Multimodal AI", slug: "multimodal", href: "/modules/multimodal" },
     ],
   },
   {
     no: "03",
     name: "协议与互操作层",
     en: "Protocols & Interoperability",
-    purpose: "理解模型、工具、Agent 与系统间如何发现、协作和治理。",
+    purpose: "明确模型、工具与 Agent 之间的连接和责任边界。",
     modules: [
-      {
-        zh: "MCP · 模型上下文协议",
-        en: "Model Context Protocol",
-        slug: "mcp",
-        href: "/modules/mcp",
-      },
-      {
-        zh: "A2A · 智能体间协议",
-        en: "Agent2Agent Protocol",
-        slug: "a2a",
-        href: "/modules/a2a",
-      },
-      {
-        zh: "API / 事件",
-        en: "API / Event",
-        slug: "api-events",
-        href: "/modules/api-events",
-      },
-      {
-        zh: "身份与授权边界",
-        en: "Identity & Authorization Boundaries",
-        slug: "identity-authorization-boundaries",
-        href: "/modules/identity-authorization-boundaries",
-      },
+      { zh: "MCP · 模型上下文协议", en: "Model Context Protocol", slug: "mcp", href: "/modules/mcp" },
+      { zh: "A2A · 智能体间协议", en: "Agent2Agent Protocol", slug: "a2a", href: "/modules/a2a" },
     ],
   },
   {
     no: "04",
     name: "工程保障层",
     en: "Engineering Assurance",
-    purpose: "让 PoC 从“能回答”走向“可上线、可治理、可运营”。",
+    purpose: "把质量、安全、流量与运营变成生产控制面。",
     modules: [
-      {
-        zh: "评估",
-        en: "Evaluation",
-        slug: "evaluation",
-        href: "/modules/evaluation",
-      },
-      {
-        zh: "安全与治理",
-        en: "Safety & Governance",
-        slug: "safety-governance",
-        href: "/modules/safety-governance",
-      },
-      {
-        zh: "推理与 AI 网关",
-        en: "Inference & AI Gateway",
-        slug: "inference-ai-gateway",
-        href: "/modules/inference-ai-gateway",
-      },
-      {
-        zh: "可观测与 FinOps",
-        en: "Observability & FinOps",
-        slug: "observability-finops",
-        href: "/modules/observability-finops",
-      },
+      { zh: "评估", en: "Evaluation", slug: "evaluation", href: "/modules/evaluation" },
+      { zh: "安全", en: "AI Security", slug: "security", href: "/modules/security" },
+      { zh: "AI 网关", en: "AI Gateway", slug: "ai-gateway", href: "/modules/ai-gateway" },
+      { zh: "AI 可观测与运营", en: "AI Operations", slug: "ai-ops", href: "/modules/ai-ops" },
     ],
   },
   {
     no: "05",
-    name: "模型基础层",
-    en: "Model Foundations",
-    purpose: "建立解释模型能力、局限与优化手段所需的理论底座。",
+    name: "模型与优化层",
+    en: "Models & Optimization",
+    purpose: "理解模型能力从何而来，以及怎样训练、定制和高效服务。",
     modules: [
-      {
-        zh: "模型原理",
-        en: "Model Principles",
-        slug: "model-principles",
-        href: "/modules/model-principles",
-      },
-      {
-        zh: "提示词工程",
-        en: "Prompt Engineering",
-        slug: "prompt-engineering",
-        href: "/modules/prompt-engineering",
-      },
-      {
-        zh: "训练与微调",
-        en: "Training & Fine-tuning",
-        slug: "training-fine-tuning",
-        href: "/modules/training-fine-tuning",
-      },
-      {
-        zh: "模型压缩与对齐",
-        en: "Model Compression & Alignment",
-        slug: "model-compression-alignment",
-        href: "/modules/model-compression-alignment",
-      },
+      { zh: "大语言模型原理", en: "Large Language Models", slug: "llm", href: "/modules/llm" },
+      { zh: "提示词工程", en: "Prompt Engineering", slug: "prompt-engineering", href: "/modules/prompt-engineering" },
+      { zh: "微调", en: "Fine-tuning", slug: "fine-tuning", href: "/modules/fine-tuning" },
+      { zh: "大模型训练", en: "LLM Training", slug: "llm-training", href: "/modules/llm-training" },
+      { zh: "大模型推理", en: "LLM Inference", slug: "llm-inference", href: "/modules/llm-inference" },
     ],
   },
   {
     no: "06",
-    name: "数据底座层",
-    en: "Data Foundation",
-    purpose: "把非结构化与结构化数据转成可信、可检索、可运营的知识。",
+    name: "数据工程层",
+    en: "Data Engineering",
+    purpose: "把原始数据变成可信、可追溯、可检索的 AI 输入。",
     modules: [
-      {
-        zh: "解析 / OCR",
-        en: "Parsing & OCR",
-        slug: "parsing-ocr",
-        href: "/modules/parsing-ocr",
-      },
-      {
-        zh: "同步 / CDC",
-        en: "Synchronization & CDC",
-        slug: "synchronization-cdc",
-        href: "/modules/synchronization-cdc",
-      },
-      {
-        zh: "向量库与检索",
-        en: "Vector Database & Retrieval",
-        slug: "vector-database-retrieval",
-        href: "/modules/vector-database-retrieval",
-      },
-      {
-        zh: "质量与知识运营",
-        en: "Quality & Knowledge Operations",
-        slug: "quality-knowledge-operations",
-        href: "/modules/quality-knowledge-operations",
-      },
+      { zh: "AI 数据工程", en: "Data Engineering for AI", slug: "data-engineering", href: "/modules/data-engineering" },
     ],
   },
   {
     no: "07",
-    name: "算力底座层",
-    en: "Compute Foundation",
-    purpose: "理解模型以下的硬件、集群、存储、网络与平台能力。",
+    name: "AI 基础设施层",
+    en: "AI Infrastructure",
+    purpose: "承载算力、网络、存储、集群与平台编排。",
     modules: [
-      {
-        zh: "加速器与异构算力",
-        en: "Accelerators & Heterogeneous Compute",
-        slug: "accelerators-heterogeneous-compute",
-        href: "/modules/accelerators-heterogeneous-compute",
-      },
-      {
-        zh: "集群与调度",
-        en: "Clusters & Scheduling",
-        slug: "clusters-scheduling",
-        href: "/modules/clusters-scheduling",
-      },
-      {
-        zh: "推理栈",
-        en: "Inference Stack",
-        slug: "inference-stack",
-        href: "/modules/inference-stack",
-      },
-      {
-        zh: "存储与网络",
-        en: "Storage & Networking",
-        slug: "storage-networking",
-        href: "/modules/storage-networking",
-      },
+      { zh: "AI 基础设施平台", en: "AI Infrastructure Platform", slug: "ai-infra-platform", href: "/modules/ai-infra-platform" },
+      { zh: "AI 算力基础设施", en: "AI Compute Infrastructure", slug: "ai-infra-compute", href: "/modules/ai-infra-compute" },
     ],
   },
 ];
@@ -235,6 +92,41 @@ export const moduleList = layers.flatMap((layer) =>
   })),
 );
 
+/**
+ * 历史地址继续解析为合并后的主要模块，避免同事保存的旧链接失效。
+ * 别名不出现在知识地图，也不形成第二份内容。
+ */
+export const legacyModuleAliases = Object.freeze({
+  "scenario-solution-library": "solution-patterns",
+  "industry-blueprint": "solution-patterns",
+  "business-value-tco": "solution-patterns",
+  "workflow-structured-generation": "solution-patterns",
+  "model-selection-landscape": "model-landscape",
+  multimodality: "multimodal",
+  "api-events": "mcp",
+  "identity-authorization-boundaries": "security",
+  "safety-governance": "security",
+  "inference-ai-gateway": "ai-gateway",
+  "observability-finops": "ai-ops",
+  "model-principles": "llm",
+  "training-fine-tuning": "fine-tuning",
+  "model-compression-alignment": "llm-training",
+  "parsing-ocr": "data-engineering",
+  "synchronization-cdc": "data-engineering",
+  "vector-database-retrieval": "data-engineering",
+  "quality-knowledge-operations": "data-engineering",
+  "accelerators-heterogeneous-compute": "ai-infra-compute",
+  "storage-networking": "ai-infra-compute",
+  "clusters-scheduling": "ai-infra-platform",
+  "inference-stack": "llm-inference",
+});
+
+export function resolveModuleSlug(slug) {
+  return legacyModuleAliases[slug] ?? slug;
+}
+
 export function getModuleBySlug(slug) {
-  return moduleList.find((module) => module.slug === slug);
+  const canonicalSlug = resolveModuleSlug(slug);
+  const knowledgeModule = moduleList.find((item) => item.slug === canonicalSlug);
+  return knowledgeModule ? { ...knowledgeModule, requestedSlug: slug, canonicalSlug } : undefined;
 }

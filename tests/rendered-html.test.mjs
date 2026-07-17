@@ -3,7 +3,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 import { balanceRows } from "../app/layout-utils.mjs";
-import { getModuleBySlug, layers, moduleList } from "../app/knowledge-map.mjs";
+import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
@@ -48,6 +48,12 @@ const publishedModules = publishedModuleRegistry.map((module) => {
   const content = requireModuleContent(module.slug);
   return { ...module, id: module.slug, cards: content.evidenceCards, qa: content.qa };
 });
+
+function getPublishedModule(slug) {
+  const publishedModule = publishedModules.find((candidate) => candidate.slug === slug);
+  assert.ok(publishedModule, `缺少发布模块：${slug}`);
+  return publishedModule;
+}
 
 function collectModuleSourceIds({ cards, qa }) {
   return new Set([
@@ -118,7 +124,7 @@ test("RAG route contains principles, cloud-service opportunities, and evidence-b
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
   assert.match(html, /href="\/references"/);
 
-  for (const sourceId of collectModuleSourceIds(publishedModules[0])) {
+  for (const sourceId of collectModuleSourceIds(getPublishedModule("rag"))) {
     assert.match(
       html,
       new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`),
@@ -165,7 +171,7 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   assert.match(html, /选择云上托管 Agent 平台，还是自己用框架搭/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, agentQa.length);
 
-  for (const sourceId of collectModuleSourceIds(publishedModules[1])) {
+  for (const sourceId of collectModuleSourceIds(getPublishedModule("ai-agent"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
   }
 
@@ -190,7 +196,7 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /Prompt、RAG 和 Context Engineering 是什么关系/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, promptQa.length);
 
-  for (const sourceId of collectModuleSourceIds(publishedModules[2])) {
+  for (const sourceId of collectModuleSourceIds(getPublishedModule("prompt-engineering"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
   }
 
@@ -294,33 +300,30 @@ test("references route is the complete centralized source ledger", async () => {
   }
 });
 
-test("an unpublished module keeps a clean, independent route without reader-facing build notes", async () => {
-  const html = await renderHtml("/modules/multimodality");
-  const unfinishedModule = getModuleBySlug("multimodality");
-  assert.ok(unfinishedModule);
+test("legacy module addresses resolve to the merged 19-module knowledge base", async () => {
+  assert.ok(Object.keys(legacyModuleAliases).length > 0);
 
-  assert.match(html, /<h1>多模态<\/h1>/);
-  assert.match(html, /Multimodality/);
-  assert.match(html, /同层相关模块/);
-  assert.match(html, /href="\/#map"/);
-  assert.match(html, /href="\/references"/);
+  for (const [legacySlug, canonicalSlug] of Object.entries(legacyModuleAliases)) {
+    const resolved = getModuleBySlug(legacySlug);
+    assert.ok(resolved, `历史模块地址无法解析：${legacySlug}`);
+    assert.equal(resolved.canonicalSlug, canonicalSlug);
+    assert.equal(resolved.href, `/modules/${canonicalSlug}`);
 
-  const relatedModules = moduleList.filter(
-    (candidate) => candidate.layerNo === unfinishedModule.layerNo && candidate.slug !== unfinishedModule.slug,
-  );
-  assert.ok(relatedModules.length > 0);
-  for (const related of relatedModules) {
-    assert.match(html, new RegExp(`href="${escapeRegExp(related.href)}"`));
-    assert.match(html, new RegExp(escapeRegExp(related.zh)));
+    const html = await renderHtml(`/modules/${legacySlug}`);
+    const canonicalModule = getPublishedModule(canonicalSlug);
+    assert.match(html, new RegExp(`<h1[^>]*id="${escapeRegExp(canonicalModule.titleId)}"`));
+    assert.match(html, /客户高频问题与深度回答/);
+    assert.doesNotMatch(html, /正文建设中|CONTENT STATUS|后续版本将补齐|模块依赖/);
   }
-
-  assert.doesNotMatch(html, /正文建设中|CONTENT STATUS|后续版本将补齐/);
-  assert.doesNotMatch(html, new RegExp(escapeRegExp(unfinishedModule.layerPurpose)));
-  assert.doesNotMatch(html, /RAG 的工作原理与工程机制|客户高频问题与深度回答/);
 });
 
 test("every public knowledge route is anonymously readable and directly shareable", async () => {
-  const routes = ["/", "/references", ...moduleList.map((knowledgeModule) => knowledgeModule.href)];
+  const routes = [
+    "/",
+    "/references",
+    ...moduleList.map((knowledgeModule) => knowledgeModule.href),
+    ...Object.keys(legacyModuleAliases).map((slug) => `/modules/${slug}`),
+  ];
 
   for (const path of routes) {
     const response = await render(path);
@@ -335,6 +338,7 @@ test("every public knowledge route is anonymously readable and directly shareabl
 test("knowledge-map registry supports changing layer and module counts without duplicate routes", () => {
   assert.ok(layers.length > 0);
   assert.ok(moduleList.length > 0);
+  assert.equal(moduleList.length, 19, "公开知识地图必须与 CC-20260717 的 19 个模块一一对应");
   assert.equal(layers.reduce((total, layer) => total + layer.modules.length, 0), moduleList.length);
 
   const layerNumbers = layers.map((layer) => layer.no);
@@ -353,7 +357,11 @@ test("knowledge-map registry supports changing layer and module counts without d
   for (const knowledgeModule of moduleList) {
     assert.match(knowledgeModule.slug, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
     assert.equal(knowledgeModule.href, `/modules/${knowledgeModule.slug}`);
-    assert.strictEqual(getModuleBySlug(knowledgeModule.slug), knowledgeModule);
+    const resolved = getModuleBySlug(knowledgeModule.slug);
+    assert.ok(resolved);
+    assert.equal(resolved.slug, knowledgeModule.slug);
+    assert.equal(resolved.canonicalSlug, knowledgeModule.slug);
+    assert.equal(resolved.href, knowledgeModule.href);
     assert.ok(knowledgeModule.zh && knowledgeModule.en && knowledgeModule.layerNo && knowledgeModule.layerName && knowledgeModule.layerEn);
   }
 });
@@ -475,10 +483,11 @@ test("keeps module card systems dynamically balanced with mobile navigation", as
     readFile(new URL("../app/module-publication.mjs", import.meta.url), "utf8"),
   ]);
 
-  assert.match(genericModuleRoute, /isPublishedModule\(module\.slug\)/);
-  assert.match(genericModuleRoute, /isPublishedModule\(slug\)/);
-  assert.doesNotMatch(genericModuleRoute, /dedicatedModuleSlugs|href="\/modules\/rag"/);
-  assert.match(genericModuleRoute, /const relatedRows = balanceRows\(relatedModules, 3\)/);
+  assert.match(genericModuleRoute, /hasDedicatedModule\(module\.slug\)/);
+  assert.match(genericModuleRoute, /hasDedicatedModule\(currentModule\.canonicalSlug\)/);
+  assert.match(genericModuleRoute, /legacyModuleAliases/);
+  assert.doesNotMatch(genericModuleRoute, /href="\/modules\/rag"/);
+  assert.match(genericModuleRoute, /const relatedRows = balanceRows\(relatedModules, 4\)/);
   assert.match(genericModuleRoute, /"--related-span": 12 \/ row\.length/);
   assert.match(genericModuleRoute, /data-odd=\{relatedModules\.length % 2 === 1/);
   assert.match(referencesRoute, /const referenceModuleRows = balanceRows\(referenceModules, 4\)/);
@@ -508,6 +517,9 @@ test("keeps module card systems dynamically balanced with mobile navigation", as
   assert.match(styles, /\.layer:nth-child\(7n \+ 1\)/);
   assert.match(styles, /\.layer:nth-child\(7n\)/);
   assert.match(styles, /\.relatedModuleGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(styles, /\.flow\s*\{[^}]*grid-auto-flow:\s*column;[^}]*grid-auto-columns:\s*minmax\(180px,1fr\);/s);
+  assert.doesNotMatch(styles, /\.flow\s*\{[^}]*grid-template-columns:\s*repeat\(\d+,/s);
+  assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.flow\s*\{[^}]*grid-auto-flow:\s*row;[^}]*grid-template-columns:\s*1fr;/);
   assert.match(styles, /\.referenceModuleNav\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
   assert.match(styles, /\.relatedModuleGrid\[data-odd="true"\] > a:last-child,[\s\S]*?\.referenceModuleNav\[data-odd="true"\] > a:last-child\s*\{\s*grid-column:\s*span 12;/);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{\s*display:\s*flex;[^}]*width:\s*100%;/);

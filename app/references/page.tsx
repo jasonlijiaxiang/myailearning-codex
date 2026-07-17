@@ -72,7 +72,7 @@ export default function ReferencesPage() {
             <p className="eyebrow">REFERENCE LEDGER · 来源与证据</p>
             <h1>统一来源台账<br />Reference Library</h1>
             <p className="heroLead">
-              所有模块的论文、标准、教材、官方产品文档、厂商实验与行业指南集中在这里维护。
+              所有模块的论文、标准、教材、官方产品文档、厂商实验与行业指南集中汇总在这里。
               正文只引用稳定的来源标识；本页统一呈现来源原文、证据类别、适用边界和最近核验日期。
             </p>
             <div className="heroActions">

@@ -216,4 +216,43 @@ export const ragQa = [
       { sourceId: "fid-2021", supports: "支持多 passage 聚合在特定任务中的作用，同时表明数量结论不能跨任务照搬。" },
     ],
   },
+  {
+    q: "Hybrid Search、RRF 和 Reranker 各自解决什么问题？",
+    a: "Hybrid Search 让关键词与向量两路尽量不漏；RRF 把两路排名合并；Reranker 再对有限候选做更细的查询—证据判断。三者是分工，不是同一能力的三个名字。",
+    depth: "BM25 与向量分数来自不同空间，不能假设数值可以直接比较；RRF 主要利用各路名次融合候选。Reranker 读取问题和候选全文，通常更准确也更慢，因此只放在候选阶段之后。应分别测两路增量召回、融合后的 Candidate Recall、重排后的排序质量和新增 P95，而不是只看最终回答。",
+    ask: "追问客户：失败查询主要是编号 / 专名未命中、同义表达未命中，还是正确证据进入候选后排位太低？",
+    tag: "检索架构",
+    basis: "检索论文 + 厂商实验边界",
+    evidence: [
+      { sourceId: "bm25-book", supports: "支持稀疏检索对词项、稀有度与文档长度的基本评分机制。" },
+      { sourceId: "bert-reranker", supports: "支持在候选召回之后进行查询—段落联合重排。" },
+      { sourceId: "contextual-retrieval", supports: "支持混合检索与重排值得在客户语料上做组合实验，不提供通用收益承诺。" },
+    ],
+  },
+  {
+    q: "什么时候值得上 Agentic RAG、GraphRAG 或多模态 RAG？",
+    a: "先让普通 RAG 在真实问题上达到可诊断基线，再只为明确的问题形态增加复杂度：多步选源用 Agentic，跨文档关系归纳用 GraphRAG，答案依赖图表与版面时用多模态。",
+    depth: "三类扩展改变的是不同环节：Agentic RAG 增加路由、循环和工具；GraphRAG 增加实体关系、社区与摘要索引；多模态 RAG 增加视觉解析或页面级表示。它们会扩大索引成本、运行轨迹、评估集和安全面，不能用架构名称代替适用性证据。",
+    ask: "追问客户：普通 RAG 的失败样本中，有多少确实需要多步查询、全局关系分析或视觉信息，而不是基础解析与召回问题？",
+    tag: "架构演进",
+    basis: "RAG 综述 + GraphRAG / 视觉检索研究",
+    evidence: [
+      { sourceId: "rag-survey", supports: "支持 Naive、Advanced 与 Modular RAG 的能力分层和组件化视角。" },
+      { sourceId: "graphrag", supports: "支持 GraphRAG 面向跨语料全局归纳问题的研究路线。" },
+      { sourceId: "colpali-2025", supports: "支持视觉丰富文档的页面多向量检索路线；不保证所有文档都需要视觉检索。" },
+    ],
+  },
+  {
+    q: "RAG 上线几个月后效果变差，应该怎样排查？",
+    a: "先比较同一冻结评估集与线上失败样本，沿数据、切块、召回、重排、上下文、生成六段定位变化；不要先凭感觉改 Prompt 或换模型。",
+    depth: "检查源文档、解析器、Embedding、索引、过滤规则、Reranker、模型、Prompt 和缓存版本是否变化，并按来源、问题类型、租户与时间切片。HTTP 正常不代表答案质量正常；线上应保存可脱敏的 Trace、来源 ID、组件版本和拒答原因，失败样本经人工确认后回流评估集。",
+    ask: "追问客户：是否能把一次失败回答还原到命中文档、候选排名、最终上下文和确切模型 / Prompt 版本？",
+    tag: "生产运营",
+    basis: "持续评估 + 风险管理",
+    evidence: [
+      { sourceId: "ragas", supports: "支持将上下文相关性、回答相关性与忠实度分开衡量。" },
+      { sourceId: "nist-genai-profile", supports: "支持部署后持续测量、监测和管理生成式 AI 风险。" },
+      { sourceId: "opentelemetry-semconv", supports: "支持用标准化遥测关联模型与应用链路；业务质量字段仍需项目定义。" },
+    ],
+  },
 ];

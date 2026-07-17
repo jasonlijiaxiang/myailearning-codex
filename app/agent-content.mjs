@@ -220,4 +220,41 @@ export const agentQa = [
       { sourceId: "nist-genai-profile", supports: "支持按风险容忍度设置上线门槛、持续复核和停止机制。" },
     ],
   },
+  {
+    q: "Function Calling、MCP 和 A2A 是什么关系？",
+    a: "Function Calling 表达一次工具调用意图；MCP 标准化 Agent / AI 应用与工具、资源的连接；A2A 用于 Agent 之间发现、委派和交换任务结果。",
+    depth: "三者可以同时出现：Agent 用 Function Calling 选择一个由 MCP Server 暴露的工具，再通过 A2A 把独立任务交给另一个 Agent。协议降低连接成本，但不会自动完成身份、授权、租户隔离、审批、限流和审计；单系统内部编排也不必为了使用 A2A 而拆成分布式架构。",
+    ask: "追问客户：需要统一的是工具接入、跨系统 Agent 协作，还是单个应用内部编排？信任边界跨越了哪些团队或租户？",
+    tag: "协议边界",
+    basis: "官方协议架构与职责边界",
+    evidence: [
+      { sourceId: "mcp-architecture", supports: "支持 MCP 的 Host、Client、Server 架构和工具 / 资源互操作职责。" },
+      { sourceId: "a2a-concepts", supports: "支持 A2A 的 Agent Card、Task、Message 与 Artifact 等跨 Agent 协作概念。" },
+      { sourceId: "openai-function-calling", supports: "支持模型提出工具调用、应用执行并回传结果的职责分界。" },
+    ],
+  },
+  {
+    q: "Agent 的长期记忆能不能直接当客户档案或业务事实库？",
+    a: "不能。长期记忆适合保存经治理的偏好、经历摘要和可复用信息；余额、订单、权限和政策等权威事实仍应在业务系统中读取。",
+    depth: "至少分开任务状态、会话状态、长期记忆与权威事实。模型生成的摘要在写入长期记忆前要经过主体绑定、来源、去重、有效期和必要的用户确认；权威事实只由获授权的业务流程写入。否则错误总结会被持久化，并在未来任务中反复放大。",
+    ask: "追问客户：哪些信息允许模型总结后保存，哪些必须每次回到 CRM、ERP 或策略系统读取？谁能纠正和删除？",
+    tag: "记忆治理",
+    basis: "云平台记忆实现 + 风险治理",
+    evidence: [
+      { sourceId: "aws-agentcore-memory", supports: "支持区分会话内事件与跨会话长期记忆，并按主体 / 会话隔离。" },
+      { sourceId: "nist-genai-profile", supports: "支持对数据来源、隐私、生命周期和持续风险进行治理。" },
+    ],
+  },
+  {
+    q: "没有稳定 API 时，可以直接让 Agent 用 Computer Use 操作生产界面吗？",
+    a: "可以作为受限补充，但不应默认成为高风险生产主通道。有稳定 API 时优先 API；Computer Use 应运行在隔离环境，并从只读、建议和人工确认开始。",
+    depth: "界面会变化，视觉定位和状态判断也可能错误。需要限制网站和应用范围、使用短期凭证、屏蔽敏感信息、记录屏幕与动作轨迹、验证关键后置状态，并为付款、删除、外发和生产变更保留人工确认。固定且可脚本化的界面路径也可先比较 RPA。",
+    ask: "追问客户：目标系统为何没有 API？动作是否可逆？能否提供隔离账号、沙箱环境、回放证据和人工审批？",
+    tag: "执行方式",
+    basis: "Agent 风险治理 + 零信任原则",
+    evidence: [
+      { sourceId: "nist-zero-trust", supports: "支持每次资源访问前验证主体、设备与授权，而不因运行位置默认信任。" },
+      { sourceId: "nist-genai-profile", supports: "支持按使用情境、影响与风险容忍度设置控制和持续测量。" },
+    ],
+  },
 ];

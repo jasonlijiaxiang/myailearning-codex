@@ -1,3 +1,6 @@
+import { moduleList } from "./knowledge-map.mjs";
+import { moduleContentRegistry } from "./module-content-registry.mjs";
+
 /**
  * 全站统一来源台账（Reference Ledger）。
  *
@@ -357,77 +360,202 @@ export const sourceLedger = {
     verifiedAt: "2026-07-17",
     href: "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
   },
+  "transformer-2017": {
+    grade: "A", kind: "同行评审论文", shortTitle: "Transformer",
+    title: "Attention Is All You Need",
+    note: "提出以自注意力为核心的 Transformer 架构；支持解释并行训练与注意力机制，不代表所有后续模型实现完全相同。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/1706.03762",
+  },
+  "chinchilla-2022": {
+    grade: "A", kind: "一手论文", shortTitle: "Chinchilla Scaling",
+    title: "Training Compute-Optimal Large Language Models",
+    note: "研究模型规模与训练 token 配比的计算最优关系；结论受论文模型族、数据和训练设定限制，不能直接换算客户训练预算。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2203.15556",
+  },
+  "lora-2021": {
+    grade: "A", kind: "同行评审论文", shortTitle: "LoRA",
+    title: "LoRA: Low-Rank Adaptation of Large Language Models",
+    note: "提出冻结基础权重并训练低秩适配矩阵的参数高效微调方法；实际质量、显存与速度仍取决于模型、任务和实现。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2106.09685",
+  },
+  "qlora-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "QLoRA",
+    title: "QLoRA: Efficient Finetuning of Quantized LLMs",
+    note: "展示量化基础模型上的参数高效微调路线；论文实验不能外推为任意模型、硬件和客户数据都能保持同等质量。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2305.14314",
+  },
+  "instructgpt-2022": {
+    grade: "A", kind: "同行评审论文", shortTitle: "InstructGPT",
+    title: "Training language models to follow instructions with human feedback",
+    note: "展示监督微调、偏好数据和强化学习形成指令跟随模型的路线；支持训练阶段分工，不构成通用企业效果承诺。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2203.02155",
+  },
+  "dpo-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "DPO",
+    title: "Direct Preference Optimization: Your Language Model is Secretly a Reward Model",
+    note: "提出直接用偏好对优化语言模型的对齐方法；适用性依赖偏好数据质量、任务与基线。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2305.18290",
+  },
+  "clip-2021": {
+    grade: "A", kind: "同行评审论文", shortTitle: "CLIP",
+    title: "Learning Transferable Visual Models From Natural Language Supervision",
+    note: "通过图像—文本对比学习形成共享语义表征；支持跨模态检索基础，不保证视觉事实、计数或空间推理正确。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2103.00020",
+  },
+  "vit-2021": {
+    grade: "A", kind: "同行评审论文", shortTitle: "Vision Transformer",
+    title: "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale",
+    note: "将图像 Patch 序列交给 Transformer 的经典路线；用于解释视觉 token 化，不代表所有多模态模型采用相同架构或计费。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2010.11929",
+  },
+  "vllm-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "vLLM / PagedAttention",
+    title: "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+    note: "提出 PagedAttention 与面向 LLM Serving 的 KV Cache 内存管理；论文吞吐结果受模型、硬件和负载限制。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2309.06180",
+  },
+  "flashattention-2022": {
+    grade: "A", kind: "同行评审论文", shortTitle: "FlashAttention",
+    title: "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness",
+    note: "通过 IO-aware 算法减少注意力计算的内存访问；具体收益依赖序列、硬件、内核与推理栈。",
+    verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2205.14135",
+  },
+  "mcp-architecture": {
+    grade: "O", kind: "官方技术文档", shortTitle: "MCP Architecture",
+    title: "Architecture overview — Model Context Protocol",
+    note: "定义 Host、Client、Server、数据层、传输层及 Tools / Resources / Prompts 等核心原语；协议不规定 AI 应用怎样管理模型或上下文。",
+    verifiedAt: "2026-07-17", href: "https://modelcontextprotocol.io/docs/learn/architecture",
+  },
+  "mcp-authorization": {
+    grade: "O", kind: "官方技术文档", shortTitle: "MCP Authorization",
+    title: "Authorization — Model Context Protocol Specification",
+    note: "规定远程 MCP 的授权角色、发现、访问令牌与安全考虑；实现仍需结合身份系统、租户策略和业务权限。",
+    verifiedAt: "2026-07-17", href: "https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization",
+  },
+  "mcp-security": {
+    grade: "O", kind: "官方安全指南", shortTitle: "MCP Security",
+    title: "Security Best Practices — Model Context Protocol",
+    note: "整理 MCP 实现中的令牌、代理、会话与权限风险；属于协议安全指南，不替代组织自身威胁建模和控制验证。",
+    verifiedAt: "2026-07-17", href: "https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices",
+  },
+  "a2a-concepts": {
+    grade: "O", kind: "官方技术文档", shortTitle: "A2A Core Concepts",
+    title: "Core Concepts — A2A Protocol",
+    note: "定义 Agent Card、Task、Message、Part 与 Artifact 等跨 Agent 协作对象；不规定单个 Agent 内部实现。",
+    verifiedAt: "2026-07-17", href: "https://a2a-protocol.org/latest/topics/key-concepts/",
+  },
+  "a2a-specification": {
+    grade: "O", kind: "官方技术文档", shortTitle: "A2A Specification",
+    title: "A2A Protocol Specification",
+    note: "A2A 最新规范入口，覆盖发现、任务生命周期、交互与协议绑定；版本、SDK 和产品支持需在采购与实施时点复核。",
+    verifiedAt: "2026-07-17", href: "https://a2a-protocol.org/latest/specification/",
+  },
+  "openai-models": {
+    grade: "P", kind: "模型目录", shortTitle: "OpenAI Models",
+    title: "Models — OpenAI API",
+    note: "OpenAI 官方模型目录；型号、能力、上下文、可用接口、退役与计价属于高时效事实，必须按使用时点复核。",
+    verifiedAt: "2026-07-17", href: "https://developers.openai.com/api/docs/models",
+  },
+  "google-models": {
+    grade: "P", kind: "模型目录", shortTitle: "Gemini Models",
+    title: "Models — Gemini API",
+    note: "Google 官方 Gemini 模型目录；型号、能力、限制和发布阶段会变化，不在知识正文固化当前排名。",
+    verifiedAt: "2026-07-17", href: "https://ai.google.dev/gemini-api/docs/models",
+  },
+  "anthropic-models": {
+    grade: "P", kind: "模型目录", shortTitle: "Claude Models",
+    title: "Models overview — Claude Platform Docs",
+    note: "Anthropic 官方 Claude 模型目录；能力、生命周期、区域和定价应在选型时重新核验。",
+    verifiedAt: "2026-07-17", href: "https://platform.claude.com/docs/en/about-claude/models/overview",
+  },
+  "openai-prompt-caching": {
+    grade: "P", kind: "官方技术文档", shortTitle: "Prompt Caching",
+    title: "Prompt caching | OpenAI API",
+    note: "说明 OpenAI API 的前缀缓存、命中与用量可见性；只适用于该产品当期机制，不能外推为所有平台或整体应用成本。",
+    verifiedAt: "2026-07-17", href: "https://developers.openai.com/api/docs/guides/prompt-caching",
+  },
+  "cloudflare-ai-gateway": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Cloudflare AI Gateway",
+    title: "AI Gateway — Cloudflare Docs",
+    note: "说明 AI 网关的统一接入、分析、缓存、限流、日志和路由等产品能力；产品范围、计费和限制需按采购时点复核。",
+    verifiedAt: "2026-07-17", href: "https://developers.cloudflare.com/ai-gateway/",
+  },
+  "kubernetes-dra": {
+    grade: "O", kind: "官方技术文档", shortTitle: "Kubernetes DRA",
+    title: "Dynamic Resource Allocation — Kubernetes",
+    note: "说明 Kubernetes 中按设备属性、拓扑与声明分配资源的机制；功能状态和字段与 Kubernetes 版本相关。",
+    verifiedAt: "2026-07-17", href: "https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/",
+  },
+  "nvidia-gpu-operator": {
+    grade: "P", kind: "官方产品文档", shortTitle: "NVIDIA GPU Operator",
+    title: "NVIDIA GPU Operator Documentation",
+    note: "说明驱动、容器运行时、设备插件、监控和 GPU 软件栈的 Kubernetes 生命周期管理；兼容矩阵与功能随版本变化。",
+    verifiedAt: "2026-07-17", href: "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html",
+  },
 };
 
-export const referenceModules = [
-  {
-    id: "rag",
-    zh: "检索增强生成",
-    en: "Retrieval-Augmented Generation",
-    shortTitle: "RAG",
-    href: "/modules/rag",
-    sourceIds: [
-      "bm25-book",
-      "dpr-2020",
-      "hnsw-2016",
-      "rag-survey",
-      "graphrag",
-      "chunking-study",
-      "rag-original-2020",
-      "bert-reranker",
-      "fid-2021",
-      "replug-2024",
-      "self-rag",
-      "lost-middle",
-      "contextual-retrieval",
-      "ragas",
-      "nist-genai-profile",
-      "nist-zero-trust",
-      "owasp-prompt-injection",
-      "owasp-vector-weaknesses",
-      "docling-report",
-      "pp-ocr-2020",
-      "colpali-2025",
-      "fine-tuning-or-retrieval",
-    ],
-  },
-  {
-    id: "ai-agent",
-    zh: "Agent · 智能体",
-    en: "AI Agent",
-    shortTitle: "Agent",
-    href: "/modules/ai-agent",
-    sourceIds: [
-      "openai-agent-guide",
-      "openai-model-spec-hidden-cot",
-      "anthropic-effective-agents",
-      "react-2023",
-      "webarena-2024",
-      "google-agent-platform",
-      "aws-agentcore",
-      "aws-agentcore-memory",
-      "azure-foundry-agent-service",
-      "opentelemetry-semconv",
-      "nist-genai-profile",
-      "nist-zero-trust",
-    ],
-  },
-  {
-    id: "prompt-engineering",
-    zh: "提示词工程",
-    en: "Prompt Engineering",
-    shortTitle: "Prompt",
-    href: "/modules/prompt-engineering",
-    sourceIds: [
-      "openai-prompting-guide",
-      "openai-structured-outputs",
-      "openai-function-calling",
-      "google-prompt-introduction",
-      "google-prompt-strategies",
-      "google-system-instructions",
-      "anthropic-prompt-overview",
-      "nist-genai-profile",
-      "owasp-prompt-injection",
-    ],
-  },
-];
+const referenceShortTitles = Object.freeze({
+  "solution-patterns": "Solution Patterns",
+  "model-landscape": "Model Landscape",
+  rag: "RAG",
+  "ai-agent": "Agent",
+  multimodal: "Multimodal",
+  mcp: "MCP",
+  a2a: "A2A",
+  evaluation: "Evaluation",
+  security: "Security",
+  "ai-gateway": "AI Gateway",
+  "ai-ops": "AI Ops",
+  llm: "LLM",
+  "prompt-engineering": "Prompt",
+  "fine-tuning": "Fine-tuning",
+  "llm-training": "LLM Training",
+  "llm-inference": "LLM Inference",
+  "data-engineering": "Data Engineering",
+  "ai-infra-platform": "Infra Platform",
+  "ai-infra-compute": "Infra Compute",
+});
+
+const additionalSourceIds = Object.freeze({
+  rag: [
+    "bm25-book", "dpr-2020", "hnsw-2016", "rag-survey", "graphrag", "chunking-study",
+    "rag-original-2020", "bert-reranker", "fid-2021", "replug-2024", "self-rag",
+    "lost-middle", "contextual-retrieval", "ragas", "nist-genai-profile", "nist-zero-trust",
+    "owasp-prompt-injection", "owasp-vector-weaknesses", "docling-report", "pp-ocr-2020",
+    "colpali-2025", "fine-tuning-or-retrieval", "opentelemetry-semconv",
+  ],
+  "ai-agent": [
+    "openai-agent-guide", "openai-model-spec-hidden-cot", "anthropic-effective-agents", "react-2023",
+    "webarena-2024", "google-agent-platform", "aws-agentcore", "aws-agentcore-memory",
+    "azure-foundry-agent-service", "opentelemetry-semconv", "nist-genai-profile", "nist-zero-trust",
+    "mcp-architecture", "a2a-concepts", "openai-function-calling",
+  ],
+  "prompt-engineering": [
+    "openai-prompting-guide", "openai-structured-outputs", "openai-function-calling",
+    "google-prompt-introduction", "google-prompt-strategies", "google-system-instructions",
+    "anthropic-prompt-overview", "openai-model-spec-hidden-cot", "openai-prompt-caching",
+    "anthropic-effective-agents", "react-2023", "nist-genai-profile", "nist-zero-trust",
+    "owasp-prompt-injection",
+  ],
+});
+
+function contentSourceIds(slug) {
+  const content = moduleContentRegistry[slug];
+  if (!content) return [];
+  return [
+    ...content.evidenceCards.map((card) => card.sourceId),
+    ...content.qa.flatMap((item) => item.evidence.map((reference) => reference.sourceId)),
+  ];
+}
+
+export const referenceModules = moduleList.map((module) => ({
+  id: module.slug,
+  zh: module.zh,
+  en: module.en,
+  shortTitle: referenceShortTitles[module.slug],
+  href: module.href,
+  sourceIds: [...new Set([
+    ...contentSourceIds(module.slug),
+    ...(additionalSourceIds[module.slug] ?? []),
+  ])],
+}));

@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 };
 
 const conceptLinks = [
-  { concept: "LLM 与上下文窗口", owner: "模型原理", href: "/modules/model-principles", relation: "前置知识", local: "理解模型的参数化记忆、token 与注意力边界。" },
-  { concept: "Embedding", owner: "模型原理", href: "/modules/model-principles", relation: "前置知识", local: "理解文本如何映射到向量空间，以及相似度为何不等于事实正确。" },
-  { concept: "解析、OCR 与 Chunk", owner: "解析 / OCR", href: "/modules/parsing-ocr", relation: "知识供给", local: "决定原始资料能否变成完整、可定位、可撤回的检索单元。" },
-  { concept: "搜索与向量数据库", owner: "向量库与检索", href: "/modules/vector-database-retrieval", relation: "检索引擎", local: "负责稀疏、稠密、过滤、索引与增量更新，不等同于完整 RAG。" },
+  { concept: "LLM 与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解模型的参数化记忆、token 与注意力边界。" },
+  { concept: "Embedding", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解文本如何映射到向量空间，以及相似度为何不等于事实正确。" },
+  { concept: "解析、OCR 与 Chunk", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "知识供给", local: "决定原始资料能否变成完整、可定位、可撤回的检索单元。" },
+  { concept: "搜索与向量数据库", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "检索引擎", local: "负责稀疏、稠密、过滤、索引与增量更新，不等同于完整 RAG。" },
   { concept: "Prompt 与 Grounding", owner: "提示词工程", href: "/modules/prompt-engineering", relation: "生成约束", local: "把检索证据、回答规则、引用格式和拒答条件组装成模型输入。" },
   { concept: "评估、安全与网关", owner: "评估", href: "/modules/evaluation", relation: "生产控制", local: "把检索、生成、权限、风险、成本和 SLA 变成可观测控制面。" },
   { concept: "Agent 与 GraphRAG", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "下游演进", local: "多步检索、工具调用与全局主题分析属于 RAG 的组合或扩展。" },
-  { concept: "容器、Serverless 与算力", owner: "集群与调度", href: "/modules/clusters-scheduling", relation: "运行底座", local: "承载解析任务、检索服务、模型推理和峰值弹性。" },
+  { concept: "容器、Serverless 与算力", owner: "AI 基础设施平台", href: "/modules/ai-infra-platform", relation: "运行底座", local: "承载解析任务、检索服务、模型推理和峰值弹性。" },
 ];
 
 const conceptRows = balanceRows(conceptLinks, 4);
@@ -59,6 +59,23 @@ const servingFlow = [
   { zh: "生成 / 引用 / 拒答", en: "Generation / Citation / Abstention" },
 ];
 
+const ragFailureChain = [
+  { stage: "源数据与解析", symptom: "文档存在，但正确段落从未出现在索引", check: "解析保真、页码 / 表格 / 标题、版本与删除状态", action: "按文档类型路由解析，保留来源坐标与失败队列" },
+  { stage: "切块与索引", symptom: "证据被拆断、过大噪声或更新后仍命中旧块", check: "Chunk 边界、父子关系、重复率、索引版本", action: "用真实问题比较结构切分、语义切分与父子块" },
+  { stage: "候选召回", symptom: "标准证据不在候选 Top-K", check: "Candidate Recall@K、过滤前后召回、查询类型", action: "关键词 + 向量双路召回，按身份和元数据过滤" },
+  { stage: "融合与重排", symptom: "正确证据有召回，却排不进最终上下文", check: "融合排名、MRR / nDCG、Reranker 增益与延迟", action: "用 RRF 融合不同分数空间，再对有限候选精排" },
+  { stage: "上下文组装", symptom: "引用缺版本、冲突、顺序错误或证据被截断", check: "最终上下文覆盖、token 预算、版本与冲突策略", action: "去重、压缩、排序并保留稳定来源 ID" },
+  { stage: "生成与引用", symptom: "证据正确但回答误读、漏引或不应答却回答", check: "Faithfulness、引用正确性、拒答与事实正确性", action: "强化输出契约、证据不足拒答，并对高风险答案复核" },
+];
+
+const ragExtensionChoices = [
+  { pattern: "普通 / Advanced RAG", use: "单跳事实、制度、产品与知识问答", adds: "混合检索、过滤、重排、引用", cost: "生产基线", boundary: "不要被复杂名称诱导跳过基础质量链。" },
+  { pattern: "Agentic RAG", use: "多步拆解、选源、查询改写或工具联动", adds: "路由、计划、循环、预算和轨迹评估", cost: "调用次数和故障路径增加", boundary: "只对复杂问题路由启用，不默认覆盖所有请求。" },
+  { pattern: "GraphRAG", use: "关系密集、跨文档归纳与全局主题问题", adds: "实体关系、社区与分层摘要", cost: "索引、更新和运营链更重", boundary: "精确事实与常规问答通常仍需普通检索。" },
+  { pattern: "Multimodal RAG", use: "答案依赖页面布局、图表、图纸或图像", adds: "OCR / Caption、统一嵌入或页面多向量", cost: "视觉处理、存储和评测增加", boundary: "固定字段优先专业解析；开放视觉理解才交给 VLM。" },
+  { pattern: "Structured Data RAG", use: "答案来自指标、交易与关系数据库", adds: "语义层、Text-to-SQL、权限与结果验证", cost: "口径治理和 SQL 安全成为主成本", boundary: "查文与查数必须分流，不能把表数据简单切块后向量化。" },
+];
+
 const ragOriginalSource = sourceLedger["rag-original-2020"];
 
 
@@ -79,7 +96,7 @@ export default function RagModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V0.9</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.0</p>
             <h1 className="moduleHeroTitle" id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h1>
           </div>
           <div className="ragDefinition">
@@ -222,8 +239,26 @@ export default function RagModulePage() {
             </BalancedGrid>
           </div>
 
+          <div className="subsection" id="production-rag">
+            <div className="subHead"><span>2.4</span><div><p className="kicker">PRODUCTION DIAGNOSTICS</p><h3>从宽召回到可解释诊断</h3></div></div>
+            <p className="sectionLead">企业 RAG 常让关键词与向量检索各自“尽量不漏”，再用倒数排名融合（Reciprocal Rank Fusion, RRF）合并不同分数空间的候选，最后用 Reranker 做更精细的查询—证据判断。RRF 解决“怎样合并排名”，Reranker 解决“候选中谁更相关”；二者都不能补回未召回证据。</p>
+            <div className="engineeringPipeline">
+              <article><span>01</span><h6>双路宽召回<small>Sparse + Dense</small></h6><p>关键词保住编号与专名，向量补足同义表达；两路都按当前身份过滤。</p></article>
+              <article><span>02</span><h6>排名融合<small>Rank Fusion / RRF</small></h6><p>基于各自名次融合候选，避免直接比较不可通用的 BM25 与向量原始分数。</p></article>
+              <article><span>03</span><h6>精细重排<small>Cross-encoder Rerank</small></h6><p>只在有限候选上做更贵的联合判断，并衡量排序收益与新增延迟。</p></article>
+              <article><span>04</span><h6>证据组装<small>Context &amp; Citation</small></h6><p>只把版本正确、无冲突、可引用的证据交给生成器。</p></article>
+            </div>
+            <div className="tableWrap" style={{ marginTop: 18 }}>
+              <table>
+                <thead><tr><th>失效环节</th><th>客户看到的症状</th><th>先检查什么</th><th>典型控制</th></tr></thead>
+                <tbody>{ragFailureChain.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.symptom}</td><td>{item.check}</td><td>{item.action}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <CriticalBoundary>换更大的生成模型只能改善“证据已经正确进入上下文但模型没用好”的一部分问题。证据在解析、切块、召回或权限过滤阶段丢失时，升级模型不会把它找回来。</CriticalBoundary>
+          </div>
+
           <div className="subsection" id="rag-variants">
-            <div className="subHead"><span>2.4</span><div><p className="kicker">RAG PATTERNS</p><h3>RAG 架构模式</h3></div></div>
+            <div className="subHead"><span>2.5</span><div><p className="kicker">RAG PATTERNS</p><h3>基础架构与扩展模式</h3></div></div>
             <div className="variantList">
               {ragVariants.map((item) => (
                 <article key={item.name}>
@@ -233,11 +268,17 @@ export default function RagModulePage() {
                 </article>
               ))}
             </div>
-            <p className="sectionFootnote">术语归属：Naive / Advanced / Modular 属于 RAG 模块；Agent 的规划和工具调用深入应用模式层；知识图谱构建与治理深入数据底座层。</p>
+            <p className="sectionFootnote">术语归属：Naive / Advanced / Modular 属于 RAG 模块；Agent 的规划和工具调用深入应用模式层；知识图谱构建与治理深入数据工程层。</p>
+            <div className="tableWrap" style={{ marginTop: 18 }}>
+              <table>
+                <thead><tr><th>模式</th><th>适合的问题</th><th>新增能力</th><th>主要成本</th><th>选择边界</th></tr></thead>
+                <tbody>{ragExtensionChoices.map((item) => <tr key={item.pattern}><th>{item.pattern}</th><td>{item.use}</td><td>{item.adds}</td><td>{item.cost}</td><td>{item.boundary}</td></tr>)}</tbody>
+              </table>
+            </div>
           </div>
 
           <div className="subsection" id="when-to-use">
-            <div className="subHead"><span>2.5</span><div><p className="kicker">FIT CHECK</p><h3>RAG 适用性判断</h3></div></div>
+            <div className="subHead"><span>2.6</span><div><p className="kicker">FIT CHECK</p><h3>RAG 适用性判断</h3></div></div>
             <div className="fitGrid">
               <article className="fit yes">
                 <h4><span>✓</span> 高匹配</h4>
@@ -263,7 +304,7 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection" id="architecture">
-            <div className="subHead"><span>2.6</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>RAG 双链参考架构</h3></div></div>
+            <div className="subHead"><span>2.7</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>RAG 双链参考架构</h3></div></div>
             <div className="chainWrap">
               <div className="chainLabel"><strong>离线知识链</strong><span>Knowledge pipeline</span></div>
               <div className="flow">
@@ -281,7 +322,7 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection" id="choice">
-            <div className="subHead"><span>2.7</span><div><p className="kicker">CHOICE MATRIX</p><h3>四类知识增强路线对比</h3></div></div>
+            <div className="subHead"><span>2.8</span><div><p className="kicker">CHOICE MATRIX</p><h3>四类知识增强路线对比</h3></div></div>
             <div className="tableWrap">
               <table>
                 <thead><tr><th>路线</th><th>最适合</th><th>更新 / 引用</th><th>主要代价</th><th>售前判断</th></tr></thead>
@@ -296,12 +337,12 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>2.8</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
+            <div className="subHead"><span>2.9</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>2.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>RAG 技术环节与云服务机会</h3></div></div>
+            <div className="subHead"><span>2.10</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>RAG 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro">
               <p>先用厂商中立能力描述问题，再映射到实际销售的产品。云服务不是附录：它贯穿数据进入、知识处理、模型调用、在线运行、安全和持续运营。</p>
               <span>能力优先</span><span>产品后映射</span><span>以客户约束决定组合</span>
@@ -325,7 +366,7 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.10</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 PoC 验证包</h3></div></div>
+            <div className="subHead"><span>2.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 PoC 验证包</h3></div></div>
             <div className="pocGrid">
               <article><span>D1–2</span><h4>定义问题与基线</h4><p>选 2–3 个高价值任务；冻结真实问题、正确答案、证据位置与风险等级；用长上下文 / 现有搜索建立基线。</p></article>
               <article><span>D3–5</span><h4>打通知识链</h4><p>接入最小权威语料；验证解析、切块、元数据、权限与增量更新；记录每个处理版本。</p></article>
@@ -342,8 +383,7 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>2.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-            <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时标出具体依据、证据支持范围和售前必须确认的下一问。</p>
+            <div className="subHead"><span>2.12</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <ModuleQaList items={ragQa} sourceLedger={sourceLedger} />
           </div>
 
@@ -352,7 +392,7 @@ export default function RagModulePage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>RAG 独立模块 V0.9 · 2026-07-17</p>
+        <p>RAG 独立模块 V1.0 · 2026-07-17</p>
         <a href="#rag">返回顶部 ↑</a>
       </footer>
     </main>

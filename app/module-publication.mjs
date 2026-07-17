@@ -1,63 +1,77 @@
 /**
- * 已完整发布模块的唯一注册表。
+ * 19 个正式模块的发布注册表。
  *
- * 首页入口、专用路由和自动检查都从这里派生。requiredTerms 指向统一
- * 术语表；contentContract 记录本主题不可丢失的原理、机制、边界、
- * 云服务和客户问答语义。数组长度不是内容配额，只表达本模块当前必须
- * 讲清的知识，不得为了凑数量增删条目。
+ * dedicated 模块保留深度定制页面；brief 模块共享导航、证据与问答能力，
+ * 但正文根据内容选择流程、循环、分层、光谱或决策矩阵，不强迫同一版式。
  */
-export const publishedModules = Object.freeze([
-  Object.freeze({
-    slug: "rag",
-    path: "/modules/rag",
-    titleId: "rag-title",
-    requiredTerms: Object.freeze([
-      "rag", "retrieval", "augmentation", "generation", "sparse-retrieval",
-      "dense-retrieval", "reranking", "grounding",
-    ]),
-    contentContract: Object.freeze({
-      principle: Object.freeze(["RAG 的工作原理与工程机制", "检索到不等于回答正确"]),
-      mechanism: Object.freeze(["候选召回", "过滤与重排", "上下文组装", "有据生成"]),
-      boundary: Object.freeze(["召回是证据可用性的上限", "增强发生在上下文"]),
-      cloud: Object.freeze(["RAG 技术环节与云服务机会"]),
-      customer: Object.freeze(["上下文窗口已经很长，为什么还需要 RAG"]),
-    }),
-  }),
-  Object.freeze({
-    slug: "ai-agent",
-    path: "/modules/ai-agent",
-    titleId: "agent-title",
-    requiredTerms: Object.freeze([
-      "ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools",
-    ]),
-    contentContract: Object.freeze({
-      principle: Object.freeze(["Agent 的基础概念与工作循环", "感知—思考—行动—观察"]),
-      mechanism: Object.freeze(["规划、记忆与工具", "停止条件", "人工接管"]),
-      boundary: Object.freeze(["模型会调用 API，不等于模型拥有 API 权限", "不是模型魔法"]),
-      cloud: Object.freeze(["Agent 技术环节与云服务机会"]),
-      customer: Object.freeze(["什么时候应该用 Agent，什么时候用固定工作流"]),
-    }),
-  }),
-  Object.freeze({
-    slug: "prompt-engineering",
-    path: "/modules/prompt-engineering",
-    titleId: "prompt-title",
-    requiredTerms: Object.freeze([
-      "prompt-engineering", "context-engineering", "instructions", "context",
-      "tools-schema", "structured-outputs", "prompt-injection",
-    ]),
-    contentContract: Object.freeze({
-      principle: Object.freeze(["Prompt 是什么，以及 Context Engineering 的边界", "受控调用"]),
-      mechanism: Object.freeze(["稳定指令", "动态上下文", "能力接口"]),
-      boundary: Object.freeze(["必须执行的规则应落在模型外", "结构正确不等于事实正确"]),
-      cloud: Object.freeze(["提示词工程与云服务机会"]),
-      customer: Object.freeze(["系统提示", "是否就等于安全"]),
-    }),
-  }),
-]);
+const moduleSpecs = [
+  ["solution-patterns", "solution-patterns-title", ["solution-patterns"], "brief"],
+  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing"], "brief"],
+  ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated"],
+  ["ai-agent", "agent-title", ["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated"],
+  ["multimodal", "multimodal-title", ["multimodal", "document-intelligence"], "brief"],
+  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization"], "brief"],
+  ["a2a", "a2a-title", ["a2a", "agent-collaboration", "identity-authorization"], "brief"],
+  ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability"], "brief"],
+  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief"],
+  ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "guardrails"], "brief"],
+  ["ai-ops", "ai-ops-title", ["ai-ops", "observability", "golden-set"], "brief"],
+  ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief"],
+  ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated"],
+  ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief"],
+  ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief"],
+  ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief"],
+  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval"], "brief"],
+  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability"], "brief"],
+  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache"], "brief"],
+];
+
+export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind]) => Object.freeze({
+  slug,
+  path: `/modules/${slug}`,
+  titleId,
+  requiredTerms: Object.freeze(requiredTerms),
+  routeKind,
+  contentContract: Object.freeze(routeKind === "dedicated"
+    ? {
+        principle: Object.freeze(slug === "rag"
+          ? ["RAG 的工作原理与工程机制"]
+          : slug === "ai-agent"
+            ? ["Agent 的基础概念与工作循环"]
+            : ["Prompt 是什么，以及 Context Engineering 的边界"]),
+        mechanism: Object.freeze(slug === "rag"
+          ? ["候选召回", "上下文组装", "有据生成"]
+          : slug === "ai-agent"
+            ? ["感知—思考—行动—观察", "规划、记忆与工具"]
+            : ["稳定指令", "动态上下文", "能力接口"]),
+        boundary: Object.freeze(slug === "rag"
+          ? ["检索到不等于回答正确"]
+          : slug === "ai-agent"
+            ? ["模型会调用 API，不等于模型拥有 API 权限"]
+            : ["必须执行的规则应落在模型外"]),
+        cloud: Object.freeze([slug === "rag" ? "RAG 技术环节与云服务机会" : slug === "ai-agent" ? "Agent 技术环节与云服务机会" : "提示词工程与云服务机会"]),
+        customer: Object.freeze(["客户高频问题与深度回答"]),
+      }
+    : {
+        principle: Object.freeze(["核心机制与售前判断"]),
+        mechanism: Object.freeze(["机制、失败与控制"]),
+        boundary: Object.freeze(["重要边界"]),
+        cloud: Object.freeze(["云服务连接"]),
+        customer: Object.freeze(["客户高频问题与深度回答"]),
+      }),
+})));
 
 export const publishedModuleSlugs = Object.freeze(publishedModules.map((module) => module.slug));
+export const dedicatedModuleSlugs = Object.freeze(publishedModules.filter((module) => module.routeKind === "dedicated").map((module) => module.slug));
 
 export function isPublishedModule(slug) {
   return publishedModuleSlugs.includes(slug);
+}
+
+export function hasDedicatedModule(slug) {
+  return dedicatedModuleSlugs.includes(slug);
+}
+
+export function getPublishedModule(slug) {
+  return publishedModules.find((module) => module.slug === slug);
 }

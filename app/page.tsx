@@ -35,7 +35,7 @@ export default function Home() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V0.9</p>
+            <p className="eyebrow">READING EDITION · V1.0</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
               从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径；
@@ -49,7 +49,7 @@ export default function Home() {
             <nav className="heroModulePicker" id="available-modules" aria-label="已完成的学习模块">
               <div className="heroModulePickerHead">
                 <p>AVAILABLE MODULES</p>
-                <span>{availableModules.length} 个模块可完整阅读</span>
+                <span>{availableModules.length} 个独立模块</span>
               </div>
               <ul className="heroModuleRail">
                 {availableModules.map((module, index) => (
@@ -138,9 +138,9 @@ export default function Home() {
               <h3>任务导向的学习路径</h3>
             </div>
             <div className="pathCards">
-              <article><strong>新入门 · 4 周</strong><p>模型基础 → RAG → 评估 → 场景方案</p></article>
-              <article><strong>做 PoC · 2 周</strong><p>场景 → 数据 → RAG / Agent → 验收与安全</p></article>
-              <article><strong>做平台规划</strong><p>方案组合 → 工程保障 → 数据 / 算力底座 → TCO</p></article>
+              <article><strong>新入门 · 4 周</strong><p>LLM 原理 → Prompt → RAG / Agent → 评估</p></article>
+              <article><strong>做 PoC · 2 周</strong><p>场景方案 → 数据工程 → 应用模式 → 安全与验收</p></article>
+              <article><strong>做平台规划</strong><p>模型格局 → 网关与运营 → 推理 → 平台与算力</p></article>
             </div>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function Home() {
 
       <footer>
         <span>Cloud × AI Presales Fieldbook</span>
-        <span>V0.9 · 模块化阅读</span>
+        <span>V1.0 · 19 模块阅读版</span>
       </footer>
     </main>
   );

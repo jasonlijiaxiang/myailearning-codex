@@ -2,7 +2,7 @@
 
 面向具有 Python / API 基础的售前人员，以中文为主、专业术语中英对照。知识库围绕概念、架构判断、证据、云服务连接和客户现场问答组织内容。
 
-当前包含完整知识地图、28 个独立模块地址，以及 RAG、Agent、Prompt Engineering 三个深度模块与全站统一 Reference 页面。后续模块沿用同一内容、证据和构图标准扩展。
+当前知识地图已按 `external_reference/CC-20260717` 的 19 份讲义合并为 19 个正式模块。RAG、Agent、Prompt Engineering 保留主题定制的深度页面，其余 16 个模块也具备独立正文、售前判断、云服务连接、客户深度问答和可追溯证据；全站来源集中在统一 Reference 页面。
 
 ## 本地运行
 
@@ -22,11 +22,12 @@ npm run lint
 ## 主要目录
 
 - `app/page.tsx`：知识库首页与全局知识地图
-- `app/knowledge-map.mjs`：7 层架构、28 个模块与稳定路由的统一注册表
+- `app/knowledge-map.mjs`：7 层架构、19 个正式模块、历史地址别名与稳定路由的统一注册表
 - `app/modules/rag/page.tsx`：RAG 原理、架构、云服务连接与实战问答
 - `app/modules/ai-agent/page.tsx`：Agent 原理、受控循环、云上运行与实战问答
 - `app/modules/prompt-engineering/page.tsx`：提示词、上下文工程、发布治理与实战问答
-- `app/modules/[slug]/page.tsx`：尚在建设模块的独立页面入口
+- `app/modules/[slug]/page.tsx`：16 个内容自适应模块及历史地址别名的独立页面入口
+- `app/module-briefs-*.mjs`：16 个模块的原理、决策、云连接、问答与证据内容源
 - `app/rag-content.mjs`：RAG 问答与证据卡内容源
 - `app/agent-content.mjs`：Agent 问答与证据卡内容源
 - `app/prompt-content.mjs`：Prompt Engineering 问答与证据卡内容源
@@ -39,6 +40,7 @@ npm run lint
 - `docs/MODULE-BUILD-STANDARD.md`：由 RAG 提炼的模块建设、证据、云服务与验收标准
 - `docs/MODULE-QUALITY-GATES.md`：历史问题追溯、防复发机制与新模块 Definition of Done
 - `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则
+- `external_reference/`：原始参考资料投放区；内容经核验后才能进入公开来源台账
 - `.openai/hosting.json`：公开站点发布配置
 
 ## 内容维护原则
@@ -49,6 +51,7 @@ npm run lint
 - 每道客户问答标明具体依据、支持范围和边界，并通过稳定来源 ID 回链到统一来源台账。
 - 每个技术环节同时说明可能连接的云服务、客户价值和售前发现问题。
 - 图、表、代码、案例与问答按理解需要使用，不设数量配额。
+- 外部讲义用于发现知识点和叙事关系；论文、协议、产品能力与动态数字仍回到一手来源核验。
 
 ## 页面结构
 
@@ -57,6 +60,7 @@ npm run lint
 - RAG：`/modules/rag`
 - Agent：`/modules/ai-agent`
 - Prompt Engineering：`/modules/prompt-engineering`
+- 其余正式模块：由知识地图进入 `/modules/<slug>`
 - 统一来源台账：`/references`
 
 每个模块独立维护和分享；正文中的证据链接统一跳转到 Reference 页对应来源，不在模块页重复展示完整来源列表。

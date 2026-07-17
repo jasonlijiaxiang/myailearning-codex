@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 };
 
 const conceptLinks = [
-  { concept: "模型原理与上下文窗口", owner: "模型原理", href: "/modules/model-principles", relation: "前置知识", local: "理解 token、上下文容量、指令遵循与生成不确定性。" },
+  { concept: "模型原理与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解 token、上下文容量、指令遵循与生成不确定性。" },
   { concept: "RAG 与 Grounding", owner: "RAG · 检索增强生成", href: "/modules/rag", relation: "知识供给", local: "提示负责使用证据，不负责把正确证据检索出来。" },
   { concept: "Agent 与工具调用", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "行动扩展", local: "工具定义进入上下文；授权、执行和状态由应用控制。" },
-  { concept: "工作流与结构化生成", owner: "工作流与结构化生成", href: "/modules/workflow-structured-generation", relation: "输出消费", local: "把自然语言结果约束为可被下游系统可靠处理的结构。" },
+  { concept: "工作流与结构化生成", owner: "场景解决方案", href: "/modules/solution-patterns", relation: "输出消费", local: "把自然语言结果约束为可被下游系统可靠处理的结构。" },
   { concept: "评估", owner: "评估", href: "/modules/evaluation", relation: "质量门槛", local: "提示版本必须用固定任务集回归，不能凭演示观感发布。" },
-  { concept: "安全与治理", owner: "安全与治理", href: "/modules/safety-governance", relation: "风险控制", local: "提示注入（Prompt Injection）、数据泄漏和越权不能只靠系统提示（System Prompt）防御。" },
-  { concept: "推理与 AI 网关", owner: "推理与 AI 网关", href: "/modules/inference-ai-gateway", relation: "生产入口", local: "承载多模型路由、限流、密钥、策略、回滚与成本控制。" },
-  { concept: "可观测与 FinOps", owner: "可观测与 FinOps", href: "/modules/observability-finops", relation: "运营闭环", local: "关联提示版本、模型、输入、输出、时延、质量和单次成功成本。" },
+  { concept: "安全与治理", owner: "AI 安全", href: "/modules/security", relation: "风险控制", local: "提示注入（Prompt Injection）、数据泄漏和越权不能只靠系统提示（System Prompt）防御。" },
+  { concept: "AI 网关", owner: "AI 网关", href: "/modules/ai-gateway", relation: "生产入口", local: "承载多模型路由、限流、密钥、策略、回滚与成本控制。" },
+  { concept: "AI 可观测与运营", owner: "AI 可观测与运营", href: "/modules/ai-ops", relation: "运营闭环", local: "关联提示版本、模型、输入、输出、时延、质量和单次成功成本。" },
 ];
 
 const conceptRows = balanceRows(conceptLinks, 4);
@@ -41,6 +41,29 @@ const messageResponsibilities = [
 ];
 
 const messageResponsibilityRows = balanceRows(messageResponsibilities, 4);
+
+const techniqueLadder = [
+  { symptom: "任务目标或输出边界含糊", technique: "Zero-shot 基线", change: "明确任务、输入、约束、成功标准和输出契约", boundary: "先证明基础表达是否足够，不先堆技巧。" },
+  { symptom: "标签、风格或边界容易误解", technique: "Few-shot Examples", change: "加入代表性正例、边界例与拒答例", boundary: "示例数量由评估增益决定，越多不一定越好。" },
+  { symptom: "下游需要稳定字段", technique: "Structured Outputs", change: "使用 API Schema，并在应用侧校验类型与业务规则", boundary: "结构正确仍不证明字段值真实。" },
+  { symptom: "单次任务过长或步骤互相干扰", technique: "Task Decomposition / Chaining", change: "拆成有明确中间产物与检查点的步骤", boundary: "固定步骤优先工作流；不要把链条全塞进一条 Prompt。" },
+  { symptom: "需要查询工具并根据结果调整", technique: "ReAct / Agent", change: "把工具调用、观察、停止和授权交给编排层", boundary: "这是从 Prompt 进入 Agent 的边界，不是更长的系统提示。" },
+  { symptom: "需要更深推理而非更多知识", technique: "Reasoning Model", change: "给清晰问题、证据、约束和推理预算", boundary: "通常不要求公开或手写冗长 Chain-of-Thought；仍需验证最终答案。" },
+];
+
+const contextBudgetZones = [
+  { zone: "稳定指令", en: "Stable Instructions", content: "角色、任务边界、输出契约和长期规则", control: "版本、审批、回归；稳定前缀有利于缓存" },
+  { zone: "可信状态", en: "Trusted State", content: "身份、权限、业务配置和权威系统结果", control: "由应用注入；模型不能自行改写" },
+  { zone: "动态证据", en: "Dynamic Evidence", content: "RAG 文档、网页、历史、工具返回和用户内容", control: "来源、ACL、时效、长度与不可信标记" },
+  { zone: "能力接口", en: "Tools & Schema", content: "工具说明、参数 Schema、可用动作与返回契约", control: "最小集合、清晰职责、应用侧授权与执行" },
+];
+
+const promptSecurityScenarios = [
+  { threat: "直接提示注入", source: "用户试图覆盖系统指令", control: "输入分区、策略检查、最小权限、拒绝高风险越权" },
+  { threat: "间接提示注入", source: "网页、邮件、PDF、RAG 证据或工具返回中的恶意指令", control: "把外部内容标为数据；隔离指令、限制工具并对高风险动作审批" },
+  { threat: "越狱", source: "角色扮演、编码、分步诱导等绕过安全策略", control: "内容安全、策略组合、红队与模型外业务不变量" },
+  { threat: "系统提示泄露", source: "模型复述隐藏指令、示例或敏感上下文", control: "不在 Prompt 存放密钥；最小披露、输出检查与日志脱敏" },
+];
 
 const cloudHooks = [
   { stage: "模型接入", services: "模型即服务、模型目录、推理端点、多模型路由", value: "在质量、时延、成本与数据边界间选择模型", discover: "是否需要跨厂商？固定快照还是自动升级？" },
@@ -69,7 +92,7 @@ export default function PromptEngineeringModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · MODEL FOUNDATION · V0.9</p>
+            <p className="kicker light">MODULE · MODEL &amp; OPTIMIZATION · V1.0</p>
             <h1
               className="moduleHeroTitle"
               id="prompt-title"
@@ -161,8 +184,31 @@ export default function PromptEngineeringModulePage() {
             </div>
           </div>
 
+          <div className="subsection" id="prompt-diagnostics">
+            <div className="subHead"><span>5.5</span><div><p className="kicker">TECHNIQUE DIAGNOSTICS</p><h3>按失败症状选择技巧，而不是堆叠技巧</h3></div></div>
+            <div className="tableWrap">
+              <table>
+                <thead><tr><th>失败症状</th><th>优先技术</th><th>实际改变什么</th><th>选择边界</th></tr></thead>
+                <tbody>{techniqueLadder.map((item) => <tr key={item.technique}><th>{item.symptom}</th><td>{item.technique}</td><td>{item.change}</td><td>{item.boundary}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <div className="tableWrap" style={{ marginTop: 18 }}>
+              <table>
+                <thead><tr><th>上下文预算区</th><th>放什么</th><th>治理方式</th></tr></thead>
+                <tbody>{contextBudgetZones.map((item) => <tr key={item.en}><th>{item.zone}<small>{item.en}</small></th><td>{item.content}</td><td>{item.control}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <div className="tableWrap" style={{ marginTop: 18 }}>
+              <table>
+                <thead><tr><th>威胁</th><th>从哪里进入</th><th>主要控制</th></tr></thead>
+                <tbody>{promptSecurityScenarios.map((item) => <tr key={item.threat}><th>{item.threat}</th><td>{item.source}</td><td>{item.control}</td></tr>)}</tbody>
+              </table>
+            </div>
+            <CriticalBoundary>Prompt Chaining、ReAct 与工具循环一旦涉及外部状态、重试和停止，就应进入工作流或 Agent 编排层。推理模型也不需要售前人员要求公开完整思维链；应评估的是可验证答案、证据、工具轨迹与业务终态。</CriticalBoundary>
+          </div>
+
           <div className="subsection" id="templates">
-            <div className="subHead"><span>5.5</span><div><p className="kicker">TEMPLATES &amp; VARIABLES</p><h3>可维护的提示模板 · Prompt Template</h3></div></div>
+            <div className="subHead"><span>5.6</span><div><p className="kicker">TEMPLATES &amp; VARIABLES</p><h3>可维护的提示模板 · Prompt Template</h3></div></div>
             <div className="tableWrap">
               <table>
                 <thead><tr><th>组成</th><th>放什么</th><th>不要放什么</th><th>治理方式</th><th>售前发现问题</th></tr></thead>
@@ -183,7 +229,7 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection" id="fit-check">
-            <div className="subHead"><span>5.6</span><div><p className="kicker">FIT CHECK</p><h3>什么问题适合由 Prompt 解决</h3></div></div>
+            <div className="subHead"><span>5.7</span><div><p className="kicker">FIT CHECK</p><h3>什么问题适合由 Prompt 解决</h3></div></div>
             <div className="fitGrid">
               <article className="fit yes">
                 <h4><span>✓</span> 优先提示优化</h4>
@@ -197,7 +243,7 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection" id="version-governance">
-            <div className="subHead"><span>5.7</span><div><p className="kicker">MODEL &amp; VERSION GOVERNANCE</p><h3>模型差异、提示版本与发布控制</h3></div></div>
+            <div className="subHead"><span>5.8</span><div><p className="kicker">MODEL &amp; VERSION GOVERNANCE</p><h3>模型差异、提示版本与发布控制</h3></div></div>
             <div className="tableWrap">
               <table>
                 <thead><tr><th>变化项</th><th>可能影响</th><th>必须记录</th><th>发布检查</th><th>回滚单位</th></tr></thead>
@@ -214,12 +260,12 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>5.8</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div>
+            <div className="subHead"><span>5.9</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={promptEvidenceCards} sourceLedger={sourceLedger} maxColumns={3} />
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>5.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
+            <div className="subHead"><span>5.10</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
             <div className="cloudIntro">
               <p>Prompt 是整体方案中的一个配置面。真正可销售、可验收的能力来自模型接入、上下文供给、工具编排、安全、发布和持续运营的组合。</p>
               <span>能力先于产品名</span><span>模型与提示共同验收</span><span>当期规格单独核验</span>
@@ -238,7 +284,7 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>5.10</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 Prompt PoC 验证包</h3></div></div>
+            <div className="subHead"><span>5.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 Prompt PoC 验证包</h3></div></div>
             <div className="pocGrid">
               <article><span>D1–2</span><h4>定义任务与基线</h4><p>选 2–3 个高价值任务；冻结真实输入、期望输出、错误成本、边界和现有流程基线。</p></article>
               <article><span>D3–5</span><h4>建立模板与模式</h4><p>从 Zero-shot 开始；按失败加入示例、Grounding、Schema 或 Tool Definition，一次只改变一类变量。</p></article>
@@ -253,8 +299,7 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>5.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-            <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时给出证据边界和售前下一问。</p>
+            <div className="subHead"><span>5.12</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <ModuleQaList items={promptQa} sourceLedger={sourceLedger} />
           </div>
         </div>
@@ -262,7 +307,7 @@ export default function PromptEngineeringModulePage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>提示词工程独立模块 V0.9 · 2026-07-17</p>
+        <p>提示词工程独立模块 V1.0 · 2026-07-17</p>
         <a href="#prompt-engineering">返回顶部 ↑</a>
       </footer>
     </main>
