@@ -68,6 +68,94 @@ export const modelLandscape = {
       boundary: "模型只是完整方案的一层；数据、工作流、权限与运营可能才是主要瓶颈。",
     },
   ],
+  deepDiveTitle: "把模型选型从排行榜问题变成组合工程",
+  deepDiveLead:
+    "模型组合的价值不在于保留更多名字，而在于先划出满足客户硬约束的可行域，再用质量、运行包络和业务经济性形成可解释的权衡。下面的方法不依赖某一家厂商的榜单。",
+  deepDives: [
+    {
+      kind: "matrix",
+      eyebrow: "DECISION GEOMETRY",
+      title: "先划可行域，再比较帕累托前沿",
+      intro:
+        "一个候选若违反数据驻留、许可证或接口硬约束，就不应靠更高的平均分“补回来”；只有进入可行域的模型，才值得比较彼此不能同时最优的质量、时延、成本和退出代价。",
+      sourceIds: ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"],
+      columnLabels: {
+        name: "决策面",
+        mechanism: "如何形成证据",
+        decision: "售前动作",
+        boundary: "适用边界",
+      },
+      items: [
+        {
+          name: "硬约束门槛",
+          en: "Hard-constraint Gate",
+          mechanism: "先核对地域、数据处理、许可证、模态、上下文、工具接口和采购渠道，把不满足必选条件的候选排除，并在模型注册表中保存核验快照。",
+          decision: "用云模型目录、区域清单、合同条款和 IAM / 私网设计共同形成候选白名单，再投入评测预算。",
+          boundary: "厂商目录只证明当期产品声明，不证明客户工作负载上的质量或 SLA。",
+        },
+        {
+          name: "关键切片质量",
+          en: "Slice-level Quality",
+          mechanism: "冻结客户样本，按语言、任务难度、风险等级和长尾类型分别计算通过率与严重错误，而不是只看一个平均总分。",
+          decision: "在云评估服务中保留数据集、裁决规则和模型版本；先设置淘汰门槛，再讨论候选之间的细微分差。",
+          boundary: "自动裁判需要用人工样本校准；平均提升不能掩盖高风险切片退化。",
+        },
+        {
+          name: "运行包络",
+          en: "Operating Envelope",
+          mechanism: "在目标请求长度、并发、结构化输出和工具调用条件下测量首字延迟、输出速度、限额、失败恢复与降级行为。",
+          decision: "在候选云端点和 AI 网关上执行同口径压测，记录可持续容量，而不是引用单次演示延迟。",
+          boundary: "测试环境的峰值数据不能直接等同于合同 SLA，也不能外推到不同地域与配额。",
+        },
+        {
+          name: "稳健经济性",
+          en: "Robust Economics",
+          mechanism: "把缓存命中、路由、重试、人工复核和失败返工计入每个合格结果成本，并对流量、输入长度和价格变化做敏感性分析。",
+          decision: "让 FinOps 看板同时展示业务成功量与云消耗；选择在合理波动区间内仍可接受的组合，而非某个点上最便宜的模型。",
+          boundary: "经济结论属于特定负载快照，不是长期价格排名；模型和计费变化后必须重算。",
+        },
+      ],
+    },
+    {
+      kind: "scenario",
+      eyebrow: "PORTFOLIO SCENARIOS",
+      title: "客户约束如何改变模型组合",
+      intro:
+        "同一份模型清单进入不同业务后，会因为数据边界、流量结构、模态和动作风险形成不同组合。场景设计的目标是让每条路径都有明确的升级、降级和验收条件。",
+      sourceIds: ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"],
+      maxColumns: 2,
+      items: [
+        {
+          name: "受监管知识助手",
+          en: "Regulated Knowledge Assistant",
+          mechanism: "含敏感数据的请求进入满足地域与合同要求的专属或私有端点；只有脱敏且获准的复杂问题才可升级到外部强模型。",
+          decision: "云侧重点是私网、密钥、审计、内容分级与模型路由，PoC 应验证数据分类是否真正驱动了路由。",
+          boundary: "模型部署在私有网络不代表输入、日志、检索库和人工复核链已经合规。",
+        },
+        {
+          name: "高吞吐工单分流",
+          en: "High-volume Triage",
+          mechanism: "成本较低的模型处理可判定的常规分类，低置信、高损失或新类型工单升级到更强模型或人工队列。",
+          decision: "用托管批处理、弹性端点、网关置信规则和人工工作台共同核算每个正确分流的成本。",
+          boundary: "模型自报置信度不一定可校准；升级门槛必须用真实错误代价验证。",
+        },
+        {
+          name: "多模态现场巡检",
+          en: "Multimodal Field Inspection",
+          mechanism: "设备侧或近端模型先做压缩与初筛，云端多模态模型处理复杂图像、文档和跨记录推理，并保留原始证据定位。",
+          decision: "选型同时验证图像输入限制、网络带宽、离线容忍、对象存储和人工复核，不只比较视觉问答效果。",
+          boundary: "压缩和裁剪会丢失证据；高风险判定不能因云端不可达而静默降级。",
+        },
+        {
+          name: "可执行的代码与工具助手",
+          en: "Code and Tool-use Assistant",
+          mechanism: "主模型负责规划与生成结构化调用，备用模型只有在 Schema、工具语义和安全策略等价的路径上才接管；动作仍由受控执行层完成。",
+          decision: "在模型网关之外配置沙箱、最小权限、审批和追踪，并把工具调用成功率纳入候选评估。",
+          boundary: "返回相同 HTTP 状态不等于语义等价；故障转移不能绕过业务授权。",
+        },
+      ],
+    },
+  ],
   criticalBoundary: "模型目录、价格、排名与平台能力都是高时效事实。任何对客比较都必须标明核验日期、地域、计费口径与官方来源；模型榜单不等于客户场景结论。",
   cloudHooks: [
     {
@@ -245,6 +333,93 @@ export const llm = {
       boundary: "架构是解释和诊断工具，不是采购目标本身。",
     },
   ],
+  deepDiveTitle: "从模型机理定位性能与可信边界",
+  deepDiveLead:
+    "售前不需要推导复杂公式，但需要把用户感受到的慢、贵、漂移和不稳定拆到可验证的系统层。只有先定位故障属于排队、预填充、解码、上下文还是外部编排，云资源方案才有依据。",
+  deepDives: [
+    {
+      kind: "diagnostic",
+      eyebrow: "INFERENCE PATH",
+      title: "从请求症状反推推理瓶颈",
+      intro:
+        "端到端延迟是网络、排队、模型计算和应用编排的叠加。把指标拆开，才能避免用扩容 GPU 处理缓存、网关或上下文设计问题。",
+      sourceIds: ["transformer-2017", "vllm-2023", "flashattention-2022"],
+      items: [
+        {
+          name: "首字延迟高，输出速度正常",
+          en: "High TTFT",
+          mechanism: "长输入会增加预填充计算，排队、冷启动和未命中的前缀缓存也会把时间推迟到第一个输出 Token 之前。",
+          decision: "在云端 Trace 中分离排队、网络与 prefill；按输入长度分桶，并比较精简上下文、前缀缓存和专属容量。",
+          boundary: "缩短 Prompt 可能损失必要证据；缓存命中必须同时满足租户、权限和版本边界。",
+        },
+        {
+          name: "首字很快，后续输出缓慢",
+          en: "Slow Decode",
+          mechanism: "逐 Token 解码更受显存带宽、批处理调度和模型规模影响；请求间长度差异还会造成批次拖尾。",
+          decision: "分别观察每秒输出 Token、批次占用和显存带宽，在目标硬件上比较推理引擎、量化和模型档位。",
+          boundary: "更激进的量化或更小模型可能改变质量，性能优化必须通过同一评估集回归。",
+        },
+        {
+          name: "并发升高后容量突然坍塌",
+          en: "Concurrency Cliff",
+          mechanism: "长会话占用的 KV Cache、显存碎片和过量排队会跨过容量拐点，使吞吐不再线性增长并触发 OOM 或超时。",
+          decision: "用真实上下文长度分布做阶梯压测，设置准入、排队和最大 Token 预算，再决定 GPU 数量与自动伸缩策略。",
+          boundary: "平均上下文长度会掩盖长尾；单请求显存估算不能替代目标引擎上的压力测试。",
+        },
+        {
+          name: "GPU 利用率高，业务完成量却低",
+          en: "Busy but Unproductive",
+          mechanism: "重复生成、无效重试、超长输出或低质量结果返工都可能消耗算力，却没有增加被业务接受的结果。",
+          decision: "把 GPU、Token 和请求指标连接到任务成功、人工接管与重试链，按每个合格结果而非设备忙碌度验收。",
+          boundary: "硬件利用率是容量信号，不是质量或商业价值指标。",
+        },
+      ],
+    },
+    {
+      kind: "matrix",
+      eyebrow: "VARIANCE LAYERS",
+      title: "不要把所有输出变化都叫作模型随机性",
+      intro:
+        "同一问题产生不同答案，可能来自知识边界、上下文竞争、解码采样或模型外系统。每一层需要不同的实验和云控制，简单把温度调成零并不能消除所有变化。",
+      sourceIds: ["transformer-2017", "nist-genai-profile", "openai-models"],
+      columnLabels: {
+        name: "变化来源",
+        mechanism: "为什么会变化",
+        decision: "验证与控制",
+        boundary: "不能据此承诺",
+      },
+      items: [
+        {
+          name: "权重与知识边界",
+          en: "Knowledge Boundary",
+          mechanism: "模型参数只编码训练形成的统计模式，不保证包含最新、私有或经过授权的业务事实。",
+          decision: "用冻结事实题区分能力与知识缺口；把动态事实连接到 RAG、数据库或受控 API，并记录来源。",
+          boundary: "增加上下文能提供证据，但不能保证模型正确理解或引用。",
+        },
+        {
+          name: "上下文竞争",
+          en: "Context Competition",
+          mechanism: "指令、历史、检索片段和工具结果共同占用有限窗口，顺序、冲突和无关信息会改变模型利用的线索。",
+          decision: "版本化 Prompt 与上下文组装，在评估服务中做删减和位置对照；观察证据使用而非只看窗口上限。",
+          boundary: "注意力机制能够聚合信息，不代表长窗口中的所有内容都会被同等可靠地利用。",
+        },
+        {
+          name: "解码采样",
+          en: "Decoding Variance",
+          mechanism: "模型输出的是下一 Token 分布，温度、Top-p、停止条件和结构化约束决定如何从分布形成具体序列。",
+          decision: "生成创意内容时保留可控多样性；分类、抽取和工具参数则收紧采样并用 Schema 校验。",
+          boundary: "低温提升可重复性，不会把错误概率变成事实保证。",
+        },
+        {
+          name: "模型外编排",
+          en: "External Orchestration",
+          mechanism: "检索结果、工具响应、网关路由、模型版本和重试路径会改变实际输入，即使用户看到的提问完全相同。",
+          decision: "用端到端 Trace 记录模型、Prompt、证据、工具和策略版本；在云网关统一关联请求而不隐藏下游细节。",
+          boundary: "模型可重复不等于系统可重复；外部副作用仍需幂等与业务事务控制。",
+        },
+      ],
+    },
+  ],
   criticalBoundary: "大模型根据训练参数与当前上下文预测后续 Token；流畅表达不等于事实正确、权限正确或业务动作正确。事实、安全、授权和确定性业务规则必须由模型外系统共同保障。",
   cloudHooks: [
     {
@@ -419,6 +594,93 @@ export const llmTraining = {
       boundary: "公开 Benchmark 与训练集结果都不能替代客户的 Go / No-Go 门槛。",
     },
   ],
+  deepDiveTitle: "把训练看成数据、算力与恢复共同构成的系统",
+  deepDiveLead:
+    "训练预算不能只用 GPU 数量解释。真正决定交付周期的是有效训练步能否稳定推进，以及数据、通信、检查点和故障恢复是否把昂贵算力转化为可复现的模型增量。",
+  deepDives: [
+    {
+      kind: "matrix",
+      eyebrow: "EFFECTIVE TRAINING TIME",
+      title: "GPU 清单之外，哪些路径决定有效训练时间",
+      intro:
+        "账面卡时只有在模型计算、集群通信、数据供给和恢复链同时顺畅时才转化为有效训练 Token。售前容量设计应围绕最慢路径和故障损失，而不是孤立比较单卡峰值。",
+      sourceIds: ["transformer-2017", "chinchilla-2022", "nist-genai-profile"],
+      columnLabels: {
+        name: "系统路径",
+        mechanism: "主要机制",
+        decision: "云服务与验收",
+        boundary: "适用边界",
+      },
+      items: [
+        {
+          name: "模型计算",
+          en: "Model Compute",
+          mechanism: "矩阵计算、精度、序列长度、批量和并行切分决定每步计算量；模型与训练 Token 的投入需要在预算下协调。",
+          decision: "先用小规模运行测每步时间、显存余量和收敛趋势，再选择 GPU 型号、混合精度与并行策略。",
+          boundary: "理论 FLOPS 和厂商峰值不能直接换算为训练完成时间。",
+        },
+        {
+          name: "集群通信",
+          en: "Collective Communication",
+          mechanism: "数据、张量与流水线并行会引入梯度或激活通信；慢链路、拓扑跨域和单节点拖尾都会让其余 GPU 等待。",
+          decision: "在目标云集群上测试 all-reduce、节点间带宽与扩展效率，按作业拓扑申请高速互联和放置策略。",
+          boundary: "增加 GPU 可能降低并行效率；卡数翻倍不代表训练时间减半。",
+        },
+        {
+          name: "数据供给",
+          en: "Input Pipeline",
+          mechanism: "对象存储、分片、解压、Token 化和数据加载若跟不上训练循环，GPU 会在等待数据时表现为周期性空转。",
+          decision: "监控数据等待时间与读取吞吐，比较预处理、缓存、分片和并行文件系统，而不是把低利用率直接归因于 GPU。",
+          boundary: "提高读取速度不能修复数据许可、重复、污染和样本配比问题。",
+        },
+        {
+          name: "故障与恢复",
+          en: "Failure and Recovery",
+          mechanism: "大规模长作业必然暴露节点、网络和存储故障；检查点间隔与恢复速度决定失败时要重算多少工作。",
+          decision: "在正式训练前演练故障注入、检查点写入与跨节点恢复，并把有效训练时间、RPO 和 RTO 写入云平台验收。",
+          boundary: "检查点文件存在不等于能够完整恢复优化器、调度器和数据游标。",
+        },
+      ],
+    },
+    {
+      kind: "diagnostic",
+      eyebrow: "TRAINING TRIAGE",
+      title: "训练曲线异常时，不要先追加算力",
+      intro:
+        "质量异常和系统异常常会互相伪装。先把样本、优化、基础设施和恢复状态关联起来，才能判断问题需要修数据、调训练还是修集群。",
+      sourceIds: ["chinchilla-2022", "instructgpt-2022", "nist-genai-profile"],
+      items: [
+        {
+          name: "Loss 突然尖峰或出现 NaN",
+          en: "Loss Spike / NaN",
+          mechanism: "异常批次、数值溢出、学习率过高或恢复后的状态不一致都可能破坏梯度，而不是单纯算力不足。",
+          decision: "将 step、样本分片、梯度范数、学习率和节点事件写入同一实验 Trace，先回放故障前后的最小区间。",
+          boundary: "跳过异常批次可能掩盖系统性数据问题，不能作为默认长期修复。",
+        },
+        {
+          name: "训练 Loss 下降，验证表现变差",
+          en: "Validation Divergence",
+          mechanism: "过拟合、测试污染、训练与业务分布错位，或优化目标只奖励表面格式，都可能制造虚假进步。",
+          decision: "按数据来源与任务切片比较基线，检查近重复和时间穿越，并由业务裁决者复核关键样本。",
+          boundary: "单一验证集也会被反复试验间接过拟合，需要保留最终未触碰的发布集。",
+        },
+        {
+          name: "吞吐周期性下降",
+          en: "Throughput Sawtooth",
+          mechanism: "数据加载、同步等待、检查点写入、节点温控或抢占会形成周期性停顿，平均 GPU 利用率难以指明根因。",
+          decision: "把 step time 拆成计算、通信、I/O 与检查点阶段，并与云监控、调度和存储事件对齐。",
+          boundary: "缩短检查点写入时间不能以失去可恢复性或制品完整性为代价。",
+        },
+        {
+          name: "从检查点恢复后结果漂移",
+          en: "Resume Drift",
+          mechanism: "优化器、学习率调度、随机状态、数据游标或精度配置未完整恢复，会使“继续训练”实际变成另一条实验。",
+          decision: "在小规模作业中比较不中断与中断恢复曲线，并在模型注册表记录完整运行清单和检查点兼容性。",
+          boundary: "分布式训练存在一定非确定性；目标是可解释且在验收容差内，而非承诺逐位一致。",
+        },
+      ],
+    },
+  ],
   criticalBoundary: "训练可以改变模型权重与行为，但不会自动赋予正确、合规或可运营的产品能力。数据权利、评估、推理服务、安全和发布控制都必须独立验收。",
   cloudHooks: [
     {
@@ -591,6 +853,93 @@ export const fineTuning = {
       signal: "数据能否出域、模型是否开放、训练方法是否受平台支持、团队是否具备 GPU 与运维能力。",
       recommendation: "标准 SFT/偏好任务且满足数据边界时优先托管；需要开放权重、深度训练或自定义运行时再自建。",
       boundary: "托管产品支持的模型、方法、地域和产物所有权会变化，必须查当期官方条款。",
+    },
+  ],
+  deepDiveTitle: "从训练成功走向可隔离、可回滚的微调服务",
+  deepDiveLead:
+    "微调项目的后半程不是导出一个 Adapter 就结束，而是决定它如何与基础模型配对、如何服务多个租户，以及离线提升进入目标运行时后是否仍然成立。",
+  deepDives: [
+    {
+      kind: "matrix",
+      eyebrow: "ADAPTER SERVING",
+      title: "微调制品进入生产时的部署权衡",
+      intro:
+        "LoRA 等参数高效方法把任务增量与底座分开保存，但生产系统仍要在隔离、利用率、切换速度和平台约束之间选择服务形态。",
+      sourceIds: ["lora-2021", "qlora-2023", "vllm-2023", "nist-genai-profile"],
+      columnLabels: {
+        name: "服务形态",
+        mechanism: "运行方式",
+        decision: "适合的客户条件",
+        boundary: "主要风险",
+      },
+      items: [
+        {
+          name: "独立端点",
+          en: "Dedicated Endpoint",
+          mechanism: "每个定制模型或 Adapter 使用独立运行实例、权限和扩缩容边界，故障与性能更容易归因。",
+          decision: "适合强隔离、高风险或稳定高负载场景；云侧重点是专属端点、私网、密钥和独立监控。",
+          boundary: "大量低流量定制会产生空闲容量和版本运维成本。",
+        },
+        {
+          name: "共享底座、动态加载 Adapter",
+          en: "Shared Base with Dynamic Adapters",
+          mechanism: "多个任务共享同一基础模型权重，运行时按请求加载或选择 Adapter，以减少重复显存和模型副本。",
+          decision: "适合底座一致、租户较多且流量分散的场景；应验证路由、热加载、批处理、缓存和租户授权。",
+          boundary: "共享提高利用率，也扩大错误路由、跨租户缓存和单点故障的影响范围。",
+        },
+        {
+          name: "合并 Adapter 后部署",
+          en: "Merged Adapter",
+          mechanism: "将适配增量合并进基础权重，运行时无需动态选择 Adapter，服务链更接近普通模型端点。",
+          decision: "适合版本稳定、任务单一且运行时不支持动态 Adapter 的环境；合并前后必须重新评估与签名。",
+          boundary: "合并会弱化快速切换和共享底座优势，回滚需要完整保留原始底座与 Adapter。",
+        },
+        {
+          name: "托管微调端点",
+          en: "Managed Fine-tuned Endpoint",
+          mechanism: "云平台负责支持模型的训练制品、部署、伸缩和部分版本管理，客户通过平台 API 使用定制版本。",
+          decision: "适合标准训练方法和快速上线；采购时核验地域、支持底座、数据处理、产物归属、配额与退出路径。",
+          boundary: "平台便利不等于可移植；支持范围与产品状态会变化，不能预设 Adapter 可导出或跨云复用。",
+        },
+      ],
+    },
+    {
+      kind: "diagnostic",
+      eyebrow: "PRODUCTION REGRESSION",
+      title: "离线提升为何会在生产中消失",
+      intro:
+        "微调结果依赖基础模型、Tokenizer、聊天模板、运行时和路由共同组成的组合版本。生产退化常来自组合漂移，而不是训练本身完全无效。",
+      sourceIds: ["lora-2021", "qlora-2023", "instructgpt-2022", "nist-genai-profile"],
+      items: [
+        {
+          name: "离线达标，在线格式突然漂移",
+          en: "Template Mismatch",
+          mechanism: "训练和服务使用了不同的聊天模板、系统指令、Tokenizer、停止符或结构化输出约束，模型看到的任务实际上已经改变。",
+          decision: "把完整请求组装纳入模型制品清单，在目标云端点回放同一冻结样本并比较逐阶段输入。",
+          boundary: "只固定 Adapter 哈希不能保证可复现，运行镜像与网关改写也必须版本化。",
+        },
+        {
+          name: "目标任务提升，通用与安全能力退化",
+          en: "Narrow-task Regression",
+          mechanism: "训练样本过窄、重复或缺少拒答与边界行为，会让模型过度偏向目标模式并覆盖原有分寸。",
+          decision: "同时运行目标集、通用保留集和安全切片；通过样本配比、训练强度或更轻量 Adapter 重新寻找权衡。",
+          boundary: "目标指标提升不能抵消不可接受的安全、合规或关键通用能力退化。",
+        },
+        {
+          name: "基础模型升级后 Adapter 失效",
+          en: "Base-model Compatibility Drift",
+          mechanism: "Adapter 针对特定底座参数与层结构学习，底座、Tokenizer 或推理算子变化会破坏原先的适配关系。",
+          decision: "用不可变的底座版本或摘要绑定 Adapter；底座升级按新候选重新训练或至少完成全量回归。",
+          boundary: "同一模型家族名称不代表权重、层结构和行为向后兼容。",
+        },
+        {
+          name: "用户得到错误租户的行为",
+          en: "Adapter Routing Leak",
+          mechanism: "租户身份、Adapter 路由、缓存键或批处理隔离设计错误，会把另一个定制版本的行为应用到当前请求。",
+          decision: "在 AI 网关和推理服务中传播已验证的租户身份，将模型、Adapter 和策略版本写入 Trace，并执行跨租户负向测试。",
+          boundary: "Adapter 不一定包含可读客户数据，但错误路由仍属于隔离与授权事故。",
+        },
+      ],
     },
   ],
   criticalBoundary: "微调把模式写入模型或 Adapter，因此更新、撤回和归因都比 Prompt/RAG 更重。不要用微调替代实时知识库、业务数据库、权限系统或确定性规则。",

@@ -2,9 +2,9 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { agentEvidenceCards, agentQa } from "../../agent-content.mjs";
+import { agentDeepDives, agentEvidenceCards, agentQa } from "../../agent-content.mjs";
 import { balanceRows } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import { sourceLedger } from "../../reference-content.mjs";
 
 export const metadata: Metadata = {
@@ -168,7 +168,7 @@ export default function AgentModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.0</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.1</p>
             <h1
               className="moduleHeroTitle"
               id="agent-title"
@@ -370,8 +370,14 @@ export default function AgentModulePage() {
             </div>
           </div>
 
+          <div className="subsection" id="agent-independent-depth" data-quality-section="deep-dive">
+            <div className="subHead"><span>2.8</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>让 Agent 成为可托管的生产执行系统</h3></div></div>
+            <p className="sectionLead">本节围绕一次真实任务的生命周期展开：Run 如何结束、工具怎样安全执行、崩溃后怎样恢复、记忆与委托怎样缩小信任。重点是客户长期托管能力，而不是框架功能清单。</p>
+            <ModuleDeepDiveBlocks blocks={agentDeepDives} sourceLedger={sourceLedger} />
+          </div>
+
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>2.8</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
+            <div className="subHead"><span>2.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro"><p>Agent 会把模型服务延伸成跨运行时、API、身份、数据、安全和运维的整体方案。售前应先用厂商中立能力拆解，再映射当期云产品、地域、配额和计费。</p><span>模型不是全部</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
             <div className="cloudTable tableWrap">
               <table><thead><tr><th>Agent 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
@@ -386,29 +392,29 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.9</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 Agent PoC 验证包</h3></div></div>
+            <div className="subHead"><span>2.10</span><div><p className="kicker">POC PLAYBOOK</p><h3>按自治风险逐级验证 Agent</h3></div></div>
             <div className="pocGrid">
-              <article><span>D1–2</span><h4>任务与终态</h4><p>选 2–3 个高价值任务；冻结初始数据、可验证终态、风险等级和人工基线。</p></article>
-              <article><span>D3–5</span><h4>最小工具闭环</h4><p>先用单 Agent 接入最少工具；实现结构化参数、身份、超时、停止和审计。</p></article>
-              <article><span>D6–8</span><h4>失败与安全</h4><p>测试工具选错、参数错误、注入、越权、循环、超预算、部分失败和人工接管。</p></article>
-              <article><span>D9–10</span><h4>验收与容量</h4><p>对比工作流（Workflow）/ 人工基线；输出成功率、P95、成本、上线门槛和扩容方案。</p></article>
+              <article><span>SHADOW</span><h4>任务与终态</h4><p>先以观察或建议模式运行，冻结真实任务、可验证终态、风险等级和人工 / 工作流基线。</p></article>
+              <article><span>READ ONLY</span><h4>最小工具闭环</h4><p>接入完成任务必需的最少只读工具；验证身份、结构化参数、超时、停止、Trace 和后置条件。</p></article>
+              <article><span>CONTROLLED WRITE</span><h4>受控副作用</h4><p>只开放可逆或低风险写入，验证审批绑定、幂等、重复消息、结果未知、部分成功、补偿和恢复。</p></article>
+              <article><span>OPERATIONS</span><h4>灰度与运营交接</h4><p>按风险切片验收成功率、接管率、P95 和成功任务成本；满足门禁后再扩大自治，不预设固定天数。</p></article>
             </div>
             <div className="gates"><h4>建议的 Go / No-Go 门槛结构</h4><div className="gateList"><span>端到端任务成功率</span><span>关键步骤完成率</span><span>策略违规 = 0</span><span>高风险误执行 = 0</span><span>人工接管率</span><span>P95 / 完成时长</span><span>每个成功任务成本</span><span>可恢复 / 可回滚</span></div><p>具体数值按业务风险、人工基线与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
           </div>
 
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>2.10</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
+            <div className="subHead"><span>2.11</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={agentEvidenceCards} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>2.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+            <div className="subHead"><span>2.12</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <ModuleQaList items={agentQa} sourceLedger={sourceLedger} />
           </div>
         </div>
       </section>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V1.0 · 2026-07-17</p><a href="#agent">返回顶部 ↑</a></footer>
+      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V1.1 · 2026-07-17</p><a href="#agent">返回顶部 ↑</a></footer>
     </main>
   );
 }

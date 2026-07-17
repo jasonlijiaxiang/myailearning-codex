@@ -95,6 +95,114 @@ export const solutionPatternsBrief = {
         "PoC 账单不能直接外推生产 TCO；失败重试、峰值容量和人工接管必须计入。",
     },
   ],
+  deepDiveTitle: "从方案构想到可归因的业务系统",
+  deepDiveLead:
+    "售前方案的深度不取决于组件数量，而取决于能否解释业务变化由什么机制产生、系统在哪些条件下失效，以及上线后由谁持续承担责任。",
+  deepDives: [
+    {
+      kind: "scenario",
+      eyebrow: "AUTONOMY GRADIENT",
+      title: "同一个业务目标，自动化深度决定风险与云架构",
+      intro:
+        "先判断系统只是提供信息、形成建议，还是会改变业务状态；自主性越高，身份、策略、恢复和人工介入越应成为主架构。",
+      items: [
+        {
+          name: "知识助手",
+          en: "Read-only Assistant",
+          mechanism:
+            "系统检索、汇总并引用企业知识，不改变外部系统状态；主要风险是越权检索、过期证据和错误解释。",
+          decision:
+            "云服务重点放在文档处理、搜索、模型服务、IAM、引用与质量监控，并以可访问、可定位和可拒答验收。",
+          boundary:
+            "只读不等于低风险；敏感信息泄漏仍可能不可逆。",
+        },
+        {
+          name: "决策副驾",
+          en: "Decision Copilot",
+          mechanism:
+            "系统在证据基础上给出比较、评分或建议，但最终决策由有责任的人员作出。",
+          decision:
+            "增加规则引擎、解释记录、审批工作流和人工反馈；验收既看建议质量，也看校准、覆盖与升级路径。",
+          boundary:
+            "建议附带证据并不转移业务责任，也不能掩盖不确定性。",
+        },
+        {
+          name: "受控流程助手",
+          en: "Bounded Workflow",
+          mechanism:
+            "系统只在预定义步骤、工具和参数范围内执行任务，关键状态由工作流或业务系统保存。",
+          decision:
+            "云服务重点转向工作流、队列、短期身份、幂等、补偿和审批；用业务终态而非回答文本验收。",
+          boundary:
+            "模型可以选择动作，但不能自行扩大工具范围或授权范围。",
+        },
+        {
+          name: "自主任务系统",
+          en: "Autonomous Task System",
+          mechanism:
+            "模型可规划、多轮调用工具并根据观察调整路径，复合错误与资源消耗随轨迹增长。",
+          decision:
+            "只有复杂度收益经基线证明后才引入，并配置预算、停止条件、沙箱、策略门、全链追踪和人工接管。",
+          boundary:
+            "自主性是需要证明的成本，不是默认更高级的方案形态。",
+        },
+      ],
+      sourceIds: ["anthropic-effective-agents", "nist-genai-profile"],
+      maxColumns: 2,
+    },
+    {
+      kind: "diagnostic",
+      eyebrow: "SOLUTION FAILURE DIAGNOSTICS",
+      title: "架构图看起来完整，为什么方案仍可能失真",
+      intro:
+        "用失败现象反推缺失的因果证据和运营机制，可以在报价和资源投入前暴露方案风险。",
+      items: [
+        {
+          name: "Demo 很好，业务指标不动",
+          mechanism:
+            "演示指标与业务结果之间没有可验证因果链，或者系统只优化了回答质量，却没有改变真实流程瓶颈。",
+          decision:
+            "补齐当前基线、目标行为、可观察业务终态和对照组；云上把模型 Trace 与业务事件关联。",
+          boundary:
+            "用户喜欢或单次回答正确不能替代业务结果。",
+        },
+        {
+          name: "PoC 成功，生产成本失控",
+          mechanism:
+            "样本未覆盖峰值并发、长上下文、多轮工具、失败重试、人工接管和持续数据处理。",
+          decision:
+            "按负载切片做容量与成本敏感性分析，观测每个成功任务的模型、检索、计算和人工成本。",
+          boundary:
+            "PoC 单价与平均时延不能直接外推生产。",
+        },
+        {
+          name: "组件可替换，系统却无法回滚",
+          mechanism:
+            "模型、Prompt、检索索引、工具 Schema 和策略没有共同版本，变更后无法还原当时执行条件。",
+          decision:
+            "建立版本元组、灰度路由、冻结回归集和回滚资产；使用注册表、CI/CD、对象存储与 Feature Flag 承载。",
+          boundary:
+            "供应商提供模型版本不等于应用具备端到端回滚。",
+        },
+        {
+          name: "系统上线，问题无人负责",
+          mechanism:
+            "业务、数据、平台、安全和运营只在建设期协作，没有为质量漂移、数据更新、告警和争议设定责任人。",
+          decision:
+            "在方案中建立运行责任矩阵、事件响应、内容所有者和定期复核；将告警直接路由到可处置团队。",
+          boundary:
+            "托管云服务承担基础设施责任，不承担客户业务事实和最终决策责任。",
+        },
+      ],
+      sourceIds: ["nist-genai-profile", "opentelemetry-semconv"],
+      columnLabels: {
+        name: "失真现象",
+        mechanism: "根因机制",
+        decision: "验证与云服务落点",
+        boundary: "不能误判",
+      },
+    },
+  ],
   criticalBoundary:
     "场景解决方案不是把产品图标排成架构图，而是把客户结果、责任边界、可验证指标和可运营控制连接起来；Demo 成功不等于生产可用。",
   cloudHooks: [
@@ -343,6 +451,123 @@ export const multimodalBrief = {
         "定位为素材生产和创意加速能力，采用生成—审核—标识—发布的内容供应链。",
       boundary:
         "生成完成不等于可以发布；人物肖像、品牌、版权和深度合成要求必须单独审查。",
+    },
+  ],
+  deepDiveTitle: "从媒体输入到可核验业务事实",
+  deepDiveLead:
+    "多模态系统真正困难的不是模型能否看见或听见，而是媒体信息在转码、解析、检索和生成过程中是否被完整保留，并能否回到原始区域或时间段复核。",
+  deepDives: [
+    {
+      kind: "sequence",
+      eyebrow: "EVIDENCE-PRESERVING PIPELINE",
+      title: "让非文本内容形成可回跳的证据链",
+      intro:
+        "面向文档、图像、音频和视频建立统一资产身份，再为不同媒体选择不同处理路径，避免在第一步就丢失关键事实。",
+      items: [
+        {
+          name: "登记原始资产",
+          en: "Asset Registration",
+          mechanism:
+            "为对象建立稳定 ID、哈希、版本、来源、权限、保留期和媒体技术信息，派生内容始终指回原资产。",
+          decision:
+            "使用对象存储、元数据目录、KMS 和访问控制承载事实源；上传成功后先完成准入和安全扫描。",
+          boundary:
+            "文件名和公开 URL 不是稳定来源标识。",
+        },
+        {
+          name: "按信息形态路由",
+          en: "Modality-aware Routing",
+          mechanism:
+            "连续文本、扫描文字、表格、图表、自然图像、语音和视频时序需要不同解析与抽样策略。",
+          decision:
+            "用文档智能、OCR、ASR、关键帧和视觉模型组合处理，并保存页码、坐标、时间戳和处理版本。",
+          boundary:
+            "将所有文件统一转成纯文本会丢失布局、视觉关系和声音线索。",
+        },
+        {
+          name: "建立多路表示",
+          en: "Multiple Representations",
+          mechanism:
+            "同一资产可同时保留结构化字段、文字转写、图像区域、Caption 和跨模态向量，以支持不同问题形态。",
+          decision:
+            "搜索和向量服务按任务选择表示并融合结果，先测每一路增量召回再决定是否保留。",
+          boundary:
+            "增加表示会增加索引、同步和一致性成本，不应为技术完整性全部开启。",
+        },
+        {
+          name: "证据定位与生成",
+          en: "Grounding & Generation",
+          mechanism:
+            "模型回答时绑定具体页面区域、表格单元或音视频时间段，并保留转换前后的内容关系。",
+          decision:
+            "生成端使用支持相应模态的模型；高风险事实同时呈现原始证据、转换结果和不确定性。",
+          boundary:
+            "模型对页面的整体理解不能代替字段级、数值级和时间定位验证。",
+        },
+        {
+          name: "反馈回流与重处理",
+          en: "Feedback & Reprocessing",
+          mechanism:
+            "失败样本应能定位到资产、转换器、区域和模型版本，修复后只重跑受影响派生物并完成回归。",
+          decision:
+            "通过事件总线、批处理、版本化索引和 Tracing 形成可重放管线。",
+          boundary:
+            "重新调用最终模型不会修复建库阶段已经丢失的信息。",
+        },
+      ],
+      sourceIds: ["docling-report", "pp-ocr-2020", "colpali-2025", "nist-genai-profile"],
+    },
+    {
+      kind: "diagnostic",
+      eyebrow: "MULTIMODAL FAILURE SLICES",
+      title: "同样是答错，先判断信息在哪一层丢失",
+      intro:
+        "按媒体特有的失败切片建立诊断集，才能判断应调整输入处理、检索表示、模型还是实时链路。",
+      items: [
+        {
+          name: "小字和表格数值经常错误",
+          mechanism:
+            "分辨率、裁剪、OCR、阅读顺序或表格结构恢复丢失了字符和单元格关系。",
+          decision:
+            "抽样比对原图区域与解析结果，比较专业解析、区域放大和页面视觉检索；在云端分别记录解析与模型质量。",
+          boundary:
+            "提升通用 VLM 规模不一定修复错误的输入像素或表格结构。",
+        },
+        {
+          name: "图片相关，但回答说错关系",
+          mechanism:
+            "共享向量空间找到了语义相近图片，却没有证明数量、空间位置、流程箭头或因果关系正确。",
+          decision:
+            "把检索相关性与视觉事实验证分开，针对计数、空间、图表和流程建立独立测试切片。",
+          boundary:
+            "跨模态相似度不是事实正确率。",
+        },
+        {
+          name: "语音首响快，但对话仍然卡顿",
+          mechanism:
+            "端点检测、网络抖动、工具等待、TTS 排队或打断取消未完成造成端到端体验问题。",
+          decision:
+            "用统一 Trace 拆分 VAD、ASR、模型、工具、TTS 和传输时延，并测试打断后的任务取消与状态续接。",
+          boundary:
+            "单个模型首包指标不能代表一轮对话体验。",
+        },
+        {
+          name: "答案正确，却无法给出出处",
+          mechanism:
+            "转写、Caption 或摘要脱离了页码、坐标和时间戳，生成端只能引用派生文本。",
+          decision:
+            "为每个派生单元保存原资产引用和空间/时间定位，使用对象存储版本与元数据目录支持回跳。",
+          boundary:
+            "无法回到原始媒体的正确答案仍不适合作为高风险证据。",
+        },
+      ],
+      sourceIds: ["vit-2021", "clip-2021", "docling-report", "opentelemetry-semconv"],
+      columnLabels: {
+        name: "客户症状",
+        mechanism: "可能丢失层",
+        decision: "诊断与云服务接点",
+        boundary: "重要边界",
+      },
     },
   ],
   criticalBoundary:
@@ -596,6 +821,127 @@ export const mcpBrief = {
         "能在 Registry 中发现，或能被客户端成功连接，都不代表 Server 已通过企业安全审查。",
     },
   ],
+  deepDiveTitle: "把协议调用变成可验证的信任链",
+  deepDiveLead:
+    "企业采用 MCP 的核心工程问题不是能否列出并调用 Tool，而是一次发现、授权和执行是否始终绑定正确主体、正确能力、正确资源与可追溯版本。",
+  deepDives: [
+    {
+      kind: "sequence",
+      eyebrow: "REMOTE MCP TRUST CHAIN",
+      title: "远程 Tool 调用穿过哪些信任边界",
+      intro:
+        "每一段都应由确定性系统验证；模型负责表达意图，但不能替代服务身份、用户授权和资源端校验。",
+      items: [
+        {
+          name: "发现并验证 Server",
+          en: "Discovery & Verification",
+          mechanism:
+            "Host 获得 Server 地址与能力信息，并核验发布者、域名、版本、传输和允许接入的环境。",
+          decision:
+            "使用私有目录、DNS、证书、签名资产和准入工作流；第三方目录只作为发现线索。",
+          boundary:
+            "能解析端点或读取工具描述不等于服务可信。",
+        },
+        {
+          name: "协商协议与能力",
+          en: "Initialize & Negotiate",
+          mechanism:
+            "Client 与 Server 交换协议版本和能力，随后发现当前会话可用的 Tools、Resources 与 Prompts。",
+          decision:
+            "固定兼容范围并测试能力缺失、版本变化、取消和断线；通过网关记录 Server 与 Schema 版本。",
+          boundary:
+            "客户端不能根据上一次连接缓存无限期假设能力不变。",
+        },
+        {
+          name: "建立用户或工作负载授权",
+          en: "Authorization Context",
+          mechanism:
+            "远程调用需要将调用主体、受众、Scope、租户和授权时效绑定到受保护资源。",
+          decision:
+            "接入企业 OAuth/OIDC、工作负载身份和短期凭据；由 Host 呈现同意，由资源服务校验访问。",
+          boundary:
+            "模型声称代表用户，或 Host 能连接 Server，都不构成资源授权。",
+        },
+        {
+          name: "策略检查后执行",
+          en: "Policy-bound Execution",
+          mechanism:
+            "模型提出 Tool 和参数，应用根据风险、身份、资源和业务规则执行 Allowlist、Schema 校验、审批和限流。",
+          decision:
+            "API Gateway、策略引擎、WAF 和业务 API 共同控制动作；高影响请求先生成预览再确认。",
+          boundary:
+            "Tool Schema 约束格式，不证明参数有权执行或业务语义正确。",
+        },
+        {
+          name: "验证结果并关联审计",
+          en: "Result Validation & Audit",
+          mechanism:
+            "工具结果可能包含错误、敏感数据或间接提示注入，必须记录执行终态、过滤后再进入模型上下文。",
+          decision:
+            "关联 Trace、工具版本、调用身份、策略决策和下游资源日志，并将异常发送到 SIEM。",
+          boundary:
+            "HTTP 成功和结构合法都不等于业务动作成功或返回内容可信。",
+        },
+      ],
+      sourceIds: ["mcp-architecture", "mcp-authorization", "mcp-security", "nist-zero-trust"],
+    },
+    {
+      kind: "matrix",
+      eyebrow: "DEPLOYMENT TRUST MODES",
+      title: "同一个 MCP Server，在不同部署形态下不是同一种风险",
+      intro:
+        "部署位置、用户数量、工具影响和运营主体共同决定网关、安全与审计投入，不能只按 stdio 或 HTTP 二分。",
+      items: [
+        {
+          name: "本机开发工具",
+          en: "Local Developer Tool",
+          mechanism:
+            "Host 启动受控进程，通过 stdio 交换消息，主要风险来自本地文件、命令执行和依赖供应链。",
+          decision:
+            "使用沙箱、目录白名单、最小文件权限、进程隔离和锁定依赖；适合单用户开发能力。",
+          boundary:
+            "本机运行不会自动限制进程可以读取或执行什么。",
+        },
+        {
+          name: "企业内部共享服务",
+          en: "Internal Shared Service",
+          mechanism:
+            "多个用户和应用通过远程端点复用工具，身份、租户、配额和版本成为共享控制面。",
+          decision:
+            "通过私网、API Gateway、企业身份、细粒度 Scope、限流和集中审计运行。",
+          boundary:
+            "内网位置不能替代逐请求授权。",
+        },
+        {
+          name: "第三方 SaaS Server",
+          en: "External SaaS Server",
+          mechanism:
+            "服务由外部组织运营，工具描述、数据处理、版本和可用性不在客户直接控制范围。",
+          decision:
+            "完成供应商评估、数据边界、版本固定、出站网关和最小 Tool Allowlist，再逐项批准。",
+          boundary:
+            "协议兼容不等于供应商满足数据、地域和事件响应要求。",
+        },
+        {
+          name: "高影响业务工具",
+          en: "High-impact Tool",
+          mechanism:
+            "Tool 可付款、删除、发布、修改生产或访问受监管数据，错误会形成真实且可能不可逆的状态。",
+          decision:
+            "使用强身份、短期授权、参数约束、双人审批、幂等与补偿，并将执行证据写入不可变审计。",
+          boundary:
+            "高影响能力不应因采用 MCP 而降低原业务系统的授权和审批标准。",
+        },
+      ],
+      sourceIds: ["mcp-authorization", "mcp-security", "owasp-prompt-injection"],
+      columnLabels: {
+        name: "部署形态",
+        mechanism: "主要信任边界",
+        decision: "云服务与治理路线",
+        boundary: "不能忽略",
+      },
+    },
+  ],
   criticalBoundary:
     "MCP 标准化的是发现与调用，不会自动授予信任、权限或安全保证；协议可互操作不等于服务可安全使用。",
   cloudHooks: [
@@ -827,6 +1173,122 @@ export const a2aBrief = {
         "通过受控对象存储传递短期访问地址、校验值和元数据，独立执行访问与保留策略。",
       boundary:
         "A2A 消息不是数据治理绕行通道，底层存储权限和地域要求仍然有效。",
+    },
+  ],
+  deepDiveTitle: "把跨 Agent 协作设计成可恢复的分布式任务",
+  deepDiveLead:
+    "A2A 的售前价值不在于让更多 Agent 对话，而在于跨团队、跨系统和跨信任域的委派能够持久化、恢复、验收并明确责任。",
+  deepDives: [
+    {
+      kind: "sequence",
+      eyebrow: "TASK LIFECYCLE",
+      title: "长任务如何跨断线、等待与失败继续推进",
+      intro:
+        "Task 应成为服务端事实源，网络连接只是结果交付通道；每次状态变化都要有明确触发者、授权和恢复语义。",
+      items: [
+        {
+          name: "委派并接纳任务",
+          en: "Submit & Accept",
+          mechanism:
+            "调用方依据已验证的 Agent Card 提交目标、输入、约束和关联 ID，提供方创建稳定 Task ID。",
+          decision:
+            "在 API Gateway 验证主体、Skill Scope 与租户，并将任务契约写入数据库或持久任务存储。",
+          boundary:
+            "接收请求不等于接受无限范围目标，服务端必须校验契约。",
+        },
+        {
+          name: "执行并发布进度",
+          en: "Work & Progress",
+          mechanism:
+            "Agent 在内部执行，外部只看到标准状态、消息和必要进度；流式输出不替代任务持久状态。",
+          decision:
+            "使用工作流、队列和 Trace 记录重试、内部超时和中间产物，并限制外部可见信息。",
+          boundary:
+            "内部思考过程不是跨组织审计所必需的证据。",
+        },
+        {
+          name: "等待输入或授权",
+          en: "Input / Auth Required",
+          mechanism:
+            "任务可能因缺少业务信息、用户确认或新授权而暂停，而不是继续猜测或直接失败。",
+          decision:
+            "将等待原因、允许输入和超时策略结构化，通过审批工作流或身份服务恢复同一 Task。",
+          boundary:
+            "补充信息不能被用来静默扩大原始授权范围。",
+        },
+        {
+          name: "进入可判定终态",
+          en: "Terminal State",
+          mechanism:
+            "完成、失败、取消和拒绝应具有不同语义，并记录最终错误、补偿状态和是否可重试。",
+          decision:
+            "业务系统根据终态驱动后续流程；重复交付使用幂等键，失败重试遵守预算和策略。",
+          boundary:
+            "网络超时不能直接被解释为任务失败，也不能盲目重复执行高影响动作。",
+        },
+        {
+          name: "交付并验收 Artifact",
+          en: "Deliver & Verify Artifact",
+          mechanism:
+            "产物与 Task、版本、媒体类型、校验值和访问策略关联，由调用方按业务契约验证。",
+          decision:
+            "大文件使用对象存储短期地址、KMS 和完整性校验；验收结果回写任务与审计链。",
+          boundary:
+            "Task completed 只表示提供方结束执行，不自动证明产物满足调用方业务标准。",
+        },
+      ],
+      sourceIds: ["a2a-concepts", "a2a-specification", "opentelemetry-semconv"],
+    },
+    {
+      kind: "scenario",
+      eyebrow: "COLLABORATION TOPOLOGIES",
+      title: "什么时候用本地编排，什么时候建立 A2A 边界",
+      intro:
+        "是否采用协议应由所有权、部署、信任和生命周期边界决定，而不是由系统里有几个 Agent 决定。",
+      items: [
+        {
+          name: "同一应用内的专业节点",
+          en: "One Runtime",
+          mechanism:
+            "节点共享代码、状态存储、发布周期和安全边界，协作失败由同一团队处理。",
+          decision:
+            "继续使用本地工作流或 Agent 框架，统一部署在容器或托管运行时。",
+          boundary:
+            "为内部节点强行增加网络协议会扩大延迟、故障和测试面。",
+        },
+        {
+          name: "跨部门专业服务",
+          en: "Cross-team Service",
+          mechanism:
+            "提供方独立升级并对专业能力负责，调用方只应依赖稳定任务契约和产物。",
+          decision:
+            "用私有 Agent 目录、A2A Task、企业身份和跨服务 Trace 建立边界，并约定 SLO 与升级兼容。",
+          boundary:
+            "共享企业身份不代表部门间数据可以无条件流动。",
+        },
+        {
+          name: "跨组织或跨云委派",
+          en: "Cross-organization",
+          mechanism:
+            "双方拥有不同身份、数据、网络、审计和事件响应体系，产物可能跨地域交付。",
+          decision:
+            "使用网关、OAuth2/mTLS、数据分类、对象存储交换区和合同化任务边界；限制 Skill 与 Artifact 范围。",
+          boundary:
+            "可互操作不等于双方已经建立法律、数据和运营信任。",
+        },
+        {
+          name: "人机共同完成的长任务",
+          en: "Human-in-the-loop",
+          mechanism:
+            "任务在自动执行与人工补充、批准、修订之间切换，处理时间可能跨越会话和工作日。",
+          decision:
+            "使用持久工作流、审批队列、通知、任务超时和审计；人工决定应成为结构化状态变化。",
+          boundary:
+            "人工介入不是异常兜底，而是部分高风险任务的正常协议路径。",
+        },
+      ],
+      sourceIds: ["a2a-concepts", "a2a-specification", "anthropic-effective-agents"],
+      maxColumns: 2,
     },
   ],
   criticalBoundary:
@@ -1064,6 +1526,133 @@ export const evaluationBrief = {
         "保留冻结回归集，同时采样线上 Trace、人工反馈和坏案例，定期扩充评估集。",
       boundary:
         "线上点赞率不能单独解释任务质量；静态离线集也无法覆盖生产漂移。",
+    },
+  ],
+  deepDiveTitle: "把分数变成可诊断、可阻断、可回滚的证据",
+  deepDiveLead:
+    "评估系统不仅计算结果，还要识别分数为什么变化、变化影响哪些用户和风险切片，并形成足以支持发布决策的证据包。",
+  deepDives: [
+    {
+      kind: "diagnostic",
+      eyebrow: "SCORE CHANGE DIAGNOSTICS",
+      title: "总分变化时，先判断系统变了还是量尺变了",
+      intro:
+        "模型、数据、流量和评分器都会漂移；只看聚合分数容易把评估问题误当成模型问题。",
+      items: [
+        {
+          name: "总分上升，关键任务反而退化",
+          mechanism:
+            "容易样本占比增加或平均分掩盖高风险切片，关键场景退化没有触发硬门。",
+          decision:
+            "按任务、风险、语言、租户和数据源分层报告，并为零容忍错误设置独立阻断规则。",
+          boundary:
+            "总体平均分不能抵消越权、错误执行或关键事实错误。",
+        },
+        {
+          name: "同一输出，Judge 分数变化",
+          mechanism:
+            "Judge 模型、Rubric、Prompt、采样配置或服务版本变化导致量尺漂移。",
+          decision:
+            "固定 Judge 版本与配置，使用人工标注校准集监控一致性，并保存评分理由和原始输入。",
+          boundary:
+            "更强或更新的 Judge 不自动与业务专家更一致。",
+        },
+        {
+          name: "离线稳定，线上投诉增加",
+          mechanism:
+            "真实问题分布、知识新鲜度、工具状态、权限或负载已变化，冻结集没有覆盖新失败。",
+          decision:
+            "从脱敏 Trace 按失败和流量切片采样，将确认后的新案例加入回归集并补线上告警。",
+          boundary:
+            "点赞、投诉和人工接管具有选择偏差，不能单独作为 ground truth。",
+        },
+        {
+          name: "结果相同，时延与成本恶化",
+          mechanism:
+            "路由、上下文、检索宽度、工具重试或模型服务改变，质量分没有覆盖资源效率。",
+          decision:
+            "关联 Trace、Token、工具次数、P95 和每个成功任务成本，并设置质量与效率联合门。",
+          boundary:
+            "低平均成本不能掩盖峰值超时和失败重试。",
+        },
+        {
+          name: "测试集持续变好，真实泛化不变",
+          mechanism:
+            "团队反复针对已知评估集优化，产生测试集过拟合或污染。",
+          decision:
+            "保留独立留出集、盲测和轮换样本，并记录每次修复针对的案例与预期泛化范围。",
+          boundary:
+            "评估集是控制资产，不应同时充当无限公开的开发提示。",
+        },
+      ],
+      sourceIds: ["nist-genai-profile", "ragas", "opentelemetry-semconv"],
+      columnLabels: {
+        name: "异常现象",
+        mechanism: "可能原因",
+        decision: "验证与处理",
+        boundary: "不能误读",
+      },
+    },
+    {
+      kind: "checklist",
+      eyebrow: "RELEASE EVIDENCE PACK",
+      title: "一次 AI 变更进入生产前应留下什么证据",
+      intro:
+        "证据包应让未参与开发的人也能判断改了什么、影响谁、硬门是否通过，以及出现问题怎样恢复。",
+      items: [
+        {
+          name: "变更与版本元组",
+          en: "Change Manifest",
+          mechanism:
+            "记录模型、Prompt、数据、检索、工具、策略、运行时和依赖的前后版本及变更原因。",
+          decision:
+            "关联模型注册表、代码提交、对象版本和部署记录，保证评估结果可重放。",
+          boundary:
+            "只记录模型名称无法还原完整应用行为。",
+        },
+        {
+          name: "切片化质量报告",
+          en: "Slice Report",
+          mechanism:
+            "同时展示总体、关键任务、边界、安全和历史失败样本，并提供基线差异和置信信息。",
+          decision:
+            "在评估平台保存逐样本结果和错误分类，硬风险单独列出，不隐藏在汇总图中。",
+          boundary:
+            "单一总分和几个精选案例不构成发布证据。",
+        },
+        {
+          name: "工程与经济性结果",
+          en: "Non-functional Evidence",
+          mechanism:
+            "在代表性负载下测量 P95、错误率、工具次数、Token、峰值行为和每个成功任务成本。",
+          decision:
+            "将 Tracing、负载测试、FinOps 与质量运行关联，确认优化没有把问题转移到其他阶段。",
+          boundary:
+            "开发环境平均值不能代替生产容量结论。",
+        },
+        {
+          name: "风险例外与批准",
+          en: "Risk Exceptions",
+          mechanism:
+            "列出未通过项、剩余风险、补偿控制、有效期和批准责任人，避免口头豁免。",
+          decision:
+            "使用策略引擎和审批工作流保存决定；零容忍安全门不得由平均收益覆盖。",
+          boundary:
+            "批准例外不等于风险消失，应有到期与复核。",
+        },
+        {
+          name: "灰度、监控与回滚",
+          en: "Canary & Recovery",
+          mechanism:
+            "定义放量范围、线上观察指标、自动停止条件、旧版本资产和事件责任人。",
+          decision:
+            "通过 CI/CD、Feature Flag、告警和回滚运行手册连接评估与生产控制面。",
+          boundary:
+            "离线通过不能证明真实流量下无需监控或回滚。",
+        },
+      ],
+      sourceIds: ["nist-genai-profile", "opentelemetry-semconv"],
+      maxColumns: 3,
     },
   ],
   criticalBoundary:
@@ -1304,6 +1893,132 @@ export const securityBrief = {
         "按四道控制门组合内容检测、IAM、DLP、策略引擎、沙箱、审计和人工审批，并持续红队测试。",
       boundary:
         "Guardrail 可以降低风险，不能消除模型不确定性或替代传统安全控制。",
+    },
+  ],
+  deepDiveTitle: "从不可信内容到真实动作的安全控制链",
+  deepDiveLead:
+    "AI 安全应围绕数据怎样进入上下文、模型怎样提出动作、应用怎样授权执行以及事件怎样被还原设计，而不是把所有风险交给一个内容过滤器。",
+  deepDives: [
+    {
+      kind: "sequence",
+      eyebrow: "UNTRUSTED CONTENT TO ACTION",
+      title: "让模型看到内容，但不让内容自动获得权限",
+      intro:
+        "外部文本、文档、图片和工具结果都可能影响模型；关键是让影响停留在受控建议层，直到确定性策略明确允许执行。",
+      items: [
+        {
+          name: "识别来源与信任标签",
+          en: "Source Classification",
+          mechanism:
+            "用户输入、企业知识、互联网内容、工具结果和系统指令来自不同主体，具有不同完整性和授权等级。",
+          decision:
+            "在接入层记录来源、租户、版本和完整性，执行准入扫描、DLP 与数据分类。",
+          boundary:
+            "已认证用户提交的内容也可能恶意或被其复制自不可信来源。",
+        },
+        {
+          name: "隔离指令与数据",
+          en: "Context Isolation",
+          mechanism:
+            "应用以结构化边界标识系统规则、用户目标和外部证据，并限制不可信内容进入高权限提示区域。",
+          decision:
+            "使用最小上下文、来源标签、检索 ACL 和 Prompt 防护；对文档与工具返回保持相同不信任。",
+          boundary:
+            "结构化分隔和注入检测只能降低混淆，不能保证模型永不服从恶意内容。",
+        },
+        {
+          name: "模型只提出动作意图",
+          en: "Proposed Action",
+          mechanism:
+            "模型输出工具名与参数建议，不直接持有长期凭据，也不直接连接高价值资源。",
+          decision:
+            "通过 AI Gateway 或应用编排层校验 Schema、参数来源、资源范围和风险等级。",
+          boundary:
+            "结构合法的工具参数仍可能越权、危险或违背业务规则。",
+        },
+        {
+          name: "确定性授权与审批",
+          en: "Policy Enforcement",
+          mechanism:
+            "策略引擎根据真实用户或工作负载身份、租户、资源、动作和上下文决定允许、确认或拒绝。",
+          decision:
+            "使用 IAM、短期凭据、PAM、策略引擎和审批工作流；不可逆动作先预览并获得明确确认。",
+          boundary:
+            "模型判断用户有权执行不能替代资源端授权。",
+        },
+        {
+          name: "执行、验证与持续监控",
+          en: "Execute & Observe",
+          mechanism:
+            "受控执行器调用下游系统，验证业务终态，并将身份、策略、参数、结果和补偿状态写入审计。",
+          decision:
+            "通过沙箱、API Gateway、Tracing、SIEM 和告警关联完整链路；异常时撤销凭据、隔离工具并恢复状态。",
+          boundary:
+            "工具返回成功不等于业务目标正确完成，返回内容本身也仍是不可信输入。",
+        },
+      ],
+      sourceIds: ["owasp-prompt-injection", "nist-zero-trust", "mcp-security", "nist-genai-profile"],
+    },
+    {
+      kind: "diagnostic",
+      eyebrow: "AI INCIDENT TRIAGE",
+      title: "出现异常回答或动作时，怎样确定影响范围",
+      intro:
+        "AI 事件需要同时保留传统安全证据与模型上下文证据，先阻断继续影响，再判断是数据、权限、工具还是供应链失效。",
+      items: [
+        {
+          name: "用户看到无权限知识",
+          mechanism:
+            "检索 ACL、租户映射、缓存键、日志脱敏或删除传播失败，导致敏感内容进入候选或响应。",
+          decision:
+            "立即封禁相关索引与缓存路径，核对身份、查询过滤、命中文档和 ACL 版本，并执行全租户负向回归。",
+          boundary:
+            "只删除最终回答不能证明其他副本、日志和缓存已清除。",
+        },
+        {
+          name: "Agent 执行了意外动作",
+          mechanism:
+            "提示注入、工具选择错误、参数未校验、凭据过宽或审批绕过把模型错误放大为系统状态变化。",
+          decision:
+            "暂停高风险 Tool、撤销短期凭据、验证业务终态并执行补偿；回放模型输入、策略决定和资源审计。",
+          boundary:
+            "只修改 Prompt 无法修复过宽权限和缺失的资源端授权。",
+        },
+        {
+          name: "知识库开始稳定输出错误内容",
+          mechanism:
+            "可信写入路径被投毒、来源版本被替换、恶意文档获得高排名，或 Embedding/索引更新改变检索分布。",
+          decision:
+            "冻结写入、隔离来源批次、核对哈希和血缘，重建干净索引并用历史失败与投毒样本回归。",
+          boundary:
+            "向量相似度和 Reranker 分数不能证明来源真实。",
+        },
+        {
+          name: "外部模型或插件行为突然变化",
+          mechanism:
+            "模型版本、Server 描述、依赖、权重或供应商策略发生未受控变化，绕过原评估与批准范围。",
+          decision:
+            "切换到批准版本，核验注册表、哈希、SBOM、发布记录和供应商通知，再重新完成安全与任务回归。",
+          boundary:
+            "服务仍可调用不代表其行为和数据处理条件仍与批准时一致。",
+        },
+        {
+          name: "Guardrail 命中率正常但风险仍发生",
+          mechanism:
+            "检测只覆盖已知内容模式，真正失效点可能在授权、工具、编码、多模态输入或人工流程。",
+          decision:
+            "按攻击路径复核输入、行动、输出和监控各门，增加自适应红队与确定性策略，而不是只调检测阈值。",
+          boundary:
+            "没有告警不能证明没有风险；遥测缺失本身就是控制缺口。",
+        },
+      ],
+      sourceIds: ["owasp-prompt-injection", "owasp-vector-weaknesses", "mcp-security", "nist-genai-profile"],
+      columnLabels: {
+        name: "事件症状",
+        mechanism: "可能失效点",
+        decision: "遏制、取证与恢复",
+        boundary: "避免误判",
+      },
     },
   ],
   criticalBoundary:

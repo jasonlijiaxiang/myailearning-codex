@@ -35,7 +35,7 @@ export default function Home() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V1.0</p>
+            <p className="eyebrow">READING EDITION · V1.1</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
               从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径；
@@ -148,7 +148,7 @@ export default function Home() {
 
       <footer>
         <span>Cloud × AI Presales Fieldbook</span>
-        <span>V1.0 · 19 模块阅读版</span>
+        <span>V1.1 · {moduleCount} 模块阅读版</span>
       </footer>
     </main>
   );

@@ -4,6 +4,67 @@
  * 来源标题、链接、证据类别和核验日期统一维护在
  * app/reference-content.mjs；此文件仅保存稳定 sourceId。
  */
+export const promptDeepDives = [
+  {
+    kind: "matrix",
+    eyebrow: "INSTRUCTION AUTHORITY",
+    title: "先解决指令冲突，再优化措辞",
+    intro: "生产输入同时包含平台规则、应用目标、用户请求、检索内容和工具结果。必须记录来源与信任级别，不能把所有自然语言都当成同等指令。",
+    columnLabels: { name: "输入来源", mechanism: "处理机制", decision: "工程判断", boundary: "不能替代" },
+    items: [
+      { name: "平台与应用指令", en: "System / Developer", mechanism: "承载稳定目标、角色与输出契约；按模型 API 的指令层级处理冲突并版本化。", decision: "规则是建议模型遵循，还是必须由代码硬执行？", boundary: "指令层级是模型行为机制，不是 IAM 或访问控制。" },
+      { name: "用户请求", en: "User Request", mechanism: "表达本次意图和输入；与高层目标冲突时限定范围，并对敏感动作要求确认。", decision: "用户是否有权提出该动作，参数是否完整且经过校验？", boundary: "自然语言请求不能自动扩大资源权限。" },
+      { name: "外部内容", en: "Untrusted Content", mechanism: "网页、邮件、PDF、RAG 证据和工具返回标注为数据，只提供事实，不取得指令权限。", decision: "上下文组装器能否保留来源、ACL、时效和不可信标记？", boundary: "分隔符有助理解，但不能单独阻止提示注入。" },
+      { name: "模型历史输出", en: "Assistant History", mechanism: "只作为会话历史或中间产物，关键事实和动作仍须回到权威系统验证。", decision: "哪些历史可压缩，哪些必须保留原始证据和操作编号？", boundary: "模型之前说过的话不是新的系统事实。" },
+    ],
+    sourceIds: ["openai-model-spec-command", "google-system-instructions", "owasp-prompt-injection"],
+  },
+  {
+    kind: "sequence",
+    eyebrow: "CONTEXT ASSEMBLY PLAN",
+    title: "Context 不是一段拼接字符串，而是一份可审计装配计划",
+    intro: "上下文工程应在每次调用前决定放什么、为何放、占多少 token、何时淘汰，并保留能够复盘的 Manifest。",
+    items: [
+      { name: "登记上下文块", en: "Register Blocks", mechanism: "每块携带 block_id、来源、ACL、有效期、信任级别、优先级和 token 估算。", decision: "能否解释某段内容为何进入本次模型调用？", boundary: "只有最终 Prompt 文本会丢失来源、权限和生命周期。" },
+      { name: "分配预算", en: "Allocate Budget", mechanism: "先保护任务、硬约束和输出 Schema，再给证据、历史、示例与工具说明分配独立预算。", decision: "哪些内容可压缩，哪些被截断会改变业务含义？", boundary: "上下文窗口上限不等于所有位置都能被稳定利用。" },
+      { name: "按策略排序", en: "Order by Policy", mechanism: "稳定指令与复用内容保持一致顺序；动态证据按主张和重要性组织，避免关键限制长期落在中间。", decision: "排序是否同时考虑缓存、位置偏差和引用完整性？", boundary: "为了缓存而把过期或越权内容放入稳定前缀是错误优化。" },
+      { name: "淘汰与压缩", en: "Evict / Compress", mechanism: "按显式规则去重、摘要或删除低优先级块，并保护否定词、范围、版本和原文坐标。", decision: "压缩后能否证明关键主张仍有直接证据？", boundary: "摘要器会产生新文本，不能无条件当作原始证据。" },
+      { name: "保存 Context Manifest", en: "Persist Manifest", mechanism: "记录块顺序、淘汰原因、token、模型、Prompt 与工具版本，供评估和事故复盘。", decision: "线上失败能否还原模型当时实际看到了什么？", boundary: "Manifest 可能含敏感元数据，日志同样需要最小化和保留策略。" },
+    ],
+    sourceIds: ["lost-middle", "openai-prompt-caching", "nist-genai-profile"],
+  },
+  {
+    kind: "matrix",
+    eyebrow: "OUTPUT & TOOL CONTRACT",
+    title: "结构化输出之后，还有业务有效性和动作安全",
+    intro: "Schema 只解决语法和字段形状。真正可交付的调用还要通过业务规则、权限、工具执行和事务后置条件。",
+    columnLabels: { name: "验证层", mechanism: "验证什么", decision: "失败如何处理", boundary: "典型误判" },
+    items: [
+      { name: "语法有效", en: "Syntactic Validity", mechanism: "输出可以被目标解析器读取，JSON、XML 或文本格式完整。", decision: "解析失败时重试、修复还是返回明确错误？", boundary: "能解析不代表字段齐全或枚举合法。" },
+      { name: "Schema 有效", en: "Schema Validity", mechanism: "字段、类型、必填项和枚举符合受支持的结构化输出约束。", decision: "拒答、截断和不支持的 Schema 特性如何单独处理？", boundary: "Schema 正确不代表日期、金额或引用真实。" },
+      { name: "业务有效", en: "Business Validity", mechanism: "应用检查金额、库存、权限、状态转换、数据新鲜度和跨字段规则。", decision: "哪些不变量必须由代码或规则引擎执行？", boundary: "把业务规则全部写进 Prompt 无法提供确定性保证。" },
+      { name: "工具契约有效", en: "Tool Contract", mechanism: "工具描述、输入 Schema、风险、幂等、错误类别和后置验证共同决定是否执行。", decision: "模型选中工具后，应用是否重新鉴权并验证参数？", boundary: "更多工具会增加上下文和选择歧义；动态发现也要限制范围。" },
+      { name: "事务可接受", en: "Transaction Accepted", mechanism: "真实系统返回 operation ID，并回读权威状态确认动作完成或进入可恢复状态。", decision: "结果未知或部分成功时是否停止、查询、补偿或交人工？", boundary: "模型生成“成功”不能代替外部系统事实。" },
+    ],
+    sourceIds: ["openai-structured-outputs", "anthropic-tool-definitions", "openai-function-calling", "openapi-3-1-1"],
+  },
+  {
+    kind: "checklist",
+    eyebrow: "RELEASE & SECURITY",
+    title: "把提示发布包和 Source–Sink 风险一起验收",
+    intro: "提示上线不是替换一段文字。模型、上下文组装、工具、Schema、安全策略和评估集共同决定行为，也共同构成回滚单位。",
+    maxColumns: 3,
+    items: [
+      { name: "冻结发布 Bundle", en: "Release Bundle", mechanism: "记录 prompt_version、model_snapshot、context_assembler、retriever、tool_schema、output_schema 与 safety_policy。", decision: "一次线上回答能否关联到完整配置，而不是只有 Prompt ID？", boundary: "只回滚模板可能无法消除由模型或工具版本引入的回归。" },
+      { name: "做因果对比", en: "Causal Comparison", mechanism: "一次主要改变一个变量；在冻结任务集上做切片、成对比较、人工校准和失败归因。", decision: "改善来自 Prompt、模型、上下文还是工具变化？", boundary: "LLM Judge 有位置和冗长偏差，不能成为高风险唯一门禁。" },
+      { name: "持续评估与灰度", en: "Continuous Evaluation", mechanism: "离线回归后走影子、Canary、在线监测和快速回滚，线上失败经确认后进入评估集。", decision: "门槛是否覆盖真实分布、边界、对抗和不可接受错误？", boundary: "文档中的示例阈值不是客户通用上线标准。" },
+      { name: "标记不可信 Source", en: "Untrusted Sources", mechanism: "识别用户、网页、邮件、PDF、RAG、图像和工具结果等可被攻击者影响的入口。", decision: "每种 Source 能到达哪些模型、工作流和工具？", boundary: "仅检测恶意文本无法可靠覆盖复杂社会工程攻击。" },
+      { name: "限制危险 Sink", en: "Dangerous Sinks", mechanism: "对外发、支付、数据写入、链接访问、代码执行和敏感信息传输执行最小权限、参数绑定与确认。", decision: "即使模型被误导，最大可造成的影响是否仍受确定性控制？", boundary: "系统提示更强不能替代 Sink 侧的硬限制。" },
+    ],
+    sourceIds: ["openai-eval-best-practices", "openai-source-sink-injection", "nist-zero-trust", "openai-prompting-guide"],
+  },
+];
+
 export const promptEvidenceCards = [
   {
     metric: "4",
@@ -47,6 +108,20 @@ export const promptEvidenceCards = [
     finding: "OWASP 安全指南强调：提示注入无法只靠模型内部约束彻底消除，需要结合最小权限、输入输出过滤与高风险动作审批。",
     boundary: "提示加固可降低风险，但不能替代身份鉴别、最小权限、输出验证、隔离和高风险动作审批。",
     sourceId: "owasp-prompt-injection",
+  },
+  {
+    metric: "Source + Sink",
+    title: "提示注入要控制真实影响",
+    finding: "OpenAI 的安全工程文章把攻击建模为不可信输入 Source 与危险能力 Sink 的组合，并强调在检测失败时仍限制影响。",
+    boundary: "这是安全分析方法，不是单一产品功能；企业仍需按自身数据与动作建立权限和确认。",
+    sourceId: "openai-source-sink-injection",
+  },
+  {
+    metric: "持续评估",
+    title: "发布不是一次性打分",
+    finding: "官方评估指南建议任务特定评估、生产分布样本、每次变化持续运行，并用人工反馈校准自动评分。",
+    boundary: "指南中的示例任务与阈值不是跨业务标准；上线门槛必须按客户错误成本定义。",
+    sourceId: "openai-eval-best-practices",
   },
 ];
 
@@ -216,6 +291,54 @@ export const promptQa = [
     evidence: [
       { sourceId: "owasp-prompt-injection", supports: "直接支持间接提示注入可来自外部内容，以及最小权限和人工审批等分层缓解。" },
       { sourceId: "nist-zero-trust", supports: "支持访问资源前持续验证主体和权限，不因内容或网络位置默认信任。" },
+    ],
+  },
+  {
+    q: "系统、用户、检索内容和工具结果互相冲突时，模型应该听谁的？",
+    a: "先按所选模型 API 的指令层级处理平台、应用与用户指令；网页、文档、RAG 和工具结果默认是数据而不是新指令。必须执行的授权和业务不变量仍放在模型外。",
+    depth: "上下文块应记录来源、信任级别、ACL、时效与用途。冲突时保留原始输入和适用指令，拒绝让低信任内容覆盖高层任务边界；但不能把某家模型的角色名称当成跨厂商协议。更不能因为系统提示优先级高，就认为模型获得了 IAM 或事务权限。",
+    ask: "追问客户：哪些规则是模型行为指导，哪些必须由网关、IAM、代码或规则引擎硬执行？",
+    tag: "指令治理",
+    basis: "官方模型行为规范 + 跨平台边界",
+    evidence: [
+      { sourceId: "openai-model-spec-command", supports: "支持不同指令来源具有权限层级，外部不可信内容默认不取得指令权限。" },
+      { sourceId: "google-system-instructions", supports: "支持系统指令配置模型行为，同时说明其不能完全防止越狱或泄漏。" },
+    ],
+  },
+  {
+    q: "Structured Outputs 已经保证 JSON Schema，为什么还需要应用校验？",
+    a: "Schema 只保证受支持范围内的字段形状，不保证字段值真实、用户有权执行、业务状态允许或外部交易已经成功。",
+    depth: "至少按四层验收：语法可解析、Schema 有效、业务规则有效、事务后置条件成立。金额、库存、日期、跨字段约束、权限和状态转换由应用或规则引擎校验；拒答、截断、不支持特性和结果未知也要有单独错误路径。",
+    ask: "追问客户：下游真正依赖哪些业务不变量？字段值错误或事务部分成功时如何停止与恢复？",
+    tag: "输出契约",
+    basis: "官方结构化输出 + 应用责任边界",
+    evidence: [
+      { sourceId: "openai-structured-outputs", supports: "支持用 JSON Schema 约束输出结构，并说明拒答、截断与 Schema 支持边界。" },
+      { sourceId: "openapi-3-1-1", supports: "支持描述 API 数据结构，但不替代授权和业务后置条件。" },
+    ],
+  },
+  {
+    q: "工具越多，Agent 的能力是不是越强？",
+    a: "不一定。每个工具的名称、描述和 Schema 都占用上下文并增加选择歧义；应只暴露当前任务所需的最小集合，必要时再做受控动态发现。",
+    depth: "工具目录要有清晰、互斥的职责，描述何时使用、何时不要使用，并提供风险、幂等、错误和后置条件。评估工具选择、参数正确率、无效调用和新增 token / P95；如果多个工具高度重叠，应合并、分层路由或按权限缩小可见范围。",
+    ask: "追问客户：哪些工具职责重叠？模型一次可见多少定义？动态加载由任务、身份还是租户策略决定？",
+    tag: "工具上下文",
+    basis: "官方工具定义 + 工程评估",
+    evidence: [
+      { sourceId: "anthropic-tool-definitions", supports: "支持工具名称、描述与输入 Schema 进入模型上下文并影响工具选择。" },
+      { sourceId: "openai-function-calling", supports: "支持应用提供工具集合、模型提出调用而应用负责执行的控制边界。" },
+    ],
+  },
+  {
+    q: "如何证明一次 Prompt 改动真的带来提升，而不是模型或上下文碰巧变化？",
+    a: "把 Prompt、模型快照、上下文组装器、检索器、工具 Schema、输出 Schema、安全策略和评估集冻结为发布 Bundle；一次主要改变一个变量并做切片对比。",
+    depth: "先在代表性任务、边界与对抗集做离线回归，再走影子和 Canary。自动评分使用明确 rubric，并与人工标签校准；保存失败样本和完整 Bundle 版本，才能把退化归因到 Prompt、模型、Context 或工具。LLM Judge 的位置和冗长偏差也应进入校准。",
+    ask: "追问客户：当前能否还原每次回答的完整调用配置？谁维护人工金标和回滚触发器？",
+    tag: "发布治理",
+    basis: "官方持续评估 + 版本工程",
+    evidence: [
+      { sourceId: "openai-eval-best-practices", supports: "支持任务特定、持续评估、生产样本与人工校准，并警告主观观感评估。" },
+      { sourceId: "openai-prompting-guide", supports: "支持提示版本化并在发布时运行代表性评估。" },
     ],
   },
 ];

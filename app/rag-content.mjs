@@ -4,6 +4,66 @@
  * 来源标题、链接、证据类型和核验日期统一维护在
  * app/reference-content.mjs；此文件仅保存对应的 sourceId。
  */
+export const ragDeepDives = [
+  {
+    kind: "sequence",
+    eyebrow: "QUERY PLANNING",
+    title: "先生成查询计划，再决定是否以及怎样检索",
+    intro: "复杂检索不是把用户原话直接向量化。查询计划要保留原问题、提取硬约束、选择知识源，并只在能带来增量召回时增加改写或分解。",
+    items: [
+      { name: "保留原始问题", en: "Preserve Original Query", mechanism: "把用户原话、身份、会话与时间一起保存，避免改写后无法还原型号、否定、日期和限定词。", decision: "所有改写都应与原问题并存，并能在 Trace 中比较贡献。", boundary: "模型生成的改写不是用户的新授权，也不能覆盖原始业务条件。" },
+      { name: "识别问题与风险", en: "Classify Intent & Risk", mechanism: "判断是精确查找、语义解释、关系归纳、结构化查询还是无需检索，同时标注答案风险。", decision: "精确编号优先关键词或结构化查询；复杂多跳问题才考虑规划型检索。", boundary: "问题分类错误会把请求送入不合适的数据源。" },
+      { name: "提取硬过滤条件", en: "Extract Hard Filters", mechanism: "将租户、地区、产品版本、有效日期、文档类型和访问身份转成确定性过滤条件。", decision: "过滤条件由应用校验，不能只藏在自然语言 Prompt 中。", boundary: "过滤过严会漏召回，过滤过松会越权或混入错误版本。" },
+      { name: "选择检索路线", en: "Route Retrieval", mechanism: "在关键词、向量、SQL、图谱、API 或不检索之间路由，并为每路设置预算和停止条件。", decision: "先建立单路基线，再用真实失败样本证明组合价值。", boundary: "更多检索器会增加时延、成本和故障路径，不等于更准确。" },
+      { name: "按需改写或分解", en: "Rewrite or Decompose", mechanism: "对多意图问题做子查询，对语义缺口尝试查询扩展或 HyDE，并记录每个子查询的增量命中。", decision: "只对明确复杂问题启用；用候选召回和业务成功率验证。", boundary: "HyDE 的假设文档可能幻觉，只能帮助找真实文档，不能当证据。" },
+    ],
+    sourceIds: ["hyde-2023", "azure-search-query-rewrite", "aws-bedrock-query-decomposition"],
+  },
+  {
+    kind: "sequence",
+    eyebrow: "KNOWLEDGE LIFECYCLE",
+    title: "新增、修改、删除与撤权是四条不同的时效链",
+    intro: "绿色的同步任务只证明作业完成，不证明旧内容已经不可检索。生产 RAG 要把知识变化一直验证到缓存、权限和最终回答。",
+    items: [
+      { name: "记录有效版本", en: "Version the Source", mechanism: "知识单元保存 source_version、valid_from、valid_to、supersedes、indexed_at 与 acl_version。", decision: "先定义权威版本和冲突规则，再谈同步频率。", boundary: "更新时间不能完整表达业务生效时间与权限变化。" },
+      { name: "传播变更事件", en: "Propagate Change Events", mechanism: "用 CDC、对象存储事件或调度任务区分新增、修改、删除和 ACL 变化。", decision: "按变化类型分别设置 SLA、失败队列和责任人。", boundary: "某些 ACL 变化不会更新内容时间戳，普通高水位检测可能看不到。" },
+      { name: "重建索引产物", en: "Rebuild Index Artifacts", mechanism: "解析、切块、Embedding 与索引均带版本；失败时保持旧版本可服务并隔离半成品。", decision: "索引任务完成后抽样验证内容、坐标、权限与版本。", boundary: "Reset 或重新运行不一定删除源端已不存在的孤儿文档。" },
+      { name: "删除并失效缓存", en: "Delete & Invalidate", mechanism: "通过 Tombstone 或显式删除动作清理向量、稀疏索引、摘要、问答缓存和权限快照。", decision: "删除与撤权优先级通常高于新增，应单独做负向验收。", boundary: "先物理删除源文件、后通知索引可能留下无法追踪的孤儿。" },
+      { name: "端到端一致性探针", en: "Consistency Probe", mechanism: "用已删除、已撤权和已替换样本持续查询，验证系统不会再返回正文、元数据或缓存答案。", decision: "以用户身份的最终检索结果作为 SLA 终点，而不是作业状态。", boundary: "探针与日志本身也要遵守敏感数据和保留策略。" },
+    ],
+    sourceIds: ["aws-bedrock-kb-sync", "azure-search-indexer-lifecycle", "nist-zero-trust"],
+  },
+  {
+    kind: "matrix",
+    eyebrow: "EVIDENCE COMPILER",
+    title: "把“拼接片段”升级为主张级证据编排",
+    intro: "上下文组装的目标不是塞满 token，而是让每项重要结论都能回到当前有效、用户有权访问的原始证据。",
+    columnLabels: { name: "编排对象", mechanism: "工作机制", decision: "验收问题", boundary: "失效方式" },
+    items: [
+      { name: "证据对象", en: "Evidence Object", mechanism: "统一携带来源 ID、原文坐标、版本、有效期、ACL、权威等级与抽取方式。", decision: "任一回答片段能否稳定回跳到原文？", boundary: "只有链接、没有版本和坐标，无法证明当时看到了什么。" },
+      { name: "冲突集合", en: "Conflict Set", mechanism: "对同一主题的不同版本、地区或条款显式分组，按适用范围决定选用、并列说明或拒答。", decision: "客户是否定义了权威来源和冲突责任人？", boundary: "把冲突片段一起塞给模型只会把决策责任转移给随机生成。" },
+      { name: "主张绑定", en: "Claim Attribution", mechanism: "将答案拆成可核验主张，逐项绑定支持证据，并分别计算引用正确性与覆盖完整性。", decision: "关键数字、期限和结论是否各有直接支持？", boundary: "引用一个相关文档不代表该文档支持整段回答。" },
+      { name: "限定或拒答", en: "Scope or Abstain", mechanism: "证据不足、过期、冲突或越权时，缩小回答范围、说明不确定性或转人工。", decision: "哪些主张必须有证据，哪些允许经验性建议？", boundary: "生成后再补链接是事后装饰，不是可审计证据链。" },
+    ],
+    sourceIds: ["alce-2023", "ragas", "nist-genai-profile"],
+  },
+  {
+    kind: "checklist",
+    eyebrow: "ZERO-DOWNTIME CHANGE",
+    title: "Embedding、索引与权限变更的无停机发布清单",
+    intro: "模型或 Embedding 升级不是替换一个配置项，而是一次数据迁移和检索发布。业务可以不停机，但通常无法跳过全量回填与双版本验证。",
+    maxColumns: 3,
+    items: [
+      { name: "稳定 Chunk ID 与语料快照", en: "Stable IDs & Snapshot", mechanism: "冻结或标记语料版本，以稳定文档和 Chunk ID 建立新索引。", decision: "能否把同一标准证据在新旧索引中一一对应？", boundary: "不同 Embedding 的向量不能在同一空间直接比较。" },
+      { name: "新旧索引双写", en: "Dual Indexing", mechanism: "迁移期让新增、修改、删除和 ACL 变化同时传播到两套索引。", decision: "双写失败是否有重放、补偿和一致性告警？", boundary: "双索引会暂时增加存储、算力和运营复杂度。" },
+      { name: "影子查询与切片比较", en: "Shadow Queries", mechanism: "对真实流量影子检索，比较候选召回、排序、P95、成本和越权负例。", decision: "总体平均之外，高风险切片是否没有退化？", boundary: "HTTP 成功和平均分改善都不能掩盖关键场景失败。" },
+      { name: "别名或网关切换", en: "Alias / Gateway Cutover", mechanism: "通过索引别名或应用路由小流量切换，并保留旧索引回滚窗口。", decision: "切换单位、观察时间和回滚触发器是否明确？", boundary: "别名是具体产品能力，功能阶段和限制需现场核验。" },
+      { name: "退役前负向验证", en: "Negative Verification", mechanism: "确认旧内容、已删除文档和已撤权身份在新索引、缓存和最终回答中均不可见。", decision: "谁签署删除、权限和审计一致性后才允许退役旧索引？", boundary: "只比较正向召回会漏掉最严重的权限与删除回归。" },
+    ],
+    sourceIds: ["azure-search-document-acl", "azure-search-index-alias", "azure-search-indexer-lifecycle", "opentelemetry-semconv"],
+  },
+];
+
 export const evidenceCards = [
   {
     metric: "+9–19 pp",
@@ -40,6 +100,20 @@ export const evidenceCards = [
     finding: "论文实验中，相关信息处于上下文中部时，表现往往低于位于开头或结尾。",
     boundary: "结论来自特定模型与任务；它支持做位置偏差基线，不证明 RAG 必然胜出。",
     sourceId: "lost-middle",
+  },
+  {
+    metric: "主张级",
+    title: "引用要检查正确性与完整性",
+    finding: "ALCE 将引用是否真正支持对应主张，以及关键主张是否都获得引用，作为不同评估问题。",
+    boundary: "论文评测方法支持拆分引用质量；不能把论文数据直接外推为客户系统准确率。",
+    sourceId: "alce-2023",
+  },
+  {
+    metric: "删除 ≠ 重置",
+    title: "知识时效是端到端状态",
+    finding: "Azure 官方文档明确指出 Reset / Run 不会自动清理没有源端对应物的孤儿文档，ACL 变化也可能绕过普通高水位检测。",
+    boundary: "这是特定产品的实现边界；它支持设计删除与撤权验收，不代表其他产品机制相同。",
+    sourceId: "azure-search-indexer-lifecycle",
   },
 ];
 
@@ -253,6 +327,57 @@ export const ragQa = [
       { sourceId: "ragas", supports: "支持将上下文相关性、回答相关性与忠实度分开衡量。" },
       { sourceId: "nist-genai-profile", supports: "支持部署后持续测量、监测和管理生成式 AI 风险。" },
       { sourceId: "opentelemetry-semconv", supports: "支持用标准化遥测关联模型与应用链路；业务质量字段仍需项目定义。" },
+    ],
+  },
+  {
+    q: "开启 Agentic Retrieval 或查询分解后，是不是一定更准确？",
+    a: "不一定。它们只在多意图、多跳或需要选源的问题上可能增加有效召回；精确编号、短事实和简单单跳请求可能因改写丢词、调用变多而变慢甚至变差。",
+    depth: "建立查询切片：精确查找、语义解释、多跳比较、跨源任务分别保留原查询基线。对每个子查询记录命中文档、增量召回、额外 P95 和成本；如果分解没有带来新证据，就应回到确定性单次检索。Azure 文档还明确警告生成式改写可能遗漏产品代码等精确词项，且该能力当前标注为预览。",
+    ask: "追问客户：真实问题中有多少需要多跳或跨源？哪些唯一编号、日期和否定条件绝不能被改写丢失？",
+    tag: "查询规划",
+    basis: "论文机制 + 官方产品边界 + 客户切片实验",
+    evidence: [
+      { sourceId: "hyde-2023", supports: "支持用假设文档改善特定零样本稠密检索，并明确生成文档可能包含幻觉。" },
+      { sourceId: "azure-search-query-rewrite", supports: "支持保留原查询并生成替代查询，也直接说明改写可能遗漏精确唯一词项。" },
+      { sourceId: "aws-bedrock-query-decomposition", supports: "支持复杂查询可选地分解为多个子查询，并可能增加查询次数。" },
+    ],
+  },
+  {
+    q: "文档已经删除或用户已经撤权，为什么系统还会回答旧内容？",
+    a: "因为源系统、解析产物、向量与关键词索引、摘要、缓存和权限快照是不同副本。任何一层没有收到删除或撤权事件，都可能继续暴露旧内容。",
+    depth: "沿完整链路检查 source_version、删除 Tombstone、索引作业、孤儿文档、ACL 版本、问答缓存和最终引用。新增、修改、删除和撤权要有独立 SLA 与负向探针；任务显示成功后，仍需用已撤权身份查询并确认正文、元数据和缓存答案均不可见。",
+    ask: "追问客户：权限变化是否会更新源文件时间戳？哪些派生层和缓存持有内容？删除与撤权要求多快端到端生效？",
+    tag: "时效与权限",
+    basis: "官方同步机制 + 零信任验收",
+    evidence: [
+      { sourceId: "aws-bedrock-kb-sync", supports: "支持新增、修改与删除需要通过增量同步传播到知识库。" },
+      { sourceId: "azure-search-indexer-lifecycle", supports: "支持 Reset 不自动删除孤儿文档，并说明部分 ACL 变化可能绕过高水位检测。" },
+      { sourceId: "nist-zero-trust", supports: "支持每次资源访问前重新认证授权，而非信任旧权限快照。" },
+    ],
+  },
+  {
+    q: "答案已经带出处，是否就可以认定可信或合规？",
+    a: "不能。还要确认出处是否直接支持对应主张、是否覆盖所有关键主张、是否为当前有效版本，以及当前用户是否有权查看。",
+    depth: "把答案拆成数字、期限、条件和结论等可核验主张，分别绑定原文坐标；对引用正确性和引用完整性单独验收。一个相关链接可能没有支持具体结论；一个准确引用也可能来自过期或不适用版本。高风险任务还要保留证据对象、冲突处理和人工复核记录。",
+    ask: "追问客户：哪些主张必须逐项有证据？谁决定权威版本？引用能否回到用户有权访问的原文位置？",
+    tag: "证据治理",
+    basis: "同行评审引用评估 + 风险治理",
+    evidence: [
+      { sourceId: "alce-2023", supports: "支持把引用是否支撑主张与关键主张是否被完整覆盖分开评估。" },
+      { sourceId: "nist-genai-profile", supports: "支持对来源、有效性、透明度和生成式 AI 风险持续治理。" },
+    ],
+  },
+  {
+    q: "更换 Embedding 模型或重建索引时，RAG 必须停机吗？",
+    a: "通常需要全量回填新向量，但不必让在线业务停机。可采用新旧索引并存、双写变化、影子查询、小流量切换和保留旧索引回滚的蓝绿迁移。",
+    depth: "先冻结语料快照和稳定 Chunk ID，在新索引完成全量 Embedding；迁移期让新增、修改、删除和 ACL 变化同步进入两边。用同一问题集比较召回、排序、P95、成本与越权负例，再通过别名或应用路由灰度切换。最后确认删除与撤权一致性后才退役旧索引。",
+    ask: "追问客户：索引能否双写？是否有稳定文档 ID、路由层、影子流量、回滚窗口和额外存储预算？",
+    tag: "无停机迁移",
+    basis: "官方索引能力 + 工程发布方法",
+    evidence: [
+      { sourceId: "azure-search-index-alias", supports: "支持通过稳定别名指向搜索索引，为切换与回滚提供具体产品机制。" },
+      { sourceId: "azure-search-indexer-lifecycle", supports: "支持索引重建、增量同步与删除处理具有不同生命周期。" },
+      { sourceId: "opentelemetry-semconv", supports: "支持以标准遥测关联影子查询和组件版本；质量门槛仍需项目定义。" },
     ],
   },
 ];

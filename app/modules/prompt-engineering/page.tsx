@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceRows } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
-import { promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { promptDeepDives, promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 
 export const metadata: Metadata = {
@@ -92,7 +92,7 @@ export default function PromptEngineeringModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · MODEL &amp; OPTIMIZATION · V1.0</p>
+            <p className="kicker light">MODULE · MODEL &amp; OPTIMIZATION · V1.1</p>
             <h1
               className="moduleHeroTitle"
               id="prompt-title"
@@ -259,13 +259,19 @@ export default function PromptEngineeringModulePage() {
             <p className="sectionFootnote">Prompt 的可迁移部分是业务意图与测试集；角色名称、工具协议、结构化输出和模型特有技巧应放在薄适配层，不应假设跨模型逐字复制仍然等价。</p>
           </div>
 
+          <div className="subsection" id="prompt-independent-depth" data-quality-section="deep-dive">
+            <div className="subHead"><span>5.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>从提示技巧到输入、契约、发布与安全工程</h3></div></div>
+            <p className="sectionLead">本节不按技巧名单展开，而是回答生产系统更难的问题：冲突指令如何处理、Context 如何装配、输出何时可执行，以及提示注入成功时如何仍然限制真实影响。</p>
+            <ModuleDeepDiveBlocks blocks={promptDeepDives} sourceLedger={sourceLedger} />
+          </div>
+
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>5.9</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div>
+            <div className="subHead"><span>5.10</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={promptEvidenceCards} sourceLedger={sourceLedger} maxColumns={3} />
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>5.10</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
+            <div className="subHead"><span>5.11</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
             <div className="cloudIntro">
               <p>Prompt 是整体方案中的一个配置面。真正可销售、可验收的能力来自模型接入、上下文供给、工具编排、安全、发布和持续运营的组合。</p>
               <span>能力先于产品名</span><span>模型与提示共同验收</span><span>当期规格单独核验</span>
@@ -284,12 +290,12 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>5.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 Prompt PoC 验证包</h3></div></div>
+            <div className="subHead"><span>5.12</span><div><p className="kicker">POC PLAYBOOK</p><h3>按发布风险组织 Prompt PoC</h3></div></div>
             <div className="pocGrid">
-              <article><span>D1–2</span><h4>定义任务与基线</h4><p>选 2–3 个高价值任务；冻结真实输入、期望输出、错误成本、边界和现有流程基线。</p></article>
-              <article><span>D3–5</span><h4>建立模板与模式</h4><p>从 Zero-shot 开始；按失败加入示例、Grounding、Schema 或 Tool Definition，一次只改变一类变量。</p></article>
-              <article><span>D6–8</span><h4>模型与版本对比</h4><p>固定评估集比较候选模型、Prompt 版本和上下文策略；记录质量、P95、token 与成功成本。</p></article>
-              <article><span>D9–10</span><h4>安全与发布验收</h4><p>测试注入、敏感数据、拒答、错误工具参数、模型升级和回滚；输出门槛、责任与上线差距。</p></article>
+              <article><span>OBJECTIVE</span><h4>任务与基线</h4><p>按业务分布冻结真实输入、期望输出、错误成本、边界和现有流程表现；先判断问题是否应由 Prompt 改善。</p></article>
+              <article><span>CONTROLLED CHANGE</span><h4>单变量迭代</h4><p>从最小提示开始；按失败加入示例、Grounding、Schema 或工具定义，一次只改变一个主要因素并保留归因。</p></article>
+              <article><span>RELEASE BUNDLE</span><h4>完整配置比较</h4><p>把模型、Prompt、Context 组装、工具、Schema 与安全策略作为发布包，比较任务质量、P95、token 和成功成本。</p></article>
+              <article><span>CANARY</span><h4>安全与灰度</h4><p>测试冲突指令、Source–Sink 注入、敏感数据、错误工具参数和回滚；达到当前门禁后再放量，周期由风险决定。</p></article>
             </div>
             <div className="gates">
               <h4>建议的 Go / No-Go 门槛结构</h4>
@@ -299,7 +305,7 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>5.12</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+            <div className="subHead"><span>5.13</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <ModuleQaList items={promptQa} sourceLedger={sourceLedger} />
           </div>
         </div>
@@ -307,7 +313,7 @@ export default function PromptEngineeringModulePage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>提示词工程独立模块 V1.0 · 2026-07-17</p>
+        <p>提示词工程独立模块 V1.1 · 2026-07-17</p>
         <a href="#prompt-engineering">返回顶部 ↑</a>
       </footer>
     </main>

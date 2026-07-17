@@ -393,6 +393,36 @@ details[open] .plus { transform: rotate(45deg); }
 .briefPrinciples--spectrum article { border-top: 5px solid var(--purple); }
 .briefPrinciples--decision h4, .briefPrinciples--spectrum h4 { margin: 30px 0 10px; font-size: 20px; }
 
+.deepDiveList { display: grid; gap: 32px; }
+.deepDiveBlock { border: 1px solid var(--line); background: var(--white); }
+.deepDiveHeader { display: grid; grid-template-columns: 72px 1fr; border-bottom: 1px solid var(--line); }
+.deepDiveHeader > span { display: grid; place-items: center; border-right: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+.deepDiveHeader > div { max-width: 1000px; padding: 28px; }
+.deepDiveHeader h3 { margin: 10px 0 12px; font-family: var(--font-serif), "Songti SC", serif; font-size: clamp(24px,2.7vw,38px); font-weight: 500; line-height: 1.25; }
+.deepDiveHeader p:last-child { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.deepDiveSequence { margin: 0; padding: 0; list-style: none; }
+.deepDiveSequence li { display: grid; grid-template-columns: 72px 1fr; min-height: 160px; border-bottom: 1px solid var(--line); }
+.deepDiveSequence li:last-child { border-bottom: 0; }
+.deepDiveSequence li > span { display: grid; place-items: center; border-right: 1px solid var(--line); color: var(--blue); font-size: 11px; font-weight: 800; }
+.deepDiveSequence li > div { padding: 25px 28px; }
+.deepDiveSequence h4 { margin: 0 0 10px; font-size: 19px; }
+.deepDiveSequence h4 small, .deepDiveTable th small { display: block; margin-top: 4px; color: var(--muted); font-size: 9px; font-weight: 500; }
+.deepDiveSequence p { margin: 0 0 13px; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.deepDiveSequence strong { display: block; font-size: 14px; line-height: 1.7; }
+.deepDiveSequence em { display: block; margin-top: 12px; color: #9a3e24; font-size: 13px; line-height: 1.65; font-style: normal; }
+.deepDiveCards { border: 0; }
+.deepDiveCards .balancedGridCell { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.deepDiveCards article { height: 100%; min-height: 260px; padding: 26px; display: flex; flex-direction: column; }
+.deepDiveCards h4 { margin: 24px 0 12px; font-size: 19px; }
+.deepDiveCards p:not(.miniLabel) { margin: 0 0 18px; color: var(--muted); font-size: 15px; line-height: 1.75; }
+.deepDiveCards strong { font-size: 14px; line-height: 1.7; }
+.deepDiveCards small { margin-top: auto; padding-top: 18px; color: #9a3e24; font-size: 12px; line-height: 1.65; }
+.deepDiveTable { border: 0; }
+.deepDiveTable table { min-width: 900px; }
+.deepDiveSources { padding: 15px 22px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; border-top: 1px solid var(--line); background: var(--paper); font-size: 12px; }
+.deepDiveSources > span { font-weight: 800; color: var(--muted); }
+.deepDiveSources a { text-underline-offset: 3px; }
+
 .referenceHero { min-height: 76vh; }
 .referenceHeroGrid { padding-top: clamp(70px, 10vh, 110px); }
 .referenceHero h1 { font-size: clamp(48px, 6.5vw, 98px); }
@@ -520,6 +550,9 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .briefPrinciples--decision[data-odd="true"] article:last-child,
   .briefPrinciples--spectrum[data-odd="true"] article:last-child { grid-column: span 12 !important; min-height: auto; }
   .briefPrinciples--pipeline li, .briefPrinciples--loop li, .briefPrinciples--stack li { grid-template-columns: 44px 1fr; }
+  .deepDiveHeader, .deepDiveSequence li { grid-template-columns: 44px 1fr; }
+  .deepDiveHeader > div, .deepDiveSequence li > div { padding: 22px 18px; }
+  .deepDiveCards article { min-height: auto; }
   .relatedModules { padding-left: 22px; padding-right: 22px; }
   .relatedModuleGrid a,
   .relatedModuleGrid[data-odd="true"] > a:last-child,

@@ -1,3 +1,65 @@
+export const agentDeepDives = [
+  {
+    kind: "sequence",
+    eyebrow: "RUN LIFECYCLE",
+    title: "生产 Agent 的核心对象不是一段对话，而是可恢复的 Run",
+    intro: "模型的一次输出、框架的一次运行和业务任务完成是三个层次。Run 必须有显式状态、转换条件、责任主体和不可变终态。",
+    items: [
+      { name: "创建运行实例", en: "Created", mechanism: "绑定任务目标、调用者身份、输入快照、预算、策略与版本，生成唯一 Run ID。", decision: "能否在数小时后准确恢复当时的权限、工具和模型配置？", boundary: "Conversation ID 只代表会话，不必然代表一次业务任务。" },
+      { name: "执行与建立检查点", en: "Running / Checkpoint", mechanism: "模型提出决策，应用执行工具并在每次外部动作和结果验证后保存状态与调用账本。", decision: "崩溃后能否区分动作未执行、已执行或结果未知？", boundary: "模型输出 final_output 只结束运行器循环，不证明业务后置条件成立。" },
+      { name: "等待输入或审批", en: "Waiting", mechanism: "缺少信息、等待外部事件或高风险动作审批时持久暂停，并记录恢复条件和超时策略。", decision: "暂停后是否释放计算资源，并在恢复时重新校验权限与参数？", boundary: "审批期间目标资源和授权都可能发生变化。" },
+      { name: "重试或人工接管", en: "Retry / Handoff", mechanism: "按错误类别决定自动重试、补偿、人工修复或创建关联 Run，不让模型自由猜测。", decision: "哪些错误可安全重试，哪些必须先查询权威系统状态？", boundary: "跨第三方系统通常只能做到可去重、可检测和可补偿，不能轻率承诺 exactly-once。" },
+      { name: "验证业务终态", en: "Verify Outcome", mechanism: "回读订单、工单、资源或测试等权威系统，以预定义后置条件确认真实结果。", decision: "谁定义成功，使用哪套系统作为 ground truth？", boundary: "“模型说完成”不能把 Run 置为业务成功。" },
+      { name: "进入不可变终态", en: "Terminal State", mechanism: "Completed、Failed、Canceled、Expired 等终态不可原地改写；修订或重跑创建新 Run 并保留关联。", decision: "是否能解释每次终止的触发事件、责任主体和最终证据？", boundary: "内部状态机与 A2A Task 状态是不同层次，不能混为同一实现。" },
+    ],
+    sourceIds: ["openai-agents-run-loop", "a2a-task-lifecycle", "azure-durable-orchestration"],
+  },
+  {
+    kind: "matrix",
+    eyebrow: "ACTION CONTRACT",
+    title: "工具 Schema 只描述形状，动作契约才决定能否安全执行",
+    intro: "把 API 包成工具只是完成发现和参数生成。生产动作还要定义权限、副作用、幂等、错误和后置验证。",
+    columnLabels: { name: "契约面", mechanism: "必须声明", decision: "售前验收", boundary: "常见误区" },
+    items: [
+      { name: "前置条件与身份", en: "Preconditions & Identity", mechanism: "声明 user subject、agent actor、应用身份、租户、scope、资源版本和必要审批。", decision: "真实执行前是否重新鉴权，而不是沿用规划阶段判断？", boundary: "工具目录里的能力声明不是权限，Prompt 更不能赋权。" },
+      { name: "副作用与幂等", en: "Side Effects & Idempotency", mechanism: "区分只读、可逆写入和不可逆写入；为写操作定义幂等键、重复调用与并发冲突规则。", decision: "API 超时后，系统如何确认是否已经执行？", boundary: "HTTP 方法语义不等于跨队列、模型和业务系统的端到端仅执行一次。" },
+      { name: "错误分类", en: "Error Taxonomy", mechanism: "区分可重试、需补充信息、需审批、永久失败、冲突、部分成功和结果未知。", decision: "错误能否驱动确定性恢复路径，而不是只返回一段自然语言？", boundary: "把所有失败都交给模型重试可能重复下单或扩大故障。" },
+      { name: "后置条件", en: "Postconditions", mechanism: "声明预期业务状态、operation ID、验证接口和完成证据。", decision: "工具返回 200 后是否回读权威系统确认业务结果？", boundary: "结构合法的返回值不代表交易、权限或业务规则合法。" },
+      { name: "补偿与审计", en: "Compensation & Audit", mechanism: "定义部分成功后的反向动作、人工恢复入口、版本和不可变审计凭证。", decision: "不可逆动作失败时，责任人能否看到完整调用账本并介入？", boundary: "补偿不是回滚时间，它本身也可能失败并需要审批。" },
+    ],
+    sourceIds: ["openapi-3-1-1", "openai-function-calling", "oauth-token-exchange", "nist-zero-trust"],
+  },
+  {
+    kind: "scenario",
+    eyebrow: "FAILURE RECOVERY",
+    title: "用故障时间线验证 Agent，而不是只跑成功路径",
+    intro: "同一个退款动作在调用前、调用中和调用后崩溃，恢复策略完全不同。PoC 应主动制造这些不确定状态。",
+    maxColumns: 2,
+    items: [
+      { name: "调用前崩溃", en: "Before Call", mechanism: "Checkpoint 中没有动作账本，也没有外部 operation ID；恢复后可重新规划并执行。", decision: "恢复是否仍使用同一业务幂等键和最新权限？", boundary: "不能因为模型曾经提出调用就假设外部动作发生过。" },
+      { name: "API 成功、回写前崩溃", en: "After Side Effect", mechanism: "先用幂等键、operation ID 或权威业务状态查询是否已完成，再补写结果或决定重试。", decision: "能否证明不会重复退款、重复发信或重复创建资源？", boundary: "盲目重试是生产 Agent 最危险的恢复方式之一。" },
+      { name: "等待审批时策略变化", en: "Policy Changed", mechanism: "恢复前重新检查参数、资源版本、令牌、审批有效期和当前业务策略。", decision: "审批是否绑定具体工具、参数、资源版本和失效时间？", boundary: "批准旧参数不等于批准修改后的动作。" },
+      { name: "部分成功且无法自动补偿", en: "Partial Success", mechanism: "冻结后续自动动作，保存证据和影响范围，进入人工恢复队列。", decision: "客户是否接受可检测、可补偿，而不是不现实的零故障承诺？", boundary: "模型不应自行编造补偿步骤或宣告最终成功。" },
+    ],
+    sourceIds: ["azure-durable-orchestration", "openai-agents-hitl", "azure-durable-hitl"],
+  },
+  {
+    kind: "checklist",
+    eyebrow: "MEMORY & DELEGATION",
+    title: "长期记忆和多 Agent 委托都必须显式缩小信任",
+    intro: "跨会话保存信息或把任务交给子 Agent，会扩大数据和权限边界。正确做法不是共享全部上下文，而是传递最小、可验证的状态。",
+    maxColumns: 3,
+    items: [
+      { name: "候选记忆先不入库", en: "Candidate Memory", mechanism: "从事件中提取候选，保留主体、来源、用途、有效期、敏感级别和置信度。", decision: "模型摘要是否需要用户或策略确认后才能成为长期事实？", boundary: "自动摘要可能把推断、玩笑或过期信息固化。" },
+      { name: "冲突、修订与删除传播", en: "Conflict & Deletion", mechanism: "写入前与现有记忆冲突检查；新记录替代旧记录，并同步清理向量、摘要和缓存副本。", decision: "客户能否查看、纠正和删除与自己相关的记忆？", boundary: "相似度召回不能解决版本、权限和有效期。" },
+      { name: "委托契约", en: "Delegation Contract", mechanism: "传递 Task ID、目标、输入快照、输出 Schema、截止时间、数据分类和工具预算。", decision: "子 Agent 的结果由谁验证，失败和取消由谁承担？", boundary: "Handoff、Agent-as-tool 与 A2A 是不同控制层。" },
+      { name: "权限默认不继承", en: "Permission Attenuation", mechanism: "子 Agent 使用被削减的短期身份，只访问任务所需资源，不能共享父 Agent 的宽权限令牌。", decision: "每次委托能否说明主体、执行者、scope 和允许的资源？", boundary: "跨 Agent 传递上下文不等于传递授权。" },
+      { name: "限制 fan-out 与循环", en: "Bounded Delegation", mechanism: "设置并行数、委托深度、成本、超时和循环检测；父 Agent 汇总前验证每个产物。", decision: "拆成多 Agent 的收益是否超过交接、评估和成本开销？", boundary: "Agent 数量不是架构成熟度指标。" },
+    ],
+    sourceIds: ["aws-agentcore-memory", "oauth-token-exchange", "a2a-task-lifecycle", "nist-genai-profile"],
+  },
+];
+
 export const agentEvidenceCards = [
   {
     metric: "3",
@@ -34,6 +96,20 @@ export const agentEvidenceCards = [
     finding: "WebArena 原始论文中，最佳 GPT-4 Agent 的端到端成功率为 14.41%，人类为 78.24%。",
     boundary: "这是 2023 年发布的特定网页环境基线，不代表当前模型水平；它证明评估必须看完整任务，而非单步回答。",
     sourceId: "webarena-2024",
+  },
+  {
+    metric: "final_output ≠ 完成",
+    title: "运行器终止不等于业务成功",
+    finding: "OpenAI Agents SDK 以 final_output、Handoff、工具调用与 max_turns 驱动循环；业务后置条件仍需应用另外验证。",
+    boundary: "这是一个 SDK 的运行语义，不是所有框架统一状态机，也不替客户定义成功。",
+    sourceId: "openai-agents-run-loop",
+  },
+  {
+    metric: "Checkpoint",
+    title: "长期任务需要可恢复执行历史",
+    finding: "Durable Orchestration 通过事件历史和自动检查点恢复长期流程，并在重放时复用已经完成的活动结果。",
+    boundary: "持久化运行时不自动让外部副作用幂等；工具仍需调用账本、去重与补偿。",
+    sourceId: "azure-durable-orchestration",
   },
 ];
 
@@ -255,6 +331,54 @@ export const agentQa = [
     evidence: [
       { sourceId: "nist-zero-trust", supports: "支持每次资源访问前验证主体、设备与授权，而不因运行位置默认信任。" },
       { sourceId: "nist-genai-profile", supports: "支持按使用情境、影响与风险容忍度设置控制和持续测量。" },
+    ],
+  },
+  {
+    q: "模型已经返回“任务完成”，为什么系统还不能把 Run 标成成功？",
+    a: "因为模型只能结束自己的生成或运行循环，不能证明订单、工单、资源或审批等真实业务状态已经满足。Run 成功必须由权威系统的后置条件验证。",
+    depth: "区分模型 final output、Agent Runtime 终止和业务完成。应用应回读真实系统的 operation ID、状态与资源版本；结果未知时进入查询或人工恢复，而不是让模型自行解释。还要记录完成、失败、取消、超时和交还人工等显式终态。",
+    ask: "追问客户：哪个系统是 ground truth？成功需要满足哪些可机器验证的后置条件？",
+    tag: "Run 状态机",
+    basis: "官方运行循环 + 持久任务语义",
+    evidence: [
+      { sourceId: "openai-agents-run-loop", supports: "支持 final_output、工具调用和 max_turns 是 SDK 运行循环的结束与控制语义。" },
+      { sourceId: "a2a-task-lifecycle", supports: "支持跨 Agent Task 具有显式状态与终态；不规定内部业务验证。" },
+    ],
+  },
+  {
+    q: "我们已经有 API，包装成 Agent 工具就可以安全上线了吗？",
+    a: "不够。OpenAPI 或 JSON Schema 描述接口与参数形状，但生产动作还需要身份、权限、副作用等级、幂等、错误分类、后置验证和补偿语义。",
+    depth: "以退款工具为例：调用前检查用户委托、金额和订单版本；写操作带幂等键；错误区分可重试、冲突、部分成功与结果未知；调用后回读退款状态；无法自动恢复时进入人工队列。模型只提出调用，应用决定是否授权并执行。",
+    ask: "追问客户：API 超时后怎样确认是否已执行？重复调用、部分成功和审批参数变化分别怎样处理？",
+    tag: "工具契约",
+    basis: "开放标准 + 工具职责边界",
+    evidence: [
+      { sourceId: "openapi-3-1-1", supports: "支持机器可读地描述 API 操作和数据结构；不覆盖业务授权与事务语义。" },
+      { sourceId: "openai-function-calling", supports: "支持模型提出工具调用而应用负责执行并回传结果的职责分界。" },
+    ],
+  },
+  {
+    q: "退款 API 已经成功，但 Agent 在记录结果前崩溃，重启后怎么办？",
+    a: "不能盲目重试。恢复流程先用幂等键、operation ID 或权威业务状态确认退款是否存在；已完成则补写结果并继续，未完成才重新执行。",
+    depth: "Checkpoint 应保存 Run 状态、调用账本、审批、模型 / Prompt / Tool 版本。恢复时先判定崩溃发生在调用前、调用中还是副作用后，并重新校验权限与资源版本。跨系统很难轻率承诺 exactly-once，应交付可去重、可检测、可补偿和可人工恢复。",
+    ask: "追问客户：现有 API 是否支持幂等键或查询 operation 状态？调用账本和人工恢复入口在哪里？",
+    tag: "故障恢复",
+    basis: "持久编排 + 人工恢复机制",
+    evidence: [
+      { sourceId: "azure-durable-orchestration", supports: "支持使用执行历史与 Checkpoint 恢复长期流程并重放已完成活动结果。" },
+      { sourceId: "openai-agents-hitl", supports: "支持暂停 Agent Run、持久化状态并在人工决策后恢复。" },
+    ],
+  },
+  {
+    q: "Agent 应该使用用户权限，还是一个统一服务账号？",
+    a: "面向用户私有数据与个人动作时，优先用户委托或 OBO；后台无人值守任务使用独立工作负载身份。不要用一个宽权限共享账号覆盖所有 Agent、用户和租户。",
+    depth: "每次执行同时记录 user subject、agent actor、应用客户端与目标资源；使用短期、限定 audience、scope 和资源的令牌。真实执行前重新授权，高风险动作做 step-up 或审批。子 Agent 默认不继承父 Agent 的全部令牌和上下文。",
+    ask: "追问客户：动作代表用户还是后台服务？令牌由谁签发、scope 到什么粒度、等待期间权限变化如何重新验证？",
+    tag: "身份授权",
+    basis: "OAuth 标准 + 零信任原则",
+    evidence: [
+      { sourceId: "oauth-token-exchange", supports: "支持在 OAuth 体系中表达主体与执行者并交换受限令牌。" },
+      { sourceId: "nist-zero-trust", supports: "支持每次访问资源前验证主体和授权，不因运行位置或既有会话默认信任。" },
     ],
   },
 ];

@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceRows } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import { sourceLedger } from "../../reference-content.mjs";
-import { evidenceCards, ragQa } from "../../rag-content.mjs";
+import { evidenceCards, ragDeepDives, ragQa } from "../../rag-content.mjs";
 
 export const metadata: Metadata = {
   title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
@@ -96,7 +96,7 @@ export default function RagModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.0</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.1</p>
             <h1 className="moduleHeroTitle" id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h1>
           </div>
           <div className="ragDefinition">
@@ -336,13 +336,19 @@ export default function RagModulePage() {
             </div>
           </div>
 
+          <div className="subsection" id="rag-independent-depth" data-quality-section="deep-dive">
+            <div className="subHead"><span>2.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>从检索 Demo 到可持续的证据系统</h3></div></div>
+            <p className="sectionLead">本节从生产问题反向组织知识：查询怎样规划、删除与撤权怎样传播、回答怎样绑定主张级证据，以及索引如何无停机迁移。</p>
+            <ModuleDeepDiveBlocks blocks={ragDeepDives} sourceLedger={sourceLedger} />
+          </div>
+
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>2.9</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
+            <div className="subHead"><span>2.10</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>2.10</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>RAG 技术环节与云服务机会</h3></div></div>
+            <div className="subHead"><span>2.11</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>RAG 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro">
               <p>先用厂商中立能力描述问题，再映射到实际销售的产品。云服务不是附录：它贯穿数据进入、知识处理、模型调用、在线运行、安全和持续运营。</p>
               <span>能力优先</span><span>产品后映射</span><span>以客户约束决定组合</span>
@@ -366,12 +372,12 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日 PoC 验证包</h3></div></div>
+            <div className="subHead"><span>2.12</span><div><p className="kicker">POC PLAYBOOK</p><h3>按风险门禁组织 RAG PoC</h3></div></div>
             <div className="pocGrid">
-              <article><span>D1–2</span><h4>定义问题与基线</h4><p>选 2–3 个高价值任务；冻结真实问题、正确答案、证据位置与风险等级；用长上下文 / 现有搜索建立基线。</p></article>
-              <article><span>D3–5</span><h4>打通知识链</h4><p>接入最小权威语料；验证解析、切块、元数据、权限与增量更新；记录每个处理版本。</p></article>
-              <article><span>D6–8</span><h4>对比检索与生成</h4><p>比较 sparse / dense / hybrid、Top-K 与 rerank；固定生成配置，避免同时改太多变量。</p></article>
-              <article><span>D9–10</span><h4>红队与验收</h4><p>测试拒答、冲突、越权、恶意文档、过期内容和峰值延迟；输出差距清单、上线门槛与容量估算。</p></article>
+              <article><span>BASELINE</span><h4>问题与权威基线</h4><p>按业务风险选代表性任务；冻结真实问题、正确答案、证据位置、身份和现有流程表现。样本规模由业务分布决定。</p></article>
+              <article><span>DATA PROOF</span><h4>知识与权限证明</h4><p>接入最小权威语料；验证解析、切块、版本、权限、新增、删除与撤权传播，并记录每个处理版本。</p></article>
+              <article><span>QUALITY PROOF</span><h4>检索与回答证明</h4><p>一次改变一个主要变量，比较候选召回、重排、最终上下文、主张级引用和拒答，而不是只看最终观感。</p></article>
+              <article><span>OPERATIONS</span><h4>负载、安全与交接</h4><p>测试冲突、越权、恶意文档、过期内容、峰值和回滚；达到当前门禁后再进入下一阶段，周期随范围和风险变化。</p></article>
             </div>
             <div className="gates">
               <h4>建议的 Go / No-Go 门槛结构</h4>
@@ -383,7 +389,7 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>2.12</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+            <div className="subHead"><span>2.13</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <ModuleQaList items={ragQa} sourceLedger={sourceLedger} />
           </div>
 
@@ -392,7 +398,7 @@ export default function RagModulePage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>RAG 独立模块 V1.0 · 2026-07-17</p>
+        <p>RAG 独立模块 V1.1 · 2026-07-17</p>
         <a href="#rag">返回顶部 ↑</a>
       </footer>
     </main>

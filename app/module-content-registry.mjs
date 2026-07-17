@@ -1,6 +1,6 @@
-import { agentEvidenceCards, agentQa } from "./agent-content.mjs";
-import { promptEvidenceCards, promptQa } from "./prompt-content.mjs";
-import { evidenceCards, ragQa } from "./rag-content.mjs";
+import { agentDeepDives, agentEvidenceCards, agentQa } from "./agent-content.mjs";
+import { promptDeepDives, promptEvidenceCards, promptQa } from "./prompt-content.mjs";
+import { evidenceCards, ragDeepDives, ragQa } from "./rag-content.mjs";
 import { moduleBriefs } from "./module-brief-content.mjs";
 
 /**
@@ -10,11 +10,11 @@ import { moduleBriefs } from "./module-brief-content.mjs";
 export const moduleContentRegistry = Object.freeze({
   ...Object.fromEntries(Object.values(moduleBriefs).map((brief) => [
     brief.slug,
-    Object.freeze({ qa: brief.qa, evidenceCards: brief.evidenceCards }),
+    Object.freeze({ qa: brief.qa, evidenceCards: brief.evidenceCards, deepDives: brief.deepDives ?? [] }),
   ])),
-  rag: Object.freeze({ qa: ragQa, evidenceCards }),
-  "ai-agent": Object.freeze({ qa: agentQa, evidenceCards: agentEvidenceCards }),
-  "prompt-engineering": Object.freeze({ qa: promptQa, evidenceCards: promptEvidenceCards }),
+  rag: Object.freeze({ qa: ragQa, evidenceCards, deepDives: ragDeepDives }),
+  "ai-agent": Object.freeze({ qa: agentQa, evidenceCards: agentEvidenceCards, deepDives: agentDeepDives }),
+  "prompt-engineering": Object.freeze({ qa: promptQa, evidenceCards: promptEvidenceCards, deepDives: promptDeepDives }),
 });
 
 export function requireModuleContent(slug) {

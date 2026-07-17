@@ -35,6 +35,30 @@ type QaItem = {
   evidence: QaEvidence[];
 };
 
+export type DeepDiveItem = {
+  name: string;
+  en?: string;
+  mechanism: string;
+  decision: string;
+  boundary?: string;
+};
+
+export type DeepDiveBlock = {
+  kind: "sequence" | "matrix" | "diagnostic" | "checklist" | "scenario";
+  eyebrow: string;
+  title: string;
+  intro: string;
+  items: DeepDiveItem[];
+  sourceIds: string[];
+  maxColumns?: number;
+  columnLabels?: {
+    name: string;
+    mechanism: string;
+    decision: string;
+    boundary: string;
+  };
+};
+
 function requireSource(sourceLedger: SourceLedger, sourceId: string) {
   const source = sourceLedger[sourceId];
 
@@ -90,6 +114,81 @@ export function CriticalBoundary({ children }: { children: ReactNode }) {
       </div>
       <p>{children}</p>
     </aside>
+  );
+}
+
+function DeepDiveSourceLinks({ sourceIds, sourceLedger }: { sourceIds: string[]; sourceLedger: SourceLedger }) {
+  if (sourceIds.length === 0) return null;
+
+  return (
+    <div className="deepDiveSources" aria-label="本节依据">
+      <span>本节依据</span>
+      {sourceIds.map((sourceId) => {
+        const source = requireSource(sourceLedger, sourceId);
+        return <Link href={`/references#source-${sourceId}`} key={sourceId}>{source.shortTitle} ↘</Link>;
+      })}
+    </div>
+  );
+}
+
+export function ModuleDeepDiveBlocks({
+  blocks,
+  sourceLedger,
+}: {
+  blocks: DeepDiveBlock[];
+  sourceLedger: SourceLedger;
+}) {
+  if (blocks.length === 0) return null;
+
+  return (
+    <div className="deepDiveList">
+      {blocks.map((block, blockIndex) => {
+        const labels = block.columnLabels ?? {
+          name: block.kind === "diagnostic" ? "现象 / 检查点" : "对象",
+          mechanism: block.kind === "diagnostic" ? "可能机制" : "工作机制",
+          decision: block.kind === "diagnostic" ? "验证与处理" : "售前判断",
+          boundary: "适用边界",
+        };
+
+        return (
+          <article className={`deepDiveBlock deepDiveBlock--${block.kind}`} key={block.title}>
+            <header className="deepDiveHeader">
+              <span>{String(blockIndex + 1).padStart(2, "0")}</span>
+              <div><p className="miniLabel">{block.eyebrow}</p><h3>{block.title}</h3><p>{block.intro}</p></div>
+            </header>
+
+            {block.kind === "sequence" ? (
+              <ol className="deepDiveSequence" data-count={block.items.length}>
+                {block.items.map((item, index) => (
+                  <li key={item.name}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <div><h4>{item.name}{item.en ? <small>{item.en}</small> : null}</h4><p>{item.mechanism}</p><strong>{item.decision}</strong>{item.boundary ? <em>{item.boundary}</em> : null}</div>
+                  </li>
+                ))}
+              </ol>
+            ) : block.kind === "checklist" || block.kind === "scenario" ? (
+              <BalancedGrid className={`deepDiveCards deepDiveCards--${block.kind}`} maxColumns={block.maxColumns ?? 3}>
+                {block.items.map((item) => (
+                  <article key={item.name}>
+                    <p className="miniLabel">{item.en ?? block.eyebrow}</p>
+                    <h4>{item.name}</h4>
+                    <p>{item.mechanism}</p>
+                    <strong>{item.decision}</strong>
+                    {item.boundary ? <small>{item.boundary}</small> : null}
+                  </article>
+                ))}
+              </BalancedGrid>
+            ) : (
+              <div className="tableWrap deepDiveTable"><table><thead><tr><th>{labels.name}</th><th>{labels.mechanism}</th><th>{labels.decision}</th><th>{labels.boundary}</th></tr></thead><tbody>
+                {block.items.map((item) => <tr key={item.name}><th>{item.name}{item.en ? <small>{item.en}</small> : null}</th><td>{item.mechanism}</td><td>{item.decision}</td><td>{item.boundary ?? "—"}</td></tr>)}
+              </tbody></table></div>
+            )}
+
+            <DeepDiveSourceLinks sourceIds={block.sourceIds} sourceLedger={sourceLedger} />
+          </article>
+        );
+      })}
+    </div>
   );
 }
 

@@ -46,7 +46,7 @@ function escapeHtmlText(value) {
 
 const publishedModules = publishedModuleRegistry.map((module) => {
   const content = requireModuleContent(module.slug);
-  return { ...module, id: module.slug, cards: content.evidenceCards, qa: content.qa };
+  return { ...module, id: module.slug, cards: content.evidenceCards, qa: content.qa, deepDives: content.deepDives };
 });
 
 function getPublishedModule(slug) {
@@ -55,10 +55,11 @@ function getPublishedModule(slug) {
   return publishedModule;
 }
 
-function collectModuleSourceIds({ cards, qa }) {
+function collectModuleSourceIds({ cards, qa, deepDives }) {
   return new Set([
     ...cards.map((card) => card.sourceId),
     ...qa.flatMap((item) => item.evidence.map((reference) => reference.sourceId)),
+    ...deepDives.flatMap((block) => block.sourceIds),
   ]);
 }
 
@@ -230,7 +231,7 @@ test("every published module passes the shared reader, terminology, and depth co
       assert.doesNotMatch(headingText, /先确定|我们来看|你需要|不要一上来/, `标题不应使用编辑者对读者说话的语气：${headingText}`);
     }
 
-    for (const section of ["related-modules", "principle", "evidence", "cloud", "qa"]) {
+    for (const section of ["related-modules", "principle", "deep-dive", "evidence", "cloud", "qa"]) {
       assert.match(html, new RegExp(`data-quality-section="${section}"`), `${publishedModule.slug} 缺少 ${section} 质量区块`);
     }
 
@@ -338,7 +339,6 @@ test("every public knowledge route is anonymously readable and directly shareabl
 test("knowledge-map registry supports changing layer and module counts without duplicate routes", () => {
   assert.ok(layers.length > 0);
   assert.ok(moduleList.length > 0);
-  assert.equal(moduleList.length, 19, "公开知识地图必须与 CC-20260717 的 19 个模块一一对应");
   assert.equal(layers.reduce((total, layer) => total + layer.modules.length, 0), moduleList.length);
 
   const layerNumbers = layers.map((layer) => layer.no);
@@ -416,6 +416,23 @@ test("every published module claim resolves to a unique, grouped, and verified s
     const moduleSourceIds = new Set(referenceModule.sourceIds);
 
     assert.ok(publishedModule.qa.length > 0, `已发布模块缺少客户问答：${publishedModule.id}`);
+    assert.ok(publishedModule.deepDives.length > 0, `已发布模块缺少独立知识扩展：${publishedModule.id}`);
+
+    for (const block of publishedModule.deepDives) {
+      assert.ok(["sequence", "matrix", "diagnostic", "checklist", "scenario"].includes(block.kind), `未知深挖表达类型：${publishedModule.id} / ${block.kind}`);
+      assert.ok(block.eyebrow && block.title && block.intro, `深挖区块元数据不完整：${publishedModule.id}`);
+      assert.ok(block.items.length > 0, `深挖区块不应为空：${publishedModule.id} / ${block.title}`);
+      assert.ok(block.sourceIds.length > 0, `深挖区块缺少依据：${publishedModule.id} / ${block.title}`);
+      assert.equal(new Set(block.sourceIds).size, block.sourceIds.length, `深挖区块来源重复：${publishedModule.id} / ${block.title}`);
+
+      for (const item of block.items) {
+        assert.ok(item.name && item.mechanism && item.decision, `深挖条目不完整：${publishedModule.id} / ${block.title}`);
+      }
+      for (const sourceId of block.sourceIds) {
+        assert.ok(sourceIds.has(sourceId), `深挖区块引用未知来源：${sourceId}`);
+        assert.ok(moduleSourceIds.has(sourceId), `深挖来源未归入 ${publishedModule.id} 分组：${sourceId}`);
+      }
+    }
 
     for (const item of publishedModule.qa) {
       assert.ok(item.q && item.a && item.depth && item.ask && item.tag && item.basis);

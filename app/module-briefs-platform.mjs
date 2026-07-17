@@ -103,6 +103,101 @@ export const aiGatewayBrief = {
         "MCP 是上下文与工具互操作协议；AI 网关是治理执行点，两者互补，不应把网关宣传为协议本身。",
     },
   ],
+  deepDiveTitle: "从统一入口走向可验证的治理数据面",
+  deepDiveLead:
+    "网关的工程难点不在于能否转发请求，而在于策略变化能否安全上线，以及多层代理、重试和身份映射出现问题时能否留下可归因证据。",
+  deepDives: [
+    {
+      kind: "sequence",
+      eyebrow: "POLICY RELEASE",
+      title: "网关策略变更的五步安全发布链",
+      intro:
+        "路由、限流、内容检查或日志策略都可能改变生产结果；把策略当配置直接全量生效，会让网关自身成为不可追踪的变更源。",
+      sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "cloudflare-ai-gateway"],
+      items: [
+        {
+          name: "冻结策略包",
+          en: "Freeze Policy Bundle",
+          mechanism: "把路由条件、模型目录、限流、重试、护栏、日志字段和例外名单绑定到同一版本，并记录审批人与生效范围。",
+          decision: "售前验收应要求一次请求可还原当时命中的策略包，而不是只能看到当前配置。",
+          boundary: "策略版本不能替代下游模型、Prompt 和工具 Schema 的独立版本。",
+        },
+        {
+          name: "离线回放",
+          en: "Offline Replay",
+          mechanism: "用脱敏历史流量比较新旧策略的路由结果、阻断、配额、成本和降级路径，不实际调用高风险工具。",
+          decision: "先检查误阻断、跨地域切换和模型能力不等价，再决定是否进入在线验证。",
+          boundary: "回放不能完全复现实时配额、网络故障和提供方瞬态状态。",
+        },
+        {
+          name: "影子判定",
+          en: "Shadow Decision",
+          mechanism: "生产请求仍执行旧策略，新策略只计算拟议动作并记录差异，使真实流量验证不改变客户结果。",
+          decision: "差异必须能解释到具体规则和输入属性；只看总体一致率不足以放行高风险分组。",
+          boundary: "影子模式仍可能处理敏感元数据，访问与保留要求不能放宽。",
+        },
+        {
+          name: "分段放量",
+          en: "Segmented Canary",
+          mechanism: "按租户、应用、任务和风险等级逐步启用，并同时观察业务成功、P95、重试、阻断和每个成功任务成本。",
+          decision: "先放只读低风险流量；涉及付款、删除或数据外发的路径需要独立批准。",
+          boundary: "百分比放量不能代替业务分组，少量高风险流量可能被总体指标淹没。",
+        },
+        {
+          name: "证据化回滚",
+          en: "Evidence-led Rollback",
+          mechanism: "超过门槛时原子恢复上一策略包，保留触发条件、受影响请求和下游结果用于复盘。",
+          decision: "上线前演练回滚时间，并确认控制面故障不会阻止数据面使用最后一个已验证版本。",
+          boundary: "回滚网关策略不能自动撤销已经发生的业务副作用。",
+        },
+      ],
+    },
+    {
+      kind: "diagnostic",
+      eyebrow: "FAILURE AMPLIFICATION",
+      title: "网关上线后最容易被误判的五类故障",
+      intro:
+        "许多问题表面上像模型慢、提供方不稳或用户超额，根因却是网关与上游、下游控制重复或语义丢失。",
+      sourceIds: ["opentelemetry-semconv", "cloudflare-ai-gateway", "nist-zero-trust"],
+      items: [
+        {
+          name: "尾延迟突然放大",
+          en: "Retry Multiplication",
+          mechanism: "应用、通用 API 网关、AI 网关和模型 SDK 分别重试，同一失败请求形成乘法流量并耗尽连接或配额。",
+          decision: "沿 trace 统计每层 attempt，统一重试所有权、预算和幂等条件后再扩容。",
+          boundary: "关闭重复重试后仍需保留对明确可重试错误的受控恢复。",
+        },
+        {
+          name: "流式请求首字节变慢",
+          en: "Streaming Buffering",
+          mechanism: "中间代理为检查或日志而缓冲完整响应，破坏上游的流式传递，使 TTFT 看似由模型退化。",
+          decision: "分别测模型端、网关入站与客户端首事件时间，并验证代理对流式协议的透传方式。",
+          boundary: "某些输出策略必须等待完整内容；此时应明确体验取舍，而不是伪装成流式。",
+        },
+        {
+          name: "审计只有共享账号",
+          en: "Identity Collapse",
+          mechanism: "网关将用户、租户和应用都映射为同一下游凭据，却没有保留不可伪造的主体链和授权上下文。",
+          decision: "检查 trace、审计与下游策略能否同时回答谁、代表谁、访问什么和为何获准。",
+          boundary: "传播主体标识不能把未经验证的客户端声明直接当成身份。",
+        },
+        {
+          name: "限流正常但下游仍报配额",
+          en: "Quota Unit Mismatch",
+          mechanism: "入口按请求数限流，下游却按 token、并发、模型或地域计算配额；长请求和突发流量穿透平均值。",
+          decision: "把 RPM、TPM、并发、排队和下游剩余额度放入同一容量模型，按真实长度分布压测。",
+          boundary: "本地估算不能取代提供方最终配额与错误语义。",
+        },
+        {
+          name: "故障转移成功但任务失败",
+          en: "Semantic Failover Drift",
+          mechanism: "备用模型能返回 200，却不支持相同上下文、工具、Schema、安全策略或语言质量。",
+          decision: "将故障转移作为独立发布路径，用任务评估集验证功能和质量等价范围。",
+          boundary: "可用性降级策略必须预先声明允许牺牲什么，不能在事故中临时猜测。",
+        },
+      ],
+    },
+  ],
   criticalBoundary:
     "AI 网关不会自动提高模型事实正确性，也不替代推理引擎、MCP / A2A 协议、Agent 工作流或业务系统授权。它提供统一的控制与证据面；最终质量仍取决于模型、数据、Prompt、工具结果、应用约束和评估。",
   cloudHooks: [
@@ -315,6 +410,95 @@ export const llmInferenceBrief = {
         "先证明单池调度无法满足目标，再评估跨节点传输 KV Cache、路由、容错和网络成本。",
       boundary:
         "它是面向特定规模和负载的架构选择，不是所有推理服务的默认最佳实践。",
+    },
+  ],
+  deepDiveTitle: "把推理性能问题拆成可定位、可复现的负载证据",
+  deepDiveLead:
+    "推理系统很少只有一个“慢”字：首 token、持续生成、排队、拒绝和质量回退来自不同资源路径，必须用真实负载形状分别验证。",
+  deepDives: [
+    {
+      kind: "diagnostic",
+      eyebrow: "BOTTLENECK DIAGNOSIS",
+      title: "五种线上症状如何定位到真正瓶颈",
+      intro:
+        "先用分阶段指标缩小范围，再用 profile 和受控实验确认；直接加卡可能掩盖调度、缓存或软件回退。",
+      sourceIds: ["vllm-2023", "flashattention-2022", "opentelemetry-semconv"],
+      items: [
+        {
+          name: "TTFT 上升但生成速度正常",
+          en: "Slow Time to First Token",
+          mechanism: "常见原因是排队、冷加载、长输入预填充或请求被合并到过大的批次，而非解码算力不足。",
+          decision: "分解 queue、model load 与 prefill 时间，并按输入长度分组；只有 prefill 受限时才评估更快注意力或独立资源池。",
+          boundary: "客户端首字节还会受网关缓冲与网络影响，不能只看引擎内部计时。",
+        },
+        {
+          name: "ITL 变慢且 GPU 利用率不低",
+          en: "Slow Inter-token Latency",
+          mechanism: "解码阶段可能受显存带宽、KV Cache 访问、过度批处理或跨卡同步约束，算力繁忙不代表单请求体验良好。",
+          decision: "固定并发逐级改变 batch 和上下文，观察 ITL、带宽与缓存占用的拐点，再调整调度或并行方式。",
+          boundary: "追求更低 ITL 可能降低总吞吐，取舍必须由交互 SLO 决定。",
+        },
+        {
+          name: "并发增加后吞吐反而下降",
+          en: "Throughput Collapse",
+          mechanism: "长度差异、KV Cache 碎片、请求换入换出或尾部超长输出使批次效率下降，并触发更多拒绝和重试。",
+          decision: "按长度分池并检查缓存利用、抢占和重算；容量结论使用稳定成功吞吐而非短时峰值。",
+          boundary: "分池会减少资源共享，流量不足时可能增加空闲。",
+        },
+        {
+          name: "运行数小时后间歇 OOM",
+          en: "Progressive OOM",
+          mechanism: "动态缓存增长、碎片、异常请求未释放或 admission control 只看权重，导致压力随会话与长输出累积。",
+          decision: "记录每请求的输入输出 token、缓存块、回收和拒绝原因，用长稳测试而非单轮 benchmark 验收。",
+          boundary: "自动重启只能恢复容量，不能证明内存生命周期问题已解决。",
+        },
+        {
+          name: "性能提升但业务质量下降",
+          en: "Optimization Regression",
+          mechanism: "量化、编译、投机策略或模型替换可能改变数值、输出分布、工具参数与安全行为。",
+          decision: "把优化产物视为新发布版本，除性能外同步回归事实、中文、长上下文、结构化输出与高风险样本。",
+          boundary: "公开 benchmark 的质量结论不能替代客户任务集。",
+        },
+      ],
+    },
+    {
+      kind: "scenario",
+      eyebrow: "LOAD SHAPES",
+      title: "四类负载必须分开建容量基线",
+      intro:
+        "平均输入长度和平均并发无法代表真实服务；同一套引擎参数在不同负载形状上可能给出相反结论。",
+      sourceIds: ["vllm-2023", "opentelemetry-semconv", "nist-genai-profile"],
+      maxColumns: 2,
+      items: [
+        {
+          name: "短输入交互问答",
+          en: "Interactive Short-form",
+          mechanism: "输入较短、用户等待敏感、输出逐 token 消费，主要关注排队、TTFT、ITL 和连接稳定性。",
+          decision: "用峰值到达过程而非固定并发压测，并设置尾延迟和超时下的成功吞吐门槛。",
+          boundary: "最高 tokens/s 不能代表最佳交互体验。",
+        },
+        {
+          name: "长上下文分析",
+          en: "Long-context Analysis",
+          mechanism: "预填充和 KV Cache 占比显著，少量长请求即可挤压短请求并降低并发。",
+          decision: "分别测输入长度阶梯、缓存占用和短长请求混跑，必要时独立队列或容量池。",
+          boundary: "模型最大上下文只是允许值，不是质量、并发和成本承诺。",
+        },
+        {
+          name: "Agent 突发调用",
+          en: "Agentic Bursts",
+          mechanism: "一个用户任务会产生多轮模型与工具调用，到达呈簇状并受外部工具延迟影响，重试还会放大峰值。",
+          decision: "按完整任务模拟循环、停止和失败路径，验收每个成功任务的调用数、P95 与成本。",
+          boundary: "单次模型请求压测不能推导 Agent 容量。",
+        },
+        {
+          name: "离线批量生成",
+          en: "Offline Batch",
+          mechanism: "可牺牲单请求时延换取更大批量和设备利用率，但受队列、公平、失败重跑与截止时间约束。",
+          decision: "以截止时间内的有效输出、失败恢复和单位结果成本验收，不与在线 SLO 共用参数。",
+          boundary: "批量作业占满设备可能破坏在线服务的容量保障。",
+        },
+      ],
     },
   ],
   criticalBoundary:
@@ -531,6 +715,101 @@ export const aiOpsBrief = {
         "优化系统不能同时生成变更、定义裁判并直接全量发布，否则缺少独立控制。",
     },
   ],
+  deepDiveTitle: "从异常告警走到可复现的质量归因",
+  deepDiveLead:
+    "AI 运营的核心不是多一个评分面板，而是把线上异常冻结成可重放证据，并识别哪些看似直观的指标会误导发布和事故判断。",
+  deepDives: [
+    {
+      kind: "sequence",
+      eyebrow: "INCIDENT ATTRIBUTION",
+      title: "一次 AI 质量事故的五步归因回路",
+      intro:
+        "生成式系统的输出不可完全复现，但当时的输入分组、完整发布版本、外部结果和判定依据必须可还原。",
+      sourceIds: ["opentelemetry-semconv", "nist-genai-profile", "nist-zero-trust"],
+      items: [
+        {
+          name: "冻结事故样本",
+          en: "Freeze Incident Evidence",
+          mechanism: "保存 trace、输入分组、输出或安全摘要、业务终态、模型与工具错误，并对敏感内容执行受控封存。",
+          decision: "先保证证据完整，再做自动重试或人工修正；否则后续只能看到被修复后的状态。",
+          boundary: "证据保留遵守用途、地域、访问与删除要求，不能因事故默认永久保存原文。",
+        },
+        {
+          name: "还原发布 Bundle",
+          en: "Reconstruct Release Bundle",
+          mechanism: "关联模型快照、Prompt、检索索引、上下文组装、工具 Schema、护栏、网关策略和应用版本。",
+          decision: "若任一关键组件只能解析到“latest”，先补版本治理，再谈自动归因。",
+          boundary: "版本相同仍可能受外部系统或数据时点影响，不能据此断言结果必然一致。",
+        },
+        {
+          name: "最小变量回放",
+          en: "Controlled Replay",
+          mechanism: "以事故输入为基线，一次只替换模型、Prompt、检索、工具或策略，比较失败是否消失以及出现何种副作用。",
+          decision: "用成对结果和环境断言定位影响层，不把一次重跑成功当成根因已确认。",
+          boundary: "线上竞态、配额和第三方状态可能无法离线复现，需要结合生产遥测。",
+        },
+        {
+          name: "业务与风险裁决",
+          en: "Outcome Adjudication",
+          mechanism: "规则验证确定性字段，业务系统验证真实终态，模型裁判处理开放式质量，争议和高风险样本由人工裁决。",
+          decision: "记录裁决者、Rubric 和置信度；自动裁判与人工长期失配时应暂停自动门禁。",
+          boundary: "同一个模型不应在缺少校准的情况下既生成答案又独立证明答案正确。",
+        },
+        {
+          name: "转化为持续门禁",
+          en: "Promote to Regression Gate",
+          mechanism: "将事故样本及相邻变体加入对应分组评估集，定义修复门槛、监控信号、负责人和再次触发的停止动作。",
+          decision: "只有能阻止同类问题再次发布，事故复盘才形成运营闭环。",
+          boundary: "评估集持续增长时要去重、分层和维护权威答案，不能无限堆积历史噪声。",
+        },
+      ],
+    },
+    {
+      kind: "diagnostic",
+      eyebrow: "MISLEADING SIGNALS",
+      title: "五个看似正确、实际可能误导的运营指标",
+      intro:
+        "单一指标通常只描述系统的一面；每个信号都要配对业务终态、分组和独立校验后才能用于发布或成本判断。",
+      sourceIds: ["nist-genai-profile", "opentelemetry-semconv"],
+      items: [
+        {
+          name: "平均质量分上升",
+          en: "Higher Average Score",
+          mechanism: "多数低风险样本的微小提升可能掩盖少量付款、合规或关键客户场景的严重回退。",
+          decision: "按任务、语言、租户和风险分组设置硬门槛，并展示最差分组与失败数量。",
+          boundary: "分组过细会造成样本不足，需要同时报告不确定性和人工复核。",
+        },
+        {
+          name: "点赞率下降",
+          en: "Lower User Rating",
+          mechanism: "反馈受用户预期、界面、等待时间和参与偏差影响，不能直接区分事实错误与体验不佳。",
+          decision: "把反馈与任务类型、业务结果和原始失败标签关联，再决定是改模型、Prompt 还是产品流程。",
+          boundary: "缺少反馈不代表成功，许多失败用户不会主动评价。",
+        },
+        {
+          name: "单次调用成本降低",
+          en: "Lower Cost per Call",
+          mechanism: "更便宜的模型或更短上下文可能增加重试、工具轮数和人工接管，使完整任务成本反而上升。",
+          decision: "以每个成功任务的模型、检索、工具、基础设施和人工总成本比较版本。",
+          boundary: "新业务早期终态样本不足时，可先并列报告调用成本与成功率，不能伪造精确 TCO。",
+        },
+        {
+          name: "LLM Judge 一致通过",
+          en: "Judge Pass Rate",
+          mechanism: "裁判可能偏好更长回答、继承同类模型偏差，或在 Prompt 和版本变化后发生漂移。",
+          decision: "定期用人工金标校准，检查误报漏报，并将裁判模型、Prompt 和阈值纳入发布版本。",
+          boundary: "裁判适合扩展抽样，不适合作为高风险动作的唯一授权依据。",
+        },
+        {
+          name: "GPU 利用率很高",
+          en: "High Accelerator Utilization",
+          mechanism: "设备繁忙可能来自无效重试、超长上下文、错误循环或低优先级批任务，不证明业务产出有效。",
+          decision: "把利用率关联到队列等待、成功吞吐、任务终态和单位结果成本，再决定扩容或优化。",
+          boundary: "低利用率也可能是严格在线 SLO 所需的容量余量，不能机械追求满载。",
+        },
+      ],
+    },
+  ],
   criticalBoundary:
     "本模块关注 AI 应用的质量与运行闭环，不是传统 AIOps 的告警降噪，也不是只看 GPU 利用率的基础设施监控。可观测数据提供证据，不会自动证明答案正确；业务终态、评估集和人工裁决仍是判断依据。",
   cloudHooks: [
@@ -742,6 +1021,101 @@ export const dataEngineeringBrief = {
         "保留共同原始层，分别生成带用途、许可、版本与血缘的派生数据产品；评估集与训练集必须隔离。",
       boundary:
         "可检索不代表允许训练；训练过的数据也不能进入用于证明泛化能力的评估集。",
+    },
+  ],
+  deepDiveTitle: "识别不会报错的数据损坏，并证明变更已传播",
+  deepDiveLead:
+    "AI 数据管道最危险的问题常不是任务失败，而是内容看似成功入库、实际结构错位，或权限与删除只在部分副本生效。",
+  deepDives: [
+    {
+      kind: "diagnostic",
+      eyebrow: "SILENT CORRUPTION",
+      title: "文档管道五类静默损坏及验证方法",
+      intro:
+        "解析成功率、OCR 字符率或向量写入数都可能正常，但下游看到的事实、关系和引用位置已经失真。",
+      sourceIds: ["docling-report", "hnsw-2016", "nist-genai-profile"],
+      items: [
+        {
+          name: "阅读顺序错位",
+          en: "Reading-order Corruption",
+          mechanism: "多栏、侧栏、脚注和浮动文本被按错误顺序拼接，句子仍可读却改变条件、因果与条款归属。",
+          decision: "建立含复杂版面的金标页，比较块顺序、标题父子关系和引用回跳，而不是只测字符相似度。",
+          boundary: "单一版式模板通过不能代表供应商、年份和语言变化后的文档。",
+        },
+        {
+          name: "表格关系丢失",
+          en: "Table Semantics Loss",
+          mechanism: "单元格文本被提取，但行列标题、合并单元格、单位和注释未保留，数值无法确定属于哪个对象。",
+          decision: "用关键业务问题反向验证表头—单元格—单位关系，并对高风险表格保留图像或人工复核路径。",
+          boundary: "OCR 识别出所有数字也不能证明表格语义正确。",
+        },
+        {
+          name: "页眉页脚污染",
+          en: "Repeated Boilerplate",
+          mechanism: "版权、导航、页码和重复标题进入每个 chunk，稀释正文并在向量空间制造大量近似片段。",
+          decision: "统计跨页高频块、去除前后检索分布对比，并抽查正文是否被误删。",
+          boundary: "法律声明或版本信息有时是有效证据，不能用固定坐标无条件删除。",
+        },
+        {
+          name: "扫描质量分层失效",
+          en: "OCR Quality Skew",
+          mechanism: "总体 OCR 指标被清晰页面主导，印章、手写、低对比或旋转页的关键字段持续失败。",
+          decision: "按页面质量和字段风险分组采样，记录置信度、失败截图和人工纠正结果，再决定路由到更强解析或审核。",
+          boundary: "模型置信度不是事实正确率，阈值需要用客户材料校准。",
+        },
+        {
+          name: "新旧版本混合召回",
+          en: "Version Collision",
+          mechanism: "文档 ID、更新时间或删除标记不稳定，使旧条款和新条款同时存在并被近邻索引召回。",
+          decision: "用稳定主键和有效期构造版本冲突测试，核对索引、原文与查询结果中的唯一有效版本。",
+          boundary: "近邻索引解决相似搜索，不负责判定哪一个业务版本权威。",
+        },
+      ],
+    },
+    {
+      kind: "sequence",
+      eyebrow: "CHANGE PROPAGATION",
+      title: "权限收回与删除必须穿过五个派生层",
+      intro:
+        "删除前台链接远远不够；原文、解析结果、索引、缓存、评估与训练候选都可能继续保留可访问副本。",
+      sourceIds: ["nist-zero-trust", "nist-genai-profile", "hnsw-2016"],
+      items: [
+        {
+          name: "生成权威变更事件",
+          en: "Authoritative Change Event",
+          mechanism: "由源系统发出带主体、对象、版本、时间和变更类型的事件，删除与 ACL 收回使用可重放 tombstone。",
+          decision: "先确认唯一权威来源和事件顺序；无法产生事件的源需要周期性全量对账。",
+          boundary: "管道不能自行推断法律保留或业务例外，冲突交给数据所有者裁决。",
+        },
+        {
+          name: "隔离原始与派生内容",
+          en: "Quarantine Derived Assets",
+          mechanism: "立即阻止新请求读取相关原文、解析块、图片和特征，同时保留受控证据供传播任务定位。",
+          decision: "安全收回应优先于后台清理完成，访问检查不能只依赖最终索引状态。",
+          boundary: "隔离副本仍受相同敏感等级和访问审计约束。",
+        },
+        {
+          name: "更新索引与缓存",
+          en: "Update Indexes and Caches",
+          mechanism: "按稳定文档 ID 删除或重建关键词、向量、元数据、语义缓存和搜索副本，并处理正在进行的增量任务。",
+          decision: "运行删除后负向查询，证明旧 ID、相似文本和跨租户路径均不可召回。",
+          boundary: "索引删除的实现和可见性窗口取决于具体产品，不能只凭 API 成功码验收。",
+        },
+        {
+          name: "清理用途派生集",
+          en: "Reconcile Downstream Datasets",
+          mechanism: "从评估集、标注任务、微调候选、导出文件和分析仓库中按血缘定位受影响记录，并执行删除、替换或保留裁决。",
+          decision: "可检索、可评估和可训练是不同使用权；每一用途都需要独立证明处理结果。",
+          boundary: "已完成训练的权重是否受影响需要单独法律和模型治理判断，不能宣称删除数据即自动遗忘。",
+        },
+        {
+          name: "签发传播证明",
+          en: "Issue Propagation Evidence",
+          mechanism: "汇总各系统处理状态、失败重试、负向查询、保留例外和完成时间，形成可审计的删除或权限传播记录。",
+          decision: "售前应把最大传播时间和失败升级责任写入数据 SLO，而不是只演示一次成功流程。",
+          boundary: "证明描述系统执行事实，不替代监管或合同意义上的合规认定。",
+        },
+      ],
     },
   ],
   criticalBoundary:
@@ -956,6 +1330,101 @@ export const aiInfraComputeBrief = {
         "均衡架构比单项堆料重要；局部峰值升级可能把瓶颈推到下一层。",
     },
   ],
+  deepDiveTitle: "用瓶颈证据和缩放曲线替代卡型直觉",
+  deepDiveLead:
+    "硬件采购应回答工作负载在哪一层等待、增加资源后能否继续扩展，以及故障和空闲会把多少理论容量变成无效成本。",
+  deepDives: [
+    {
+      kind: "matrix",
+      eyebrow: "BOTTLENECK EVIDENCE",
+      title: "四类资源瓶颈的证据、误判与投资方向",
+      intro:
+        "同样表现为 GPU 未满或作业变慢，根因可能在计算、内存、网络或数据通路；只有 profile 与对照实验能决定采购重点。",
+      sourceIds: ["flashattention-2022", "vllm-2023"],
+      columnLabels: {
+        name: "瓶颈类型",
+        mechanism: "可观察证据",
+        decision: "验证与投资判断",
+        boundary: "常见误判",
+      },
+      items: [
+        {
+          name: "计算受限",
+          en: "Compute-bound",
+          mechanism: "计算单元持续繁忙，算子时间随问题规模增长，改变内存布局或 I/O 后收益有限。",
+          decision: "先验证目标精度和内核真正使用所购计算路径，再比较更强加速器、编译或模型并行。",
+          boundary: "厂商峰值 FLOPS 不能证明目标框架可持续达到该利用率。",
+        },
+        {
+          name: "内存与带宽受限",
+          en: "Memory-bound",
+          mechanism: "高带宽内存读写、KV Cache 或激活搬运占主导，计算利用率可能看似不高但带宽已接近上限。",
+          decision: "比较显存容量、带宽、算子融合、精度和缓存管理；先优化数据移动，再盲目增加计算峰值。",
+          boundary: "显存更大解决容量，不必然提高带宽或端到端速度。",
+        },
+        {
+          name: "通信受限",
+          en: "Communication-bound",
+          mechanism: "增加卡数后集合通信和同步等待占比上升，扩展效率下降并对拓扑、拥塞和慢节点敏感。",
+          decision: "用 1、2、4、8 节点缩放曲线和通信 profile 验证，再决定高速互联、拓扑放置或改变并行策略。",
+          boundary: "单节点 benchmark 无法推导多节点训练或分布式推理效率。",
+        },
+        {
+          name: "存储与数据通路受限",
+          en: "I/O-bound",
+          mechanism: "设备等待数据、权重或 Checkpoint，作业在启动、保存或故障恢复阶段出现长空窗。",
+          decision: "测加载、预取、缓存、Checkpoint 和恢复吞吐，再权衡本地 NVMe、并行文件系统、对象存储与网络。",
+          boundary: "缓存后的稳态速度不能掩盖首次加载、数据更新和恢复路径。",
+        },
+      ],
+    },
+    {
+      kind: "checklist",
+      eyebrow: "PROCUREMENT PROOF",
+      title: "进入容量采购前必须交付的五项证据",
+      intro:
+        "没有这些证据，卡数、小时数和三年 TCO 都只是对未知负载的精确猜测。",
+      sourceIds: ["nist-genai-profile", "nvidia-gpu-operator", "flashattention-2022", "vllm-2023"],
+      maxColumns: 3,
+      items: [
+        {
+          name: "可重放工作负载",
+          en: "Replayable Workload",
+          mechanism: "冻结模型、框架、精度、输入输出分布、并行策略、SLO 和增长场景，形成训练或推理基准包。",
+          decision: "候选硬件必须运行同一版本；不能用不同 batch、量化或模型分别展示最优数字。",
+          boundary: "基准包需要随业务变化复核，不能永久代表未来负载。",
+        },
+        {
+          name: "端到端 Profile",
+          en: "End-to-end Profile",
+          mechanism: "同时记录计算、显存、带宽、通信、I/O、排队和失败，让每一段等待都能映射到资源层。",
+          decision: "投资优先解决当前主瓶颈，并预估瓶颈转移后的下一层，而不是所有资源等比例扩容。",
+          boundary: "采样过短或只看平均值会漏掉拥塞、Checkpoint 和尾部故障。",
+        },
+        {
+          name: "缩放效率曲线",
+          en: "Scaling Efficiency",
+          mechanism: "逐级增加卡和节点，记录有效吞吐、作业时间、通信占比、失败率和单位结果成本。",
+          decision: "在边际收益明显下降前确定经济集群规模，并为更大规模提供新的并行或网络证据。",
+          boundary: "卡数翻倍不等于性能翻倍，短跑峰值也不代表长作业稳定性。",
+        },
+        {
+          name: "故障与恢复演练",
+          en: "Failure Recovery Drill",
+          mechanism: "注入设备降级、节点退出、网络抖动和容量中断，测重试、Checkpoint、重排与数据一致性。",
+          decision: "将恢复时间、丢失工作量和失败重跑成本纳入容量与容灾方案。",
+          boundary: "基础组件自动修复不等于训练状态或业务请求已正确恢复。",
+        },
+        {
+          name: "可获得性与全成本",
+          en: "Supply and Full Cost",
+          mechanism: "把地域库存、交付周期、预留、Spot 中断、软件许可、网络存储、能耗、闲置和人员纳入同一模型。",
+          decision: "稳定基线、弹性峰值和灾备可采用不同采购方式，并以有效成功结果成本比较。",
+          boundary: "当前小时价和一次可用库存不能代表长期可交付容量。",
+        },
+      ],
+    },
+  ],
   criticalBoundary:
     "算力底座解决物理容量和数据通路，不决定作业优先级、GPU 共享、模型服务发布或业务效果。峰值 FLOPS、卡数和显存都不是单独的采购结论；必须用目标模型与软件栈验证有效性能、可用性和 TCO。",
   cloudHooks: [
@@ -1166,6 +1635,101 @@ export const aiInfraPlatformBrief = {
         "按业务等级建立队列、配额、预留与弹性溢出，分别观察有效作业利用率和端到端交付时间。",
       boundary:
         "总体利用率不能掩盖低优先级占满资源或高优先级频繁抢占造成的失败重跑。",
+    },
+  ],
+  deepDiveTitle: "解释排队与闲置的矛盾，并把底层升级变成可回滚发布",
+  deepDiveLead:
+    "平台常见的真实问题是“GPU 看似空闲，作业却拿不到资源”，以及驱动或运行时升级造成跨层回退；两者都不能只靠增加节点解决。",
+  deepDives: [
+    {
+      kind: "diagnostic",
+      eyebrow: "QUEUE WITHOUT CAPACITY",
+      title: "GPU 有空闲但作业仍排队的五类根因",
+      intro:
+        "总体空闲只说明集群中存在未使用设备，不说明这些设备在型号、拓扑、数量、健康、配额和时间上满足当前请求。",
+      sourceIds: ["kubernetes-dra", "nvidia-gpu-operator", "opentelemetry-semconv"],
+      items: [
+        {
+          name: "资源碎片无法成组",
+          en: "Gang Fragmentation",
+          mechanism: "空闲 GPU 分散在不同节点、型号或故障域，分布式作业需要的同构成组资源无法一次满足。",
+          decision: "同时观察空闲量与 pending request 的形状，验证拓扑放置、队列回填或工作负载拆分。",
+          boundary: "强行跨节点拼接可能降低通信性能并扩大故障域。",
+        },
+        {
+          name: "声明与设备属性不匹配",
+          en: "Unsatisfied Device Claim",
+          mechanism: "作业要求显存、型号、驱动、共享模式或拓扑属性，现有空闲设备不满足 ResourceClaim 或调度约束。",
+          decision: "输出可解释的未满足属性，并用真实 claim 在非关键池验证驱动与调度行为。",
+          boundary: "放宽约束前必须确认模型兼容、性能和隔离要求没有被破坏。",
+        },
+        {
+          name: "设备可见但不可用",
+          en: "Unhealthy Device",
+          mechanism: "节点仍注册资源，但驱动、设备插件、固件、监控或硬件健康异常，使工作负载启动后失败或被隔离。",
+          decision: "把设备健康、驱动栈和节点修复状态纳入调度证据，失败设备自动隔离并验证恢复。",
+          boundary: "重启节点可能暂时恢复，不代表根因或硬件退化已经消除。",
+        },
+        {
+          name: "配额与优先级阻塞",
+          en: "Quota and Priority Block",
+          mechanism: "物理容量空闲，但项目配额、保留池、优先级或抢占策略禁止当前团队使用。",
+          decision: "将物理空闲、可分配容量和组织可用配额分开显示，并审查是否符合业务优先级。",
+          boundary: "提高总体利用率不能绕过隔离、预算和关键业务预留。",
+        },
+        {
+          name: "启动链路占满交付时间",
+          en: "Startup-path Delay",
+          mechanism: "资源已分配，但镜像拉取、权重加载、数据挂载或网络准备耗时，用户仍感知为排队。",
+          decision: "在 trace 中区分 scheduler wait、device prepare、image、data 和 model load，再选择预热、缓存或镜像治理。",
+          boundary: "预热降低冷启动但会占用容量和存储，需按使用频率决定。",
+        },
+      ],
+    },
+    {
+      kind: "sequence",
+      eyebrow: "STACK UPGRADE",
+      title: "驱动、固件与运行时升级的五阶段发布",
+      intro:
+        "底层软件变化会影响设备发现、算子、通信、量化和模型结果；它应像生产应用一样有兼容清单、灰度和回滚。",
+      sourceIds: ["nvidia-gpu-operator", "kubernetes-dra", "vllm-2023", "opentelemetry-semconv"],
+      items: [
+        {
+          name: "冻结兼容清单",
+          en: "Compatibility Manifest",
+          mechanism: "绑定固件、驱动、容器工具链、设备插件、框架、推理引擎、模型和关键扩展版本。",
+          decision: "售前交付的不只是“支持某 GPU”，而是目标工作负载验证过的完整组合及责任边界。",
+          boundary: "厂商支持矩阵是初筛，不能代替客户镜像和模型测试。",
+        },
+        {
+          name: "建立隔离金丝雀池",
+          en: "Isolated Canary Pool",
+          mechanism: "选择少量独立节点升级，保持旧池可用，并阻止未经验证的工作负载自动迁入。",
+          decision: "先验证设备发现、ResourceClaim、监控、网络和存储，再开放模型任务。",
+          boundary: "单节点成功不能代表多节点通信、共享和故障恢复。",
+        },
+        {
+          name: "回放代表性任务",
+          en: "Representative Replay",
+          mechanism: "运行训练、在线推理、长上下文、量化和分布式样本，比较质量、吞吐、P95、显存和错误。",
+          decision: "对比必须使用固定制品和输入；性能改善若伴随质量或稳定性回退则不放量。",
+          boundary: "合成算子测试只能定位底层能力，不是完整发布门禁。",
+        },
+        {
+          name: "分批排空与推广",
+          en: "Drain and Promote",
+          mechanism: "按故障域逐批排空旧节点、迁移可恢复任务、升级并重新加入容量，持续监测队列和服务 SLO。",
+          decision: "训练作业依赖 Checkpoint，在线服务依赖冗余副本；两类负载使用不同排空策略。",
+          boundary: "强制中断不能假设上层框架一定具备正确恢复语义。",
+        },
+        {
+          name: "保留可执行回滚",
+          en: "Executable Rollback",
+          mechanism: "保存旧镜像、驱动与配置，定义触发阈值、回滚顺序和已写入新格式制品的兼容处理。",
+          decision: "在全面升级前实际演练一批节点回退，并确认调度器不会再次把任务送往故障池。",
+          boundary: "固件或数据格式变化可能不可简单回退，需要提前定义前向修复路径。",
+        },
+      ],
     },
   ],
   criticalBoundary:

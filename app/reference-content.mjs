@@ -492,6 +492,120 @@ export const sourceLedger = {
     note: "说明驱动、容器运行时、设备插件、监控和 GPU 软件栈的 Kubernetes 生命周期管理；兼容矩阵与功能随版本变化。",
     verifiedAt: "2026-07-17", href: "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html",
   },
+  "hyde-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "HyDE",
+    title: "Precise Zero-Shot Dense Retrieval without Relevance Labels",
+    note: "HyDE 先生成假设文档再检索真实语料；论文明确假设文档可能包含幻觉，因此它只能作为检索中介，不能作为回答证据。",
+    verifiedAt: "2026-07-17", href: "https://aclanthology.org/2023.acl-long.99/",
+  },
+  "azure-search-query-rewrite": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Azure 查询改写",
+    title: "Rewrite Queries with Semantic Ranker — Azure AI Search",
+    note: "说明生成式查询改写会保留原查询并产生替代查询，也警告改写可能遗漏唯一标识或产品代码；当前文档标注为预览能力。",
+    verifiedAt: "2026-07-17", href: "https://learn.microsoft.com/en-us/azure/search/semantic-how-to-query-rewrite",
+  },
+  "aws-bedrock-query-decomposition": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Bedrock 查询分解",
+    title: "Configure and Customize Queries and Response Generation — Amazon Bedrock",
+    note: "说明复杂查询可被拆成多个子查询，并可能执行多次知识库查询；它是可选产品能力，不代表所有请求都应启用。",
+    verifiedAt: "2026-07-17", href: "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html",
+  },
+  "alce-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "ALCE",
+    title: "Enabling Large Language Models to Generate Text with Citations",
+    note: "提出面向长文本生成的引用正确性与引用完整性评估；有链接不等于全部关键主张都获得证据支持。",
+    verifiedAt: "2026-07-17", href: "https://aclanthology.org/2023.emnlp-main.398/",
+  },
+  "aws-bedrock-kb-sync": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Bedrock 增量同步",
+    title: "Sync a Data Source — Amazon Bedrock",
+    note: "说明新增、修改或删除源文件后需要执行同步，增量任务只处理上次同步后的变化；任务完成仍需业务侧验证最终可检索状态。",
+    verifiedAt: "2026-07-17", href: "https://docs.aws.amazon.com/bedrock/latest/userguide/kb-managed-sync.html",
+  },
+  "azure-search-indexer-lifecycle": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Azure 索引器生命周期",
+    title: "Run or Reset Indexers — Azure AI Search",
+    note: "说明高水位增量检测、Reset 与删除孤儿文档的差异，并指出部分 ACL 变化不会更新时间戳；预览 API 不能作为跨云通用能力承诺。",
+    verifiedAt: "2026-07-17", href: "https://learn.microsoft.com/en-us/azure/search/search-howto-run-reset-indexers",
+  },
+  "azure-search-document-acl": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Azure 文档级访问控制",
+    title: "Document-Level Access Control — Azure AI Search",
+    note: "说明文档级授权过滤的产品实现方向；数据源、API 版本、预览状态和适用限制必须按部署时点核验。",
+    verifiedAt: "2026-07-17", href: "https://learn.microsoft.com/en-us/azure/search/search-document-level-access-overview",
+  },
+  "azure-search-index-alias": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Azure Index Alias",
+    title: "Create an Index Alias — Azure AI Search",
+    note: "说明通过稳定别名切换目标索引的产品机制，可用于蓝绿迁移；功能阶段和限制不应外推为所有云搜索服务的共同事实。",
+    verifiedAt: "2026-07-17", href: "https://learn.microsoft.com/en-us/azure/search/search-how-to-alias",
+  },
+  "openai-agents-run-loop": {
+    grade: "P", kind: "官方 SDK 文档", shortTitle: "OpenAI Agent Run Loop",
+    title: "Running Agents — OpenAI Agents SDK",
+    note: "说明模型输出、工具调用、Handoff、final_output 与 max_turns 组成的运行器循环；SDK 结束条件不等于客户业务后置条件已满足。",
+    verifiedAt: "2026-07-17", href: "https://openai.github.io/openai-agents-python/running_agents/",
+  },
+  "openai-agents-hitl": {
+    grade: "P", kind: "官方 SDK 文档", shortTitle: "OpenAI HITL",
+    title: "Human-in-the-Loop — OpenAI Agents SDK",
+    note: "说明工具审批导致 Run 暂停、保存状态并在批准或拒绝后恢复；审批仍需绑定具体动作、参数和业务权限。",
+    verifiedAt: "2026-07-17", href: "https://openai.github.io/openai-agents-python/human_in_the_loop/",
+  },
+  "a2a-task-lifecycle": {
+    grade: "O", kind: "官方协议文档", shortTitle: "A2A Task Lifecycle",
+    title: "Life of a Task — Agent2Agent Protocol",
+    note: "说明跨 Agent Task 的状态与终态语义；它可作为外部任务协议参考，但不规定 Agent 内部运行时实现。",
+    verifiedAt: "2026-07-17", href: "https://a2a-protocol.org/latest/topics/life-of-a-task/",
+  },
+  "openapi-3-1-1": {
+    grade: "O", kind: "开放标准", shortTitle: "OpenAPI 3.1.1",
+    title: "OpenAPI Specification v3.1.1",
+    note: "定义 HTTP API 的机器可读接口描述；输入输出结构不能替代授权、幂等、补偿或业务后置条件。",
+    verifiedAt: "2026-07-17", href: "https://spec.openapis.org/oas/v3.1.1.html",
+  },
+  "oauth-token-exchange": {
+    grade: "O", kind: "互联网标准", shortTitle: "OAuth Token Exchange",
+    title: "RFC 8693 — OAuth 2.0 Token Exchange",
+    note: "定义在受控条件下交换主体或执行者令牌的标准机制；不能把共享服务账号或宽权限令牌自动视为用户委托。",
+    verifiedAt: "2026-07-17", href: "https://www.rfc-editor.org/rfc/rfc8693.html",
+  },
+  "azure-durable-orchestration": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Durable Orchestration",
+    title: "Durable Orchestrations — Microsoft Azure",
+    note: "说明长期工作流的实例身份、事件历史、自动 Checkpoint、重放、外部事件和恢复；副作用活动仍需可重试与幂等设计。",
+    verifiedAt: "2026-07-17", href: "https://learn.microsoft.com/en-us/azure/durable-task/common/durable-task-orchestrations",
+  },
+  "azure-durable-hitl": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Durable Human Interaction",
+    title: "Human Interaction Pattern — Microsoft Azure Durable Task",
+    note: "说明长期流程等待外部人工事件、设置超时并继续执行的耐久交互模式；它提供运行机制，不替代审批政策。",
+    verifiedAt: "2026-07-17", href: "https://learn.microsoft.com/en-us/azure/durable-task/common/durable-task-human-interaction",
+  },
+  "openai-model-spec-command": {
+    grade: "O", kind: "官方模型行为规范", shortTitle: "OpenAI Model Spec",
+    title: "OpenAI Model Spec — Chain of Command",
+    note: "说明不同来源指令的权限层级和不可信数据边界；这是模型行为规范，不是企业 IAM、授权策略或跨厂商统一协议。",
+    verifiedAt: "2026-07-17", href: "https://model-spec.openai.com/",
+  },
+  "anthropic-tool-definitions": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Claude Tool Definitions",
+    title: "Define Tools — Claude Platform",
+    note: "说明工具名称、描述与输入 Schema 会进入模型上下文并影响工具选择；业务授权、幂等和执行后验证仍由应用负责。",
+    verifiedAt: "2026-07-17", href: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
+  },
+  "openai-eval-best-practices": {
+    grade: "P", kind: "官方工程指南", shortTitle: "OpenAI Evals 指南",
+    title: "Evaluation Best Practices — OpenAI API",
+    note: "支持任务特定、持续评估、生产分布样本和人工校准，并警告只靠主观观感或通用指标；示例阈值不能直接作为客户门槛。",
+    verifiedAt: "2026-07-17", href: "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+  },
+  "openai-source-sink-injection": {
+    grade: "O", kind: "官方安全工程文章", shortTitle: "Source–Sink 注入分析",
+    title: "Designing AI Agents to Resist Prompt Injection",
+    note: "把提示注入建模为不可信 Source 与危险 Sink 的组合，并强调即使检测失败也要通过权限、确认和确定性控制限制影响。",
+    verifiedAt: "2026-07-17", href: "https://openai.com/index/designing-agents-to-resist-prompt-injection/",
+  },
 };
 
 const referenceShortTitles = Object.freeze({
@@ -545,6 +659,7 @@ function contentSourceIds(slug) {
   return [
     ...content.evidenceCards.map((card) => card.sourceId),
     ...content.qa.flatMap((item) => item.evidence.map((reference) => reference.sourceId)),
+    ...(content.deepDives ?? []).flatMap((block) => block.sourceIds ?? []),
   ];
 }
 

@@ -6,7 +6,8 @@ import { notFound } from "next/navigation";
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../knowledge-map.mjs";
 import { balanceRows } from "../../layout-utils.mjs";
 import { requireModuleBrief } from "../../module-brief-content.mjs";
-import { CriticalBoundary, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import type { DeepDiveBlock } from "../../module-content-components";
 import { getPublishedModule, hasDedicatedModule } from "../../module-publication.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { requireTerm } from "../../terminology.mjs";
@@ -67,6 +68,9 @@ type ModuleBrief = {
   relatedSlugs: string[];
   qa: BriefQaItem[];
   evidenceCards: BriefEvidenceCard[];
+  deepDiveTitle?: string;
+  deepDiveLead?: string;
+  deepDives?: DeepDiveBlock[];
 };
 
 type KnowledgeModule = {
@@ -148,6 +152,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
     .filter((related): related is KnowledgeModule => Boolean(related && related.canonicalSlug !== currentModule.canonicalSlug));
   const relatedRows = balanceRows(relatedModules, 4);
   const terms = publication.requiredTerms.map((termId: string) => requireTerm(termId) as Term);
+  const hasDeepDives = Boolean(brief.deepDives?.length);
 
   return (
     <main className="modulePage moduleBriefPage">
@@ -157,7 +162,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
           <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">高频问答</a><Link href="/references">Reference</Link></div>
         </nav>
         <div className="moduleBriefHeader">
-          <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V1.0</p>
+          <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V1.1</p>
           <h1 className="moduleHeroTitle" id={publication.titleId}>{currentModule.zh}<span>{currentModule.en}</span></h1>
           <p className="moduleBriefDefinition">{brief.definition}</p>
           <p className="moduleBriefPosition">{brief.position}</p>
@@ -190,13 +195,21 @@ export default async function ModulePage({ params }: ModulePageProps) {
         <CriticalBoundary>{brief.criticalBoundary}</CriticalBoundary>
       </section>
 
+      {hasDeepDives ? (
+        <section className="subsection moduleBriefSection" id="deep-dive" data-quality-section="deep-dive">
+          <div className="subHead"><span>04</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h2>{brief.deepDiveTitle ?? "进一步理解与工程判断"}</h2></div></div>
+          {brief.deepDiveLead ? <p className="sectionLead">{brief.deepDiveLead}</p> : null}
+          <ModuleDeepDiveBlocks blocks={brief.deepDives ?? []} sourceLedger={sourceLedger} />
+        </section>
+      ) : null}
+
       <section className="subsection moduleBriefSection" id="evidence" data-quality-section="evidence">
-        <div className="subHead"><span>04</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h2>证据与适用边界</h2></div></div>
+        <div className="subHead"><span>{hasDeepDives ? "05" : "04"}</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h2>证据与适用边界</h2></div></div>
         <ModuleEvidenceGrid cards={brief.evidenceCards} sourceLedger={sourceLedger} maxColumns={3} />
       </section>
 
       <section className="subsection moduleBriefSection cloudSection" id="cloud" data-quality-section="cloud">
-        <div className="subHead"><span>05</span><div><p className="kicker">CLOUD CONNECTION</p><h2>云服务连接</h2></div></div>
+        <div className="subHead"><span>{hasDeepDives ? "06" : "05"}</span><div><p className="kicker">CLOUD CONNECTION</p><h2>云服务连接</h2></div></div>
         <p className="sectionLead">先识别能力、客户价值和验收方式，再映射到目标云当期可用产品；地域、配额、SLA 与价格需要在采购时点重新核验。</p>
         <div className="tableWrap"><table><thead><tr><th>技术环节</th><th>可连接的云能力</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
           {brief.cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
@@ -204,11 +217,11 @@ export default async function ModulePage({ params }: ModulePageProps) {
       </section>
 
       <section className="subsection moduleBriefSection qaSection" id="qa" data-quality-section="qa">
-        <div className="subHead"><span>06</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>客户高频问题与深度回答</h2></div></div>
+        <div className="subHead"><span>{hasDeepDives ? "07" : "06"}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>客户高频问题与深度回答</h2></div></div>
         <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} />
       </section>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V1.0</p><a href="#top">返回顶部 ↑</a></footer>
+      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V1.1</p><a href="#top">返回顶部 ↑</a></footer>
     </main>
   );
 }
