@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 
 import { ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "./fieldbook-interactions";
-import { balanceRows } from "./layout-utils.mjs";
+import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { layers, moduleList } from "./knowledge-map.mjs";
 import { moduleContentRegistry } from "./module-content-registry.mjs";
 import { moduleDiscovery } from "./module-discovery.mjs";
@@ -142,8 +142,8 @@ export default function Home() {
                 <div className="layerTitle"><h3>{layer.name}</h3><p>{layer.en}</p></div>
                 <div className="layerContent">
                   <div className="chips" data-count={layer.modules.length} data-odd={layer.modules.length % 2 === 1 ? "true" : "false"}>
-                    {balanceRows(layer.modules, 4).flatMap((row) => row.map((module) => (
-                      <Link key={module.slug} href={module.href} style={{ "--module-span": 12 / row.length } as CSSProperties} aria-label={`${module.zh}：打开独立模块页面`}>
+                    {balanceGridRows(layer.modules, 4).flatMap((row) => row.map((module) => (
+                      <Link key={module.slug} href={module.href} style={{ "--module-span": gridSpan(row.length) } as CSSProperties} aria-label={`${module.zh}：打开独立模块页面`}>
                         <strong>{module.zh}</strong><small>{module.en}</small><i aria-hidden="true">↗</i>
                       </Link>
                     )))}

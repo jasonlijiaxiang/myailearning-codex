@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
-import { balanceRows } from "../app/layout-utils.mjs";
+import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
@@ -44,6 +44,19 @@ function escapeHtmlText(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
+function assertValidGridSpans(html, path) {
+  const spanDeclarations = [...html.matchAll(/--(?:module|concept|mechanic|balanced|evidence|qa-evidence|related|brief|reference|result|search)-span:([^;"']+)/g)];
+
+  for (const declaration of spanDeclarations) {
+    const value = Number(declaration[1]);
+    assert.ok(Number.isInteger(value) && value >= 1 && value <= 12 && 12 % value === 0, `${path} 出现非法 Grid span：${declaration[0]}`);
+  }
+
+  for (const openingTag of html.matchAll(/<div\b[^>]*class="[^"]*\bmechanicGrid\b[^"]*"[^>]*>/g)) {
+    assert.match(openingTag[0], /data-count="\d+"/, `${path} 的 mechanicGrid 必须声明真实卡片数量`);
+  }
+}
+
 const publishedModules = publishedModuleRegistry.map((module) => {
   const content = requireModuleContent(module.slug);
   return { ...module, id: module.slug, cards: content.evidenceCards, qa: content.qa, deepDives: content.deepDives };
@@ -65,6 +78,7 @@ function collectModuleSourceIds({ cards, qa, deepDives }) {
 
 test("homepage is a focused knowledge map with links to every independent module", async () => {
   const html = await renderHtml("/");
+  assertValidGridSpans(html, "/");
   const homepageSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
   assert.match(html, /<html lang="zh-CN">/i);
@@ -108,6 +122,7 @@ test("homepage is a focused knowledge map with links to every independent module
 
 test("RAG route contains principles, cloud-service opportunities, and evidence-backed answers", async () => {
   const html = await renderHtml("/modules/rag");
+  assertValidGridSpans(html, "/modules/rag");
 
   assert.match(html, /检索增强生成 · Retrieval-Augmented Generation/);
   assert.match(html, /RAG 的工作原理与工程机制/);
@@ -239,6 +254,7 @@ test("every published module passes the shared reader, terminology, and depth co
     assert.ok(referenceModules.some((module) => module.id === publishedModule.slug), `缺少 Reference 分组：${publishedModule.slug}`);
 
     const html = await renderHtml(publishedModule.path);
+    assertValidGridSpans(html, publishedModule.path);
     assert.equal((html.match(/<h1\b/g) ?? []).length, 1, `每个正式模块只能有一个主标题：${publishedModule.slug}`);
     assert.match(html, new RegExp(`<h1[^>]*id="${escapeRegExp(publishedModule.titleId)}"`));
 
@@ -512,6 +528,28 @@ test("balances arbitrary card counts without hard-coded even or odd layouts", ()
   assert.throws(() => balanceRows([1], 0), /positive integer/);
 });
 
+test("balances arbitrary CSS Grid counts without fractional or missing spans", () => {
+  for (let maxColumns = 1; maxColumns <= 12; maxColumns += 1) {
+    for (let count = 0; count <= 60; count += 1) {
+      const items = Array.from({ length: count }, (_, index) => index);
+      const rows = balanceGridRows(items, maxColumns);
+
+      assert.deepEqual(rows.flat(), items, `Grid 布局必须保持原顺序：${count} / ${maxColumns}`);
+
+      if (rows.length > 0) {
+        const sizes = rows.map((row) => row.length);
+        assert.ok(Math.max(...sizes) <= maxColumns);
+        assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1, `Grid 各行数量差不能超过 1：${count} / ${maxColumns}`);
+        for (const row of rows) assert.ok(Number.isInteger(gridSpan(row.length)), `Grid span 必须为整数：${row.length}`);
+      }
+    }
+  }
+
+  assert.deepEqual(balanceGridRows([1, 2, 3, 4, 5], 5).map((row) => row.length), [3, 2]);
+  assert.throws(() => gridSpan(5), /must divide/);
+  assert.throws(() => balanceGridRows([1], 0), /positive integer/);
+});
+
 test("keeps module systems dynamically balanced, searchable, and navigable on mobile", async () => {
   const [styles, v2Styles, homepage, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
@@ -528,22 +566,29 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(genericModuleRoute, /hasDedicatedModule\(currentModule\.canonicalSlug\)/);
   assert.match(genericModuleRoute, /legacyModuleAliases/);
   assert.doesNotMatch(genericModuleRoute, /href="\/modules\/rag"/);
-  assert.match(genericModuleRoute, /const relatedRows = balanceRows\(relatedModules, 4\)/);
-  assert.match(genericModuleRoute, /"--related-span": 12 \/ row\.length/);
+  assert.match(genericModuleRoute, /const relatedRows = balanceGridRows\(relatedModules, 4\)/);
+  assert.match(genericModuleRoute, /"--related-span": gridSpan\(row\.length\)/);
   assert.match(genericModuleRoute, /data-odd=\{relatedModules\.length % 2 === 1/);
-  assert.match(referencesRoute, /const referenceModuleRows = balanceRows\(referenceModules, 4\)/);
-  assert.match(referencesRoute, /"--reference-span": 12 \/ row\.length/);
+  assert.match(referencesRoute, /const referenceModuleRows = balanceGridRows\(referenceModules, 4\)/);
+  assert.match(referencesRoute, /"--reference-span": gridSpan\(row\.length\)/);
   assert.match(referencesRoute, /data-odd=\{referenceModules\.length % 2 === 1/);
   assert.match(moduleComponents, /if \(cards\.length === 0\) return null/);
-  assert.match(moduleComponents, /const rows = balanceRows\(cards, maxColumns\)/);
-  assert.match(moduleComponents, /const rows = balanceRows\(items, maxColumns\)/);
-  assert.match(moduleComponents, /balanceRows\(item\.evidence, 3\)/);
-  assert.match(moduleComponents, /"--evidence-span": 12 \/ row\.length/);
-  assert.match(moduleComponents, /"--qa-evidence-span": 12 \/ row\.length/);
+  assert.match(moduleComponents, /const rows = balanceGridRows\(cards, maxColumns\)/);
+  assert.match(moduleComponents, /const rows = balanceGridRows\(items, maxColumns\)/);
+  assert.match(moduleComponents, /balanceGridRows\(item\.evidence, 3\)/);
+  assert.match(moduleComponents, /"--evidence-span": gridSpan\(row\.length\)/);
+  assert.match(moduleComponents, /"--qa-evidence-span": gridSpan\(row\.length\)/);
   assert.match(moduleComponents, /data-importance="critical"/);
   assert.match(moduleComponents, /className="balancedGridCell"/);
   assert.match(styles, /\.mechanicGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
   assert.match(styles, /\.balancedGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  for (const [source, variable] of [[styles, "module"], [styles, "concept"], [styles, "mechanic"], [styles, "balanced"], [styles, "evidence"], [styles, "qa-evidence"], [styles, "related"], [styles, "brief"], [styles, "reference"], [v2Styles, "result"], [v2Styles, "search"]]) {
+    assert.match(source, new RegExp(`var\\(--${variable}-span,\\s*12\\)`), `--${variable}-span 必须有通栏 fallback`);
+  }
+  assert.match(v2Styles, /container-type:\s*inline-size/);
+  assert.match(v2Styles, /@container \(max-width: 900px\)/);
+  assert.match(v2Styles, /@container \(max-width: 620px\)/);
+  assert.match(v2Styles, /\.subHead h2, \.subHead h3\s*\{[^}]*5cqi[^}]*text-wrap:\s*balance/s);
   assert.match(homepage, /explorerModules/);
   assert.match(homepage, /publishedModuleSlugs\.map/);
   assert.match(homepage, /knowledgeSearchEntries/);
@@ -555,8 +600,8 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(interactions, /export function SystemLens/);
   assert.match(interactions, /export function QaFilterShell/);
   assert.match(interactions, /export function ReferenceFilterShell/);
-  assert.match(v2Styles, /\.moduleResultGrid\s*\{[^}]*grid-template-columns:\s*repeat\(3,/s);
-  assert.match(v2Styles, /@media \(max-width: 720px\)[\s\S]*?\.moduleResultGrid\s*\{[^}]*grid-template-columns:\s*1fr;/s);
+  assert.match(v2Styles, /\.moduleResultGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(v2Styles, /@media \(max-width: 720px\)[\s\S]*?\.moduleResult,[\s\S]*?grid-column:\s*span 12;/s);
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*font-size:\s*var\(--module-title-size,/s);
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*line-height:\s*1;/s);
   assert.doesNotMatch(styles, /#[a-z-]+-title\s*\{/);
@@ -646,7 +691,7 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(moduleStandard, /技术环节—云能力—客户价值—发现问题—验收指标/);
   assert.match(moduleStandard, /每道问题至少包含/);
   assert.match(moduleStandard, /公式必须同时满足以下条件/);
-  assert.match(moduleStandard, /balanceRows\(items, maxColumns\)/);
+  assert.match(moduleStandard, /balanceGridRows\(items, maxColumns\)/);
   assert.match(moduleStandard, /内部巡检流程、责任人、字段 schema、发布步骤和构建状态不得公开/);
   assert.match(moduleStandard, /MODULE-QUALITY-GATES\.md/);
   assert.match(moduleStandard, /发布注册/);

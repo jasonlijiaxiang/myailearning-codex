@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../knowledge-map.mjs";
-import { balanceRows } from "../../layout-utils.mjs";
+import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { requireModuleBrief } from "../../module-brief-content.mjs";
 import { CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import type { DeepDiveBlock } from "../../module-content-components";
@@ -127,11 +127,11 @@ function PrincipleView({ brief }: { brief: ModuleBrief }) {
     );
   }
 
-  const rows = balanceRows(brief.principles, brief.presentation === "spectrum" ? 5 : 3);
+  const rows = balanceGridRows(brief.principles, brief.presentation === "spectrum" ? 5 : 3);
   return (
     <div className={`briefPrinciples briefPrinciples--${brief.presentation}`} data-count={brief.principles.length} data-odd={brief.principles.length % 2 === 1 ? "true" : "false"}>
       {(rows as BriefPrinciple[][]).flatMap((row) => row.map((item) => (
-        <article key={item.en} style={{ "--brief-span": 12 / row.length } as CSSProperties}>
+        <article key={item.en} style={{ "--brief-span": gridSpan(row.length) } as CSSProperties}>
           <p className="miniLabel">{item.en}</p><h4>{item.zh}</h4><p>{item.explanation}</p><strong>售前判断：{item.decision}</strong>
         </article>
       )))}
@@ -151,7 +151,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const relatedModules = brief.relatedSlugs
     .map((relatedSlug) => getModuleBySlug(relatedSlug) as KnowledgeModule | undefined)
     .filter((related): related is KnowledgeModule => Boolean(related && related.canonicalSlug !== currentModule.canonicalSlug));
-  const relatedRows = balanceRows(relatedModules, 4);
+  const relatedRows = balanceGridRows(relatedModules, 4);
   const terms = publication.requiredTerms.map((termId: string) => requireTerm(termId) as Term);
   const hasDeepDives = Boolean(brief.deepDives?.length);
   const readingSections: ReadingSection[] = [
@@ -217,7 +217,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
         <div className="subHead"><span>01</span><div><p className="kicker">RELATED MODULES</p><h2 id="related-modules-title">相关模块</h2></div></div>
         <div className="relatedModuleGrid" data-count={relatedModules.length} data-odd={relatedModules.length % 2 === 1 ? "true" : "false"}>
           {(relatedRows as KnowledgeModule[][]).flatMap((row) => row.map((related) => (
-            <Link href={related.href} key={related.slug} style={{ "--related-span": 12 / row.length } as CSSProperties}>
+            <Link href={related.href} key={related.slug} style={{ "--related-span": gridSpan(row.length) } as CSSProperties}>
               <span>{related.layerNo}</span><strong>{related.zh}</strong><small>{related.en}</small>
             </Link>
           )))}

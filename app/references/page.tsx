@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 
 import { ReadingProgress, ReferenceFilterShell, type ReferenceFilterItem } from "../fieldbook-interactions";
-import { balanceRows } from "../layout-utils.mjs";
+import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
 import { referenceModules, sourceLedger } from "../reference-content.mjs";
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ const evidenceLegend = [
   },
 ];
 
-const referenceModuleRows = balanceRows(referenceModules, 4);
+const referenceModuleRows = balanceGridRows(referenceModules, 4);
 const sourceAnchorOwner = new Map<string, string>();
 
 for (const referenceModule of referenceModules) {
@@ -137,7 +137,7 @@ export default function ReferencesPage() {
                     className="referenceModuleLink"
                     href={`#module-${module.id}`}
                     key={module.id}
-                    style={{ "--reference-span": 12 / row.length } as CSSProperties}
+                    style={{ "--reference-span": gridSpan(row.length) } as CSSProperties}
                   >
                     <span>{module.shortTitle}</span>
                     <strong>{module.zh}</strong>

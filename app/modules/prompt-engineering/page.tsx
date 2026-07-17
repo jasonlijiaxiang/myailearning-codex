@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { balanceRows } from "../../layout-utils.mjs";
+import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { PromptAssemblyLab } from "../../flagship-labs";
@@ -25,7 +25,7 @@ const conceptLinks = [
   { concept: "AI 可观测与运营", owner: "AI 可观测与运营", href: "/modules/ai-ops", relation: "运营闭环", local: "关联提示版本、模型、输入、输出、时延、质量和单次成功成本。" },
 ];
 
-const conceptRows = balanceRows(conceptLinks, 4);
+const conceptRows = balanceGridRows(conceptLinks, 4);
 
 const promptPatterns = [
   { name: "零样本提示 · Zero-shot Prompting", cue: "先建最小基线", pipeline: "目标 + 输入 + 约束 + 输出要求", boundary: "适合先做最小基线；复杂边界仅靠文字描述可能不稳定。" },
@@ -42,7 +42,7 @@ const messageResponsibilities = [
   { code: "D", title: "应用控制 · Application Control", body: "身份、授权、工具执行、数据写入、输出校验和最终业务动作必须由确定性系统执行，不能委托给自然语言提示。", control: "主归属：安全治理 / API / Agent / 工作流" },
 ];
 
-const messageResponsibilityRows = balanceRows(messageResponsibilities, 4);
+const messageResponsibilityRows = balanceGridRows(messageResponsibilities, 4);
 
 const techniqueLadder = [
   { symptom: "任务目标或输出边界含糊", technique: "Zero-shot 基线", change: "明确任务、输入、约束、成功标准和输出契约", boundary: "先证明基础表达是否足够，不先堆技巧。" },
@@ -189,7 +189,7 @@ export default function PromptEngineeringModulePage() {
             <p className="sectionLead">本模块聚焦“如何表达任务并治理模型输入”。知识检索、Agent 规划、API 授权、模型推理和评估各有独立主模块；这里给出必要连接，避免把整个 AI 应用都误称为 Prompt Engineering。</p>
             <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
               {conceptRows.flatMap((row) => row.map((item) => (
-                <article key={item.concept} style={{ "--concept-span": 12 / row.length } as CSSProperties}>
+                <article key={item.concept} style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}>
                   <div className="conceptCard">
                     <div className="conceptMeta"><span>{item.relation}</span><Link href={item.href}>{item.owner} ↗</Link></div>
                     <h4>{item.concept}</h4>
@@ -236,7 +236,7 @@ export default function PromptEngineeringModulePage() {
             <div className="subHead"><span>5.3</span><div><p className="kicker">MESSAGE &amp; RESPONSIBILITY</p><h3>消息、指令与应用责任</h3></div></div>
             <div className="mechanicGrid" data-count={messageResponsibilities.length} data-odd={messageResponsibilities.length % 2 === 1 ? "true" : "false"}>
               {messageResponsibilityRows.flatMap((row) => row.map((item, index) => (
-                <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": 12 / row.length } as CSSProperties}>
+                <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": gridSpan(row.length) } as CSSProperties}>
                   <span className="mechanicNo">{item.code}</span><h4>{item.title}</h4><p>{item.body}</p><small>{item.control}</small>
                 </article>
               )))}

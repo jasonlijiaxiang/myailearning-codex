@@ -1,7 +1,7 @@
 import { Children, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 
-import { balanceRows } from "./layout-utils.mjs";
+import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { QaFilterShell } from "./fieldbook-interactions";
 
 type SourceSummary = {
@@ -82,7 +82,7 @@ export function BalancedGrid({
   const items = Children.toArray(children);
   if (items.length === 0) return null;
 
-  const rows = balanceRows(items, maxColumns);
+  const rows = balanceGridRows(items, maxColumns);
 
   return (
     <div
@@ -95,7 +95,7 @@ export function BalancedGrid({
           <div
             className="balancedGridCell"
             key={`${rowIndex}-${index}`}
-            style={{ "--balanced-span": 12 / row.length } as CSSProperties}
+            style={{ "--balanced-span": gridSpan(row.length) } as CSSProperties}
           >
             {item}
           </div>
@@ -204,7 +204,7 @@ export function ModuleEvidenceGrid({
 }) {
   if (cards.length === 0) return null;
 
-  const rows = balanceRows(cards, maxColumns);
+  const rows = balanceGridRows(cards, maxColumns);
 
   return (
     <div className="evidenceGrid" data-count={cards.length} data-odd={cards.length % 2 === 1 ? "true" : "false"}>
@@ -216,7 +216,7 @@ export function ModuleEvidenceGrid({
             <article
               className={`metricCard${card.accent ? " accent" : ""}`}
               key={card.title}
-              style={{ "--evidence-span": 12 / row.length } as CSSProperties}
+              style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}
             >
               <p className="metric">{card.metric}</p>
               <h4>{card.title}</h4>
@@ -254,7 +254,7 @@ export function ModuleQaList({ items, sourceLedger }: { items: QaItem[]; sourceL
                 <span>{item.basis}</span>
               </div>
               <div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>
-                {balanceRows(item.evidence, 3).flatMap((row) =>
+                {balanceGridRows(item.evidence, 3).flatMap((row) =>
                   row.map((reference) => {
                     const source = requireSource(sourceLedger, reference.sourceId);
 
@@ -262,7 +262,7 @@ export function ModuleQaList({ items, sourceLedger }: { items: QaItem[]; sourceL
                       <Link
                         href={`/references#source-${reference.sourceId}`}
                         key={reference.sourceId}
-                        style={{ "--qa-evidence-span": 12 / row.length } as CSSProperties}
+                        style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}
                       >
                         <span className="qaEvidenceMeta">{source.grade} · {source.kind}</span>
                         <strong>{source.shortTitle}</strong>

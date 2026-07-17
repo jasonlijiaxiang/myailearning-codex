@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../agent-content.mjs";
-import { balanceRows } from "../../layout-utils.mjs";
+import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { AgentRunLab } from "../../flagship-labs";
@@ -25,7 +25,7 @@ const conceptLinks = [
   { concept: "身份与授权", owner: "AI 安全", href: "/modules/security", relation: "执行边界", local: "应用在每次工具调用前绑定主体、验证权限、执行策略并留下审计证据。" },
 ];
 
-const conceptRows = balanceRows(conceptLinks, 4);
+const conceptRows = balanceGridRows(conceptLinks, 4);
 
 const agentLoop = [
   { zh: "感知", en: "Perceive" },
@@ -82,7 +82,7 @@ const agentActions = [
   },
 ];
 
-const agentActionRows = balanceRows(agentActions, 2);
+const agentActionRows = balanceGridRows(agentActions, 2);
 
 const architecturePatterns = [
   { name: "确定性工作流 · Deterministic Workflow", cue: "步骤清楚、规则稳定、错误代价高", pipeline: "固定步骤 → 条件分支 → 人工审批", boundary: "最易测试和审计；不要为追求 Agent 标签而增加自治。" },
@@ -127,7 +127,7 @@ const coreCapabilities = [
   },
 ];
 
-const coreCapabilityRows = balanceRows(coreCapabilities, 4);
+const coreCapabilityRows = balanceGridRows(coreCapabilities, 4);
 
 const memoryLayers = [
   { layer: "当前任务状态", en: "Work State", stores: "目标、当前步骤、工具结果、预算、停止原因", read: "每一轮", write: "运行时在检查点更新", boundary: "任务结束后按审计与恢复要求保留；不能冒充业务事实源。" },
@@ -264,7 +264,7 @@ export default function AgentModulePage() {
             <p className="sectionLead">Agent 聚焦“由模型动态管理任务执行”。模型、Prompt、RAG、协议、身份与评估各有独立主模块；这里解释它们如何在一个可执行系统中协作。</p>
             <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
               {conceptRows.flatMap((row) => row.map((item) => (
-                <article key={item.concept} style={{ "--concept-span": 12 / row.length } as CSSProperties}>
+                <article key={item.concept} style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}>
                   <div className="conceptCard">
                     <div className="conceptMeta"><span>{item.relation}</span><Link href={item.href}>{item.owner} ↗</Link></div>
                     <h4>{item.concept}</h4><p>{item.local}</p>
@@ -306,7 +306,7 @@ export default function AgentModulePage() {
               <p className="paperBoundary"><strong>术语边界：</strong>为了教学，这里把<strong>感知（Perceive）</strong>定义为“把用户、事件和多模态输入标准化为当前任务状态”，把<strong>观察（Observe）</strong>定义为“读取工具与环境返回的 ground truth，更新状态并判断继续或终止”。不同框架可能把两者统称为 observation、context 或 state update，评估产品时应看实际数据流，不只看名称。</p>
               <div className="mechanicGrid" data-count={agentActions.length} data-odd={agentActions.length % 2 === 1 ? "true" : "false"}>
                 {agentActionRows.flatMap((row) => row.map((item, index) => (
-                  <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": 12 / row.length } as CSSProperties}>
+                  <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": gridSpan(row.length) } as CSSProperties}>
                     <span className="mechanicNo">{item.code}</span>
                     <h4>{item.title}</h4>
                     <p><strong>定义：</strong>{item.definition}</p>
@@ -361,7 +361,7 @@ export default function AgentModulePage() {
             <p className="sectionLead">四个动作描述 Agent 每一轮“做什么”，三类组件说明它“靠什么持续完成多步任务”。规划决定路径，记忆保留必要信息，工具连接外部世界；三者共享一个可恢复、可审计的运行状态（Run State）。</p>
             <div className="mechanicGrid" data-count={coreCapabilities.length} data-odd={coreCapabilities.length % 2 === 1 ? "true" : "false"}>
               {coreCapabilityRows.flatMap((row) => row.map((item, index) => (
-                <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": 12 / row.length } as CSSProperties}>
+                <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": gridSpan(row.length) } as CSSProperties}>
                   <span className="mechanicNo">{item.code}</span>
                   <h4>{item.title}</h4>
                   <p><strong>定义：</strong>{item.definition}</p>

@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { balanceRows } from "../../layout-utils.mjs";
+import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { RagRetrievalLab } from "../../flagship-labs";
@@ -25,7 +25,7 @@ const conceptLinks = [
   { concept: "容器、Serverless 与算力", owner: "AI 基础设施平台", href: "/modules/ai-infra-platform", relation: "运行底座", local: "承载解析任务、检索服务、模型推理和峰值弹性。" },
 ];
 
-const conceptRows = balanceRows(conceptLinks, 4);
+const conceptRows = balanceGridRows(conceptLinks, 4);
 
 const ragVariants = [
   { name: "Naive RAG", cue: "单次查询、单一知识源、快速基线", pipeline: "切块 → 向量检索 → Top-K → 生成", boundary: "实现快，但容易受切块、召回和噪声影响。" },
@@ -60,6 +60,39 @@ const servingFlow = [
   { zh: "上下文组装", en: "Context Assembly" },
   { zh: "生成 / 引用 / 拒答", en: "Generation / Citation / Abstention" },
 ];
+
+const retrievalMechanics = [
+  {
+    code: "A",
+    title: "解析与切块",
+    en: "Parsing & Chunking",
+    body: "解析保留文字、表格、标题、页码和版面关系；切块把文档变成可召回单元。块太小会丢上下文，太大则稀释相关信息并增加 token。",
+    owner: "主归属：数据解析 / OCR / 质量运营",
+  },
+  {
+    code: "B",
+    title: "稀疏检索",
+    en: "Sparse Retrieval",
+    body: "BM25 根据查询词在文档中的出现、稀有程度和文档长度评分。对编号、专有名词、错误码、日期和精确短语通常很强。",
+    owner: "主归属：搜索与索引",
+  },
+  {
+    code: "C",
+    title: "稠密检索",
+    en: "Dense Retrieval",
+    body: "双编码器把查询与文档映射为向量，以距离寻找语义相近内容。能跨同义表达，但会混淆“语义相似”和“事实相关”。",
+    owner: "主归属：Embedding / 向量数据库",
+  },
+  {
+    code: "D",
+    title: "过滤与重排",
+    en: "Filtering & Reranking",
+    body: "先用高吞吐检索取候选，再用更精细模型比较问题与候选；权限、时间、产品和地区过滤必须在上下文组装前生效。",
+    owner: "主归属：检索工程 / 安全",
+  },
+];
+
+const retrievalMechanicRows = balanceGridRows(retrievalMechanics, 4);
 
 const ragFailureChain = [
   { stage: "源数据与解析", symptom: "文档存在，但正确段落从未出现在索引", check: "解析保真、页码 / 表格 / 标题、版本与删除状态", action: "按文档类型路由解析，保留来源坐标与失败队列" },
@@ -193,7 +226,7 @@ export default function RagModulePage() {
                   row.map((item) => (
                     <article
                       key={item.concept}
-                      style={{ "--concept-span": 12 / row.length } as CSSProperties}
+                      style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}
                     >
                       <div className="conceptCard">
                         <div className="conceptMeta"><span>{item.relation}</span><Link href={item.href}>{item.owner} ↗</Link></div>
@@ -285,11 +318,19 @@ export default function RagModulePage() {
 
           <div className="subsection" id="retrieval-basics">
             <div className="subHead"><span>2.3</span><div><p className="kicker">RETRIEVAL MECHANICS</p><h3>检索链的证据形成与失效机制</h3></div></div>
-            <div className="mechanicGrid">
-              <article><span className="mechanicNo">A</span><h4>解析与切块</h4><p>解析保留文字、表格、标题、页码和版面关系；切块把文档变成可召回单元。块太小会丢上下文，太大则稀释相关信息并增加 token。</p><small>主归属：数据解析 / OCR / 质量运营</small></article>
-              <article><span className="mechanicNo">B</span><h4>稀疏检索 · Sparse Retrieval</h4><p>BM25 根据查询词在文档中的出现、稀有程度和文档长度评分。对编号、专有名词、错误码、日期和精确短语通常很强。</p><small>主归属：搜索与索引</small></article>
-              <article><span className="mechanicNo">C</span><h4>稠密检索 · Dense Retrieval</h4><p>双编码器把查询与文档映射为向量，以距离寻找语义相近内容。能跨同义表达，但会混淆“语义相似”和“事实相关”。</p><small>主归属：Embedding / 向量数据库</small></article>
-              <article><span className="mechanicNo">D</span><h4>过滤与重排</h4><p>先用高吞吐检索取候选，再用更精细模型比较问题与候选；权限、时间、产品和地区过滤必须在上下文组装前生效。</p><small>主归属：检索工程 / 安全</small></article>
+            <div className="mechanicGrid" data-count={retrievalMechanics.length} data-odd={retrievalMechanics.length % 2 === 1 ? "true" : "false"}>
+              {retrievalMechanicRows.flatMap((row) => row.map((item, index) => (
+                <article
+                  className={index === row.length - 1 ? "mechanicRowEnd" : undefined}
+                  key={item.code}
+                  style={{ "--mechanic-span": gridSpan(row.length) } as CSSProperties}
+                >
+                  <span className="mechanicNo">{item.code}</span>
+                  <h4>{item.title}<small>{item.en}</small></h4>
+                  <p>{item.body}</p>
+                  <small>{item.owner}</small>
+                </article>
+              ))) }
             </div>
 
             <div className="retrievalCompare tableWrap">

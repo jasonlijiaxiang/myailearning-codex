@@ -80,15 +80,15 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .knowledgeSearchResults > header { display: flex; justify-content: space-between; gap: 20px; padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,.22); }
 .knowledgeSearchResults > header strong { font-size: 15px; }
 .knowledgeSearchResults > header span { color: rgba(255,255,255,.58); font-size: 12px; }
-.knowledgeSearchResults > div { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
-.knowledgeSearchResults a { position: relative; min-width: 0; padding: 20px 50px 20px 22px; display: grid; gap: 4px; color: var(--white); text-decoration: none; border-right: 1px solid rgba(255,255,255,.18); border-bottom: 1px solid rgba(255,255,255,.18); }
+.knowledgeSearchResults > div { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); }
+.knowledgeSearchResults a { grid-column: span var(--search-span, 12); position: relative; min-width: 0; padding: 20px 50px 20px 22px; display: grid; gap: 4px; color: var(--white); text-decoration: none; border-right: 1px solid rgba(255,255,255,.18); border-bottom: 1px solid rgba(255,255,255,.18); }
 .knowledgeSearchResults a:hover { background: rgba(185,255,102,.11); }
 .knowledgeSearchResults a > span { color: var(--lime); font-size: 11px; font-weight: 800; letter-spacing: .06em; }
 .knowledgeSearchResults a > strong { overflow: hidden; font-size: 15px; line-height: 1.55; text-overflow: ellipsis; white-space: nowrap; }
 .knowledgeSearchResults a > small { overflow: hidden; color: rgba(255,255,255,.58); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .knowledgeSearchResults a > i { position: absolute; top: 20px; right: 22px; color: var(--lime); font-size: 16px; font-style: normal; }
-.moduleResultGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
-.moduleResult { padding: 28px; border: 1px solid var(--line); background: #fbfaf5; color: var(--ink); text-decoration: none; display: flex; flex-direction: column; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+.moduleResultGrid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 14px; }
+.moduleResult { grid-column: span var(--result-span, 12); min-width: 0; padding: 28px; border: 1px solid var(--line); background: #fbfaf5; color: var(--ink); text-decoration: none; display: flex; flex-direction: column; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
 .moduleResult:nth-child(7n+1) { border-top: 5px solid var(--orange); }
 .moduleResult:nth-child(7n+2) { border-top: 5px solid var(--lime); }
 .moduleResult:nth-child(7n+3) { border-top: 5px solid var(--purple); }
@@ -149,6 +149,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .moduleBriefPosition { max-width: 900px; font-size: 17px; line-height: 1.75; }
 .moduleArticleLayout { max-width: 1640px; margin: 0 auto; display: grid; grid-template-columns: 270px minmax(0,1fr); gap: 24px; padding: 24px; align-items: start; }
 .moduleArticleContent { min-width: 0; background: var(--white); border: 1px solid var(--line); }
+.moduleArticleContent, .sectionBody, .subsection, .referenceGuideContent { container-type: inline-size; }
 .moduleArticleContent > .subsection { border-left: 0 !important; border-right: 0 !important; }
 .dedicatedArticleLayout > .section { min-width: 0; max-width: none; margin: 0; border: 1px solid var(--line); }
 .moduleReadingNav { position: sticky; top: 18px; max-height: calc(100vh - 36px); overflow: auto; border: 1px solid var(--line); background: var(--white); box-shadow: 0 12px 34px rgba(20,33,43,.06); }
@@ -167,7 +168,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 
 .subsection { padding-top: 78px; padding-bottom: 78px; }
 .subHead { margin-bottom: 48px; }
-.subHead h2, .subHead h3 { font-size: clamp(36px,4vw,58px); }
+.subHead h2, .subHead h3 { font-size: clamp(34px,5cqi,52px); text-wrap: balance; line-break: strict; overflow-wrap: break-word; }
 .sectionLead { max-width: var(--readable); margin-bottom: 40px; color: var(--muted); font-size: 18px; line-height: 1.8; }
 .miniLabel { font-size: 11px !important; }
 .moduleBriefIntro { max-width: var(--readable); }
@@ -198,6 +199,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .tableWrap th, .tableWrap td { padding: 19px 18px; line-height: 1.65; vertical-align: top; }
 .tableWrap thead th { position: sticky; top: 0; z-index: 1; background: var(--ink); color: var(--white); font-size: 12px; letter-spacing: .03em; }
 .tableWrap tbody th { font-size: 15px; }
+.metricCard, .metricCard h4, .metricCard p, .metricCard a { min-width: 0; overflow-wrap: anywhere; }
 
 /* Interactive system view */
 .systemLens { margin: 42px 0; border: 1px solid var(--ink); background: #f8f7f1; }
@@ -332,11 +334,58 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .sourceShortTitle::after { content: "·"; margin-left: 8px; color: var(--line); }
 .sourceLevel, .sourceDate { font-size: 12px; }
 
+/* Content-width responsive grids: the reading rail reduces usable width even
+   when the browser viewport is wide. These rules follow the actual article
+   width and keep every knowledge card readable. */
+@container (max-width: 900px) {
+  .conceptGrid article,
+  .mechanicGrid article,
+  .balancedGridCell,
+  .metricCard,
+  .qaBasisList a,
+  .relatedModuleGrid a,
+  .briefPrinciples--decision article,
+  .briefPrinciples--spectrum article,
+  .referenceModuleLink { grid-column: span 6; }
+
+  .conceptGrid[data-odd="true"] article:last-child,
+  .mechanicGrid[data-odd="true"] article:last-child,
+  .balancedGrid[data-odd="true"] .balancedGridCell:last-child,
+  .evidenceGrid[data-odd="true"] .metricCard:last-child,
+  .qaBasisList[data-odd="true"] a:last-child,
+  .relatedModuleGrid[data-odd="true"] > a:last-child,
+  .briefPrinciples--decision[data-odd="true"] article:last-child,
+  .briefPrinciples--spectrum[data-odd="true"] article:last-child,
+  .referenceModuleNav[data-odd="true"] > a:last-child { grid-column: span 12; }
+}
+
+@container (max-width: 620px) {
+  .conceptGrid article,
+  .conceptGrid[data-odd="true"] article:last-child,
+  .mechanicGrid article,
+  .mechanicGrid[data-odd="true"] article:last-child,
+  .balancedGridCell,
+  .balancedGrid[data-odd="true"] .balancedGridCell:last-child,
+  .metricCard,
+  .evidenceGrid[data-odd="true"] .metricCard:last-child,
+  .qaBasisList a,
+  .qaBasisList[data-odd="true"] a:last-child,
+  .relatedModuleGrid a,
+  .relatedModuleGrid[data-odd="true"] > a:last-child,
+  .briefPrinciples--decision article,
+  .briefPrinciples--spectrum article,
+  .briefPrinciples--decision[data-odd="true"] article:last-child,
+  .briefPrinciples--spectrum[data-odd="true"] article:last-child,
+  .referenceModuleLink,
+  .referenceModuleNav[data-odd="true"] > a:last-child { grid-column: span 12; }
+}
+
 @media (max-width: 1180px) {
   .heroGridV2, .ragHeader { grid-template-columns: minmax(0,1fr); }
   .heroGridV2 > *, .ragHeader > *, .ragDefinition { min-width: 0; }
   .heroDecisionPanel { min-height: auto; max-width: 780px; }
-  .moduleResultGrid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .moduleResult { grid-column: span 6; }
+  .moduleResultGrid[data-odd="true"] .moduleResult:last-child { grid-column: span 12; }
   .moduleArticleLayout { grid-template-columns: 230px minmax(0,1fr); padding: 14px; gap: 14px; }
   .lensFlow { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .referenceToolbar { grid-template-columns: 1fr 1fr; }
@@ -382,8 +431,8 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
   .moduleSearch input { font-size: 16px; }
   .layerFilters { flex-wrap: nowrap; overflow-x: auto; }
   .layerFilters button { white-space: nowrap; }
-  .moduleResultGrid { grid-template-columns: 1fr; }
-  .knowledgeSearchResults > div { grid-template-columns: 1fr; }
+  .moduleResult, .moduleResultGrid[data-odd="true"] .moduleResult:last-child,
+  .knowledgeSearchResults a { grid-column: span 12; }
   .mapSectionV2 .sectionNumber { display: none; }
   .mapSectionV2.section { display: block; border-left: 0; border-right: 0; }
   .learningPathList article { padding: 24px 0; }

@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
+
+import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 
 export type ExplorerModule = {
   slug: string;
@@ -76,6 +78,8 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
       .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase("zh-CN").includes(normalized))
       .slice(0, 12);
   }, [knowledgeEntries, query]);
+  const visibleRows = useMemo(() => balanceGridRows(visible, 3), [visible]);
+  const knowledgeMatchRows = useMemo(() => balanceGridRows(knowledgeMatches, 2), [knowledgeMatches]);
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -130,29 +134,29 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
       {query && knowledgeMatches.length > 0 ? (
         <div className="knowledgeSearchResults" aria-label="知识内容搜索结果">
           <header><strong>直接进入知识内容</strong><span>显示前 {knowledgeMatches.length} 条匹配</span></header>
-          <div>
-            {knowledgeMatches.map((item) => (
-              <Link href={item.href} key={item.id}>
+          <div data-count={knowledgeMatches.length} data-odd={knowledgeMatches.length % 2 === 1 ? "true" : "false"}>
+            {knowledgeMatchRows.flatMap((row) => row.map((item) => (
+              <Link href={item.href} key={item.id} style={{ "--search-span": gridSpan(row.length) } as CSSProperties}>
                 <span>{item.type}</span>
                 <strong>{item.title}</strong>
                 <small>{item.subtitle}</small>
                 <i aria-hidden="true">↗</i>
               </Link>
-            ))}
+            )))}
           </div>
         </div>
       ) : null}
 
-      <div className="moduleResultGrid">
-        {visible.map((item) => (
-          <Link className="moduleResult" href={item.href} key={item.slug}>
+      <div className="moduleResultGrid" data-count={visible.length} data-odd={visible.length % 2 === 1 ? "true" : "false"}>
+        {visibleRows.flatMap((row) => row.map((item) => (
+          <Link className="moduleResult" href={item.href} key={item.slug} style={{ "--result-span": gridSpan(row.length) } as CSSProperties}>
             <div className="moduleResultMeta"><span>{item.layerNo}</span><small>{item.layerName}</small><i aria-hidden="true">↗</i></div>
             <h3>{item.zh}</h3>
             <p className="moduleResultEn">{item.en}</p>
             <p>{item.summary}</p>
             <strong>客户信号：{item.cue}</strong>
           </Link>
-        ))}
+        )))}
       </div>
       {visible.length === 0 && <div className="emptySearch"><strong>没有直接匹配的模块</strong><p>换一个业务问题或清除知识层筛选。</p></div>}
     </section>
