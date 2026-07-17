@@ -62,6 +62,10 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.match(html, new RegExp(`aria-label="${layers.length} 层架构，${moduleList.length} 个细分模块"`));
   assert.match(html, /href="\/references"/);
   assert.match(html, /Reference/);
+  assert.match(html, /选择学习模块/);
+  assert.match(html, /aria-label="已完成的学习模块"/);
+  assert.match(html, /AVAILABLE MODULES/);
+  assert.doesNotMatch(html, /阅读 RAG 模块/);
 
   for (const knowledgeModule of moduleList) {
     assert.match(html, new RegExp(`href="${escapeRegExp(knowledgeModule.href)}"`), `首页缺少模块入口：${knowledgeModule.zh}`);
@@ -121,6 +125,21 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
 
   assert.match(html, /智能体 · AI Agent/);
   assert.match(html, /Agent 的基础概念与工作循环/);
+  assert.match(html, /Agent 的四个关键动作：感知—思考—行动—观察/);
+  assert.match(html, /感知 · Perceive/);
+  assert.match(html, /思考 · Reason/);
+  assert.match(html, /行动 · Act/);
+  assert.match(html, /观察 · Observe/);
+  assert.match(html, /感知（Perceive）.*观察（Observe）/s);
+  assert.match(html, /计划、决策摘要、工具调用、环境结果、策略判断与停止原因/);
+  assert.match(html, /规划、记忆与工具：让四个动作持续运转/);
+  assert.match(html, /规划 · Planning/);
+  assert.match(html, /记忆 · Memory/);
+  assert.match(html, /工具 · Tools/);
+  assert.match(html, /数据工具 · Data Tools/);
+  assert.match(html, /动作工具 · Action Tools/);
+  assert.match(html, /编排工具 · Orchestration Tools/);
+  assert.match(html, /RAG ≠ MEMORY/);
   assert.match(html, /观察—决策—行动—反馈/);
   assert.match(html, /模型会调用 API，不等于模型拥有 API 权限/);
   assert.match(html, /智能体、工作流、RAG 与聊天机器人的边界/);
@@ -371,8 +390,9 @@ test("balances arbitrary card counts without hard-coded even or odd layouts", ()
 });
 
 test("keeps module card systems dynamically balanced with mobile navigation", async () => {
-  const [styles, genericModuleRoute, referencesRoute, moduleComponents, agentRoute, promptRoute] = await Promise.all([
+  const [styles, homepage, genericModuleRoute, referencesRoute, moduleComponents, agentRoute, promptRoute] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/modules/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/references/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
@@ -393,10 +413,16 @@ test("keeps module card systems dynamically balanced with mobile navigation", as
   assert.match(moduleComponents, /"--evidence-span": 12 \/ row\.length/);
   assert.match(moduleComponents, /"--qa-evidence-span": 12 \/ row\.length/);
   assert.match(agentRoute, /const coreCapabilityRows = balanceRows\(coreCapabilities, 4\)/);
+  assert.match(agentRoute, /const agentActionRows = balanceRows\(agentActions, 2\)/);
   assert.match(promptRoute, /const messageResponsibilityRows = balanceRows\(messageResponsibilities, 4\)/);
   assert.match(agentRoute, /"--mechanic-span": 12 \/ row\.length/);
   assert.match(promptRoute, /"--mechanic-span": 12 \/ row\.length/);
   assert.match(styles, /\.mechanicGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(homepage, /availableModules\.map/);
+  assert.match(homepage, /className="heroModuleRail"/);
+  assert.match(styles, /\.heroModuleRail\s*\{[^}]*overflow-x:\s*auto;/s);
+  assert.match(styles, /\.heroModuleRail\s*\{[^}]*scroll-snap-type:\s*x proximity;/s);
+  assert.match(styles, /#agent-title\s*\{[^}]*line-height:\s*1;/s);
   assert.doesNotMatch(styles, /\.mechanicGrid\s*\{[^}]*auto-fit/s);
   assert.match(styles, /\.relatedModuleGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
   assert.match(styles, /\.referenceModuleNav\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
@@ -458,6 +484,8 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(standard, /相关模块/);
   assert.match(standard, /仅当公式直接帮助售前做架构、选型或风险判断时展示/);
   assert.match(standard, /MODULE-BUILD-STANDARD\.md/);
+  assert.match(moduleStandard, /机制与组件完整性/);
+  assert.match(moduleStandard, /每个关键动作和组件都必须分别讲清/);
 
   assert.match(moduleStandard, /定义.*机制.*边界.*判断.*证据/);
   assert.match(moduleStandard, /不为图、卡片、案例、问答或来源设置数量指标/);

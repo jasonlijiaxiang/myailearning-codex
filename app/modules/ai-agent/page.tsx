@@ -26,12 +26,61 @@ const conceptLinks = [
 const conceptRows = balanceRows(conceptLinks, 4);
 
 const agentLoop = [
-  { zh: "理解目标", en: "Understand Goal" },
-  { zh: "读取状态", en: "Observe State" },
-  { zh: "选择下一步", en: "Decide Next Step" },
-  { zh: "调用工具", en: "Act with Tools" },
-  { zh: "检查与停止", en: "Verify or Stop" },
+  { zh: "感知", en: "Perceive" },
+  { zh: "思考", en: "Reason" },
+  { zh: "行动", en: "Act" },
+  { zh: "观察", en: "Observe" },
+  { zh: "继续 / 终止", en: "Continue / Stop" },
 ];
+
+const agentActions = [
+  {
+    code: "01",
+    title: "感知 · Perceive",
+    definition: "把用户请求、系统事件和当前环境状态，整理成 Agent 此刻能够处理的任务表示。感知不是把所有数据塞进上下文，而是识别目标、对象、约束、身份和仍缺少的信息。",
+    mechanism: "入口层先完成身份绑定、意图识别、输入校验与上下文选择；必要时调用搜索、OCR、数据库或传感器接口补齐证据，再形成结构化任务状态。",
+    io: "输入：自然语言、事件、会话状态、业务记录。输出：目标、已知事实、约束、风险等级、待确认项。",
+    failure: "常见失败：误解目标、忽略附件或权限、把不可信内容当指令、上下文过载、引用了过期状态。",
+    control: "工程控制：输入 Schema、来源标记、Prompt Injection 隔离、时效检查、缺失字段追问。",
+    cloud: "云服务连接：多模态模型、文档解析 / OCR、托管搜索、事件总线、API 网关、身份服务。",
+    presales: "售前判断：客户的任务入口有哪些？哪套系统是事实源？输入是否跨模态、跨租户或有实时性要求？",
+  },
+  {
+    code: "02",
+    title: "思考 · Reason",
+    definition: "基于目标、当前状态和可用工具，判断下一步是补充信息、调用工具、修改计划、给出结果，还是停止并交还人工。这里的重点是可执行决策，不是展示模型内部推理文字。",
+    mechanism: "模型把任务状态与工具契约进行匹配，评估候选动作的前置条件、风险与预期结果；复杂任务可先规划，简单任务可逐步决策，并在每次观察后重新判断。",
+    io: "输入：任务状态、计划、记忆、工具目录、策略与预算。输出：结构化动作意图、参数草案、决策摘要或终止原因。",
+    failure: "常见失败：凭空假设、目标漂移、选择错误工具、反复规划不行动、忽略业务规则或把不确定判断说成事实。",
+    control: "工程控制：限定动作空间、结构化输出、风险规则、轮次 / token 预算、检查点、低置信度接管。",
+    cloud: "云服务连接：模型服务与路由、AI 网关、内容安全、策略引擎、评估平台、Prompt 版本管理。",
+    presales: "售前判断：哪些决策确实需要模型？正确性如何验证？是否允许模型在多个工具之间自主选择？",
+  },
+  {
+    code: "03",
+    title: "行动 · Act",
+    definition: "把模型提出的动作意图交给应用执行：查询知识、调用 API、运行代码、发送消息或修改业务状态。模型提出调用，不代表它拥有凭据或可以绕过审批。",
+    mechanism: "应用根据工具 Schema 校验参数，绑定用户或工作负载身份，执行授权与策略判断；通过后才调用真实系统，并把结果、错误与操作凭证返回给 Agent。",
+    io: "输入：工具名、结构化参数、调用主体、策略上下文。输出：执行结果、错误码、资源版本、操作编号与可回滚信息。",
+    failure: "常见失败：选错 API、参数越界、重复扣款 / 重复建单、超时后误重试、越权调用、部分成功未补偿。",
+    control: "工程控制：最小权限、参数白名单、幂等键、预览与审批、超时重试、事务 / 补偿、沙箱与审计。",
+    cloud: "云服务连接：API / MCP Gateway、函数计算、工作流、IAM、密钥管理、沙箱、私网连接与消息队列。",
+    presales: "售前判断：哪些动作只读、可逆或高风险？现有 API 是否稳定？失败后能否回滚、补偿和追责？",
+  },
+  {
+    code: "04",
+    title: "观察 · Observe",
+    definition: "读取行动产生的真实环境反馈，并判断预期状态是否已经发生。观察与感知的区别是：感知建立本轮起点，观察验证刚刚行动的结果。",
+    mechanism: "解析工具返回、回读权威系统、比较前置 / 后置状态，更新任务状态和证据；随后触发下一轮思考，或确认完成、失败、超时和人工接管。",
+    io: "输入：API 响应、数据库状态、事件、错误、Trace。输出：已验证事实、状态增量、异常、完成证据和下一轮信号。",
+    failure: "常见失败：把 HTTP 200 当业务成功、忽略异步状态、相信模型生成的成功描述、未发现部分失败、旧结果污染下一轮。",
+    control: "工程控制：后置条件、Read-after-Write、来源与时间戳、Checkpoint、异常分类、终态断言和人工复核。",
+    cloud: "云服务连接：数据库 / 缓存、事件总线、Tracing、日志与指标、评估平台、告警和状态存储。",
+    presales: "售前判断：客户用哪个系统状态证明任务完成？异步结果多久可见？失败和人工接管由谁运营？",
+  },
+];
+
+const agentActionRows = balanceRows(agentActions, 2);
 
 const architecturePatterns = [
   { name: "确定性工作流 · Deterministic Workflow", cue: "步骤清楚、规则稳定、错误代价高", pipeline: "固定步骤 → 条件分支 → 人工审批", boundary: "最易测试和审计；不要为追求 Agent 标签而增加自治。" },
@@ -41,10 +90,39 @@ const architecturePatterns = [
 ];
 
 const coreCapabilities = [
-  { code: "A", title: "工具调用 · Tool Use", body: "工具定义要说明唯一用途、参数、返回、错误与权限。模型提出调用，应用校验并执行；读、写和高风险动作分级。", control: "核心控制：Schema、授权、幂等、超时、审计" },
-  { code: "B", title: "状态 · State", body: "记录当前任务目标、已完成步骤、工具结果和剩余预算。状态应结构化并可恢复，不只依赖不断增长的对话文本。", control: "核心控制：Run ID、Checkpoint、版本与恢复" },
-  { code: "C", title: "记忆 · Memory", body: "短期会话与长期记忆分开。长期信息写入前需要提取、校验、来源、范围、保留期和删除机制。", control: "核心控制：主体、来源、TTL、撤回与隔离" },
-  { code: "D", title: "规划 · Planning", body: "可以先列计划，也可以每一步只选择下一个动作。计划会被新事实推翻，必须允许修正并设置轮次和预算。", control: "核心控制：里程碑、停止条件、人工检查点" },
+  {
+    code: "P",
+    title: "规划 · Planning",
+    definition: "把目标分解为可检查的子目标，并选择顺序、工具、依赖和停止条件。规划是当前信息下的行动假设，不是必须照做到底的脚本。",
+    mechanism: "简单任务采用逐步规划（每轮只定下一步）；长任务采用计划—执行（先列里程碑，再逐项验证）；可并行任务可由编排者拆给执行者，汇总后再校验。",
+    io: "输入：目标、当前状态、工具能力、约束、时间与成本预算。输出：里程碑、候选动作、依赖、预期结果、检查点和退出条件。",
+    failure: "常见失败：过度规划、遗漏前置条件、计划与工具不匹配、环境变化后仍照旧执行、拆分过细导致成本激增。",
+    control: "工程控制：计划 Schema、最大深度 / 轮次、预算、关键里程碑审批、每次观察后重规划、终态检查。",
+    cloud: "云服务连接：Agent Runtime、工作流 / 任务编排、模型路由、队列、分布式任务、评估与 Trace。",
+    presales: "售前判断：路径为什么不可预先确定？任务最长多久？哪些里程碑必须人工确认？并行带来的收益是否覆盖成本？",
+  },
+  {
+    code: "M",
+    title: "记忆 · Memory",
+    definition: "为后续决策保留有用信息。当前 Run 的工作状态、跨轮会话信息和跨会话长期记忆用途不同；记忆不是把全部聊天记录永久保存。",
+    mechanism: "运行状态保存本次任务的目标、步骤、工具结果与预算；短期会话记忆保存当前会话事件与上下文；情节记忆保存过去任务经历；语义记忆保存经过核验的偏好或事实。长期写入前提取、去重、校验来源，读取时按主体、任务和时效检索。",
+    io: "输入：对话、工具结果、用户确认、业务事件。输出：带主体、来源、时间、置信度、范围与保留期的记忆条目，或与当前任务相关的记忆片段。",
+    failure: "常见失败：错误总结被永久化、跨用户串记忆、旧偏好覆盖新事实、敏感信息过度保留、检索到记忆却忽略适用范围。",
+    control: "工程控制：命名空间、来源、TTL、版本、用户确认、访问控制、加密、纠正 / 删除、写入与读取评估。",
+    cloud: "云服务连接：会话存储、数据库、向量检索、对象存储、缓存、KMS、数据治理与生命周期管理。",
+    presales: "售前判断：要记住什么、为谁记、保存多久？谁能纠正和删除？哪些事实必须每次回到权威系统读取？",
+  },
+  {
+    code: "T",
+    title: "工具 · Tools",
+    definition: "Agent 与外部世界交互的受控能力接口，包括知识工具（搜索 / RAG）、动作工具（业务 API）、计算工具（代码 / 函数）和协作工具（消息 / 其他 Agent）。",
+    mechanism: "工具目录向模型暴露名称、唯一用途、输入输出 Schema、错误语义和使用边界；模型选择并生成参数，应用负责校验、授权、执行，把真实结果送回观察阶段。",
+    io: "输入：工具描述、调用意图、结构化参数、身份与策略。输出：结构化结果、错误、操作凭证、资源状态和审计记录。",
+    failure: "常见失败：工具职责重叠、描述含糊、参数幻觉、返回内容注入、读写权限混放、错误语义不足导致无限重试。",
+    control: "工程控制：清晰 Tool Contract、最小工具集、读写分级、Schema、IAM、幂等、超时、限流、审批、审计与沙箱。",
+    cloud: "云服务连接：API Gateway、MCP Gateway、函数计算、SaaS 连接器、服务目录、IAM、密钥、工作流与服务网格。",
+    presales: "售前判断：工具是否已有 API？模型能否清楚区分？谁是调用主体？哪些写操作需要预览、审批和补偿？",
+  },
 ];
 
 const coreCapabilityRows = balanceRows(coreCapabilities, 4);
@@ -129,8 +207,8 @@ export default function AgentModulePage() {
             <div className="principleDepth">
               <header className="principleDepthIntro">
                 <p className="miniLabel">PRESALES MECHANISM</p>
-                <h4>Agent 是“观察—决策—行动—反馈”的受控循环</h4>
-                <p>模型不是在一次回答中预知所有步骤，而是每执行一步就读取新的环境事实，再决定下一步。真正的工程难点，是让循环知道<strong>何时继续、何时完成、何时失败，以及何时必须交还人工</strong>。</p>
+                <h4>Agent 的四个关键动作：感知—思考—行动—观察</h4>
+                <p>Agent 不是一次回答，而是一个闭环：先把输入整理成当前任务状态，再选择并执行动作，随后读取真实环境结果。传统抽象常写作“观察—决策—行动—反馈”；这里进一步区分感知与行动后的观察。每次观察都会成为下一轮感知与思考的新依据，直到<strong>完成、失败、超时、超预算或交还人工</strong>。</p>
               </header>
               <div className="chainWrap">
                 <div className="chainLabel"><strong>单次任务运行 · Run</strong><span>Controlled agent loop</span></div>
@@ -140,11 +218,26 @@ export default function AgentModulePage() {
                   ))}
                 </div>
               </div>
-              <p className="paperBoundary"><strong>售前判断：</strong>模型可以建议下一步，但应用必须掌握工具清单、身份授权、真实执行、预算、超时、审批和终止条件。<strong>模型会调用 API，不等于模型拥有 API 权限。</strong></p>
+              <p className="paperBoundary"><strong>术语边界：</strong>为了教学，这里把<strong>感知（Perceive）</strong>定义为“把用户、事件和多模态输入标准化为当前任务状态”，把<strong>观察（Observe）</strong>定义为“读取工具与环境返回的 ground truth，更新状态并判断继续或终止”。不同框架可能把两者统称为 observation、context 或 state update，评估产品时应看实际数据流，不只看名称。</p>
+              <div className="mechanicGrid" data-count={agentActions.length} data-odd={agentActions.length % 2 === 1 ? "true" : "false"}>
+                {agentActionRows.flatMap((row) => row.map((item, index) => (
+                  <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": 12 / row.length } as CSSProperties}>
+                    <span className="mechanicNo">{item.code}</span>
+                    <h4>{item.title}</h4>
+                    <p><strong>定义：</strong>{item.definition}</p>
+                    <p><strong>机制：</strong>{item.mechanism}</p>
+                    <p><strong>输入 → 输出：</strong>{item.io}</p>
+                    <p><strong>常见失败：</strong>{item.failure}</p>
+                    <p><strong>工程控制：</strong>{item.control}</p>
+                    <small><strong>云服务连接：</strong>{item.cloud}<br /><strong>售前判断：</strong>{item.presales}</small>
+                  </article>
+                )))}
+              </div>
+              <p className="paperBoundary"><strong>生产可观测边界：</strong>“思考（Reason）”不等于要求模型公开隐藏的思维链（Chain-of-Thought）。系统应记录可审计的<strong>计划、决策摘要、工具调用、环境结果、策略判断与停止原因</strong>；这些足以复盘行为，同时避免把冗长推理文字误当成真实依据。<strong>模型会调用 API，不等于模型拥有 API 权限。</strong></p>
               <div className="principleLimits">
-                <article><span>A</span><h5>环境反馈是新的事实</h5><p>工具返回、数据库状态和执行错误决定下一步；不能只依赖模型自己的推测或旧对话。</p></article>
-                <article><span>B</span><h5>循环必须有停止条件</h5><p>完成、失败、超时、超预算、最大轮次和人工接管都应是显式终态。</p></article>
-                <article><span>C</span><h5>自治范围由业务划定</h5><p>Agent 可以动态规划，但高风险动作仍可由确定性规则、审批和人工控制。</p></article>
+                <article><span>A</span><h5>真实反馈优先于模型描述</h5><p>工具返回、权威数据库状态和执行错误决定下一步；“模型说成功”不等于业务已经成功。</p></article>
+                <article><span>B</span><h5>循环必须有显式终态</h5><p>完成、失败、超时、超预算、最大轮次和人工接管都要能被系统识别与审计。</p></article>
+                <article><span>C</span><h5>应用控制面约束每一步</h5><p>模型可以建议下一步，但工具、身份、预算、审批、执行和终止条件仍由应用掌握。</p></article>
               </div>
               <Link className="paperAnchor" href="/references#source-react-2023">原理来源：ReAct 论文 ↗</Link>
             </div>
@@ -152,9 +245,9 @@ export default function AgentModulePage() {
             <div className="workedExample">
               <div className="exampleQuestion"><span>客户任务</span><strong>“分析这张异常账单，并在符合政策时创建退款工单。”</strong></div>
               <div className="exampleSteps">
-                <article><span>01</span><h4>理解与取证<small>Understand &amp; Retrieve</small></h4><p>确认客户身份、账单对象和意图；读取订单、合同、退款政策与历史记录。</p></article>
-                <article><span>02</span><h4>判断与行动<small>Decide &amp; Act</small></h4><p>模型提出异常原因和下一步；应用验证权限、金额、参数和审批要求后执行。</p></article>
-                <article><span>03</span><h4>验证与交付<small>Verify &amp; Handoff</small></h4><p>回读工单状态，给出证据和操作编号；冲突、超限或失败时交还人工。</p></article>
+                <article><span>01</span><h4>感知<small>Perceive</small></h4><p>把身份、账单、客户意图、退款政策与待确认信息整理为当前任务状态。</p></article>
+                <article><span>02</span><h4>思考与行动<small>Reason &amp; Act</small></h4><p>判断应先查合同还是订单；模型提出调用，应用校验金额、权限和审批后执行。</p></article>
+                <article><span>03</span><h4>观察与闭环<small>Observe &amp; Close</small></h4><p>回读工单和退款状态；有操作编号才确认完成，冲突、超限或失败则进入下一轮或交还人工。</p></article>
               </div>
             </div>
             <aside className="callout" aria-label="重要边界">
@@ -180,18 +273,38 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="capabilities">
-            <div className="subHead"><span>2.4</span><div><p className="kicker">CORE CAPABILITIES</p><h3>工具调用、记忆与规划如何落到工程</h3></div></div>
+            <div className="subHead"><span>2.4</span><div><p className="kicker">CORE COMPONENTS</p><h3>规划、记忆与工具：让四个动作持续运转</h3></div></div>
+            <p className="sectionLead">四个动作描述 Agent 每一轮“做什么”，三类组件说明它“靠什么持续完成多步任务”。规划决定路径，记忆保留必要信息，工具连接外部世界；三者共享一个可恢复、可审计的运行状态（Run State）。</p>
             <div className="mechanicGrid" data-count={coreCapabilities.length} data-odd={coreCapabilities.length % 2 === 1 ? "true" : "false"}>
               {coreCapabilityRows.flatMap((row) => row.map((item, index) => (
                 <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": 12 / row.length } as CSSProperties}>
-                  <span className="mechanicNo">{item.code}</span><h4>{item.title}</h4><p>{item.body}</p><small>{item.control}</small>
+                  <span className="mechanicNo">{item.code}</span>
+                  <h4>{item.title}</h4>
+                  <p><strong>定义：</strong>{item.definition}</p>
+                  <p><strong>机制：</strong>{item.mechanism}</p>
+                  <p><strong>输入 → 输出：</strong>{item.io}</p>
+                  <p><strong>常见失败：</strong>{item.failure}</p>
+                  <p><strong>工程控制：</strong>{item.control}</p>
+                  <small><strong>云服务连接：</strong>{item.cloud}<br /><strong>售前判断：</strong>{item.presales}</small>
                 </article>
               )))}
             </div>
+            <div className="memoryCompare retrievalCompare">
+              <article>
+                <p className="miniLabel">RUN STATE ≠ MEMORY</p>
+                <h4>运行状态是共同底座</h4>
+                <p>运行状态记录本次任务的目标、当前步骤、工具结果、预算和停止原因，应通过 Run ID、Checkpoint 与版本恢复。短期会话只服务当前交互；长期记忆才跨会话保留。Memory 是需治理的数据，不是模型魔法；不能把不断增长的聊天文本同时当状态机、数据库和审计日志。</p>
+              </article>
+              <article className="externalMemory">
+                <p className="miniLabel">RAG ≠ MEMORY</p>
+                <h4>知识检索不等于记住用户</h4>
+                <p>RAG 从外部知识库取回可更新证据，回答“组织知道什么”；Memory 保存与主体和历史交互相关的信息，回答“这个 Agent 需要为谁记住什么”。二者都需要来源、权限和时效控制，但写入责任与生命周期不同。</p>
+              </article>
+            </div>
             <div className="technicalNotes">
-              <article><p className="miniLabel">TOOL CONTRACT</p><h4>让工具难以被误用</h4><p>优先结构化参数、枚举、范围限制和预览接口；避免含义重叠的工具与模糊字段，错误信息要能指导下一步。</p></article>
-              <article><p className="miniLabel">MEMORY IS DATA</p><h4>记忆不是模型魔法</h4><p>它通常落在会话存储、数据库或检索系统中。模型生成的总结只是候选记录，不能自动成为权威客户事实。</p></article>
-              <article><p className="miniLabel">PLAN IS A HYPOTHESIS</p><h4>计划必须接受环境校验</h4><p>真实工具结果可能让原计划失效。Agent 的能力体现在依据事实修正，而不是固执地执行最初步骤。</p></article>
+              <article><p className="miniLabel">DATA TOOLS</p><h4>数据工具 · Data Tools</h4><p>搜索、RAG、数据库查询和文件读取为判断提供证据，通常只读，但返回内容仍可能过期、越权或包含注入指令。</p></article>
+              <article><p className="miniLabel">ACTION TOOLS</p><h4>动作工具 · Action Tools</h4><p>创建工单、修改订单、发消息或执行代码会改变外部状态，必须强化身份、幂等、审批、回读与补偿。</p></article>
+              <article><p className="miniLabel">ORCHESTRATION TOOLS</p><h4>编排工具 · Orchestration Tools</h4><p>工作流、队列、子 Agent 和任务调度负责长任务、并行与交接；需要明确输入输出、超时、所有权和聚合验证。</p></article>
             </div>
           </div>
 

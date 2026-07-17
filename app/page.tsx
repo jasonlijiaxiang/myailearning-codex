@@ -6,6 +6,16 @@ import { layers, moduleList } from "./knowledge-map.mjs";
 
 const layerCount = layers.length;
 const moduleCount = moduleList.length;
+const availableModuleSlugs = ["rag", "ai-agent", "prompt-engineering"];
+const availableModules = availableModuleSlugs.map((slug) => {
+  const selectedModule = moduleList.find((item) => item.slug === slug);
+
+  if (!selectedModule) {
+    throw new Error(`首页可用模块未在知识地图中登记：${slug}`);
+  }
+
+  return selectedModule;
+});
 
 export default function Home() {
   return (
@@ -17,8 +27,8 @@ export default function Home() {
             <span>Cloud × AI / Presales Fieldbook</span>
           </Link>
           <div className="toplinks">
+            <a href="#available-modules">学习模块</a>
             <a href="#map">知识地图</a>
-            <Link href="/modules/rag">RAG</Link>
             <Link href="/references">Reference</Link>
           </div>
         </nav>
@@ -32,9 +42,28 @@ export default function Home() {
               中文为主，关键术语中英对照；兼顾理论深度与客户现场可用性。
             </p>
             <div className="heroActions">
-              <Link className="primaryButton" href="/modules/rag">阅读 RAG 模块</Link>
-              <a className="textButton" href="#map">浏览完整框架 <span>↘</span></a>
+              <a className="primaryButton" href="#available-modules">选择学习模块</a>
+              <a className="textButton" href="#map">进入完整知识地图 <span>↘</span></a>
             </div>
+
+            <nav className="heroModulePicker" id="available-modules" aria-label="已完成的学习模块">
+              <div className="heroModulePickerHead">
+                <p>AVAILABLE MODULES</p>
+                <span>{availableModules.length} 个模块可完整阅读</span>
+              </div>
+              <ul className="heroModuleRail">
+                {availableModules.map((module, index) => (
+                  <li key={module.slug}>
+                    <Link className="heroModuleCard" href={module.href}>
+                      <span>{String(index + 1).padStart(2, "0")} · {module.layerName}</span>
+                      <strong>{module.zh}</strong>
+                      <small>{module.en}</small>
+                      <i aria-hidden="true">↗</i>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </div>
       </header>
