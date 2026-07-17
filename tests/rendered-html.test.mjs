@@ -68,6 +68,7 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.doesNotMatch(html, /id="source-[a-z0-9-]+"/);
   assert.doesNotMatch(html, /统一来源台账/);
   assert.doesNotMatch(html, /BUILD BRIEF|语言规范 \/ Language Standard|编辑原则：|跨模块阅读规则/);
+  assert.doesNotMatch(html, /\/(?:Users|home)\//, "生产 HTML 不应包含本机绝对路径");
 });
 
 test("RAG route contains principles, cloud-service opportunities, and evidence-backed answers", async () => {
