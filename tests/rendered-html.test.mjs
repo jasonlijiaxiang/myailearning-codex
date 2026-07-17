@@ -24,6 +24,12 @@ test("server-renders the complete presales knowledge base", async () => {
   assert.match(html, /<title>云计算 × AI 平台售前知识库<\/title>/i);
   assert.match(html, /知识地图：7 层、28 个细分模块/);
   assert.match(html, /Retrieval-Augmented Generation/);
+  assert.match(html, /给模型增加可查的外部记忆/);
+  assert.match(html, /PARAMETRIC MEMORY/);
+  assert.match(html, /BM25 \/ Sparse/);
+  assert.match(html, /ANN \/ HNSW/);
+  assert.match(html, /把每个技术环节连接到云服务机会/);
+  assert.match(html, /内容优先，载体后置/);
   assert.match(html, /客户高频问题与深度回答/);
   assert.match(html, /时效性不是页脚日期/);
   assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);

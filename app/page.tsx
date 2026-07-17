@@ -144,7 +144,78 @@ const qa = [
   },
 ];
 
+const conceptLinks = [
+  { concept: "LLM 与上下文窗口", owner: "模型基础层", relation: "前置知识", local: "理解模型的参数化记忆、token 与注意力边界。" },
+  { concept: "Embedding", owner: "模型基础层", relation: "前置知识", local: "理解文本如何映射到向量空间，以及相似度为何不等于事实正确。" },
+  { concept: "解析、OCR 与 Chunk", owner: "数据底座层", relation: "知识供给", local: "决定原始资料能否变成完整、可定位、可撤回的检索单元。" },
+  { concept: "搜索与向量数据库", owner: "数据底座层", relation: "检索引擎", local: "负责稀疏、稠密、过滤、索引与增量更新，不等同于完整 RAG。" },
+  { concept: "Prompt 与 Grounding", owner: "模型基础层", relation: "生成约束", local: "把检索证据、回答规则、引用格式和拒答条件组装成模型输入。" },
+  { concept: "评估、安全与网关", owner: "工程保障层", relation: "生产控制", local: "把检索、生成、权限、风险、成本和 SLA 变成可观测控制面。" },
+  { concept: "Agent 与 GraphRAG", owner: "应用模式层", relation: "下游演进", local: "多步检索、工具调用与全局主题分析属于 RAG 的组合或扩展。" },
+  { concept: "容器、Serverless 与算力", owner: "算力底座层", relation: "运行底座", local: "承载解析任务、检索服务、模型推理和峰值弹性。" },
+];
+
+const ragVariants = [
+  { name: "Naive RAG", cue: "单次查询、单一知识源、快速基线", pipeline: "切块 → 向量检索 → Top-K → 生成", boundary: "实现快，但容易受切块、召回和噪声影响。" },
+  { name: "Advanced RAG", cue: "企业知识问答与可控质量", pipeline: "查询改写 → 混合召回 → 过滤 → 重排 → 压缩 → 生成", boundary: "质量更稳，但组件、时延和评估复杂度增加。" },
+  { name: "Modular / Agentic RAG", cue: "跨系统、多步问题与动态工具", pipeline: "计划 → 选择知识源 → 多轮检索 / 工具 → 汇总", boundary: "适合复杂任务；必须加强预算、权限和轨迹评估。" },
+  { name: "GraphRAG", cue: "关系密集、主题归纳与全局问题", pipeline: "实体 / 关系抽取 → 社区 → 摘要 → 局部或全局检索", boundary: "索引成本高，不应替代所有普通事实检索。" },
+];
+
+const cloudHooks = [
+  { stage: "数据进入", services: "对象存储、数据库、文件服务、SaaS 连接器、CDC、消息队列", value: "统一沉淀知识源并建立增量同步", discover: "数据在哪里？新增、修改、删除多久必须生效？" },
+  { stage: "文档理解", services: "OCR、文档智能、批处理、函数计算、容器任务", value: "把 PDF、扫描件、表格和图片转成可追溯内容", discover: "扫描件、复杂表格、多栏文档各占多少？" },
+  { stage: "数据治理", services: "数据目录、元数据、质量、脱敏、主数据、血缘", value: "明确权威来源、版本、负责人和保留策略", discover: "谁批准内容？冲突版本以谁为准？" },
+  { stage: "检索与索引", services: "托管搜索、向量数据库、关系数据库、缓存、知识图谱", value: "承载关键词、语义、过滤与关系查询", discover: "精确编号、语义问题、关系问题分别占多少？" },
+  { stage: "模型能力", services: "模型即服务、Embedding、Reranker、模型微调与推理", value: "提供向量化、重排、生成和模型可替换性", discover: "数据能否出域？质量、语言、时延如何排序？" },
+  { stage: "应用运行", services: "Serverless、容器、Kubernetes、API 网关、负载均衡", value: "把知识链和问答链变成弹性在线服务", discover: "并发、峰值系数、P95 和可用性目标是什么？" },
+  { stage: "安全合规", services: "IAM、KMS、密钥管理、WAF、私网连接、审计", value: "让身份、权限和密钥贯穿检索与生成", discover: "权限来自哪里？是否要求租户、文档或字段级隔离？" },
+  { stage: "运营优化", services: "日志、Tracing、APM、评估平台、告警、FinOps", value: "定位失败、持续评测并核算每个成功回答成本", discover: "谁运营质量？如何发现退化并形成改进闭环？" },
+];
+
 const sources = [
+  {
+    level: "A / 教材",
+    title: "Introduction to Information Retrieval — Okapi BM25",
+    note: "稀疏检索的概率排序、词频、逆文档频率与长度归一化基础。",
+    date: "核验：2026-07-17",
+    href: "https://nlp.stanford.edu/IR-book/html/htmledition/okapi-bm25-a-non-binary-model-1.html",
+  },
+  {
+    level: "A / 论文",
+    title: "Dense Passage Retrieval for Open-Domain Question Answering",
+    note: "双编码器稠密检索；特定开放域数据集上 top-20 召回准确率较 BM25 高 9–19 个百分点。",
+    date: "核验：2026-07-17",
+    href: "https://arxiv.org/abs/2004.04906",
+  },
+  {
+    level: "A / 论文",
+    title: "Efficient and Robust ANN Search Using HNSW",
+    note: "解释常见向量索引 HNSW 的分层近邻图与近似搜索机制。",
+    date: "核验：2026-07-17",
+    href: "https://arxiv.org/abs/1603.09320",
+  },
+  {
+    level: "A / 综述",
+    title: "Retrieval-Augmented Generation for Large Language Models: A Survey",
+    note: "系统整理 Naive、Advanced、Modular RAG 及检索、增强、生成与评估。",
+    date: "核验：2026-07-17",
+    href: "https://arxiv.org/abs/2312.10997",
+  },
+  {
+    level: "A / 论文",
+    title: "From Local to Global: A Graph RAG Approach",
+    note: "用实体图、社区和社区摘要处理跨整个语料的全局归纳问题。",
+    date: "核验：2026-07-17",
+    href: "https://arxiv.org/abs/2404.16130",
+  },
+  {
+    level: "A / 论文",
+    title: "How Does Chunking Affect Retrieval-Augmented Code Completion?",
+    note: "2026 控制实验再次说明切块策略需按任务实测，不存在脱离语料的万能参数。",
+    date: "核验：2026-07-17",
+    href: "https://arxiv.org/abs/2605.04763",
+  },
   {
     level: "A / 论文",
     title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
@@ -207,7 +278,7 @@ export default function Home() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V0.1</p>
+            <p className="eyebrow">READING EDITION · V0.2</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
               从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径。
@@ -226,9 +297,9 @@ export default function Home() {
               <div><dt>读者</dt><dd>有 Python / API 基础的售前人员</dd></div>
               <div><dt>重点</dt><dd>概念 → 判断 → 证据 → 客户回答</dd></div>
               <div><dt>载体</dt><dd>阅读型 HTML，可扩展为模块库</dd></div>
-              <div><dt>示范</dt><dd>RAG：架构、选型、评估、安全、问答</dd></div>
+              <div><dt>示范</dt><dd>RAG：原理、检索、云服务、工程与售前</dd></div>
             </dl>
-            <p className="statusLine"><span /> 当前版本已纳入 6 份一级来源</p>
+            <p className="statusLine"><span /> 当前 RAG 模块已纳入 {sources.length} 份核验来源</p>
           </aside>
         </div>
       </header>
@@ -238,7 +309,7 @@ export default function Home() {
         <div className="sectionBody">
           <div className="sectionIntro">
             <p className="kicker">HOW TO USE</p>
-            <h2 id="principles-title">每个模块都回答四个问题</h2>
+            <h2 id="principles-title">每个模块都回答这些问题</h2>
           </div>
           <div className="principleGrid">
             <article><span>01</span><h3>它解决什么？</h3><p>业务问题、适用边界、非目标与价值假设。</p></article>
@@ -246,6 +317,7 @@ export default function Home() {
             <article><span>03</span><h3>如何证明？</h3><p>数据、评测、来源等级与验收门槛。</p></article>
             <article><span>04</span><h3>现场怎么说？</h3><p>客户问题、短答、深答、追问和风险提示。</p></article>
           </div>
+          <p className="editorialRule"><strong>编辑原则：</strong>图、表、代码、案例和问答均按理解需要使用；不设数量配额，不为了形式堆内容。</p>
         </div>
       </section>
 
@@ -301,7 +373,7 @@ export default function Home() {
           </div>
           <div className="ragDefinition">
             <p>用可更新、可追溯的外部证据增强模型回答；核心不是“接一个向量库”，而是建立一条可评估、可授权、可运营的知识供应链。</p>
-            <div className="moduleMeta"><span>阅读约 18 分钟</span><span>12 个客户问题</span><span>6 份一级来源</span></div>
+            <div className="moduleMeta"><span>基础原理 + 工程 + 售前</span><span>跨模块知识串联</span><span>{sources.length} 份核验来源</span></div>
           </div>
         </div>
       </section>
@@ -315,8 +387,104 @@ export default function Home() {
             <p>客户要的不是一个“会聊天的搜索框”，而是一套能在正确权限下找到正确证据、生成可核验回答，并持续知道哪里做错了的系统。</p>
           </div>
 
+          <div className="subsection" id="concept-map">
+            <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>先确定 RAG 在知识地图中的位置</h3></div></div>
+            <p className="sectionLead">RAG 模块拥有的是“检索增强生成的组合逻辑”。底层概念各有唯一的主要归属；本章会讲到足以理解 RAG 的深度，再把完整知识回链到对应模块，避免重复和版本漂移。</p>
+            <div className="conceptGrid">
+              {conceptLinks.map((item) => (
+                <article key={item.concept}>
+                  <div className="conceptMeta"><span>{item.relation}</span><a href="#map">{item.owner} ↗</a></div>
+                  <h4>{item.concept}</h4>
+                  <p>{item.local}</p>
+                </article>
+              ))}
+            </div>
+            <div className="linkRule">
+              <strong>跨模块阅读规则</strong>
+              <span>本地解释：不跳转也能读懂</span>
+              <span>主模块：完整原理与实现</span>
+              <span>返回路径：继续当前学习任务</span>
+            </div>
+          </div>
+
+          <div className="subsection foundationSection" id="rag-principle">
+            <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION</p><h3>核心原理：给模型增加可查的外部记忆</h3></div></div>
+            <div className="memoryCompare">
+              <article>
+                <p className="miniLabel">PARAMETRIC MEMORY</p>
+                <h4>参数化记忆</h4>
+                <p>模型训练时压缩进权重的语言规律与世界知识。调用快、泛化强，但知识何时写入、能否精确更新、来源在哪里，都难以直接控制。</p>
+              </article>
+              <article className="externalMemory">
+                <p className="miniLabel">NON-PARAMETRIC MEMORY</p>
+                <h4>非参数化记忆</h4>
+                <p>文档、数据库、搜索索引和知识图谱等外部数据。可以独立新增、撤回、授权和审计，RAG 在推理时把相关部分临时交给模型。</p>
+              </article>
+            </div>
+
+            <div className="formulaCard">
+              <div>
+                <p className="miniLabel">CONCEPTUAL FORM</p>
+                <p className="formula">P(y | x) ≈ Σ<sub>z ∈ Top-K</sub> P<sub>retriever</sub>(z | x) · P<sub>generator</sub>(y | x, z)</p>
+              </div>
+              <p><strong>x</strong> 是问题，<strong>z</strong> 是检索到的证据，<strong>y</strong> 是回答。直观上：先估计哪些证据与问题相关，再让模型在问题和证据条件下生成答案。现代工程实现通常不联合训练，但分解思路仍然有用。</p>
+            </div>
+
+            <div className="workedExample">
+              <div className="exampleQuestion"><span>客户问题</span><strong>“企业版产品的数据保留期是多少？”</strong></div>
+              <div className="exampleSteps">
+                <article><span>01</span><h4>检索</h4><p>从产品文档、合同条款和最新公告中找候选证据，并按身份过滤。</p></article>
+                <article><span>02</span><h4>增强</h4><p>把有效日期、产品版本、原文片段和引用要求组装成上下文。</p></article>
+                <article><span>03</span><h4>生成</h4><p>模型比较证据、说明适用范围；证据不足或冲突时拒答并提示人工确认。</p></article>
+              </div>
+            </div>
+            <aside className="callout"><strong>重要边界</strong><p>RAG 不会把检索内容永久写入模型参数，也不保证检索到的内容真实。它提供的是可控证据通道，正确性仍依赖数据治理、检索质量、生成约束和评估。</p></aside>
+          </div>
+
+          <div className="subsection" id="retrieval-basics">
+            <div className="subHead"><span>2.3</span><div><p className="kicker">RETRIEVAL MECHANICS</p><h3>从文档到证据：检索链为什么会失效</h3></div></div>
+            <div className="mechanicGrid">
+              <article><span className="mechanicNo">A</span><h4>解析与切块</h4><p>解析保留文字、表格、标题、页码和版面关系；切块把文档变成可召回单元。块太小会丢上下文，太大则稀释相关信息并增加 token。</p><small>主归属：数据解析 / OCR / 质量运营</small></article>
+              <article><span className="mechanicNo">B</span><h4>稀疏检索</h4><p>BM25 根据查询词在文档中的出现、稀有程度和文档长度评分。对编号、专有名词、错误码、日期和精确短语通常很强。</p><small>主归属：搜索与索引</small></article>
+              <article><span className="mechanicNo">C</span><h4>稠密检索</h4><p>双编码器把查询与文档映射为向量，以距离寻找语义相近内容。能跨同义表达，但会混淆“语义相似”和“事实相关”。</p><small>主归属：Embedding / 向量数据库</small></article>
+              <article><span className="mechanicNo">D</span><h4>过滤与重排</h4><p>先用高吞吐检索取候选，再用更精细模型比较问题与候选；权限、时间、产品和地区过滤必须在上下文组装前生效。</p><small>主归属：检索工程 / 安全</small></article>
+            </div>
+
+            <div className="retrievalCompare tableWrap">
+              <table>
+                <thead><tr><th>机制</th><th>它实际比较什么</th><th>擅长</th><th>常见盲点</th><th>设计建议</th></tr></thead>
+                <tbody>
+                  <tr><th>BM25 / Sparse</th><td>词项、词频、稀有度与长度</td><td>精确术语、编号、名称</td><td>同义改写、跨语言表达</td><td>保留原始字段与关键词索引</td></tr>
+                  <tr><th>Dense / Embedding</th><td>向量空间中的语义距离</td><td>自然语言、同义表达、模糊意图</td><td>精确值、否定、细粒度条件</td><td>用任务数据选择 embedding</td></tr>
+                  <tr className="highlight"><th>Hybrid</th><td>融合稀疏与稠密候选</td><td>企业混合语料</td><td>融合权重需要评估</td><td>通常作为企业 PoC 的主对比路线</td></tr>
+                  <tr><th>Reranker</th><td>问题与候选的联合相关性</td><td>提高候选排序精度</td><td>增加时延与成本</td><td>只重排有限候选并监测收益</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="technicalNotes">
+              <article><p className="miniLabel">VECTOR SIMILARITY</p><h4>余弦相似度</h4><p className="smallFormula">cos(q,d) = (q · d) / (‖q‖ ‖d‖)</p><p>衡量向量方向接近程度。分数只在同一 embedding、同一任务和同一索引配置下有意义，不能跨模型直接比较。</p></article>
+              <article><p className="miniLabel">APPROXIMATE SEARCH</p><h4>ANN / HNSW</h4><p>大规模向量库不会逐条精确比较。HNSW 通过分层近邻图快速逼近最近向量，用索引内存、构建时间和召回率换取查询速度。</p></article>
+              <article><p className="miniLabel">CHUNKING</p><h4>没有万能 Chunk Size</h4><p>固定长度、按标题、语义切分、父子块各适合不同文档。参数必须用真实问题集同时测召回、上下文完整性、时延和 token。</p></article>
+            </div>
+          </div>
+
+          <div className="subsection" id="rag-variants">
+            <div className="subHead"><span>2.4</span><div><p className="kicker">RAG PATTERNS</p><h3>RAG 不是一种固定架构</h3></div></div>
+            <div className="variantList">
+              {ragVariants.map((item) => (
+                <article key={item.name}>
+                  <div><p className="miniLabel">{item.cue}</p><h4>{item.name}</h4></div>
+                  <p className="variantPipeline">{item.pipeline}</p>
+                  <p>{item.boundary}</p>
+                </article>
+              ))}
+            </div>
+            <p className="sectionFootnote">术语归属：Naive / Advanced / Modular 属于 RAG 模块；Agent 的规划和工具调用深入应用模式层；知识图谱构建与治理深入数据底座层。</p>
+          </div>
+
           <div className="subsection" id="when-to-use">
-            <div className="subHead"><span>2.1</span><div><p className="kicker">FIT CHECK</p><h3>先判断：是不是该做 RAG</h3></div></div>
+            <div className="subHead"><span>2.5</span><div><p className="kicker">FIT CHECK</p><h3>再判断：是不是该做 RAG</h3></div></div>
             <div className="fitGrid">
               <article className="fit yes">
                 <h4><span>✓</span> 高匹配</h4>
@@ -342,7 +510,7 @@ export default function Home() {
           </div>
 
           <div className="subsection" id="architecture">
-            <div className="subHead"><span>2.2</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>把 RAG 看成两条链</h3></div></div>
+            <div className="subHead"><span>2.6</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>把 RAG 看成两条链</h3></div></div>
             <div className="chainWrap">
               <div className="chainLabel"><strong>离线知识链</strong><span>Knowledge pipeline</span></div>
               <div className="flow">
@@ -360,7 +528,7 @@ export default function Home() {
           </div>
 
           <div className="subsection" id="choice">
-            <div className="subHead"><span>2.3</span><div><p className="kicker">CHOICE MATRIX</p><h3>四种路线，不要一上来就选产品</h3></div></div>
+            <div className="subHead"><span>2.7</span><div><p className="kicker">CHOICE MATRIX</p><h3>四种路线，不要一上来就选产品</h3></div></div>
             <div className="tableWrap">
               <table>
                 <thead><tr><th>路线</th><th>最适合</th><th>更新 / 引用</th><th>主要代价</th><th>售前判断</th></tr></thead>
@@ -375,16 +543,41 @@ export default function Home() {
           </div>
 
           <div className="subsection" id="evidence">
-            <div className="subHead"><span>2.4</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可以引用的数据，也要说明边界</h3></div></div>
+            <div className="subHead"><span>2.8</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可以引用的数据，也要说明边界</h3></div></div>
             <div className="evidenceGrid">
               <article className="metricCard"><p className="metric">3</p><h4>开放域问答任务</h4><p>原始 RAG 论文在当时 3 个 open-domain QA 任务达到 SOTA。它证明方法潜力，不等于今天任何企业语料都能复现。</p><a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noreferrer">查看论文 ↗</a></article>
+              <article className="metricCard"><p className="metric">+9–19</p><h4>Top-20 召回准确率百分点</h4><p>DPR 在其开放域问答实验中相对强 BM25 基线的提升。它说明 dense retrieval 的潜力，不表示所有企业语料都应只用向量检索。</p><a href="https://arxiv.org/abs/2004.04906" target="_blank" rel="noreferrer">查看论文 ↗</a></article>
               <article className="metricCard accent"><p className="metric">5.7% → 1.9%</p><h4>Top-20 检索失败率</h4><p>Anthropic 的特定实验中，contextual dense + BM25 + rerank 达到该结果。应作为“混合检索值得 A/B”的证据，不是采购承诺。</p><a href="https://www.anthropic.com/engineering/contextual-retrieval" target="_blank" rel="noreferrer">查看实验 ↗</a></article>
               <article className="metricCard"><p className="metric">4</p><h4>分层验收面</h4><p>检索质量、生成忠实度、端到端业务结果、工程与安全。单一“正确率”无法定位系统失败。</p><a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noreferrer">评估研究 ↗</a></article>
             </div>
           </div>
 
+          <div className="subsection cloudSection" id="cloud-opportunities">
+            <div className="subHead"><span>2.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>把每个技术环节连接到云服务机会</h3></div></div>
+            <div className="cloudIntro">
+              <p>先用厂商中立能力描述问题，再映射到实际销售的产品。云服务不是附录：它贯穿数据进入、知识处理、模型调用、在线运行、安全和持续运营。</p>
+              <span>能力优先</span><span>产品后映射</span><span>以客户约束决定组合</span>
+            </div>
+            <div className="cloudTable tableWrap">
+              <table>
+                <thead><tr><th>RAG 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead>
+                <tbody>
+                  {cloudHooks.map((item) => (
+                    <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="solutionBundles">
+              <article><p className="miniLabel">BUNDLE A</p><h4>安全企业知识助手</h4><p>对象存储 / 文档智能 + 托管搜索 / 向量库 + 模型服务 + API 网关 + IAM / KMS + 可观测。</p><small>购买角色：业务部门、数据负责人、安全与应用团队</small></article>
+              <article><p className="miniLabel">BUNDLE B</p><h4>实时知识同步</h4><p>数据库 / SaaS + CDC / 事件总线 + Serverless 处理 + 增量索引 + 缓存失效 + 审计。</p><small>购买角色：数据平台、集成团队、业务运营</small></article>
+              <article><p className="miniLabel">BUNDLE C</p><h4>私有化规模运行</h4><p>Kubernetes / GPU 推理 + 私网模型网关 + 向量检索 + 弹性缓存 + APM / FinOps。</p><small>购买角色：平台团队、基础设施、信息安全与采购</small></article>
+            </div>
+            <p className="sectionFootnote">后续可在不改正文的情况下，为目标云厂商增加一张“能力 → 产品名称 → 限制 → 计费单位”映射表，并按 30 天时效等级维护。</p>
+          </div>
+
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.5</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日的验证包</h3></div></div>
+            <div className="subHead"><span>2.10</span><div><p className="kicker">POC PLAYBOOK</p><h3>10 个工作日的验证包</h3></div></div>
             <div className="pocGrid">
               <article><span>D1–2</span><h4>定义问题与基线</h4><p>选 2–3 个高价值任务；冻结真实问题、正确答案、证据位置与风险等级；用长上下文 / 现有搜索建立基线。</p></article>
               <article><span>D3–5</span><h4>打通知识链</h4><p>接入最小权威语料；验证解析、切块、元数据、权限与增量更新；记录每个处理版本。</p></article>
@@ -401,7 +594,7 @@ export default function Home() {
           </div>
 
           <div className="subsection qaSection" id="qa">
-            <div className="subHead"><span>2.6</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+            <div className="subHead"><span>2.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题最后给出售前必须确认的下一问。</p>
             <div className="qaList">
               {qa.map((item, index) => (
@@ -418,7 +611,7 @@ export default function Home() {
           </div>
 
           <div className="subsection" id="sources">
-            <div className="subHead"><span>2.7</span><div><p className="kicker">SOURCE LEDGER</p><h3>本模块的来源与证据等级</h3></div></div>
+            <div className="subHead"><span>2.12</span><div><p className="kicker">SOURCE LEDGER</p><h3>本模块的来源与证据等级</h3></div></div>
             <div className="sourceList">
               {sources.map((source) => (
                 <a className="sourceItem" href={source.href} target="_blank" rel="noreferrer" key={source.title}>
@@ -452,7 +645,11 @@ export default function Home() {
           </article>
           <article>
             <span className="maintNo">D</span><h3>模块发布门槛</h3>
-            <p>有负责人、有来源台账、有客户问答、有验证数据、有风险边界、有变更记录；缺一项则标记为草案。</p>
+            <p>不按图表、案例或问答数量验收；以概念是否讲清、关联是否完整、云机会是否明确、证据是否可追溯为准。</p>
+          </article>
+          <article>
+            <span className="maintNo">E</span><h3>内容优先，载体后置</h3>
+            <p>先把内容深度和概念关系做完整，不为控制交付包大小删减知识。内容稳定后再生成在线 HTML、离线 HTML、PPT 或 PDF。</p>
           </article>
         </div>
         <div className="schema">
@@ -462,7 +659,7 @@ export default function Home() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>框架稿 + RAG 示范模块 · 2026-07-17</p>
+        <p>知识地图 + RAG 样板模块 V0.2 · 2026-07-17</p>
         <a href="#top">返回顶部 ↑</a>
       </footer>
     </main>
