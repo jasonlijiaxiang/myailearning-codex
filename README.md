@@ -2,7 +2,7 @@
 
 面向具有 Python / API 基础的售前人员，以中文为主、专业术语中英对照。知识库围绕概念、架构判断、证据、云服务连接和客户现场问答组织内容。
 
-当前包含完整知识地图与 RAG 样板模块，后续模块沿用同一内容和构图标准扩展。
+当前包含完整知识地图、28 个独立模块地址、RAG 深度模块与全站统一 Reference 页面。后续模块沿用同一内容、证据和构图标准扩展。
 
 ## 本地运行
 
@@ -21,8 +21,13 @@ npm run lint
 
 ## 主要目录
 
-- `app/page.tsx`：知识地图、RAG 模块和实战问答内容
-- `app/rag-content.mjs`：RAG 问答、证据卡与来源台账的统一内容源
+- `app/page.tsx`：知识库首页与全局知识地图
+- `app/knowledge-map.mjs`：7 层架构、28 个模块与稳定路由的统一注册表
+- `app/modules/rag/page.tsx`：RAG 原理、架构、云服务连接与实战问答
+- `app/modules/[slug]/page.tsx`：其他模块的独立页面入口
+- `app/rag-content.mjs`：RAG 问答与证据卡内容源
+- `app/reference-content.mjs`：全站来源台账与模块来源分组的唯一内容源
+- `app/references/page.tsx`：所有模块共用的 Reference 页面
 - `app/globals.css`：阅读版视觉系统与响应式布局
 - `tests/rendered-html.test.mjs`：内容、导航和构图规则检查
 - `docs/CONTENT-DESIGN-STANDARD.md`：后续模块必须遵守的内容与构图规范
@@ -37,6 +42,19 @@ npm run lint
 - 每道客户问答标明具体依据、支持范围和边界，并通过稳定来源 ID 回链到统一来源台账。
 - 每个技术环节同时说明可能连接的云服务、客户价值和售前发现问题。
 - 图、表、代码、案例与问答按理解需要使用，不设数量配额。
+
+## 页面结构
+
+- 首页：`/`
+- 模块页：`/modules/<slug>`
+- RAG：`/modules/rag`
+- 统一来源台账：`/references`
+
+每个模块独立维护和分享；正文中的证据链接统一跳转到 Reference 页对应来源，不在模块页重复展示完整来源列表。
+
+## 推送与发布
+
+本项目的 Codex 协作规则要求：每次代码推送后，同一次任务必须把该精确提交发布到公开站点并确认部署成功。详细规则见 `AGENTS.md`。
 
 ## 发布地址
 

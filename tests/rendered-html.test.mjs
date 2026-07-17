@@ -3,161 +3,248 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 import { balanceRows } from "../app/layout-utils.mjs";
-import { evidenceCards, ragQa, sourceLedger } from "../app/rag-content.mjs";
+import { getModuleBySlug, layers, moduleList } from "../app/knowledge-map.mjs";
+import { evidenceCards, ragQa } from "../app/rag-content.mjs";
+import { referenceModules, sourceLedger } from "../app/reference-content.mjs";
 
-async function render() {
+async function render(path = "/") {
+  assert.match(path, /^\//, "render(path) 必须接收站内绝对路径");
+
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
+  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${Math.random()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", { headers: { accept: "text/html" } }),
+    new Request(new URL(path, "http://localhost"), {
+      headers: { accept: "text/html" },
+    }),
     { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
     { waitUntil() {}, passThroughOnException() {} },
   );
 }
 
-test("server-renders the complete presales knowledge base", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
+async function renderHtml(path) {
+  const response = await render(path);
+  assert.equal(response.status, 200, `${path} 应可正常访问`);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+  return response.text();
+}
 
-  const html = await response.text();
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function escapeHtmlText(value) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+function collectRagSourceIds() {
+  return new Set([
+    ...evidenceCards.map((card) => card.sourceId),
+    ...ragQa.flatMap((item) => item.evidence.map((reference) => reference.sourceId)),
+  ]);
+}
+
+test("homepage is a focused knowledge map with links to every independent module", async () => {
+  const html = await renderHtml("/");
+
   assert.match(html, /<html lang="zh-CN">/i);
   assert.match(html, /<title>云计算 × AI 平台售前知识库<\/title>/i);
   assert.match(html, /<h2 id="map-title">知识地图<\/h2>/);
-  assert.match(html, /aria-label="\d+ 层架构，\d+ 个细分模块"/);
-  assert.match(html, /Retrieval-Augmented Generation/);
-  assert.doesNotMatch(html, /语言规范 \/ Language Standard/);
-  assert.doesNotMatch(html, /编辑原则：|跨模块阅读规则|aria-label="知识库定义"/);
-  assert.match(html, /MCP · 模型上下文协议/);
-  assert.match(html, /Model Context Protocol/);
-  assert.match(html, /Chunking &amp; Metadata/);
-  assert.match(html, /href="#rag"[^>]*aria-label="RAG · 检索增强生成：跳转到对应模块"/);
-  assert.doesNotMatch(html, /BUILD BRIEF/);
-  assert.match(html, /RAG 在知识地图中的位置与相关模块/);
-  assert.match(html, /RAG 的概率模型与工程机制/);
-  assert.match(html, /检索<small>Retrieval<\/small>/);
-  assert.match(html, /增强<small>Augmentation<\/small>/);
-  assert.match(html, /生成<small>Generation<\/small>/);
-  assert.match(html, /必须记住/);
-  assert.match(html, /Critical Boundary/);
-  assert.match(html, /PARAMETRIC MEMORY/);
-  assert.match(html, /BM25 \/ Sparse/);
-  assert.match(html, /ANN \/ HNSW/);
-  assert.match(html, /RAG 技术环节与云服务机会/);
-  assert.match(html, /客户高频问题与深度回答/);
-  assert.match(html, /潜变量/);
-  assert.match(html, /边缘化/);
-  assert.match(html, /RAG-Sequence/);
-  assert.match(html, /RAG-Token/);
-  assert.match(html, /RAG-SEQUENCE · LATENT-DOCUMENT MARGINALIZATION/);
-  assert.match(html, /不是所有现代 RAG 实现的统一公式/);
-  assert.match(html, /Candidate Retrieval/);
-  assert.match(html, /Context Assembly/);
-  assert.match(html, /召回是证据可用性的上限/);
-  assert.match(html, /增强发生在上下文/);
-  assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);
-  assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
-  assert.match(html, /RAG-Sequence 和 RAG-Token 是两种部署架构吗/);
-  assert.match(html, /企业做 RAG，必须把检索器和生成模型端到端联合训练吗/);
-  assert.match(html, /Top-K 是不是越大越好/);
-  assert.match(html, /本题依据 \/ Evidence/);
-  assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
-  assert.match(html, /id="source-rag-original-2020"/);
-  assert.match(html, /id="source-nist-zero-trust"/);
-  assert.match(html, /id="source-docling-report"/);
-  assert.doesNotMatch(
-    html,
-    /MAINTENANCE BY DESIGN|时效性不是页脚日期|claim_id|review_by|layerNote|href="#maintenance"|30 天时效等级|复核节奏|事实最小单元/,
-  );
-  assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/);
+  assert.match(html, new RegExp(`aria-label="${layers.length} 层架构，${moduleList.length} 个细分模块"`));
+  assert.match(html, /href="\/references"/);
+  assert.match(html, /Reference/);
+
+  for (const knowledgeModule of moduleList) {
+    assert.match(html, new RegExp(`href="${escapeRegExp(knowledgeModule.href)}"`), `首页缺少模块入口：${knowledgeModule.zh}`);
+    assert.match(html, new RegExp(escapeRegExp(knowledgeModule.zh)), `首页缺少模块名称：${knowledgeModule.zh}`);
+    assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(knowledgeModule.en))), `首页缺少英文术语：${knowledgeModule.en}`);
+  }
+
+  assert.doesNotMatch(html, /RAG 的概率模型与工程机制/);
+  assert.doesNotMatch(html, /RAG 技术环节与云服务机会/);
+  assert.doesNotMatch(html, /客户高频问题与深度回答/);
+  assert.doesNotMatch(html, /本题依据 \/ Evidence/);
+  assert.doesNotMatch(html, /id="source-[a-z0-9-]+"/);
+  assert.doesNotMatch(html, /统一来源台账/);
+  assert.doesNotMatch(html, /BUILD BRIEF|语言规范 \/ Language Standard|编辑原则：|跨模块阅读规则/);
 });
 
-test("enforces the reusable content and composition rules", async () => {
-  const [page, styles, standard, maintenance, ragContent] = await Promise.all([
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../docs/CONTENT-DESIGN-STANDARD.md", import.meta.url), "utf8"),
-    readFile(new URL("../docs/CONTENT-MAINTENANCE.md", import.meta.url), "utf8"),
-    readFile(new URL("../app/rag-content.mjs", import.meta.url), "utf8"),
-  ]);
+test("RAG route contains principles, cloud-service opportunities, and evidence-backed answers", async () => {
+  const html = await renderHtml("/modules/rag");
 
-  const headings = [...page.matchAll(/<h[1-3]\b[^>]*>([\s\S]*?)<\/h[1-3]>/g)]
-    .map((match) => match[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
-  for (const heading of headings) {
-    assert.doesNotMatch(
-      heading,
-      /^(?:先(?:确定|理解|选择|判断)|再(?:判断|选择|来看)|把\S|不要|我们(?:先|来|需要)|你(?:需要|应该|可以))/,
-      `标题应使用客观知识库语气：${heading}`,
+  assert.match(html, /检索增强生成 · Retrieval-Augmented Generation/);
+  assert.match(html, /RAG 的概率模型与工程机制/);
+  assert.match(html, /潜变量（Latent Variable）/);
+  assert.match(html, /边缘化（Marginalization）/);
+  assert.match(html, /RAG-Sequence/);
+  assert.match(html, /RAG-Token/);
+  assert.match(html, /不是所有现代 RAG 实现的统一公式/);
+  assert.match(html, /召回是证据可用性的上限/);
+  assert.match(html, /增强发生在上下文/);
+  assert.match(html, /RAG 技术环节与云服务机会/);
+  assert.match(html, /对象存储、数据库、文件服务、SaaS 连接器、CDC、消息队列/);
+  assert.match(html, /客户高频问题与深度回答/);
+  assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);
+  assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
+  assert.match(html, /本题依据 \/ Evidence/);
+  assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
+  assert.match(html, /href="\/references"/);
+
+  for (const sourceId of collectRagSourceIds()) {
+    assert.match(
+      html,
+      new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`),
+      `RAG 页面缺少统一 Reference 回链：${sourceId}`,
     );
   }
 
-  assert.match(page, /const conceptRows = balanceRows\(conceptLinks, 4\)/);
-  assert.match(page, /data-count=\{conceptLinks\.length\}/);
-  assert.match(page, /data-odd=\{conceptLinks\.length % 2 === 1/);
-  assert.match(page, /"--concept-span": 12 \/ row\.length/);
-  assert.match(styles, /\.conceptGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  assert.match(styles, /\.conceptGrid article\s*\{[^}]*grid-column:\s*span var\(--concept-span\);/s);
-  assert.match(styles, /@media \(max-width: 1050px\)[\s\S]*?\.conceptGrid article\s*\{\s*grid-column:\s*span 6;/);
-  assert.match(styles, /\.conceptGrid\[data-odd="true"\] article:last-child\s*\{\s*grid-column:\s*span 12;/);
-  assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.conceptGrid article,[^{]*\{\s*grid-column:\s*span 12;/);
-  assert.match(page, /const layerCount = layers\.length/);
-  assert.match(page, /const moduleCount = layers\.reduce/);
-  assert.match(page, /className="mapStats" aria-label=\{`\$\{layerCount\} 层架构，\$\{moduleCount\} 个细分模块`\}/);
-  assert.doesNotMatch(page, /aria-label="\d+ 层架构，\d+ 个细分模块"/);
-  assert.doesNotMatch(page, /<i aria-hidden="true">／<\/i>/);
-  assert.match(styles, /\.mapStat\s*\{[^}]*flex:\s*0 0 auto;[^}]*white-space:\s*nowrap;/s);
-  assert.match(styles, /\.mapStat \+ \.mapStat::before\s*\{[^}]*content:\s*"／";/s);
-  assert.match(page, /balanceRows\(layer\.modules, 4\)/);
-  assert.match(page, /"--module-span": 12 \/ row\.length/);
-  assert.match(page, /data-count=\{layer\.modules\.length\}/);
-  assert.match(page, /data-odd=\{layer\.modules\.length % 2 === 1/);
-  assert.match(styles, /\.chips\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  assert.match(
-    styles,
-    /\.chips > span, \.chips > a\s*\{[^}]*grid-column:\s*span var\(--module-span\);/s,
-  );
-  assert.match(styles, /@media \(max-width: 1050px\)[\s\S]*?\.chips > span, \.chips > a\s*\{\s*grid-column:\s*span 6;/);
-  assert.match(styles, /\.chips\[data-odd="true"\] > :last-child\s*\{\s*grid-column:\s*span 12;/);
-  assert.match(page, /const evidenceRows = balanceRows\(evidenceCards, 4\)/);
-  assert.match(page, /data-count=\{evidenceCards\.length\}/);
-  assert.match(page, /"--evidence-span": 12 \/ row\.length/);
-  assert.match(styles, /\.evidenceGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  assert.match(styles, /\.metricCard\s*\{[^}]*grid-column:\s*span var\(--evidence-span\);/s);
-  assert.match(page, /aria-label="本题依据"/);
-  assert.match(page, /id=\{`source-\$\{sourceId\}`\}/);
-  assert.doesNotMatch(page, /https?:\/\//, "来源 URL 只能在统一来源台账维护");
-  assert.match(page, /balanceRows\(item\.evidence, 3\)/);
-  assert.match(page, /"--qa-evidence-span": 12 \/ row\.length/);
-  assert.match(styles, /\.qaBasisList\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  assert.match(ragContent, /export const sourceLedger/);
-  assert.match(ragContent, /export const ragQa/);
-  assert.match(ragContent, /export const evidenceCards/);
-  assert.doesNotMatch(page, /layerNote|id="maintenance"|href="#maintenance"/);
-  assert.doesNotMatch(styles, /\.layerNote\b|\.maintenance(?:Head|Grid)?\b/);
-  assert.match(standard, /动态均衡卡片/);
-  assert.match(standard, /客观陈述/);
-  assert.match(maintenance, /不进入读者页面/);
-  for (const field of [
-    "claim_id",
-    "claim",
-    "scope",
-    "source_url",
-    "evidence_grade",
-    "verified_at",
-    "review_by",
-    "owner",
-    "status",
-  ]) {
-    assert.match(maintenance, new RegExp(`\\b${field}\\b`));
-  }
-  assert.match(maintenance, /30 天/);
-  assert.match(maintenance, /90 天/);
-  assert.match(maintenance, /180 天/);
+  assert.doesNotMatch(html, /id="source-[a-z0-9-]+"/, "RAG 页面不应复制完整来源台账");
+  assert.doesNotMatch(html, /统一来源台账|本模块的来源与证据类别|打开原文 ↗/);
+  assert.doesNotMatch(html, /MAINTENANCE BY DESIGN|时效性不是页脚日期|claim_id|review_by|事实最小单元/);
 });
 
-test("balances arbitrary concept-card counts without hard-coding eight", () => {
+test("references route is the complete centralized source ledger", async () => {
+  const html = await renderHtml("/references");
+
+  assert.match(html, /统一来源台账/);
+  assert.match(html, /Reference Library/);
+  assert.match(html, /来源与证据类别图例/);
+
+  for (const referenceModule of referenceModules) {
+    assert.match(html, new RegExp(`id="module-${escapeRegExp(referenceModule.id)}"`));
+    assert.match(html, new RegExp(`href="${escapeRegExp(referenceModule.href)}"`));
+    assert.match(html, new RegExp(escapeRegExp(referenceModule.zh)));
+
+    for (const sourceId of referenceModule.sourceIds) {
+      const source = sourceLedger[sourceId];
+      assert.ok(source, `Reference 模块引用未知来源：${sourceId}`);
+      assert.match(html, new RegExp(`id="source-${escapeRegExp(sourceId)}"`));
+      assert.match(html, new RegExp(`href="${escapeRegExp(source.href)}"`));
+      assert.match(html, new RegExp(escapeRegExp(source.title)));
+      assert.match(html, new RegExp(`核验：(?:<!-- -->)?${escapeRegExp(source.verifiedAt)}`));
+    }
+  }
+
+  for (const sourceId of Object.keys(sourceLedger)) {
+    assert.match(html, new RegExp(`id="source-${escapeRegExp(sourceId)}"`), `来源未出现在统一台账：${sourceId}`);
+  }
+});
+
+test("an unfinished module still has an independent, navigable route", async () => {
+  const html = await renderHtml("/modules/ai-agent");
+  const agentModule = getModuleBySlug("ai-agent");
+  assert.ok(agentModule);
+
+  assert.match(html, /<h1>Agent · 智能体<\/h1>/);
+  assert.match(html, /AI Agent/);
+  assert.match(html, /正文建设中/);
+  assert.match(html, /同层相关模块/);
+  assert.match(html, /href="\/#map"/);
+  assert.match(html, /href="\/references"/);
+
+  const relatedModules = moduleList.filter(
+    (candidate) => candidate.layerNo === agentModule.layerNo && candidate.slug !== agentModule.slug,
+  );
+  assert.ok(relatedModules.length > 0);
+  for (const related of relatedModules) {
+    assert.match(html, new RegExp(`href="${escapeRegExp(related.href)}"`));
+    assert.match(html, new RegExp(escapeRegExp(related.zh)));
+  }
+
+  assert.doesNotMatch(html, /RAG 的概率模型与工程机制|客户高频问题与深度回答/);
+});
+
+test("knowledge-map registry remains seven layers and twenty-eight unique module routes", () => {
+  assert.equal(layers.length, 7);
+  assert.equal(moduleList.length, 28);
+  assert.equal(layers.reduce((total, layer) => total + layer.modules.length, 0), 28);
+
+  const layerNumbers = layers.map((layer) => layer.no);
+  const slugs = moduleList.map((module) => module.slug);
+  const hrefs = moduleList.map((module) => module.href);
+
+  assert.equal(new Set(layerNumbers).size, layers.length, "层编号必须唯一");
+  assert.equal(new Set(slugs).size, moduleList.length, "模块 slug 必须唯一");
+  assert.equal(new Set(hrefs).size, moduleList.length, "模块 href 必须唯一");
+
+  for (const layer of layers) {
+    assert.ok(layer.no && layer.name && layer.en && layer.purpose);
+    assert.ok(layer.modules.length > 0, `知识层不应为空：${layer.name}`);
+  }
+
+  for (const knowledgeModule of moduleList) {
+    assert.match(knowledgeModule.slug, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+    assert.equal(knowledgeModule.href, `/modules/${knowledgeModule.slug}`);
+    assert.strictEqual(getModuleBySlug(knowledgeModule.slug), knowledgeModule);
+    assert.ok(knowledgeModule.zh && knowledgeModule.en && knowledgeModule.layerNo && knowledgeModule.layerName && knowledgeModule.layerEn);
+  }
+});
+
+test("every RAG claim resolves to a unique, grouped, and verified source", () => {
+  const sourceEntries = Object.entries(sourceLedger);
+  const sourceIds = new Set(sourceEntries.map(([sourceId]) => sourceId));
+  const sourceUrls = sourceEntries.map(([, source]) => source.href);
+
+  assert.ok(sourceEntries.length > 0);
+  assert.equal(new Set(sourceUrls).size, sourceUrls.length, "来源 URL 不应重复维护");
+
+  for (const [sourceId, source] of sourceEntries) {
+    assert.match(sourceId, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+    assert.match(source.href, /^https:\/\//);
+    assert.match(source.verifiedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(!Number.isNaN(Date.parse(`${source.verifiedAt}T00:00:00Z`)), `核验日期无效：${sourceId}`);
+    assert.ok(source.grade && source.kind && source.shortTitle && source.title && source.note);
+  }
+
+  const groupedSourceIds = new Set();
+  const referenceModuleIds = new Set();
+  const referenceModuleHrefs = new Set();
+  for (const referenceModule of referenceModules) {
+    assert.ok(!referenceModuleIds.has(referenceModule.id), `Reference 模块 ID 重复：${referenceModule.id}`);
+    assert.ok(!referenceModuleHrefs.has(referenceModule.href), `Reference 模块链接重复：${referenceModule.href}`);
+    referenceModuleIds.add(referenceModule.id);
+    referenceModuleHrefs.add(referenceModule.href);
+    assert.ok(referenceModule.zh && referenceModule.en && referenceModule.shortTitle);
+    assert.ok(referenceModule.sourceIds.length > 0, `Reference 模块缺少来源：${referenceModule.id}`);
+    assert.equal(new Set(referenceModule.sourceIds).size, referenceModule.sourceIds.length, `Reference 模块来源重复：${referenceModule.id}`);
+    assert.equal(referenceModule.href, getModuleBySlug(referenceModule.id)?.href, `Reference 分组应连接到对应模块：${referenceModule.id}`);
+
+    for (const sourceId of referenceModule.sourceIds) {
+      assert.ok(sourceIds.has(sourceId), `Reference 模块引用未知来源：${sourceId}`);
+      groupedSourceIds.add(sourceId);
+    }
+  }
+  assert.deepEqual([...groupedSourceIds].sort(), [...sourceIds].sort(), "每个来源都必须归入至少一个模块分组");
+
+  const ragReferenceModule = referenceModules.find((module) => module.id === "rag");
+  assert.ok(ragReferenceModule, "缺少 RAG Reference 分组");
+  const ragGroupedSourceIds = new Set(ragReferenceModule.sourceIds);
+
+  for (const item of ragQa) {
+    assert.ok(item.q && item.a && item.depth && item.ask && item.tag && item.basis);
+    assert.ok(item.evidence.length > 0, `问答缺少本题依据：${item.q}`);
+    assert.equal(
+      new Set(item.evidence.map((reference) => reference.sourceId)).size,
+      item.evidence.length,
+      `同一问题不应重复引用同一来源：${item.q}`,
+    );
+    for (const reference of item.evidence) {
+      assert.ok(sourceIds.has(reference.sourceId), `问答引用未知来源：${reference.sourceId}`);
+      assert.ok(ragGroupedSourceIds.has(reference.sourceId), `问答来源未归入 RAG 分组：${reference.sourceId}`);
+      assert.match(reference.supports, /支持|直接定义/, `应说明来源具体支持什么：${item.q}`);
+    }
+  }
+
+  assert.ok(evidenceCards.length > 0);
+  for (const card of evidenceCards) {
+    assert.ok(sourceIds.has(card.sourceId), `证据卡引用未知来源：${card.sourceId}`);
+    assert.ok(ragGroupedSourceIds.has(card.sourceId), `证据卡来源未归入 RAG 分组：${card.sourceId}`);
+    assert.ok(card.metric && card.title && card.finding && card.boundary);
+  }
+});
+
+test("balances arbitrary card counts without hard-coded even or odd layouts", () => {
   const cases = new Map([
     [1, [1]],
     [2, [2]],
@@ -196,75 +283,82 @@ test("balances arbitrary concept-card counts without hard-coding eight", () => {
   assert.throws(() => balanceRows([1], 0), /positive integer/);
 });
 
-test("keeps every RAG answer and evidence card connected to the source ledger", async () => {
-  const sourceEntries = Object.entries(sourceLedger);
-  const sourceIds = new Set(sourceEntries.map(([sourceId]) => sourceId));
-  const hrefs = sourceEntries.map(([, source]) => source.href);
+test("keeps related and Reference cards dynamically balanced with mobile navigation", async () => {
+  const [styles, genericModuleRoute, referencesRoute] = await Promise.all([
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/modules/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/references/page.tsx", import.meta.url), "utf8"),
+  ]);
 
-  assert.equal(new Set(hrefs).size, hrefs.length, "来源 URL 不应重复维护");
-  for (const [sourceId, source] of sourceEntries) {
-    assert.match(sourceId, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
-    assert.match(source.href, /^https:\/\//);
-    assert.match(source.verifiedAt, /^\d{4}-\d{2}-\d{2}$/);
-    assert.ok(source.grade && source.kind && source.shortTitle && source.title && source.note);
-  }
-
-  for (const requiredQuestion of [
-    /检到了正确文档.*答错/,
-    /RAG-Sequence.*RAG-Token/,
-    /端到端联合训练/,
-    /Top-K.*Reranker/,
-    /PDF.*扫描件.*表格.*图片/,
-  ]) {
-    assert.ok(ragQa.some((item) => requiredQuestion.test(item.q)), `缺少关键知识问答：${requiredQuestion}`);
-  }
-  for (const item of ragQa) {
-    assert.ok(item.q && item.a && item.depth && item.ask && item.tag && item.basis);
-    assert.ok(item.evidence.length > 0, `问答缺少本题依据：${item.q}`);
-    assert.equal(
-      new Set(item.evidence.map((reference) => reference.sourceId)).size,
-      item.evidence.length,
-      `同一问题不应重复引用同一来源：${item.q}`,
-    );
-    for (const reference of item.evidence) {
-      assert.ok(sourceIds.has(reference.sourceId), `未知来源 ID：${reference.sourceId}`);
-      assert.match(reference.supports, /支持|直接定义/, `应说明来源具体支持什么：${item.q}`);
-    }
-  }
-
-  assert.ok(evidenceCards.length > 0);
-  for (const card of evidenceCards) {
-    assert.ok(sourceIds.has(card.sourceId), `证据卡引用未知来源：${card.sourceId}`);
-    assert.ok(card.finding && card.boundary, `证据卡必须同时说明发现与边界：${card.title}`);
-  }
-
-  const response = await render();
-  const html = await response.text();
-  for (const sourceId of new Set([
-    ...ragQa.flatMap((item) => item.evidence.map((reference) => reference.sourceId)),
-    ...evidenceCards.map((card) => card.sourceId),
-  ])) {
-    assert.match(html, new RegExp(`href="#source-${sourceId}"`));
-    assert.match(html, new RegExp(`id="source-${sourceId}"`));
-  }
+  assert.match(genericModuleRoute, /const relatedRows = balanceRows\(relatedModules, 3\)/);
+  assert.match(genericModuleRoute, /"--related-span": 12 \/ row\.length/);
+  assert.match(genericModuleRoute, /data-odd=\{relatedModules\.length % 2 === 1/);
+  assert.match(referencesRoute, /const referenceModuleRows = balanceRows\(referenceModules, 4\)/);
+  assert.match(referencesRoute, /"--reference-span": 12 \/ row\.length/);
+  assert.match(referencesRoute, /data-odd=\{referenceModules\.length % 2 === 1/);
+  assert.match(styles, /\.relatedModuleGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(styles, /\.referenceModuleNav\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(styles, /\.relatedModuleGrid\[data-odd="true"\] > a:last-child,[\s\S]*?\.referenceModuleNav\[data-odd="true"\] > a:last-child\s*\{\s*grid-column:\s*span 12;/);
+  assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{\s*display:\s*flex;[^}]*width:\s*100%;/);
+  assert.doesNotMatch(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{[^}]*display:\s*none;/);
 });
 
-test("keeps source links and starter cleanup intact", async () => {
-  const [ragContent, layout, packageJson] = await Promise.all([
+test("source URLs have one code owner and are absent from content and route files", async () => {
+  const [referenceContent, ragContent, homepage, ragRoute, referencesRoute] = await Promise.all([
+    readFile(new URL("../app/reference-content.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/rag-content.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/modules/rag/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/references/page.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(referenceContent, /export const sourceLedger/);
+  assert.match(referenceContent, /export const referenceModules/);
+  assert.doesNotMatch(ragContent, /export const sourceLedger/);
+  assert.match(ragContent, /export const ragQa/);
+  assert.match(ragContent, /export const evidenceCards/);
+
+  for (const source of Object.values(sourceLedger)) {
+    assert.ok(referenceContent.includes(source.href), `统一来源文件缺少 URL：${source.href}`);
+    assert.ok(!ragContent.includes(source.href), `RAG 内容文件不应维护 URL：${source.href}`);
+    assert.ok(!homepage.includes(source.href), `首页不应维护 URL：${source.href}`);
+    assert.ok(!ragRoute.includes(source.href), `RAG 路由不应维护 URL：${source.href}`);
+    assert.ok(!referencesRoute.includes(source.href), `Reference 页面组件不应重复维护 URL：${source.href}`);
+  }
+
+  assert.doesNotMatch(ragContent, /https?:\/\//);
+  assert.doesNotMatch(homepage, /https?:\/\//);
+  assert.doesNotMatch(ragRoute, /https?:\/\//);
+  assert.doesNotMatch(referencesRoute, /https?:\/\//);
+});
+
+test("project docs require independent routes, one reference page, and publish-after-push", async () => {
+  const [standard, maintenance, agentRules, layout, packageJson] = await Promise.all([
+    readFile(new URL("../docs/CONTENT-DESIGN-STANDARD.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/CONTENT-MAINTENANCE.md", import.meta.url), "utf8"),
+    readFile(new URL("../AGENTS.md", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
-  assert.match(ragContent, /proceedings\.neurips\.cc\/paper\/2020/);
-  assert.match(ragContent, /aclanthology\.org\/2020\.emnlp-main\.550/);
-  assert.match(ragContent, /aclanthology\.org\/2024\.eacl-demo\.16/);
-  assert.match(ragContent, /research\.ibm\.com\/publications\/docling-technical-report/);
-  assert.match(ragContent, /arxiv\.org\/abs\/2009\.09941/);
-  assert.match(ragContent, /proceedings\.iclr\.cc\/paper_files\/paper\/2025/);
-  assert.match(ragContent, /csrc\.nist\.gov\/pubs\/sp\/800\/207\/final/);
-  assert.match(ragContent, /anthropic\.com\/engineering\/contextual-retrieval/);
-  assert.match(ragContent, /genai\.owasp\.org\/llmrisk\/llm01-prompt-injection/);
+  assert.match(standard, /每个模块使用独立页面/);
+  assert.match(standard, /\/references/);
+  assert.match(standard, /所有来源集中在独立/);
+  assert.match(standard, /动态均衡卡片/);
+  assert.match(standard, /相关模块/);
+
+  assert.match(maintenance, /完整来源台账只呈现在 `\/references`/);
+  assert.match(maintenance, /Git 推送后的公开发布/);
+  assert.match(maintenance, /任何 Git 推送后/);
+  assert.match(maintenance, /部署公开版本/);
+  assert.match(maintenance, /轮询至成功/);
+
+  assert.match(agentRules, /每个知识模块使用独立地址 `\/modules\/<slug>`/);
+  assert.match(agentRules, /`\/references` 是全站唯一的公开来源台账/);
+  assert.match(agentRules, /任何 Git 推送后/);
+  assert.match(agentRules, /更新公开站点/);
+  assert.match(agentRules, /轮询到发布成功/);
+
   assert.match(layout, /lang="zh-CN"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
