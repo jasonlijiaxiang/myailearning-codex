@@ -1,3 +1,7 @@
+import type { CSSProperties } from "react";
+
+import { balanceRows } from "./layout-utils.mjs";
+
 const layers = [
   {
     no: "01",
@@ -190,6 +194,8 @@ const conceptLinks = [
   { concept: "容器、Serverless 与算力", owner: "算力底座层", relation: "运行底座", local: "承载解析任务、检索服务、模型推理和峰值弹性。" },
 ];
 
+const conceptRows = balanceRows(conceptLinks, 4);
+
 const ragVariants = [
   { name: "Naive RAG", cue: "单次查询、单一知识源、快速基线", pipeline: "切块 → 向量检索 → Top-K → 生成", boundary: "实现快，但容易受切块、召回和噪声影响。" },
   { name: "Advanced RAG", cue: "企业知识问答与可控质量", pipeline: "查询改写 → 混合召回 → 过滤 → 重排 → 压缩 → 生成", boundary: "质量更稳，但组件、时延和评估复杂度增加。" },
@@ -329,7 +335,7 @@ export default function Home() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V0.5</p>
+            <p className="eyebrow">READING EDITION · V0.6</p>
             <h1>云计算 × AI 平台<br />售前知识库</h1>
             <p className="heroLead">
               从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径。
@@ -435,17 +441,26 @@ export default function Home() {
           </div>
 
           <div className="subsection" id="concept-map">
-            <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>RAG 的知识位置与模块依赖</h3></div></div>
+            <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>RAG 在知识地图中的位置与相关模块</h3></div></div>
             <p className="sectionLead">RAG 模块聚焦“检索增强生成的组合逻辑”。底层概念各有唯一的主要归属；本节提供理解 RAG 所需的局部解释，并将完整知识链接至对应主模块，以减少重复和版本漂移。</p>
-            <div className="conceptGrid">
-              {conceptLinks.map((item) => (
-                <article key={item.concept}>
-                  <div className="conceptMeta"><span>{item.relation}</span><a href="#map">{item.owner} ↗</a></div>
-                  <h4>{item.concept}</h4>
-                  <p>{item.local}</p>
-                </article>
-              ))}
-            </div>
+            {conceptRows.length > 0 && (
+              <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
+                {conceptRows.flatMap((row) =>
+                  row.map((item) => (
+                    <article
+                      key={item.concept}
+                      style={{ "--concept-span": 12 / row.length } as CSSProperties}
+                    >
+                      <div className="conceptCard">
+                        <div className="conceptMeta"><span>{item.relation}</span><a href="#map">{item.owner} ↗</a></div>
+                        <h4>{item.concept}</h4>
+                        <p>{item.local}</p>
+                      </div>
+                    </article>
+                  )),
+                )}
+              </div>
+            )}
           </div>
 
           <div className="subsection foundationSection" id="rag-principle">
@@ -703,7 +718,7 @@ export default function Home() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>知识地图 + RAG 样板模块 V0.5 · 2026-07-17</p>
+        <p>知识地图 + RAG 样板模块 V0.6 · 2026-07-17</p>
         <a href="#top">返回顶部 ↑</a>
       </footer>
     </main>

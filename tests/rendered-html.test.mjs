@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
+import { balanceRows } from "../app/layout-utils.mjs";
+
 async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
@@ -32,7 +34,7 @@ test("server-renders the complete presales knowledge base", async () => {
   assert.match(html, /Chunking &amp; Metadata/);
   assert.match(html, /href="#rag"[^>]*aria-label="RAG · 检索增强生成：跳转到对应模块"/);
   assert.doesNotMatch(html, /BUILD BRIEF/);
-  assert.match(html, /RAG 的知识位置与模块依赖/);
+  assert.match(html, /RAG 在知识地图中的位置与相关模块/);
   assert.match(html, /RAG 的外部记忆机制/);
   assert.match(html, /检索<small>Retrieval<\/small>/);
   assert.match(html, /增强<small>Augmentation<\/small>/);
@@ -67,18 +69,60 @@ test("enforces the reusable content and composition rules", async () => {
     );
   }
 
-  const conceptBlock = page.match(/const conceptLinks = \[([\s\S]*?)\n\];\n\nconst ragVariants/);
-  assert.ok(conceptBlock, "应保留 RAG 跨模块概念清单");
-  assert.equal((conceptBlock[1].match(/\bconcept:/g) ?? []).length, 8);
-  assert.match(styles, /\.conceptGrid\s*\{[^}]*grid-template-columns:\s*repeat\(4,/s);
-  assert.match(styles, /@media \(max-width: 1050px\)[\s\S]*?\.conceptGrid\s*\{\s*grid-template-columns:\s*repeat\(2,/);
-  assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.conceptGrid\s*\{\s*grid-template-columns:\s*1fr;/);
+  assert.match(page, /const conceptRows = balanceRows\(conceptLinks, 4\)/);
+  assert.match(page, /data-count=\{conceptLinks\.length\}/);
+  assert.match(page, /data-odd=\{conceptLinks\.length % 2 === 1/);
+  assert.match(page, /"--concept-span": 12 \/ row\.length/);
+  assert.match(styles, /\.conceptGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(styles, /\.conceptGrid article\s*\{[^}]*grid-column:\s*span var\(--concept-span\);/s);
+  assert.match(styles, /@media \(max-width: 1050px\)[\s\S]*?\.conceptGrid article\s*\{\s*grid-column:\s*span 6;/);
+  assert.match(styles, /\.conceptGrid\[data-odd="true"\] article:last-child\s*\{\s*grid-column:\s*span 12;/);
+  assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.conceptGrid article,[^{]*\{\s*grid-column:\s*span 12;/);
   assert.match(page, /className="mapStats" aria-label="7 层架构，28 个细分模块"/);
   assert.doesNotMatch(page, /<i aria-hidden="true">／<\/i>/);
   assert.match(styles, /\.mapStat\s*\{[^}]*flex:\s*0 0 auto;[^}]*white-space:\s*nowrap;/s);
   assert.match(styles, /\.mapStat \+ \.mapStat::before\s*\{[^}]*content:\s*"／";/s);
-  assert.match(standard, /固定数量卡片/);
+  assert.match(standard, /动态均衡卡片/);
   assert.match(standard, /客观陈述/);
+});
+
+test("balances arbitrary concept-card counts without hard-coding eight", () => {
+  const cases = new Map([
+    [1, [1]],
+    [2, [2]],
+    [3, [3]],
+    [4, [4]],
+    [5, [3, 2]],
+    [6, [3, 3]],
+    [7, [4, 3]],
+    [8, [4, 4]],
+    [9, [3, 3, 3]],
+    [10, [4, 3, 3]],
+    [11, [4, 4, 3]],
+    [12, [4, 4, 4]],
+  ]);
+
+  for (const [count, expected] of cases) {
+    const items = Array.from({ length: count }, (_, index) => index);
+    const rows = balanceRows(items, 4);
+    assert.deepEqual(rows.map((row) => row.length), expected);
+    assert.deepEqual(rows.flat(), items);
+    assert.ok(Math.max(...rows.map((row) => row.length)) <= 4);
+    assert.ok(Math.max(...rows.map((row) => row.length)) - Math.min(...rows.map((row) => row.length)) <= 1);
+  }
+
+  for (const count of [13, 25]) {
+    const items = Array.from({ length: count }, (_, index) => index);
+    const rows = balanceRows(items, 4);
+    const sizes = rows.map((row) => row.length);
+    assert.equal(rows.length, Math.ceil(count / 4));
+    assert.deepEqual(rows.flat(), items);
+    assert.ok(Math.max(...sizes) <= 4);
+    assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1);
+  }
+
+  assert.deepEqual(balanceRows([], 4), []);
+  assert.throws(() => balanceRows([1], 0), /positive integer/);
 });
 
 test("keeps source links and starter cleanup intact", async () => {
