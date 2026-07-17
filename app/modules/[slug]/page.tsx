@@ -8,6 +8,7 @@ import { balanceRows } from "../../layout-utils.mjs";
 import { requireModuleBrief } from "../../module-brief-content.mjs";
 import { CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
 import type { DeepDiveBlock } from "../../module-content-components";
+import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { getPublishedModule, hasDedicatedModule } from "../../module-publication.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { requireTerm } from "../../terminology.mjs";
@@ -153,23 +154,66 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const relatedRows = balanceRows(relatedModules, 4);
   const terms = publication.requiredTerms.map((termId: string) => requireTerm(termId) as Term);
   const hasDeepDives = Boolean(brief.deepDives?.length);
+  const readingSections: ReadingSection[] = [
+    { id: "related-modules", label: "相关模块", eyebrow: "建立连接" },
+    { id: "principle", label: "核心机制", eyebrow: "理解为什么" },
+    { id: "decisions", label: "方案选择", eyebrow: "识别客户信号" },
+    ...(hasDeepDives ? [{ id: "deep-dive", label: brief.deepDiveTitle ?? "进一步理解", eyebrow: "生产级判断" }] : []),
+    { id: "evidence", label: "证据与边界", eyebrow: "知道能证明什么" },
+    { id: "cloud", label: "云服务连接", eyebrow: "映射可售能力" },
+    { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
+  ];
+  const systemLensPanels: LensPanel[] = [
+    {
+      id: `${currentModule.slug}-mechanism`,
+      label: "系统如何工作",
+      title: brief.principleTitle,
+      description: "把核心机制放进同一条因果链，先理解输入怎样经过处理成为可验收结果。",
+      takeaway: brief.criticalBoundary,
+      nodes: brief.principles.map((item) => ({ label: item.zh, en: item.en, detail: item.explanation, signal: `售前判断：${item.decision}` })),
+    },
+    {
+      id: `${currentModule.slug}-decision`,
+      label: "客户怎样选择",
+      title: "从客户信号反推正确路线",
+      description: "同一技术名称可能对应不同客户问题；先识别约束，再给建议，不从产品功能表开始。",
+      takeaway: "建议必须同时说明适用条件和不可越过的边界，并在 PoC 中形成可验证信号。",
+      nodes: brief.decisions.map((item) => ({ label: item.question, detail: item.signal, signal: `${item.recommendation}；边界：${item.boundary}` })),
+    },
+    {
+      id: `${currentModule.slug}-cloud`,
+      label: "云服务怎样承载",
+      title: "能力、客户价值与云服务形成同一责任链",
+      description: "先确认技术环节的责任和验收方式，再映射到目标云当期可用产品。",
+      takeaway: "产品名称会变化，客户要购买的是可被验收的能力组合、责任边界和运营闭环。",
+      nodes: brief.cloudHooks.map((item) => ({ label: item.stage, detail: item.value, signal: `${item.services}；发现问题：${item.discover}` })),
+    },
+  ];
 
   return (
     <main className="modulePage moduleBriefPage">
+      <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页"><span className="brandMark">CA</span><span>Cloud × AI / Presales Fieldbook</span></Link>
           <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">高频问答</a><Link href="/references">Reference</Link></div>
         </nav>
         <div className="moduleBriefHeader">
-          <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V1.1</p>
+          <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V2.0</p>
           <h1 className="moduleHeroTitle" id={publication.titleId}>{currentModule.zh}<span>{currentModule.en}</span></h1>
           <p className="moduleBriefDefinition">{brief.definition}</p>
           <p className="moduleBriefPosition">{brief.position}</p>
         </div>
       </header>
 
-      <section className="subsection moduleBriefRelated" data-quality-section="related-modules" aria-labelledby="related-modules-title">
+      <div className="moduleArticleLayout">
+        <ModuleReadingNav moduleName={currentModule.zh} sections={readingSections} quickLinks={[
+          { href: "#principle", label: "先懂原理" },
+          { href: "#cloud", label: "找云机会" },
+          { href: "#qa", label: "准备客户问答" },
+        ]} />
+        <div className="moduleArticleContent">
+      <section className="subsection moduleBriefRelated" id="related-modules" data-quality-section="related-modules" aria-labelledby="related-modules-title">
         <div className="subHead"><span>01</span><div><p className="kicker">RELATED MODULES</p><h2 id="related-modules-title">相关模块</h2></div></div>
         <div className="relatedModuleGrid" data-count={relatedModules.length} data-odd={relatedModules.length % 2 === 1 ? "true" : "false"}>
           {(relatedRows as KnowledgeModule[][]).flatMap((row) => row.map((related) => (
@@ -185,6 +229,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
         <div className="moduleBriefIntro"><p className="miniLabel">机制、失败与控制</p><h3>{brief.principleTitle}</h3></div>
         <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
         <PrincipleView brief={brief} />
+        <SystemLens title={`用三个视角理解${currentModule.zh}`} lead="在机制、客户选择和云服务承载之间切换，避免把概念、产品和验收拆成互不相关的清单。" panels={systemLensPanels} />
       </section>
 
       <section className="subsection moduleBriefSection" id="decisions">
@@ -220,8 +265,10 @@ export default async function ModulePage({ params }: ModulePageProps) {
         <div className="subHead"><span>{hasDeepDives ? "07" : "06"}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>客户高频问题与深度回答</h2></div></div>
         <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} />
       </section>
+        </div>
+      </div>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V1.1</p><a href="#top">返回顶部 ↑</a></footer>
+      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V2.0</p><a href="#top">返回顶部 ↑</a></footer>
     </main>
   );
 }

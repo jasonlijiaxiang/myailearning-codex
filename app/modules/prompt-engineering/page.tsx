@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import { balanceRows } from "../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
+import { PromptAssemblyLab } from "../../flagship-labs";
 import { promptDeepDives, promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 
@@ -75,9 +77,71 @@ const cloudHooks = [
   { stage: "观测运营", services: "Tracing、APM、日志、告警、成本分析、提示缓存（Prompt Cache）", value: "定位退化并核算每个成功任务成本", discover: "需要保存哪些输入输出？保留期和脱敏要求是什么？" },
 ];
 
+const promptReadingSections: ReadingSection[] = [
+  { id: "concept-map", label: "知识连接", eyebrow: "相关模块" },
+  { id: "prompt-foundation", label: "基础机制", eyebrow: "Prompt 与 Context" },
+  { id: "message-hierarchy", label: "消息与信任", eyebrow: "谁能下什么指令" },
+  { id: "patterns", label: "核心模式", eyebrow: "从基线逐步增强" },
+  { id: "prompt-diagnostics", label: "技术诊断", eyebrow: "症状到解决路线" },
+  { id: "templates", label: "可复用模板", eyebrow: "现场快速起步" },
+  { id: "fit-check", label: "方案边界", eyebrow: "何时不是 Prompt 问题" },
+  { id: "version-governance", label: "版本治理", eyebrow: "作为发布资产" },
+  { id: "prompt-independent-depth", label: "生产级扩展", eyebrow: "权威、契约与安全" },
+  { id: "evidence", label: "数据与证据", eyebrow: "知道适用边界" },
+  { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
+  { id: "poc", label: "PoC 剧本", eyebrow: "从基线到灰度" },
+  { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
+];
+
+const promptSystemLens: LensPanel[] = [
+  {
+    id: "prompt-call",
+    label: "一次调用",
+    title: "生产 Prompt 是一次受治理的上下文装配",
+    description: "模型看到的不只是几句提示词，而是一组具有不同权威、来源、时效和执行后果的输入。",
+    takeaway: "Prompt 的工作是表达任务；身份、权限、事实来源、工具执行和业务校验仍属于应用系统。",
+    nodes: [
+      { label: "稳定指令", en: "Stable Instructions", detail: "定义角色、任务、边界、成功标准与输出契约。", signal: "治理：版本、审批与回归" },
+      { label: "可信状态", en: "Trusted State", detail: "由应用注入身份、权限、配置和权威业务状态。", signal: "治理：来源与不可篡改字段" },
+      { label: "动态上下文", en: "Dynamic Context", detail: "用户内容、RAG 证据、历史和工具返回按预算进入。", signal: "治理：ACL、时效与不可信标记" },
+      { label: "能力接口", en: "Tools & Schema", detail: "声明可用工具、参数、错误与结构化输出形状。", signal: "治理：最小集合与应用授权" },
+      { label: "校验与执行", en: "Validate & Execute", detail: "应用校验结构、业务规则和动作权限后才消费结果。", signal: "治理：拒绝、回滚与审计" },
+    ],
+  },
+  {
+    id: "prompt-failure",
+    label: "一次退化",
+    title: "看起来像 Prompt 失效，根因可能来自整个调用剖面",
+    description: "只改措辞会掩盖模型、上下文、工具和业务校验的真实变化，导致反复试错却无法复现。",
+    takeaway: "每次只改变一个主要变量，并记录模型快照、提示版本、上下文清单、工具 Schema 和评估集。",
+    nodes: [
+      { label: "指令冲突", detail: "平台、应用、用户和外部内容对同一行为给出相互矛盾的要求。", signal: "检查：权威顺序与冲突测试" },
+      { label: "上下文污染", detail: "过期证据、错误历史或间接提示注入进入模型输入。", signal: "检查：来源、ACL、时效与数据标记" },
+      { label: "工具含糊", detail: "工具职责重叠、参数描述不清或错误语义不足。", signal: "检查：选择准确率与参数失败" },
+      { label: "输出形对值错", detail: "Schema 正确，但字段内容不真实、不合规或不可执行。", signal: "检查：业务不变量与事实验证" },
+      { label: "评估失真", detail: "只看少量演示或最终文字，忽略任务分布和失败终态。", signal: "检查：固定集、轨迹与线上反馈" },
+    ],
+  },
+  {
+    id: "prompt-release",
+    label: "一次发布",
+    title: "上线单位不是 Prompt 文件，而是一套行为版本",
+    description: "同一段提示在不同模型、上下文供给和工具契约下会表现不同；这些变化必须一起进入发布证据。",
+    takeaway: "把 Prompt、模型、上下文策略、工具 Schema、评估结果和回滚开关绑定为同一发布包。",
+    nodes: [
+      { label: "冻结基线", detail: "记录当前生产版本、任务分布、质量、时延和成本。", signal: "产物：可复现的行为快照" },
+      { label: "控制变更", detail: "只修改一个主要变量，并说明希望改善的失败类型。", signal: "产物：变更假设与责任人" },
+      { label: "离线回归", detail: "测试正常、边界、拒答、注入和工具调用任务。", signal: "门禁：关键任务不得退化" },
+      { label: "灰度观察", detail: "按租户或流量小范围发布，关联版本与真实业务结果。", signal: "门禁：质量、风险和成本阈值" },
+      { label: "回滚与运营", detail: "保留一键回滚、退化告警和线上样本回流。", signal: "产物：版本谱系与持续评估" },
+    ],
+  },
+];
+
 export default function PromptEngineeringModulePage() {
   return (
     <main>
+      <ReadingProgress />
       <section className="ragHero" id="prompt-engineering" aria-labelledby="prompt-title">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
@@ -92,7 +156,7 @@ export default function PromptEngineeringModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · MODEL &amp; OPTIMIZATION · V1.1</p>
+            <p className="kicker light">MODULE · MODEL &amp; OPTIMIZATION · V2.0</p>
             <h1
               className="moduleHeroTitle"
               id="prompt-title"
@@ -105,6 +169,12 @@ export default function PromptEngineeringModulePage() {
         </div>
       </section>
 
+      <div className="moduleArticleLayout dedicatedArticleLayout">
+        <ModuleReadingNav moduleName="提示词工程" sections={promptReadingSections} quickLinks={[
+          { href: "#prompt-foundation", label: "先懂原理" },
+          { href: "#cloud-opportunities", label: "找云机会" },
+          { href: "#qa", label: "准备客户问答" },
+        ]} />
       <section className="section ragBody" aria-label="提示词工程核心内容">
         <div className="sectionNumber">05</div>
         <div className="sectionBody">
@@ -157,6 +227,8 @@ export default function PromptEngineeringModulePage() {
                 <article><span>03</span><h5>能力接口 · Tools &amp; Schema</h5><p>工具定义告诉模型可提出哪些调用；Schema 约束结果形状。真正授权、执行与业务校验仍在应用侧。</p></article>
               </div>
               <CriticalBoundary>消息角色与指令层级能帮助模型区分来源，却不是通用安全协议。不同模型 API 的角色、优先级与能力并不完全一致；<strong>必须执行的规则应落在模型外</strong>。</CriticalBoundary>
+              <SystemLens title="Prompt 的调用、退化与发布" lead="把提示词从一句文本还原为完整系统输入，才能判断问题该通过文字、上下文、工具、评估还是应用控制解决。" panels={promptSystemLens} />
+              <PromptAssemblyLab />
             </div>
           </div>
 
@@ -310,10 +382,11 @@ export default function PromptEngineeringModulePage() {
           </div>
         </div>
       </section>
+      </div>
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>提示词工程独立模块 V1.1 · 2026-07-17</p>
+        <p>提示词工程独立模块 V2.0 · 2026-07-17</p>
         <a href="#prompt-engineering">返回顶部 ↑</a>
       </footer>
     </main>

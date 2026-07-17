@@ -65,21 +65,24 @@ function collectModuleSourceIds({ cards, qa, deepDives }) {
 
 test("homepage is a focused knowledge map with links to every independent module", async () => {
   const html = await renderHtml("/");
+  const homepageSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
   assert.match(html, /<html lang="zh-CN">/i);
+  assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1"\/>/i);
   assert.match(html, /<title>云计算 × AI 平台售前知识库<\/title>/i);
   assert.match(html, /<h2 id="map-title">知识地图<\/h2>/);
   assert.match(html, new RegExp(`aria-label="${layers.length} 层架构，${moduleList.length} 个细分模块"`));
   assert.match(html, /href="\/references"/);
   assert.match(html, /Reference/);
-  assert.match(html, /选择学习模块/);
-  assert.match(html, /aria-label="已完成的学习模块"/);
-  assert.match(html, /AVAILABLE MODULES/);
+  assert.match(html, /从当前客户问题开始/);
+  assert.match(html, /搜索模块与客户信号/);
+  assert.match(html, /同一份知识，支持三种阅读深度/);
+  assert.match(html, /不要按章节学，按任务走/);
   assert.doesNotMatch(html, /阅读 RAG 模块/);
-  assert.equal((html.match(/class="heroModuleCard"/g) ?? []).length, publishedModules.length);
+  assert.equal((html.match(/class="moduleResult"/g) ?? []).length, publishedModules.length);
 
   for (const publishedModule of publishedModules) {
-    assert.match(html, new RegExp(`<a[^>]*href="${escapeRegExp(publishedModule.path)}"[^>]*class="heroModuleCard"`));
+    assert.match(html, new RegExp(`<a(?=[^>]*class="moduleResult")(?=[^>]*href="${escapeRegExp(publishedModule.path)}")[^>]*>`));
   }
 
   for (const knowledgeModule of moduleList) {
@@ -88,9 +91,7 @@ test("homepage is a focused knowledge map with links to every independent module
     assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(knowledgeModule.en))), `首页缺少英文术语：${knowledgeModule.en}`);
   }
 
-  for (const layer of layers) {
-    assert.doesNotMatch(html, new RegExp(escapeRegExp(layer.purpose)), `首页不应显示泛化层说明：${layer.name}`);
-  }
+  assert.doesNotMatch(homepageSource, /layer\.purpose/, "首页不应渲染泛化层说明");
 
   assert.doesNotMatch(html, /RAG 的工作原理与工程机制/);
   assert.doesNotMatch(html, /RAG 技术环节与云服务机会/);
@@ -123,6 +124,11 @@ test("RAG route contains principles, cloud-service opportunities, and evidence-b
   assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
   assert.match(html, /本题依据 \/ Evidence/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
+  assert.ok(ragQa.length >= 36, "RAG 实战包必须覆盖完整售前链路");
+  assert.match(html, /INTERACTIVE SYSTEM VIEW/);
+  assert.match(html, /搜索客户问题/);
+  assert.match(html, /RAG 检索链实验/);
+  assert.match(html, /关键词检索 BM25/);
   assert.match(html, /href="\/references"/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("rag"))) {
@@ -171,6 +177,11 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   assert.match(html, /编排者—执行者 · Orchestrator–Workers/);
   assert.match(html, /选择云上托管 Agent 平台，还是自己用框架搭/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, agentQa.length);
+  assert.ok(agentQa.length >= 36, "Agent 实战包必须覆盖完整售前链路");
+  assert.match(html, /INTERACTIVE SYSTEM VIEW/);
+  assert.match(html, /搜索客户问题/);
+  assert.match(html, /Agent 运行与恢复实验/);
+  assert.match(html, /故障注入：工具超时/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("ai-agent"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
@@ -196,6 +207,11 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /可维护的提示模板 · Prompt Template/);
   assert.match(html, /Prompt、RAG 和 Context Engineering 是什么关系/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, promptQa.length);
+  assert.ok(promptQa.length >= 36, "Prompt Engineering 实战包必须覆盖完整售前链路");
+  assert.match(html, /INTERACTIVE SYSTEM VIEW/);
+  assert.match(html, /搜索客户问题/);
+  assert.match(html, /Prompt 装配实验/);
+  assert.match(html, /坏提示 Bad Prompt/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("prompt-engineering"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
@@ -237,6 +253,10 @@ test("every published module passes the shared reader, terminology, and depth co
 
     assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
     assert.match(html, /客户高频问题与深度回答/);
+    assert.match(html, /class="readingProgress"/, `${publishedModule.slug} 缺少阅读进度`);
+    assert.match(html, /class="moduleReadingNav"/, `${publishedModule.slug} 缺少章节导航`);
+    assert.match(html, /INTERACTIVE SYSTEM VIEW/, `${publishedModule.slug} 缺少机制或决策视图`);
+    assert.match(html, /搜索客户问题/, `${publishedModule.slug} 缺少可检索实战包`);
     assert.match(html, /href="\/references(?:#[^"]+)?"/);
 
     for (const termId of publishedModule.requiredTerms) {
@@ -275,6 +295,8 @@ test("references route is the complete centralized source ledger", async () => {
   assert.match(html, /来源与证据类别图例/);
   assert.match(html, /官方产品与技术文档/);
   assert.match(html, /id="reference-modules"/);
+  assert.match(html, /查找来源，而不是翻阅长名单/);
+  assert.match(html, /检索标题、边界或模块/);
 
   for (const referenceModule of referenceModules) {
     assert.match(html, new RegExp(`id="module-${escapeRegExp(referenceModule.id)}"`));
@@ -490,10 +512,12 @@ test("balances arbitrary card counts without hard-coded even or odd layouts", ()
   assert.throws(() => balanceRows([1], 0), /positive integer/);
 });
 
-test("keeps module card systems dynamically balanced with mobile navigation", async () => {
-  const [styles, homepage, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
+test("keeps module systems dynamically balanced, searchable, and navigable on mobile", async () => {
+  const [styles, v2Styles, homepage, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/modules/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/references/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
@@ -520,17 +544,22 @@ test("keeps module card systems dynamically balanced with mobile navigation", as
   assert.match(moduleComponents, /className="balancedGridCell"/);
   assert.match(styles, /\.mechanicGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
   assert.match(styles, /\.balancedGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  assert.match(homepage, /availableModules\.map/);
+  assert.match(homepage, /explorerModules/);
   assert.match(homepage, /publishedModuleSlugs\.map/);
+  assert.match(homepage, /knowledgeSearchEntries/);
+  assert.match(homepage, /<ModuleExplorer modules=\{explorerModules\} knowledgeEntries=\{knowledgeSearchEntries\}/);
   assert.match(publicationRegistry, /export const publishedModules/);
   assert.match(publicationRegistry, /contentContract/);
-  assert.match(homepage, /className="heroModuleRail"/);
-  assert.match(styles, /\.heroModuleRail\s*\{[^}]*overflow-x:\s*auto;/s);
-  assert.match(styles, /\.heroModuleRail\s*\{[^}]*scroll-snap-type:\s*x proximity;/s);
+  assert.match(interactions, /export function ModuleExplorer/);
+  assert.match(interactions, /export function ModuleReadingNav/);
+  assert.match(interactions, /export function SystemLens/);
+  assert.match(interactions, /export function QaFilterShell/);
+  assert.match(interactions, /export function ReferenceFilterShell/);
+  assert.match(v2Styles, /\.moduleResultGrid\s*\{[^}]*grid-template-columns:\s*repeat\(3,/s);
+  assert.match(v2Styles, /@media \(max-width: 720px\)[\s\S]*?\.moduleResultGrid\s*\{[^}]*grid-template-columns:\s*1fr;/s);
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*font-size:\s*var\(--module-title-size,/s);
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*line-height:\s*1;/s);
   assert.doesNotMatch(styles, /#[a-z-]+-title\s*\{/);
-  assert.doesNotMatch(styles, /auto-fit/);
   assert.match(styles, /\.layer:nth-child\(7n \+ 1\)/);
   assert.match(styles, /\.layer:nth-child\(7n\)/);
   assert.match(styles, /\.relatedModuleGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);

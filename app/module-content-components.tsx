@@ -2,6 +2,7 @@ import { Children, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 
 import { balanceRows } from "./layout-utils.mjs";
+import { QaFilterShell } from "./fieldbook-interactions";
 
 type SourceSummary = {
   grade: string;
@@ -234,9 +235,10 @@ export function ModuleQaList({ items, sourceLedger }: { items: QaItem[]; sourceL
   if (items.length === 0) return null;
 
   return (
-    <div className="qaList">
-      {items.map((item, index) => (
-        <details key={item.q} open={index === 0}>
+    <QaFilterShell items={items.map((item) => ({ tag: item.tag, text: `${item.q} ${item.a} ${item.depth} ${item.ask}` }))}>
+      <div className="qaList">
+        {items.map((item, index) => (
+        <details id={`qa-${index + 1}`} key={item.q} open={index === 0} data-qa-tag={item.tag}>
           <summary>
             <span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span>
             <strong>{item.q}</strong>
@@ -273,8 +275,9 @@ export function ModuleQaList({ items, sourceLedger }: { items: QaItem[]; sourceL
             </div>
             <div className="ask"><p className="answerLabel">售前下一问</p><p>{item.ask}</p></div>
           </div>
-        </details>
-      ))}
-    </div>
+          </details>
+        ))}
+      </div>
+    </QaFilterShell>
   );
 }

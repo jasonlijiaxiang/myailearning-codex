@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import { balanceRows } from "../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
+import { RagRetrievalLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { evidenceCards, ragDeepDives, ragQa } from "../../rag-content.mjs";
 
@@ -78,10 +80,72 @@ const ragExtensionChoices = [
 
 const ragOriginalSource = sourceLedger["rag-original-2020"];
 
+const ragReadingSections: ReadingSection[] = [
+  { id: "concept-map", label: "知识连接", eyebrow: "相关模块" },
+  { id: "rag-principle", label: "RAG 原理", eyebrow: "先建立心智模型" },
+  { id: "retrieval-basics", label: "检索机制", eyebrow: "证据如何形成" },
+  { id: "production-rag", label: "生产诊断", eyebrow: "失败在哪里发生" },
+  { id: "rag-variants", label: "架构模式", eyebrow: "复杂度怎样增加" },
+  { id: "when-to-use", label: "适用性判断", eyebrow: "先判断是否该做" },
+  { id: "architecture", label: "双链架构", eyebrow: "离线与在线" },
+  { id: "choice", label: "路线选择", eyebrow: "比较替代方案" },
+  { id: "rag-independent-depth", label: "生产级扩展", eyebrow: "生命周期与迁移" },
+  { id: "evidence", label: "数据与证据", eyebrow: "知道适用边界" },
+  { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
+  { id: "poc", label: "PoC 剧本", eyebrow: "按风险门禁推进" },
+  { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
+];
+
+const ragSystemLens: LensPanel[] = [
+  {
+    id: "rag-query",
+    label: "一条查询",
+    title: "答案质量由整条证据链共同决定",
+    description: "点击不同视角，不是切换术语清单，而是观察同一套 RAG 系统在回答、故障和云服务责任上的不同切面。",
+    takeaway: "先证明标准证据能以正确身份进入最终上下文，再讨论生成模型是否足够强。",
+    nodes: [
+      { label: "理解问题", en: "Query Contract", detail: "识别意图、实体、时间、产品版本与当前身份。", signal: "输出：可执行查询与过滤条件" },
+      { label: "宽召回", en: "Candidate Retrieval", detail: "关键词和向量各自找全候选，保住编号与语义改写。", signal: "检查：标准证据是否进入 Top-K" },
+      { label: "过滤与重排", en: "Filter & Rerank", detail: "先执行权限与版本过滤，再提高真正支持问题的证据排名。", signal: "检查：过滤前后召回与排序增益" },
+      { label: "组装上下文", en: "Context Assembly", detail: "处理冲突、去重、顺序、token 预算和稳定来源 ID。", signal: "输出：可审计的最终证据包" },
+      { label: "生成或拒答", en: "Generate / Abstain", detail: "模型根据证据回答、引用；证据不足时明确拒答。", signal: "检查：主张是否逐项得到证据支持" },
+    ],
+  },
+  {
+    id: "rag-failure",
+    label: "一次失败",
+    title: "客户看到一句错答，后台可能是五种不同事故",
+    description: "排障不能从“换更大模型”开始。每一个阶段都要留下可观察的输入、输出、版本和责任人。",
+    takeaway: "把最终答案拆回解析、召回、排序、上下文和生成，才能找到可修复的根因。",
+    nodes: [
+      { label: "知识未进入", detail: "同步失败、解析丢表、删除状态错误或权威版本未标记。", signal: "证据：文档与块级处理轨迹" },
+      { label: "证据被拆断", detail: "Chunk 边界破坏标题、表格、条件或父子关系。", signal: "证据：标准段落与块覆盖率" },
+      { label: "候选未召回", detail: "查询改写、向量模型、关键词字段或过滤条件不匹配。", signal: "证据：过滤前后 Recall@K" },
+      { label: "上下文被挤掉", detail: "正确候选排名靠后、重复内容过多或 token 预算不足。", signal: "证据：最终上下文快照" },
+      { label: "模型误用证据", detail: "忽略限定条件、错误合并冲突来源或未执行拒答规则。", signal: "证据：主张—引用对齐与拒答评估" },
+    ],
+  },
+  {
+    id: "rag-cloud",
+    label: "一套云方案",
+    title: "云机会不是向量库一项，而是端到端知识供应链",
+    description: "每个技术阶段对应不同购买角色、云能力和验收信号；售前需要把它们组织成可分阶段采购的方案。",
+    takeaway: "先用厂商中立能力确认责任边界，再映射到目标云的产品、地域、配额、SLA 与计费单位。",
+    nodes: [
+      { label: "知识供给", detail: "对象存储、连接器、CDC、文档智能和批处理。", signal: "验收：新增、修改、删除传播 SLA" },
+      { label: "检索底座", detail: "托管搜索、向量数据库、缓存、关系与图谱查询。", signal: "验收：权限过滤后的候选召回" },
+      { label: "模型能力", detail: "Embedding、Reranker、生成模型与模型路由。", signal: "验收：质量、时延与单次成功成本" },
+      { label: "安全运行", detail: "API 网关、容器、Serverless、IAM、KMS 与私网。", signal: "验收：越权泄漏、峰值与故障恢复" },
+      { label: "持续运营", detail: "Tracing、评估平台、告警、版本和 FinOps。", signal: "验收：退化发现、回滚与责任闭环" },
+    ],
+  },
+];
+
 
 export default function RagModulePage() {
   return (
     <main>
+      <ReadingProgress />
       <section className="ragHero" id="rag" aria-labelledby="rag-title">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
@@ -96,7 +160,7 @@ export default function RagModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.1</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN · V2.0</p>
             <h1 className="moduleHeroTitle" id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h1>
           </div>
           <div className="ragDefinition">
@@ -105,6 +169,12 @@ export default function RagModulePage() {
         </div>
       </section>
 
+      <div className="moduleArticleLayout dedicatedArticleLayout">
+        <ModuleReadingNav moduleName="RAG · 检索增强生成" sections={ragReadingSections} quickLinks={[
+          { href: "#rag-principle", label: "先懂原理" },
+          { href: "#cloud-opportunities", label: "找云机会" },
+          { href: "#qa", label: "准备客户问答" },
+        ]} />
       <section className="section ragBody" aria-label="RAG 核心内容">
         <div className="sectionNumber">02</div>
         <div className="sectionBody">
@@ -209,6 +279,8 @@ export default function RagModulePage() {
               </div>
             </div>
             <CriticalBoundary>RAG 的质量不是一个模型分数，而是一条证据链：找得到、排得准、装得下、用得对、引得出。任何一段失效，都可能得到流畅但不可核验的回答。</CriticalBoundary>
+            <SystemLens title="用三个视角理解同一套 RAG 系统" lead="从查询、故障和云方案三个视角切换，建立比静态架构图更完整的因果关系。" panels={ragSystemLens} />
+            <RagRetrievalLab />
           </div>
 
           <div className="subsection" id="retrieval-basics">
@@ -395,10 +467,11 @@ export default function RagModulePage() {
 
         </div>
       </section>
+      </div>
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>RAG 独立模块 V1.1 · 2026-07-17</p>
+        <p>RAG 独立模块 V2.0 · 2026-07-17</p>
         <a href="#rag">返回顶部 ↑</a>
       </footer>
     </main>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../agent-content.mjs";
 import { balanceRows } from "../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
+import { AgentRunLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
 
 export const metadata: Metadata = {
@@ -151,9 +153,70 @@ const cloudHooks = [
   { stage: "运营与 FinOps", services: "预算、配额、成本分析、缓存、容量与发布平台", value: "控制轮次、工具消耗和每个成功任务成本", discover: "P95、并发、任务预算和回滚要求是什么？" },
 ];
 
+const agentReadingSections: ReadingSection[] = [
+  { id: "concept-map", label: "知识连接", eyebrow: "相关模块" },
+  { id: "agent-principle", label: "工作循环", eyebrow: "四个关键动作" },
+  { id: "boundaries", label: "模式边界", eyebrow: "不要滥用 Agent" },
+  { id: "capabilities", label: "关键组件", eyebrow: "规划、记忆与工具" },
+  { id: "memory-interaction", label: "状态与互操作", eyebrow: "事实、记忆与协议" },
+  { id: "patterns", label: "架构模式", eyebrow: "自治怎样增加" },
+  { id: "architecture", label: "参考架构", eyebrow: "模型与控制面" },
+  { id: "agent-independent-depth", label: "生产级扩展", eyebrow: "状态机与恢复" },
+  { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
+  { id: "poc", label: "PoC 剧本", eyebrow: "按动作风险推进" },
+  { id: "evidence", label: "数据与证据", eyebrow: "知道适用边界" },
+  { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
+];
+
+const agentSystemLens: LensPanel[] = [
+  {
+    id: "agent-run",
+    label: "一次 Run",
+    title: "Agent 不是一次模型调用，而是一台受控状态机",
+    description: "每一轮都要从环境事实开始，以可验证状态结束；模型负责提出下一步，应用负责执行和确认。",
+    takeaway: "工具返回成功不等于业务完成，必须由权威系统状态和终态断言结束 Run。",
+    nodes: [
+      { label: "感知", en: "Perceive", detail: "绑定身份，读取请求、事件、事实源与仍缺少的信息。", signal: "输出：结构化任务状态" },
+      { label: "思考", en: "Reason", detail: "在工具、策略、预算和当前状态下选择下一步。", signal: "输出：动作意图或停止原因" },
+      { label: "行动", en: "Act", detail: "应用校验参数、授权、审批和幂等后调用真实系统。", signal: "输出：操作编号与真实返回" },
+      { label: "观察", en: "Observe", detail: "回读权威状态，判断预期后置条件是否发生。", signal: "输出：已验证事实与异常" },
+      { label: "继续或终止", en: "Continue / Stop", detail: "更新检查点，继续下一轮、交还人工或写入终态。", signal: "输出：可恢复的 Run 状态" },
+    ],
+  },
+  {
+    id: "agent-controls",
+    label: "控制平面",
+    title: "自治能力越强，模型外控制必须越明确",
+    description: "规划、记忆和工具让 Agent 能持续运行；身份、策略、检查点与人工接管让它可被企业接受。",
+    takeaway: "不要把 Prompt 写成权限系统；授权、金额、审批、补偿与审计必须落在确定性系统。",
+    nodes: [
+      { label: "规划", detail: "把目标拆成可检查里程碑，并为每一步定义预期结果。", signal: "控制：深度、轮次与预算" },
+      { label: "记忆", detail: "区分任务状态、会话状态、长期记忆和权威业务事实。", signal: "控制：主体、来源、TTL 与删除" },
+      { label: "工具契约", detail: "定义唯一用途、Schema、错误语义、读写级别和补偿能力。", signal: "控制：最小工具集与参数校验" },
+      { label: "身份与策略", detail: "在动作发生时绑定用户或工作负载身份并重新授权。", signal: "控制：最小权限与动态策略" },
+      { label: "检查点与人审", detail: "在高风险动作前暂停，在失败后从持久状态恢复。", signal: "控制：审批、超时与恢复责任" },
+    ],
+  },
+  {
+    id: "agent-recovery",
+    label: "一次故障",
+    title: "最危险的不是调用失败，而是不知道动作是否已经发生",
+    description: "长任务、异步 API 和网络重试会产生模糊状态；可靠 Agent 必须能恢复、确认、补偿并留下证据。",
+    takeaway: "每个写操作都需要幂等键、操作编号、后置条件和可恢复检查点，高风险路径还需要人工接管。",
+    nodes: [
+      { label: "动作已提交", detail: "Agent 发起退款、建单或资源变更，请求可能已被系统接受。", signal: "记录：幂等键与业务操作号" },
+      { label: "进程中断", detail: "模型超时、Worker 崩溃或响应在网络中丢失。", signal: "保存：动作前检查点与调用证据" },
+      { label: "恢复 Run", detail: "从持久状态恢复，而不是重新生成整段计划。", signal: "读取：已执行步骤与未决动作" },
+      { label: "回读事实", detail: "查询业务系统确认动作成功、失败、仍处理中或状态未知。", signal: "判断：权威后置条件" },
+      { label: "继续、补偿或人审", detail: "只在状态明确后继续；未知或高风险状态交还人工。", signal: "留下：终态、原因与审计轨迹" },
+    ],
+  },
+];
+
 export default function AgentModulePage() {
   return (
     <main>
+      <ReadingProgress />
       <section className="ragHero" id="agent" aria-labelledby="agent-title">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
@@ -168,7 +231,7 @@ export default function AgentModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V1.1</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN · V2.0</p>
             <h1
               className="moduleHeroTitle"
               id="agent-title"
@@ -181,6 +244,12 @@ export default function AgentModulePage() {
         </div>
       </section>
 
+      <div className="moduleArticleLayout dedicatedArticleLayout">
+        <ModuleReadingNav moduleName="Agent · 智能体" sections={agentReadingSections} quickLinks={[
+          { href: "#agent-principle", label: "先懂原理" },
+          { href: "#cloud-opportunities", label: "找云机会" },
+          { href: "#qa", label: "准备客户问答" },
+        ]} />
       <section className="section ragBody" aria-label="Agent 核心内容">
         <div className="sectionNumber">02</div>
         <div className="sectionBody">
@@ -267,6 +336,8 @@ export default function AgentModulePage() {
               </div>
             </div>
             <CriticalBoundary>Agent 的“思考”不能替代业务控制。身份、权限、金额、审批、幂等、补偿和审计必须由确定性系统执行；Prompt 不是授权策略，模型输出也不是系统事实。</CriticalBoundary>
+            <SystemLens title="从运行、控制与恢复理解 Agent" lead="三个视角共同回答：Agent 如何推进任务、企业怎样限制它，以及失败后如何知道真实世界发生了什么。" panels={agentSystemLens} />
+            <AgentRunLab />
           </div>
 
           <div className="subsection" id="boundaries">
@@ -413,8 +484,9 @@ export default function AgentModulePage() {
           </div>
         </div>
       </section>
+      </div>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V1.1 · 2026-07-17</p><a href="#agent">返回顶部 ↑</a></footer>
+      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V2.0 · 2026-07-17</p><a href="#agent">返回顶部 ↑</a></footer>
     </main>
   );
 }

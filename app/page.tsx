@@ -1,155 +1,170 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
+import { ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "./fieldbook-interactions";
 import { balanceRows } from "./layout-utils.mjs";
 import { layers, moduleList } from "./knowledge-map.mjs";
-import { publishedModuleSlugs } from "./module-publication.mjs";
+import { moduleContentRegistry } from "./module-content-registry.mjs";
+import { moduleDiscovery } from "./module-discovery.mjs";
+import { publishedModules, publishedModuleSlugs } from "./module-publication.mjs";
+import { referenceModules, sourceLedger } from "./reference-content.mjs";
+import { terminology } from "./terminology.mjs";
 
 const layerCount = layers.length;
 const moduleCount = moduleList.length;
-const availableModules = publishedModuleSlugs.map((slug) => {
-  const selectedModule = moduleList.find((item) => item.slug === slug);
-
-  if (!selectedModule) {
-    throw new Error(`首页可用模块未在知识地图中登记：${slug}`);
-  }
-
-  return selectedModule;
+const explorerModules: ExplorerModule[] = publishedModuleSlugs.map((slug) => {
+  const item = moduleList.find((module) => module.slug === slug);
+  const discovery = moduleDiscovery[slug as keyof typeof moduleDiscovery];
+  if (!item || !discovery) throw new Error(`首页模块发现信息不完整：${slug}`);
+  return { ...item, ...discovery };
 });
+
+const moduleNames = new Map(moduleList.map((module) => [module.slug, module.zh]));
+const termOwners = new Map<string, string>();
+publishedModules.forEach((module) => module.requiredTerms.forEach((termId) => {
+  if (!termOwners.has(termId)) termOwners.set(termId, module.slug);
+}));
+const sourceModules = new Map<string, string[]>();
+referenceModules.forEach((module) => module.sourceIds.forEach((sourceId) => {
+  sourceModules.set(sourceId, [...(sourceModules.get(sourceId) ?? []), module.zh]);
+}));
+
+const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
+  ...[...termOwners.entries()].map(([termId, slug]) => {
+    const term = terminology[termId as keyof typeof terminology];
+    return {
+      id: `term-${termId}`,
+      type: "专业术语" as const,
+      title: `${term.zh} · ${term.en}${term.abbr ? `（${term.abbr}）` : ""}`,
+      subtitle: `${moduleNames.get(slug)}模块`,
+      href: `/modules/${slug}`,
+      keywords: `${term.zh} ${term.en} ${term.abbr ?? ""}`,
+    };
+  }),
+  ...Object.entries(moduleContentRegistry).flatMap(([slug, content]) => content.qa.map((item, index) => ({
+    id: `qa-${slug}-${index + 1}`,
+    type: "客户问答" as const,
+    title: item.q,
+    subtitle: `${moduleNames.get(slug)} · ${item.tag}`,
+    href: `/modules/${slug}#qa-${index + 1}`,
+    keywords: `${moduleNames.get(slug)} ${item.q} ${item.tag}`,
+  }))),
+  ...Object.entries(sourceLedger).map(([sourceId, source]) => ({
+    id: `source-${sourceId}`,
+    type: "来源证据" as const,
+    title: source.title,
+    subtitle: `${source.grade} 类证据 · ${(sourceModules.get(sourceId) ?? []).join(" / ")}`,
+    href: `/references#source-${sourceId}`,
+    keywords: `${source.shortTitle} ${source.title} ${source.kind} ${(sourceModules.get(sourceId) ?? []).join(" ")}`,
+  })),
+];
+
+const learningPaths = [
+  { no: "01", title: "第一次与客户聊 AI 平台", time: "建立全局判断", route: "场景解决方案 → 模型格局 → LLM → 评估", outcome: "先判断客户真正要解决的问题，再讨论模型和产品。" },
+  { no: "02", title: "正在设计企业知识助手", time: "形成 PoC 路线", route: "数据工程 → RAG → 安全 → AI 网关 → AI Ops", outcome: "把知识、权限、回答质量和上线运营连成完整方案。" },
+  { no: "03", title: "客户希望 AI 执行业务任务", time: "控制行动风险", route: "Agent → MCP / A2A → 安全 → 评估 → AI Ops", outcome: "区分模型决策、工具权限、持久任务与业务完成状态。" },
+  { no: "04", title: "准备规划私有化 AI 基础设施", time: "形成容量证据", route: "模型格局 → 推理 → 平台 → 算力 → 数据工程", outcome: "从真实负载反推模型服务、调度、网络、存储与采购。" },
+];
 
 export default function Home() {
   return (
-    <main>
-      <header className="hero" id="top">
+    <main className="fieldbookHome">
+      <ReadingProgress />
+      <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="主导航">
           <Link className="brand" href="/" aria-label="云与 AI 售前知识库首页">
             <span className="brandMark">CA</span>
-            <span>Cloud × AI / Presales Fieldbook</span>
+            <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>
           </Link>
           <div className="toplinks">
-            <a href="#available-modules">学习模块</a>
+            <a href="#available-modules">查找模块</a>
             <a href="#map">知识地图</a>
-            <Link href="/references">Reference</Link>
+            <Link href="/references">来源与证据 / Reference</Link>
           </div>
         </nav>
 
-        <div className="heroGrid">
+        <div className="heroGrid heroGridV2">
           <div className="heroCopy">
-            <p className="eyebrow">READING EDITION · V1.1</p>
-            <h1>云计算 × AI 平台<br />售前知识库</h1>
-            <p className="heroLead">
-              从客户问题出发，把概念、架构、选择、证据和回答话术连成一条可复用的售前路径；
-              每个主题都可以独立阅读、直接分享并回到完整知识地图。
-            </p>
+            <p className="eyebrow">TECHNICAL PRESALES FIELD MANUAL · V2.0</p>
+            <h1>把复杂 AI 技术<br />变成客户能做的决定</h1>
+            <p className="heroLead">这不是产品目录，也不是概念词典。它把原理、架构、失败模式、云服务、验收证据和客户回答组织成一套可检索、可深读、可在现场使用的技术售前工作台。</p>
             <div className="heroActions">
-              <a className="primaryButton" href="#available-modules">选择学习模块</a>
-              <a className="textButton" href="#map">进入完整知识地图 <span>↘</span></a>
+              <a className="primaryButton" href="#available-modules">从客户问题开始</a>
+              <a className="textButton" href="#learning-paths">按任务学习 <span>↓</span></a>
             </div>
-
-            <nav className="heroModulePicker" id="available-modules" aria-label="已完成的学习模块">
-              <div className="heroModulePickerHead">
-                <p>AVAILABLE MODULES</p>
-                <span>{availableModules.length} 个独立模块</span>
-              </div>
-              <ul className="heroModuleRail">
-                {availableModules.map((module, index) => (
-                  <li key={module.slug}>
-                    <Link className="heroModuleCard" href={module.href}>
-                      <span>{String(index + 1).padStart(2, "0")} · {module.layerName}</span>
-                      <strong>{module.zh}</strong>
-                      <small>{module.en}</small>
-                      <i aria-hidden="true">↗</i>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
           </div>
+
+          <aside className="heroDecisionPanel" aria-label="知识库可以帮助完成的任务">
+            <p className="miniLabel">USE IT IN THE MOMENT</p>
+            <h2>客户会议前，快速完成三件事</h2>
+            <ol>
+              <li><span>01</span><div><strong>解释清楚</strong><p>用机制图和边界说明技术为什么有效、又会在哪里失效。</p></div></li>
+              <li><span>02</span><div><strong>选择正确</strong><p>根据客户信号比较路线、云能力、风险和验收门槛。</p></div></li>
+              <li><span>03</span><div><strong>回答有据</strong><p>从短答进入深答、追问与一手来源，不靠模糊话术。</p></div></li>
+            </ol>
+            <div className="heroDecisionFoot"><strong>{moduleCount}</strong><span>个独立模块</span><strong>{layerCount}</strong><span>层知识地图</span></div>
+          </aside>
         </div>
       </header>
 
-      <section className="principles section" aria-labelledby="principles-title">
-        <div className="sectionNumber">00</div>
-        <div className="sectionBody">
-          <div className="sectionIntro">
-            <p className="kicker">HOW TO USE</p>
-            <h2 id="principles-title">模块阅读框架</h2>
-          </div>
-          <div className="principleGrid">
-            <article><span>01</span><h3>业务目标与边界</h3><p>业务问题、适用边界、非目标与价值假设。</p></article>
-            <article><span>02</span><h3>架构判断与选型</h3><p>架构模式、关键变量、选型矩阵与反例。</p></article>
-            <article><span>03</span><h3>证据与验收</h3><p>数据、评测、来源类别与验收门槛。</p></article>
-            <article><span>04</span><h3>客户沟通</h3><p>客户问题、短答、深答、追问和风险提示。</p></article>
-          </div>
+      <div id="available-modules" className="explorerAnchor">
+        <ModuleExplorer modules={explorerModules} knowledgeEntries={knowledgeSearchEntries} />
+      </div>
+
+      <section className="fieldbookPromise" aria-labelledby="promise-title">
+        <div className="promiseIntro"><p className="kicker">READING EXPERIENCE</p><h2 id="promise-title">同一份知识，支持三种阅读深度</h2></div>
+        <div className="promiseGrid">
+          <article><span>30 秒</span><h3>先拿到判断</h3><p>定义、客户信号、推荐路线和不可越过的边界首先出现。</p></article>
+          <article><span>10 分钟</span><h3>理解系统为什么这样工作</h3><p>机制、数据流、控制面和生产故障形成连续叙事。</p></article>
+          <article><span>客户现场</span><h3>搜索问题并回到证据</h3><p>按场景筛选高频问答，短答、深答、追问和来源在同一处。</p></article>
         </div>
       </section>
 
-      <section className="section mapSection" id="map" aria-labelledby="map-title">
+      <section className="section mapSection mapSectionV2" id="map" aria-labelledby="map-title">
         <div className="sectionNumber">01</div>
         <div className="sectionBody">
           <div className="sectionIntro splitIntro mapIntro">
             <div className="mapHeading">
-              <p className="kicker">KNOWLEDGE MAP</p>
+              <p className="kicker">KNOWLEDGE SYSTEM</p>
               <h2 id="map-title">知识地图</h2>
               <div className="mapStats" aria-label={`${layerCount} 层架构，${moduleCount} 个细分模块`}>
                 <span className="mapStat"><strong>{layerCount}</strong><span>层架构</span></span>
                 <span className="mapStat"><strong>{moduleCount}</strong><span>个细分模块</span></span>
               </div>
             </div>
-            <p>从售前场景进入应用模式，再向协议、工程、模型、数据与算力层展开；每个模块都可单独阅读与分享。</p>
+            <p>地图按客户对话从上到下展开：先明确业务方案，再选择应用模式和互操作方式，最后落实工程、模型、数据与算力。</p>
           </div>
 
-          <div className="layerStack">
+          <div className="layerStack layerStackV2">
             {layers.map((layer) => (
               <article className="layer" key={layer.no}>
                 <div className="layerIndex">{layer.no}</div>
-                <div className="layerTitle">
-                  <h3>{layer.name}</h3>
-                  <p>{layer.en}</p>
-                </div>
+                <div className="layerTitle"><h3>{layer.name}</h3><p>{layer.en}</p></div>
                 <div className="layerContent">
-                  <div
-                    className="chips"
-                    data-count={layer.modules.length}
-                    data-odd={layer.modules.length % 2 === 1 ? "true" : "false"}
-                  >
-                    {balanceRows(layer.modules, 4).flatMap((row) =>
-                      row.map((module) => (
-                        <Link
-                          key={module.slug}
-                          href={module.href}
-                          style={{ "--module-span": 12 / row.length } as CSSProperties}
-                          aria-label={`${module.zh}：打开独立模块页面`}
-                        >
-                          <strong>{module.zh}</strong>
-                          <small>{module.en}</small>
-                        </Link>
-                      )),
-                    )}
+                  <div className="chips" data-count={layer.modules.length} data-odd={layer.modules.length % 2 === 1 ? "true" : "false"}>
+                    {balanceRows(layer.modules, 4).flatMap((row) => row.map((module) => (
+                      <Link key={module.slug} href={module.href} style={{ "--module-span": 12 / row.length } as CSSProperties} aria-label={`${module.zh}：打开独立模块页面`}>
+                        <strong>{module.zh}</strong><small>{module.en}</small><i aria-hidden="true">↗</i>
+                      </Link>
+                    )))}
                   </div>
                 </div>
               </article>
             ))}
           </div>
-
-          <div className="curriculum">
-            <div>
-              <p className="kicker">LEARNING PATHS</p>
-              <h3>任务导向的学习路径</h3>
-            </div>
-            <div className="pathCards">
-              <article><strong>新入门 · 4 周</strong><p>LLM 原理 → Prompt → RAG / Agent → 评估</p></article>
-              <article><strong>做 PoC · 2 周</strong><p>场景方案 → 数据工程 → 应用模式 → 安全与验收</p></article>
-              <article><strong>做平台规划</strong><p>模型格局 → 网关与运营 → 推理 → 平台与算力</p></article>
-            </div>
-          </div>
         </div>
       </section>
 
-      <footer>
-        <span>Cloud × AI Presales Fieldbook</span>
-        <span>V1.1 · {moduleCount} 模块阅读版</span>
-      </footer>
+      <section className="learningPathsV2" id="learning-paths" aria-labelledby="learning-paths-title">
+        <header><p className="kicker">MISSION-BASED PATHS</p><h2 id="learning-paths-title">不要按章节学，按任务走</h2><p>每条路径都以客户要完成的决策结束，而不是以“看完若干模块”结束。</p></header>
+        <div className="learningPathList">
+          {learningPaths.map((path) => (
+            <article key={path.no}><span>{path.no}</span><div><p>{path.time}</p><h3>{path.title}</h3></div><strong>{path.route}</strong><p>{path.outcome}</p></article>
+          ))}
+        </div>
+      </section>
+
+      <footer><span>Cloud × AI Presales Fieldbook</span><span>V2.0 · {moduleCount} 模块阅读版</span></footer>
     </main>
   );
 }

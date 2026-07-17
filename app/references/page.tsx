@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
+import { ReadingProgress, ReferenceFilterShell, type ReferenceFilterItem } from "../fieldbook-interactions";
 import { balanceRows } from "../layout-utils.mjs";
 import { referenceModules, sourceLedger } from "../reference-content.mjs";
 
@@ -52,9 +53,20 @@ for (const referenceModule of referenceModules) {
   }
 }
 
+const referenceFilterItems: ReferenceFilterItem[] = referenceModules.flatMap((module) => module.sourceIds.map((sourceId) => {
+  const source = sourceLedger[sourceId as keyof typeof sourceLedger];
+  return {
+    key: `${module.id}:${sourceId}`,
+    moduleId: module.id,
+    grade: source.grade,
+    text: `${module.zh} ${module.en} ${module.shortTitle} ${source.shortTitle} ${source.title} ${source.kind} ${source.note}`,
+  };
+}));
+
 export default function ReferencesPage() {
   return (
     <main className="referencePage">
+      <ReadingProgress />
       <header className="hero referenceHero" id="top">
         <nav className="topbar" aria-label="来源页导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
@@ -138,55 +150,60 @@ export default function ReferencesPage() {
         </div>
       </section>
 
-      {referenceModules.map((module, moduleIndex) => (
-        <section
-          className="section referenceModuleSection"
-          id={`module-${module.id}`}
-          aria-labelledby={`module-${module.id}-title`}
-          key={module.id}
-        >
-          <div className="sectionNumber">{String(moduleIndex + 1).padStart(2, "0")}</div>
-          <div className="sectionBody">
-            <div className="sectionIntro splitIntro">
-              <div>
-                <p className="kicker">{module.shortTitle} REFERENCES</p>
-                <h2 id={`module-${module.id}-title`}>{module.zh}</h2>
+      <ReferenceFilterShell items={referenceFilterItems}>
+        {referenceModules.map((module, moduleIndex) => (
+          <section
+            className="section referenceModuleSection"
+            id={`module-${module.id}`}
+            aria-labelledby={`module-${module.id}-title`}
+            data-reference-module={module.id}
+            key={module.id}
+          >
+            <div className="sectionNumber">{String(moduleIndex + 1).padStart(2, "0")}</div>
+            <div className="sectionBody">
+              <div className="sectionIntro splitIntro">
+                <div>
+                  <p className="kicker">{module.shortTitle} REFERENCES</p>
+                  <h2 id={`module-${module.id}-title`}>{module.zh}</h2>
+                </div>
+                <p>
+                  {module.en} · 当前收录 {module.sourceIds.length} 条已核验来源。
+                  <br />
+                  <Link href={module.href}>进入 {module.shortTitle} 模块，查看这些来源支撑的原理、判断与客户回答 ↗</Link>
+                </p>
               </div>
-              <p>
-                {module.en} · 当前收录 {module.sourceIds.length} 条已核验来源。
-                <br />
-                <Link href={module.href}>进入 {module.shortTitle} 模块，查看这些来源支撑的原理、判断与客户回答 ↗</Link>
-              </p>
-            </div>
 
-            <div className="subsection referenceModuleContent">
-              <div className="sourceList">
-                {module.sourceIds.map((sourceId) => {
-                  const source = sourceLedger[sourceId as keyof typeof sourceLedger];
+              <div className="subsection referenceModuleContent">
+                <div className="sourceList">
+                  {module.sourceIds.map((sourceId) => {
+                    const source = sourceLedger[sourceId as keyof typeof sourceLedger];
 
-                  return (
-                    <a
-                      className="sourceItem"
-                      id={sourceAnchorOwner.get(sourceId) === module.id ? `source-${sourceId}` : undefined}
-                      href={source.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      key={sourceId}
-                    >
-                      <span className="sourceLevel">{source.grade} / {source.kind}</span>
+                    return (
+                      <a
+                        className="sourceItem"
+                        id={sourceAnchorOwner.get(sourceId) === module.id ? `source-${sourceId}` : undefined}
+                        data-reference-key={`${module.id}:${sourceId}`}
+                        data-source-grade={source.grade}
+                        href={source.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={sourceId}
+                      >
+                        <span className="sourceLevel">{source.grade} / {source.kind}</span>
                       <span className="sourceTitle">
                         <strong>{source.title}</strong>
-                        <small>{source.note}</small>
+                        <small><b className="sourceShortTitle">{source.shortTitle}</b>{source.note}</small>
                       </span>
-                      <span className="sourceDate">核验：{source.verifiedAt}<br />打开原文 ↗</span>
-                    </a>
-                  );
-                })}
+                        <span className="sourceDate">核验：{source.verifiedAt}<br />打开原文 ↗</span>
+                      </a>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        ))}
+      </ReferenceFilterShell>
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
