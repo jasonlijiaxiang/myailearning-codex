@@ -161,33 +161,18 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .memoryCompare .externalMemory { background: var(--lime); }
 .memoryCompare h4 { font-family: var(--font-serif), "Songti SC", serif; font-size: 30px; font-weight: 500; margin: 40px 0 12px; }
 .memoryCompare p:last-child { margin: 0; color: var(--muted); font-size: 14px; }
-.formula { font-family: var(--font-geist-mono), monospace; font-size: clamp(16px,2vw,28px); letter-spacing: -.04em; margin: 0; overflow-wrap: anywhere; }
 .principleDepth { margin-top: 16px; border: 1px solid var(--line); }
 .principleDepthIntro { padding: 36px; background: var(--paper); border-bottom: 1px solid var(--line); }
 .principleDepthIntro h4 { margin: 16px 0 12px; font-family: var(--font-serif), "Songti SC", serif; font-size: clamp(28px,3vw,42px); font-weight: 500; }
 .principleDepthIntro > p:last-child { max-width: 940px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
-.probabilityModel { display: grid; grid-template-columns: 1.2fr .8fr; background: var(--ink); color: var(--white); }
-.probabilityFormula { padding: 34px 36px; }
-.probabilityFormula .miniLabel { color: var(--lime); }
-.probabilityFormula > p:last-child { margin: 18px 0 0; max-width: 720px; color: rgba(255,255,255,.64); font-size: 13px; }
-.probabilityTerms { display: grid; grid-template-columns: repeat(3,1fr); border-left: 1px solid rgba(255,255,255,.2); }
-.probabilityTerms > div { padding: 28px 20px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid rgba(255,255,255,.15); }
-.probabilityTerms > div:last-child { border-right: 0; }
-.probabilityTerms strong { color: var(--lime); font-family: var(--font-geist-mono), monospace; font-size: 24px; }
-.probabilityTerms span { margin-top: 28px; font-size: 12px; }
-.probabilityTerms small { color: rgba(255,255,255,.52); font-size: 9px; }
-.componentTheory { display: grid; grid-template-columns: 1fr 1fr; }
-.componentTheory article { padding: 32px 36px; border-bottom: 1px solid var(--line); }
-.componentTheory article + article { border-left: 1px solid var(--line); }
-.componentTheory h5, .marginalizationIntro h5, .engineeringBridge h5, .principleLimits h5 { margin: 15px 0 12px; font-size: 20px; }
-.componentTheory article > p:last-child, .marginalizationGrid article > p:last-child { margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
-.deepFormula { margin: 18px 0 0; font-family: var(--font-geist-mono), monospace; font-size: clamp(13px,1.25vw,17px); overflow-wrap: anywhere; }
-.marginalizationIntro { padding: 32px 36px 18px; }
-.marginalizationGrid { display: grid; grid-template-columns: 1fr 1fr; margin: 0 36px; border: 1px solid var(--line); }
-.marginalizationGrid article { padding: 28px; }
-.marginalizationGrid article + article { border-left: 1px solid var(--line); }
-.marginalizationGrid article > span, .engineeringPipeline article > span, .principleLimits article > span { color: var(--blue); font-size: 10px; font-weight: 800; }
-.marginalizationGrid h5 { margin: 26px 0 8px; font-size: 20px; }
+.ragMechanism { display: grid; grid-template-columns: repeat(3,1fr); background: var(--ink); color: var(--white); }
+.ragMechanism article { min-height: 220px; padding: 30px; border-right: 1px solid rgba(255,255,255,.18); }
+.ragMechanism article:last-child { border-right: 0; }
+.ragMechanism article > span, .engineeringPipeline article > span, .principleLimits article > span { color: var(--blue); font-size: 10px; font-weight: 800; }
+.ragMechanism article > span { color: var(--lime); }
+.ragMechanism h5, .engineeringBridge h5, .principleLimits h5 { margin: 15px 0 12px; font-size: 20px; }
+.ragMechanism h5 { margin-top: 42px; }
+.ragMechanism p { margin: 0; color: rgba(255,255,255,.68); font-size: 13px; line-height: 1.7; }
 .paperBoundary { margin: 20px 36px 36px; padding: 18px 20px; background: #e9f5fd; border-left: 4px solid var(--blue); color: var(--muted); font-size: 13px; line-height: 1.7; }
 .paperBoundary strong { color: var(--ink); }
 .engineeringBridge { margin: 0 36px 36px; border: 1px solid var(--line); }
@@ -200,11 +185,6 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .engineeringPipeline h6 { display: flex; flex-direction: column; gap: 4px; margin: 34px 0 10px; font-size: 15px; }
 .engineeringPipeline h6 small { color: var(--muted); font-size: 9px; font-weight: 600; }
 .engineeringPipeline p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
-.trainingCompare { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
-.trainingCompare article { padding: 22px 26px; }
-.trainingCompare article + article { border-left: 1px solid var(--line); }
-.trainingCompare strong { font-size: 13px; }
-.trainingCompare p { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 .principleLimits { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--line); }
 .principleLimits article { padding: 28px 30px; border-right: 1px solid var(--line); }
 .principleLimits article:last-child { border-right: 0; }
@@ -241,7 +221,6 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .technicalNotes article { padding: 24px; border: 1px solid var(--line); background: var(--paper); }
 .technicalNotes h4 { margin: 22px 0 10px; }
 .technicalNotes p:last-child { margin: 0; color: var(--muted); font-size: 12px; }
-.smallFormula { margin: 0 0 14px !important; font-family: var(--font-geist-mono), monospace; font-size: 15px !important; color: var(--ink) !important; }
 .variantList { border-top: 1px solid var(--ink); }
 .variantList article { display: grid; grid-template-columns: .65fr 1fr 1fr; gap: 30px; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
 .variantList h4 { margin: 0; font-size: 18px; }
@@ -408,8 +387,6 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .pocGrid { grid-template-columns: 1fr 1fr; }
   .pocGrid article:nth-child(2) { border-right: 0; }
   .pocGrid article:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
-  .probabilityModel { grid-template-columns: 1fr; }
-  .probabilityTerms { border-left: 0; border-top: 1px solid rgba(255,255,255,.2); }
   .engineeringPipeline { grid-template-columns: 1fr 1fr; }
   .engineeringPipeline article { border-bottom: 1px solid var(--line); }
   .engineeringPipeline article:nth-child(2) { border-right: 0; }
@@ -435,13 +412,10 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .splitIntro, .fitGrid, .architectureNotes, .qaAnswer, .curriculum, .callout { grid-template-columns: 1fr; }
   .principleGrid { grid-template-columns: 1fr; }
   .conceptGrid article, .conceptGrid[data-odd="true"] article:last-child { grid-column: span 12; }
-  .componentTheory, .marginalizationGrid, .engineeringBridgeHead, .trainingCompare, .principleLimits { grid-template-columns: 1fr; }
-  .componentTheory article + article, .marginalizationGrid article + article, .trainingCompare article + article { border-left: 0; border-top: 1px solid var(--line); }
-  .probabilityTerms { grid-template-columns: 1fr; }
-  .probabilityTerms > div { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.15); }
-  .probabilityTerms > div:last-child { border-bottom: 0; }
-  .probabilityTerms span { margin-top: 10px; }
-  .marginalizationGrid, .engineeringBridge { margin-left: 18px; margin-right: 18px; }
+  .ragMechanism, .engineeringBridgeHead, .principleLimits { grid-template-columns: 1fr; }
+  .ragMechanism article { min-height: auto; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.18); }
+  .ragMechanism article:last-child { border-bottom: 0; }
+  .engineeringBridge { margin-left: 18px; margin-right: 18px; }
   .paperBoundary { margin-left: 18px; margin-right: 18px; }
   .engineeringPipeline { grid-template-columns: 1fr; }
   .engineeringPipeline article { min-height: auto; border-right: 0; }

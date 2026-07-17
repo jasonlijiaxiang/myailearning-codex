@@ -6,13 +6,6 @@
  */
 export const evidenceCards = [
   {
-    metric: "2",
-    title: "种原始概率形式",
-    finding: "原始论文分别给出 RAG-Sequence 与 RAG-Token：前者在完整输出序列层面对候选文档求和，后者在每个 token 生成时求和。",
-    boundary: "这是建模方式，不是两种云部署模板，也不是现代 API 型 RAG 的统一实现。",
-    sourceId: "rag-original-2020",
-  },
-  {
     metric: "+9–19 pp",
     title: "Top-20 召回准确率",
     finding: "DPR 在论文所评估的开放域问答数据上，相对其 Lucene-BM25 基线取得这一绝对提升。",
@@ -196,17 +189,6 @@ export const ragQa = [
     evidence: [
       { sourceId: "owasp-prompt-injection", supports: "直接支持 RAG 与微调不能完全消除提示注入。" },
       { sourceId: "owasp-vector-weaknesses", supports: "支持向量库的数据投毒、访问控制与跨上下文泄漏风险。" },
-    ],
-  },
-  {
-    q: "RAG-Sequence 和 RAG-Token 是两种部署架构吗？",
-    a: "不是。它们是 2020 年原始 RAG 论文中两种对检索文档进行概率边缘化的建模方式，不是两种云部署模板或产品形态。",
-    depth: "RAG-Sequence 假设整段输出共享同一个潜在文档，并在完整输出序列层面对 Top-K 文档求和；RAG-Token 在每个生成 token 时分别对候选文档求和，因此不同 token 可以依赖不同文档。今天常见的“检索片段—组装上下文—调用模型 API”通常不会显式计算这两种边缘概率，不能简单贴成其中一种。",
-    ask: "追问客户：讨论的是论文模型，还是实际的检索、重排、上下文组装和模型调用架构？",
-    tag: "原理辨析",
-    basis: "原始论文定义",
-    evidence: [
-      { sourceId: "rag-original-2020", supports: "直接定义 RAG-Sequence 与 RAG-Token 的概率边缘化形式。" },
     ],
   },
   {

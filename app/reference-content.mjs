@@ -65,7 +65,7 @@ export const sourceLedger = {
     kind: "同行评审论文",
     shortTitle: "原始 RAG 论文",
     title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-    note: "RAG 的潜变量文档、Top-K 截断边缘化、RAG-Sequence / RAG-Token，以及查询编码器与生成器的联合优化。",
+    note: "原始 RAG 定义、检索与生成的协同方式、外部知识增强机制，以及查询编码器与生成器的联合优化范围。",
     verifiedAt: "2026-07-17",
     href: "https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html",
   },

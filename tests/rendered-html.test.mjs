@@ -61,7 +61,7 @@ test("homepage is a focused knowledge map with links to every independent module
     assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(knowledgeModule.en))), `首页缺少英文术语：${knowledgeModule.en}`);
   }
 
-  assert.doesNotMatch(html, /RAG 的概率模型与工程机制/);
+  assert.doesNotMatch(html, /RAG 的工作原理与工程机制/);
   assert.doesNotMatch(html, /RAG 技术环节与云服务机会/);
   assert.doesNotMatch(html, /客户高频问题与深度回答/);
   assert.doesNotMatch(html, /本题依据 \/ Evidence/);
@@ -75,12 +75,11 @@ test("RAG route contains principles, cloud-service opportunities, and evidence-b
   const html = await renderHtml("/modules/rag");
 
   assert.match(html, /检索增强生成 · Retrieval-Augmented Generation/);
-  assert.match(html, /RAG 的概率模型与工程机制/);
-  assert.match(html, /潜变量（Latent Variable）/);
-  assert.match(html, /边缘化（Marginalization）/);
-  assert.match(html, /RAG-Sequence/);
-  assert.match(html, /RAG-Token/);
-  assert.match(html, /不是所有现代 RAG 实现的统一公式/);
+  assert.match(html, /RAG 的工作原理与工程机制/);
+  assert.match(html, /检索 · Retrieval/);
+  assert.match(html, /增强 · Augmentation/);
+  assert.match(html, /生成 · Generation/);
+  assert.match(html, /检索到不等于回答正确/);
   assert.match(html, /召回是证据可用性的上限/);
   assert.match(html, /增强发生在上下文/);
   assert.match(html, /RAG 技术环节与云服务机会/);
@@ -103,6 +102,8 @@ test("RAG route contains principles, cloud-service opportunities, and evidence-b
   assert.doesNotMatch(html, /id="source-[a-z0-9-]+"/, "RAG 页面不应复制完整来源台账");
   assert.doesNotMatch(html, /统一来源台账|本模块的来源与证据类别|打开原文 ↗/);
   assert.doesNotMatch(html, /MAINTENANCE BY DESIGN|时效性不是页脚日期|claim_id|review_by|事实最小单元/);
+  assert.doesNotMatch(html, /softmax|RAG-Sequence|RAG-Token|潜变量|边缘化|Σ|∏/);
+  assert.doesNotMatch(html, /class="(?:formula|deepFormula|smallFormula)"/);
 });
 
 test("references route is the complete centralized source ledger", async () => {
@@ -153,7 +154,7 @@ test("an unfinished module still has an independent, navigable route", async () 
     assert.match(html, new RegExp(escapeRegExp(related.zh)));
   }
 
-  assert.doesNotMatch(html, /RAG 的概率模型与工程机制|客户高频问题与深度回答/);
+  assert.doesNotMatch(html, /RAG 的工作原理与工程机制|客户高频问题与深度回答/);
 });
 
 test("knowledge-map registry remains seven layers and twenty-eight unique module routes", () => {
@@ -162,8 +163,8 @@ test("knowledge-map registry remains seven layers and twenty-eight unique module
   assert.equal(layers.reduce((total, layer) => total + layer.modules.length, 0), 28);
 
   const layerNumbers = layers.map((layer) => layer.no);
-  const slugs = moduleList.map((module) => module.slug);
-  const hrefs = moduleList.map((module) => module.href);
+  const slugs = moduleList.map((knowledgeModule) => knowledgeModule.slug);
+  const hrefs = moduleList.map((knowledgeModule) => knowledgeModule.href);
 
   assert.equal(new Set(layerNumbers).size, layers.length, "层编号必须唯一");
   assert.equal(new Set(slugs).size, moduleList.length, "模块 slug 必须唯一");
@@ -218,7 +219,7 @@ test("every RAG claim resolves to a unique, grouped, and verified source", () =>
   }
   assert.deepEqual([...groupedSourceIds].sort(), [...sourceIds].sort(), "每个来源都必须归入至少一个模块分组");
 
-  const ragReferenceModule = referenceModules.find((module) => module.id === "rag");
+  const ragReferenceModule = referenceModules.find((referenceModule) => referenceModule.id === "rag");
   assert.ok(ragReferenceModule, "缺少 RAG Reference 分组");
   const ragGroupedSourceIds = new Set(ragReferenceModule.sourceIds);
 
@@ -238,6 +239,8 @@ test("every RAG claim resolves to a unique, grouped, and verified source", () =>
   }
 
   assert.ok(evidenceCards.length > 0);
+  assert.ok(evidenceCards.every((card) => card.title !== "种原始概率形式"));
+  assert.ok(ragQa.every((item) => !/RAG-Sequence|RAG-Token/.test(item.q)));
   for (const card of evidenceCards) {
     assert.ok(sourceIds.has(card.sourceId), `证据卡引用未知来源：${card.sourceId}`);
     assert.ok(ragGroupedSourceIds.has(card.sourceId), `证据卡来源未归入 RAG 分组：${card.sourceId}`);
@@ -347,6 +350,7 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(standard, /所有来源集中在独立/);
   assert.match(standard, /动态均衡卡片/);
   assert.match(standard, /相关模块/);
+  assert.match(standard, /仅当公式直接帮助售前做架构、选型或风险判断时展示/);
 
   assert.match(maintenance, /完整来源台账只呈现在 `\/references`/);
   assert.match(maintenance, /Git 推送后的公开发布/);

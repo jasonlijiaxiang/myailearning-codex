@@ -123,72 +123,45 @@ export default function RagModulePage() {
           </div>
 
           <div className="subsection foundationSection" id="rag-principle">
-            <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION &amp; MECHANICS</p><h3>RAG 的概率模型与工程机制</h3></div></div>
+            <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION &amp; MECHANICS</p><h3>RAG 的工作原理与工程机制</h3></div></div>
             <div className="memoryCompare">
               <article>
                 <p className="miniLabel">PARAMETRIC MEMORY</p>
-                <h4>参数化记忆</h4>
+                <h4>参数化记忆 · Parametric Memory</h4>
                 <p>模型训练时压缩进权重的语言规律与世界知识。调用快、泛化强，但知识何时写入、能否精确更新、来源在哪里，都难以直接控制。</p>
               </article>
               <article className="externalMemory">
-                <p className="miniLabel">NON-PARAMETRIC MEMORY</p>
-                <h4>非参数化记忆</h4>
-                <p>文档、数据库、搜索索引和知识图谱等外部数据。可以独立新增、撤回、授权和审计，RAG 在推理时把相关部分临时交给模型。</p>
+                <p className="miniLabel">EXTERNAL KNOWLEDGE</p>
+                <h4>外部知识 · External Knowledge</h4>
+                <p>文档、数据库、搜索索引和知识图谱等模型外的数据。可以独立新增、撤回、授权和审计，RAG 在回答当前问题时把相关部分临时交给模型。</p>
               </article>
             </div>
 
             <div className="principleDepth">
               <header className="principleDepthIntro">
-                <p className="miniLabel">ORIGINAL PROBABILISTIC VIEW</p>
-                <h4>从概率模型理解 RAG</h4>
-                <p>原始 RAG 把检索到的文档 <strong>z</strong> 视为潜变量（Latent Variable）：模型不预先指定由哪篇文档解释目标输出，而是让检索器给候选证据分配相关性概率，再让生成器估计“在该证据条件下生成答案”的概率，最后对候选证据做边缘化（Marginalization）。下式先用序列级的 RAG-Sequence 解释这一思想，随后再与 RAG-Token 对照。</p>
+                <p className="miniLabel">PRESALES MECHANISM</p>
+                <h4>技术售前需要理解的 RAG 原理</h4>
+                <p>RAG 在模型回答之前，先从外部知识中找到可能相关的证据，再把问题、证据和回答要求一起交给模型。它改变的是<strong>本次回答可使用的上下文</strong>，不是重新训练模型，也不会把文档永久写入模型参数。</p>
               </header>
 
-              <div className="probabilityModel">
-                <div className="probabilityFormula">
-                  <p className="miniLabel">RAG-SEQUENCE · LATENT-DOCUMENT MARGINALIZATION</p>
-                  <p className="formula">p(y | x) ≈ Σ<sub>z ∈ Top-K</sub> p<sub>η</sub>(z | x) · p<sub>θ</sub>(y | x, z)</p>
-                  <p>这里的 <strong>y</strong> 是完整输出序列；Top-K 是对“遍历整个知识库并求和”的计算近似，而不是把第一条检索结果直接当成答案。它是原始 RAG-Sequence 的序列级形式，不是所有现代 RAG 实现的统一公式。</p>
-                </div>
-                <div className="probabilityTerms">
-                  <div><strong>x</strong><span>输入 / 查询<br /><small>Input / Query</small></span></div>
-                  <div><strong>z</strong><span>检索证据<br /><small>Retrieved Evidence</small></span></div>
-                  <div><strong>y</strong><span>输出序列<br /><small>Output Sequence</small></span></div>
-                </div>
-              </div>
-
-              <div className="componentTheory">
+              <div className="ragMechanism" aria-label="RAG 三步工作机制">
                 <article>
-                  <p className="miniLabel">RETRIEVER · pη(z | x)</p>
-                  <h5>检索器决定“看什么”</h5>
-                  <p className="deepFormula">p<sub>η</sub>(z | x) = softmax(q<sub>η</sub>(x) · d(z))</p>
-                  <p>原始论文使用 DPR 双编码器（Bi-encoder）：查询向量与文档向量做最大内积搜索（MIPS），形成 Top-K 候选。这个概率表示<strong>任务相关性</strong>，不表示文档真实、权威或仍然有效。</p>
+                  <span>01</span>
+                  <h5>检索 · Retrieval</h5>
+                  <p>从当前用户有权访问的知识源中找出候选证据。检索分数表示“与问题有多相关”，不证明内容真实、权威或仍然有效。</p>
                 </article>
                 <article>
-                  <p className="miniLabel">GENERATOR · pθ(y | x,z)</p>
-                  <h5>生成器决定“怎么说”</h5>
-                  <p className="deepFormula">p<sub>θ</sub>(y | x,z) = ∏<sub>i</sub> p<sub>θ</sub>(y<sub>i</sub> | x,z,y&lt;i)</p>
-                  <p>生成器仍然逐 token 自回归预测。检索证据只是新的条件输入；模型可能正确使用、忽略、误读或与参数化记忆混合，因此“检到了”不等于“答对了”。</p>
-                </article>
-              </div>
-
-              <div className="marginalizationIntro">
-                <p className="miniLabel">TWO ORIGINAL FORMULATIONS</p>
-                <h5>RAG-Sequence 与 RAG-Token 的差别在“何时对文档求和”</h5>
-              </div>
-              <div className="marginalizationGrid">
-                <article>
-                  <span>01</span><h5>RAG-Sequence</h5>
-                  <p className="deepFormula">Σ<sub>z</sub> p<sub>η</sub>(z|x) · ∏<sub>i</sub> p<sub>θ</sub>(y<sub>i</sub>|x,z,y&lt;i)</p>
-                  <p>整段输出共享同一个潜在文档假设；先分别计算每个文档条件下的完整序列概率，再在文档维度求和。</p>
+                  <span>02</span>
+                  <h5>增强 · Augmentation</h5>
+                  <p>把经过权限、版本、去重和冲突处理的证据，与问题、引用格式及拒答规则一起组装成模型上下文。</p>
                 </article>
                 <article>
-                  <span>02</span><h5>RAG-Token</h5>
-                  <p className="deepFormula">∏<sub>i</sub> Σ<sub>z</sub> p<sub>η</sub>(z|x) · p<sub>θ</sub>(y<sub>i</sub>|x,z,y&lt;i)</p>
-                  <p>每个输出 token 都可以由不同文档影响；先在当前 token 上对文档求和，再进入下一个 token。</p>
+                  <span>03</span>
+                  <h5>生成 · Generation</h5>
+                  <p>模型基于问题与证据组织回答、引用或拒答，但仍可能忽略、误读或错误组合证据，因此生成环节必须单独评估。</p>
                 </article>
               </div>
-              <p className="paperBoundary"><strong>论文边界：</strong>两者是 2020 年原始论文的概率建模方式，不是今天云平台上两种通用部署模板。常见的“检索多段内容—拼装 Prompt—调用大模型 API”通常没有显式计算上述边缘概率。</p>
+              <p className="paperBoundary"><strong>售前判断：</strong>RAG 的价值是给模型增加一条可更新、可授权、可追溯的外部证据通道；它不改变“模型仍可能犯错”这一事实。<strong>检索到不等于回答正确</strong>，还要检查证据是否进入最终上下文、模型是否忠实使用，以及来源本身是否可靠。</p>
 
               <div className="engineeringBridge">
                 <div className="engineeringBridgeHead">
@@ -201,10 +174,6 @@ export default function RagModulePage() {
                   <article><span>03</span><h6>上下文组装<small>Context Assembly</small></h6><p>处理去重、版本、冲突、顺序、token 预算和来源 ID；不是简单拼接 Top-K。</p></article>
                   <article><span>04</span><h6>有据生成<small>Grounded Generation</small></h6><p>区分事实、推断和建议；证据不足时拒答，重要结论必须能回到原文。</p></article>
                 </div>
-                <div className="trainingCompare">
-                  <article><strong>原始论文</strong><p>查询编码器与 BART 生成器联合微调；文档编码器和索引保持固定，避免反复重建索引。</p></article>
-                  <article><strong>企业工程</strong><p>Embedding、搜索、Reranker 与大模型通常来自独立服务，分阶段评估、升级和回滚；权限也必须在模型外执行。</p></article>
-                </div>
               </div>
 
               <div className="principleLimits">
@@ -213,7 +182,7 @@ export default function RagModulePage() {
                 <article><span>C</span><h5>增强发生在上下文，不在权重</h5><p>常见企业 RAG 把证据序列化为输入 token，改变本次生成条件；它不会因此把知识永久写入模型参数。</p></article>
               </div>
 
-              <Link className="paperAnchor" href="/references#source-rag-original-2020">原始模型来源：Lewis et al., {ragOriginalSource.title} ↗</Link>
+              <Link className="paperAnchor" href="/references#source-rag-original-2020">原理来源：Lewis et al., {ragOriginalSource.title} ↗</Link>
             </div>
 
             <div className="workedExample">
@@ -252,7 +221,7 @@ export default function RagModulePage() {
             </div>
 
             <div className="technicalNotes">
-              <article><p className="miniLabel">VECTOR SIMILARITY</p><h4>余弦相似度</h4><p className="smallFormula">cos(q,d) = (q · d) / (‖q‖ ‖d‖)</p><p>衡量向量方向接近程度。分数只在同一 embedding、同一任务和同一索引配置下有意义，不能跨模型直接比较。</p></article>
+              <article><p className="miniLabel">VECTOR SIMILARITY</p><h4>余弦相似度 · Cosine Similarity</h4><p>直观理解是比较查询向量与文档向量的方向是否接近；分数越高通常表示语义越相近。但分数只在同一 Embedding、同一任务和同一索引配置下有意义，不能跨模型直接比较。</p></article>
               <article><p className="miniLabel">APPROXIMATE SEARCH</p><h4>ANN / HNSW</h4><p>大规模向量库不会逐条精确比较。HNSW 通过分层近邻图快速逼近最近向量，用索引内存、构建时间和召回率换取查询速度。</p></article>
               <article><p className="miniLabel">CHUNKING</p><h4>Chunk Size 的任务依赖性</h4><p>固定长度、按标题、语义切分、父子块各适合不同文档。参数必须用真实问题集同时测召回、上下文完整性、时延和 token。</p></article>
             </div>
