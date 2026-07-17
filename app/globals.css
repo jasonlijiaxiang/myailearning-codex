@@ -284,13 +284,15 @@ tbody th { width: 150px; }
 tbody small { font-weight: 400; color: var(--muted); }
 tr.highlight { background: #efffd9; }
 
-.evidenceGrid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 16px; }
-.metricCard { border: 1px solid var(--line); padding: 28px; display: flex; flex-direction: column; min-height: 320px; }
+.evidenceGrid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 16px; }
+.metricCard { grid-column: span var(--evidence-span); border: 1px solid var(--line); padding: 28px; display: flex; flex-direction: column; min-height: 350px; }
 .metricCard.accent { background: var(--lime); border-color: var(--ink); }
 .metric { font-family: var(--font-serif), "Songti SC", serif; font-size: clamp(44px,5vw,76px); line-height: 1; letter-spacing: -.06em; margin: 0 0 28px; }
 .metricCard h4 { margin: 0 0 10px; }
-.metricCard > p:not(.metric) { margin: 0; color: var(--muted); font-size: 13px; flex: 1; }
-.metricCard a { margin-top: 30px; font-size: 12px; font-weight: 800; text-underline-offset: 4px; }
+.metricFinding { flex: 1; margin: 0; color: var(--muted); font-size: 13px; }
+.metricBoundary { margin: 18px 0 0; padding: 14px 0 0; border-top: 1px solid rgba(20,30,35,.16); color: var(--muted); font-size: 12px; }
+.metricBoundary strong { display: block; margin-bottom: 5px; color: var(--ink); font-size: 10px; letter-spacing: .08em; }
+.metricCard a { margin-top: auto; padding-top: 30px; font-size: 12px; font-weight: 800; text-underline-offset: 4px; }
 
 .pocGrid { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--line); }
 .pocGrid article { padding: 26px; border-right: 1px solid var(--line); }
@@ -326,13 +328,29 @@ tr.highlight { background: #efffd9; }
 details[open] .plus { transform: rotate(45deg); }
 .qaAnswer { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); margin-left: 74px; }
 .qaAnswer > div { padding: 24px; background: var(--paper); }
+.qaAnswer .qaBasis { grid-column: 1 / -1; background: #e9f5fd; }
+.qaBasisHead { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.qaBasisHead .answerLabel { margin-bottom: 0 !important; }
+.qaBasisHead > span { padding: 5px 9px; border: 1px solid #b9d8eb; border-radius: 999px; background: var(--white); color: var(--muted); font-size: 10px; }
+.qaBasisList { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 10px; align-items: stretch; }
+.qaBasisList a { grid-column: span var(--qa-evidence-span); min-width: 0; padding: 14px; border: 1px solid #b9d8eb; background: var(--white); color: var(--ink); text-decoration: none; display: flex; flex-direction: column; }
+.qaBasisList a:hover { border-color: var(--ink); transform: translateY(-1px); }
+.qaEvidenceMeta { color: #44614c; font-size: 9px; font-weight: 800; letter-spacing: .06em; }
+.qaBasisList strong { margin: 9px 0 5px; font-size: 13px; }
+.qaBasisList small { color: var(--muted); font-size: 11px; line-height: 1.55; }
 .qaAnswer .ask { grid-column: 1 / -1; background: #eaf9d8; }
 .qaAnswer p { margin: 0; font-size: 14px; }
 .answerLabel { font-size: 10px !important; color: var(--muted); font-weight: 800; letter-spacing: .12em; margin-bottom: 8px !important; }
 
+.sourceGuide { margin: -12px 0 28px 70px; padding: 22px; border-left: 3px solid var(--blue); background: #e9f5fd; }
+.sourceGuide > p { max-width: 980px; margin: 0; color: var(--muted); font-size: 13px; }
+.sourceLegend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.sourceLegend span { padding: 6px 9px; border: 1px solid #b9d8eb; background: var(--white); font-size: 10px; }
+.sourceLegend strong { margin-right: 4px; color: #44614c; }
 .sourceList { border-top: 1px solid var(--ink); }
-.sourceItem { display: grid; grid-template-columns: 150px 1fr 140px; gap: 24px; align-items: center; text-decoration: none; padding: 21px 0; border-bottom: 1px solid var(--line); }
+.sourceItem { scroll-margin-top: 24px; display: grid; grid-template-columns: 180px 1fr 140px; gap: 24px; align-items: center; text-decoration: none; padding: 21px 0; border-bottom: 1px solid var(--line); }
 .sourceItem:hover { background: var(--paper); padding-left: 14px; padding-right: 14px; }
+.sourceItem:target { padding-left: 14px; padding-right: 14px; border-left: 3px solid var(--blue); background: #e9f5fd; }
 .sourceLevel { font-size: 10px; font-weight: 800; color: #44614c; }
 .sourceTitle { display: flex; flex-direction: column; }
 .sourceTitle strong { font-size: 14px; }
@@ -354,8 +372,8 @@ footer p, footer a { font-size: 11px; color: var(--muted); }
   .principleGrid article:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
   .layer { grid-template-columns: 50px 190px 1fr; }
   .pathCards { grid-template-columns: 1fr; }
-  .evidenceGrid { grid-template-columns: 1fr; }
-  .metricCard { min-height: 250px; }
+  .metricCard { grid-column: span 6; min-height: 300px; }
+  .evidenceGrid[data-odd="true"] .metricCard:last-child { grid-column: span 12; }
   .pocGrid { grid-template-columns: 1fr 1fr; }
   .pocGrid article:nth-child(2) { border-right: 0; }
   .pocGrid article:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
@@ -364,6 +382,8 @@ footer p, footer a { font-size: 11px; color: var(--muted); }
   .engineeringPipeline { grid-template-columns: 1fr 1fr; }
   .engineeringPipeline article { border-bottom: 1px solid var(--line); }
   .engineeringPipeline article:nth-child(2) { border-right: 0; }
+  .qaBasisList a { grid-column: span 6; }
+  .qaBasisList[data-odd="true"] a:last-child { grid-column: span 12; }
 }
 
 @media (max-width: 720px) {
@@ -410,7 +430,11 @@ footer p, footer a { font-size: 11px; color: var(--muted); }
   .qaList summary { grid-template-columns: 42px 1fr 24px; padding: 12px 0; }
   .qaTag { display: none; }
   .qaAnswer { margin-left: 0; }
-  .qaAnswer .ask { grid-column: auto; }
+  .qaAnswer .qaBasis, .qaAnswer .ask { grid-column: auto; }
+  .qaBasisHead { align-items: flex-start; flex-direction: column; }
+  .qaBasisList a, .qaBasisList[data-odd="true"] a:last-child { grid-column: span 12; }
+  .sourceGuide { margin-left: 0; }
+  .metricCard, .evidenceGrid[data-odd="true"] .metricCard:last-child { grid-column: span 12; min-height: auto; }
   .sourceItem { grid-template-columns: 1fr; gap: 7px; }
   .sourceDate { text-align: left; }
   footer { flex-direction: column; align-items: flex-start; }

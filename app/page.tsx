@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 
 import { balanceRows } from "./layout-utils.mjs";
+import { evidenceCards, ragQa, sourceLedger } from "./rag-content.mjs";
 
 const layers = [
   {
@@ -89,92 +90,9 @@ const layers = [
   },
 ];
 
-const qa = [
-  {
-    q: "上下文窗口已经很长，为什么还需要 RAG？",
-    a: "长上下文解决“能装下多少”，RAG 解决“该拿什么、是否最新、谁能看、证据来自哪里”。当语料很小、稳定且可整体装入时，直接长上下文可能更简单；当知识持续变化、跨权限域、需要引用或规模持续增长时，RAG 更可运营。",
-    depth: "不能只比较 token 上限。还要比较有效召回、上下文位置偏差、首 token 时延、重复传输成本、权限过滤和更新 SLA。研究显示，相关信息位于长上下文中部时，模型表现可能显著下降，所以“放得下”不等于“用得好”。",
-    ask: "追问客户：语料多大、多久变化一次、是否分权限、答案是否必须给出处？",
-    tag: "架构判断",
-  },
-  {
-    q: "RAG 能消除幻觉吗？",
-    a: "不能。RAG 能提供外部证据并降低无依据生成的概率，但仍会在检索、上下文理解、推理和生成四个环节失败。",
-    depth: "应把“幻觉”拆成可诊断链路：没检到、检错了、证据冲突、模型忽略证据、引用与结论不一致。上线控制应包含拒答阈值、逐句引用、冲突提示、高风险场景人工复核，以及检索与生成分层评估。",
-    ask: "追问客户：错误答案的业务代价是什么？允许拒答吗？哪些场景必须人工确认？",
-    tag: "风险边界",
-  },
-  {
-    q: "做 RAG 一定要向量数据库吗？",
-    a: "不一定。向量检索擅长语义相似，但精确编号、产品代码、日期、人名与强过滤条件常常更适合关键词、结构化查询或混合检索。",
-    depth: "常见稳健方案是 dense + sparse + metadata filter，再对候选结果 rerank。小规模、低并发场景也可以先用已有搜索引擎或数据库扩展，避免为技术名词单独采购。选型重点是过滤正确性、增量更新、隔离、备份和可观测，不只是向量吞吐。",
-    ask: "追问客户：查询更像“找同义内容”还是“查精确事实”？现有搜索与数据库能否复用？",
-    tag: "产品选型",
-  },
-  {
-    q: "为什么系统明明有文档，还是答不到？",
-    a: "先看检索链路，不要先换更大的模型。常见原因是解析丢内容、切块破坏语义、元数据错误、查询与文档语言不一致、Top-K 太小，或重排把正确证据压下去。",
-    depth: "用带标准答案和证据位置的诊断集逐层排查：文档是否入库 → 正确片段是否进入候选集 → 是否进入最终上下文 → 模型是否忠实使用。只有最后一步失败时，升级生成模型才最可能有效。",
-    ask: "追问客户：能否提供 50–100 个真实失败问题及其正确证据？",
-    tag: "故障诊断",
-  },
-  {
-    q: "RAG 和微调怎么选？",
-    a: "知识频繁更新、要给出处，优先 RAG；希望模型稳定遵循风格、格式或专门行为，考虑微调。两者可以组合。",
-    depth: "微调把模式写入参数，更新与追溯成本较高；RAG 在运行时注入证据，便于更新和撤回。不要用微调代替权限控制，也不要期待 RAG 自动学会复杂输出行为。先用提示词 + RAG 建基线，确认剩余误差确实是行为问题后再评估微调。",
-    ask: "追问客户：变化的是“事实知识”还是“回答行为”？多久变一次？",
-    tag: "路线选择",
-  },
-  {
-    q: "不同部门、不同客户的数据权限如何保证？",
-    a: "权限必须在检索前或检索时强制执行，不能只写在提示词里。",
-    depth: "身份应贯穿查询链路；索引保留来源 ACL 或采用物理隔离；检索服务在候选生成前做 tenant / user / group 过滤；缓存键包含权限上下文；日志做脱敏。验收必须包含越权对抗集，并要求越权泄漏率为零。",
-    ask: "追问客户：权限来自哪个主系统？是否有行列级、文档级和租户级隔离要求？",
-    tag: "安全",
-  },
-  {
-    q: "源文档更新后，多久能在回答中生效？",
-    a: "这不是模型 SLA，而是数据新鲜度 SLA。需要把发现、解析、索引、缓存失效和删除传播分别计时。",
-    depth: "建议为不同来源定义更新等级，例如政策分钟级、产品手册小时级、历史档案天级；记录 source_version、indexed_at、effective_at 和 deletion_at。删除与权限撤销往往比新增更关键，必须有可验证的端到端传播时间。",
-    ask: "追问客户：哪类数据最敏感？新增、修改、删除分别要求多快生效？",
-    tag: "时效性",
-  },
-  {
-    q: "如何证明 RAG 的效果，而不是做一个漂亮 Demo？",
-    a: "先冻结真实问题集和业务门槛，再对检索、生成、端到端、性能安全四层分别验收。",
-    depth: "检索看 Recall@K、MRR / nDCG；生成看 faithfulness、答案相关性、引用正确性；端到端看任务完成率与人工接受率；工程看 P95、单问成本、更新 SLA、越权泄漏率。自动评分用于提速，人审用于校准高风险样本。",
-    ask: "追问客户：谁定义正确答案？什么分数能上线？失败样本如何回流？",
-    tag: "评估",
-  },
-  {
-    q: "PDF、扫描件、表格和图片很多，RAG 还能做好吗？",
-    a: "可以，但解析质量会成为上限。必须把版面、表格关系、页码和图文对应关系保留下来。",
-    depth: "纯文本抽取容易把双栏顺序、表头、脚注和跨页表格打乱。建议按文档类型路由解析器，保留页级坐标和原始文件回链；表格同时保留结构化表示与可读摘要；抽样衡量字段完整率和版面恢复率。多模态检索只在图片本身承载信息时引入。",
-    ask: "追问客户：文档类型各占多少？扫描质量如何？正确答案依赖图表还是正文？",
-    tag: "数据工程",
-  },
-  {
-    q: "怎样控制延迟和成本？",
-    a: "先缩短无效链路，再缩小模型。成本通常来自解析与索引、检索 / 重排、输入 token、生成 token 和峰值容量。",
-    depth: "可采用查询分类跳过不必要检索、缓存稳定结果、分级 Top-K、轻量模型做改写与路由、只对高价值候选重排、压缩上下文，并把流式首 token 与总时延分开管理。不要只报每百万 token 价格，应报每个成功回答成本。",
-    ask: "追问客户：并发、P95、峰值系数、平均文档长度和每月成功问答量是多少？",
-    tag: "FinOps",
-  },
-  {
-    q: "开源模型还是商业模型更适合？",
-    a: "没有脱离约束的统一答案。先用同一套语料与评测集比较质量、吞吐、运维、合规、锁定和三年 TCO。",
-    depth: "商业 API 通常更快获得强能力与弹性；自托管更利于深度控制、数据域隔离和稳定大规模负载，但需要容量、升级、安全和 SRE 能力。RAG 把知识层与模型层解耦，有利于做模型可替换性，但提示、分词、上下文长度和工具调用差异仍需适配。",
-    ask: "追问客户：数据能否出域？团队是否具备 GPU / 推理运维能力？负载是否稳定？",
-    tag: "模型格局",
-  },
-  {
-    q: "RAG 系统会不会被文档里的恶意指令攻击？",
-    a: "会。检索到的内容是不可信数据，不能把它当系统指令。RAG 也不能天然防止 prompt injection。",
-    depth: "控制包括来源白名单、入库扫描与签名、把指令与证据分区、最小权限工具调用、输出校验、敏感动作二次确认、异常检索监控和红队测试。对于能执行动作的 Agent，知识检索与工具授权要采用不同信任域。",
-    ask: "追问客户：系统只回答，还是还能发邮件、下单、改配置？知识源是否允许外部写入？",
-    tag: "安全",
-  },
-];
+const layerCount = layers.length;
+const moduleCount = layers.reduce((total, layer) => total + layer.modules.length, 0);
+
 
 const conceptLinks = [
   { concept: "LLM 与上下文窗口", owner: "模型基础层", relation: "前置知识", local: "理解模型的参数化记忆、token 与注意力边界。" },
@@ -223,120 +141,10 @@ const servingFlow = [
   { zh: "生成 / 引用 / 拒答", en: "Generation / Citation / Abstention" },
 ];
 
-const sources = [
-  {
-    level: "A / 教材",
-    title: "Introduction to Information Retrieval — Okapi BM25",
-    note: "稀疏检索的概率排序、词频、逆文档频率与长度归一化基础。",
-    date: "核验：2026-07-17",
-    href: "https://nlp.stanford.edu/IR-book/html/htmledition/okapi-bm25-a-non-binary-model-1.html",
-  },
-  {
-    level: "A / 论文",
-    title: "Dense Passage Retrieval for Open-Domain Question Answering",
-    note: "双编码器稠密检索；特定开放域数据集上 top-20 召回准确率较 BM25 高 9–19 个百分点。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2004.04906",
-  },
-  {
-    level: "A / 论文",
-    title: "Efficient and Robust ANN Search Using HNSW",
-    note: "解释常见向量索引 HNSW 的分层近邻图与近似搜索机制。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/1603.09320",
-  },
-  {
-    level: "A / 综述",
-    title: "Retrieval-Augmented Generation for Large Language Models: A Survey",
-    note: "系统整理 Naive、Advanced、Modular RAG 及检索、增强、生成与评估。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2312.10997",
-  },
-  {
-    level: "A / 论文",
-    title: "From Local to Global: A Graph RAG Approach",
-    note: "用实体图、社区和社区摘要处理跨整个语料的全局归纳问题。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2404.16130",
-  },
-  {
-    level: "A / 论文",
-    title: "How Does Chunking Affect Retrieval-Augmented Code Completion?",
-    note: "2026 控制实验再次说明切块策略需按任务实测，不存在脱离语料的万能参数。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2605.04763",
-  },
-  {
-    level: "A / 论文",
-    title: "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
-    note: "RAG 原始概率模型、潜变量文档、RAG-Sequence / RAG-Token 与端到端训练。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2005.11401",
-  },
-  {
-    level: "A / 论文",
-    title: "Passage Re-ranking with BERT",
-    note: "查询—段落联合重排的经典方法；说明高召回候选之后为何还需要精排。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/1901.04085",
-  },
-  {
-    level: "A / 论文",
-    title: "Leveraging Passage Retrieval with Generative Models for Open Domain QA",
-    note: "Fusion-in-Decoder 说明多段证据如何被独立编码并在生成阶段聚合。",
-    date: "核验：2026-07-17",
-    href: "https://aclanthology.org/2021.eacl-main.74/",
-  },
-  {
-    level: "A / 论文",
-    title: "REPLUG: Retrieval-Augmented Black-Box Language Models",
-    note: "验证冻结黑盒大模型、在模型外部训练和运行检索器的模块化路线。",
-    date: "核验：2026-07-17",
-    href: "https://aclanthology.org/2024.naacl-long.463/",
-  },
-  {
-    level: "A / 论文",
-    title: "Self-RAG: Learning to Retrieve, Generate, and Critique",
-    note: "强调相关证据被检索到后，生成仍需判断、引用与自我校验。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2310.11511",
-  },
-  {
-    level: "A / 论文",
-    title: "Lost in the Middle: How Language Models Use Long Contexts",
-    note: "长上下文并不保证稳定利用；相关信息位置会显著影响表现。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2307.03172",
-  },
-  {
-    level: "B / 厂商实验",
-    title: "Contextual Retrieval",
-    note: "特定实验中，混合检索将 top-20 失败率从 5.7% 降至 2.9%，加重排后为 1.9%；不可直接外推。",
-    date: "核验：2026-07-17",
-    href: "https://www.anthropic.com/engineering/contextual-retrieval",
-  },
-  {
-    level: "A / 论文",
-    title: "RAGAS: Automated Evaluation of Retrieval Augmented Generation",
-    note: "将评估拆到检索上下文、忠实度和回答质量等维度。",
-    date: "核验：2026-07-17",
-    href: "https://arxiv.org/abs/2309.15217",
-  },
-  {
-    level: "S / 标准框架",
-    title: "NIST AI RMF: Generative AI Profile",
-    note: "用 Govern / Map / Measure / Manage 组织生成式 AI 风险治理。",
-    date: "核验：2026-07-17",
-    href: "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
-  },
-  {
-    level: "S / 社区标准",
-    title: "OWASP LLM01:2025 Prompt Injection",
-    note: "明确 RAG 与微调都不能完全消除 prompt injection。",
-    date: "核验：2026-07-17",
-    href: "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
-  },
-];
+const sourceEntries = Object.entries(sourceLedger);
+const evidenceRows = balanceRows(evidenceCards, 4);
+const ragOriginalSource = sourceLedger["rag-original-2020"];
+
 
 export default function Home() {
   return (
@@ -380,7 +188,7 @@ export default function Home() {
           <div className="principleGrid">
             <article><span>01</span><h3>业务目标与边界</h3><p>业务问题、适用边界、非目标与价值假设。</p></article>
             <article><span>02</span><h3>架构判断与选型</h3><p>架构模式、关键变量、选型矩阵与反例。</p></article>
-            <article><span>03</span><h3>证据与验收</h3><p>数据、评测、来源等级与验收门槛。</p></article>
+            <article><span>03</span><h3>证据与验收</h3><p>数据、评测、来源类别与验收门槛。</p></article>
             <article><span>04</span><h3>客户沟通</h3><p>客户问题、短答、深答、追问和风险提示。</p></article>
           </div>
         </div>
@@ -393,9 +201,9 @@ export default function Home() {
             <div className="mapHeading">
               <p className="kicker">KNOWLEDGE MAP</p>
               <h2 id="map-title">知识地图</h2>
-              <div className="mapStats" aria-label="7 层架构，28 个细分模块">
-                <span className="mapStat"><strong>7</strong><span>层架构</span></span>
-                <span className="mapStat"><strong>28</strong><span>个细分模块</span></span>
+              <div className="mapStats" aria-label={`${layerCount} 层架构，${moduleCount} 个细分模块`}>
+                <span className="mapStat"><strong>{layerCount}</strong><span>层架构</span></span>
+                <span className="mapStat"><strong>{moduleCount}</strong><span>个细分模块</span></span>
               </div>
             </div>
             <p>目录按售前对话的自然顺序自上而下；学习时可从底座向上补齐。层与层之间通过相关能力与客户证据交叉链接。</p>
@@ -453,7 +261,7 @@ export default function Home() {
           </div>
           <div className="ragDefinition">
             <p>用可更新、可追溯的外部证据增强模型回答；核心不是“接一个向量库”，而是建立一条可评估、可授权、可运营的知识供应链。</p>
-            <div className="moduleMeta"><span>基础原理 + 工程 + 售前</span><span>跨模块知识串联</span><span>{sources.length} 份核验来源</span></div>
+            <div className="moduleMeta"><span>基础原理 + 工程 + 售前</span><span>跨模块知识串联</span><span>{sourceEntries.length} 份核验来源</span></div>
           </div>
         </div>
       </section>
@@ -509,7 +317,7 @@ export default function Home() {
               <header className="principleDepthIntro">
                 <p className="miniLabel">ORIGINAL PROBABILISTIC VIEW</p>
                 <h4>从概率模型理解 RAG</h4>
-                <p>原始 RAG 把检索到的文档 <strong>z</strong> 视为潜变量（Latent Variable）：系统不先认定某一条文档就是真相，而是让检索器给候选证据分配相关性概率，再让生成器估计“在该证据条件下生成答案”的概率，最后对候选证据做边缘化（Marginalization）。下式先用序列级的 RAG-Sequence 解释这一思想，随后再与 RAG-Token 对照。</p>
+                <p>原始 RAG 把检索到的文档 <strong>z</strong> 视为潜变量（Latent Variable）：模型不预先指定由哪篇文档解释目标输出，而是让检索器给候选证据分配相关性概率，再让生成器估计“在该证据条件下生成答案”的概率，最后对候选证据做边缘化（Marginalization）。下式先用序列级的 RAG-Sequence 解释这一思想，随后再与 RAG-Token 对照。</p>
               </header>
 
               <div className="probabilityModel">
@@ -581,7 +389,7 @@ export default function Home() {
                 <article><span>C</span><h5>增强发生在上下文，不在权重</h5><p>常见企业 RAG 把证据序列化为输入 token，改变本次生成条件；它不会因此把知识永久写入模型参数。</p></article>
               </div>
 
-              <a className="paperAnchor" href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noreferrer">原始模型来源：Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks ↗</a>
+              <a className="paperAnchor" href={ragOriginalSource.href} target="_blank" rel="noreferrer">原始模型来源：Lewis et al., {ragOriginalSource.title} ↗</a>
             </div>
 
             <div className="workedExample">
@@ -701,11 +509,25 @@ export default function Home() {
 
           <div className="subsection" id="evidence">
             <div className="subHead"><span>2.8</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
-            <div className="evidenceGrid">
-              <article className="metricCard"><p className="metric">3</p><h4>开放域问答任务</h4><p>原始 RAG 论文在当时 3 个 open-domain QA 任务达到 SOTA。它证明方法潜力，不等于今天任何企业语料都能复现。</p><a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noreferrer">查看论文 ↗</a></article>
-              <article className="metricCard"><p className="metric">+9–19</p><h4>Top-20 召回准确率百分点</h4><p>DPR 在其开放域问答实验中相对强 BM25 基线的提升。它说明 dense retrieval 的潜力，不表示所有企业语料都应只用向量检索。</p><a href="https://arxiv.org/abs/2004.04906" target="_blank" rel="noreferrer">查看论文 ↗</a></article>
-              <article className="metricCard accent"><p className="metric">5.7% → 1.9%</p><h4>Top-20 检索失败率</h4><p>Anthropic 的特定实验中，contextual dense + BM25 + rerank 达到该结果。应作为“混合检索值得 A/B”的证据，不是采购承诺。</p><a href="https://www.anthropic.com/engineering/contextual-retrieval" target="_blank" rel="noreferrer">查看实验 ↗</a></article>
-              <article className="metricCard"><p className="metric">4</p><h4>分层验收面</h4><p>检索质量、生成忠实度、端到端业务结果、工程与安全。单一“正确率”无法定位系统失败。</p><a href="https://arxiv.org/abs/2309.15217" target="_blank" rel="noreferrer">评估研究 ↗</a></article>
+            <div className="evidenceGrid" data-count={evidenceCards.length} data-odd={evidenceCards.length % 2 === 1 ? "true" : "false"}>
+              {evidenceRows.flatMap((row) =>
+                row.map((card) => {
+                  const source = sourceLedger[card.sourceId as keyof typeof sourceLedger];
+                  return (
+                    <article
+                      className={`metricCard${card.accent ? " accent" : ""}`}
+                      key={card.title}
+                      style={{ "--evidence-span": 12 / row.length } as CSSProperties}
+                    >
+                      <p className="metric">{card.metric}</p>
+                      <h4>{card.title}</h4>
+                      <p className="metricFinding">{card.finding}</p>
+                      <p className="metricBoundary"><strong>适用边界</strong>{card.boundary}</p>
+                      <a href={`#source-${card.sourceId}`}>对应来源 · {source.shortTitle} ↓</a>
+                    </article>
+                  );
+                }),
+              )}
             </div>
           </div>
 
@@ -752,14 +574,38 @@ export default function Home() {
 
           <div className="subsection qaSection" id="qa">
             <div className="subHead"><span>2.11</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-            <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题最后给出售前必须确认的下一问。</p>
+            <p className="qaGuide">现场先给“结论短答”，客户继续追问时再展开“深一层”。每题同时标出具体依据、证据支持范围和售前必须确认的下一问。</p>
             <div className="qaList">
-              {qa.map((item, index) => (
+              {ragQa.map((item, index) => (
                 <details key={item.q} open={index === 0}>
                   <summary><span className="qaNo">Q{String(index + 1).padStart(2, '0')}</span><strong>{item.q}</strong><span className="qaTag">{item.tag}</span><span className="plus">＋</span></summary>
                   <div className="qaAnswer">
                     <div><p className="answerLabel">结论短答</p><p>{item.a}</p></div>
                     <div><p className="answerLabel">深一层</p><p>{item.depth}</p></div>
+                    <div className="qaBasis" aria-label="本题依据">
+                      <div className="qaBasisHead">
+                        <p className="answerLabel">本题依据 / Evidence</p>
+                        <span>{item.basis}</span>
+                      </div>
+                      <div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>
+                        {balanceRows(item.evidence, 3).flatMap((row) =>
+                          row.map((reference) => {
+                            const source = sourceLedger[reference.sourceId as keyof typeof sourceLedger];
+                            return (
+                              <a
+                                href={`#source-${reference.sourceId}`}
+                                key={reference.sourceId}
+                                style={{ "--qa-evidence-span": 12 / row.length } as CSSProperties}
+                              >
+                                <span className="qaEvidenceMeta">{source.grade} · {source.kind}</span>
+                                <strong>{source.shortTitle}</strong>
+                                <small>{reference.supports}</small>
+                              </a>
+                            );
+                          }),
+                        )}
+                      </div>
+                    </div>
                     <div className="ask"><p className="answerLabel">售前下一问</p><p>{item.ask}</p></div>
                   </div>
                 </details>
@@ -768,13 +614,22 @@ export default function Home() {
           </div>
 
           <div className="subsection" id="sources">
-            <div className="subHead"><span>2.12</span><div><p className="kicker">SOURCE LEDGER</p><h3>本模块的来源与证据等级</h3></div></div>
+            <div className="subHead"><span>2.12</span><div><p className="kicker">SOURCE LEDGER</p><h3>本模块的来源与证据类别</h3></div></div>
+            <div className="sourceGuide">
+              <p>问答中的“本题依据”只说明来源具体支撑哪一段结论；点击可回到此处查看完整边界，再打开原文。时延、成本、SLA 与 TCO 等客户相关数值仍须以当期产品资料和客户 PoC 为准。</p>
+              <div className="sourceLegend" aria-label="证据类型说明">
+                <span><strong>A</strong> 论文 / 教材 / 一手研究</span>
+                <span><strong>B</strong> 可复核厂商实验</span>
+                <span><strong>O</strong> 官方出版物 / 框架</span>
+                <span><strong>G</strong> 行业社区指南</span>
+              </div>
+            </div>
             <div className="sourceList">
-              {sources.map((source) => (
-                <a className="sourceItem" href={source.href} target="_blank" rel="noreferrer" key={source.title}>
-                  <span className="sourceLevel">{source.level}</span>
+              {sourceEntries.map(([sourceId, source]) => (
+                <a className="sourceItem" id={`source-${sourceId}`} href={source.href} target="_blank" rel="noreferrer" key={sourceId}>
+                  <span className="sourceLevel">{source.grade} / {source.kind}</span>
                   <span className="sourceTitle"><strong>{source.title}</strong><small>{source.note}</small></span>
-                  <span className="sourceDate">{source.date}<br />打开 ↗</span>
+                  <span className="sourceDate">核验：{source.verifiedAt}<br />打开原文 ↗</span>
                 </a>
               ))}
             </div>
