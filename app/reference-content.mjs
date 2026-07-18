@@ -1,5 +1,7 @@
 import { moduleList } from "./knowledge-map.mjs";
 import { moduleContentRegistry } from "./module-content-registry.mjs";
+import { moduleCurriculumContent } from "./module-curriculum-content.mjs";
+import { moduleLearningContent } from "./module-learning-content.mjs";
 
 /**
  * 全站统一来源台账（Reference Ledger）。
@@ -663,6 +665,18 @@ function contentSourceIds(slug) {
   ];
 }
 
+function learningSourceIds(slug) {
+  const learning = moduleLearningContent[slug];
+  if (!learning) return [];
+  return learning.labs.flatMap((lab) => lab.sourceIds);
+}
+
+function curriculumSourceIds(slug) {
+  const curriculum = moduleCurriculumContent[slug];
+  if (!curriculum) return [];
+  return curriculum.chapters.flatMap((chapter) => chapter.sourceIds);
+}
+
 export const referenceModules = moduleList.map((module) => ({
   id: module.slug,
   zh: module.zh,
@@ -671,6 +685,8 @@ export const referenceModules = moduleList.map((module) => ({
   href: module.href,
   sourceIds: [...new Set([
     ...contentSourceIds(module.slug),
+    ...learningSourceIds(module.slug),
+    ...curriculumSourceIds(module.slug),
     ...(additionalSourceIds[module.slug] ?? []),
   ])],
 }));

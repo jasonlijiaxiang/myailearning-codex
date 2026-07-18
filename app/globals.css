@@ -14,6 +14,7 @@
   --rose: #f08aa2;
   --white: #fffdf7;
   --muted: #5f665f;
+  --font-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun";
 }
 
 * { box-sizing: border-box; }

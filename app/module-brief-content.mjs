@@ -15,24 +15,30 @@ import {
   dataEngineeringBrief,
   llmInferenceBrief,
 } from "./module-briefs-platform.mjs";
+import { moduleQaExpansion } from "./module-qa-expansion.mjs";
+
+const withExpandedQa = (brief) => Object.freeze({
+  ...brief,
+  qa: Object.freeze([...brief.qa, ...moduleQaExpansion[brief.slug]]),
+});
 
 export const moduleBriefs = Object.freeze({
-  [solutionPatternsBrief.slug]: Object.freeze(solutionPatternsBrief),
-  [modelLandscape.slug]: Object.freeze(modelLandscape),
-  [multimodalBrief.slug]: Object.freeze(multimodalBrief),
-  [mcpBrief.slug]: Object.freeze(mcpBrief),
-  [a2aBrief.slug]: Object.freeze(a2aBrief),
-  [evaluationBrief.slug]: Object.freeze(evaluationBrief),
-  [securityBrief.slug]: Object.freeze(securityBrief),
-  [aiGatewayBrief.slug]: Object.freeze(aiGatewayBrief),
-  [aiOpsBrief.slug]: Object.freeze(aiOpsBrief),
-  [llm.slug]: Object.freeze(llm),
-  [fineTuning.slug]: Object.freeze(fineTuning),
-  [llmTraining.slug]: Object.freeze(llmTraining),
-  [llmInferenceBrief.slug]: Object.freeze(llmInferenceBrief),
-  [dataEngineeringBrief.slug]: Object.freeze(dataEngineeringBrief),
-  [aiInfraPlatformBrief.slug]: Object.freeze(aiInfraPlatformBrief),
-  [aiInfraComputeBrief.slug]: Object.freeze(aiInfraComputeBrief),
+  [solutionPatternsBrief.slug]: withExpandedQa(solutionPatternsBrief),
+  [modelLandscape.slug]: withExpandedQa(modelLandscape),
+  [multimodalBrief.slug]: withExpandedQa(multimodalBrief),
+  [mcpBrief.slug]: withExpandedQa(mcpBrief),
+  [a2aBrief.slug]: withExpandedQa(a2aBrief),
+  [evaluationBrief.slug]: withExpandedQa(evaluationBrief),
+  [securityBrief.slug]: withExpandedQa(securityBrief),
+  [aiGatewayBrief.slug]: withExpandedQa(aiGatewayBrief),
+  [aiOpsBrief.slug]: withExpandedQa(aiOpsBrief),
+  [llm.slug]: withExpandedQa(llm),
+  [fineTuning.slug]: withExpandedQa(fineTuning),
+  [llmTraining.slug]: withExpandedQa(llmTraining),
+  [llmInferenceBrief.slug]: withExpandedQa(llmInferenceBrief),
+  [dataEngineeringBrief.slug]: withExpandedQa(dataEngineeringBrief),
+  [aiInfraPlatformBrief.slug]: withExpandedQa(aiInfraPlatformBrief),
+  [aiInfraComputeBrief.slug]: withExpandedQa(aiInfraComputeBrief),
 });
 
 export const moduleBriefSlugs = Object.freeze(Object.keys(moduleBriefs));

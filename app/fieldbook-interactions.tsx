@@ -18,7 +18,7 @@ export type ExplorerModule = {
 
 export type KnowledgeSearchEntry = {
   id: string;
-  type: "客户问答" | "专业术语" | "来源证据";
+  type: "客户问答" | "课程章节" | "实战练习" | "专业术语" | "来源证据";
   title: string;
   subtitle: string;
   href: string;
@@ -106,13 +106,13 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
 
       <div className="moduleExplorerControls">
         <label className="moduleSearch">
-          <span>搜索模块与客户信号</span>
+          <span>搜索模块与知识内容</span>
           <input
             ref={searchRef}
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="例如：知识更新、工具调用、GPU 利用率……"
+            placeholder="例如：知识更新、量化、工具调用、GPU 利用率……"
           />
           <kbd>⌘ K</kbd>
         </label>

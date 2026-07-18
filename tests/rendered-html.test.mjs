@@ -6,6 +6,9 @@ import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs"
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
+import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
+import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
+import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { promptQa } from "../app/prompt-content.mjs";
 import { evidenceCards, ragQa } from "../app/rag-content.mjs";
@@ -84,12 +87,14 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.match(html, /<html lang="zh-CN">/i);
   assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1"\/>/i);
   assert.match(html, /<title>云计算 × AI 平台售前知识库<\/title>/i);
+  assert.match(html, /<meta property="og:image" content="https:\/\/cloud-ai-presales-fieldbook\.lijx\.chatgpt\.site\/social-card\.png"\/>/i);
+  assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/i);
   assert.match(html, /<h2 id="map-title">知识地图<\/h2>/);
   assert.match(html, new RegExp(`aria-label="${layers.length} 层架构，${moduleList.length} 个细分模块"`));
   assert.match(html, /href="\/references"/);
   assert.match(html, /Reference/);
   assert.match(html, /从当前客户问题开始/);
-  assert.match(html, /搜索模块与客户信号/);
+  assert.match(html, /搜索模块与知识内容/);
   assert.match(html, /同一份知识，支持三种阅读深度/);
   assert.match(html, /不要按章节学，按任务走/);
   assert.doesNotMatch(html, /阅读 RAG 模块/);
@@ -508,6 +513,64 @@ test("source freshness rejects impossible, future, and overdue verification date
   assert.equal(sourceFreshness({ ...productSource, verifiedAt: "2026-04-01" }, now).status, "stale");
 });
 
+test("every shared module has a source-backed learning route and practical labs", async () => {
+  const sharedModules = publishedModuleRegistry.filter((module) => module.routeKind === "brief");
+  assert.deepEqual([...moduleLearningSlugs].sort(), sharedModules.map((module) => module.slug).sort());
+  assert.deepEqual([...moduleCurriculumSlugs].sort(), sharedModules.map((module) => module.slug).sort());
+  assert.equal(Object.keys(moduleLearningContent).length, sharedModules.length);
+  assert.equal(Object.keys(moduleCurriculumContent).length, sharedModules.length);
+  assert.deepEqual(Object.keys(moduleQaExpansion).sort(), sharedModules.map((module) => module.slug).sort());
+
+  for (const publishedModuleEntry of sharedModules) {
+    const learning = requireModuleLearning(publishedModuleEntry.slug);
+    const curriculum = requireModuleCurriculum(publishedModuleEntry.slug);
+    const referenceModule = referenceModules.find((candidate) => candidate.id === publishedModuleEntry.slug);
+    assert.ok(referenceModule, `学习路线缺少 Reference 分组：${publishedModuleEntry.slug}`);
+    const moduleSourceIds = new Set(referenceModule.sourceIds);
+
+    assert.ok(learning.outcomes.length > 0, `学习结果不足：${publishedModuleEntry.slug}`);
+    assert.equal(learning.route.length, 3, `共享模块应提供三步学习路线：${publishedModuleEntry.slug}`);
+    assert.ok(learning.labs.length > 0, `实战任务不足：${publishedModuleEntry.slug}`);
+    assert.ok(moduleQaExpansion[publishedModuleEntry.slug].length > 0, `缺少增补客户问答：${publishedModuleEntry.slug}`);
+    assert.ok(curriculum.lead.length >= 20, `课程地图导语不足：${publishedModuleEntry.slug}`);
+    assert.ok(curriculum.chapters.length > 0, `课程地图覆盖不足：${publishedModuleEntry.slug}`);
+
+    for (const chapter of curriculum.chapters) {
+      assert.ok(chapter.title && chapter.en && chapter.explanation && chapter.decision && chapter.boundary, `课程主题不完整：${publishedModuleEntry.slug}`);
+      assert.ok(chapter.explanation.length >= 40, `课程主题解释过浅：${publishedModuleEntry.slug} / ${chapter.title}`);
+      assert.ok(chapter.sourceIds.length > 0, `课程主题缺少依据：${publishedModuleEntry.slug} / ${chapter.title}`);
+      for (const sourceId of chapter.sourceIds) {
+        assert.ok(sourceLedger[sourceId], `课程主题引用未知来源：${publishedModuleEntry.slug} / ${sourceId}`);
+        assert.ok(moduleSourceIds.has(sourceId), `课程主题来源未归入 ${publishedModuleEntry.slug} Reference：${sourceId}`);
+      }
+    }
+
+    for (const outcome of learning.outcomes) assert.ok(outcome.length >= 8, `学习结果过于空泛：${publishedModuleEntry.slug}`);
+    for (const step of learning.route) {
+      assert.ok(step.title && step.learn && step.checkpoint, `学习步骤不完整：${publishedModuleEntry.slug}`);
+    }
+    for (const lab of learning.labs) {
+      assert.ok(lab.title && lab.scenario && lab.deliverable && lab.acceptance, `实战任务不完整：${publishedModuleEntry.slug}`);
+      assert.ok(lab.tasks.length >= 3, `实战任务步骤不足：${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.ok(lab.sourceIds.length > 0, `实战任务缺少依据：${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.equal(new Set(lab.sourceIds).size, lab.sourceIds.length, `实战任务来源重复：${publishedModuleEntry.slug} / ${lab.title}`);
+      for (const sourceId of lab.sourceIds) {
+        assert.ok(sourceLedger[sourceId], `实战任务引用未知来源：${publishedModuleEntry.slug} / ${sourceId}`);
+        assert.ok(moduleSourceIds.has(sourceId), `实战任务来源未归入 ${publishedModuleEntry.slug} Reference：${sourceId}`);
+      }
+    }
+
+    const html = await renderHtml(publishedModuleEntry.path);
+    assert.match(html, /id="study-guide"/);
+    assert.match(html, /id="curriculum"/);
+    assert.match(html, /学完后，你应该能独立完成/);
+    assert.match(html, /三步学习路线/);
+    assert.match(html, /用真实产物证明掌握/);
+    assert.match(html, /课程地图与知识展开/);
+    assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
+  }
+});
+
 test("balances arbitrary card counts without hard-coded even or odd layouts", () => {
   for (let maxColumns = 1; maxColumns <= 6; maxColumns += 1) {
     for (let count = 0; count <= 50; count += 1) {
@@ -592,6 +655,10 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(homepage, /explorerModules/);
   assert.match(homepage, /publishedModuleSlugs\.map/);
   assert.match(homepage, /knowledgeSearchEntries/);
+  assert.match(homepage, /Object\.entries\(moduleCurriculumContent\)/);
+  assert.match(homepage, /Object\.entries\(moduleLearningContent\)/);
+  assert.match(homepage, /type: "课程章节" as const/);
+  assert.match(homepage, /type: "实战练习" as const/);
   assert.match(homepage, /<ModuleExplorer modules=\{explorerModules\} knowledgeEntries=\{knowledgeSearchEntries\}/);
   assert.match(publicationRegistry, /export const publishedModules/);
   assert.match(publicationRegistry, /contentContract/);
@@ -665,13 +732,14 @@ test("source URLs have one code owner and are absent from content and route file
 });
 
 test("project docs require independent routes, one reference page, and publish-after-push", async () => {
-  const [standard, moduleStandard, qualityGates, maintenance, agentRules, layout, packageJson] = await Promise.all([
+  const [standard, moduleStandard, qualityGates, maintenance, agentRules, layout, globalStyles, packageJson] = await Promise.all([
     readFile(new URL("../docs/CONTENT-DESIGN-STANDARD.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/MODULE-BUILD-STANDARD.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/MODULE-QUALITY-GATES.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/CONTENT-MAINTENANCE.md", import.meta.url), "utf8"),
     readFile(new URL("../AGENTS.md", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
@@ -725,6 +793,10 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(agentRules, /新的系统性问题/);
 
   assert.match(layout, /lang="zh-CN"/);
+  assert.doesNotMatch(layout, /Noto_Serif_SC/, "大字符集中文字体不得由 next\/font 注册并在首屏预加载");
+  assert.match(globalStyles, /--font-serif:[^;]*Songti SC[^;]*Noto Serif CJK SC/, "中文标题必须保留可移植的系统字体栈");
+  assert.match(moduleStandard, /大字符集中文字体不得通过 `next\/font`/);
+  assert.match(qualityGates, /响应 `Link` 头不含大字符集中文字体分片/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });

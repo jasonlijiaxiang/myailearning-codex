@@ -5,7 +5,9 @@ import { ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSea
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { layers, moduleList } from "./knowledge-map.mjs";
 import { moduleContentRegistry } from "./module-content-registry.mjs";
+import { moduleCurriculumContent } from "./module-curriculum-content.mjs";
 import { moduleDiscovery } from "./module-discovery.mjs";
+import { moduleLearningContent } from "./module-learning-content.mjs";
 import { publishedModules, publishedModuleSlugs } from "./module-publication.mjs";
 import { referenceModules, sourceLedger } from "./reference-content.mjs";
 import { terminology } from "./terminology.mjs";
@@ -48,6 +50,22 @@ const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
     subtitle: `${moduleNames.get(slug)} · ${item.tag}`,
     href: `/modules/${slug}#qa-${index + 1}`,
     keywords: `${moduleNames.get(slug)} ${item.q} ${item.tag}`,
+  }))),
+  ...Object.entries(moduleCurriculumContent).flatMap(([slug, curriculum]) => curriculum.chapters.map((chapter) => ({
+    id: `curriculum-${slug}-${chapter.en.toLocaleLowerCase("en-US").replace(/[^a-z0-9]+/g, "-")}`,
+    type: "课程章节" as const,
+    title: chapter.title,
+    subtitle: `${moduleNames.get(slug)} · ${chapter.en}`,
+    href: `/modules/${slug}#curriculum`,
+    keywords: `${moduleNames.get(slug)} ${chapter.title} ${chapter.en} ${chapter.explanation} ${chapter.decision} ${chapter.boundary}`,
+  }))),
+  ...Object.entries(moduleLearningContent).flatMap(([slug, learning]) => learning.labs.map((lab, index) => ({
+    id: `lab-${slug}-${index + 1}`,
+    type: "实战练习" as const,
+    title: lab.title,
+    subtitle: `${moduleNames.get(slug)} · 可验收练习`,
+    href: `/modules/${slug}#study-guide`,
+    keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
   }))),
   ...Object.entries(sourceLedger).map(([sourceId, source]) => ({
     id: `source-${sourceId}`,

@@ -36,6 +36,35 @@ type QaItem = {
   evidence: QaEvidence[];
 };
 
+export type ModuleLearningContent = {
+  outcomes: string[];
+  route: Array<{
+    title: string;
+    learn: string;
+    checkpoint: string;
+  }>;
+  labs: Array<{
+    title: string;
+    scenario: string;
+    tasks: string[];
+    deliverable: string;
+    acceptance: string;
+    sourceIds: string[];
+  }>;
+};
+
+export type ModuleCurriculumContent = {
+  lead: string;
+  chapters: Array<{
+    title: string;
+    en: string;
+    explanation: string;
+    decision: string;
+    boundary: string;
+    sourceIds: string[];
+  }>;
+};
+
 export type DeepDiveItem = {
   name: string;
   en?: string;
@@ -189,6 +218,98 @@ export function ModuleDeepDiveBlocks({
           </article>
         );
       })}
+    </div>
+  );
+}
+
+export function ModuleCurriculumAtlas({
+  content,
+  sourceLedger,
+}: {
+  content: ModuleCurriculumContent;
+  sourceLedger: SourceLedger;
+}) {
+  return (
+    <div className="curriculumAtlas">
+      <p className="curriculumAtlasLead">{content.lead}</p>
+      <BalancedGrid className="curriculumChapterGrid" maxColumns={2}>
+        {content.chapters.map((chapter, index) => (
+          <article className="curriculumChapter" key={chapter.title}>
+            <header>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h3>{chapter.title}</h3><p>{chapter.en}</p></div>
+            </header>
+            <p className="curriculumExplanation">{chapter.explanation}</p>
+            <dl>
+              <div><dt>售前判断</dt><dd>{chapter.decision}</dd></div>
+              <div><dt>关键边界</dt><dd>{chapter.boundary}</dd></div>
+            </dl>
+            <DeepDiveSourceLinks sourceIds={chapter.sourceIds} sourceLedger={sourceLedger} />
+          </article>
+        ))}
+      </BalancedGrid>
+    </div>
+  );
+}
+
+export function ModuleLearningStudio({
+  content,
+  sourceLedger,
+}: {
+  content: ModuleLearningContent;
+  sourceLedger: SourceLedger;
+}) {
+  return (
+    <div className="learningStudio">
+      <div className="learningOutcomes" aria-labelledby="learning-outcomes-title">
+        <div className="learningStudioHeading">
+          <p className="miniLabel">LEARNING OUTCOMES</p>
+          <h3 id="learning-outcomes-title">学完后，你应该能独立完成</h3>
+        </div>
+        <ol>
+          {content.outcomes.map((outcome, index) => (
+            <li key={outcome}><span>{String(index + 1).padStart(2, "0")}</span><strong>{outcome}</strong></li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="learningRoute" aria-labelledby="learning-route-title">
+        <div className="learningStudioHeading">
+          <p className="miniLabel">RECOMMENDED ROUTE</p>
+          <h3 id="learning-route-title">三步学习路线</h3>
+          <p>每一步都以“能做出什么判断”作为检查点，而不是以读完多少内容作为完成标准。</p>
+        </div>
+        <ol>
+          {content.route.map((step, index) => (
+            <li key={step.title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h4>{step.title}</h4><p>{step.learn}</p><strong>掌握检查：{step.checkpoint}</strong></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="learningLabs" aria-labelledby="learning-labs-title">
+        <div className="learningStudioHeading">
+          <p className="miniLabel">PRACTICE LABS</p>
+          <h3 id="learning-labs-title">用真实产物证明掌握</h3>
+          <p>练习围绕真实生产问题组织，实验结果可以直接进入方案评审、PoC 或复盘。</p>
+        </div>
+        <BalancedGrid className="learningLabGrid" maxColumns={2}>
+          {content.labs.map((lab, index) => (
+            <article className="learningLab" key={lab.title}>
+              <header><span>LAB {String(index + 1).padStart(2, "0")}</span><h4>{lab.title}</h4></header>
+              <p className="learningLabScenario"><strong>情境</strong>{lab.scenario}</p>
+              <ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
+              <dl>
+                <div><dt>产物</dt><dd>{lab.deliverable}</dd></div>
+                <div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div>
+              </dl>
+              <DeepDiveSourceLinks sourceIds={lab.sourceIds} sourceLedger={sourceLedger} />
+            </article>
+          ))}
+        </BalancedGrid>
+      </div>
     </div>
   );
 }

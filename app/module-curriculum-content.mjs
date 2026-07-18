@@ -1,0 +1,203 @@
+/**
+ * 共享模块的课程地图。
+ *
+ * 它补足“原则卡”和“深挖区”之间的知识跨度：读者可以先看到一门课的
+ * 完整概念版图，再进入机制、决策、实验和问答。内容按网页学习逻辑重组，
+ * 只保存稳定 sourceId，不复制来源元数据或外部材料结构。
+ */
+export const moduleCurriculumContent = Object.freeze({
+  "solution-patterns": {
+    lead: "场景方案不是产品清单，而是从业务结果、能力组合、风险控制到运营证据的一条决策链。",
+    chapters: [
+      { title: "场景轴与技术轴", en: "Scenario × Capability", explanation: "场景轴描述谁在什么触发下要完成什么工作；技术轴描述检索、生成、行动、规则和人工分别承担哪一段。先把两条轴分开，再组合，能避免从某个模型或产品反推需求。", decision: "用业务终态决定能力组合，不用技术热度决定场景。", boundary: "同一能力在不同风险等级场景中可能需要完全不同的审批、证据和回退。", sourceIds: ["anthropic-effective-agents", "nist-genai-profile"] },
+      { title: "通用参考架构", en: "Reference Architecture", explanation: "入口、身份、上下文、模型、工具、数据、护栏、观测和人工控制构成常见骨架，但每一层都必须连接到真实责任、故障和验收。架构图只证明组件关系，不证明业务流程已经闭环。", decision: "只保留能改变质量、风险、成本或可运营性的组件。", boundary: "组件齐全不等于端到端正确，跨层契约和失败补偿仍需单独验证。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "PoC 与基线", en: "PoC & Baseline", explanation: "PoC 应先建立人工或现有系统基线，再选择能推翻方案的代表样本，分别验证任务成功、失败恢复、集成和运营。展示几个漂亮答案只能证明演示路径可走，不能支持生产决策。", decision: "把最大不确定性排在最先验证，而不是先做最容易展示的路径。", boundary: "PoC 样本、流量和环境与生产不同，结论必须写清适用范围和重测触发器。", sourceIds: ["ragas", "nist-genai-profile"] },
+      { title: "典型交互方案", en: "Assist, Search, Analyze", explanation: "客服、企业搜索、会议助手和 ChatBI 都以信息辅助为主，但数据权威性、语义口径、实时性和人工确认差异很大。生成质量之外，还要检查检索覆盖、权限、引用和最终任务完成。", decision: "先判断答案是否影响业务决策，再决定自动化深度和人审位置。", boundary: "聊天界面相似不代表后台责任相同，尤其不能把自然语言流畅度当成数据口径正确。", sourceIds: ["ragas", "nist-zero-trust"] },
+      { title: "内容与行动方案", en: "Create & Act", explanation: "营销生成、AI Coding、数字人与流程 Agent 从‘给建议’走向‘产生资产或改变系统状态’。越接近外部发布、代码合并或业务写入，越需要版本、审批、权限、审计和可逆设计。", decision: "根据后果半径决定模型能建议、起草、提交还是直接执行。", boundary: "模型生成的资产仍需满足版权、品牌、安全、测试和业务责任，自动化不能转移所有者责任。", sourceIds: ["anthropic-effective-agents", "nist-genai-profile"] },
+      { title: "三本账与持续运营", en: "Quality, Risk, TCO", explanation: "模型与云资源只是技术账；数据准备、集成、评估、监控和人工复核构成工程运营账；错误决策、客户流失和补偿构成业务失败账。上线后还要把反馈和变更写回评估资产。", decision: "以每个成功业务结果的全成本比较方案，而不是只比较 Token 单价。", boundary: "早期缺少终态样本时只能报告区间和假设，不能伪造精确 ROI。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+    ],
+  },
+  "model-landscape": {
+    lead: "模型格局学习的目标不是记住一次排名，而是建立面对版本、价格和产品形态持续变化时仍有效的选型方法。",
+    chapters: [
+      { title: "模型、产品与服务形态", en: "Model, Product, Service", explanation: "同一模型名称可能对应 API、托管平台、消费端产品或开放权重制品。上下文、工具、数据处理、区域、配额和支持策略属于产品能力的一部分，不能只比较基础模型。", decision: "先确定采购对象和责任边界，再比较能力。", boundary: "厂商页面中的模型能力不能自动外推到所有地区、账户层级和集成形态。", sourceIds: ["openai-models", "google-models", "anthropic-models"] },
+      { title: "闭源、开放权重与开源", en: "Access Spectrum", explanation: "API 服务提供托管运行与持续更新；开放权重允许本地部署和修改；真正开源还涉及训练代码、数据与许可。开放程度改变可控性、透明度、维护负担和供应链责任。", decision: "把许可、数据边界、运维能力和可审计要求一起纳入选型。", boundary: "可下载不代表可任意商用，也不代表训练过程、数据或安全属性完全透明。", sourceIds: ["nist-genai-profile", "openai-models"] },
+      { title: "能力矩阵与任务切片", en: "Capability Matrix", explanation: "文本、代码、视觉、语音、工具调用、长上下文和推理预算需要按客户任务分别验证。通用榜单把多种任务压成一个分数，容易掩盖关键切片上的失败和拒答差异。", decision: "用客户任务集决定候选和分工，不寻找无条件最强模型。", boundary: "公开基准受数据污染、提示和评分方式影响，只能用于形成验证假设。", sourceIds: ["nist-genai-profile", "openai-models", "google-models"] },
+      { title: "价格带与上下文经济学", en: "Cost Structure", explanation: "输入、输出、缓存、批处理、长上下文、工具循环和失败重试共同决定成本。输出通常更慢更贵；简单请求和复杂请求混用一个模型，会让成本优化和质量保障互相牵制。", decision: "按任务层级报告成功率、延迟和每次成功结果成本。", boundary: "公开单价和上下文上限变化很快，采购时需要按当期产品资料复核。", sourceIds: ["openai-models", "anthropic-models", "google-models"] },
+      { title: "路由、回退与组合", en: "Routing & Fallback", explanation: "规则路由处理明确约束，分类器或模型路由处理复杂度判断，人工或高能力模型承接高风险和低置信请求。回退不仅是换供应商，还要明确允许牺牲的质量、功能和数据边界。", decision: "为每类请求预先定义主路径、保护组、回退和停止条件。", boundary: "动态路由本身会误判，必须独立评估、观测并可快速关闭。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "版本发布与可替换性", en: "Release Discipline", explanation: "模型版本改变会影响输出、拒答、工具 Schema、Token 使用和延迟。可替换性来自统一契约、代表性回归、影子验证和数据可迁移，而不是在配置里保留第二个模型名称。", decision: "把模型升级当作软件与风险策略共同变更。", boundary: "同一家族的新版本也可能出现行为漂移，不能因厂商兼容承诺跳过客户回归。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+    ],
+  },
+  multimodal: {
+    lead: "多模态系统要分别解释感知、表示、对齐、推理与生成，才能判断信息在哪一层丢失。",
+    chapters: [
+      { title: "模态与任务契约", en: "Modality Contract", explanation: "图像、文档、视频和语音并不是一种输入；每种模态都有采样、分辨率、时间、说话人、版式和来源定位要求。理解、检索、生成和实时对话也需要不同输出与验收。", decision: "先定义模态输入和业务输出，再选择模型或管线。", boundary: "支持某种文件格式不等于可靠理解其中所有结构和业务语义。", sourceIds: ["nist-genai-profile", "docling-report"] },
+      { title: "视觉表示：ViT 与 Patch", en: "Vision Transformer", explanation: "ViT 把图像切成 Patch 并映射为序列表示，再用 Transformer 聚合全局关系。它说明视觉信息可以进入通用序列架构，但分辨率、细节和位置仍会影响 Token 数与可见性。", decision: "对小字、密集表格和局部证据单独做分辨率与裁剪验证。", boundary: "视觉编码器的基准表现不能直接代表客户扫描件、语言和版式。", sourceIds: ["vit-2021", "colpali-2025"] },
+      { title: "跨模态对齐：CLIP", en: "Contrastive Alignment", explanation: "CLIP 用对比学习把图像和文本映射到可比较空间，支持开放词汇匹配和检索。对齐空间适合找相似语义，不等于细粒度 OCR、逻辑推理或事实核验。", decision: "用跨模态检索解决候选发现，用专用解析或推理处理精确结构。", boundary: "相似度高只表示表示空间接近，不证明图像内容满足业务条件。", sourceIds: ["clip-2021"] },
+      { title: "原生融合与专用管线", en: "Native vs Pipeline", explanation: "原生模型在统一上下文中处理多模态，适合开放式理解；OCR、ASR、版面、检测和结构化管线提供可控中间产物。生产系统常把两者组合，用管线保留证据，用模型处理模糊语义。", decision: "由可追溯、时延、成本和结构精度决定融合方式。", boundary: "增加模型层不能恢复采集或解析阶段已经丢失的信息。", sourceIds: ["docling-report", "pp-ocr-2020", "colpali-2025"] },
+      { title: "理解侧与生成侧", en: "Understand vs Generate", explanation: "理解侧关注识别、描述、问答、检索和时间定位；生成侧关注图像、视频、语音与 any-to-any 输出。两侧的风险不同：理解错误会误导决策，生成错误还涉及品牌、版权、标识和内容安全。", decision: "把理解准确性和生成可发布性分成两套门禁。", boundary: "视觉质量好不等于事实、版权或品牌合规，生成资产仍需业务审核。", sourceIds: ["nist-genai-profile", "owasp-prompt-injection"] },
+      { title: "实时语音与视频链路", en: "Real-time Loop", explanation: "实时体验由采集、端点检测、识别、推理、合成、网络和打断策略共同决定。平均时延无法解释卡顿、抢话、误唤醒和多轮修复，需要按阶段和任务终态观测。", decision: "用端到端任务完成率和分阶段尾延迟共同验收。", boundary: "模型首包速度不能代表客户端播放、网络和交互策略后的真实体验。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "安全、隐私与证据", en: "Trust & Evidence", explanation: "图片、音频和文档都可能携带敏感信息、不可信指令和难以察觉的操纵内容。生产系统需要来源、页码、区域、时间戳、权限和原始资产版本，才能审核回答和追踪影响。", decision: "让多模态内容成为可审计证据，而不是无来源的上下文块。", boundary: "把文本从图片中识别出来不会自动使其可信，也不能授予工具权限。", sourceIds: ["owasp-prompt-injection", "nist-zero-trust"] },
+    ],
+  },
+  mcp: {
+    lead: "MCP 解决能力如何被发现和调用；生产落地还必须补上身份、授权、网络与业务事务语义。",
+    chapters: [
+      { title: "Host、Client 与 Server", en: "Protocol Roles", explanation: "Host 承载用户体验与安全决策，Client 维护与某个 Server 的协议会话，Server 暴露能力。角色分离允许多个 Server 被组合，也意味着信任、生命周期和错误不能由单一进程假设。", decision: "明确每个角色由谁运行、升级、认证和审计。", boundary: "协议角色不是部署拓扑；同一机器和跨组织网络会产生不同风险。", sourceIds: ["mcp-architecture"] },
+      { title: "Tools、Resources 与 Prompts", en: "Server Primitives", explanation: "Tool 面向可执行动作，Resource 面向可读取上下文，Prompt 面向可复用交互模板。正确分类能让客户端呈现适当控制，但三种原语都不能绕过下游业务权限。", decision: "按副作用和用户意图选择原语，而不是把所有 API 都包装成 Tool。", boundary: "只读 Resource 也可能包含敏感信息，Prompt 也可能引入不可信内容。", sourceIds: ["mcp-architecture", "mcp-security"] },
+      { title: "初始化与能力协商", en: "Lifecycle & Capability", explanation: "Client 与 Server 在初始化阶段协商协议版本和能力，再进入正常请求、通知与关闭。能力协商让实现可演进，但客户端仍需为缺失能力、版本差异和断线准备降级。", decision: "把协议版本与业务能力版本分别管理。", boundary: "完成握手只证明协议兼容，不证明每个 Tool 的业务语义和权限正确。", sourceIds: ["mcp-architecture"] },
+      { title: "传输与部署形态", en: "stdio & Streamable HTTP", explanation: "stdio 常用于本地子进程，边界靠操作系统用户和进程；Streamable HTTP 面向远程共享服务，需要网络身份、会话、重试、负载均衡和边缘治理。传输选择会改变凭据和故障半径。", decision: "先画信任边界，再选择本地或远程传输。", boundary: "本地开发安全假设不能原样复制到远程服务。", sourceIds: ["mcp-architecture", "mcp-authorization"] },
+      { title: "身份、授权与同意", en: "Identity & Authorization", explanation: "客户端身份、最终用户身份和 Server 自身身份可能同时存在。生产调用要明确代表谁、允许做什么、Token 面向哪个资源，以及何时需要用户确认或审批。", decision: "让每次高影响调用可追到主体、授权依据和参数。", boundary: "OAuth 登录成功不等于 Tool 内部业务授权已完成，也不能信任客户端自报角色。", sourceIds: ["mcp-authorization", "nist-zero-trust"] },
+      { title: "生产工程与供应链", en: "Production Operations", explanation: "Schema 版本、超时、幂等、限流、沙箱、日志、撤销、密钥轮换和 Server 来源共同决定可运营性。公共 Server 与高权限插件类似，需要清单、审查、隔离和快速停用。", decision: "把 Server 当作可执行供应链组件管理。", boundary: "发现能力和调用成功不能证明副作用可逆、结果正确或第三方可信。", sourceIds: ["mcp-security", "nist-zero-trust"] },
+    ],
+  },
+  a2a: {
+    lead: "A2A 面向独立 Agent 之间的任务协作，重点是能力发现、长任务状态、消息与产物交付，而不是共享内部思维过程。",
+    chapters: [
+      { title: "A2A 与 MCP 的分工", en: "Agent vs Tool Boundary", explanation: "MCP 让模型或应用调用工具和读取资源；A2A 让独立 Agent 以任务为单位协作。一个 Agent 可以内部使用 MCP，也可以通过 A2A 把目标交给另一个拥有独立策略和生命周期的 Agent。", decision: "按独立责任、状态所有权和组织边界决定使用哪种协议。", boundary: "多 Agent 框架内部调用不一定需要 A2A，跨 Agent 协作也不能代替工具授权。", sourceIds: ["a2a-concepts", "mcp-architecture"] },
+      { title: "Agent Card 与能力发现", en: "Agent Card", explanation: "Agent Card 描述身份、入口、技能和交互能力，帮助客户端发现可委派对象。发现信息应被验证、缓存和版本化，不能仅因公开可访问就被信任。", decision: "把能力声明当作候选信息，再通过组织信任和运行证据决定调用。", boundary: "声明支持某技能不等于对特定客户数据、权限和质量负责。", sourceIds: ["a2a-concepts", "a2a-specification"] },
+      { title: "Task、Message 与 Artifact", en: "Core Objects", explanation: "Message 承载交互内容，Task 承载有状态工作，Artifact 承载可交付结果。把消息和产物分开，能让长任务在多轮输入、等待和多版本结果中保持清楚。", decision: "用 Task 管理生命周期，用 Artifact 管理可消费结果。", boundary: "Artifact 仍需版本、权限、保留和内容安全，不能因协议交付而默认可信。", sourceIds: ["a2a-concepts", "a2a-specification"] },
+      { title: "任务状态机", en: "Task Lifecycle", explanation: "长任务会经历提交、处理中、等待输入、完成、失败或取消。客户端需要处理重复事件、断线恢复、迟到结果和幂等，Server 需要明确终态与可重试边界。", decision: "先定义状态和恢复语义，再选择同步、流式或异步交付。", boundary: "网络重试不能自动等同于业务重试，重复执行可能产生不可逆副作用。", sourceIds: ["a2a-specification", "opentelemetry-semconv"] },
+      { title: "协作拓扑与编排边界", en: "Collaboration Topology", explanation: "中心协调、点对点委派和分层协作适合不同治理强度。内部编排可以共享更多状态，跨组织 A2A 应最小化契约和数据暴露，并允许各方独立演进。", decision: "把稳定外部契约放在组织边界，把高频细粒度协作留在内部。", boundary: "增加 Agent 数量会增加协调、追踪和错误传播，不会自动提升质量。", sourceIds: ["anthropic-effective-agents", "a2a-concepts"] },
+      { title: "身份、产物与审计", en: "Trust & Audit", explanation: "跨 Agent 调用要验证调用主体、目标 Agent、任务权限和 Artifact 访问，并保留任务、消息、事件和外部动作的关联证据。审计关注可观察输入输出和责任，而非要求暴露隐藏思维。", decision: "用任务证据、策略版本和外部动作记录证明边界。", boundary: "不透明内部实现不免除安全和质量责任，但也不应通过索取隐藏思维链伪装审计。", sourceIds: ["a2a-specification", "opentelemetry-semconv"] },
+    ],
+  },
+  evaluation: {
+    lead: "评估不是给模型一个总分，而是建立能支持选型、发布、诊断和持续运营的量尺系统。",
+    chapters: [
+      { title: "为什么生成式 AI 难评", en: "Non-determinism", explanation: "同一输入可能产生多个合理答案，输出质量还受上下文、采样、工具和外部状态影响。传统精确匹配不足以覆盖语义正确、事实依据、风险和任务完成。", decision: "先定义可接受结果集合和不可接受行为，再选择评分方法。", boundary: "非确定性不意味着无法测试，而是需要分层样本、重复运行和不确定性报告。", sourceIds: ["nist-genai-profile", "ragas"] },
+      { title: "模型、组件与业务三层", en: "Three Evaluation Layers", explanation: "模型层检查通用或任务能力，组件层检查检索、路由、工具和护栏，业务层检查终态、风险和用户价值。三层共同变化时，只看最终分数无法定位责任。", decision: "每个发布门同时保留端到端结果和关键组件诊断。", boundary: "组件指标好不保证业务成功，业务结果下降也不一定由模型造成。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "公开基准与竞技场", en: "Benchmarks & Arenas", explanation: "基准提供可复现任务和历史比较，竞技场提供偏好信号，但二者都受任务分布、数据污染、提示、评审人群和版本时点影响。它们适合筛选候选，不适合替代客户验收。", decision: "用公开结果形成假设，用客户任务集做最终决策。", boundary: "榜单名次差异可能不具业务意义，也不能证明安全、成本和集成表现。", sourceIds: ["nist-genai-profile"] },
+      { title: "规则、Judge 与人工", en: "Scoring Spectrum", explanation: "规则适合结构和确定约束，LLM Judge 扩展语义评分，人工负责高风险、模糊和校准样本。组合方式应先在小样本上测一致性、偏差和失败，再扩大自动评分。", decision: "把评分器当作需要评估和版本化的模型组件。", boundary: "同一个模型生成又自证会产生相关偏差，Judge 也不能独立授权高风险动作。", sourceIds: ["nist-genai-profile", "ragas"] },
+      { title: "黄金集与失败分类", en: "Golden Set", explanation: "黄金集由输入、上下文、期望、不可接受行为、标签、来源和版本组成。按场景、风险、难度和失败机制分层，能避免平均分掩盖关键退化，并让真实失败进入回归。", decision: "少量高质量、可解释样本优先于大量未治理数据。", boundary: "线上反馈不能未经去重、裁决和隐私处理直接成为权威答案。", sourceIds: ["nist-genai-profile", "ragas"] },
+      { title: "场景验收与生产闭环", en: "Release & Monitoring", explanation: "RAG 要分检索与生成，Agent 要检查过程、工具与终态，微调要比较未见切片和基座。上线后用抽样、业务指标和失败回流持续巡检，并把每次变更关联到版本。", decision: "离线门禁决定能否放量，在线证据决定是否继续、回滚或修复。", boundary: "线上自动评分无法覆盖所有风险，低反馈量也不表示系统成功。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+    ],
+  },
+  security: {
+    lead: "AI 安全要覆盖不可信内容、概率输出、可执行工具、敏感数据和快速变化供应链，任何单一护栏都不是完整防线。",
+    chapters: [
+      { title: "攻击面与责任分层", en: "Attack Surface", explanation: "模型层有越狱、对齐和鲁棒性问题；应用层有提示、上下文、工具和输出处理问题；平台层有身份、网络、密钥、数据和供应链问题。分层后才能把控制交给真正能执行它的系统。", decision: "先画资产、主体、信任边界和高影响 Sink，再讨论具体攻击。", boundary: "把所有问题称为‘模型安全’会掩盖应用和平台本可确定控制的责任。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
+      { title: "直接与间接提示注入", en: "Prompt Injection", explanation: "直接注入来自用户，间接注入藏在网页、文档、邮件或工具返回中。根因是模型同时处理指令和不可信数据；更强系统提示能降低部分攻击成功率，但不能建立确定权限边界。", decision: "按 Source—Sink 路径限制不可信内容能触发的高影响动作。", boundary: "RAG、微调和输入检测都不能单独消除提示注入。", sourceIds: ["owasp-prompt-injection", "mcp-security"] },
+      { title: "数据、隐私与向量资产", en: "Data & Privacy", explanation: "原文、Prompt、日志、Embedding、索引、缓存和评估样本都可能包含敏感信息。权限和删除需要穿过所有派生层，日志保留要平衡诊断、用途限制和最小化。", decision: "为每种数据形态定义所有者、用途、访问、地域、保留和删除证明。", boundary: "Embedding 不是自动匿名化，向量相似检索也不能替代访问控制。", sourceIds: ["owasp-vector-weaknesses", "nist-zero-trust"] },
+      { title: "模型与组件供应链", en: "AI Supply Chain", explanation: "模型权重、数据集、容器、插件、MCP Server、评估器和托管 API 都是依赖。需要来源、版本、许可证、漏洞、签名、部署清单、隔离和替代路径，才能在公告或异常发生时定位影响。", decision: "把可执行 AI 组件纳入与代码依赖相同甚至更严格的发布治理。", boundary: "开放权重不等于可信，官方托管也不免除配置、数据和业务使用责任。", sourceIds: ["nist-genai-profile", "mcp-security"] },
+      { title: "Agent、工具与爆炸半径", en: "Agentic Risk", explanation: "Agent 把概率输出连接到外部动作，风险由权限范围、动作可逆性、执行速度和自主循环共同放大。Schema、参数校验、最小权限、沙箱、审批、限额和补偿应位于模型之外。", decision: "按后果把动作分成建议、草稿、可逆执行和高影响审批。", boundary: "模型会调用 API 不等于模型拥有 API 权限，也不证明参数符合业务规则。", sourceIds: ["nist-zero-trust", "mcp-security"] },
+      { title: "纵深防御与红队", en: "Defense in Depth", explanation: "输入处理、上下文隔离、模型策略、输出校验、工具授权、运行沙箱、监控和人工控制形成多层防线。红队应从业务威胁出发，覆盖绕过、组合攻击和控制失败后的残余影响。", decision: "验证控制能限制后果，而不是只统计检测率。", boundary: "Guardrail 服务覆盖有限类别和时点，不能替代应用安全测试与事件响应。", sourceIds: ["nist-genai-profile", "owasp-prompt-injection"] },
+      { title: "治理、事件与合规映射", en: "Governance & Response", explanation: "风险分级、模型与数据清单、责任人、变更记录、事件证据、通知和恢复门共同构成治理。法规和标准应映射到具体数据流和控制，不以一个‘合规’标签替代地区、行业和用途判断。", decision: "让每项治理要求落到可执行控制、证据和责任人。", boundary: "框架和认证不能保证特定应用安全；动态法规必须由法务和安全按部署时点复核。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
+    ],
+  },
+  "ai-gateway": {
+    lead: "AI 网关把多模型调用的接入、身份、策略、成本与观测集中起来，但集中化也带来新的性能和故障责任。",
+    chapters: [
+      { title: "统一接入与协议归一", en: "Unified Access", explanation: "不同模型提供方在请求格式、流式、错误、用量、工具和内容策略上存在差异。网关可以提供稳定应用契约，并保留提供方特性作为显式能力，而不是抹平成最低公共集合。", decision: "统一稳定语义，暴露会改变质量或风险的差异。", boundary: "格式兼容不等于模型行为兼容，切换提供方仍需回归。", sourceIds: ["cloudflare-ai-gateway", "opentelemetry-semconv"] },
+      { title: "身份、虚拟凭据与租户", en: "Identity & Credentials", explanation: "应用不应直接持有所有提供方密钥。网关可用虚拟凭据映射租户、项目、预算和允许模型，同时把最终用户主体传到策略与审计链。", decision: "把人、应用、项目和提供方凭据分层，分别轮换与撤销。", boundary: "虚拟密钥只解决接入治理，不能替代下游数据和业务权限。", sourceIds: ["mcp-authorization", "nist-zero-trust"] },
+      { title: "路由、负载与容灾", en: "Routing & Fallback", explanation: "路由可基于任务、风险、区域、容量、价格或健康；容灾需要定义重试、替代模型、功能降级和停止条件。为了可用而切换模型时，质量和数据边界也可能改变。", decision: "为每条回退路径预先声明允许牺牲什么并持续演练。", boundary: "跨模型重试可能产生重复费用、不同输出或重复工具动作，不能盲目自动化。", sourceIds: ["cloudflare-ai-gateway", "nist-genai-profile"] },
+      { title: "配额、预算与缓存", en: "Traffic & Cost", explanation: "限流保护容量，预算控制归属，精确缓存复用相同请求，语义缓存复用相似结果。缓存收益取决于时效、权限、版本和误命中成本，不能只看命中率。", decision: "用每个成功任务成本优化，并为缓存定义禁止区与失效规则。", boundary: "缓存必须纳入租户、身份、模型、Prompt 和数据版本，敏感或动态结果不应默认复用。", sourceIds: ["cloudflare-ai-gateway", "nist-zero-trust"] },
+      { title: "前后置护栏与审计", en: "Guardrails & Audit", explanation: "前置策略检查输入、身份和允许能力，后置策略检查输出、结构和敏感内容；工具动作还需单独授权与参数校验。审计应关联策略版本、命中原因和最终处置。", decision: "把确定规则放在网关或应用外部控制，把语义检测作为辅助信号。", boundary: "全量缓冲才能检查的策略会改变流式体验，需要明确取舍。", sourceIds: ["nist-genai-profile", "mcp-authorization"] },
+      { title: "端到端可观测", en: "GenAI Telemetry", explanation: "网关知道请求、提供方、延迟、错误、Token、缓存和策略，但不知道最终业务是否成功。需要与应用 Trace、检索、工具和终态关联，才能分辨网关优化是否真正有效。", decision: "让网关 Span 成为任务 Trace 的一段，而不是独立报表。", boundary: "标准字段不自动提供业务成功、风险标签和成本责任，需要组织扩展。", sourceIds: ["opentelemetry-semconv"] },
+      { title: "MCP 网关与工具治理", en: "MCP Gateway", explanation: "MCP 网关可以集中 Server 发现、身份、网络、策略和观测，但 Tool Schema、业务权限、事务、审批与补偿仍属于具体服务和应用。模型流量与工具流量的后果不同。", decision: "共享基础治理，但分别为模型生成和工具副作用设置门禁。", boundary: "接入网关不表示远程 Server 可信，也不使调用自动符合业务规则。", sourceIds: ["mcp-authorization", "nist-zero-trust"] },
+    ],
+  },
+  "ai-ops": {
+    lead: "AI Ops 管理的不只是服务可用性，还包括任务质量、模型与上下文版本、反馈、成本和高风险动作。",
+    chapters: [
+      { title: "任务级 Trace 与 OTel", en: "End-to-end Tracing", explanation: "一次任务可能穿过网关、检索、多个模型、工具和人工等待。共同 Trace 需要记录组件版本、输入类别、Token、错误和业务终态，同时对原文采样、脱敏和保留。", decision: "以任务为根关联所有技术调用和业务结果。", boundary: "Trace 完整不代表应永久保存敏感原文；可观测数据也受用途和访问限制。", sourceIds: ["opentelemetry-semconv", "nist-zero-trust"] },
+      { title: "离线验收与在线巡检", en: "Offline & Online Evaluation", explanation: "离线评估使用可控样本比较版本，在线评估观察真实分布、反馈和业务结果。规则、Judge、人工抽样和用户行为共同形成漏斗，线上失败再进入治理后的回归集。", decision: "离线决定能否放量，在线决定是否继续、回滚或修复。", boundary: "自动 Judge 不能覆盖所有风险，反馈缺失也不表示成功。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "三类漂移与静默退化", en: "Drift", explanation: "输入分布、数据内容和系统行为都可能漂移；外部 API、Prompt、检索和工具变化会让基础设施指标仍绿色但任务成功下降。分层切片和变更时间线比单一阈值更可靠。", decision: "把漂移信号连接到可重现样本和具体责任层。", boundary: "统计变化不一定有业务影响，业务退化也可能没有明显分布漂移。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "版本、灰度与回滚", en: "Release Management", explanation: "模型、Prompt、数据、索引、工具 Schema、路由和护栏都要进入版本注册。离线回放、影子、金丝雀、分组放量和自动回退组成发布链，并保留回滚后的数据兼容。", decision: "任何影响输出或动作的变化都作为可审计发布。", boundary: "回滚配置不能撤销已经发生的外部副作用，需要补偿和客户处置。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "成本、容量与单位经济", en: "Cost & Capacity", explanation: "Token、工具、检索、人工和失败重试共同决定成本。容量需要按交互、长上下文、Agent 和批处理分别建模，把预留余量与低效空闲区分。", decision: "报告每个成功业务终态的成本和分层 SLO。", boundary: "低利用率可能是尾延迟保障，满载也可能降低成功率。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "事件、HITL 与急停", en: "Incident & Stop", explanation: "高风险系统需要可停止模型调用、工具执行、队列消费或外部写入的多级开关。Human-in/on/out-of-the-loop 按风险和时效分工，事故证据进入复盘和新回归。", decision: "在事故前定义谁能停、停什么、如何恢复和如何补偿。", boundary: "停止模型不一定停止已排队动作或第三方副作用，恢复也不等于业务状态正确。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
+    ],
+  },
+  llm: {
+    lead: "大语言模型从序列表示、注意力和 Transformer 块出发，以自回归方式逐 Token 生成；工程边界来自上下文、内存和概率输出。",
+    chapters: [
+      { title: "Token、Embedding 与位置", en: "Input Representation", explanation: "文本先被分词成 Token，再映射为向量；位置编码或位置机制让模型区分顺序。不同语言、数字和代码的 Token 密度不同，会直接改变上下文占用、成本和截断。", decision: "用真实语料测 Token 分布，不按字符或词数粗略承诺容量。", boundary: "Embedding 表示相似性和上下文特征，不是可直接读取的事实数据库。", sourceIds: ["transformer-2017"] },
+      { title: "Q/K/V 与缩放点积注意力", en: "Self-Attention", explanation: "Query 表示当前位置要寻找什么，Key 表示各位置可被匹配的特征，Value 表示被聚合的信息。点积、缩放、Softmax 和加权求和形成上下文相关表示，多头让模型并行学习不同关系。", decision: "用注意力解释信息聚合机制，不把权重当作完整因果解释。", boundary: "注意力高不等于模型在主观思考，也不能单独证明答案来源。", sourceIds: ["transformer-2017"] },
+      { title: "Transformer 块", en: "Block Anatomy", explanation: "注意力、前馈网络、残差连接和归一化反复堆叠。注意力混合上下文，前馈网络逐位置变换表示，残差与归一化帮助深层训练；参数和计算在各部分的分布影响模型能力与成本。", decision: "把架构名词连接到训练稳定、推理计算和内存，而不是只背组件。", boundary: "相同‘Transformer’标签下的层数、宽度、注意力和训练数据差异巨大。", sourceIds: ["transformer-2017"] },
+      { title: "Decoder-only、因果掩码与 MoE", en: "Architecture Variants", explanation: "Decoder-only 用因果掩码保证每个位置只看此前 Token，适合统一生成；MoE 让每个 Token 只激活部分专家，增加参数容量但引入路由、负载均衡和分布式通信。", decision: "从任务和服务特性理解架构取舍，不用参数量独立判断质量。", boundary: "总参数、激活参数和实际推理成本不是同一指标，MoE 也不自动更快。", sourceIds: ["transformer-2017", "nist-genai-profile"] },
+      { title: "自回归生成与采样", en: "Autoregressive Generation", explanation: "模型根据已有上下文预测下一个 Token，再把结果加入上下文重复计算。温度、top-p 和停止条件改变多样性与稳定性；输出越长，串行解码步骤越多。", decision: "把生成参数作为版本化应用配置并用任务集回归。", boundary: "更低温度提高一致性但不保证事实正确，固定随机种子也不消除服务变化。", sourceIds: ["nist-genai-profile"] },
+      { title: "上下文、Prefill 与 KV Cache", en: "Runtime Context", explanation: "输入上下文在 Prefill 阶段并行处理，历史 Key/Value 被缓存以避免每个新 Token 重算全部前缀；Decode 仍逐步生成。长上下文同时增加预填充计算、缓存内存和信息利用难度。", decision: "区分缺知识、缺上下文、上下文组织差和推理容量不足。", boundary: "上下文上限是允许值，不是模型会可靠使用全部信息的保证。", sourceIds: ["vllm-2023", "flashattention-2022"] },
+    ],
+  },
+  "fine-tuning": {
+    lead: "微调适合稳定行为和特定能力塑形；新鲜知识、确定规则和外部动作权限通常应由 RAG、应用代码或身份系统承担。",
+    chapters: [
+      { title: "定制光谱与关键分叉", en: "Customization Ladder", explanation: "Prompt 改变当次指令，RAG 提供外部知识，工具提供确定能力，微调改变权重中的行为倾向。先区分知识、风格、格式、领域技能和安全边界，才能避免用训练解决错误问题。", decision: "只有稳定、重复且难以用更轻手段解决的行为问题才进入微调。", boundary: "微调不能保证记住所有事实，也不能替代实时数据和硬业务规则。", sourceIds: ["nist-genai-profile", "lora-2021"] },
+      { title: "全参、LoRA 与 QLoRA", en: "Adaptation Methods", explanation: "全参更新全部权重，投资和制品管理最重；LoRA 学习低秩增量，便于多 Adapter；QLoRA 在量化基座上训练 Adapter，降低显存但增加数值和部署组合。", decision: "按能力变化、数据量、算力和部署约束选择最小充分方法。", boundary: "参数效率不等于数据要求低或质量自动保持，结果取决于任务与基座。", sourceIds: ["lora-2021", "qlora-2023"] },
+      { title: "数据格式、质量与治理", en: "Training Data", explanation: "高质量示范要覆盖真实输入、期望输出、拒答、边界和困难切片，并与评估集隔离。去重、来源、许可、敏感信息、专家裁决和版本决定可复现与可发布性。", decision: "先修正少量高价值样本，再扩大数量。", boundary: "合成数据会复制教师偏差，训练 Loss 下降也可能来自泄漏或模板记忆。", sourceIds: ["nist-genai-profile", "instructgpt-2022"] },
+      { title: "SFT 与训练监控", en: "Supervised Fine-tuning", explanation: "SFT 通过示范提高按指令和格式工作的倾向。训练要同时观察训练/验证 Loss、关键切片、过拟合、灾难性遗忘和服务资源，而不是只看一条下降曲线。", decision: "用未见任务和原有能力回归决定何时停止。", boundary: "更低验证 Loss 不一定对应更好的业务偏好、安全或推理稳定性。", sourceIds: ["instructgpt-2022", "nist-genai-profile"] },
+      { title: "DPO 与偏好优化", en: "Preference Optimization", explanation: "偏好数据表达两个回答中哪个更符合目标；DPO 等方法直接优化相对偏好，避免完整在线 RL 流程。它适合风格、安全和回答取舍，但依赖偏好定义与标注一致性。", decision: "只有 SFT 已能完成任务但好坏取舍仍不稳定时再引入偏好优化。", boundary: "偏好优化会放大标注者与采样分布的价值判断，不能当作客观真理。", sourceIds: ["dpo-2023", "nist-genai-profile"] },
+      { title: "Adapter 发布与回滚", en: "Serving Lifecycle", explanation: "生产制品由基座、Adapter、合并方式、推理引擎、量化和生成参数共同组成。离线提升还要通过延迟、显存、并发、拒答和安全回归，并在基座升级时重新验证。", decision: "把 Adapter 当作与代码相同的版本化可回滚制品。", boundary: "同一 Adapter 在不同基座或运行时上不保证兼容，也不能静默热替换高风险行为。", sourceIds: ["lora-2021", "vllm-2023"] },
+    ],
+  },
+  "llm-training": {
+    lead: "大模型训练是数据、目标函数、分布式系统和评估共同驱动的长期实验，不是简单地增加参数与 GPU。",
+    chapters: [
+      { title: "训练全景与阶段目标", en: "Training Pipeline", explanation: "预训练学习通用模式，SFT 学习按示范工作，偏好优化学习相对好坏，推理强化使用可验证奖励塑造搜索与解题。每阶段的数据、损失和评估都不同。", decision: "为每个阶段写清新增能力、数据来源和退出门槛。", boundary: "阶段名称相同不代表厂商使用相同数据、算法或效果。", sourceIds: ["instructgpt-2022", "dpo-2023"] },
+      { title: "数据、去重与分词", en: "Data Foundation", explanation: "数据来源、质量、混合比例、去重、污染、过滤和 Tokenizer 决定模型看到什么以及如何表示。重复数据会浪费计算并放大记忆，评估污染会产生虚假能力。", decision: "把数据版本和治理证据作为训练制品的一部分。", boundary: "更多原始数据不等于更多有效学习信号，过滤也可能删除少数语言和专业内容。", sourceIds: ["chinchilla-2022", "nist-genai-profile"] },
+      { title: "预训练、Scaling 与 MoE", en: "Pretraining", explanation: "下一个 Token 预测从大规模语料学习统计结构。Scaling Law 描述特定设定下模型、数据和计算的经验关系；MoE 增加总参数但只激活部分专家，改变通信和负载。", decision: "用计算最优与数据可得性约束规模，不以单一参数量设目标。", boundary: "经验 Scaling 关系不能直接外推到任意数据质量、架构、语言和预算。", sourceIds: ["chinchilla-2022", "nist-genai-profile"] },
+      { title: "SFT、RLHF 与 DPO", en: "Alignment", explanation: "SFT 建立基本指令行为；RLHF 用奖励模型和强化学习优化偏好；DPO 用成对偏好直接优化。选择取决于目标是否可示范、可比较或需要在线探索。", decision: "从最简单能验证目标的方法开始，并保留基座能力回归。", boundary: "对齐提高期望行为概率，不会产生绝对安全或消除事实错误。", sourceIds: ["instructgpt-2022", "dpo-2023"] },
+      { title: "推理训练与可验证奖励", en: "Reasoning Training", explanation: "推理模型通过更长测试时计算、强化学习或蒸馏提高复杂任务表现。可验证奖励适合数学、代码等有明确判定的问题，但开放任务需要更谨慎的量尺与人工判断。", decision: "只有任务价值能覆盖额外训练和推理成本时采用推理强化。", boundary: "更长内部推理不保证正确，也不应把隐藏思维链作为外部审计依据。", sourceIds: ["nist-genai-profile", "dpo-2023"] },
+      { title: "并行、通信与 Checkpoint", en: "Distributed Systems", explanation: "数据、张量、流水线和专家并行在显存、通信、气泡和实现复杂度间取舍。长训练还受数据加载、网络、存储、Checkpoint 和故障恢复影响，应报告有效训练时间而非只看 GPU 小时。", decision: "先用剖析定位计算、通信和 I/O，再调整并行或集群。", boundary: "卡数翻倍不会带来线性加速，短时吞吐也不代表长作业稳定。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "评估与发布门", en: "Training Evidence", explanation: "每个阶段都要比较未见任务、关键切片、安全、能力保留、资源和不确定性。训练结束只是候选制品产生，仍需推理部署、线上影子和持续监控。", decision: "用预先定义的证据门决定继续训练、回退数据或进入发布。", boundary: "公开基准提升不能替代客户任务、服务性能和风险验证。", sourceIds: ["nist-genai-profile"] },
+    ],
+  },
+  "llm-inference": {
+    lead: "推理优化要同时管理单请求阶段、多请求调度、模型质量、硬件内存和生产可靠性。",
+    chapters: [
+      { title: "Prefill、Decode 与服务指标", en: "Request Lifecycle", explanation: "Prefill 并行处理输入，决定首 Token 前的大部分计算；Decode 逐 Token 生成，受内存带宽和串行循环影响。TTFT、TPOT/ITL、总时延和吞吐分别描述不同体验。", decision: "按交互意图选择指标，不用平均响应时间概括所有阶段。", boundary: "客户端首字还会受网关缓冲、网络和渲染影响，不能只看引擎内部。", sourceIds: ["vllm-2023", "opentelemetry-semconv"] },
+      { title: "KV Cache 与显存账", en: "Runtime Memory", explanation: "权重决定固定内存，KV Cache 随层数、头维度、序列和并发增长，激活、工作区和碎片也占空间。模型权重放得下只说明能加载，不代表有足够并发和稳定余量。", decision: "分别计算权重、KV、运行时和安全余量，再谈并发。", boundary: "缓存公式依赖架构与精度，最大上下文不能与最大并发同时兑现。", sourceIds: ["vllm-2023"] },
+      { title: "连续批处理与 PagedAttention", en: "Scheduling & Paging", explanation: "连续批处理让新请求动态加入、完成请求及时退出；PagedAttention 以块管理 KV，减少碎片并支持共享。前缀缓存进一步复用相同开头，但调度仍要平衡吞吐、公平和尾延迟。", decision: "按负载分布调批和缓存，而不是追求单一最大 Tokens/s。", boundary: "更大批次提高吞吐但可能恶化交互时延和高优先级请求。", sourceIds: ["vllm-2023"] },
+      { title: "框架与服务栈", en: "Inference Engines", explanation: "推理引擎负责算子、内存、调度和模型执行；服务层还需 API、路由、认证、发布、观测和多租户；平台层管理设备、容量与恢复。框架选型应基于模型支持和目标硬件。", decision: "区分引擎、模型服务和完整平台的责任。", boundary: "安装 vLLM 或同类引擎不等于具备生产多租户、安全和运营能力。", sourceIds: ["vllm-2023", "kubernetes-dra"] },
+      { title: "量化与质量账", en: "Quantization", explanation: "降低权重或激活精度可减少内存与带宽，并腾出 KV 空间；收益取决于硬件内核、量化格式和工作负载。质量损失可能集中在少数任务、长上下文或异常输入。", decision: "在目标硬件和客户任务集上同时测质量、延迟、吞吐与稳定。", boundary: "更小不等于必然更快，也不能把公开平均精度损失外推到客户关键切片。", sourceIds: ["vllm-2023", "nist-genai-profile"] },
+      { title: "投机解码与算法加速", en: "Speculative Decoding", explanation: "小模型、同模型多头或检索草稿可先提出多个 Token，再由目标模型验证，从而减少串行步骤。接受率、草稿成本和验证并行度决定收益，任务分布变化会改变效果。", decision: "先测接受率和端到端尾延迟，再决定是否增加复杂度。", boundary: "投机解码不改变目标分布的前提依赖正确实现，也不解决 Prefill 或容量全部问题。", sourceIds: ["vllm-2023"] },
+      { title: "P/D 分离与分布式推理", en: "Disaggregated Serving", explanation: "Prefill 和 Decode 资源画像不同，分离可独立扩容并减少干扰，但引入 KV 传输、调度和网络依赖。张量、流水线和专家并行则在单模型跨设备执行时权衡通信与内存。", decision: "只有阶段资源冲突或模型规模确实需要时采用分布式复杂度。", boundary: "网络、KV 传输和调度开销可能抵消收益，小规模负载不一定适合分离。", sourceIds: ["vllm-2023", "flashattention-2022"] },
+      { title: "容量、SLO 与故障恢复", en: "Production Serving", explanation: "短交互、长上下文、Agent 和批处理需要不同容量基线。生产还要验证冷启动、模型加载、节点故障、限流、降级、版本灰度和恢复后业务正确性。", decision: "用分层负载曲线和尾部 SLO 决定资源池与余量。", boundary: "自动重启只恢复进程或容量，不证明请求状态、缓存和业务副作用已正确恢复。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+    ],
+  },
+  "data-engineering": {
+    lead: "AI 数据工程要把原始资料变成有结构、权限、版本、质量和可追溯性的长期数据产品。",
+    chapters: [
+      { title: "数据就绪度与契约", en: "Data Readiness", explanation: "来源所有者、业务语义、格式、更新、权限、地域、保留和质量目标构成数据契约。先确认权威版本和使用目的，才能决定解析、索引、评估或训练。", decision: "把数据问题写成可验证契约，不用‘数据很乱’作为永久状态。", boundary: "同一数据用于 RAG、评估和训练时，许可、时效和泄漏风险并不相同。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
+      { title: "文档解析与结构恢复", en: "Document Parsing", explanation: "抽取不仅是文字识别，还包括版面、阅读顺序、表格、标题、页码、图片和元数据。通用解析器、文档 AI 和视觉语言模型各有优势，应按文档分层组合。", decision: "用客户最难版式验证结构和证据定位，不只测字符准确率。", boundary: "OCR 识别出所有数字也不能证明表格行列和业务含义正确。", sourceIds: ["docling-report", "pp-ocr-2020"] },
+      { title: "连接器与增量同步", en: "Connect & Sync", explanation: "连接器需要认证、分页、增量游标、重试、幂等、限流、删除和权限事件。批量适合低频全量，CDC 或事件适合及时变化，但都需要对账和重建路径。", decision: "由业务新鲜度和源系统能力选择同步模式，并保留全量校验。", boundary: "API 返回成功不代表所有对象、权限和删除都已完整传播。", sourceIds: ["nist-zero-trust", "opentelemetry-semconv"] },
+      { title: "切分、Embedding 与索引", en: "Retrieval Preparation", explanation: "切分决定语义单元和证据边界，Embedding 提供向量表示，索引在召回、延迟、内存和更新之间取舍。元数据、权限和版本过滤应与向量召回共同设计。", decision: "按任务和文档结构调切分与索引，而不是先采购向量库。", boundary: "HNSW 等 ANN 算法解决相似搜索，不负责权威版本、权限或答案正确。", sourceIds: ["hnsw-2016", "nist-zero-trust"] },
+      { title: "质量、血缘与反馈", en: "Data Quality", explanation: "完整性、正确性、时效、唯一性和可追溯需要在管道各阶段测量。回答失败应区分源数据缺失、解析错误、切分、权限、索引和模型问题，把可修复样本回到责任层。", decision: "优先修复产生错误的数据机制，不用 Prompt 补丁长期掩盖。", boundary: "模型或解析器置信度不是事实正确率，阈值必须用客户材料校准。", sourceIds: ["docling-report", "nist-genai-profile"] },
+      { title: "标注、合成与双线运营", en: "Label & Synthesize", explanation: "专家标注建立权威样本，弱监督和合成扩展覆盖。坏案例可进入数据修复线或模型/应用评估线，两条线共享身份和来源，但不能让自动生成结果未经裁决成为真值。", decision: "把专家时间投入高风险、争议和校准样本。", boundary: "合成数据会继承教师和提示偏差，规模扩大前必须抽样审核。", sourceIds: ["nist-genai-profile"] },
+      { title: "权限、删除与生命周期", en: "Governance", explanation: "权限要在查询时结合当前主体执行，删除和撤权要传播到缓存、对象、切块、Embedding、索引和评估资产。血缘与完成证明帮助审计传播窗口和例外。", decision: "为所有派生层定义传播 SLO、重试和验证。", boundary: "删除源文档不表示训练权重自动遗忘，法律保留冲突需要数据所有者裁决。", sourceIds: ["nist-zero-trust", "hnsw-2016"] },
+    ],
+  },
+  "ai-infra-platform": {
+    lead: "AI 基础设施平台把异构设备、调度、共享、环境、恢复和服务化变成可重复运营能力。",
+    chapters: [
+      { title: "平台职责与资源契约", en: "Platform Duties", explanation: "平台负责设备发现、资源声明、队列、环境、数据通路、故障恢复、服务发布和观测。工作负载需要声明设备、拓扑、网络、存储、镜像和时间约束，调度器才能做正确匹配。", decision: "先定义工作负载与平台契约，再选择 Kubernetes、Slurm 或托管形态。", boundary: "安装编排器不能自动形成数据、模型和业务全生命周期平台。", sourceIds: ["kubernetes-dra", "nvidia-gpu-operator"] },
+      { title: "Kubernetes GPU 栈", en: "Device Plugin, DRA, Operator", explanation: "Device Plugin 提供传统设备资源，DRA 增强设备属性、声明与调度协作，GPU Operator 管理驱动、插件和监控等运行栈。三者位于不同层，不是简单互相替代。", decision: "按现有版本、设备需求和迁移能力选择渐进路线。", boundary: "DRA 和 Operator 的功能、成熟度与支持矩阵需按当期集群和厂商文档核验。", sourceIds: ["kubernetes-dra", "nvidia-gpu-operator"] },
+      { title: "队列、Gang 与碎片", en: "Scheduling", explanation: "分布式作业需要多设备同时可用，Gang Scheduling 避免部分启动；配额、优先级、抢占、拓扑和不同请求形状会造成空闲但不可调度。利用率与作业完成时间必须一起看。", decision: "用排队原因和业务优先级优化，不机械追求满载。", boundary: "抢占会浪费进度并增加恢复压力，碎片也不一定能靠时间共享解决。", sourceIds: ["kubernetes-dra", "opentelemetry-semconv"] },
+      { title: "GPU 切分与多租户", en: "MIG, Time-slicing, MPS", explanation: "整卡隔离最强，MIG 提供硬件分区，时间共享提升利用但干扰更大，MPS 等机制改善并发执行。选择要考虑显存、计算、故障、侧信道、可预测性和作业特性。", decision: "按隔离和 SLO 选择共享方式，并对干扰做压力测试。", boundary: "逻辑配额不等于性能隔离，切分也可能增加碎片和调度复杂度。", sourceIds: ["nvidia-gpu-operator", "nist-zero-trust"] },
+      { title: "训练容错与 Checkpoint", en: "Resilience", explanation: "大规模长作业把节点故障变成常态。Checkpoint 周期在写入成本与丢失进度间取舍，自愈还要恢复数据游标、随机状态、优化器和拓扑，并验证结果连续。", decision: "用失败率、恢复时间和有效训练进度共同设置策略。", boundary: "Pod 重启或节点替换不表示训练状态已经正确恢复。", sourceIds: ["opentelemetry-semconv", "nvidia-gpu-operator"] },
+      { title: "利用率、MFU 与 Goodput", en: "Observability", explanation: "设备利用率只说明某时段有工作，MFU 衡量有效模型计算，Goodput 关注满足 SLO 的有效工作。排队、数据等待、通信、Checkpoint、重试和不合格输出都可能让表面忙碌失去价值。", decision: "用作业与业务有效产出解释资源指标。", boundary: "不同工具和框架口径不完全一致，跨团队比较前必须统一定义。", sourceIds: ["opentelemetry-semconv", "nvidia-gpu-operator"] },
+      { title: "推理平台化与发布", en: "Serving Platform", explanation: "推理服务需要模型仓库、引擎、路由、自动扩缩、灰度、配额、观测和回滚。训练调度追求长作业吞吐和恢复，推理调度更关注尾延迟、优先级和弹性，通常需要不同资源池。", decision: "共享底层设备治理，分开设计训练与在线服务 SLO。", boundary: "同一集群混部能提高共享，但批处理作业可能破坏在线容量保障。", sourceIds: ["vllm-2023", "kubernetes-dra"] },
+    ],
+  },
+  "ai-infra-compute": {
+    lead: "AI 算力是一条从模型数值、加速器和内存到互联、存储、电力与软件生态的完整数据通路。",
+    chapters: [
+      { title: "工作负载画像与五层栈", en: "Workload First", explanation: "训练、在线推理、长上下文、批处理和 Agent 对计算、内存、网络和时延要求不同。模型、精度、序列、批量、并行、数据、SLO 和增长构成容量输入。", decision: "先冻结负载假设和验收方法，再比较硬件。", boundary: "用参数量或卡数直接报价会遗漏 KV、激活、并行和运营余量。", sourceIds: ["vllm-2023", "nist-genai-profile"] },
+      { title: "GPU、精度与 Roofline", en: "Compute & Precision", explanation: "Tensor Core 等单元提供低精度矩阵计算，Roofline 用计算峰值和内存带宽判断工作负载偏计算还是带宽受限。精度改变吞吐、内存和质量，软件内核决定能否接近硬件能力。", decision: "用目标算子和框架剖析判断瓶颈，不按峰值 FLOPS 排名。", boundary: "厂商峰值通常基于特定精度和稀疏条件，不能直接代表端到端持续性能。", sourceIds: ["flashattention-2022", "nist-genai-profile"] },
+      { title: "HBM 与内存层级", en: "Memory System", explanation: "权重、激活、优化器和 KV Cache 占用不同；HBM 容量决定能否放下，带宽决定大量搬运的速度，主机内存和本地存储影响加载与溢出。训练和推理需要分别记账。", decision: "同时评估容量、带宽、碎片和安全余量。", boundary: "显存更大解决容量，不必然提供更高带宽、互联或端到端速度。", sourceIds: ["flashattention-2022", "vllm-2023"] },
+      { title: "芯片、软件生态与异构", en: "Accelerator Choice", explanation: "GPU、云自研 ASIC 和其他加速器在硬件、编译器、算子、框架、调试和人才生态上共同竞争。迁移成本来自模型支持、内核、运维和供应，而不只是重编译。", decision: "用代表模型跑通训练/推理、故障和升级全链，再考虑规模采购。", boundary: "一次 benchmark 成功不能证明全部模型、算子和未来版本兼容。", sourceIds: ["nvidia-gpu-operator", "nist-genai-profile"] },
+      { title: "Scale-up 节点内互联", en: "Scale-up", explanation: "当模型或并行状态跨设备时，节点内高带宽互联和交换减少同步成本。拓扑、链路带宽、集合通信和内存访问共同影响可扩展性，设备数增加会放大通信。", decision: "根据并行策略和通信画像选择节点内规模。", boundary: "互联规格高不等于目标框架能持续利用，单节点结果也不能外推多节点。", sourceIds: ["nvidia-gpu-operator", "flashattention-2022"] },
+      { title: "Scale-out 网络与集合通信", en: "Scale-out", explanation: "多节点训练和分布式推理依赖 RDMA、拥塞控制、拓扑和集合通信。IB 与 RoCE 等路线的差别还包括运营经验、可观测、故障域和现有网络，而非只有峰值带宽。", decision: "用 AllReduce/All-to-All 和真实作业长跑验证网络设计。", boundary: "短时链路测试不会暴露拥塞、尾延迟、故障恢复和跨租户干扰。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "存储、数据管线与供电", en: "Feed the Cluster", explanation: "训练读取、Checkpoint、模型分发和推理加载需要对象、并行文件系统、本地缓存和网络协同。电力、散热、机柜密度和交付周期决定物理可部署规模。", decision: "把数据到设备的持续吞吐和恢复路径纳入容量验收。", boundary: "缓存后的稳态速度不能掩盖首次加载、数据更新、故障恢复和峰值供电。", sourceIds: ["nvidia-gpu-operator", "opentelemetry-semconv"] },
+      { title: "算力经济与采购证据", en: "TCO & Supply", explanation: "采购、长期租用、按需云和模型 API 分别承担资本、利用率、弹性和运维风险。TCO 还包括软件适配、网络存储、能耗、闲置、故障、人才和供应周期。", decision: "用每个达标训练或推理结果的全成本和交付风险比较。", boundary: "当前小时价、一次库存和单次 benchmark 都不能代表长期可交付容量。", sourceIds: ["nist-genai-profile", "vllm-2023"] },
+    ],
+  },
+});
+
+export const moduleCurriculumSlugs = Object.freeze(Object.keys(moduleCurriculumContent));
+
+export function requireModuleCurriculum(slug) {
+  const content = moduleCurriculumContent[slug];
+  if (!content) throw new Error(`Missing module curriculum content: ${slug}`);
+  return content;
+}

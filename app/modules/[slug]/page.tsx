@@ -6,8 +6,10 @@ import { notFound } from "next/navigation";
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../knowledge-map.mjs";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { requireModuleBrief } from "../../module-brief-content.mjs";
-import { CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
-import type { DeepDiveBlock } from "../../module-content-components";
+import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleLearningStudio, ModuleQaList } from "../../module-content-components";
+import type { DeepDiveBlock, ModuleCurriculumContent, ModuleLearningContent } from "../../module-content-components";
+import { requireModuleCurriculum } from "../../module-curriculum-content.mjs";
+import { requireModuleLearning } from "../../module-learning-content.mjs";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { getPublishedModule, hasDedicatedModule } from "../../module-publication.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
@@ -145,6 +147,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
   if (!currentModule || hasDedicatedModule(currentModule.canonicalSlug)) notFound();
 
   const brief = requireModuleBrief(currentModule.canonicalSlug) as ModuleBrief;
+  const curriculumContent = requireModuleCurriculum(currentModule.canonicalSlug) as ModuleCurriculumContent;
+  const learningContent = requireModuleLearning(currentModule.canonicalSlug) as ModuleLearningContent;
   const publication = getPublishedModule(currentModule.canonicalSlug) as ModulePublication | undefined;
   if (!publication) notFound();
 
@@ -156,6 +160,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const hasDeepDives = Boolean(brief.deepDives?.length);
   const readingSections: ReadingSection[] = [
     { id: "related-modules", label: "相关模块", eyebrow: "建立连接" },
+    { id: "study-guide", label: "学习与实战", eyebrow: "知道如何掌握" },
+    { id: "curriculum", label: "课程地图", eyebrow: "补齐知识版图" },
     { id: "principle", label: "核心机制", eyebrow: "理解为什么" },
     { id: "decisions", label: "方案选择", eyebrow: "识别客户信号" },
     ...(hasDeepDives ? [{ id: "deep-dive", label: brief.deepDiveTitle ?? "进一步理解", eyebrow: "生产级判断" }] : []),
@@ -224,8 +230,20 @@ export default async function ModulePage({ params }: ModulePageProps) {
         </div>
       </section>
 
+      <section className="subsection moduleBriefSection learningStudioSection" id="study-guide" data-quality-section="study-guide">
+        <div className="subHead"><span>02</span><div><p className="kicker">LEARN, PRACTICE, PROVE</p><h2>学习路线与实战练习</h2></div></div>
+        <p className="sectionLead">先建立心智模型，再完成方案判断，最后用可复核产物证明掌握；每一步都连接到后续章节与真实方案工作。</p>
+        <ModuleLearningStudio content={learningContent} sourceLedger={sourceLedger} />
+      </section>
+
+      <section className="subsection moduleBriefSection curriculumSection" id="curriculum" data-quality-section="curriculum">
+        <div className="subHead"><span>03</span><div><p className="kicker">CURRICULUM ATLAS</p><h2>课程地图与知识展开</h2></div></div>
+        <p className="sectionLead">先看完整知识版图，再进入核心机制、方案选择和生产深挖；每个主题同时说明为什么重要、会改变什么判断，以及不能越过的边界。</p>
+        <ModuleCurriculumAtlas content={curriculumContent} sourceLedger={sourceLedger} />
+      </section>
+
       <section className="subsection moduleBriefSection" id="principle" data-quality-section="principle">
-        <div className="subHead"><span>02</span><div><p className="kicker">MECHANISM, FAILURE &amp; CONTROL</p><h2>核心机制与售前判断</h2></div></div>
+        <div className="subHead"><span>04</span><div><p className="kicker">MECHANISM, FAILURE &amp; CONTROL</p><h2>核心机制与售前判断</h2></div></div>
         <div className="moduleBriefIntro"><p className="miniLabel">机制、失败与控制</p><h3>{brief.principleTitle}</h3></div>
         <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
         <PrincipleView brief={brief} />
@@ -233,7 +251,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       </section>
 
       <section className="subsection moduleBriefSection" id="decisions">
-        <div className="subHead"><span>03</span><div><p className="kicker">DECISION WORKBENCH</p><h2>客户信号与方案选择</h2></div></div>
+        <div className="subHead"><span>05</span><div><p className="kicker">DECISION WORKBENCH</p><h2>客户信号与方案选择</h2></div></div>
         <div className="tableWrap"><table><thead><tr><th>客户问题</th><th>判断信号</th><th>建议路线</th><th>不能越过的边界</th></tr></thead><tbody>
           {brief.decisions.map((item) => <tr key={item.question}><th>{item.question}</th><td>{item.signal}</td><td>{item.recommendation}</td><td>{item.boundary}</td></tr>)}
         </tbody></table></div>
@@ -242,19 +260,19 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       {hasDeepDives ? (
         <section className="subsection moduleBriefSection" id="deep-dive" data-quality-section="deep-dive">
-          <div className="subHead"><span>04</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h2>{brief.deepDiveTitle ?? "进一步理解与工程判断"}</h2></div></div>
+          <div className="subHead"><span>06</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h2>{brief.deepDiveTitle ?? "进一步理解与工程判断"}</h2></div></div>
           {brief.deepDiveLead ? <p className="sectionLead">{brief.deepDiveLead}</p> : null}
           <ModuleDeepDiveBlocks blocks={brief.deepDives ?? []} sourceLedger={sourceLedger} />
         </section>
       ) : null}
 
       <section className="subsection moduleBriefSection" id="evidence" data-quality-section="evidence">
-        <div className="subHead"><span>{hasDeepDives ? "05" : "04"}</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h2>证据与适用边界</h2></div></div>
+        <div className="subHead"><span>{hasDeepDives ? "07" : "06"}</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h2>证据与适用边界</h2></div></div>
         <ModuleEvidenceGrid cards={brief.evidenceCards} sourceLedger={sourceLedger} maxColumns={3} />
       </section>
 
       <section className="subsection moduleBriefSection cloudSection" id="cloud" data-quality-section="cloud">
-        <div className="subHead"><span>{hasDeepDives ? "06" : "05"}</span><div><p className="kicker">CLOUD CONNECTION</p><h2>云服务连接</h2></div></div>
+        <div className="subHead"><span>{hasDeepDives ? "08" : "07"}</span><div><p className="kicker">CLOUD CONNECTION</p><h2>云服务连接</h2></div></div>
         <p className="sectionLead">先识别能力、客户价值和验收方式，再映射到目标云当期可用产品；地域、配额、SLA 与价格需要在采购时点重新核验。</p>
         <div className="tableWrap"><table><thead><tr><th>技术环节</th><th>可连接的云能力</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
           {brief.cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
@@ -262,7 +280,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       </section>
 
       <section className="subsection moduleBriefSection qaSection" id="qa" data-quality-section="qa">
-        <div className="subHead"><span>{hasDeepDives ? "07" : "06"}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>客户高频问题与深度回答</h2></div></div>
+        <div className="subHead"><span>{hasDeepDives ? "09" : "08"}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>客户高频问题与深度回答</h2></div></div>
         <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} />
       </section>
         </div>
