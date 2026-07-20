@@ -782,6 +782,20 @@ export const llmTraining = {
       boundary: "是否优于其他对齐方法取决于数据、模型、任务与评估，不能作为通用默认承诺。",
       sourceId: "dpo-2023",
     },
+    {
+      metric: "格式决定训练输入",
+      title: "对话数据必须匹配基座模板",
+      finding: "文本、对话、提示—补全和偏好数据需要不同结构，角色与特殊 Token 也要匹配目标模型。",
+      boundary: "格式正确只代表训练器能正确读取，不能证明样本质量、许可或目标行为正确。",
+      sourceId: "hf-trl-data-formats",
+    },
+    {
+      metric: "数据 / 训练 / 任务 / 服务",
+      title: "微调发布需要四层证据",
+      finding: "训练曲线要与未见任务、能力保留、安全、显存、时延和成本共同判断。",
+      boundary: "Loss 下降不能单独支持上线，也不能证明相对 Prompt、RAG 或更换模型更划算。",
+      sourceId: "hf-trl-sft-trainer",
+    },
   ],
 };
 

@@ -7,15 +7,20 @@
  */
 export const moduleLearningContent = Object.freeze({
   "solution-patterns": {
-    outcomes: ["把业务目标改写成可验收的一页约定", "从检索、生成、行动与人工控制搭配方案", "设计能证伪方案假设的 PoC", "用质量、风险与全成本共同决定是否上线"],
+    outcomes: ["把业务目标改写成可验收的一页约定", "能拆解客服、企业搜索、内容生成、AI Coding、数字人、ChatBI 与会议助手", "设计能证伪方案假设的 PoC", "用质量、风险与全成本共同决定是否上线"],
     route: [
       { title: "从业务结果开始", learn: "识别用户、触发、输入、期望结果和不可接受结果。", checkpoint: "能写出不依赖模型名称的成功定义。" },
       { title: "把场景拆成能力链", learn: "判断哪些步骤需要检索、生成、工具执行、规则或人工审批。", checkpoint: "能解释每个组件为什么存在，以及失败后由谁接管。" },
+      { title: "选择最接近的场景原型", learn: "比较客服、搜索、内容、Coding、数字人、ChatBI 和会议助手的数据链、动作深度与风险。", checkpoint: "能复用架构骨架，同时说清该场景特有的指标和控制。" },
+      { title: "把架构连线写成运行约定", learn: "为身份、数据、模型、工具、人工和观测补上接口、超时、重试与责任。", checkpoint: "架构图可以支持故障演练和责任讨论，不只是产品摆放。" },
       { title: "PoC 优先验证最大不确定性", learn: "先验证质量、集成、风险和成本中最可能推翻方案的假设。", checkpoint: "能给出包含现有表现、样本、阈值和退出条件的验收表。" },
+      { title: "用生产门完成交接", learn: "核对容量、数据更新、质量巡检、事件处理、回滚、成本和负责人。", checkpoint: "试点结论能转换成上线、补做或停止的明确决定。" },
     ],
     labs: [
       { title: "把模糊需求改写成一页约定", scenario: "客户说“想做一个企业 AI 助手”，但没有定义用户、动作和失败责任。", tasks: ["列出三类目标用户和各自高频任务", "为每个任务写出输入、输出、失败与人工接管", "选出一个最适合先验证的窄场景"], deliverable: "一页场景约定与暂停条件清单", acceptance: "任何评审者都能据此判断 PoC 是否成功，不依赖主观演示效果。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents"] },
       { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "设计一条客服解决漏斗", scenario: "客户希望机器人减少人工量，但当前只统计回复次数。", tasks: ["区分自助、坐席辅助和必须转人工的问题", "画出知识查询、业务查询、工单和转接路径", "定义解决率、放弃率、误答补偿和人工接管指标"], deliverable: "客服任务漏斗、参考架构和验收表", acceptance: "指标能区分真正解决、用户放弃和错误拦截，且高风险问题不会被自动处理。", sourceIds: ["ragas", "nist-genai-profile"] },
+      { title: "为 ChatBI 加上语义与执行护栏", scenario: "管理层希望用自然语言查询经营指标，但多个部门的口径不一致。", tasks: ["选定五个有权威定义的指标", "限制只读数据域、查询成本和允许操作", "设计结果校验、引用、人工确认和错误回退"], deliverable: "语义层边界、查询流程与反例测试集", acceptance: "相同问题不会因自由生成 SQL 得到不同业务口径，模型不能写入或越权读取数据。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
     ],
   },
   "model-landscape": {
@@ -81,13 +86,18 @@ export const moduleLearningContent = Object.freeze({
   security: {
     outcomes: ["建立模型、应用、工具、数据和供应链的分层威胁模型", "理解直接与间接提示注入", "用外部控制限制 Agent 自主性", "把红队、事件响应与治理纳入持续运营"],
     route: [
-      { title: "先画攻击面与资产", learn: "识别不可信输入、高价值数据、可执行工具和外部依赖。", checkpoint: "能说明攻击者跨越哪条信任边界获得什么能力。" },
-      { title: "再设计纵深防御", learn: "组合数据隔离、身份授权、参数校验、审批、沙箱、监控和停止机制。", checkpoint: "任一护栏失效时仍有下一层限制影响。" },
-      { title: "最后验证与运营", learn: "按业务威胁做红队、保留证据、分级响应并持续回归。", checkpoint: "能证明控制有效，而不是只证明安全产品已启用。" },
+      { title: "先用风险目录检查漏项", learn: "从提示注入、数据泄露、投毒、供应链、输出处理、过度授权和向量检索弱点建立初始清单。", checkpoint: "能把通用风险映射到本系统的资产和损失。" },
+      { title: "沿数据流画信任边界", learn: "识别不可信输入、高价值数据、可执行工具、派生资产和外部依赖。", checkpoint: "能说明攻击者跨越哪条边界获得什么能力。" },
+      { title: "拆开身份、授权与凭据", learn: "追踪用户、应用、Agent、工具和下游系统分别代表谁。", checkpoint: "每个高影响动作都有外部授权依据，模型不能自我授权。" },
+      { title: "组合纵深防御并做红队", learn: "组合隔离、参数校验、审批、沙箱、监控和停止机制，以真实威胁测试绕过与残余影响。", checkpoint: "任一护栏失效时仍有下一层限制影响。" },
+      { title: "把治理和法规变成发布证据", learn: "把地区、行业和用途要求连接到清单、控制、负责人和复核日期。", checkpoint: "能说明适用性由谁确认，以及哪些结论必须在上线前刷新。" },
+      { title: "最后演练事件与恢复", learn: "保留证据、停止扩散、撤销凭据、判断影响、补偿并持续回归。", checkpoint: "能证明控制有效，而不是只证明安全产品已启用。" },
     ],
     labs: [
       { title: "为带工具的 RAG Agent 建威胁模型", scenario: "Agent 会读取外部文档、查询内部知识并创建工单。", tasks: ["标出指令、数据与工具调用的 Source—Sink 路径", "枚举直接注入、间接注入、越权和数据外泄", "为高影响动作设置外部授权与人工门"], deliverable: "威胁模型、控制映射和残余风险清单", acceptance: "不可信文档不能仅靠文本指令获得工具权限或改变业务规则。", sourceIds: ["owasp-prompt-injection", "nist-zero-trust", "mcp-security"] },
       { title: "演练一次供应链事件", scenario: "第三方模型、插件或开源依赖出现高危公告。", tasks: ["建立版本、来源、部署和调用方清单", "确定隔离、回滚和替代路径", "设计证据保留与受影响客户判断"], deliverable: "事件响应时间线与恢复门槛", acceptance: "团队能在不依赖原供应商可用的情况下定位影响、停止扩散并恢复服务。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
+      { title: "验证向量库撤权与删除", scenario: "员工权限被撤销，但旧文档片段仍可能存在于索引、缓存与日志中。", tasks: ["追踪原文、切块、Embedding、索引、缓存和评估样本", "定义撤权传播时限和失败重试", "用不同身份验证搜索、生成和审计结果"], deliverable: "派生数据清单、撤权流程与完成证明", acceptance: "承诺时限内所有读取路径均停止返回内容，例外有明确负责人和补救。", sourceIds: ["owasp-vector-weaknesses", "nist-zero-trust"] },
+      { title: "判断地区与用途适用哪些规定", scenario: "一个面向中国和欧盟用户的内容生成服务准备上线。", tasks: ["确认用户地区、内容用途、数据类型和传播渠道", "核对生成内容标识及适用的风险分类要求", "把法律判断、技术控制和复核日期分别记录"], deliverable: "适用性问题表、控制对应表和待法务确认项", acceptance: "页面或产品声明不把动态法规简化成一个“已合规”标签，未确认事项不会被写成事实。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "eu-ai-act"] },
     ],
   },
   "ai-gateway": {
@@ -130,12 +140,17 @@ export const moduleLearningContent = Object.freeze({
     outcomes: ["区分知识更新、行为塑形和新能力学习", "理解全参、LoRA 与 QLoRA 的投资差异", "建立训练数据与评估数据的治理边界", "把 Adapter 作为可发布、可回滚制品"],
     route: [
       { title: "先证明微调是正确手段", learn: "用 Prompt、RAG、工作流和模型切换作为对照。", checkpoint: "能说明问题来自稳定行为而不是缺少最新知识。" },
-      { title: "再设计数据与方法", learn: "选择 SFT、偏好优化、LoRA、QLoRA 或全参，并防止训练测试泄漏。", checkpoint: "每种方法都对应明确目标与资源约束。" },
-      { title: "最后完成发布与回滚", learn: "比较现有做法、切片失败、服务性能、回滚和数据反馈。", checkpoint: "训练 Loss 下降不是唯一发布依据。" },
+      { title: "再选择参数更新方式", learn: "比较全参、LoRA 与 QLoRA 的能力目标、显存、训练与部署组合。", checkpoint: "选择的是满足目标的最轻方法，不是默认使用最流行方法。" },
+      { title: "把数据格式与聊天模板跑通", learn: "区分文本、对话、提示—回答和偏好对，固定角色、特殊 Token、来源和版本。", checkpoint: "训练样本可被检查、复现且与评估样本隔离。" },
+      { title: "用曲线与切片诊断训练", learn: "关联训练/评估 Loss、学习率、吞吐、目标任务和通用能力。", checkpoint: "能区分欠拟合、过拟合、数据异常和评估泄漏。" },
+      { title: "按反馈类型选择 SFT、DPO 或奖励训练", learn: "示范、偏好对和可验证结果需要不同数据与训练方法。", checkpoint: "不会用一个“对齐”名称掩盖反馈信号差异。" },
+      { title: "最后完成评估、发布与回滚", learn: "比较基座和更轻方案，检查切片失败、服务性能、制品绑定和灰度回滚。", checkpoint: "训练 Loss 下降不是唯一发布依据。" },
     ],
     labs: [
-      { title: "做一次微调适用性分诊", scenario: "客户希望模型记住产品知识、遵守品牌语气并输出固定 JSON。", tasks: ["把知识、风格和结构约束分开", "分别设计 RAG、Prompt/Schema 和微调对照", "定义每项方案的成功指标与维护成本"], deliverable: "定制路线决策树与实验计划", acceptance: "不会把所有问题都送进训练，且每条路线可独立验证。", sourceIds: ["nist-genai-profile", "openai-structured-outputs", "lora-2021"] },
+      { title: "判断一个需求是否应该微调", scenario: "客户希望模型记住产品知识、遵守品牌语气并输出固定 JSON。", tasks: ["把知识、风格和结构约束分开", "分别设计 RAG、Prompt/Schema 和微调对照", "定义每项方案的成功指标与维护成本"], deliverable: "定制路线决策树与实验计划", acceptance: "不会把所有问题都送进训练，且每条路线可独立验证。", sourceIds: ["nist-genai-profile", "openai-structured-outputs", "lora-2021"] },
       { title: "设计 LoRA 发布门", scenario: "Adapter 离线评分提高，但团队不清楚是否可进入生产。", tasks: ["建立未见任务和高风险切片", "比较质量、拒答、延迟和显存", "定义 Adapter、基座和推理配置的版本与回滚"], deliverable: "评估报告与部署清单", acceptance: "提升在代表性切片上稳定，且不会因基座升级或合并方式变化失去可复现性。", sourceIds: ["lora-2021", "qlora-2023", "nist-genai-profile"] },
+      { title: "检查一批对话训练数据", scenario: "团队收集了工单对话准备做 SFT，但角色、模板和答案质量不一致。", tasks: ["统一 system/user/assistant 角色和聊天模板", "检查重复、泄漏、敏感信息、拒答案例与来源授权", "划分训练、验证、冻结测试和高风险切片"], deliverable: "数据说明、清洗报告和可直接加载的样本集", acceptance: "样本格式与目标基座一致，测试问题没有进入训练，关键边界有正反例。", sourceIds: ["hf-trl-data-formats", "hf-trl-chat-templates", "nist-genai-profile"] },
+      { title: "诊断一次漂亮但无效的训练曲线", scenario: "训练和验证 Loss 持续下降，但业务评审没有明显提升。", tasks: ["检查模板记忆、样本重复和评估泄漏", "按任务、难度、格式与拒答切片比较基座", "调整数据、学习率或停止点并重跑单变量实验"], deliverable: "训练诊断记录与下一轮可证伪假设", acceptance: "结论能解释曲线与业务结果为何不一致，并有证据决定继续、改数据或停止。", sourceIds: ["hf-trl-sft-trainer", "openai-eval-best-practices"] },
     ],
   },
   "llm-training": {

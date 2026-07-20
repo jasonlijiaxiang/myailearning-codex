@@ -999,6 +999,17 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .solutionCapabilityGrid dt { font-size: 12px; font-weight: 850; }
 .solutionCapabilityGrid dd { margin: 3px 0 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
 .solutionCapabilityGrid article > p { grid-column: 1 / -1; margin: 0; padding-top: 12px; border-top: 1px solid #9fae92; font-size: 14px; font-weight: 750; line-height: 1.55; }
+.primerAtlas { margin-top: 12px; border: 1px solid #a9b59a; background: var(--white); }
+.primerAtlasHeader { padding: 20px 22px; display: flex; justify-content: space-between; gap: 24px; align-items: baseline; border-bottom: 1px solid #c6cebb; background: #eef4e7; }
+.primerAtlasHeader h3 { margin: 0; font-size: 21px; }
+.primerAtlasHeader p { margin: 0; color: var(--muted); font-size: 13px; }
+.primerAtlasTable { overflow-x: auto; }
+.primerAtlasRow { min-width: 760px; display: grid; grid-template-columns: .58fr 1.35fr 1fr .9fr; border-bottom: 1px solid #d7ddcf; }
+.primerAtlasRow:last-child { border-bottom: 0; }
+.primerAtlasRow > * { min-width: 0; padding: 13px 17px; border-right: 1px solid #d7ddcf; font-size: 14px; line-height: 1.5; }
+.primerAtlasRow > *:last-child { border-right: 0; }
+.primerAtlasRow--head { background: #325346; color: var(--white); }
+.primerAtlasRow--head span { font-size: 11px; font-weight: 850; letter-spacing: .05em; }
 
 /* Security: one attack path with defense layers outside the model. */
 .pilotPrimer--security { background: #f8f2ef; }
@@ -1017,6 +1028,13 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .securityDefenseStack h3 { margin: 0; font-size: 17px; }
 .securityDefenseStack article > p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
 .securityDefenseStack article > strong { grid-column: 2 / -1; padding-top: 10px; border-top: 1px solid #ced8cb; font-size: 14px; line-height: 1.55; }
+.securityRiskAtlas { margin-top: 12px; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); border: 1px solid #9c7d73; }
+.securityRiskAtlas article { min-width: 0; padding: 19px; border-right: 1px solid #c8b9b2; background: var(--white); }
+.securityRiskAtlas article:last-child { border-right: 0; }
+.securityRiskAtlas article > span { color: #8b574a; font-family: var(--font-geist-mono),monospace; font-size: 11px; }
+.securityRiskAtlas h3 { margin: 25px 0 8px; font-size: 18px; }
+.securityRiskAtlas p { min-height: 68px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.securityRiskAtlas strong { display: block; margin-top: 14px; padding-top: 12px; border-top: 1px solid #ddd1cc; font-size: 13px; line-height: 1.55; }
 
 /* Fine-tuning: method triage before a versioned release lifecycle. */
 .pilotPrimer--tuning { background: #f5f1f8; }
@@ -1038,6 +1056,21 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .tuningLifecycle li > span { color: #c9b5e6; font-family: var(--font-geist-mono),monospace; font-size: 11px; }
 .tuningLifecycle h3 { margin: 28px 0 9px; font-size: 16px; line-height: 1.3; }
 .tuningLifecycle p { margin: 0; color: rgba(255,255,255,.68); font-size: 14px; line-height: 1.55; }
+.tuningEvidenceBoard { margin-top: 12px; padding: 22px; border: 1px solid #b4a9bf; background: var(--white); }
+.tuningEvidenceBoard > div:first-child { display: flex; align-items: baseline; gap: 16px; }
+.tuningEvidenceBoard > div:first-child h3 { margin: 0; font-size: 21px; }
+.tuningMethodMatrix { margin-top: 18px; overflow-x: auto; border: 1px solid #c7bdcf; }
+.tuningMethodRow { min-width: 760px; display: grid; grid-template-columns: .72fr .95fr 1.35fr 1.1fr; border-bottom: 1px solid #ddd5e3; }
+.tuningMethodRow:last-child { border-bottom: 0; }
+.tuningMethodRow > * { padding: 13px 16px; border-right: 1px solid #ddd5e3; font-size: 14px; line-height: 1.5; }
+.tuningMethodRow > *:last-child { border-right: 0; }
+.tuningMethodRow--head { background: #44384f; color: var(--white); }
+.tuningMethodRow--head span { font-size: 11px; font-weight: 850; letter-spacing: .05em; }
+.tuningEvidenceChecks { margin-top: 10px; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }
+.tuningEvidenceChecks article { padding: 17px; border: 1px solid #c7bdcf; background: #f8f4fb; }
+.tuningEvidenceChecks span { color: #755b90; font-family: var(--font-geist-mono),monospace; font-size: 11px; }
+.tuningEvidenceChecks h3 { margin: 18px 0 6px; font-size: 17px; }
+.tuningEvidenceChecks p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
 
 @media (max-width: 1180px) {
   .pilotPrimerHeader { grid-template-columns: 1fr; gap: 15px; }
@@ -1071,7 +1104,11 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
   .securityThreatPath li:nth-child(3)::after { display: none; }
   .securityThreatPath li:nth-child(4) { grid-column: span 2; }
   .securityDefenseStack { grid-template-columns: 1fr; }
+  .securityRiskAtlas { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1px; background: #c8b9b2; }
+  .securityRiskAtlas article { border-right: 0; }
+  .securityRiskAtlas article:last-child { grid-column: 1 / -1; }
   .tuningLifecycle { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .tuningEvidenceChecks { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .tuningLifecycle li:nth-child(3) { border-right: 0; }
   .tuningLifecycle li:nth-child(-n+3) { border-bottom: 1px solid #b3a7bd; }
   .tuningLifecycle li:nth-child(3)::after { display: none; }
@@ -1140,4 +1177,9 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
   .securityDefenseStack article > p,
   .securityDefenseStack article > strong { grid-column: 1 / -1; }
   .tuningMethodGrid article > p { min-height: 0; }
+  .primerAtlasHeader { display: block; }
+  .primerAtlasHeader p { margin-top: 5px; }
+  .securityRiskAtlas,
+  .tuningEvidenceChecks { grid-template-columns: 1fr; }
+  .securityRiskAtlas article:last-child { grid-column: 1; }
 }

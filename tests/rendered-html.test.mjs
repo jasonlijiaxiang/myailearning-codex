@@ -188,19 +188,33 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(solution, /把业务目标变成可以验收的方案/);
   assert.match(solution, /检索证据.*生成内容.*执行任务.*人工负责/s);
   assert.match(solution, /TCO/);
+  assert.match(solution, /七类场景，七套验收重点/);
+  assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
   assert.doesNotMatch(solution, /需求决策契约|三本账|能力组合/);
 
   assert.match(security, /data-knowledge-view="threat-path"/);
   assert.match(security, /沿一条攻击路径看清每道防线/);
   assert.match(security, /不可信内容进入.*进入模型上下文.*应用决定是否执行.*外部系统状态变化/s);
   assert.match(security, /IAM.*ACL.*DLP/s);
+  assert.match(security, /指令.*数据.*模型与组件.*工具与 Agent.*输出与运营/s);
+  assert.match(security, /按部署地判断适用法规/);
   assert.doesNotMatch(security, /四道外部控制门/);
 
   assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
   assert.match(tuning, /先判断该不该训练，再管理完整发布过程/);
   assert.match(tuning, /Prompt \/ Schema.*RAG.*Fine-tuning.*换基础模型/s);
   assert.match(tuning, /SFT.*LoRA.*QLoRA.*DPO/s);
+  assert.match(tuning, /三种参数更新方式/);
+  assert.match(tuning, /数据.*训练.*任务.*服务/s);
   assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
+
+  assert.ok(moduleCurriculumContent["solution-patterns"].chapters.length >= 10, "场景方案必须覆盖主要应用原型与生产验收");
+  assert.ok(moduleCurriculumContent.security.chapters.length >= 9, "安全模块必须覆盖攻击、控制、治理、法规与响应");
+  assert.ok(moduleCurriculumContent["fine-tuning"].chapters.length >= 8, "微调模块必须覆盖数据、训练、对齐、评估与发布");
+  for (const slug of ["solution-patterns", "security", "fine-tuning"]) {
+    assert.ok(moduleLearningContent[slug].route.length >= 5, `${slug} 学习路线不能压缩为通用三步模板`);
+    assert.ok(moduleLearningContent[slug].labs.length >= 4, `${slug} 至少覆盖四个不同决策或工程练习`);
+  }
 });
 
 test("RAG route contains principles, cloud-service opportunities, and evidence-backed answers", async () => {
@@ -612,7 +626,7 @@ test("every shared module has a source-backed learning route and practical labs"
     const moduleSourceIds = new Set(referenceModule.sourceIds);
 
     assert.ok(learning.outcomes.length > 0, `学习结果不足：${publishedModuleEntry.slug}`);
-    assert.equal(learning.route.length, 3, `共享模块应提供三步学习路线：${publishedModuleEntry.slug}`);
+    assert.ok(learning.route.length >= 3 && learning.route.length <= 6, `共享模块应按知识复杂度提供 3–6 步学习路线：${publishedModuleEntry.slug}`);
     assert.ok(learning.labs.length > 0, `实战任务不足：${publishedModuleEntry.slug}`);
     assert.ok(moduleQaExpansion[publishedModuleEntry.slug].length > 0, `缺少增补客户问答：${publishedModuleEntry.slug}`);
     assert.ok(curriculum.lead.length >= 20, `课程地图导语不足：${publishedModuleEntry.slug}`);

@@ -160,6 +160,16 @@ const solutionCapabilityChoices = [
   { verb: "审", title: "人工负责", en: "Review", when: "错误高风险、规则模糊或结果不可逆", choice: "审批、复核、人工接管", boundary: "人工环节也要定义时限、证据和责任" },
 ];
 
+const solutionScenarioAtlas = [
+  ["客服", "解决问题或辅助坐席", "解决率 · 转接质量", "错误承诺"],
+  ["企业搜索", "找到有权限的证据", "检索覆盖 · 引用正确", "越权与旧版本"],
+  ["内容生成", "产出可发布资产", "通过审核 · 复用率", "版权与品牌"],
+  ["AI Coding", "缩短可靠交付周期", "通过测试 · 返工率", "不安全变更"],
+  ["数字人", "批量内容或实时服务", "完成率 · 端到端时延", "授权与误导"],
+  ["ChatBI", "按统一口径回答经营问题", "口径正确 · 查询成功", "越权与错口径"],
+  ["会议助手", "记录决定并推进事项", "决定召回 · 责任人正确", "隐私与错误归责"],
+];
+
 export function SolutionPatternPrimer() {
   return (
     <section className="pilotPrimer pilotPrimer--solution" data-knowledge-view="decision-blueprint" aria-labelledby="solution-pattern-primer-title">
@@ -185,6 +195,13 @@ export function SolutionPatternPrimer() {
           ))}
         </div>
       </div>
+      <div className="primerAtlas" aria-label="七类常见场景的目标、指标和隐藏风险">
+        <div className="primerAtlasHeader"><h3>七类场景，七套验收重点</h3><p>复用的是能力积木，不是同一套指标。</p></div>
+        <div className="primerAtlasTable" role="table">
+          <div className="primerAtlasRow primerAtlasRow--head" role="row"><span>场景</span><span>要改变的工作</span><span>主要指标</span><span>容易漏掉</span></div>
+          {solutionScenarioAtlas.map(([scene, outcome, metric, risk]) => <div className="primerAtlasRow" role="row" key={scene}><strong>{scene}</strong><span>{outcome}</span><span>{metric}</span><span>{risk}</span></div>)}
+        </div>
+      </div>
       <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用四步决策把模糊需求缩成一个可验证场景，再选择“找、写、做、审”的必要组合；每增加一项能力，都要同时增加验收方法和负责人。</p><nav aria-label="场景解决方案深入阅读"><a href="#decisions">查看方案选择</a><a href="#study-guide">完成场景练习</a><a href="#cloud">对应云服务</a></nav></footer>
     </section>
   );
@@ -203,6 +220,14 @@ const securityDefenseLayers = [
   { no: "B", title: "上下文与模型", en: "CONTEXT & MODEL", detail: "指令与数据分隔、最小上下文、输出约束和模型安全测试。", proves: "攻击即使进入上下文，也只能影响受限建议" },
   { no: "C", title: "身份与行动", en: "IDENTITY & ACTION", detail: "短期身份、最小权限、Schema 校验、策略引擎、审批和沙箱。", proves: "模型不能自行扩大权限或绕过业务规则" },
   { no: "D", title: "监控与恢复", en: "MONITOR & RECOVER", detail: "完整 Trace、异常检测、凭据撤销、补偿、隔离和事件响应。", proves: "风险发生后能确认影响、停止扩散并恢复" },
+];
+
+const securityRiskAtlas = [
+  ["指令", "直接/间接提示注入、越狱", "不可信内容能否改变高优先级规则"],
+  ["数据", "泄露、投毒、错误权限传播", "原文到向量、缓存、日志的完整去向"],
+  ["模型与组件", "权重、数据集、插件和依赖供应链", "来源、版本、签名、漏洞与替代路径"],
+  ["工具与 Agent", "过度授权、参数操纵、循环执行", "身份、授权、凭据和动作后果是否分离"],
+  ["输出与运营", "不安全输出处理、静默退化、事故扩散", "校验、停止、证据、补偿和恢复"],
 ];
 
 export function SecurityThreatPrimer() {
@@ -225,6 +250,9 @@ export function SecurityThreatPrimer() {
           ))}
         </div>
       </div>
+      <div className="securityRiskAtlas" aria-label="AI 系统五类风险面">
+        {securityRiskAtlas.map(([surface, risk, question], index) => <article key={surface}><span>{String(index + 1).padStart(2, "0")}</span><h3>{surface}</h3><p>{risk}</p><strong>检查：{question}</strong></article>)}
+      </div>
       <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先选一条最危险的 Source → Sink 路径，逐步说明内容从哪里来、会影响什么、谁负责授权、怎样留下证据；不要用一个 Guardrail 产品代替完整威胁模型。</p><nav aria-label="AI 安全深入阅读"><a href="#principle">查看分层威胁</a><a href="#deep-dive">查看事件处理</a><a href="#cloud">对应安全服务</a></nav></footer>
     </section>
   );
@@ -244,6 +272,12 @@ const tuningLifecycle = [
   ["04", "训练 Adapter", "从 SFT、LoRA 或 QLoRA 小步试验"],
   ["05", "比较与回归", "同时检查目标提升、通用能力和安全"],
   ["06", "灰度与回滚", "绑定基座、Adapter、模板和运行版本"],
+];
+
+const tuningMethodMatrix = [
+  ["全参微调", "全部权重", "能力变化大、数据与算力充分", "训练、存储与回归最重"],
+  ["LoRA", "低秩增量参数", "稳定行为与多个任务版本", "仍要绑定基座与模板"],
+  ["QLoRA", "量化基座上的 LoRA", "显存受限的试验与适配", "数值和部署组合更复杂"],
 ];
 
 export function FineTuningPrimer() {
@@ -268,7 +302,20 @@ export function FineTuningPrimer() {
           ))}
         </ol>
       </div>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用四种方法分诊证明微调确有必要，再把训练数据、冻结评估集、Adapter、基础模型、服务模板和回滚方案当作一个发布单元共同验收。</p><nav aria-label="微调深入阅读"><a href="#decisions">查看方法选择</a><a href="#curriculum">查看训练方法</a><a href="#cloud">查看训练与部署</a></nav></footer>
+      <div className="tuningEvidenceBoard">
+        <div><p className="miniLabel">PARAMETER UPDATE</p><h3>三种参数更新方式</h3></div>
+        <div className="tuningMethodMatrix" role="table">
+          <div className="tuningMethodRow tuningMethodRow--head" role="row"><span>方法</span><span>更新什么</span><span>更适合</span><span>主要代价</span></div>
+          {tuningMethodMatrix.map(([method, update, fit, cost]) => <div className="tuningMethodRow" role="row" key={method}><strong>{method}</strong><span>{update}</span><span>{fit}</span><span>{cost}</span></div>)}
+        </div>
+        <div className="tuningEvidenceChecks" aria-label="微调发布需要的四层证据">
+          <article><span>01</span><h3>数据</h3><p>来源、格式、模板、去重、许可与泄漏</p></article>
+          <article><span>02</span><h3>训练</h3><p>Loss、学习率、稳定性与可复现环境</p></article>
+          <article><span>03</span><h3>任务</h3><p>目标提升、未见切片、通用能力与安全</p></article>
+          <article><span>04</span><h3>服务</h3><p>显存、时延、吞吐、成本、灰度与回滚</p></article>
+        </div>
+      </div>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先比较四种方法，确认微调确有必要，再把训练数据、冻结评估集、Adapter、基础模型、服务模板和回滚方案当作一个发布单元共同验收。</p><nav aria-label="微调深入阅读"><a href="#decisions">查看方法选择</a><a href="#curriculum">查看训练方法</a><a href="#cloud">查看训练与部署</a></nav></footer>
     </section>
   );
 }

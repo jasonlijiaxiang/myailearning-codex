@@ -345,6 +345,20 @@ export const solutionPatternsBrief = {
       boundary: "成本结论依赖客户负载和架构，不能把单一 PoC 账单外推为采购承诺。",
       sourceId: "opentelemetry-semconv",
     },
+    {
+      metric: "权限 + 证据",
+      title: "企业搜索不只是聊天问答",
+      finding: "搜索与问答链要同时保留资料来源、版本和检索时访问控制，才能支持跨部门使用。",
+      boundary: "命中文档和生成引用都不能单独证明答案正确或用户有权读取。",
+      sourceId: "nist-zero-trust",
+    },
+    {
+      metric: "建议 → 动作",
+      title: "场景自动化深度决定控制强度",
+      finding: "从提供信息到修改外部系统状态，身份、审批、审计和恢复应随影响范围增强。",
+      boundary: "加入 Agent 不等于业务结果必然更好，自主性收益需要用现有做法对比证明。",
+      sourceId: "anthropic-effective-agents",
+    },
   ],
 };
 
@@ -2184,6 +2198,20 @@ export const securityBrief = {
       finding: "把检测、身份、策略、DLP、审批和审计放在不同控制点，避免单点失效。",
       boundary: "控制组合需要按场景测试，不能承诺消除所有生成式 AI 风险。",
       sourceId: "nist-genai-profile",
+    },
+    {
+      metric: "10 类常见风险",
+      title: "风险目录帮助威胁建模防止漏项",
+      finding: "提示注入、敏感信息、供应链、投毒、输出处理、过度授权与向量弱点需要跨层检查。",
+      boundary: "目录只提供共同语言，不能替代系统特有的数据流、损失分析和控制测试。",
+      sourceId: "owasp-llm-top-ten",
+    },
+    {
+      metric: "2025-09-01",
+      title: "生成合成内容标识进入实施阶段",
+      finding: "中国相关办法与强制性国家标准已在 2025 年 9 月 1 日实施，内容服务需要完成适用性判断。",
+      boundary: "是否适用及怎样实施取决于产品角色、内容和传播方式，应由法务与安全复核正式文本。",
+      sourceId: "china-ai-content-labeling",
     },
   ],
 };

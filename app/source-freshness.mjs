@@ -2,7 +2,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 const reviewRules = Object.freeze([
   Object.freeze({ pattern: /模型目录|价格|配额|产品规格/, days: 30 }),
-  Object.freeze({ pattern: /产品文档|API 文档|技术文档|SDK 文档|协议文档|模型行为规范|安全指南|安全工程文章|可观测规范/, days: 90 }),
+  Object.freeze({ pattern: /产品文档|API 文档|技术文档|工程文档|SDK 文档|协议文档|模型行为规范|安全指南|安全工程文章|可观测规范|规范性文件|国家标准|法规实施页面/, days: 90 }),
   Object.freeze({ pattern: /论文|教材|研究综述|技术报告|任务特定研究|厂商实验|风险管理框架|架构指南|工程指南|实践指南|开放标准|互联网标准/, days: 180 }),
 ]);
 
