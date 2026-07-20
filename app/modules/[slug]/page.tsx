@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../knowledge-map.mjs";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { requireModuleBrief } from "../../module-brief-content.mjs";
-import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleLearningStudio, ModuleQaList } from "../../module-content-components";
+import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleLearningStudio, ModuleQaList } from "../../module-content-components";
 import type { DeepDiveBlock, ModuleCurriculumContent, ModuleLearningContent } from "../../module-content-components";
 import { requireModuleCurriculum } from "../../module-curriculum-content.mjs";
 import { requireModuleLearning } from "../../module-learning-content.mjs";
@@ -14,6 +14,7 @@ import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type Rea
 import { getPublishedModule, hasDedicatedModule } from "../../module-publication.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { requireTerm } from "../../terminology.mjs";
+import { LlmTheoryPrimer } from "../../module-pilot-views";
 
 type ModulePageProps = { params: Promise<{ slug: string }> };
 
@@ -94,6 +95,8 @@ type Term = { zh: string; en: string };
 type ModulePublication = {
   titleId: string;
   requiredTerms: readonly string[];
+  visualProfile: "dense-reading" | "standard";
+  knowledgeView: "theory-atlas" | null;
 };
 
 export function generateStaticParams() {
@@ -158,6 +161,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const relatedRows = balanceGridRows(relatedModules, 4);
   const terms = publication.requiredTerms.map((termId: string) => requireTerm(termId) as Term);
   const hasDeepDives = Boolean(brief.deepDives?.length);
+  const usesDenseReadingProfile = publication.visualProfile === "dense-reading";
   const readingSections: ReadingSection[] = [
     { id: "related-modules", label: "相关模块", eyebrow: "建立连接" },
     { id: "study-guide", label: "学习与实战", eyebrow: "知道如何掌握" },
@@ -197,7 +201,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   ];
 
   return (
-    <main className="modulePage moduleBriefPage">
+    <main className={`modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}`}>
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">
@@ -209,6 +213,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
           <h1 className="moduleHeroTitle" id={publication.titleId}>{currentModule.zh}<span>{currentModule.en}</span></h1>
           <p className="moduleBriefDefinition">{brief.definition}</p>
           <p className="moduleBriefPosition">{brief.position}</p>
+          {usesDenseReadingProfile ? <ModuleHeroMetrics sectionCount={readingSections.length} questionCount={brief.qa.length} evidenceCount={brief.evidenceCards.length} /> : null}
         </div>
       </header>
 
@@ -219,6 +224,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
           { href: "#qa", label: "准备客户问答" },
         ]} />
         <div className="moduleArticleContent">
+      {publication.knowledgeView === "theory-atlas" ? <LlmTheoryPrimer /> : null}
       <section className="subsection moduleBriefRelated" id="related-modules" data-quality-section="related-modules" aria-labelledby="related-modules-title">
         <div className="subHead"><span>01</span><div><p className="kicker">RELATED MODULES</p><h2 id="related-modules-title">相关模块</h2></div></div>
         <div className="relatedModuleGrid" data-count={relatedModules.length} data-odd={relatedModules.length % 2 === 1 ? "true" : "false"}>

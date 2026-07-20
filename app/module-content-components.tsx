@@ -53,6 +53,24 @@ export type ModuleLearningContent = {
   }>;
 };
 
+export function ModuleHeroMetrics({
+  sectionCount,
+  questionCount,
+  evidenceCount,
+}: {
+  sectionCount: number;
+  questionCount: number;
+  evidenceCount: number;
+}) {
+  return (
+    <dl className="moduleHeroMetrics" aria-label="模块内容概览">
+      <div><dt>阅读章节</dt><dd><strong>{sectionCount}</strong><span>章</span></dd></div>
+      <div><dt>客户问题</dt><dd><strong>{questionCount}</strong><span>题</span></dd></div>
+      <div><dt>证据卡</dt><dd><strong>{evidenceCount}</strong><span>张</span></dd></div>
+    </dl>
+  );
+}
+
 export type ModuleCurriculumContent = {
   lead: string;
   chapters: Array<{

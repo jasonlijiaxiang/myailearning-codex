@@ -125,6 +125,22 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.doesNotMatch(html, /\/(?:Users|home)\//, "生产 HTML 不应包含本机绝对路径");
 });
 
+test("dense-reading modules derive a scannable content overview from the publication registry", async () => {
+  const denseReadingModules = publishedModuleRegistry.filter((module) => module.visualProfile === "dense-reading");
+  assert.ok(denseReadingModules.length >= 3, "高密度阅读试点必须覆盖多个模块类型");
+  assert.equal(new Set(denseReadingModules.map((module) => module.knowledgeView)).size, denseReadingModules.length, "试点模块必须使用不同的知识视图");
+
+  for (const publishedModule of denseReadingModules) {
+    const html = await renderHtml(publishedModule.path);
+    assert.match(html, /class="[^"]*\bmodulePilot\b[^"]*"/, `${publishedModule.slug} 未启用共享高密度阅读壳`);
+    assert.match(html, /<dl class="moduleHeroMetrics" aria-label="模块内容概览">/);
+    assert.match(html, /<dt>阅读章节<\/dt>/);
+    assert.match(html, /<dt>客户问题<\/dt>/);
+    assert.match(html, /<dt>证据卡<\/dt>/);
+    assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
+  }
+});
+
 test("RAG route contains principles, cloud-service opportunities, and evidence-backed answers", async () => {
   const html = await renderHtml("/modules/rag");
   assertValidGridSpans(html, "/modules/rag");

@@ -3,11 +3,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { RagRetrievalLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { evidenceCards, ragDeepDives, ragQa } from "../../rag-content.mjs";
+import { RagArchitecturePrimer } from "../../module-pilot-views";
 
 export const metadata: Metadata = {
   title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
@@ -177,7 +178,7 @@ const ragSystemLens: LensPanel[] = [
 
 export default function RagModulePage() {
   return (
-    <main>
+    <main className="modulePage modulePilot modulePilot--dedicated">
       <ReadingProgress />
       <section className="ragHero" id="rag" aria-labelledby="rag-title">
         <nav className="topbar" aria-label="模块导航">
@@ -198,6 +199,7 @@ export default function RagModulePage() {
           </div>
           <div className="ragDefinition">
             <p>用可更新、可追溯的外部证据增强模型回答；核心不是“接一个向量库”，而是建立一条可评估、可授权、可运营的知识供应链。</p>
+            <ModuleHeroMetrics sectionCount={ragReadingSections.length} questionCount={ragQa.length} evidenceCount={evidenceCards.length} />
           </div>
         </div>
       </section>
@@ -216,6 +218,8 @@ export default function RagModulePage() {
             <h3>一句话定位</h3>
             <p>客户要的不是一个“会聊天的搜索框”，而是一套能在正确权限下找到正确证据、生成可核验回答，并持续知道哪里做错了的系统。</p>
           </div>
+
+          <RagArchitecturePrimer />
 
           <div className="subsection" id="concept-map" data-quality-section="related-modules">
             <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>RAG 在知识地图中的位置与相关模块</h3></div></div>

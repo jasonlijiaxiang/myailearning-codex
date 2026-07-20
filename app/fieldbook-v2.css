@@ -559,3 +559,441 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Dense-reading pilot: RAG, Agent and LLM foundations.
+   The profile is content-led and reusable; no module-specific layout patches. */
+.modulePilot {
+  --pilot-surface: #fbfcfa;
+  --pilot-tint: #edf4f5;
+  --pilot-line: #cbd6d7;
+  --pilot-accent: #90e6dc;
+  background: #eef0ec;
+}
+
+.modulePilot .topbar { height: 68px; }
+.modulePilot .modulePageHero,
+.modulePilot .ragHero {
+  min-height: 0;
+  padding-bottom: 44px;
+  background:
+    linear-gradient(90deg, rgba(144,230,220,.08), transparent 42%),
+    radial-gradient(circle at 88% 14%, rgba(105,191,255,.16), transparent 31%),
+    var(--ink);
+}
+.modulePilot .ragHeader {
+  grid-template-columns: minmax(300px,.82fr) minmax(430px,1.18fr);
+  gap: clamp(54px,7vw,108px);
+  align-items: start;
+  padding-top: 42px;
+}
+.modulePilot .ragHeader .kicker,
+.modulePilot .moduleBriefHeader .eyebrow { margin-bottom: 18px; }
+.modulePilot .ragHeader .moduleHeroTitle {
+  font-size: clamp(54px,5.4vw,74px) !important;
+  line-height: 1;
+  letter-spacing: -.045em;
+}
+.modulePilot .ragHeader .moduleHeroTitle > span {
+  margin-top: 24px;
+  font-size: clamp(15px,1.25vw,18px);
+  line-height: 1.45;
+}
+.modulePilot .ragDefinition > p {
+  max-width: 760px;
+  margin: 0;
+  font-family: var(--font-serif),serif;
+  font-size: clamp(22px,2vw,29px);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.modulePilot .moduleBriefHeader {
+  display: grid;
+  grid-template-columns: minmax(390px,.9fr) minmax(470px,1.1fr);
+  grid-template-areas:
+    "eyebrow eyebrow"
+    "title definition"
+    "title position"
+    "title metrics";
+  column-gap: clamp(58px,8vw,120px);
+  align-items: start;
+  max-width: var(--wide);
+  padding-top: 42px;
+}
+.modulePilot .moduleBriefHeader > .eyebrow { grid-area: eyebrow; }
+.modulePilot .moduleBriefHeader > .moduleHeroTitle { grid-area: title; }
+.modulePilot .moduleBriefHeader > .moduleBriefDefinition { grid-area: definition; }
+.modulePilot .moduleBriefHeader > .moduleBriefPosition { grid-area: position; }
+.modulePilot .moduleBriefHeader > .moduleHeroMetrics { grid-area: metrics; }
+.modulePilot .moduleBriefHeader .moduleHeroTitle {
+  max-width: 650px;
+  font-size: clamp(54px,5.4vw,76px);
+  line-height: 1.05;
+  letter-spacing: -.045em;
+}
+.modulePilot .moduleBriefHeader .moduleHeroTitle > span {
+  margin-top: 18px;
+  color: var(--pilot-accent);
+  font-size: clamp(17px,1.5vw,22px);
+}
+.modulePilot .moduleBriefDefinition {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(22px,2vw,29px);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.modulePilot .moduleBriefPosition {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: rgba(255,255,255,.68);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.moduleHeroMetrics {
+  margin: 28px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  border-top: 1px solid rgba(255,255,255,.24);
+  border-left: 1px solid rgba(255,255,255,.24);
+}
+.moduleHeroMetrics > div {
+  min-width: 0;
+  padding: 14px 16px 13px;
+  border-right: 1px solid rgba(255,255,255,.24);
+  border-bottom: 1px solid rgba(255,255,255,.24);
+}
+.moduleHeroMetrics dt {
+  color: rgba(255,255,255,.58);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+.moduleHeroMetrics dd {
+  margin: 4px 0 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--white);
+}
+.moduleHeroMetrics dd strong {
+  color: var(--pilot-accent);
+  font-family: var(--font-serif),serif;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+}
+.moduleHeroMetrics dd span { font-size: 12px; }
+
+.modulePilot .moduleArticleLayout {
+  max-width: 1540px;
+  grid-template-columns: 248px minmax(0,1fr);
+  gap: 16px;
+  padding: 16px;
+}
+.modulePilot .moduleReadingNav {
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  border-color: var(--pilot-line);
+  box-shadow: 0 8px 24px rgba(20,33,43,.055);
+}
+.modulePilot .readingNavHead { padding: 18px 19px; }
+.modulePilot .moduleReadingNav ol { padding: 7px; }
+.modulePilot .moduleReadingNav li a { padding: 9px 8px; }
+.modulePilot .readingNavModes { padding: 13px 17px 16px; }
+.modulePilot .moduleArticleContent,
+.modulePilot .dedicatedArticleLayout > .section {
+  border-color: var(--pilot-line);
+  background: var(--pilot-surface);
+}
+.modulePilot .dedicatedArticleLayout > .section {
+  grid-template-columns: 58px minmax(0,1fr);
+}
+.modulePilot .dedicatedArticleLayout .sectionNumber {
+  padding: 42px 14px;
+  border-color: var(--pilot-line);
+}
+
+.modulePilot .decisionBanner {
+  padding: 32px 40px;
+  display: grid;
+  grid-template-columns: 155px minmax(0,1fr);
+  column-gap: 32px;
+  align-items: start;
+  border-top: 5px solid var(--pilot-accent);
+  border-bottom: 1px solid var(--pilot-line);
+  background: var(--pilot-tint);
+}
+.modulePilot .decisionBanner .kicker { grid-column: 1; margin: 2px 0 7px; }
+.modulePilot .decisionBanner h3 { grid-column: 1; margin: 0; font-size: 17px; }
+.modulePilot .decisionBanner > p:last-child {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  max-width: 930px;
+  font-size: clamp(23px,2.25vw,32px);
+  line-height: 1.48;
+  letter-spacing: -.015em;
+  text-wrap: pretty;
+}
+
+.modulePilot .subsection {
+  padding-top: 52px;
+  padding-bottom: 52px;
+}
+.modulePilot .subHead {
+  grid-template-columns: 44px minmax(0,1fr);
+  gap: 17px;
+  margin-bottom: 28px;
+}
+.modulePilot .subHead > span { width: 36px; height: 36px; }
+.modulePilot .subHead h2,
+.modulePilot .subHead h3 {
+  max-width: 920px;
+  font-size: clamp(31px,3.6cqi,42px);
+  line-height: 1.18;
+  letter-spacing: -.025em;
+}
+.modulePilot .sectionLead {
+  max-width: 820px;
+  margin: -4px 0 28px 61px;
+  font-size: 17px;
+  line-height: 1.72;
+}
+.modulePilot .moduleBriefIntro,
+.modulePilot .termStrip { margin-left: 61px; }
+.modulePilot .conceptCard { min-height: 0; padding: 20px; }
+.modulePilot .conceptGrid h4 { margin-top: 24px; }
+.modulePilot .relatedModuleGrid a { min-height: 138px; padding: 22px; }
+.modulePilot .learningStudio { gap: 22px; }
+.modulePilot .learningOutcomes,
+.modulePilot .learningRoute { padding: 26px; }
+.modulePilot .learningRoute > ol { margin-top: 22px; }
+.modulePilot .learningRoute > ol > li { padding: 20px; }
+.modulePilot .learningRoute h4 { margin-top: 28px; }
+.modulePilot .learningLab,
+.modulePilot .curriculumChapter { padding: 22px; }
+.modulePilot .curriculumAtlasLead { padding: 20px 24px; }
+.modulePilot .briefPrinciples--pipeline li,
+.modulePilot .briefPrinciples--loop li,
+.modulePilot .briefPrinciples--stack li { min-height: 0; }
+.modulePilot .briefPrinciples--pipeline li > div,
+.modulePilot .briefPrinciples--loop li > div,
+.modulePilot .briefPrinciples--stack li > div { padding: 22px 24px; }
+.modulePilot .briefPrinciples--decision article,
+.modulePilot .briefPrinciples--spectrum article { padding: 22px; }
+.modulePilot .systemLens { margin: 30px 0; }
+.modulePilot .systemLensIntro { padding: 27px 30px; }
+.modulePilot .lensPanelCopy { padding: 28px 30px 22px; }
+.modulePilot .lensFlow { padding: 0 30px 30px; }
+.modulePilot .lensFlow li { padding: 20px; }
+.modulePilot .flagshipLab { margin-top: 42px; }
+.modulePilot .flagshipLab__header { padding: 28px 32px; }
+.modulePilot .metricCard { padding: 23px; }
+.modulePilot .qaList summary { min-height: 72px; padding: 15px 9px; }
+.modulePilot .qaAnswer > div { padding: 20px; }
+
+@media (max-width: 1180px) {
+  .modulePilot .ragHeader,
+  .modulePilot .moduleBriefHeader {
+    grid-template-columns: minmax(0,1fr);
+    grid-template-areas: "eyebrow" "title" "definition" "position" "metrics";
+    gap: 0;
+  }
+  .modulePilot .ragHeader { gap: 34px; }
+  .modulePilot .moduleBriefHeader .moduleHeroTitle { margin-bottom: 32px; }
+  .modulePilot .moduleHeroMetrics { max-width: 700px; }
+  .modulePilot .moduleArticleLayout { grid-template-columns: 224px minmax(0,1fr); }
+}
+
+@media (max-width: 900px) {
+  .modulePilot .moduleArticleLayout { display: block; padding: 0; }
+  .modulePilot .moduleReadingNav { max-height: none; }
+  .modulePilot .decisionBanner { grid-template-columns: 130px minmax(0,1fr); padding: 28px; }
+}
+
+@media (max-width: 720px) {
+  .modulePilot .modulePageHero,
+  .modulePilot .ragHero { padding-bottom: 34px; }
+  .modulePilot .ragHeader,
+  .modulePilot .moduleBriefHeader { padding-top: 30px; }
+  .modulePilot .ragHeader .moduleHeroTitle,
+  .modulePilot .moduleBriefHeader .moduleHeroTitle { font-size: clamp(44px,13vw,58px) !important; }
+  .modulePilot .ragDefinition > p,
+  .modulePilot .moduleBriefDefinition { font-size: 21px; line-height: 1.52; }
+  .moduleHeroMetrics > div { padding: 12px 10px; }
+  .moduleHeroMetrics dt { font-size: 10px; }
+  .moduleHeroMetrics dd strong { font-size: 24px; }
+  .modulePilot .decisionBanner {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    padding: 24px 22px;
+  }
+  .modulePilot .decisionBanner .kicker,
+  .modulePilot .decisionBanner h3,
+  .modulePilot .decisionBanner > p:last-child { grid-column: 1; grid-row: auto; }
+  .modulePilot .decisionBanner > p:last-child { margin-top: 6px; font-size: 23px; }
+  .modulePilot .subsection { padding-top: 44px; padding-bottom: 44px; }
+  .modulePilot .subHead { grid-template-columns: 36px minmax(0,1fr); gap: 12px; }
+  .modulePilot .subHead h2,
+  .modulePilot .subHead h3 { font-size: 31px; }
+  .modulePilot .sectionLead,
+  .modulePilot .moduleBriefIntro,
+  .modulePilot .termStrip { margin-left: 0; }
+}
+
+/* Content-specific pilot views. Shared readability, distinct knowledge grammar. */
+.pilotPrimer { padding: 46px clamp(28px,4vw,56px); border-bottom: 1px solid var(--pilot-line); }
+.pilotPrimerHeader { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(300px,.62fr); gap: clamp(40px,6vw,84px); align-items: end; margin-bottom: 30px; }
+.pilotPrimerHeader h2 { max-width: 860px; margin: 0; font-family: var(--font-serif),serif; font-size: clamp(32px,3.8cqi,45px); font-weight: 500; line-height: 1.17; letter-spacing: -.03em; text-wrap: balance; }
+.pilotPrimerHeader > p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.72; }
+.pilotPrimerActions { margin-top: 20px; padding: 19px 22px; display: grid; grid-template-columns: 120px minmax(260px,1fr) auto; gap: 18px 24px; align-items: center; border: 1px solid var(--pilot-line); background: var(--white); }
+.pilotPrimerActions > strong { font-size: 14px; }
+.pilotPrimerActions > p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+.pilotPrimerActions nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.pilotPrimerActions nav a { padding: 7px 10px; border: 1px solid var(--pilot-line); background: var(--pilot-surface); font-size: 12px; font-weight: 750; text-decoration: none; }
+.pilotPrimerActions nav a:hover { border-color: var(--ink); background: var(--pilot-accent); }
+
+/* RAG: two operational lanes with one cross-cutting control plane. */
+.pilotPrimer--rag { background: #f5f9f8; }
+.ragArchitecture { border: 1px solid #9ebbbd; background: #e2ecec; }
+.ragArchitectureLane { display: grid; grid-template-columns: 210px minmax(0,1fr); background: var(--white); }
+.ragArchitectureLane + .ragArchitectureLane { border-top: 8px solid #e2ecec; }
+.ragArchitectureLane > header { padding: 23px; border-right: 1px solid #b8cbcd; background: #16303a; color: var(--white); }
+.ragArchitectureLane > header > span { color: var(--pilot-accent); font-family: var(--font-geist-mono),monospace; font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+.ragArchitectureLane > header h3 { margin: 34px 0 5px; font-size: 22px; }
+.ragArchitectureLane > header p { margin: 0; color: rgba(255,255,255,.68); font-size: 13px; line-height: 1.55; }
+.ragArchitectureLane > ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); list-style: none; }
+.ragArchitectureLane li { position: relative; min-width: 0; padding: 20px; border-right: 1px solid #b8cbcd; }
+.ragArchitectureLane li:last-child { border-right: 0; }
+.ragArchitectureLane li:not(:last-child)::after { content: "→"; position: absolute; top: 19px; right: -10px; z-index: 2; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--pilot-accent); color: var(--ink); font-size: 11px; font-weight: 900; }
+.ragArchitectureLane li > span { color: #48717a; font-family: var(--font-geist-mono),monospace; font-size: 11px; }
+.ragArchitectureLane h4 { margin: 30px 0 9px; font-size: 17px; line-height: 1.3; }
+.ragArchitectureLane h4 small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; font-weight: 600; }
+.ragArchitectureLane li p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.62; }
+.ragControlPlane { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-top: 8px solid #e2ecec; background: #c9f2ec; }
+.ragControlPlane > div { min-width: 0; padding: 18px 21px; border-right: 1px solid #9ebbbd; }
+.ragControlPlane > div:last-child { border-right: 0; }
+.ragControlPlane span { display: block; margin-bottom: 6px; color: #315f62; font-size: 10px; font-weight: 900; letter-spacing: .08em; }
+.ragControlPlane strong { font-size: 15px; }
+.ragControlPlane p { margin: 4px 0 0; color: #3f5f61; font-size: 13px; line-height: 1.55; }
+
+/* Agent: probabilistic loop, deterministic controls, authoritative execution. */
+.pilotPrimer--agent { background: #f8f7f1; }
+.agentControlMap { display: grid; grid-template-columns: 1.05fr 1.25fr .85fr; gap: 10px; padding: 10px; background: #d9ded9; border: 1px solid #b9c1bb; }
+.agentControlMap > section { min-width: 0; background: var(--white); border: 1px solid #b9c1bb; }
+.agentControlMap section > header { padding: 20px 21px; border-bottom: 1px solid #b9c1bb; }
+.agentControlMap section > header > span { color: #55716b; font-size: 10px; font-weight: 900; letter-spacing: .1em; }
+.agentControlMap section > header h3 { margin: 6px 0 0; font-size: 21px; }
+.agentControlMap section > header p { margin: 5px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.agentLoop { border-top: 6px solid var(--purple) !important; }
+.agentLoop ol { margin: 0; padding: 0; list-style: none; }
+.agentLoop li { display: grid; grid-template-columns: 32px 62px 1fr; gap: 10px; align-items: baseline; padding: 14px 18px; border-bottom: 1px solid #d6dad6; }
+.agentLoop li:last-child { border-bottom: 0; }
+.agentLoop li > span { color: #765ed5; font-family: var(--font-geist-mono),monospace; font-size: 11px; }
+.agentLoop li strong { font-size: 15px; }
+.agentLoop li p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.agentDeterministicPlane { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 6px solid var(--orange) !important; }
+.agentDeterministicPlane > header { grid-column: 1 / -1; background: #fff0ea; }
+.agentDeterministicPlane > div { padding: 21px; border-right: 1px solid #d6dad6; border-bottom: 1px solid #d6dad6; }
+.agentDeterministicPlane > div:nth-child(odd) { border-right: 0; }
+.agentDeterministicPlane > div:nth-last-child(-n+2) { border-bottom: 0; }
+.agentDeterministicPlane strong,
+.agentExecutionPlane strong { font-size: 15px; }
+.agentDeterministicPlane p,
+.agentExecutionPlane p { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.agentExecutionPlane { border-top: 6px solid var(--blue) !important; }
+.agentExecutionPlane > header { background: #eaf4fa; }
+.agentExecutionPlane > div { padding: 20px 21px; border-bottom: 1px solid #d6dad6; }
+.agentExecutionPlane > div:last-child { border-bottom: 0; background: #eefbdc; }
+
+/* LLM: theory rail, compact equation board and explicit epistemic boundaries. */
+.pilotPrimer--llm { background: #f1eee5; }
+.llmGenerationRail { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); border: 1px solid var(--ink); list-style: none; }
+.llmGenerationRail li { position: relative; min-width: 0; min-height: 190px; padding: 19px; border-right: 1px solid var(--ink); background: #fffdf7; }
+.llmGenerationRail li:last-child { border-right: 0; }
+.llmGenerationRail li:nth-child(3), .llmGenerationRail li:nth-child(4) { background: #e7f5f3; }
+.llmGenerationRail li:not(:last-child)::after { content: "→"; position: absolute; top: 17px; right: -11px; z-index: 2; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--pilot-accent); font-size: 11px; }
+.llmGenerationRail li > span { color: #52736f; font-family: var(--font-geist-mono),monospace; font-size: 11px; }
+.llmGenerationRail h3 { margin: 48px 0 10px; font-size: 17px; line-height: 1.25; overflow-wrap: anywhere; }
+.llmGenerationRail p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.58; }
+.llmTheoryFocus { margin-top: 12px; display: grid; grid-template-columns: minmax(0,1.45fr) minmax(300px,.55fr); gap: 12px; }
+.attentionBoard { position: relative; padding: 28px; border: 1px solid var(--ink); background: var(--ink); color: var(--white); }
+.attentionBoard > header { max-width: 420px; }
+.attentionBoard > header .kicker { color: var(--pilot-accent); }
+.attentionBoard > header h3 { margin: 0; font-family: var(--font-serif),serif; font-size: 31px; font-weight: 500; }
+.attentionFormula { position: absolute; top: 25px; right: 28px; min-width: 270px; padding: 14px 18px; border: 1px solid rgba(255,255,255,.25); }
+.attentionFormula span { display: block; color: rgba(255,255,255,.58); font-size: 10px; letter-spacing: .06em; }
+.attentionFormula strong { display: block; margin-top: 5px; color: var(--pilot-accent); font-family: var(--font-geist-mono),monospace; font-size: 18px; font-weight: 600; }
+.qkvGrid { margin-top: 28px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-top: 1px solid rgba(255,255,255,.22); border-left: 1px solid rgba(255,255,255,.22); }
+.qkvGrid article { padding: 21px; border-right: 1px solid rgba(255,255,255,.22); border-bottom: 1px solid rgba(255,255,255,.22); }
+.qkvGrid article > span { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--pilot-accent); color: var(--ink); font-family: var(--font-serif),serif; font-size: 18px; }
+.qkvGrid strong { display: block; margin-top: 28px; font-size: 15px; }
+.qkvGrid p { margin: 6px 0 0; color: rgba(255,255,255,.64); font-size: 13px; line-height: 1.55; }
+.llmBoundaryBoard { padding: 27px; border: 1px solid #c6bfae; background: var(--white); }
+.llmBoundaryBoard h3 { margin: 0 0 18px; font-size: 23px; }
+.llmBoundaryBoard dl { margin: 0; }
+.llmBoundaryBoard dl > div { padding: 13px 0; border-top: 1px solid var(--line); }
+.llmBoundaryBoard dt { font-size: 14px; font-weight: 850; }
+.llmBoundaryBoard dd { margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.llmBoundaryBoard > a { display: inline-block; margin-top: 18px; font-size: 12px; font-weight: 800; text-underline-offset: 3px; }
+
+@media (max-width: 1180px) {
+  .pilotPrimerHeader { grid-template-columns: 1fr; gap: 15px; }
+  .pilotPrimerHeader > p { max-width: 760px; }
+  .pilotPrimerActions { grid-template-columns: 110px 1fr; }
+  .pilotPrimerActions nav { grid-column: 2; justify-content: flex-start; }
+  .ragArchitectureLane { grid-template-columns: 180px minmax(0,1fr); }
+  .ragArchitectureLane > ol { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .ragArchitectureLane li:nth-child(2) { border-right: 0; }
+  .ragArchitectureLane li:nth-child(-n+2) { border-bottom: 1px solid #b8cbcd; }
+  .ragArchitectureLane li:nth-child(2)::after { display: none; }
+  .agentControlMap { grid-template-columns: 1fr 1fr; }
+  .agentExecutionPlane { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3,1fr); }
+  .agentExecutionPlane > header { grid-column: 1 / -1; }
+  .agentExecutionPlane > div { border-right: 1px solid #d6dad6; border-bottom: 0; }
+  .agentExecutionPlane > div:last-child { border-right: 0; }
+  .llmGenerationRail { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .llmGenerationRail li:nth-child(3) { border-right: 0; }
+  .llmGenerationRail li:nth-child(-n+3) { border-bottom: 1px solid var(--ink); }
+  .llmGenerationRail li:nth-child(3)::after { display: none; }
+  .llmTheoryFocus { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .pilotPrimer { padding: 38px 22px; }
+  .pilotPrimerHeader h2 { font-size: 31px; }
+  .pilotPrimerActions { grid-template-columns: 1fr; }
+  .pilotPrimerActions nav { grid-column: 1; justify-content: flex-start; }
+  .ragArchitectureLane { grid-template-columns: 1fr; }
+  .ragArchitectureLane > header { border-right: 0; border-bottom: 1px solid #b8cbcd; }
+  .ragArchitectureLane > header h3 { margin-top: 14px; }
+  .ragArchitectureLane > ol { grid-template-columns: 1fr; }
+  .ragArchitectureLane li,
+  .ragArchitectureLane li:nth-child(2) { border-right: 0; border-bottom: 1px solid #b8cbcd; }
+  .ragArchitectureLane li:last-child { border-bottom: 0; }
+  .ragArchitectureLane li:not(:last-child)::after,
+  .ragArchitectureLane li:nth-child(2)::after { content: "↓"; top: auto; right: 18px; bottom: -10px; display: grid; }
+  .ragArchitectureLane h4 { margin-top: 15px; }
+  .ragControlPlane { grid-template-columns: 1fr; }
+  .ragControlPlane > div { border-right: 0; border-bottom: 1px solid #9ebbbd; }
+  .ragControlPlane > div:last-child { border-bottom: 0; }
+  .agentControlMap { grid-template-columns: 1fr; }
+  .agentExecutionPlane { grid-column: 1; grid-template-columns: 1fr; }
+  .agentExecutionPlane > header { grid-column: 1; }
+  .agentExecutionPlane > div { border-right: 0; border-bottom: 1px solid #d6dad6; }
+  .agentLoop li { grid-template-columns: 30px 54px 1fr; }
+  .llmGenerationRail { grid-template-columns: 1fr; }
+  .llmGenerationRail li,
+  .llmGenerationRail li:nth-child(3) { min-height: 0; border-right: 0; border-bottom: 1px solid var(--ink); }
+  .llmGenerationRail li:last-child { border-bottom: 0; }
+  .llmGenerationRail li:not(:last-child)::after,
+  .llmGenerationRail li:nth-child(3)::after { content: "↓"; top: auto; right: 18px; bottom: -11px; display: grid; }
+  .llmGenerationRail h3 { margin-top: 15px; }
+  .attentionBoard { padding: 23px; }
+  .attentionFormula { position: static; margin-bottom: 23px; min-width: 0; }
+  .qkvGrid { grid-template-columns: 1fr; }
+  .qkvGrid article { border-right: 1px solid rgba(255,255,255,.22); }
+  .qkvGrid strong { margin-top: 18px; }
+}

@@ -26,12 +26,20 @@ const moduleSpecs = [
   ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache"], "brief"],
 ];
 
+const pilotKnowledgeViews = Object.freeze({
+  rag: "application-architecture",
+  "ai-agent": "control-architecture",
+  llm: "theory-atlas",
+});
+
 export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind]) => Object.freeze({
   slug,
   path: `/modules/${slug}`,
   titleId,
   requiredTerms: Object.freeze(requiredTerms),
   routeKind,
+  visualProfile: Object.hasOwn(pilotKnowledgeViews, slug) ? "dense-reading" : "standard",
+  knowledgeView: pilotKnowledgeViews[slug] ?? null,
   contentContract: Object.freeze(routeKind === "dedicated"
     ? {
         principle: Object.freeze(slug === "rag"

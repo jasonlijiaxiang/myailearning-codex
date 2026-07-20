@@ -4,10 +4,11 @@ import Link from "next/link";
 
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../agent-content.mjs";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { AgentRunLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
+import { AgentControlPrimer } from "../../module-pilot-views";
 
 export const metadata: Metadata = {
   title: "Agent · 智能体 | 云计算 × AI 平台售前知识库",
@@ -215,7 +216,7 @@ const agentSystemLens: LensPanel[] = [
 
 export default function AgentModulePage() {
   return (
-    <main>
+    <main className="modulePage modulePilot modulePilot--dedicated">
       <ReadingProgress />
       <section className="ragHero" id="agent" aria-labelledby="agent-title">
         <nav className="topbar" aria-label="模块导航">
@@ -240,6 +241,7 @@ export default function AgentModulePage() {
           </div>
           <div className="ragDefinition">
             <p>让模型在受控边界内，根据环境反馈选择下一步并调用工具完成任务；核心不是“更自主”，而是把动态判断、确定性控制和业务授权正确分层。</p>
+            <ModuleHeroMetrics sectionCount={agentReadingSections.length} questionCount={agentQa.length} evidenceCount={agentEvidenceCards.length} />
           </div>
         </div>
       </section>
@@ -258,6 +260,8 @@ export default function AgentModulePage() {
             <h3>一句话定位</h3>
             <p>客户购买的不是“会自己想办法的模型”，而是一套能识别目标、调用获准工具、验证结果，并在失败或高风险时停下来交还人工的任务执行系统。</p>
           </div>
+
+          <AgentControlPrimer />
 
           <div className="subsection" id="concept-map" data-quality-section="related-modules">
             <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>Agent 在知识地图中的位置与相关模块</h3></div></div>
