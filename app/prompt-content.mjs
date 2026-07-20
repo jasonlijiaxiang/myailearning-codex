@@ -329,7 +329,6 @@ export const promptQa = [
       { sourceId: "anthropic-tool-definitions", supports: "支持工具名称、描述与输入 Schema 进入模型上下文并影响工具选择。" },
       { sourceId: "openai-function-calling", supports: "支持应用提供工具集合、模型提出调用而应用负责执行的控制边界。" },
     ],
-    updatedAt: "2026-07-20",
   },
   {
     q: "如何证明一次 Prompt 改动真的带来提升，而不是模型或上下文碰巧变化？",

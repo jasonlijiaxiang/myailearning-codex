@@ -267,7 +267,6 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .curriculumChapter header > span { color: var(--blue); font-family: var(--font-geist-mono),monospace; font-size: 12px; }
 .curriculumChapter h3 { margin: 0; font-size: 24px; line-height: 1.32; text-wrap: balance; }
 .curriculumChapter header p { margin: 5px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
-.curriculumUpdatedAt { margin-top: 10px; }
 .curriculumExplanation { margin: 22px 0; font-size: 17px; line-height: 1.78; }
 .curriculumChapter dl { margin: 0; display: grid; gap: 10px; }
 .curriculumChapter dl > div { padding: 16px 18px; background: var(--paper); }
@@ -387,7 +386,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .qaList summary { min-height: 82px; padding: 19px 10px; grid-template-columns: 62px minmax(0,1fr) auto 32px; }
 .qaQuestion > strong { font-size: 18px; line-height: 1.5; }
 .qaTag { font-size: 11px; }
-.qaUpdatedAt { color: var(--muted); }
+.qaAddedAt { color: var(--muted); }
 .qaAnswer { padding-bottom: 26px; }
 .qaAnswer p { font-size: 17px; line-height: 1.78; }
 .answerLabel { font-size: 11px !important; }
@@ -459,7 +458,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .questionDirectoryTag { padding: 5px 9px; border-radius: 999px; background: var(--paper-2); font-size: 11px; font-weight: 800; }
 .questionDirectoryNo { color: var(--muted); font-family: var(--font-geist-mono),monospace; font-size: 11px; }
 .questionDirectoryItem h3 { max-width: 1050px; margin: 24px 0 16px; font-family: var(--font-serif),"Songti SC",serif; font-size: clamp(24px,2.3vw,34px); font-weight: 500; line-height: 1.38; letter-spacing: -.02em; }
-.questionUpdatedAt { margin: -6px 0 18px; }
+.questionDirectoryAddedAt { margin: -6px 0 18px; }
 .questionDirectoryShort { max-width: 1050px; display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 20px; align-items: start; }
 .questionDirectoryShort > span { padding-top: 4px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; }
 .questionDirectoryShort p { margin: 0; font-size: 17px; line-height: 1.8; }

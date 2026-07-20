@@ -3,7 +3,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs";
-import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatContentUpdatedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
+import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
@@ -85,28 +85,56 @@ function collectModuleSourceIds({ cards, qa, deepDives }) {
   ]);
 }
 
-function assertOptionalUpdatedAt(value, label) {
+function assertOptionalContentDate(value, label, formatter, prefix) {
   if (value == null) return;
-  assert.ok(isValidContentUpdatedAt(value), `${label} 的 updatedAt 必须是策略生效后的有效日期：${value}`);
-  assert.equal(formatContentUpdatedAt(value), `更新于 ${value}`);
+  assert.ok(isValidContentUpdatedAt(value), `${label} 必须是策略生效后的有效日期：${value}`);
+  assert.equal(formatter(value), `${prefix} ${value}`);
 }
 
-test("future subtopics and questions use optional, valid update metadata without backfilling history", async () => {
+function assertNoItemDateMetadata(item, label) {
+  assert.equal(Object.hasOwn(item, "updatedAt"), false, `${label} 不得显示逐项最近更新时间`);
+  assert.equal(Object.hasOwn(item, "addedAt"), false, `${label} 不得误用新增问答日期`);
+}
+
+test("module updates and newly added questions use distinct, non-repeating date metadata", async () => {
   assert.equal(CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, "2026-07-20");
-  assert.equal(formatContentUpdatedAt(undefined), null, "历史内容缺少 updatedAt 时必须保持可渲染");
-  assert.equal(formatContentUpdatedAt("2026-07-20"), "更新于 2026-07-20");
+  assert.equal(formatModuleUpdatedAt(undefined), null, "历史模块缺少 updatedAt 时必须保持可渲染");
+  assert.equal(formatQuestionAddedAt(undefined), null, "历史问题缺少 addedAt 时必须保持可渲染");
+  assert.equal(formatModuleUpdatedAt("2026-07-20"), "最近更新于 2026-07-20");
+  assert.equal(formatQuestionAddedAt("2026-07-20"), "新增于 2026-07-20");
   assert.equal(isValidContentUpdatedAt("2026-02-30"), false);
   assert.equal(isValidContentUpdatedAt("2026-07-19"), false);
-  assert.throws(() => formatContentUpdatedAt("2026-02-30"), /updatedAt/);
+  assert.throws(() => formatModuleUpdatedAt("2026-02-30"), /updatedAt/);
+  assert.throws(() => formatQuestionAddedAt("2026-02-30"), /addedAt/);
+
+  const addedQuestions = [];
 
   for (const publication of publishedModuleRegistry) {
     const content = requireModuleContent(publication.slug);
     const curriculum = publication.routeKind === "brief" ? requireModuleCurriculum(publication.slug) : null;
+    const learning = publication.routeKind === "brief" ? requireModuleLearning(publication.slug) : null;
 
-    for (const item of content.qa) assertOptionalUpdatedAt(item.updatedAt, `${publication.slug} / ${item.q}`);
-    for (const block of content.deepDives) assertOptionalUpdatedAt(block.updatedAt, `${publication.slug} / ${block.title}`);
-    for (const chapter of curriculum?.chapters ?? []) assertOptionalUpdatedAt(chapter.updatedAt, `${publication.slug} / ${chapter.title}`);
+    assert.equal(Object.hasOwn(publication, "addedAt"), false, `${publication.slug} 的模块日期不得使用 addedAt`);
+    assertOptionalContentDate(publication.updatedAt, `${publication.slug} / updatedAt`, formatModuleUpdatedAt, "最近更新于");
+    for (const item of content.qa) {
+      assert.equal(Object.hasOwn(item, "updatedAt"), false, `${publication.slug} / ${item.q} 不得把既有题改写误标为 updatedAt`);
+      assertOptionalContentDate(item.addedAt, `${publication.slug} / ${item.q} / addedAt`, formatQuestionAddedAt, "新增于");
+      if (item.addedAt) addedQuestions.push(`${publication.slug} / ${item.q}`);
+    }
+    for (const block of content.deepDives) assertNoItemDateMetadata(block, `${publication.slug} / ${block.title}`);
+    for (const card of content.evidenceCards) assertNoItemDateMetadata(card, `${publication.slug} / ${card.title}`);
+    for (const chapter of curriculum?.chapters ?? []) assertNoItemDateMetadata(chapter, `${publication.slug} / ${chapter.title}`);
+    for (const lab of learning?.labs ?? []) assertNoItemDateMetadata(lab, `${publication.slug} / ${lab.title}`);
+
+    const html = await renderHtml(publication.path);
+    const moduleDateCount = (html.match(/class="moduleUpdatedAt"/g) ?? []).length;
+    assert.equal(moduleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} 的模块最近更新时间必须只显示一次`);
+    if (publication.updatedAt) {
+      assert.match(html, /<footer\b[^>]*>[\s\S]*?class="moduleUpdatedAt"[\s\S]*?<\/footer>/, `${publication.slug} 的模块最近更新时间必须位于页尾`);
+    }
   }
+
+  assert.deepEqual(addedQuestions, ["a2a / 服务宣称兼容 A2A 1.0，网络连通是否就足以验收？"]);
 
   const [components, questionsPage, questionIndex, styles, v2Styles, agentRules, moduleStandard] = await Promise.all([
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
@@ -118,16 +146,24 @@ test("future subtopics and questions use optional, valid update metadata without
     readFile(new URL("../docs/MODULE-BUILD-STANDARD.md", import.meta.url), "utf8"),
   ]);
 
-  assert.match(components, /<time className=\{`contentUpdatedAt/);
-  assert.match(components, /value=\{block\.updatedAt\}/);
-  assert.match(components, /value=\{chapter\.updatedAt\}/);
-  assert.match(components, /value=\{item\.updatedAt\}/);
-  assert.match(questionIndex, /updatedAt: item\.updatedAt \?\? null/);
-  assert.match(questionsPage, /value=\{item\.updatedAt \?\? undefined\}/);
-  assert.match(styles, /\.contentUpdatedAt/);
-  assert.match(v2Styles, /\.questionUpdatedAt/);
+  assert.match(components, /className="moduleUpdatedAt"/);
+  assert.match(components, /value=\{item\.addedAt\}/);
+  assert.doesNotMatch(components, /block\.updatedAt|chapter\.updatedAt/);
+  assert.match(questionIndex, /addedAt: item\.addedAt \?\? null/);
+  assert.match(questionsPage, /value=\{item\.addedAt \?\? undefined\}/);
+  assert.match(styles, /\.questionAddedAt[^}]*font-size:\s*12px/s);
+  assert.doesNotMatch(styles, /\.deepDiveUpdatedAt/);
+  assert.match(v2Styles, /\.qaAddedAt/);
+  assert.match(v2Styles, /\.questionDirectoryAddedAt/);
+  assert.doesNotMatch(v2Styles, /\.curriculumUpdatedAt/);
   assert.match(agentRules, /历史内容不回填/);
-  assert.match(moduleStandard, /2026-07-20 之前已有内容不回填日期/);
+  assert.match(agentRules, /只有整道新增的客户问答设置 `addedAt/);
+  assert.match(moduleStandard, /模块最近更新时间只说明知识内容何时修订/);
+
+  const a2aHtml = await renderHtml("/modules/a2a");
+  const questionDirectoryHtml = await renderHtml("/questions");
+  assert.match(a2aHtml, /新增于 2026-07-20/);
+  assert.match(questionDirectoryHtml, /新增于 2026-07-20/);
 });
 
 test("homepage is a focused knowledge map with links to every independent module", async () => {

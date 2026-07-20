@@ -1739,7 +1739,6 @@ export const evaluationBrief = {
           supports: "支持结合自动化测量、领域专家与人工监督管理评估局限。",
         },
       ],
-      updatedAt: "2026-07-20",
     },
     {
       q: "RAG 回答错了，怎样判断是检索还是模型的问题？",

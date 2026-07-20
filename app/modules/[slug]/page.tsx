@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../knowledge-map.mjs";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { requireModuleBrief } from "../../module-brief-content.mjs";
-import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleLearningStudio, ModuleQaList } from "../../module-content-components";
+import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleLearningStudio, ModuleQaList, ModuleUpdatedAt } from "../../module-content-components";
 import type { DeepDiveBlock, ModuleCurriculumContent, ModuleLearningContent } from "../../module-content-components";
 import { requireModuleCurriculum } from "../../module-curriculum-content.mjs";
 import { requireModuleLearning } from "../../module-learning-content.mjs";
@@ -58,7 +58,7 @@ type BriefQaItem = {
   tag: string;
   basis: string;
   evidence: Array<{ sourceId: string; supports: string }>;
-  updatedAt?: string;
+  addedAt?: string;
 };
 
 type ModuleBrief = {
@@ -98,6 +98,7 @@ type ModulePublication = {
   requiredTerms: readonly string[];
   visualProfile: "dense-reading" | "standard";
   knowledgeView: string | null;
+  updatedAt: string | null;
 };
 
 export function generateStaticParams() {
@@ -293,7 +294,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
         </div>
       </div>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V2.0</p><a href="#top">返回顶部 ↑</a></footer>
+      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V2.0<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>
     </main>
   );
 }

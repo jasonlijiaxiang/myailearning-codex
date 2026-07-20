@@ -3,17 +3,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { RagRetrievalLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { evidenceCards, ragDeepDives, ragQa } from "../../rag-content.mjs";
 import { RagArchitecturePrimer } from "../../module-pilot-views";
+import { getPublishedModule } from "../../module-publication.mjs";
 
 export const metadata: Metadata = {
   title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
   description: "RAG 的基础原理、检索与生成机制、云服务连接、评估方法和售前高频问题深度回答。",
 };
+
+const ragPublication = getPublishedModule("rag");
 
 const conceptLinks = [
   { concept: "LLM 与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解模型的参数化记忆、token 与注意力边界。" },
@@ -517,7 +520,7 @@ export default function RagModulePage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>RAG 独立模块 V2.0 · 2026-07-17</p>
+        <p>RAG 独立模块 V2.0<ModuleUpdatedAt value={ragPublication?.updatedAt ?? undefined} /></p>
         <a href="#rag">返回顶部 ↑</a>
       </footer>
     </main>

@@ -547,7 +547,6 @@ const ragQaCandidates = [
       { sourceId: "nist-genai-profile", supports: "支持监测、记录和治理系统风险，同时要求结合具体使用情境。" },
       { sourceId: "owasp-vector-weaknesses", supports: "支持记录向量检索活动并防范跨上下文泄漏；日志本身也需访问控制。" },
     ],
-    updatedAt: "2026-07-20",
   },
   {
     q: "RAG 成本应该按什么口径核算，才能支持云服务报价？",

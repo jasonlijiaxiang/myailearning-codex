@@ -3,17 +3,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { PromptAssemblyLab } from "../../flagship-labs";
 import { ModuleExtensionPrimer } from "../../module-pilot-views";
 import { promptDeepDives, promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
+import { getPublishedModule } from "../../module-publication.mjs";
 
 export const metadata: Metadata = {
   title: "提示词工程 · Prompt Engineering | 云计算 × AI 平台售前知识库",
   description: "提示词与上下文工程的基础机制、核心模式、版本治理、云服务连接、PoC 评估及售前深度问答。",
 };
+
+const promptPublication = getPublishedModule("prompt-engineering");
 
 const conceptLinks = [
   { concept: "模型原理与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解 token、上下文容量、指令遵循与生成不确定性。" },
@@ -390,7 +393,7 @@ export default function PromptEngineeringModulePage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>提示词工程独立模块 V2.0 · 2026-07-17</p>
+        <p>提示词工程独立模块 V2.0<ModuleUpdatedAt value={promptPublication?.updatedAt ?? undefined} /></p>
         <a href="#prompt-engineering">返回顶部 ↑</a>
       </footer>
     </main>

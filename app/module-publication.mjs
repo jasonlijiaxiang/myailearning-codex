@@ -6,23 +6,23 @@
  */
 const moduleSpecs = [
   ["solution-patterns", "solution-patterns-title", ["solution-patterns"], "brief"],
-  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing"], "brief"],
-  ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated"],
-  ["ai-agent", "agent-title", ["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated"],
-  ["multimodal", "multimodal-title", ["multimodal", "document-intelligence"], "brief"],
-  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization"], "brief"],
-  ["a2a", "a2a-title", ["a2a", "agent-collaboration", "identity-authorization"], "brief"],
-  ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability"], "brief"],
-  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief"],
+  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing"], "brief", "2026-07-20"],
+  ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-20"],
+  ["ai-agent", "agent-title", ["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-07-20"],
+  ["multimodal", "multimodal-title", ["multimodal", "document-intelligence"], "brief", "2026-07-20"],
+  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization"], "brief", "2026-07-20"],
+  ["a2a", "a2a-title", ["a2a", "agent-collaboration", "identity-authorization"], "brief", "2026-07-20"],
+  ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability"], "brief", "2026-07-20"],
+  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-20"],
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "guardrails"], "brief"],
-  ["ai-ops", "ai-ops-title", ["ai-ops", "observability", "golden-set"], "brief"],
-  ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief"],
-  ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated"],
-  ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief"],
-  ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief"],
-  ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief"],
+  ["ai-ops", "ai-ops-title", ["ai-ops", "observability", "golden-set"], "brief", "2026-07-20"],
+  ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-20"],
+  ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-20"],
+  ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief", "2026-07-20"],
+  ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-07-20"],
+  ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-20"],
   ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval"], "brief"],
-  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability"], "brief"],
+  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability"], "brief", "2026-07-20"],
   ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache"], "brief"],
 ];
 
@@ -130,12 +130,13 @@ const moduleQaCoverageTags = Object.freeze({
   ]),
 });
 
-export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind]) => Object.freeze({
+export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind, updatedAt]) => Object.freeze({
   slug,
   path: `/modules/${slug}`,
   titleId,
   requiredTerms: Object.freeze(requiredTerms),
   routeKind,
+  updatedAt: updatedAt ?? null,
   visualProfile: Object.hasOwn(moduleKnowledgeViews, slug) ? "dense-reading" : "standard",
   knowledgeView: moduleKnowledgeViews[slug] ?? null,
   qaCoverageTags: moduleQaCoverageTags[slug] ?? Object.freeze([]),

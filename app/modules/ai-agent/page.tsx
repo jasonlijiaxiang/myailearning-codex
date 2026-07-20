@@ -4,16 +4,19 @@ import Link from "next/link";
 
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../agent-content.mjs";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { AgentRunLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { AgentControlPrimer } from "../../module-pilot-views";
+import { getPublishedModule } from "../../module-publication.mjs";
 
 export const metadata: Metadata = {
   title: "Agent · 智能体 | 云计算 × AI 平台售前知识库",
   description: "AI Agent 的基础概念、工作循环、架构边界、云服务连接、评估治理与售前高频问题。",
 };
+
+const agentPublication = getPublishedModule("ai-agent");
 
 const conceptLinks = [
   { concept: "模型与推理", owner: "大语言模型原理", href: "/modules/llm", relation: "能力底座", local: "模型负责理解状态和选择下一步，但不应直接获得业务权限。" },
@@ -491,7 +494,7 @@ export default function AgentModulePage() {
       </section>
       </div>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V2.0 · 2026-07-17</p><a href="#agent">返回顶部 ↑</a></footer>
+      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V2.0<ModuleUpdatedAt value={agentPublication?.updatedAt ?? undefined} /></p><a href="#agent">返回顶部 ↑</a></footer>
     </main>
   );
 }

@@ -14,11 +14,19 @@ export function isValidContentUpdatedAt(value) {
     && value >= CONTENT_UPDATE_POLICY_EFFECTIVE_DATE;
 }
 
-export function formatContentUpdatedAt(value) {
+function formatContentDate(value, fieldName, prefix) {
   if (value == null) return null;
   if (!isValidContentUpdatedAt(value)) {
-    throw new Error(`updatedAt 必须是 ${CONTENT_UPDATE_POLICY_EFFECTIVE_DATE} 起的有效 YYYY-MM-DD 日期：${value}`);
+    throw new Error(`${fieldName} 必须是 ${CONTENT_UPDATE_POLICY_EFFECTIVE_DATE} 起的有效 YYYY-MM-DD 日期：${value}`);
   }
 
-  return `更新于 ${value}`;
+  return `${prefix} ${value}`;
+}
+
+export function formatModuleUpdatedAt(value) {
+  return formatContentDate(value, "updatedAt", "最近更新于");
+}
+
+export function formatQuestionAddedAt(value) {
+  return formatContentDate(value, "addedAt", "新增于");
 }

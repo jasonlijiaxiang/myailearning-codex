@@ -9,7 +9,7 @@ import {
 } from "../fieldbook-interactions";
 import { questionDirectoryItems, questionDirectoryModules } from "../question-index.mjs";
 import { sourceLedger } from "../reference-content.mjs";
-import { ContentUpdatedAt } from "../module-content-components";
+import { QuestionAddedAt } from "../module-content-components";
 
 export const metadata: Metadata = {
   title: "客户问题查询 | 云计算 × AI 平台售前知识库",
@@ -90,7 +90,7 @@ export default function QuestionsPage() {
                   <span className="questionDirectoryNo">Q{String(item.number).padStart(2, "0")}</span>
                 </header>
                 <h3>{item.question}</h3>
-                <ContentUpdatedAt value={item.updatedAt ?? undefined} className="questionUpdatedAt" />
+                <QuestionAddedAt value={item.addedAt ?? undefined} className="questionDirectoryAddedAt" />
                 <div className="questionDirectoryShort"><span>结论短答</span><p>{item.answer}</p></div>
                 <details>
                   <summary><span>展开深答、下一问与证据</span><i aria-hidden="true">＋</i></summary>

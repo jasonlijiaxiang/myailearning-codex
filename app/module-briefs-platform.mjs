@@ -1800,7 +1800,6 @@ export const aiInfraPlatformBrief = {
         { sourceId: "kubernetes-dra-1-34-ga", supports: "支持 DRA 核心 API 在 Kubernetes 1.34 进入稳定 v1 并默认启用。" },
         { sourceId: "kubernetes-dra", supports: "支持 DRA 使用 ResourceClaim 和驱动表达、准备与分配设备资源的官方机制。" },
       ],
-      updatedAt: "2026-07-20",
     },
     {
       q: "部署了 vLLM 和 GPU Operator，是否已经具备生产 AI 平台？",

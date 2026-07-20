@@ -198,7 +198,6 @@ const agentQaCandidates = [
       { sourceId: "anthropic-effective-agents", supports: "支持清晰工具定义、示例、边界与大量测试的重要性。" },
       { sourceId: "openai-agent-guide", supports: "支持从单 Agent 起步，并按工具清晰度和复杂逻辑决定是否拆分。" },
     ],
-    updatedAt: "2026-07-20",
   },
   {
     q: "Agent 的 Memory 是不是把所有对话永久保存？",
