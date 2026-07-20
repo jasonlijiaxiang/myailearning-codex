@@ -146,6 +146,15 @@ export const sourceLedger = {
     verifiedAt: "2026-07-17",
     href: "https://doi.org/10.6028/NIST.AI.600-1",
   },
+  "nist-aml-100-2e2025": {
+    grade: "O",
+    kind: "官方技术报告 / 攻击分类",
+    shortTitle: "NIST AML Taxonomy",
+    title: "NIST AI 100-2 E2025 — Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations",
+    note: "为规避、投毒、隐私与滥用等对抗性机器学习攻击提供统一术语和生命周期视角；分类不是认证，也不证明列出的缓解措施在具体系统中有效。",
+    verifiedAt: "2026-07-20",
+    href: "https://csrc.nist.gov/pubs/ai/100/2/e2025/final",
+  },
   "nist-zero-trust": {
     grade: "O",
     kind: "官方特别出版物 / 架构指南",
@@ -190,6 +199,15 @@ export const sourceLedger = {
     note: "规定显式与隐式标识及服务提供者、传播平台等主体的相关义务，自 2025 年 9 月 1 日起施行；具体适用性仍需按产品、内容与角色判断。",
     verifiedAt: "2026-07-20",
     href: "https://www.nrta.gov.cn/art/2025/3/14/art_113_70340.html?xxgkhide=1",
+  },
+  "c2pa-2-4": {
+    grade: "O",
+    kind: "开放标准",
+    shortTitle: "C2PA 2.4",
+    title: "C2PA Technical Specification 2.4",
+    note: "定义签名 Manifest、内容绑定、编辑与来源声明及验证状态；它能验证声明与资产的关联和防篡改，不证明内容真实、版权成立、身份正确或已经合规，凭证也可能被移除。",
+    verifiedAt: "2026-07-20",
+    href: "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
   },
   "gb-45438-2025": {
     grade: "O",
@@ -376,9 +394,18 @@ export const sourceLedger = {
     kind: "开放可观测规范",
     shortTitle: "OpenTelemetry SemConv",
     title: "OpenTelemetry Semantic Conventions",
-    note: "为 traces、metrics、logs、events 和资源定义统一语义命名；GenAI 约定仍可能演进，业务成功、审批与风险字段仍需项目自行扩展。",
+    note: "为 traces、metrics、logs、events 和资源定义核心与跨组件语义命名；GenAI 专用约定已迁往独立仓库，业务成功、审批与风险字段仍需项目自行扩展。",
     verifiedAt: "2026-07-17",
     href: "https://opentelemetry.io/docs/specs/semconv/",
+  },
+  "opentelemetry-genai-semconv": {
+    grade: "O",
+    kind: "开放可观测规范",
+    shortTitle: "OTel GenAI SemConv",
+    title: "OpenTelemetry Semantic Conventions for Generative AI",
+    note: "独立维护生成式 AI 客户端、Agent、MCP、检索与工具调用等遥测语义；当前仍在开发，内容字段多为可选采集，采用时应固定版本并自行补充业务终态、审批和风险字段。",
+    verifiedAt: "2026-07-20",
+    href: "https://github.com/open-telemetry/semantic-conventions-genai",
   },
   "openai-prompting-guide": {
     grade: "P",
@@ -449,6 +476,12 @@ export const sourceLedger = {
     note: "提出以自注意力为核心的 Transformer 架构；支持解释并行训练与注意力机制，不代表所有后续模型实现完全相同。",
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/1706.03762",
   },
+  "gqa-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "Grouped-Query Attention",
+    title: "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints",
+    note: "比较 Multi-Head、Multi-Query 与 Grouped-Query Attention，并展示减少 KV Head 的质量与速度折中；论文结论受模型、硬件和实验设定限制。",
+    verifiedAt: "2026-07-20", href: "https://aclanthology.org/2023.emnlp-main.298/",
+  },
   "sentencepiece-2018": {
     grade: "A", kind: "同行评审论文", shortTitle: "SentencePiece",
     title: "SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing",
@@ -491,6 +524,12 @@ export const sourceLedger = {
     note: "提出直接用偏好对优化语言模型的对齐方法；适用性依赖偏好数据质量、任务与基线。",
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2305.18290",
   },
+  "deepseek-r1-2025": {
+    grade: "A", kind: "同行评审期刊论文", shortTitle: "DeepSeek-R1",
+    title: "DeepSeek-R1 incentivizes reasoning in LLMs through reinforcement learning",
+    note: "展示可验证奖励、强化学习、冷启动数据、多阶段训练与蒸馏在一个模型族中的组合路线；结果不能外推为强化学习会自动提升所有开放任务，也不能把内部推理当作审计解释。",
+    verifiedAt: "2026-07-20", href: "https://www.nature.com/articles/s41586-025-09422-z",
+  },
   "clip-2021": {
     grade: "A", kind: "同行评审论文", shortTitle: "CLIP",
     title: "Learning Transferable Visual Models From Natural Language Supervision",
@@ -508,6 +547,18 @@ export const sourceLedger = {
     title: "Efficient Memory Management for Large Language Model Serving with PagedAttention",
     note: "提出 PagedAttention 与面向 LLM Serving 的 KV Cache 内存管理；论文吞吐结果受模型、硬件和负载限制。",
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2309.06180",
+  },
+  "vllm-prefix-caching": {
+    grade: "P", kind: "官方技术文档", shortTitle: "vLLM Prefix Caching",
+    title: "Automatic Prefix Caching — vLLM",
+    note: "说明自动前缀缓存复用共享前缀的 KV Cache，并明确它主要减少 Prefill 计算而不减少新 Token 的 Decode 时间；具体收益依赖前缀命中、负载与隔离策略。",
+    verifiedAt: "2026-07-20", href: "https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/",
+  },
+  "distserve-2024": {
+    grade: "A", kind: "同行评审论文", shortTitle: "DistServe",
+    title: "DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving",
+    note: "直接研究 Prefill / Decode 分离以及 TTFT、TPOT 约束下的 Goodput；论文收益受模型、硬件、网络、调度和请求分布限制。",
+    verifiedAt: "2026-07-20", href: "https://www.usenix.org/conference/osdi24/presentation/zhong-yinmin",
   },
   "flashattention-2022": {
     grade: "A", kind: "同行评审论文", shortTitle: "FlashAttention",
@@ -533,6 +584,18 @@ export const sourceLedger = {
     note: "整理 MCP 实现中的令牌、代理、会话与权限风险；属于协议安全指南，不替代组织自身威胁建模和控制验证。",
     verifiedAt: "2026-07-17", href: "https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices",
   },
+  "mcp-tasks-2025-11-25": {
+    grade: "O", kind: "官方协议文档", shortTitle: "MCP Tasks",
+    title: "Tasks — Model Context Protocol 2025-11-25",
+    note: "定义对 MCP 请求进行耐久包装的实验性 Task、轮询、延迟结果、状态和取消语义；它仍可能演进，也不等同于 A2A 的跨 Agent Task。",
+    verifiedAt: "2026-07-20", href: "https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/tasks",
+  },
+  "mcp-elicitation-2025-11-25": {
+    grade: "O", kind: "官方协议文档", shortTitle: "MCP Elicitation",
+    title: "Elicitation — Model Context Protocol 2025-11-25",
+    note: "定义 Form 与 URL 两种用户交互模式；密码、API Key、访问令牌和支付凭据不得经 Form 收集，URL 交互仍需展示目标域名并取得用户同意。Elicitation 不替代 MCP 或业务授权。",
+    verifiedAt: "2026-07-20", href: "https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation",
+  },
   "a2a-concepts": {
     grade: "O", kind: "官方技术文档", shortTitle: "A2A Core Concepts",
     title: "Core Concepts — A2A Protocol",
@@ -545,11 +608,23 @@ export const sourceLedger = {
     note: "A2A 最新规范入口，覆盖发现、任务生命周期、交互与协议绑定；版本、SDK 和产品支持需在采购与实施时点复核。",
     verifiedAt: "2026-07-17", href: "https://a2a-protocol.org/latest/specification/",
   },
+  "a2a-spec-1-0-0": {
+    grade: "O", kind: "官方协议文档", shortTitle: "A2A 1.0.0",
+    title: "A2A Protocol Specification v1.0.0",
+    note: "固定 A2A 1.0.0 的版本协商、AgentInterface、多协议绑定、Agent Card 签名和任务语义；网络连通或签名有效不证明业务能力、质量或授权成立。",
+    verifiedAt: "2026-07-20", href: "https://a2a-protocol.org/v1.0.0/specification/",
+  },
   "openai-models": {
     grade: "P", kind: "模型目录", shortTitle: "OpenAI Models",
     title: "Models — OpenAI API",
     note: "OpenAI 官方模型目录；型号、能力、上下文、可用接口、退役与计价属于高时效事实，必须按使用时点复核。",
     verifiedAt: "2026-07-17", href: "https://developers.openai.com/api/docs/models",
+  },
+  "openai-reasoning-guide": {
+    grade: "P", kind: "官方技术文档", shortTitle: "OpenAI Reasoning Guide",
+    title: "Reasoning models — OpenAI API",
+    note: "说明部分 OpenAI 模型可用 reasoning effort 调节思考强度，并带来质量、速度与 Token 使用取舍；这是厂商特定的当前 API 能力，支持值和默认值随模型而异。",
+    verifiedAt: "2026-07-20", href: "https://developers.openai.com/api/docs/guides/reasoning",
   },
   "google-models": {
     grade: "P", kind: "模型目录", shortTitle: "Gemini Models",
@@ -580,6 +655,12 @@ export const sourceLedger = {
     title: "Dynamic Resource Allocation — Kubernetes",
     note: "说明 Kubernetes 中按设备属性、拓扑与声明分配资源的机制；功能状态和字段与 Kubernetes 版本相关。",
     verifiedAt: "2026-07-17", href: "https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/",
+  },
+  "kubernetes-dra-1-34-ga": {
+    grade: "O", kind: "官方技术文档", shortTitle: "Kubernetes DRA GA",
+    title: "Kubernetes v1.34: DRA has graduated to GA",
+    note: "记录 DRA 核心 API 在 Kubernetes 1.34 进入稳定 v1 并默认启用；新增特性、具体驱动与厂商支持仍有各自成熟度和兼容矩阵。",
+    verifiedAt: "2026-07-20", href: "https://kubernetes.io/blog/2025/09/01/kubernetes-v1-34-dra-updates/",
   },
   "nvidia-gpu-operator": {
     grade: "P", kind: "官方产品文档", shortTitle: "NVIDIA GPU Operator",
@@ -689,11 +770,23 @@ export const sourceLedger = {
     note: "说明工具名称、描述与输入 Schema 会进入模型上下文并影响工具选择；业务授权、幂等和执行后验证仍由应用负责。",
     verifiedAt: "2026-07-17", href: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
   },
+  "anthropic-tool-search": {
+    grade: "P", kind: "官方产品文档", shortTitle: "Claude Tool Search",
+    title: "Tool Search Tool — Claude Platform",
+    note: "展示工具目录按需搜索和延迟加载的产品实现；发现结果只是候选能力，业务授权、工具版本、参数校验与执行后验证仍由应用负责，厂商观察不能外推为通用阈值。",
+    verifiedAt: "2026-07-20", href: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+  },
   "openai-eval-best-practices": {
     grade: "P", kind: "官方工程指南", shortTitle: "OpenAI Evals 指南",
     title: "Evaluation Best Practices — OpenAI API",
     note: "支持任务特定、持续评估、生产分布样本和人工校准，并警告只靠主观观感或通用指标；示例阈值不能直接作为客户门槛。",
     verifiedAt: "2026-07-17", href: "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+  },
+  "llm-as-judge-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "LLM-as-a-Judge",
+    title: "Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena",
+    note: "研究模型评审与人工偏好的关系，并记录位置、冗长等偏差；观察依赖当时模型、任务和提示，不能外推为所有 Judge 的固定准确率。",
+    verifiedAt: "2026-07-20", href: "https://papers.neurips.cc/paper_files/paper/2023/hash/91f18a1287b398d378ef22505bf41832-Abstract-Datasets_and_Benchmarks.html",
   },
   "openai-source-sink-injection": {
     grade: "O", kind: "官方安全工程文章", shortTitle: "Source–Sink 注入分析",

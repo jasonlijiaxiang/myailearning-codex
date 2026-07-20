@@ -91,7 +91,7 @@ export const completionLearning = Object.freeze({
       { title: "连接线上业务结果", learn: "用灰度、业务终态和已复核失败补充离线评估。", checkpoint: "能区分离线通过与生产真实有效。" },
     ]),
     labs: freezeLabs([
-      { title: "校准一次 LLM Judge", scenario: "开放问答没有唯一标准答案，团队准备使用模型评审。", tasks: ["把质量拆成可观察维度并写评分量表", "选择人工双评样本测一致性与偏差", "定义模型评审适用范围、抽检和争议升级"], deliverable: "评审量表与校准报告", acceptance: "确定性检查、模型评审和人工裁决各有清晰边界。", sourceIds: ["ragas", "nist-genai-profile"] },
+      { title: "校准一次 LLM Judge", scenario: "开放问答没有唯一标准答案，团队准备使用模型评审。", tasks: ["把质量拆成可观察维度并写评分量表", "对人工双评样本交换答案顺序并做长度扰动", "跨模型家族抽检一致性，定义适用范围与争议升级"], deliverable: "评审量表、偏差切片与校准报告", acceptance: "确定性检查、模型评审和人工裁决各有边界，位置与冗长偏差有实测记录。", sourceIds: ["llm-as-judge-2023", "ragas", "nist-genai-profile"], updatedAt: "2026-07-20" },
     ]),
   }),
   "ai-gateway": Object.freeze({

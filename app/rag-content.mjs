@@ -537,15 +537,17 @@ const ragQaCandidates = [
   {
     q: "一次 RAG 请求应该记录哪些 Trace，才能真正排障？",
     a: "至少记录请求与身份上下文、查询计划、每路候选与分数、过滤原因、重排结果、最终上下文、来源版本、模型与 Prompt 版本、响应时延、token、拒答和错误原因。",
-    depth: "Trace 需要可关联但也要最小化敏感数据：正文可保存稳定来源 ID、哈希或受控快照，而不是无差别长期记录。每个阶段应有输入输出数量、版本和耗时，使团队能回答证据在哪里丢失、是否越权、是否命中缓存、哪个变更造成退化。OpenTelemetry 提供通用语义约定，候选召回、ACL、证据覆盖和业务成功仍是本项目需要追加的字段。",
+    depth: "Trace 需要可关联但也要最小化敏感数据：正文可保存稳定来源 ID、哈希或受控快照，而不是无差别长期记录。每个阶段保留输入输出数量、版本和耗时。OpenTelemetry 的 GenAI 语义已单独维护并覆盖检索、Agent 与工具等 Span，但仍在演进；采用时固定版本，候选召回、ACL、证据覆盖和业务成功继续由项目扩展。",
     ask: "追问客户：当前能否从一个答案回到候选列表、过滤原因、最终证据和组件版本？哪些日志字段含敏感数据？",
     tag: "可观测性",
     basis: "标准遥测 + 风险与隐私边界",
     evidence: [
-      { sourceId: "opentelemetry-semconv", supports: "支持用标准化语义和 Trace 关联生成式 AI 调用及应用组件。" },
+      { sourceId: "opentelemetry-genai-semconv", supports: "支持生成式 AI、检索、Agent 与工具调用的专用遥测语义，同时明确约定仍在开发。" },
+      { sourceId: "opentelemetry-semconv", supports: "支持用核心与跨组件语义关联 Trace；GenAI 专用字段由独立约定维护。" },
       { sourceId: "nist-genai-profile", supports: "支持监测、记录和治理系统风险，同时要求结合具体使用情境。" },
       { sourceId: "owasp-vector-weaknesses", supports: "支持记录向量检索活动并防范跨上下文泄漏；日志本身也需访问控制。" },
     ],
+    updatedAt: "2026-07-20",
   },
   {
     q: "RAG 成本应该按什么口径核算，才能支持云服务报价？",

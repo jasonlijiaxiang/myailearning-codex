@@ -189,14 +189,16 @@ const agentQaCandidates = [
   {
     q: "是不是工具越多、自治程度越高，Agent 就越强？",
     a: "不是。工具越多，选错工具、参数混淆、权限扩大和测试组合都会增加；自治越高，也意味着更长轨迹与更大的复合错误面。",
-    depth: "应先按用途区分数据工具（Data Tools）、动作工具（Action Tools）与编排工具（Orchestration Tools），再为每个工具定义清晰且不重叠的名称、输入输出 Schema、错误语义和权限。搜索 / RAG 等数据工具通常只读，但返回内容仍需来源和注入隔离；业务写入需要幂等、预览、审批和补偿；工作流、队列或子 Agent 需要交接、超时和汇总验证。先把最小工具集和单 Agent 做稳，再判断是否扩展。",
+    depth: "应先按用途区分数据、动作与编排工具，再为每个工具定义不重叠的名称、Schema、错误语义和权限。目录较大时采用 Discover → Select → Authorize → Execute：搜索只缩小候选，真实执行前仍按当前主体重新鉴权并校验版本。先把最小工具集和单 Agent 做稳，再判断是否扩展。",
     ask: "追问客户：每个工具解决什么唯一问题？哪些工具可写、可逆或涉及资金与敏感数据？",
     tag: "工具治理",
     basis: "官方工程指南",
     evidence: [
+      { sourceId: "anthropic-tool-search", supports: "支持工具按需发现与延迟加载的实现模式；发现不替代执行权限与契约验证。" },
       { sourceId: "anthropic-effective-agents", supports: "支持清晰工具定义、示例、边界与大量测试的重要性。" },
       { sourceId: "openai-agent-guide", supports: "支持从单 Agent 起步，并按工具清晰度和复杂逻辑决定是否拆分。" },
     ],
+    updatedAt: "2026-07-20",
   },
   {
     q: "Agent 的 Memory 是不是把所有对话永久保存？",

@@ -1790,15 +1790,17 @@ export const aiInfraPlatformBrief = {
     },
     {
       q: "DRA 会取代 Device Plugin 吗？现在是否应该立即迁移？",
-      a: "DRA 提供更结构化、可扩展的设备声明与分配方式，但迁移取决于 Kubernetes 版本、驱动成熟度、厂商实现和现有工作负载。",
+      a: "DRA 核心 API 已在 Kubernetes 1.34 进入稳定 v1，但不代表应立即替换所有 Device Plugin；迁移仍取决于驱动、目标能力和现有工作负载。",
       depth:
-        "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化或跨节点准备，再验证 DRA 是否有对应驱动。迁移测试要覆盖 ResourceClaim 生命周期、调度失败、节点升级、配额、监控与回滚。不要只因新 API 出现就改生产集群，也不要把 DRA 当队列和模型服务方案。",
+        "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化、跨节点设备选择或节点侧准备，再验证目标集群版本与 DRA 驱动。迁移测试覆盖 ResourceClaim 生命周期、调度失败、节点升级、配额、监控与回滚；把核心 API 稳定、可选新特性成熟度和厂商支持矩阵分开判断。DRA 也不替代队列和模型服务。",
       ask: "追问客户：现有设备分配具体卡在哪？目标 Kubernetes 版本和硬件驱动是否已支持所需功能？",
       tag: "DRA",
       basis: "Kubernetes 官方设备资源模型",
       evidence: [
+        { sourceId: "kubernetes-dra-1-34-ga", supports: "支持 DRA 核心 API 在 Kubernetes 1.34 进入稳定 v1 并默认启用。" },
         { sourceId: "kubernetes-dra", supports: "支持 DRA 使用 ResourceClaim 和驱动表达、准备与分配设备资源的官方机制。" },
       ],
+      updatedAt: "2026-07-20",
     },
     {
       q: "部署了 vLLM 和 GPU Operator，是否已经具备生产 AI 平台？",

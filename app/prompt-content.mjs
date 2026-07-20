@@ -320,14 +320,16 @@ export const promptQa = [
   {
     q: "工具越多，Agent 的能力是不是越强？",
     a: "不一定。每个工具的名称、描述和 Schema 都占用上下文并增加选择歧义；应只暴露当前任务所需的最小集合，必要时再做受控动态发现。",
-    depth: "工具目录要有清晰、互斥的职责，描述何时使用、何时不要使用，并提供风险、幂等、错误和后置条件。评估工具选择、参数正确率、无效调用和新增 token / P95；如果多个工具高度重叠，应合并、分层路由或按权限缩小可见范围。",
+    depth: "工具目录要有清晰、互斥的职责，描述何时使用、何时不要使用，并提供风险、幂等、错误和后置条件。目录较大时可先 Discover，再 Select、Authorize、Execute；评估 search recall@k、正确工具选择、错误或越权工具暴露、新增 Token、P95 与版本不匹配。",
     ask: "追问客户：哪些工具职责重叠？模型一次可见多少定义？动态加载由任务、身份还是租户策略决定？",
     tag: "工具上下文",
-    basis: "官方工具定义 + 工程评估",
+    basis: "按需工具发现 + 工程评估",
     evidence: [
+      { sourceId: "anthropic-tool-search", supports: "支持工具目录按需搜索和延迟加载，同时保留应用负责执行与治理的边界。" },
       { sourceId: "anthropic-tool-definitions", supports: "支持工具名称、描述与输入 Schema 进入模型上下文并影响工具选择。" },
       { sourceId: "openai-function-calling", supports: "支持应用提供工具集合、模型提出调用而应用负责执行的控制边界。" },
     ],
+    updatedAt: "2026-07-20",
   },
   {
     q: "如何证明一次 Prompt 改动真的带来提升，而不是模型或上下文碰巧变化？",

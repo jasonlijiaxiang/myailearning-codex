@@ -1725,16 +1725,21 @@ export const evaluationBrief = {
       q: "LLM-as-a-Judge 可以完全代替人工吗？",
       a: "不能。Judge 适合扩展主观质量评估，但需要人工定义 Rubric、校准偏差、处理争议和审核高风险样本。",
       depth:
-        "先用人工 Gold Set 校准 Judge，再检查与人工的一致性、位置和冗长偏差。可以由较强模型校准较低成本 Judge，但应定期抽样复核；业务状态、Schema 和权限仍用代码验证。",
+        "先用人工 Gold Set 校准 Judge，再通过答案顺序交换、长度扰动、跨模型家族抽检和人工双评检查一致性、位置与冗长偏差。Judge 模型、Prompt 与 Rubric 要共同版本化；业务状态、Schema 和权限仍用代码验证。",
       ask: "追问客户：哪些判断是主观质量，哪些有确定业务事实，谁是争议裁决者？",
       tag: "评估方法",
       basis: "评分方法分工",
       evidence: [
         {
+          sourceId: "llm-as-judge-2023",
+          supports: "支持模型评审存在位置、冗长等偏差，需要校准而不能作为自动真值。",
+        },
+        {
           sourceId: "nist-genai-profile",
           supports: "支持结合自动化测量、领域专家与人工监督管理评估局限。",
         },
       ],
+      updatedAt: "2026-07-20",
     },
     {
       q: "RAG 回答错了，怎样判断是检索还是模型的问题？",
