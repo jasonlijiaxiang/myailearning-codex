@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { TermHintRow } from "./term-hint";
+
 const ragKnowledgeSteps = [
   ["01", "连接与解析", "Connect & Parse", "保留标题、表格、页码与来源坐标；失败内容进入处理队列。"],
   ["02", "切块与元数据", "Chunk & Describe", "建立版本、权限、时间、产品与父子关系，不只生成一段文本。"],
@@ -44,6 +46,7 @@ export function RagArchitecturePrimer() {
         <div><p className="kicker">ARCHITECTURE FIRST</p><h2 id="rag-architecture-primer-title">先看两条链，再讨论向量库与模型</h2></div>
         <p>面向企业技术售前：用架构先定位数据责任、在线责任与验收证据，再映射具体云产品。</p>
       </header>
+      <TermHintRow label="RAG 架构缩写" termIds={["rag", "bm25", "ann", "hnsw", "rrf"]} />
       <div className="ragArchitecture">
         <ArchitectureLane label="OFFLINE" title="离线知识链" outcome="把原始资料变成可授权、可更新、可追踪的证据单元" steps={ragKnowledgeSteps} />
         <ArchitectureLane label="ONLINE" title="在线回答链" outcome="把一次客户问题变成可核验回答或明确拒答" steps={ragServingSteps} />
@@ -72,6 +75,7 @@ export function AgentControlPrimer() {
         <div><p className="kicker">CONTROL ARCHITECTURE</p><h2 id="agent-control-primer-title">先分清谁提议、谁授权、谁执行</h2></div>
         <p>面向企业技术售前：Agent 的价值来自动态决策，可信度来自模型外的确定性控制和可恢复业务状态。</p>
       </header>
+      <TermHintRow label="Agent 控制缩写" termIds={["ai-agent", "api", "iam", "hitl", "mcp"]} />
       <div className="agentControlMap">
         <section className="agentLoop" aria-label="模型循环">
           <header><span>PROBABILISTIC</span><h3>模型循环 · Model Loop</h3><p>负责理解、规划与提出动作，不直接拥有业务权限。</p></header>
@@ -112,6 +116,7 @@ export function LlmTheoryPrimer() {
         <div><p className="kicker">THEORY ATLAS</p><h2 id="llm-theory-primer-title">把一次生成拆成六个可观察阶段</h2></div>
         <p>面向云与 AI 技术售前：理论用于解释质量、上下文、首字延迟、输出速度与显存边界，不以背公式为目标。</p>
       </header>
+      <TermHintRow label="LLM 原理缩写" termIds={["llm", "qkv", "kv-cache", "ttft", "tpot", "moe"]} />
       <ol className="llmGenerationRail" aria-label="大语言模型生成阶段">
         {llmGenerationStages.map(([no, title, detail]) => <li key={no}><span>{no}</span><h3>{title}</h3><p>{detail}</p></li>)}
       </ol>

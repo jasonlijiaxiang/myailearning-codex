@@ -125,6 +125,42 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.doesNotMatch(html, /\/(?:Users|home)\//, "生产 HTML 不应包含本机绝对路径");
 });
 
+test("focus surfaces provide accessible abbreviation explanations", async () => {
+  const hintTermIds = ["rag", "llm", "ai-agent", "poc", "sla", "mcp", "a2a", "bm25", "ann", "hnsw", "rrf", "api", "iam", "hitl", "qkv", "kv-cache", "ttft", "tpot", "moe"];
+
+  for (const termId of hintTermIds) {
+    const term = requireTerm(termId);
+    assert.ok(term.abbr && term.description, `缩写提示必须同时有缩写和简短说明：${termId}`);
+  }
+
+  for (const path of ["/", "/modules/rag", "/modules/ai-agent", "/modules/llm"]) {
+    const html = await renderHtml(path);
+    assert.match(html, /class="termHintRow"/i, `${path} 缺少缩写速查入口`);
+    assert.match(html, /<details class="termHint" data-term-id="[^"]+">/i, `${path} 缩写解释必须使用可点击的原生 details`);
+    assert.match(html, /<summary aria-label="[^"]+">/i, `${path} 缩写控件缺少可访问名称`);
+    assert.match(html, /悬停 \/ 点击查看全称与说明/);
+  }
+});
+
+test("evidence cards keep facts, findings, boundaries, and sources readable", async () => {
+  const [componentSource, globalStyles] = await Promise.all([
+    readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  const metricIndex = componentSource.indexOf('className="metric"');
+  const findingIndex = componentSource.indexOf('className="metricFinding"');
+  const boundaryIndex = componentSource.indexOf('className="metricBoundary"');
+  const sourceIndex = componentSource.indexOf("对应来源 ·");
+  assert.ok(metricIndex >= 0 && metricIndex < findingIndex && findingIndex < boundaryIndex && boundaryIndex < sourceIndex, "证据卡阅读顺序必须是事实标签、结论、边界、来源");
+
+  assert.match(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(22px,2vw,30px\)/s);
+  assert.match(globalStyles, /\.metricFinding\s*\{[^}]*font-size:\s*16px/s);
+  assert.match(globalStyles, /\.metricBoundary\s*\{[^}]*font-size:\s*14px/s);
+  assert.match(globalStyles, /\.metricCard\s*\{[^}]*min-height:\s*0/s);
+  assert.doesNotMatch(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(4\dpx/s, "证据事实标签不得恢复为封面级字号");
+});
+
 test("dense-reading modules derive a scannable content overview from the publication registry", async () => {
   const denseReadingModules = publishedModuleRegistry.filter((module) => module.visualProfile === "dense-reading");
   assert.ok(denseReadingModules.length >= 3, "高密度阅读试点必须覆盖多个模块类型");

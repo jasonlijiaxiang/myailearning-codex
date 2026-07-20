@@ -11,6 +11,7 @@ import { moduleLearningContent } from "./module-learning-content.mjs";
 import { publishedModules, publishedModuleSlugs } from "./module-publication.mjs";
 import { referenceModules, sourceLedger } from "./reference-content.mjs";
 import { terminology } from "./terminology.mjs";
+import { TermHintRow } from "./term-hint";
 
 const layerCount = layers.length;
 const moduleCount = moduleList.length;
@@ -40,7 +41,7 @@ const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
       title: `${term.zh} · ${term.en}${term.abbr ? `（${term.abbr}）` : ""}`,
       subtitle: `${moduleNames.get(slug)}模块`,
       href: `/modules/${slug}`,
-      keywords: `${term.zh} ${term.en} ${term.abbr ?? ""}`,
+      keywords: `${term.zh} ${term.en} ${term.abbr ?? ""} ${"description" in term ? term.description : ""}`,
     };
   }),
   ...Object.entries(moduleContentRegistry).flatMap(([slug, content]) => content.qa.map((item, index) => ({
@@ -128,6 +129,15 @@ export default function Home() {
       <div id="available-modules" className="explorerAnchor">
         <ModuleExplorer modules={explorerModules} knowledgeEntries={knowledgeSearchEntries} />
       </div>
+
+      <section className="homeTermGuide" aria-labelledby="home-term-guide-title">
+        <div>
+          <p className="kicker">FIELD GLOSSARY</p>
+          <h2 id="home-term-guide-title">现场缩写速查</h2>
+          <p>先看全称和一句话解释，再决定进入哪个模块；桌面悬停或键盘聚焦，手机和平板点击即可展开。</p>
+        </div>
+        <TermHintRow label="常用概念" termIds={["rag", "llm", "ai-agent", "poc", "sla", "mcp", "a2a"]} />
+      </section>
 
       <section className="fieldbookPromise" aria-labelledby="promise-title">
         <div className="promiseIntro"><p className="kicker">READING EXPERIENCE</p><h2 id="promise-title">同一份知识，支持三种阅读深度</h2></div>
