@@ -11,6 +11,7 @@ import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum
 import { moduleExtensionViews } from "../app/module-extension-views.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
 import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
+import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { promptQa } from "../app/prompt-content.mjs";
 import { evidenceCards, ragQa } from "../app/rag-content.mjs";
@@ -206,6 +207,28 @@ test("remaining modules complete their own knowledge views, learning expansions,
     for (const step of completionLearning[slug].route) assert.ok(learning.route.includes(step));
     for (const lab of completionLearning[slug].labs) assert.ok(learning.labs.includes(lab));
     for (const question of completionQa[slug]) assert.ok(content.qa.includes(question));
+  }
+});
+
+test("customer questions follow module decision coverage instead of a shared numeric template", async () => {
+  const auditedSlugs = Object.keys(moduleQuestionDepthExpansion);
+  const addedQuestionCounts = auditedSlugs.map((slug) => moduleQuestionDepthExpansion[slug].length);
+  const finalQuestionCounts = auditedSlugs.map((slug) => requireModuleContent(slug).qa.length);
+
+  assert.deepEqual([...new Set(addedQuestionCounts)].sort((a, b) => a - b), [3, 4, 5, 6], "模块补充问题不应来自统一的固定配额");
+  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [11, 12, 13, 14], "共享模块最终题数不应再次收敛成同一个模板数字");
+  assert.equal(finalQuestionCounts.filter((count) => count === 8).length, 0, "已审计模块不得保留统一 8 题的机械结果");
+
+  for (const slug of auditedSlugs) {
+    const publishedModule = publishedModuleRegistry.find((module) => module.slug === slug);
+    const content = requireModuleContent(slug);
+    const tags = new Set(content.qa.map((item) => item.tag));
+    assert.ok(publishedModule, `${slug} 缺少发布契约`);
+    for (const question of moduleQuestionDepthExpansion[slug]) {
+      assert.ok(content.qa.includes(question), `${slug} 的深度问题未进入正式内容注册表：${question.q}`);
+      assert.ok(publishedModule.qaCoverageTags.includes(question.tag), `${slug} 未登记问题覆盖主题：${question.tag}`);
+    }
+    for (const requiredTag of publishedModule.qaCoverageTags) assert.ok(tags.has(requiredTag), `${slug} 缺少登记的问题主题：${requiredTag}`);
   }
 });
 

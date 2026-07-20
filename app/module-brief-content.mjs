@@ -17,10 +17,16 @@ import {
 } from "./module-briefs-platform.mjs";
 import { moduleQaExpansion } from "./module-qa-expansion.mjs";
 import { completionQa } from "./module-completion-content.mjs";
+import { moduleQuestionDepthExpansion } from "./module-question-depth-expansion.mjs";
 
 const withExpandedQa = (brief) => Object.freeze({
   ...brief,
-  qa: Object.freeze([...brief.qa, ...moduleQaExpansion[brief.slug], ...(completionQa[brief.slug] ?? [])]),
+  qa: Object.freeze([
+    ...brief.qa,
+    ...moduleQaExpansion[brief.slug],
+    ...(completionQa[brief.slug] ?? []),
+    ...(moduleQuestionDepthExpansion[brief.slug] ?? []),
+  ]),
 });
 
 export const moduleBriefs = Object.freeze({
