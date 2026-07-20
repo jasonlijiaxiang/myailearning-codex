@@ -567,6 +567,11 @@ test("every published module claim resolves to a unique, grouped, and verified s
     const moduleSourceIds = new Set(referenceModule.sourceIds);
 
     assert.ok(publishedModule.qa.length > 0, `已发布模块缺少客户问答：${publishedModule.id}`);
+    assert.equal(
+      new Set(publishedModule.qa.map((item) => item.q)).size,
+      publishedModule.qa.length,
+      `同一模块不应出现重复客户问题：${publishedModule.id}`,
+    );
     assert.ok(publishedModule.deepDives.length > 0, `已发布模块缺少独立知识扩展：${publishedModule.id}`);
 
     for (const block of publishedModule.deepDives) {
