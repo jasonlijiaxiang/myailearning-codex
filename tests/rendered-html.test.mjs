@@ -6,7 +6,9 @@ import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs"
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
+import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
 import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
+import { moduleExtensionViews } from "../app/module-extension-views.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
 import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
@@ -163,8 +165,8 @@ test("evidence cards keep facts, findings, boundaries, and sources readable", as
 
 test("dense-reading modules derive a scannable content overview from the publication registry", async () => {
   const denseReadingModules = publishedModuleRegistry.filter((module) => module.visualProfile === "dense-reading");
-  assert.ok(denseReadingModules.length >= 3, "高密度阅读试点必须覆盖多个模块类型");
-  assert.equal(new Set(denseReadingModules.map((module) => module.knowledgeView)).size, denseReadingModules.length, "试点模块必须使用不同的知识视图");
+  assert.equal(denseReadingModules.length, publishedModuleRegistry.length, "所有正式模块都必须完成高密度阅读壳");
+  assert.equal(new Set(denseReadingModules.map((module) => module.knowledgeView)).size, denseReadingModules.length, "正式模块必须使用不同的主题知识视图");
 
   for (const publishedModule of denseReadingModules) {
     const html = await renderHtml(publishedModule.path);
@@ -174,6 +176,36 @@ test("dense-reading modules derive a scannable content overview from the publica
     assert.match(html, /<dt>客户问题<\/dt>/);
     assert.match(html, /<dt>证据卡<\/dt>/);
     assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
+  }
+});
+
+test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {
+  const remainingSlugs = Object.keys(moduleExtensionViews);
+  assert.equal(remainingSlugs.length, 13, "剩余模块清单必须完整且显式");
+  assert.equal(new Set(Object.values(moduleExtensionViews).map((view) => view.id)).size, remainingSlugs.length, "剩余模块知识视图 ID 不得复用");
+
+  for (const slug of remainingSlugs) {
+    const view = moduleExtensionViews[slug];
+    const html = await renderHtml(`/modules/${slug}`);
+    assert.match(html, new RegExp(`data-knowledge-view="${escapeRegExp(view.id)}"`));
+    assert.match(html, new RegExp(escapeRegExp(view.title)));
+    assert.match(html, /class="extensionPrimerMap"/);
+    assert.match(html, /class="extensionPrimerChecks"/);
+  }
+
+  for (const slug of Object.keys(completionLearning)) {
+    assert.ok(completionCurriculum[slug]?.length > 0, `${slug} 缺少新增课程主题`);
+    assert.ok(completionLearning[slug].route.length > 0, `${slug} 缺少新增学习步骤`);
+    assert.ok(completionLearning[slug].labs.length > 0, `${slug} 缺少新增实战任务`);
+    assert.ok(completionQa[slug]?.length > 0, `${slug} 缺少新增客户判断问题`);
+
+    const curriculum = requireModuleCurriculum(slug);
+    const learning = requireModuleLearning(slug);
+    const content = requireModuleContent(slug);
+    for (const chapter of completionCurriculum[slug]) assert.ok(curriculum.chapters.includes(chapter));
+    for (const step of completionLearning[slug].route) assert.ok(learning.route.includes(step));
+    for (const lab of completionLearning[slug].labs) assert.ok(learning.labs.includes(lab));
+    for (const question of completionQa[slug]) assert.ok(content.qa.includes(question));
   }
 });
 
@@ -687,7 +719,8 @@ test("every shared module has a source-backed learning route and practical labs"
     assert.match(html, /id="study-guide"/);
     assert.match(html, /id="curriculum"/);
     assert.match(html, /学完后，你应该能独立完成/);
-    assert.match(html, /三步学习顺序/);
+    assert.match(html, /建议学习顺序/);
+    assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
     assert.match(html, /用真实产物证明掌握/);
     assert.match(html, /课程地图与知识展开/);
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);

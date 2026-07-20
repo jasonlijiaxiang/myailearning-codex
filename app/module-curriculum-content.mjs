@@ -1,3 +1,5 @@
+import { completionCurriculum } from "./module-completion-content.mjs";
+
 /**
  * 共享模块的课程地图。
  *
@@ -5,7 +7,7 @@
  * 完整概念版图，再进入机制、决策、实验和问答。内容按网页学习逻辑重组，
  * 只保存稳定 sourceId，不复制来源元数据或外部材料结构。
  */
-export const moduleCurriculumContent = Object.freeze({
+const baseModuleCurriculumContent = Object.freeze({
   "solution-patterns": {
     lead: "场景方案不是一张通用架构图，而是把业务结果、数据与系统、风险控制、验收证据和后续运营连成一条能落地的路径。",
     chapters: [
@@ -204,6 +206,16 @@ export const moduleCurriculumContent = Object.freeze({
     ],
   },
 });
+
+export const moduleCurriculumContent = Object.freeze(Object.fromEntries(
+  Object.entries(baseModuleCurriculumContent).map(([slug, content]) => [
+    slug,
+    Object.freeze({
+      ...content,
+      chapters: Object.freeze([...content.chapters, ...(completionCurriculum[slug] ?? [])]),
+    }),
+  ]),
+));
 
 export const moduleCurriculumSlugs = Object.freeze(Object.keys(moduleCurriculumContent));
 

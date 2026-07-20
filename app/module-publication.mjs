@@ -26,19 +26,35 @@ const moduleSpecs = [
   ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache"], "brief"],
 ];
 
-const pilotKnowledgeViews = Object.freeze({
+const moduleKnowledgeViews = Object.freeze({
   "solution-patterns": "decision-blueprint",
+  "model-landscape": "selection-coordinate",
   rag: "application-architecture",
   "ai-agent": "control-architecture",
+  multimodal: "multimodal-evidence-pipeline",
+  mcp: "mcp-host-server-boundary",
+  a2a: "delegated-task-lifecycle",
+  evaluation: "evaluation-flywheel",
   security: "threat-path",
+  "ai-gateway": "gateway-policy-data-plane",
+  "ai-ops": "operations-feedback-loop",
   llm: "theory-atlas",
+  "prompt-engineering": "context-assembly",
   "fine-tuning": "tuning-lifecycle",
+  "llm-training": "training-supply-chain",
+  "llm-inference": "latency-capacity-map",
+  "data-engineering": "ai-data-lineage",
+  "ai-infra-platform": "scheduler-control-plane",
+  "ai-infra-compute": "compute-bottleneck-path",
 });
 
-const pilotQaCoverageTags = Object.freeze({
+const moduleQaCoverageTags = Object.freeze({
   "solution-patterns": Object.freeze([
     "方案边界", "PoC 验收", "TCO", "场景选择", "编排选择", "智能客服", "企业搜索",
     "内容生成", "AI Coding", "数字人", "ChatBI", "会议助手", "生产运营",
+  ]),
+  "model-landscape": Object.freeze([
+    "选型方法", "供应连续性", "TCO", "生命周期", "组合策略", "版本治理", "Benchmark 边界", "退出策略",
   ]),
   rag: Object.freeze([
     "架构判断", "风险边界", "产品选型", "故障诊断", "路线选择", "安全", "时效性", "评估",
@@ -52,9 +68,27 @@ const pilotQaCoverageTags = Object.freeze({
     "协议边界", "执行方式", "Run 状态机", "身份授权", "工具契约", "人工介入", "故障恢复",
     "长任务运行", "多 Agent",
   ]),
+  multimodal: Object.freeze([
+    "方案选择", "成本与性能", "实时交互", "多模态安全", "证据链", "评估设计", "结构恢复", "路线组合",
+  ]),
+  mcp: Object.freeze([
+    "协议边界", "身份授权", "供应链安全", "选型与锁定", "安全边界", "平台治理", "错误语义", "Server 供应链",
+  ]),
+  a2a: Object.freeze([
+    "协议边界", "架构选择", "可靠性", "审计与可观测", "采用判断", "故障恢复", "取消语义", "协作拓扑",
+  ]),
+  evaluation: Object.freeze([
+    "模型选型", "评估方法", "RAG 诊断", "Agent 评估", "评审方法", "持续评估", "黄金集治理", "发布门槛",
+  ]),
   security: Object.freeze([
     "共享责任", "提示注入", "RAG 安全", "Agent 安全", "安全验证", "风险盘点",
     "供应链", "法规适用性", "事件响应", "日志治理",
+  ]),
+  "ai-gateway": Object.freeze([
+    "架构定位", "模型路由", "可靠性", "MCP 治理", "路由策略", "策略发布", "故障降级",
+  ]),
+  "ai-ops": Object.freeze([
+    "平台复用", "在线评估", "漂移归因", "事件响应", "观测边界", "SLO 设计", "业务恢复", "遥测治理",
   ]),
   "fine-tuning": Object.freeze([
     "路线选择", "方法选型", "数据准备", "验收", "对齐路线", "数据格式", "合成数据",
@@ -64,6 +98,24 @@ const pilotQaCoverageTags = Object.freeze({
     "基础原理", "概念边界", "上下文", "性能成本", "Tokenization", "表示边界",
     "训练阶段", "规模边界", "缓存机制", "上下文边界", "生成机制",
   ]),
+  "prompt-engineering": Object.freeze([
+    "能力边界", "安全边界", "结构化输出", "工具安全", "版本治理", "上下文装配", "提示注入", "评估方法", "灰度回滚", "PoC 验收",
+  ]),
+  "llm-training": Object.freeze([
+    "训练全景", "规模边界", "后训练", "评估发布", "扩展效率", "可靠性", "训练恢复", "Scaling 边界",
+  ]),
+  "llm-inference": Object.freeze([
+    "性能原理", "容量规划", "优化边界", "组件边界", "SLO 取舍", "精度选择", "显存容量", "量化发布",
+  ]),
+  "data-engineering": Object.freeze([
+    "建设顺序", "文档解析", "向量库选型", "权限与删除", "生命周期", "解析质量", "用途治理", "删除传播",
+  ]),
+  "ai-infra-platform": Object.freeze([
+    "建设起点", "调度选型", "DRA", "平台边界", "资源效率", "升级治理", "有效产出", "混部边界",
+  ]),
+  "ai-infra-compute": Object.freeze([
+    "性能判断", "显存规划", "混合云", "TCO", "采购方法", "网络选型", "规格边界", "扩展效率",
+  ]),
 });
 
 export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind]) => Object.freeze({
@@ -72,9 +124,9 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
   titleId,
   requiredTerms: Object.freeze(requiredTerms),
   routeKind,
-  visualProfile: Object.hasOwn(pilotKnowledgeViews, slug) ? "dense-reading" : "standard",
-  knowledgeView: pilotKnowledgeViews[slug] ?? null,
-  qaCoverageTags: pilotQaCoverageTags[slug] ?? Object.freeze([]),
+  visualProfile: Object.hasOwn(moduleKnowledgeViews, slug) ? "dense-reading" : "standard",
+  knowledgeView: moduleKnowledgeViews[slug] ?? null,
+  qaCoverageTags: moduleQaCoverageTags[slug] ?? Object.freeze([]),
   contentContract: Object.freeze(routeKind === "dedicated"
     ? {
         principle: Object.freeze(slug === "rag"

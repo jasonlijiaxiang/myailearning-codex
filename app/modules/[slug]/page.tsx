@@ -14,7 +14,7 @@ import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type Rea
 import { getPublishedModule, hasDedicatedModule } from "../../module-publication.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { requireTerm } from "../../terminology.mjs";
-import { FineTuningPrimer, LlmTheoryPrimer, SecurityThreatPrimer, SolutionPatternPrimer } from "../../module-pilot-views";
+import { SharedModulePrimer } from "../../module-pilot-views";
 
 type ModulePageProps = { params: Promise<{ slug: string }> };
 
@@ -96,7 +96,7 @@ type ModulePublication = {
   titleId: string;
   requiredTerms: readonly string[];
   visualProfile: "dense-reading" | "standard";
-  knowledgeView: "decision-blueprint" | "theory-atlas" | "threat-path" | "tuning-lifecycle" | null;
+  knowledgeView: string | null;
 };
 
 export function generateStaticParams() {
@@ -224,10 +224,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
           { href: "#qa", label: "准备客户问答" },
         ]} />
         <div className="moduleArticleContent">
-      {publication.knowledgeView === "theory-atlas" ? <LlmTheoryPrimer /> : null}
-      {publication.knowledgeView === "decision-blueprint" ? <SolutionPatternPrimer /> : null}
-      {publication.knowledgeView === "threat-path" ? <SecurityThreatPrimer /> : null}
-      {publication.knowledgeView === "tuning-lifecycle" ? <FineTuningPrimer /> : null}
+      <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} />
       <section className="subsection moduleBriefRelated" id="related-modules" data-quality-section="related-modules" aria-labelledby="related-modules-title">
         <div className="subHead"><span>01</span><div><p className="kicker">RELATED MODULES</p><h2 id="related-modules-title">相关模块</h2></div></div>
         <div className="relatedModuleGrid" data-count={relatedModules.length} data-odd={relatedModules.length % 2 === 1 ? "true" : "false"}>

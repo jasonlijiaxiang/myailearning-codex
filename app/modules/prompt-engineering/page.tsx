@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList } from "../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList } from "../../module-content-components";
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { PromptAssemblyLab } from "../../flagship-labs";
+import { ModuleExtensionPrimer } from "../../module-pilot-views";
 import { promptDeepDives, promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 
@@ -140,7 +141,7 @@ const promptSystemLens: LensPanel[] = [
 
 export default function PromptEngineeringModulePage() {
   return (
-    <main>
+    <main className="modulePage modulePilot promptModulePage">
       <ReadingProgress />
       <section className="ragHero" id="prompt-engineering" aria-labelledby="prompt-title">
         <nav className="topbar" aria-label="模块导航">
@@ -165,6 +166,7 @@ export default function PromptEngineeringModulePage() {
           </div>
           <div className="ragDefinition">
             <p>把业务目标、上下文、约束与输出契约翻译成模型可执行的输入，并通过版本、评估和安全控制持续验证；它是系统工程的一部分，不是寻找一句“万能咒语”。</p>
+            <ModuleHeroMetrics sectionCount={promptReadingSections.length} questionCount={promptQa.length} evidenceCount={promptEvidenceCards.length} />
           </div>
         </div>
       </section>
@@ -178,6 +180,7 @@ export default function PromptEngineeringModulePage() {
       <section className="section ragBody" aria-label="提示词工程核心内容">
         <div className="sectionNumber">05</div>
         <div className="sectionBody">
+          <ModuleExtensionPrimer slug="prompt-engineering" />
           <div className="decisionBanner">
             <p className="kicker">PRESALES POSITION</p>
             <h3>一句话定位</h3>

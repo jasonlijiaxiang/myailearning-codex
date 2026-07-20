@@ -1,3 +1,5 @@
+import { completionLearning } from "./module-completion-content.mjs";
+
 /**
  * 16 个共享模块的网页原生学习路线与实战任务。
  *
@@ -5,7 +7,7 @@
  * “建立心智模型 -> 做出方案判断 -> 用证据验收”组织，不复刻 PPT 页序。
  * 所有公开依据仍只引用 reference-content.mjs 中的稳定 sourceId。
  */
-export const moduleLearningContent = Object.freeze({
+const baseModuleLearningContent = Object.freeze({
   "solution-patterns": {
     outcomes: ["把业务目标改写成可验收的一页约定", "能拆解客服、企业搜索、内容生成、AI Coding、数字人、ChatBI 与会议助手", "设计能证伪方案假设的 PoC", "用质量、风险与全成本共同决定是否上线"],
     route: [
@@ -214,6 +216,17 @@ export const moduleLearningContent = Object.freeze({
     ],
   },
 });
+
+export const moduleLearningContent = Object.freeze(Object.fromEntries(
+  Object.entries(baseModuleLearningContent).map(([slug, content]) => [
+    slug,
+    Object.freeze({
+      ...content,
+      route: Object.freeze([...content.route, ...(completionLearning[slug]?.route ?? [])]),
+      labs: Object.freeze([...content.labs, ...(completionLearning[slug]?.labs ?? [])]),
+    }),
+  ]),
+));
 
 export const moduleLearningSlugs = Object.freeze(Object.keys(moduleLearningContent));
 

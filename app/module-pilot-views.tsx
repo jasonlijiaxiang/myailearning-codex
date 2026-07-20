@@ -1,6 +1,20 @@
 import Link from "next/link";
 
+import { requireModuleExtensionView } from "./module-extension-views.mjs";
 import { TermHintRow } from "./term-hint";
+
+type ExtensionView = {
+  id: string;
+  layout: "spectrum" | "pipeline" | "boundary" | "lifecycle" | "loop" | "control" | "stack" | "topology";
+  eyebrow: string;
+  title: string;
+  intro: string;
+  termIds: string[];
+  steps: Array<{ code: string; title: string; en: string; detail: string; signal: string }>;
+  checks: Array<{ title: string; detail: string }>;
+  application: string;
+  links: Array<{ href: string; label: string }>;
+};
 
 const ragKnowledgeSteps = [
   ["01", "连接与解析", "Connect & Parse", "保留标题、表格、页码与来源坐标；失败内容进入处理队列。"],
@@ -318,4 +332,51 @@ export function FineTuningPrimer() {
       <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先比较四种方法，确认微调确有必要，再把训练数据、冻结评估集、Adapter、基础模型、服务模板和回滚方案当作一个发布单元共同验收。</p><nav aria-label="微调深入阅读"><a href="#decisions">查看方法选择</a><a href="#curriculum">查看训练方法</a><a href="#cloud">查看训练与部署</a></nav></footer>
     </section>
   );
+}
+
+export function ModuleExtensionPrimer({ slug }: { slug: string }) {
+  const view = requireModuleExtensionView(slug) as ExtensionView;
+
+  return (
+    <section
+      className={`pilotPrimer extensionPrimer extensionPrimer--${view.layout}`}
+      data-knowledge-view={view.id}
+      aria-labelledby={`${slug}-extension-primer-title`}
+    >
+      <header className="pilotPrimerHeader">
+        <div><p className="kicker">{view.eyebrow}</p><h2 id={`${slug}-extension-primer-title`}>{view.title}</h2></div>
+        <p>{view.intro}</p>
+      </header>
+      <TermHintRow label="本模块常用缩写" termIds={view.termIds} />
+      <div className="extensionPrimerBody">
+        <ol className="extensionPrimerMap" aria-label={`${view.title}的关键关系`}>
+          {view.steps.map((step) => (
+            <li key={step.code}>
+              <span>{step.code}</span>
+              <div><p className="miniLabel">{step.en}</p><h3>{step.title}</h3><p>{step.detail}</p><strong>{step.signal}</strong></div>
+            </li>
+          ))}
+        </ol>
+        <aside className="extensionPrimerChecks" aria-label="方案检查重点">
+          <p className="miniLabel">DECISION CHECKS</p>
+          {view.checks.map((check, index) => (
+            <article key={check.title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{check.title}</h3><p>{check.detail}</p></div></article>
+          ))}
+        </aside>
+      </div>
+      <footer className="pilotPrimerActions">
+        <strong>技术售前用法</strong>
+        <p>{view.application}</p>
+        <nav aria-label={`${view.title}深入阅读`}>{view.links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}</nav>
+      </footer>
+    </section>
+  );
+}
+
+export function SharedModulePrimer({ slug, knowledgeView }: { slug: string; knowledgeView: string | null }) {
+  if (knowledgeView === "theory-atlas") return <LlmTheoryPrimer />;
+  if (knowledgeView === "decision-blueprint") return <SolutionPatternPrimer />;
+  if (knowledgeView === "threat-path") return <SecurityThreatPrimer />;
+  if (knowledgeView === "tuning-lifecycle") return <FineTuningPrimer />;
+  return <ModuleExtensionPrimer slug={slug} />;
 }
