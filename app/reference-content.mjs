@@ -449,6 +449,18 @@ export const sourceLedger = {
     note: "提出以自注意力为核心的 Transformer 架构；支持解释并行训练与注意力机制，不代表所有后续模型实现完全相同。",
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/1706.03762",
   },
+  "sentencepiece-2018": {
+    grade: "A", kind: "同行评审论文", shortTitle: "SentencePiece",
+    title: "SentencePiece: A simple and language independent subword tokenizer and detokenizer for Neural Text Processing",
+    note: "提出直接从原始文本训练、以子词单元完成分词与还原的语言无关方法；支持解释 Token 边界由词表和分词器决定，不代表所有模型采用同一算法或词表。",
+    verifiedAt: "2026-07-20", href: "https://aclanthology.org/D18-2012/",
+  },
+  "switch-transformer-2022": {
+    grade: "A", kind: "同行评审期刊论文", shortTitle: "Switch Transformer",
+    title: "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
+    note: "研究稀疏 Mixture-of-Experts 路线，以路由器为每个 Token 选择部分专家；支持区分总参数与激活参数，不证明 MoE 模型必然优于稠密模型。",
+    verifiedAt: "2026-07-20", href: "https://www.jmlr.org/papers/v23/21-0998.html",
+  },
   "chinchilla-2022": {
     grade: "A", kind: "一手论文", shortTitle: "Chinchilla Scaling",
     title: "Training Compute-Optimal Large Language Models",

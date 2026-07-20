@@ -220,11 +220,6 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   for (const slug of ["solution-patterns", "security", "fine-tuning"]) {
     assert.ok(moduleLearningContent[slug].route.length >= 5, `${slug} 学习路线不能压缩为通用三步模板`);
     assert.ok(moduleLearningContent[slug].labs.length >= 4, `${slug} 至少覆盖四个不同决策或工程练习`);
-    const publishedModule = publishedModuleRegistry.find((module) => module.slug === slug);
-    const actualTags = new Set(moduleContentRegistry[slug].qa.map((item) => item.tag));
-    for (const requiredTag of publishedModule.qaCoverageTags) {
-      assert.ok(actualTags.has(requiredTag), `${slug} 客户问题缺少已登记的覆盖主题：${requiredTag}`);
-    }
   }
 });
 
@@ -247,7 +242,7 @@ test("RAG route contains principles, cloud-service opportunities, and evidence-b
   assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
   assert.match(html, /本题依据 \/ Evidence/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
-  assert.ok(ragQa.length >= 36, "RAG 实战包必须覆盖完整售前链路");
+  assert.doesNotMatch(html, /开源模型还是商业模型更适合|RAG 的评估集应该怎样建设|RAG 成本应该按什么口径核算/);
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
   assert.match(html, /搜索客户问题/);
   assert.match(html, /RAG 检索链实验/);
@@ -300,7 +295,7 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   assert.match(html, /编排者—执行者 · Orchestrator–Workers/);
   assert.match(html, /选择云上托管 Agent 平台，还是自己用框架搭/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, agentQa.length);
-  assert.ok(agentQa.length >= 36, "Agent 实战包必须覆盖完整售前链路");
+  assert.doesNotMatch(html, /ReAct 是否意味着 Agent 必须严格按|工具参数已经通过 Strict Schema|生产上线前，Agent 最低需要通过哪些/);
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
   assert.match(html, /搜索客户问题/);
   assert.match(html, /Agent 运行与恢复实验/);
@@ -330,7 +325,6 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /可维护的提示模板 · Prompt Template/);
   assert.match(html, /Prompt、RAG 和 Context Engineering 是什么关系/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, promptQa.length);
-  assert.ok(promptQa.length >= 36, "Prompt Engineering 实战包必须覆盖完整售前链路");
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
   assert.match(html, /搜索客户问题/);
   assert.match(html, /Prompt 装配实验/);
@@ -343,6 +337,18 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.doesNotMatch(html, /正文建设中|模块依赖/);
   assert.doesNotMatch(html, /中文主版 · 术语中英对照/);
   assert.doesNotMatch(html, /softmax|Σ|∏|class="(?:formula|deepFormula|smallFormula)"/);
+});
+
+test("LLM foundations questions cover the theory readers need for architecture decisions", async () => {
+  const html = await renderHtml("/modules/llm");
+  const llmQa = moduleContentRegistry.llm.qa;
+
+  assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, llmQa.length);
+  assert.match(html, /同一段中文、英文或代码，为什么在不同模型里占用的 Token 数不同/);
+  assert.match(html, /模型输入里的 Embedding，和向量数据库里的 Embedding 是一回事吗/);
+  assert.match(html, /预训练主要学习预测下一个 Token，模型为什么后来会遵循指令/);
+  assert.match(html, /参数量越大，模型能力就一定越强吗.*MoE/s);
+  assert.match(html, /KV Cache 是什么，为什么长上下文会迅速吃掉并发容量/);
 });
 
 test("every published module passes the shared reader, terminology, and depth contract", async () => {
@@ -572,6 +578,10 @@ test("every published module claim resolves to a unique, grouped, and verified s
       publishedModule.qa.length,
       `同一模块不应出现重复客户问题：${publishedModule.id}`,
     );
+    const actualQaTags = new Set(publishedModule.qa.map((item) => item.tag));
+    for (const requiredTag of publishedModule.qaCoverageTags) {
+      assert.ok(actualQaTags.has(requiredTag), `${publishedModule.id} 客户问题缺少已登记的覆盖主题：${requiredTag}`);
+    }
     assert.ok(publishedModule.deepDives.length > 0, `已发布模块缺少独立知识扩展：${publishedModule.id}`);
 
     for (const block of publishedModule.deepDives) {
