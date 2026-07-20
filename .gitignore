@@ -41,3 +41,7 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# portable knowledge-base runtime data
+/knowledge/private-inbox/*
+!/knowledge/private-inbox/.gitignore

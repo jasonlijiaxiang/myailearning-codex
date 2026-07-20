@@ -1,0 +1,4 @@
+interface:
+  display_name: "Portable Knowledge Curator"
+  short_description: "Capture chats and curate a portable web knowledge base"
+  default_prompt: "Use $curate-portable-knowledge-base to turn this project conversation into verified knowledge without changing the existing visual design."

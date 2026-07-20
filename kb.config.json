@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "id": "cloud-ai-presales-fieldbook",
+    "primaryLanguage": "zh-CN",
+    "requiredNode": ">=22.13.0",
+    "rootMarker": "kb.config.json"
+  },
+  "capture": {
+    "privateInbox": "knowledge/private-inbox",
+    "storeRawTranscript": false,
+    "maxTranscriptBytes": 26214400,
+    "maxCaptureBytesPerEvent": 8388608,
+    "rawRetentionDays": 14
+  },
+  "curation": {
+    "candidates": "knowledge/private-inbox/.runtime/candidates/index.json",
+    "claims": "knowledge/claims/index.json",
+    "releaseManifest": "knowledge/release-manifest.json",
+    "releaseSchema": "knowledge/schemas/release.schema.json",
+    "publicAdapter": "existing-app-registry",
+    "publicationRegistry": "app/module-publication.mjs",
+    "contentRegistry": "app/module-content-registry.mjs",
+    "sourceLedger": "app/reference-content.mjs",
+    "terminology": "app/terminology.mjs"
+  },
+  "quality": {
+    "commands": [
+      "npm run kb:validate",
+      "npm run lint",
+      "npm test"
+    ]
+  },
+  "publishing": {
+    "defaultMode": "local",
+    "github": {
+      "optional": true
+    },
+    "sites": {
+      "optional": true,
+      "binding": ".openai/hosting.json",
+      "requiresExplicitRequest": true
+    }
+  },
+  "packaging": {
+    "outputDirectory": "outputs/portable",
+    "maxArchiveBytes": 268435456,
+    "includeSiteBindingByDefault": false,
+    "include": [
+      ".agents/skills/curate-portable-knowledge-base",
+      ".codex/hooks.json",
+      ".gitignore",
+      ".node-version",
+      ".openai/hosting.example.json",
+      "AGENTS.md",
+      "README.md",
+      "kb.config.json",
+      "package.json",
+      "package-lock.json",
+      "app",
+      "public",
+      "build",
+      "db",
+      "docs",
+      "drizzle",
+      "examples",
+      "external_reference",
+      "knowledge/claims",
+      "knowledge/release-manifest.json",
+      "knowledge/schemas",
+      "scripts",
+      "tests",
+      "worker",
+      "drizzle.config.ts",
+      "eslint.config.mjs",
+      "next.config.ts",
+      "postcss.config.mjs",
+      "tsconfig.json",
+      "vite.config.ts"
+    ],
+    "exclude": [
+      ".git",
+      "node_modules",
+      "dist",
+      ".next",
+      ".vinext",
+      ".wrangler",
+      "outputs",
+      "work",
+      "coverage",
+      "tsconfig.tsbuildinfo",
+      "knowledge/private-inbox",
+      ".openai/hosting.json"
+    ]
+  }
+}

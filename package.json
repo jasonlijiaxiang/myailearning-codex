@@ -6,11 +6,18 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
-    "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
-    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
+    "dev": "node scripts/run-vinext.mjs dev",
+    "build": "node scripts/run-vinext.mjs build",
+    "start": "node scripts/run-vinext.mjs start",
+    "test": "npm run build && node --test tests/rendered-html.test.mjs tests/portable-knowledge.test.mjs tests/portable-capture-security.test.mjs tests/portable-contract.test.mjs tests/portable-release.test.mjs tests/portable-forward.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "check": "npm run lint && npm run kb:validate && npm test",
+    "kb:doctor": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs doctor",
+    "kb:inbox": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs inbox",
+    "kb:validate": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs validate",
+    "kb:mark": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs mark",
+    "kb:package": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs package",
+    "kb:release-check": "node scripts/release-check.mjs",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

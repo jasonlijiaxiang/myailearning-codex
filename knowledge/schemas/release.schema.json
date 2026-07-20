@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/schemas/knowledge-release-manifest.schema.json",
+  "title": "Knowledge release manifest",
+  "type": "object",
+  "required": ["$schema", "schemaVersion", "releases"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "type": "integer", "enum": [1] },
+    "releases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "mode",
+          "status",
+          "projectId",
+          "createdAt",
+          "verifiedAt",
+          "commitSha",
+          "archiveSha256",
+          "archiveBytes",
+          "archiveFileCount",
+          "siteBindingIncluded",
+          "versionId",
+          "publicUrl",
+          "qualityCommands",
+          "knowledgeResults"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^rel_[a-z0-9][a-z0-9._-]{2,127}$"
+          },
+          "mode": { "enum": ["local", "git", "sites"] },
+          "status": { "enum": ["verified", "deployed"] },
+          "projectId": { "type": "string", "minLength": 1 },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "verifiedAt": { "type": "string", "format": "date-time" },
+          "commitSha": {
+            "type": ["string", "null"],
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "archiveSha256": {
+            "type": ["string", "null"],
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "archiveBytes": { "type": ["integer", "null"], "minimum": 1 },
+          "archiveFileCount": { "type": ["integer", "null"], "minimum": 1 },
+          "siteBindingIncluded": { "type": "boolean" },
+          "versionId": { "type": ["string", "null"], "minLength": 1 },
+          "publicUrl": {
+            "type": ["string", "null"],
+            "pattern": "^https://[^\\s]+$"
+          },
+          "qualityCommands": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "knowledgeResults": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^(claim|module|source):[a-z0-9][a-z0-9._/-]{1,127}$"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

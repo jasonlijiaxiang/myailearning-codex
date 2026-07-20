@@ -6,18 +6,41 @@
 
 ## 本地运行
 
+准备条件：Codex 和 Node.js 22.13 或更高版本。解压项目后，从项目根目录加入或打开 Codex；项目级 Skill 会从 `.agents/skills` 自动发现。首次启用聊天采集时，通过 Codex 的 `/hooks` 检查并信任项目 Hook。
+
 ```bash
-npm install
+npm ci
+npm run kb:doctor
 npm run dev
 ```
 
-构建与验证：
+完整检查：
 
 ```bash
-npm run build
-npm test
-npm run lint
+npm run check
 ```
+
+本地使用不要求 Git 或 GitHub。没有远端仓库时，知识整理、搜索、构建和 portable 打包仍可工作；公网发布仍需要使用者自己的托管授权。
+
+## 聊天沉淀与 Portable
+
+- `UserPromptSubmit` 与 `Stop` Hook 默认只把可见的用户问题和最终回答保存在 `knowledge/private-inbox/.runtime/`。Hook 绑定经过逐级校验的项目根；有 Git 时拒绝嵌套仓库遮蔽，无 Git 时只接受当前项目根。任何定位、导入或写入失败都不会阻断聊天。完整 transcript 默认关闭；显式启用后也只接受 Codex 会话目录内的真实文件，且仍按不稳定的私有输入处理。
+- 已处理记录只有在载荷完整性通过且结果 ID 能解析到真实候选、Claim、模块、来源或发布记录后，才会进入定期原文清理；清理前会再次确认结果仍存在且仍能反向追到该捕获。未处理、受阻或结果已失效的记录不会静默删除。
+- `curate-portable-knowledge-base` Skill 负责脱敏、去重、事实核验、更新现有模块内容和来源，并在通过质量门禁后才把知识晋升到公开网站。
+- 每轮聊天都会获得处理机会，但闲聊、重复内容、仅助手内容、部分捕获、敏感内容和缺少证据的断言不会自动公开。
+- 当前网页的内容架构和视觉系统仍是公开知识的呈现层；portable 能力不会建立另一套页面或改变现有样式。
+
+常用命令：
+
+```bash
+npm run kb:doctor
+npm run kb:inbox
+npm run kb:validate
+npm run kb:package
+npm run kb:release-check -- --mode local
+```
+
+`npm run kb:package` 生成源码级 ZIP 和 SHA-256 清单，默认排除任意层级的依赖、构建缓存、私有聊天、Git 历史和个人 Sites 绑定。在 Git checkout 中，打包器只读取已暂存的 index 内容：先暂存准备交付的文件，任何 tracked 文件仍有未暂存改动时会拒绝打包，其他 untracked 文件不会进入 ZIP；无 Git 项目则只读取配置中明确允许的路径。只有在自己的已授权环境中才使用 `--include-site-binding`。仓库中的 `.openai/hosting.json` 仍是本项目正式 Sites 构建与发布所需的受控绑定；“默认排除”只指 portable 包，不代表它不进入 Git 或正式构建。
 
 ## 主要目录
 
@@ -44,6 +67,11 @@ npm run lint
 - `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则
 - `external_reference/`：原始参考资料投放区；内容经核验后才能进入公开来源台账
 - `.openai/hosting.json`：公开站点发布配置
+- `kb.config.json`：portable、聊天采集、知识整理和可选发布模式的统一配置
+- `.agents/skills/curate-portable-knowledge-base/`：项目级知识整理 Skill
+- `.codex/hooks.json`：私有聊天采集入口
+- `knowledge/claims/`：动态事实生命周期台账
+- `knowledge/private-inbox/`：仅本机可见、不会发布的聊天采集区
 
 ## 内容维护原则
 
