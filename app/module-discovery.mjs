@@ -12,7 +12,7 @@ export const moduleDiscovery = Object.freeze({
   evaluation: Object.freeze({ summary: "把好不好用变成任务集、指标、回归和发布门禁。", cue: "PoC 看起来不错，但没人能说明是否达到上线标准" }),
   security: Object.freeze({ summary: "控制不可信输入、模型行为、敏感数据和高影响动作。", cue: "客户担心提示注入、越权、泄漏或不可逆业务动作" }),
   "ai-gateway": Object.freeze({ summary: "集中管理模型路由、配额、策略、缓存与调用治理。", cue: "模型供应商和应用增多，成本、策略与流量开始失控" }),
-  "ai-ops": Object.freeze({ summary: "把质量、轨迹、时延、成本与版本变化连成运营闭环。", cue: "上线后出现退化，却无法判断是数据、模型还是应用变化" }),
+  "ai-ops": Object.freeze({ summary: "把质量、轨迹、时延、成本与版本变化放进一套持续改进流程。", cue: "上线后出现退化，却无法判断是数据、模型还是应用变化" }),
   llm: Object.freeze({ summary: "理解 Transformer、上下文、生成概率与模型能力边界。", cue: "需要解释模型为什么会生成、遗忘、幻觉或受上下文影响" }),
   "prompt-engineering": Object.freeze({ summary: "把指令、上下文、工具和输出契约组织成可发布资产。", cue: "Prompt 靠个人试错，修改后无法证明效果或安全性" }),
   "fine-tuning": Object.freeze({ summary: "用高质量样本改变稳定行为、风格或任务模式。", cue: "仅靠 Prompt 难以稳定达成专门行为或格式" }),

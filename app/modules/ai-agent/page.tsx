@@ -22,7 +22,7 @@ const conceptLinks = [
   { concept: "工作流 · Workflow", owner: "场景解决方案", href: "/modules/solution-patterns", relation: "确定性骨架", local: "固定规则负责可预测路径，Agent 只处理真正需要动态判断的节点。" },
   { concept: "MCP", owner: "模型上下文协议", href: "/modules/mcp", relation: "工具互操作", local: "标准化工具与上下文的连接方式，不替代身份、授权和业务审批。" },
   { concept: "A2A", owner: "A2A · 智能体间协议", href: "/modules/a2a", relation: "Agent 协作", local: "面向 Agent 发现、委派与结果交换；不等于多 Agent 架构本身。" },
-  { concept: "评估与治理", owner: "评估", href: "/modules/evaluation", relation: "上线门槛", local: "用可验证终态衡量任务成功，并检查轨迹、安全、时延与成本。" },
+  { concept: "评估与治理", owner: "评估", href: "/modules/evaluation", relation: "上线检查", local: "用可验证的最终状态衡量任务成功，并检查轨迹、安全、时延与成本。" },
   { concept: "身份与授权", owner: "AI 安全", href: "/modules/security", relation: "执行边界", local: "应用在每次工具调用前绑定主体、验证权限、执行策略并留下审计证据。" },
 ];
 
@@ -77,7 +77,7 @@ const agentActions = [
     mechanism: "解析工具返回、回读权威系统、比较前置 / 后置状态，更新任务状态和证据；随后触发下一轮思考，或确认完成、失败、超时和人工接管。",
     io: "输入：API 响应、数据库状态、事件、错误、Trace。输出：已验证事实、状态增量、异常、完成证据和下一轮信号。",
     failure: "常见失败：把 HTTP 200 当业务成功、忽略异步状态、相信模型生成的成功描述、未发现部分失败、旧结果污染下一轮。",
-    control: "工程控制：后置条件、Read-after-Write、来源与时间戳、Checkpoint、异常分类、终态断言和人工复核。",
+    control: "工程控制：后置条件、Read-after-Write、来源与时间戳、Checkpoint、异常分类、最终状态检查和人工复核。",
     cloud: "云服务连接：数据库 / 缓存、事件总线、Tracing、日志与指标、评估平台、告警和状态存储。",
     presales: "售前判断：客户用哪个系统状态证明任务完成？异步结果多久可见？失败和人工接管由谁运营？",
   },
@@ -100,7 +100,7 @@ const coreCapabilities = [
     mechanism: "简单任务采用逐步规划（每轮只定下一步）；长任务采用计划—执行（先列里程碑，再逐项验证）；可并行任务可由编排者拆给执行者，汇总后再校验。",
     io: "输入：目标、当前状态、工具能力、约束、时间与成本预算。输出：里程碑、候选动作、依赖、预期结果、检查点和退出条件。",
     failure: "常见失败：过度规划、遗漏前置条件、计划与工具不匹配、环境变化后仍照旧执行、拆分过细导致成本激增。",
-    control: "工程控制：计划 Schema、最大深度 / 轮次、预算、关键里程碑审批、每次观察后重规划、终态检查。",
+    control: "工程控制：计划 Schema、最大深度 / 轮次、预算、关键里程碑审批、每次观察后重规划、最终状态检查。",
     cloud: "云服务连接：Agent Runtime、工作流 / 任务编排、模型路由、队列、分布式任务、评估与 Trace。",
     presales: "售前判断：路径为什么不可预先确定？任务最长多久？哪些里程碑必须人工确认？并行带来的收益是否覆盖成本？",
   },
@@ -141,16 +141,16 @@ const interactionBoundaries = [
   { capability: "Function Calling", purpose: "表达一次工具调用意图和结构化参数", owns: "模型 ↔ 应用", boundary: "应用仍负责授权、执行、幂等、回读与审批。" },
   { capability: "MCP", purpose: "统一发现并连接工具、资源与提示原语", owns: "Agent / AI 应用 ↔ 工具与数据", boundary: "不是 Agent 编排器，也不提供天然安全认证。" },
   { capability: "A2A", purpose: "发现其他 Agent、委派任务并交换任务状态与产物", owns: "Agent ↔ Agent", boundary: "单系统内部编排不必为了使用协议而拆成分布式协作。" },
-  { capability: "API / RPA / Computer Use", purpose: "把决策变成外部系统动作", owns: "应用控制面 ↔ 目标系统", boundary: "有稳定 API 时优先 API；界面操作需隔离环境、最小权限与回放证据。" },
+  { capability: "API / RPA / Computer Use", purpose: "把决策变成外部系统动作", owns: "应用侧控制规则 ↔ 目标系统", boundary: "有稳定 API 时优先 API；界面操作需隔离环境、最小权限与回放证据。" },
 ];
 
 const cloudHooks = [
   { stage: "模型与路由", services: "模型即服务、模型目录、推理端点、AI 网关、内容安全", value: "按任务复杂度选择模型并统一限流、版本和策略", discover: "哪些决策需要强模型？是否允许跨地域或多模型？" },
-  { stage: "Agent Runtime", services: "托管 Agent 运行时、Serverless、容器、Kubernetes、任务队列", value: "承载循环、状态、超时、重试、弹性和长任务", discover: "任务持续多久？同步还是异步？失败如何恢复？" },
+  { stage: "Agent Runtime", services: "托管 Agent 运行时、Serverless、容器、Kubernetes、任务队列", value: "运行循环和长任务，管理状态、超时、重试与弹性", discover: "任务持续多久？同步还是异步？失败如何恢复？" },
   { stage: "工具接入", services: "API 网关、MCP Gateway、函数计算、工作流、事件总线、SaaS 连接器", value: "把业务 API 变成可发现、可校验、可治理的工具", discover: "有哪些现成 API？读写动作如何分级和审批？" },
   { stage: "知识与状态", services: "托管搜索、向量库、数据库、对象存储、缓存、会话与 Memory", value: "保存证据、任务状态和经过治理的长期记忆", discover: "哪些状态是权威事实？谁能修改、撤回和删除？" },
   { stage: "身份与安全", services: "IAM、工作负载身份、密钥管理、策略引擎、WAF、私网与沙箱", value: "让每次工具调用绑定真实主体并执行最小权限", discover: "用用户身份还是服务身份？哪些动作不可逆？" },
-  { stage: "可观测与评估", services: "Tracing、日志、指标、APM、评估平台、告警、SIEM", value: "还原任务轨迹，定位失败并持续检查质量和风险", discover: "成功终态是什么？日志能否关联模型与工具步骤？" },
+  { stage: "可观测与评估", services: "Tracing、日志、指标、APM、评估平台、告警、SIEM", value: "还原任务轨迹，定位失败并持续检查质量和风险", discover: "怎样确认任务最终完成？日志能否关联模型与工具步骤？" },
   { stage: "运营与 FinOps", services: "预算、配额、成本分析、缓存、容量与发布平台", value: "控制轮次、工具消耗和每个成功任务成本", discover: "P95、并发、任务预算和回滚要求是什么？" },
 ];
 
@@ -161,7 +161,7 @@ const agentReadingSections: ReadingSection[] = [
   { id: "capabilities", label: "关键组件", eyebrow: "规划、记忆与工具" },
   { id: "memory-interaction", label: "状态与互操作", eyebrow: "事实、记忆与协议" },
   { id: "patterns", label: "架构模式", eyebrow: "自治怎样增加" },
-  { id: "architecture", label: "参考架构", eyebrow: "模型与控制面" },
+  { id: "architecture", label: "参考架构", eyebrow: "模型与控制规则" },
   { id: "agent-independent-depth", label: "生产级扩展", eyebrow: "状态机与恢复" },
   { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
   { id: "poc", label: "PoC 剧本", eyebrow: "按动作风险推进" },
@@ -173,20 +173,20 @@ const agentSystemLens: LensPanel[] = [
   {
     id: "agent-run",
     label: "一次 Run",
-    title: "Agent 不是一次模型调用，而是一台受控状态机",
+    title: "一次 Agent Run 按受控状态机推进",
     description: "每一轮都要从环境事实开始，以可验证状态结束；模型负责提出下一步，应用负责执行和确认。",
-    takeaway: "工具返回成功不等于业务完成，必须由权威系统状态和终态断言结束 Run。",
+    takeaway: "工具返回成功不等于业务完成，必须由权威系统状态和最终状态检查来结束 Run。",
     nodes: [
       { label: "感知", en: "Perceive", detail: "绑定身份，读取请求、事件、事实源与仍缺少的信息。", signal: "输出：结构化任务状态" },
       { label: "思考", en: "Reason", detail: "在工具、策略、预算和当前状态下选择下一步。", signal: "输出：动作意图或停止原因" },
       { label: "行动", en: "Act", detail: "应用校验参数、授权、审批和幂等后调用真实系统。", signal: "输出：操作编号与真实返回" },
       { label: "观察", en: "Observe", detail: "回读权威状态，判断预期后置条件是否发生。", signal: "输出：已验证事实与异常" },
-      { label: "继续或终止", en: "Continue / Stop", detail: "更新检查点，继续下一轮、交还人工或写入终态。", signal: "输出：可恢复的 Run 状态" },
+      { label: "继续或终止", en: "Continue / Stop", detail: "更新检查点，继续下一轮、交还人工或记录最终状态。", signal: "输出：可恢复的 Run 状态" },
     ],
   },
   {
     id: "agent-controls",
-    label: "控制平面",
+    label: "控制规则",
     title: "自治能力越强，模型外控制必须越明确",
     description: "规划、记忆和工具让 Agent 能持续运行；身份、策略、检查点与人工接管让它可被企业接受。",
     takeaway: "不要把 Prompt 写成权限系统；授权、金额、审批、补偿与审计必须落在确定性系统。",
@@ -201,7 +201,7 @@ const agentSystemLens: LensPanel[] = [
   {
     id: "agent-recovery",
     label: "一次故障",
-    title: "最危险的不是调用失败，而是不知道动作是否已经发生",
+    title: "动作结果未知是最危险的失败",
     description: "长任务、异步 API 和网络重试会产生模糊状态；可靠 Agent 必须能恢复、确认、补偿并留下证据。",
     takeaway: "每个写操作都需要幂等键、操作编号、后置条件和可恢复检查点，高风险路径还需要人工接管。",
     nodes: [
@@ -209,7 +209,7 @@ const agentSystemLens: LensPanel[] = [
       { label: "进程中断", detail: "模型超时、Worker 崩溃或响应在网络中丢失。", signal: "保存：动作前检查点与调用证据" },
       { label: "恢复 Run", detail: "从持久状态恢复，而不是重新生成整段计划。", signal: "读取：已执行步骤与未决动作" },
       { label: "回读事实", detail: "查询业务系统确认动作成功、失败、仍处理中或状态未知。", signal: "判断：权威后置条件" },
-      { label: "继续、补偿或人审", detail: "只在状态明确后继续；未知或高风险状态交还人工。", signal: "留下：终态、原因与审计轨迹" },
+      { label: "继续、补偿或人审", detail: "只在状态明确后继续；未知或高风险状态交还人工。", signal: "留下：最终状态、原因与审计轨迹" },
     ],
   },
 ];
@@ -240,7 +240,7 @@ export default function AgentModulePage() {
             >Agent<br /><span>智能体 · AI Agent</span></h1>
           </div>
           <div className="ragDefinition">
-            <p>让模型在受控边界内，根据环境反馈选择下一步并调用工具完成任务；核心不是“更自主”，而是把动态判断、确定性控制和业务授权正确分层。</p>
+            <p>让模型在受控边界内，根据环境反馈选择下一步并调用工具完成任务；系统需要明确区分模型的动态判断、应用的确定性控制和业务授权。</p>
             <ModuleHeroMetrics sectionCount={agentReadingSections.length} questionCount={agentQa.length} evidenceCount={agentEvidenceCards.length} />
           </div>
         </div>
@@ -258,7 +258,7 @@ export default function AgentModulePage() {
           <div className="decisionBanner">
             <p className="kicker">PRESALES POSITION</p>
             <h3>一句话定位</h3>
-            <p>客户购买的不是“会自己想办法的模型”，而是一套能识别目标、调用获准工具、验证结果，并在失败或高风险时停下来交还人工的任务执行系统。</p>
+            <p>客户真正需要的是能够识别目标、调用获准工具、验证结果，并在失败或高风险时停下来交还人工的任务执行系统。</p>
           </div>
 
           <AgentControlPrimer />
@@ -289,7 +289,7 @@ export default function AgentModulePage() {
               <article className="externalMemory">
                 <p className="miniLabel">AI AGENT</p>
                 <h4>模型管理下一步</h4>
-                <p>模型根据目标与当前状态选择动作，读取真实工具结果后继续、修正、完成或退出，但所有动作仍受应用控制面约束。</p>
+                <p>模型根据目标与当前状态选择动作，读取真实工具结果后继续、修正、完成或退出，但每个动作仍受应用侧控制规则（Control Plane）约束。</p>
               </article>
             </div>
 
@@ -297,7 +297,7 @@ export default function AgentModulePage() {
               <header className="principleDepthIntro">
                 <p className="miniLabel">PRESALES MECHANISM</p>
                 <h4>Agent 的四个关键动作：感知—思考—行动—观察</h4>
-                <p>Agent 不是一次回答，而是一个闭环：先把输入整理成当前任务状态，再选择并执行动作，随后读取真实环境结果。传统抽象常写作“观察—决策—行动—反馈”；这里进一步区分感知与行动后的观察。每次观察都会成为下一轮感知与思考的新依据，直到<strong>完成、失败、超时、超预算或交还人工</strong>。</p>
+                <p>Agent 会反复执行一组动作：把输入整理成当前任务状态，选择并执行动作，再读取真实环境结果。传统抽象常写作“观察—决策—行动—反馈”；这里进一步区分感知与行动后的观察。每次观察都会成为下一轮感知与思考的新依据，直到<strong>完成、失败、超时、超预算或交还人工</strong>。</p>
               </header>
               <div className="chainWrap">
                 <div className="chainLabel"><strong>单次任务运行 · Run</strong><span>Controlled agent loop</span></div>
@@ -325,8 +325,8 @@ export default function AgentModulePage() {
               <p className="paperBoundary"><strong>生产可观测边界：</strong>“思考（Reason）”不等于要求模型公开隐藏的思维链（Chain-of-Thought）。系统应记录可审计的<strong>计划、决策摘要、工具调用、环境结果、策略判断与停止原因</strong>；这些足以复盘行为，同时避免把冗长推理文字误当成真实依据。<strong>模型会调用 API，不等于模型拥有 API 权限。</strong></p>
               <div className="principleLimits">
                 <article><span>A</span><h5>真实反馈优先于模型描述</h5><p>工具返回、权威数据库状态和执行错误决定下一步；“模型说成功”不等于业务已经成功。</p></article>
-                <article><span>B</span><h5>循环必须有显式终态</h5><p>完成、失败、超时、超预算、最大轮次和人工接管都要能被系统识别与审计。</p></article>
-                <article><span>C</span><h5>应用控制面约束每一步</h5><p>模型可以建议下一步，但工具、身份、预算、审批、执行和终止条件仍由应用掌握。</p></article>
+                <article><span>B</span><h5>循环必须有明确的最终状态</h5><p>完成、失败、超时、超预算、最大轮次和人工接管都要能被系统识别与审计。</p></article>
+                <article><span>C</span><h5>应用侧控制每一步</h5><p>模型可以建议下一步，但工具、身份、预算、审批、执行和终止条件仍由应用掌握。</p></article>
               </div>
               <Link className="paperAnchor" href="/references#source-react-2023">原理来源：ReAct 论文 ↗</Link>
             </div>
@@ -336,7 +336,7 @@ export default function AgentModulePage() {
               <div className="exampleSteps">
                 <article><span>01</span><h4>感知<small>Perceive</small></h4><p>把身份、账单、客户意图、退款政策与待确认信息整理为当前任务状态。</p></article>
                 <article><span>02</span><h4>思考与行动<small>Reason &amp; Act</small></h4><p>判断应先查合同还是订单；模型提出调用，应用校验金额、权限和审批后执行。</p></article>
-                <article><span>03</span><h4>观察与闭环<small>Observe &amp; Close</small></h4><p>回读工单和退款状态；有操作编号才确认完成，冲突、超限或失败则进入下一轮或交还人工。</p></article>
+                <article><span>03</span><h4>观察并决定是否继续<small>Observe &amp; Close</small></h4><p>回读工单和退款状态；有操作编号才确认完成，冲突、超限或失败则进入下一轮或交还人工。</p></article>
               </div>
             </div>
             <CriticalBoundary>Agent 的“思考”不能替代业务控制。身份、权限、金额、审批、幂等、补偿和审计必须由确定性系统执行；Prompt 不是授权策略，模型输出也不是系统事实。</CriticalBoundary>
@@ -422,8 +422,8 @@ export default function AgentModulePage() {
               ))}
             </div>
             <div className="fitGrid" style={{ marginTop: 18 }}>
-              <article className="fit"><h4><span>✓</span>适合 Agent 的任务</h4><ul><li>步骤数量或工具路径无法提前确定</li><li>需要综合非结构化信息和环境反馈</li><li>有清晰成功终态、沙箱和人工接管</li><li>动态判断带来的收益高于新增风险与成本</li></ul></article>
-              <article className="fit maybe"><h4><span>!</span>优先不用 Agent</h4><ul><li>固定规则已经能稳定、低成本完成</li><li>缺少可验证终态或真实工具反馈</li><li>高风险动作无法审批、回滚或补偿</li><li>没有代表性任务集和责任人持续运营</li></ul></article>
+              <article className="fit"><h4><span>✓</span>适合 Agent 的任务</h4><ul><li>步骤数量或工具路径无法提前确定</li><li>需要综合非结构化信息和环境反馈</li><li>有清晰的成功状态、沙箱和人工接管</li><li>动态判断带来的收益高于新增风险与成本</li></ul></article>
+              <article className="fit maybe"><h4><span>!</span>优先不用 Agent</h4><ul><li>固定规则已经能稳定、低成本完成</li><li>缺少可验证的最终状态或真实工具反馈</li><li>高风险动作无法审批、回滚或补偿</li><li>没有代表性任务集和责任人持续运营</li></ul></article>
             </div>
           </div>
 
@@ -432,7 +432,7 @@ export default function AgentModulePage() {
             <div className="chainWrap">
               <div className="chainLabel"><strong>设计与治理链</strong><span>Design &amp; governance</span></div>
               <div className="flow">
-                {[{zh:"任务与终态",en:"Task & Outcome"},{zh:"指令与工具",en:"Instructions & Tools"},{zh:"身份与策略",en:"Identity & Policy"},{zh:"评测与红队",en:"Evals & Red Team"},{zh:"版本与发布",en:"Version & Release"}].map((step, i) => <div className="flowStep" key={step.zh}><span className="flowNo">{String(i+1).padStart(2,"0")}</span><div className="flowTerm"><strong>{step.zh}</strong><small>{step.en}</small></div></div>)}
+                {[{zh:"任务与最终状态",en:"Task & Outcome"},{zh:"指令与工具",en:"Instructions & Tools"},{zh:"身份与策略",en:"Identity & Policy"},{zh:"评测与红队",en:"Evals & Red Team"},{zh:"版本与发布",en:"Version & Release"}].map((step, i) => <div className="flowStep" key={step.zh}><span className="flowNo">{String(i+1).padStart(2,"0")}</span><div className="flowTerm"><strong>{step.zh}</strong><small>{step.en}</small></div></div>)}
               </div>
               <div className="chainLabel runtime"><strong>在线任务链</strong><span>Serving pipeline</span></div>
               <div className="flow runtimeFlow">
@@ -440,8 +440,8 @@ export default function AgentModulePage() {
               </div>
             </div>
             <div className="architectureNotes">
-              <p><strong>共同控制面</strong>：模型与 Prompt 版本、工具目录、身份策略、预算、Trace、评测集、发布和回滚。</p>
-              <p><strong>关键分界</strong>：模型负责提出决策；应用与云平台负责验证身份、授权工具、执行动作并确认真实终态。</p>
+              <p><strong>共同使用的控制部分（Control Plane）</strong>：模型与 Prompt 版本、工具目录、身份策略、预算、Trace、评测集、发布和回滚。</p>
+              <p><strong>关键分界</strong>：模型负责提出决策；应用与云平台负责验证身份、授权工具、执行动作并确认真实的最终状态。</p>
             </div>
           </div>
 
@@ -453,7 +453,7 @@ export default function AgentModulePage() {
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
             <div className="subHead"><span>2.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
-            <div className="cloudIntro"><p>Agent 会把模型服务延伸成跨运行时、API、身份、数据、安全和运维的整体方案。售前应先用厂商中立能力拆解，再映射当期云产品、地域、配额和计费。</p><span>模型不是全部</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
+            <div className="cloudIntro"><p>Agent 会把模型服务延伸到运行时、API、身份、数据、安全和运维。售前应先用厂商中立的能力描述拆解需求，再对应到当前云产品、地域、配额和计费。</p><span>模型只是其中一部分</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
             <div className="cloudTable tableWrap">
               <table><thead><tr><th>Agent 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
                 {cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
@@ -462,19 +462,19 @@ export default function AgentModulePage() {
             <BalancedGrid className="solutionBundles" maxColumns={3}>
               <article><p className="miniLabel">BUNDLE A</p><h4>企业服务 Agent</h4><p>模型服务 + RAG / 搜索 + CRM / 工单工具 + API 网关 + 用户身份 + 审批流 + Trace。</p><small>价值：从回答问题延伸到受控地完成服务流程</small></article>
               <article><p className="miniLabel">BUNDLE B</p><h4>Agent 工具与身份平台</h4><p>托管 Runtime + MCP / API Gateway + 工作负载身份 + 密钥 + 策略引擎 + 沙箱。</p><small>价值：把零散 API 变成可发现、可授权、可审计的工具面</small></article>
-              <article><p className="miniLabel">BUNDLE C</p><h4>AgentOps 控制面</h4><p>Tracing / APM + 评估平台 + 日志 / SIEM + 发布回滚 + 配额预算 + FinOps。</p><small>价值：把长轨迹失败、风险和成本变成持续运营指标</small></article>
+              <article><p className="miniLabel">BUNDLE C</p><h4>AgentOps 管理与监控</h4><p>Tracing / APM + 评估平台 + 日志 / SIEM + 发布回滚 + 配额预算 + FinOps。</p><small>价值：把长轨迹失败、风险和成本变成持续运营指标</small></article>
             </BalancedGrid>
           </div>
 
           <div className="subsection" id="poc">
             <div className="subHead"><span>2.10</span><div><p className="kicker">POC PLAYBOOK</p><h3>按自治风险逐级验证 Agent</h3></div></div>
             <div className="pocGrid">
-              <article><span>SHADOW</span><h4>任务与终态</h4><p>先以观察或建议模式运行，冻结真实任务、可验证终态、风险等级和人工 / 工作流基线。</p></article>
-              <article><span>READ ONLY</span><h4>最小工具闭环</h4><p>接入完成任务必需的最少只读工具；验证身份、结构化参数、超时、停止、Trace 和后置条件。</p></article>
+              <article><span>SHADOW</span><h4>任务与最终状态</h4><p>先以观察或建议模式运行，固定真实任务、可验证的最终状态、风险等级和现有人工 / 工作流表现。</p></article>
+              <article><span>READ ONLY</span><h4>最小可用工具流程</h4><p>接入完成任务必需的最少只读工具；验证身份、结构化参数、超时、停止、Trace 和后置条件。</p></article>
               <article><span>CONTROLLED WRITE</span><h4>受控副作用</h4><p>只开放可逆或低风险写入，验证审批绑定、幂等、重复消息、结果未知、部分成功、补偿和恢复。</p></article>
-              <article><span>OPERATIONS</span><h4>灰度与运营交接</h4><p>按风险切片验收成功率、接管率、P95 和成功任务成本；满足门禁后再扩大自治，不预设固定天数。</p></article>
+              <article><span>OPERATIONS</span><h4>灰度与运营交接</h4><p>按风险分别验收成功率、接管率、P95 和成功任务成本；通过当前检查后再扩大自治，不预设固定天数。</p></article>
             </div>
-            <div className="gates"><h4>建议的 Go / No-Go 门槛结构</h4><div className="gateList"><span>端到端任务成功率</span><span>关键步骤完成率</span><span>策略违规 = 0</span><span>高风险误执行 = 0</span><span>人工接管率</span><span>P95 / 完成时长</span><span>每个成功任务成本</span><span>可恢复 / 可回滚</span></div><p>具体数值按业务风险、人工基线与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
+            <div className="gates"><h4>建议的通过 / 暂停条件</h4><div className="gateList"><span>端到端任务成功率</span><span>关键步骤完成率</span><span>策略违规 = 0</span><span>高风险误执行 = 0</span><span>人工接管率</span><span>P95 / 完成时长</span><span>每个成功任务成本</span><span>可恢复 / 可回滚</span></div><p>具体数值按业务风险、现有人工表现与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
           </div>
 
           <div className="subsection" id="evidence" data-quality-section="evidence">

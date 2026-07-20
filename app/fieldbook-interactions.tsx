@@ -154,7 +154,7 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
             <h3>{item.zh}</h3>
             <p className="moduleResultEn">{item.en}</p>
             <p>{item.summary}</p>
-            <strong>客户信号：{item.cue}</strong>
+            <strong>什么时候看这个模块：{item.cue}</strong>
           </Link>
         )))}
       </div>

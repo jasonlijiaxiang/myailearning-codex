@@ -80,7 +80,7 @@ const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
 
 const learningPaths = [
   { no: "01", title: "第一次与客户聊 AI 平台", time: "建立全局判断", route: "场景解决方案 → 模型格局 → LLM → 评估", outcome: "先判断客户真正要解决的问题，再讨论模型和产品。" },
-  { no: "02", title: "正在设计企业知识助手", time: "形成 PoC 路线", route: "数据工程 → RAG → 安全 → AI 网关 → AI Ops", outcome: "把知识、权限、回答质量和上线运营连成完整方案。" },
+  { no: "02", title: "正在设计企业知识助手", time: "规划 PoC 验证", route: "数据工程 → RAG → 安全 → AI 网关 → AI Ops", outcome: "把知识、权限、回答质量和上线运营连成完整方案。" },
   { no: "03", title: "客户希望 AI 执行业务任务", time: "控制行动风险", route: "Agent → MCP / A2A → 安全 → 评估 → AI Ops", outcome: "区分模型决策、工具权限、持久任务与业务完成状态。" },
   { no: "04", title: "准备规划私有化 AI 基础设施", time: "形成容量证据", route: "模型格局 → 推理 → 平台 → 算力 → 数据工程", outcome: "从真实负载反推模型服务、调度、网络、存储与采购。" },
 ];
@@ -106,7 +106,7 @@ export default function Home() {
           <div className="heroCopy">
             <p className="eyebrow">TECHNICAL PRESALES FIELD MANUAL · V2.0</p>
             <h1>把复杂 AI 技术<br />变成客户能做的决定</h1>
-            <p className="heroLead">这不是产品目录，也不是概念词典。它把原理、架构、失败模式、云服务、验收证据和客户回答组织成一套可检索、可深读、可在现场使用的技术售前工作台。</p>
+            <p className="heroLead">这里把原理、架构、失败原因、云服务、验收证据和客户回答整理成一本技术手册：既能搜索和深入阅读，也能在客户现场随手查阅。</p>
             <div className="heroActions">
               <a className="primaryButton" href="#available-modules">从客户问题开始</a>
               <a className="textButton" href="#learning-paths">按任务学习 <span>↓</span></a>
@@ -118,7 +118,7 @@ export default function Home() {
             <h2>客户会议前，快速完成三件事</h2>
             <ol>
               <li><span>01</span><div><strong>解释清楚</strong><p>用机制图和边界说明技术为什么有效、又会在哪里失效。</p></div></li>
-              <li><span>02</span><div><strong>选择正确</strong><p>根据客户信号比较路线、云能力、风险和验收门槛。</p></div></li>
+              <li><span>02</span><div><strong>选择正确</strong><p>先看客户遇到了什么问题，再比较可选方案、云服务、风险和通过条件。</p></div></li>
               <li><span>03</span><div><strong>回答有据</strong><p>从短答进入深答、追问与一手来源，不靠模糊话术。</p></div></li>
             </ol>
             <div className="heroDecisionFoot"><strong>{moduleCount}</strong><span>个独立模块</span><strong>{layerCount}</strong><span>层知识地图</span></div>
@@ -142,8 +142,8 @@ export default function Home() {
       <section className="fieldbookPromise" aria-labelledby="promise-title">
         <div className="promiseIntro"><p className="kicker">READING EXPERIENCE</p><h2 id="promise-title">同一份知识，支持三种阅读深度</h2></div>
         <div className="promiseGrid">
-          <article><span>30 秒</span><h3>先拿到判断</h3><p>定义、客户信号、推荐路线和不可越过的边界首先出现。</p></article>
-          <article><span>10 分钟</span><h3>理解系统为什么这样工作</h3><p>机制、数据流、控制面和生产故障形成连续叙事。</p></article>
+          <article><span>30 秒</span><h3>先拿到判断</h3><p>先看到定义、客户遇到的问题、建议方案和必须注意的限制。</p></article>
+          <article><span>10 分钟</span><h3>理解系统为什么这样工作</h3><p>把工作原理、数据如何流转、谁负责控制，以及常见故障串起来讲。</p></article>
           <article><span>客户现场</span><h3>搜索问题并回到证据</h3><p>按场景筛选高频问答，短答、深答、追问和来源在同一处。</p></article>
         </div>
       </section>

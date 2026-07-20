@@ -21,15 +21,15 @@ const conceptLinks = [
   { concept: "解析、OCR 与 Chunk", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "知识供给", local: "决定原始资料能否变成完整、可定位、可撤回的检索单元。" },
   { concept: "搜索与向量数据库", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "检索引擎", local: "负责稀疏、稠密、过滤、索引与增量更新，不等同于完整 RAG。" },
   { concept: "Prompt 与 Grounding", owner: "提示词工程", href: "/modules/prompt-engineering", relation: "生成约束", local: "把检索证据、回答规则、引用格式和拒答条件组装成模型输入。" },
-  { concept: "评估、安全与网关", owner: "评估", href: "/modules/evaluation", relation: "生产控制", local: "把检索、生成、权限、风险、成本和 SLA 变成可观测控制面。" },
+  { concept: "评估、安全与网关", owner: "评估", href: "/modules/evaluation", relation: "生产控制", local: "用日志、指标和链路追踪观察检索、生成、权限、风险、成本和 SLA。" },
   { concept: "Agent 与 GraphRAG", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "下游演进", local: "多步检索、工具调用与全局主题分析属于 RAG 的组合或扩展。" },
-  { concept: "容器、Serverless 与算力", owner: "AI 基础设施平台", href: "/modules/ai-infra-platform", relation: "运行底座", local: "承载解析任务、检索服务、模型推理和峰值弹性。" },
+  { concept: "容器、Serverless 与算力", owner: "AI 基础设施平台", href: "/modules/ai-infra-platform", relation: "运行底座", local: "运行解析任务、检索服务和模型推理，并应对流量高峰。" },
 ];
 
 const conceptRows = balanceGridRows(conceptLinks, 4);
 
 const ragVariants = [
-  { name: "Naive RAG", cue: "单次查询、单一知识源、快速基线", pipeline: "切块 → 向量检索 → Top-K → 生成", boundary: "实现快，但容易受切块、召回和噪声影响。" },
+  { name: "Naive RAG", cue: "单次查询、单一知识源、快速对照实现", pipeline: "切块 → 向量检索 → Top-K → 生成", boundary: "实现快，但容易受切块、召回和噪声影响。" },
   { name: "Advanced RAG", cue: "企业知识问答与可控质量", pipeline: "查询改写 → 混合召回 → 过滤 → 重排 → 压缩 → 生成", boundary: "质量更稳，但组件、时延和评估复杂度增加。" },
   { name: "Modular / Agentic RAG", cue: "跨系统、多步问题与动态工具", pipeline: "计划 → 选择知识源 → 多轮检索 / 工具 → 汇总", boundary: "适合复杂任务；必须加强预算、权限和轨迹评估。" },
   { name: "GraphRAG", cue: "关系密集、主题归纳与全局问题", pipeline: "实体 / 关系抽取 → 社区 → 摘要 → 局部或全局检索", boundary: "索引成本高，不应替代所有普通事实检索。" },
@@ -39,11 +39,11 @@ const cloudHooks = [
   { stage: "数据进入", services: "对象存储、数据库、文件服务、SaaS 连接器、CDC、消息队列", value: "统一沉淀知识源并建立增量同步", discover: "数据在哪里？新增、修改、删除多久必须生效？" },
   { stage: "文档理解", services: "OCR、文档智能、批处理、函数计算、容器任务", value: "把 PDF、扫描件、表格和图片转成可追溯内容", discover: "扫描件、复杂表格、多栏文档各占多少？" },
   { stage: "数据治理", services: "数据目录、元数据、质量、脱敏、主数据、血缘", value: "明确权威来源、版本、负责人和保留策略", discover: "谁批准内容？冲突版本以谁为准？" },
-  { stage: "检索与索引", services: "托管搜索、向量数据库、关系数据库、缓存、知识图谱", value: "承载关键词、语义、过滤与关系查询", discover: "精确编号、语义问题、关系问题分别占多少？" },
+  { stage: "检索与索引", services: "托管搜索、向量数据库、关系数据库、缓存、知识图谱", value: "提供关键词、语义、过滤与关系查询", discover: "精确编号、语义问题、关系问题分别占多少？" },
   { stage: "模型能力", services: "模型即服务、Embedding、Reranker、模型微调与推理", value: "提供向量化、重排、生成和模型可替换性", discover: "数据能否出域？质量、语言、时延如何排序？" },
   { stage: "应用运行", services: "Serverless、容器、Kubernetes、API 网关、负载均衡", value: "把知识链和问答链变成弹性在线服务", discover: "并发、峰值系数、P95 和可用性目标是什么？" },
   { stage: "安全合规", services: "IAM、KMS、密钥管理、WAF、私网连接、审计", value: "让身份、权限和密钥贯穿检索与生成", discover: "权限来自哪里？是否要求租户、文档或字段级隔离？" },
-  { stage: "运营优化", services: "日志、Tracing、APM、评估平台、告警、FinOps", value: "定位失败、持续评测并核算每个成功回答成本", discover: "谁运营质量？如何发现退化并形成改进闭环？" },
+  { stage: "运营优化", services: "日志、Tracing、APM、评估平台、告警、FinOps", value: "定位失败、持续评测并核算每个成功回答成本", discover: "谁负责质量？发现效果变差后怎样持续改进？" },
 ];
 
 const knowledgeFlow = [
@@ -105,7 +105,7 @@ const ragFailureChain = [
 ];
 
 const ragExtensionChoices = [
-  { pattern: "普通 / Advanced RAG", use: "单跳事实、制度、产品与知识问答", adds: "混合检索、过滤、重排、引用", cost: "生产基线", boundary: "不要被复杂名称诱导跳过基础质量链。" },
+  { pattern: "普通 / Advanced RAG", use: "单跳事实、制度、产品与知识问答", adds: "混合检索、过滤、重排、引用", cost: "生产环境的常用做法", boundary: "不要被复杂名称诱导跳过基础质量链。" },
   { pattern: "Agentic RAG", use: "多步拆解、选源、查询改写或工具联动", adds: "路由、计划、循环、预算和轨迹评估", cost: "调用次数和故障路径增加", boundary: "只对复杂问题路由启用，不默认覆盖所有请求。" },
   { pattern: "GraphRAG", use: "关系密集、跨文档归纳与全局主题问题", adds: "实体关系、社区与分层摘要", cost: "索引、更新和运营链更重", boundary: "精确事实与常规问答通常仍需普通检索。" },
   { pattern: "Multimodal RAG", use: "答案依赖页面布局、图表、图纸或图像", adds: "OCR / Caption、统一嵌入或页面多向量", cost: "视觉处理、存储和评测增加", boundary: "固定字段优先专业解析；开放视觉理解才交给 VLM。" },
@@ -122,11 +122,11 @@ const ragReadingSections: ReadingSection[] = [
   { id: "rag-variants", label: "架构模式", eyebrow: "复杂度怎样增加" },
   { id: "when-to-use", label: "适用性判断", eyebrow: "先判断是否该做" },
   { id: "architecture", label: "双链架构", eyebrow: "离线与在线" },
-  { id: "choice", label: "路线选择", eyebrow: "比较替代方案" },
+  { id: "choice", label: "方案选择", eyebrow: "比较替代方案" },
   { id: "rag-independent-depth", label: "生产级扩展", eyebrow: "生命周期与迁移" },
   { id: "evidence", label: "数据与证据", eyebrow: "知道适用边界" },
   { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
-  { id: "poc", label: "PoC 剧本", eyebrow: "按风险门禁推进" },
+  { id: "poc", label: "PoC 验证步骤", eyebrow: "按风险设置通过条件" },
   { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
 ];
 
@@ -161,16 +161,16 @@ const ragSystemLens: LensPanel[] = [
   },
   {
     id: "rag-cloud",
-    label: "一套云方案",
-    title: "云机会不是向量库一项，而是端到端知识供应链",
-    description: "每个技术阶段对应不同购买角色、云能力和验收信号；售前需要把它们组织成可分阶段采购的方案。",
-    takeaway: "先用厂商中立能力确认责任边界，再映射到目标云的产品、地域、配额、SLA 与计费单位。",
+    label: "云服务怎么配",
+    title: "云服务不只涉及向量库，还覆盖资料进入、检索、回答和后续维护",
+    description: "每个技术阶段涉及不同的购买角色、云服务和验收标准；售前需要把它们整理成可以分阶段采购的方案。",
+    takeaway: "先用厂商中立的能力描述确认责任边界，再对应到目标云的产品、地域、配额、SLA 与计费单位。",
     nodes: [
       { label: "知识供给", detail: "对象存储、连接器、CDC、文档智能和批处理。", signal: "验收：新增、修改、删除传播 SLA" },
       { label: "检索底座", detail: "托管搜索、向量数据库、缓存、关系与图谱查询。", signal: "验收：权限过滤后的候选召回" },
       { label: "模型能力", detail: "Embedding、Reranker、生成模型与模型路由。", signal: "验收：质量、时延与单次成功成本" },
       { label: "安全运行", detail: "API 网关、容器、Serverless、IAM、KMS 与私网。", signal: "验收：越权泄漏、峰值与故障恢复" },
-      { label: "持续运营", detail: "Tracing、评估平台、告警、版本和 FinOps。", signal: "验收：退化发现、回滚与责任闭环" },
+      { label: "持续运营", detail: "Tracing、评估平台、告警、版本和 FinOps。", signal: "验收：发现效果变差、能够回滚、责任归属明确" },
     ],
   },
 ];
@@ -198,7 +198,7 @@ export default function RagModulePage() {
             <h1 className="moduleHeroTitle" id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h1>
           </div>
           <div className="ragDefinition">
-            <p>用可更新、可追溯的外部证据增强模型回答；核心不是“接一个向量库”，而是建立一条可评估、可授权、可运营的知识供应链。</p>
+            <p>用可更新、可追溯的外部证据增强模型回答；关键在于打通从资料进入、检索到回答输出的完整流程，并让它能够评估、控制权限和持续维护。</p>
             <ModuleHeroMetrics sectionCount={ragReadingSections.length} questionCount={ragQa.length} evidenceCount={evidenceCards.length} />
           </div>
         </div>
@@ -216,7 +216,7 @@ export default function RagModulePage() {
           <div className="decisionBanner">
             <p className="kicker">PRESALES POSITION</p>
             <h3>一句话定位</h3>
-            <p>客户要的不是一个“会聊天的搜索框”，而是一套能在正确权限下找到正确证据、生成可核验回答，并持续知道哪里做错了的系统。</p>
+            <p>客户需要的系统应当能在正确权限下找到正确证据、生成可核验的回答，并持续发现问题出在哪里。</p>
           </div>
 
           <RagArchitecturePrimer />
@@ -343,7 +343,7 @@ export default function RagModulePage() {
                 <tbody>
                   <tr><th>BM25 / Sparse</th><td>词项、词频、稀有度与长度</td><td>精确术语、编号、名称</td><td>同义改写、跨语言表达</td><td>保留原始字段与关键词索引</td></tr>
                   <tr><th>Dense / Embedding</th><td>向量空间中的语义距离</td><td>自然语言、同义表达、模糊意图</td><td>精确值、否定、细粒度条件</td><td>用任务数据选择 embedding</td></tr>
-                  <tr className="highlight"><th>Hybrid</th><td>融合稀疏与稠密候选</td><td>企业混合语料</td><td>融合权重需要评估</td><td>通常作为企业 PoC 的主对比路线</td></tr>
+                  <tr className="highlight"><th>Hybrid</th><td>融合稀疏与稠密候选</td><td>企业混合语料</td><td>融合权重需要评估</td><td>通常作为企业 PoC 的主要对比方案</td></tr>
                   <tr><th>Reranker</th><td>问题与候选的联合相关性</td><td>提高候选排序精度</td><td>增加时延与成本</td><td>只重排有限候选并监测收益</td></tr>
                 </tbody>
               </table>
@@ -408,7 +408,7 @@ export default function RagModulePage() {
                 </ul>
               </article>
               <article className="fit maybe">
-                <h4><span>△</span> 需基线对比</h4>
+                <h4><span>△</span> 需要与现有做法对比</h4>
                 <ul>
                   <li>语料很小、稳定，可整体放入上下文</li>
                   <li>核心需求是固定格式、语气或专门行为</li>
@@ -433,19 +433,19 @@ export default function RagModulePage() {
               </div>
             </div>
             <div className="architectureNotes">
-              <p><strong>共同控制面</strong>：评测集、提示版本、来源谱系、权限策略、日志追踪、成本与 SLA。</p>
+              <p><strong>两条链共同使用的控制部分（Control Plane）</strong>：评测集、提示版本、来源谱系、权限策略、日志追踪、成本与 SLA。</p>
               <p><strong>关键分界</strong>：模型负责基于证据生成；应用负责身份、权限、工具调用和最终业务动作。</p>
             </div>
           </div>
 
           <div className="subsection" id="choice">
-            <div className="subHead"><span>2.8</span><div><p className="kicker">CHOICE MATRIX</p><h3>四类知识增强路线对比</h3></div></div>
+            <div className="subHead"><span>2.8</span><div><p className="kicker">CHOICE MATRIX</p><h3>四种知识增强方案对比</h3></div></div>
             <div className="tableWrap">
               <table>
-                <thead><tr><th>路线</th><th>最适合</th><th>更新 / 引用</th><th>主要代价</th><th>售前判断</th></tr></thead>
+                <thead><tr><th>方案</th><th>最适合</th><th>更新 / 引用</th><th>主要代价</th><th>售前判断</th></tr></thead>
                 <tbody>
-                  <tr><th>长上下文<br /><small>Long context</small></th><td>小而稳定的封闭语料</td><td>更新简单；可引用但需额外设计</td><td>输入成本、时延、位置偏差</td><td>先做最小基线</td></tr>
-                  <tr className="highlight"><th>RAG</th><td>动态、跨源、需权限与证据</td><td>强；可增量更新与撤回</td><td>数据链路与评估复杂度</td><td>默认企业知识路线</td></tr>
+                  <tr><th>长上下文<br /><small>Long context</small></th><td>小而稳定的封闭语料</td><td>更新简单；可引用但需额外设计</td><td>输入成本、时延、位置偏差</td><td>先与最简单的做法对比</td></tr>
+                  <tr className="highlight"><th>RAG</th><td>动态、跨源、需权限与证据</td><td>强；可增量更新与撤回</td><td>数据链路与评估复杂度</td><td>企业知识问答的常用方案</td></tr>
                   <tr><th>微调<br /><small>Fine-tuning</small></th><td>稳定行为、风格、格式与领域模式</td><td>知识更新慢；来源难追溯</td><td>数据构造、训练与回归</td><td>针对行为，不替代检索</td></tr>
                   <tr><th>Agentic retrieval</th><td>多步查询、跨系统、需计划与工具</td><td>强，但链路更长</td><td>时延、不可预测性与权限风险</td><td>复杂任务再引入</td></tr>
                 </tbody>
@@ -467,8 +467,8 @@ export default function RagModulePage() {
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
             <div className="subHead"><span>2.11</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>RAG 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro">
-              <p>先用厂商中立能力描述问题，再映射到实际销售的产品。云服务不是附录：它贯穿数据进入、知识处理、模型调用、在线运行、安全和持续运营。</p>
-              <span>能力优先</span><span>产品后映射</span><span>以客户约束决定组合</span>
+              <p>先用厂商中立的能力描述问题，再对应到实际销售的产品。云服务贯穿数据进入、知识处理、模型调用、在线运行、安全和后续维护。</p>
+              <span>先确认所需能力</span><span>再选具体产品</span><span>按客户限制决定搭配</span>
             </div>
             <div className="cloudTable tableWrap">
               <table>
@@ -485,23 +485,23 @@ export default function RagModulePage() {
               <article><p className="miniLabel">BUNDLE B</p><h4>实时知识同步</h4><p>数据库 / SaaS + CDC / 事件总线 + Serverless 处理 + 增量索引 + 缓存失效 + 审计。</p><small>购买角色：数据平台、集成团队、业务运营</small></article>
               <article><p className="miniLabel">BUNDLE C</p><h4>私有化规模运行</h4><p>Kubernetes / GPU 推理 + 私网模型网关 + 向量检索 + 弹性缓存 + APM / FinOps。</p><small>购买角色：平台团队、基础设施、信息安全与采购</small></article>
             </BalancedGrid>
-            <p className="sectionFootnote">后续可在不改正文的情况下，为目标云厂商增加“能力 → 产品名称 → 限制 → 计费单位”映射表；表中应显式标注产品版本、适用地域与核验日期。</p>
+            <p className="sectionFootnote">后续可在不改正文的情况下，为目标云厂商增加“能力 → 产品名称 → 限制 → 计费单位”对照表；表中应明确标注产品版本、适用地域与核验日期。</p>
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.12</span><div><p className="kicker">POC PLAYBOOK</p><h3>按风险门禁组织 RAG PoC</h3></div></div>
+            <div className="subHead"><span>2.12</span><div><p className="kicker">POC PLAYBOOK</p><h3>按风险设置 RAG PoC 的通过条件</h3></div></div>
             <div className="pocGrid">
-              <article><span>BASELINE</span><h4>问题与权威基线</h4><p>按业务风险选代表性任务；冻结真实问题、正确答案、证据位置、身份和现有流程表现。样本规模由业务分布决定。</p></article>
+              <article><span>BASELINE</span><h4>问题与现有做法</h4><p>按业务风险选代表性任务；固定真实问题、正确答案、证据位置、身份和现有流程表现。样本规模由业务分布决定。</p></article>
               <article><span>DATA PROOF</span><h4>知识与权限证明</h4><p>接入最小权威语料；验证解析、切块、版本、权限、新增、删除与撤权传播，并记录每个处理版本。</p></article>
               <article><span>QUALITY PROOF</span><h4>检索与回答证明</h4><p>一次改变一个主要变量，比较候选召回、重排、最终上下文、主张级引用和拒答，而不是只看最终观感。</p></article>
-              <article><span>OPERATIONS</span><h4>负载、安全与交接</h4><p>测试冲突、越权、恶意文档、过期内容、峰值和回滚；达到当前门禁后再进入下一阶段，周期随范围和风险变化。</p></article>
+              <article><span>OPERATIONS</span><h4>负载、安全与交接</h4><p>测试冲突、越权、恶意文档、过期内容、峰值和回滚；通过当前检查后再进入下一阶段，周期随范围和风险变化。</p></article>
             </div>
             <div className="gates">
-              <h4>建议的 Go / No-Go 门槛结构</h4>
+              <h4>建议的通过 / 暂停条件</h4>
               <div className="gateList">
                 <span>检索 Recall@K</span><span>引用正确率</span><span>关键任务成功率</span><span>P95 / 首 token</span><span>单次成功成本</span><span>越权泄漏 = 0</span><span>更新 / 删除 SLA</span><span>人工接受率</span>
               </div>
-              <p>具体数值必须由客户风险与基线共同决定；不要把通用数字写成合同承诺。</p>
+              <p>具体数值必须由客户风险与现有表现共同决定；不要把通用数字写成合同承诺。</p>
             </div>
           </div>
 

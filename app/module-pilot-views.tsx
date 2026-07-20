@@ -6,7 +6,7 @@ const ragKnowledgeSteps = [
   ["01", "连接与解析", "Connect & Parse", "保留标题、表格、页码与来源坐标；失败内容进入处理队列。"],
   ["02", "切块与元数据", "Chunk & Describe", "建立版本、权限、时间、产品与父子关系，不只生成一段文本。"],
   ["03", "索引与同步", "Index & Refresh", "同时服务精确词项与语义召回，并处理新增、修改、撤回和删除。"],
-  ["04", "质量门禁", "Quality Gate", "用标准问题验证证据可召回、版本正确、权限不泄漏。"],
+  ["04", "质量检查", "Quality Gate", "用标准问题验证证据可召回、版本正确、权限不泄漏。"],
 ];
 
 const ragServingSteps = [
@@ -44,19 +44,19 @@ export function RagArchitecturePrimer() {
     <section className="pilotPrimer pilotPrimer--rag" data-knowledge-view="application-architecture" aria-labelledby="rag-architecture-primer-title">
       <header className="pilotPrimerHeader">
         <div><p className="kicker">ARCHITECTURE FIRST</p><h2 id="rag-architecture-primer-title">先看两条链，再讨论向量库与模型</h2></div>
-        <p>面向企业技术售前：用架构先定位数据责任、在线责任与验收证据，再映射具体云产品。</p>
+        <p>面向企业技术售前：用架构先定位数据责任、在线责任与验收证据，再对应到具体云产品。</p>
       </header>
       <TermHintRow label="RAG 架构缩写" termIds={["rag", "bm25", "ann", "hnsw", "rrf"]} />
       <div className="ragArchitecture">
         <ArchitectureLane label="OFFLINE" title="离线知识链" outcome="把原始资料变成可授权、可更新、可追踪的证据单元" steps={ragKnowledgeSteps} />
         <ArchitectureLane label="ONLINE" title="在线回答链" outcome="把一次客户问题变成可核验回答或明确拒答" steps={ragServingSteps} />
-        <aside className="ragControlPlane" aria-label="RAG 跨链控制面">
+        <aside className="ragControlPlane" aria-label="RAG 两条链共同使用的控制部分">
           <div><span>CONTROL PLANE</span><strong>身份与权限</strong><p>主体、租户、文档与字段级授权</p></div>
           <div><strong>版本与时效</strong><p>权威来源、生效日期、撤回与重新索引</p></div>
           <div><strong>评估与观测</strong><p>Recall@K、忠实度、引用、拒答、时延与成功成本</p></div>
         </aside>
       </div>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先问知识怎样更新、权限怎样继承、错答怎样定位，再决定检索路线和云服务组合。</p><nav aria-label="RAG 深入阅读"><a href="#production-rag">查看生产诊断</a><a href="#architecture">查看双链架构</a><a href="#poc">查看 PoC 门禁</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先问知识怎样更新、权限怎样继承、错答怎样定位，再决定检索方案和云服务搭配。</p><nav aria-label="RAG 深入阅读"><a href="#production-rag">查看生产诊断</a><a href="#architecture">查看双链架构</a><a href="#poc">查看 PoC 通过条件</a></nav></footer>
     </section>
   );
 }
@@ -81,12 +81,12 @@ export function AgentControlPrimer() {
           <header><span>PROBABILISTIC</span><h3>模型循环 · Model Loop</h3><p>负责理解、规划与提出动作，不直接拥有业务权限。</p></header>
           <ol>{agentLoopSteps.map(([no, title, detail]) => <li key={no}><span>{no}</span><strong>{title}</strong><p>{detail}</p></li>)}</ol>
         </section>
-        <section className="agentDeterministicPlane" aria-label="确定性控制平面">
-          <header><span>DETERMINISTIC</span><h3>确定性控制平面</h3></header>
+        <section className="agentDeterministicPlane" aria-label="确定性控制部分">
+          <header><span>DETERMINISTIC</span><h3>确定性控制部分</h3></header>
           <div><strong>Schema 校验</strong><p>动作名、参数、前置条件</p></div>
           <div><strong>身份与授权</strong><p>主体、最小权限、动态策略</p></div>
-          <div><strong>风险与审批</strong><p>金额、范围、人工门禁</p></div>
-          <div><strong>状态与恢复</strong><p>幂等键、检查点、补偿与终态</p></div>
+          <div><strong>风险与审批</strong><p>金额、范围、人工审批</p></div>
+          <div><strong>状态与恢复</strong><p>幂等键、检查点、补偿与最终状态</p></div>
         </section>
         <section className="agentExecutionPlane" aria-label="业务执行与事实平面">
           <header><span>AUTHORITATIVE</span><h3>执行与事实平面</h3></header>

@@ -167,10 +167,10 @@ export default async function ModulePage({ params }: ModulePageProps) {
     { id: "study-guide", label: "学习与实战", eyebrow: "知道如何掌握" },
     { id: "curriculum", label: "课程地图", eyebrow: "补齐知识版图" },
     { id: "principle", label: "核心机制", eyebrow: "理解为什么" },
-    { id: "decisions", label: "方案选择", eyebrow: "识别客户信号" },
+    { id: "decisions", label: "方案选择", eyebrow: "看清实际情况" },
     ...(hasDeepDives ? [{ id: "deep-dive", label: brief.deepDiveTitle ?? "进一步理解", eyebrow: "生产级判断" }] : []),
     { id: "evidence", label: "证据与边界", eyebrow: "知道能证明什么" },
-    { id: "cloud", label: "云服务连接", eyebrow: "映射可售能力" },
+    { id: "cloud", label: "云服务连接", eyebrow: "对应可用服务" },
     { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
   ];
   const systemLensPanels: LensPanel[] = [
@@ -185,17 +185,17 @@ export default async function ModulePage({ params }: ModulePageProps) {
     {
       id: `${currentModule.slug}-decision`,
       label: "客户怎样选择",
-      title: "从客户信号反推正确路线",
-      description: "同一技术名称可能对应不同客户问题；先识别约束，再给建议，不从产品功能表开始。",
+      title: "根据客户的实际情况选择方案",
+      description: "同一技术名称可能对应不同客户问题；先看清限制条件，再提出建议，不从产品功能表开始。",
       takeaway: "建议必须同时说明适用条件和不可越过的边界，并在 PoC 中形成可验证信号。",
       nodes: brief.decisions.map((item) => ({ label: item.question, detail: item.signal, signal: `${item.recommendation}；边界：${item.boundary}` })),
     },
     {
       id: `${currentModule.slug}-cloud`,
-      label: "云服务怎样承载",
-      title: "能力、客户价值与云服务形成同一责任链",
-      description: "先确认技术环节的责任和验收方式，再映射到目标云当期可用产品。",
-      takeaway: "产品名称会变化，客户要购买的是可被验收的能力组合、责任边界和运营闭环。",
+      label: "云服务怎样提供支持",
+      title: "把需要的能力、客户价值和云服务对应起来",
+      description: "先确认每个技术环节由谁负责、怎样验收，再对应到目标云当前可用的产品。",
+      takeaway: "产品名称会变化；客户真正需要的是能验收的服务搭配、明确的责任分工和后续维护方式。",
       nodes: brief.cloudHooks.map((item) => ({ label: item.stage, detail: item.value, signal: `${item.services}；发现问题：${item.discover}` })),
     },
   ];
@@ -237,7 +237,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       </section>
 
       <section className="subsection moduleBriefSection learningStudioSection" id="study-guide" data-quality-section="study-guide">
-        <div className="subHead"><span>02</span><div><p className="kicker">LEARN, PRACTICE, PROVE</p><h2>学习路线与实战练习</h2></div></div>
+        <div className="subHead"><span>02</span><div><p className="kicker">LEARN, PRACTICE, PROVE</p><h2>学习顺序与实战练习</h2></div></div>
         <p className="sectionLead">先建立心智模型，再完成方案判断，最后用可复核产物证明掌握；每一步都连接到后续章节与真实方案工作。</p>
         <ModuleLearningStudio content={learningContent} sourceLedger={sourceLedger} />
       </section>
@@ -253,12 +253,12 @@ export default async function ModulePage({ params }: ModulePageProps) {
         <div className="moduleBriefIntro"><p className="miniLabel">机制、失败与控制</p><h3>{brief.principleTitle}</h3></div>
         <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
         <PrincipleView brief={brief} />
-        <SystemLens title={`用三个视角理解${currentModule.zh}`} lead="在机制、客户选择和云服务承载之间切换，避免把概念、产品和验收拆成互不相关的清单。" panels={systemLensPanels} />
+        <SystemLens title={`用三个视角理解${currentModule.zh}`} lead="分别从工作原理、客户选择和云服务支持方式来看同一个问题，避免把概念、产品和验收拆成互不相关的清单。" panels={systemLensPanels} />
       </section>
 
       <section className="subsection moduleBriefSection" id="decisions">
-        <div className="subHead"><span>05</span><div><p className="kicker">DECISION WORKBENCH</p><h2>客户信号与方案选择</h2></div></div>
-        <div className="tableWrap"><table><thead><tr><th>客户问题</th><th>判断信号</th><th>建议路线</th><th>不能越过的边界</th></tr></thead><tbody>
+        <div className="subHead"><span>05</span><div><p className="kicker">DECISION WORKBENCH</p><h2>客户情况与方案选择</h2></div></div>
+        <div className="tableWrap"><table><thead><tr><th>客户问题</th><th>判断线索</th><th>建议方案</th><th>不能越过的边界</th></tr></thead><tbody>
           {brief.decisions.map((item) => <tr key={item.question}><th>{item.question}</th><td>{item.signal}</td><td>{item.recommendation}</td><td>{item.boundary}</td></tr>)}
         </tbody></table></div>
         <CriticalBoundary>{brief.criticalBoundary}</CriticalBoundary>
@@ -279,7 +279,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <section className="subsection moduleBriefSection cloudSection" id="cloud" data-quality-section="cloud">
         <div className="subHead"><span>{hasDeepDives ? "08" : "07"}</span><div><p className="kicker">CLOUD CONNECTION</p><h2>云服务连接</h2></div></div>
-        <p className="sectionLead">先识别能力、客户价值和验收方式，再映射到目标云当期可用产品；地域、配额、SLA 与价格需要在采购时点重新核验。</p>
+        <p className="sectionLead">先识别需要的能力、客户价值和验收方式，再对应到目标云当前可用的产品；地域、配额、SLA 与价格需要在采购时重新核验。</p>
         <div className="tableWrap"><table><thead><tr><th>技术环节</th><th>可连接的云能力</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
           {brief.cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
         </tbody></table></div>

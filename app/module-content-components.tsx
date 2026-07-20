@@ -294,7 +294,7 @@ export function ModuleLearningStudio({
       <div className="learningRoute" aria-labelledby="learning-route-title">
         <div className="learningStudioHeading">
           <p className="miniLabel">RECOMMENDED ROUTE</p>
-          <h3 id="learning-route-title">三步学习路线</h3>
+          <h3 id="learning-route-title">三步学习顺序</h3>
           <p>每一步都以“能做出什么判断”作为检查点，而不是以读完多少内容作为完成标准。</p>
         </div>
         <ol>

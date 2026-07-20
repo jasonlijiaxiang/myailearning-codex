@@ -22,7 +22,7 @@ const conceptLinks = [
   { concept: "评估", owner: "评估", href: "/modules/evaluation", relation: "质量门槛", local: "提示版本必须用固定任务集回归，不能凭演示观感发布。" },
   { concept: "安全与治理", owner: "AI 安全", href: "/modules/security", relation: "风险控制", local: "提示注入（Prompt Injection）、数据泄漏和越权不能只靠系统提示（System Prompt）防御。" },
   { concept: "AI 网关", owner: "AI 网关", href: "/modules/ai-gateway", relation: "生产入口", local: "承载多模型路由、限流、密钥、策略、回滚与成本控制。" },
-  { concept: "AI 可观测与运营", owner: "AI 可观测与运营", href: "/modules/ai-ops", relation: "运营闭环", local: "关联提示版本、模型、输入、输出、时延、质量和单次成功成本。" },
+  { concept: "AI 可观测与运营", owner: "AI 可观测与运营", href: "/modules/ai-ops", relation: "上线后的持续改进", local: "关联提示版本、模型、输入、输出、时延、质量和单次成功成本。" },
 ];
 
 const conceptRows = balanceGridRows(conceptLinks, 4);

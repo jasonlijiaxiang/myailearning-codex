@@ -8,7 +8,7 @@ import { referenceModules, sourceLedger } from "../reference-content.mjs";
 
 export const metadata: Metadata = {
   title: "来源与证据 | 云计算 × AI 平台售前知识库",
-  description: "云计算与 AI 平台售前知识库的统一来源台账、证据类别、适用边界与核验日期。",
+  description: "集中整理云计算与 AI 平台售前知识库的一手来源、证据类别、适用条件与核验日期。",
 };
 
 const evidenceLegend = [
@@ -82,10 +82,10 @@ export default function ReferencesPage() {
         <div className="heroGrid referenceHeroGrid">
           <div className="heroCopy">
             <p className="eyebrow">REFERENCE LEDGER · 来源与证据</p>
-            <h1>统一来源台账<br />Reference Library</h1>
+            <h1>来源与证据资料库<br />Reference Library</h1>
             <p className="heroLead">
-              所有模块的论文、标准、教材、官方产品文档、厂商实验与行业指南集中汇总在这里。
-              正文只引用稳定的来源标识；本页统一呈现来源原文、证据类别、适用边界和最近核验日期。
+              所有模块用到的论文、标准、教材、官方产品文档、厂商实验与行业指南都集中在这里。
+              正文只引用稳定的来源标识；每项来源的原文、证据类别、适用条件和最近核验日期都可以在本页找到。
             </p>
             <div className="heroActions">
               <a className="primaryButton" href="#reference-modules">按模块查看来源</a>
@@ -101,7 +101,7 @@ export default function ReferencesPage() {
           <div className="sectionIntro splitIntro">
             <div>
               <p className="kicker">HOW TO READ THE EVIDENCE</p>
-              <h2 id="reference-guide-title">如何使用来源台账</h2>
+              <h2 id="reference-guide-title">如何查看这些来源</h2>
             </div>
             <p>
               证据类别用于说明来源性质，不代表简单的高低评分。每条摘要同时写明它能支撑什么、不能外推到哪里；
@@ -113,7 +113,7 @@ export default function ReferencesPage() {
             <div className="sourceGuide">
               <p>
                 论文和标准用于解释原理、方法与风险边界；云服务规格、价格、区域可用性、SLA 与客户效果仍需结合当期产品资料和客户 PoC 核验。
-                后续模块会继续写入同一台账，并在本页按模块独立分组。
+                后续模块使用的来源也会收录在这里，并按模块分组。
               </p>
               <div className="sourceLegend" aria-label="来源与证据类别图例">
                 {evidenceLegend.map((item) => (
@@ -207,7 +207,7 @@ export default function ReferencesPage() {
 
       <footer>
         <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>统一来源台账 / Reference Library</p>
+        <p>来源与证据 / Reference Library</p>
         <a href="#top">返回顶部 ↑</a>
       </footer>
     </main>

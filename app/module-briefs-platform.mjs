@@ -759,7 +759,7 @@ export const aiOpsBrief = {
           name: "转化为持续门禁",
           en: "Promote to Regression Gate",
           mechanism: "将事故样本及相邻变体加入对应分组评估集，定义修复门槛、监控信号、负责人和再次触发的停止动作。",
-          decision: "只有能阻止同类问题再次发布，事故复盘才形成运营闭环。",
+          decision: "事故复盘必须推动具体改进，避免同类问题再次发布。",
           boundary: "评估集持续增长时要去重、分层和维护权威答案，不能无限堆积历史噪声。",
         },
       ],

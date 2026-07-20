@@ -357,13 +357,18 @@ test("reader pages omit internal build notes and use the shared related-module l
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
     assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
+    assert.doesNotMatch(
+      html,
+      /客户信号|来源台账|知识供应链|责任链|运营闭环|责任闭环|技术售前工作台|形成连续叙事|产品后映射/,
+      `公开页面应使用普通中文：${path}`,
+    );
   }
 });
 
 test("references route is the complete centralized source ledger", async () => {
   const html = await renderHtml("/references");
 
-  assert.match(html, /统一来源台账/);
+  assert.match(html, /来源与证据资料库/);
   assert.match(html, /Reference Library/);
   assert.match(html, /来源与证据类别图例/);
   assert.match(html, /官方产品与技术文档/);
@@ -616,7 +621,7 @@ test("every shared module has a source-backed learning route and practical labs"
     assert.match(html, /id="study-guide"/);
     assert.match(html, /id="curriculum"/);
     assert.match(html, /学完后，你应该能独立完成/);
-    assert.match(html, /三步学习路线/);
+    assert.match(html, /三步学习顺序/);
     assert.match(html, /用真实产物证明掌握/);
     assert.match(html, /课程地图与知识展开/);
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
@@ -815,6 +820,8 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(moduleStandard, /内部巡检流程、责任人、字段 schema、发布步骤和构建状态不得公开/);
   assert.match(moduleStandard, /MODULE-QUALITY-GATES\.md/);
   assert.match(moduleStandard, /发布注册/);
+  assert.match(moduleStandard, /面向读者的中文优先使用具体名词和日常动词/);
+  assert.match(moduleStandard, /首次出现必须先给普通中文解释/);
 
   assert.match(qualityGates, /历史问题 → 永久门禁/);
   assert.match(qualityGates, /原理深度/);
@@ -824,6 +831,7 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(qualityGates, /Portable/);
   assert.match(qualityGates, /Reference/);
   assert.match(qualityGates, /时效性/);
+  assert.match(qualityGates, /普通中文/);
   assert.match(qualityGates, /新模块 Definition of Done/);
   assert.match(qualityGates, /新的系统性问题/);
 
