@@ -14,6 +14,8 @@ import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { promptQa } from "../app/prompt-content.mjs";
+import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
+import { questionDirectoryItems, questionDirectoryModules } from "../app/question-index.mjs";
 import { evidenceCards, ragQa } from "../app/rag-content.mjs";
 import { referenceModules, sourceLedger } from "../app/reference-content.mjs";
 import { sourceFreshness } from "../app/source-freshness.mjs";
@@ -232,6 +234,49 @@ test("customer questions follow module decision coverage instead of a shared num
   }
 });
 
+test("question directory searches every published question from one canonical index", async () => {
+  const html = await renderHtml("/questions");
+  const registeredCount = Object.values(moduleContentRegistry).reduce((total, content) => total + content.qa.length, 0);
+
+  assert.equal(questionDirectoryModules.length, publishedModuleRegistry.length);
+  assert.equal(questionDirectoryItems.length, registeredCount);
+  assert.equal(new Set(questionDirectoryItems.map((item) => item.key)).size, questionDirectoryItems.length, "问题查询键必须唯一");
+  assert.equal((html.match(/data-question-key="[^"]+"/g) ?? []).length, questionDirectoryItems.length, "问题查询页必须服务端呈现全部正式问题");
+  assert.match(html, /客户问题查询/);
+  assert.match(html, /搜索所有客户问题/);
+  assert.match(html, /全部 19 个模块/);
+  assert.match(html, /问题类别/);
+  assert.match(html, /展开深答、下一问与证据/);
+
+  for (const directoryModule of questionDirectoryModules) {
+    assert.equal(directoryModule.count, moduleContentRegistry[directoryModule.id].qa.length, `${directoryModule.id} 的问题统计必须来自正式内容注册表`);
+    assert.match(html, new RegExp(`value="${escapeRegExp(directoryModule.id)}"`));
+    assert.match(html, new RegExp(`href="${escapeRegExp(directoryModule.href)}"`));
+  }
+
+  for (const item of questionDirectoryItems) {
+    const sourceQuestion = moduleContentRegistry[item.moduleId].qa[item.number - 1];
+    assert.equal(item.question, sourceQuestion.q, `${item.key} 与正式问题内容不一致`);
+    assert.match(html, new RegExp(`id="question-${escapeRegExp(item.key)}"`));
+    assert.match(html, new RegExp(`href="${escapeRegExp(item.originalHref)}"`));
+    assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(item.question))));
+  }
+});
+
+test("question directory combines keyword, module, and category filters", () => {
+  const filterItems = questionDirectoryItems.map((item) => ({ key: item.key, moduleId: item.moduleId, tag: item.tag, text: item.searchText }));
+  const quantization = filterQuestionDirectoryItems(filterItems, { query: "量化" });
+  const mcp = filterQuestionDirectoryItems(filterItems, { moduleId: "mcp" });
+  const inferenceCache = filterQuestionDirectoryItems(filterItems, { query: "缓存", moduleId: "llm-inference" });
+  const evaluationSlice = filterQuestionDirectoryItems(filterItems, { moduleId: "evaluation", tag: "切片评估" });
+
+  assert.ok(quantization.length >= 4, "关键词应跨模块命中量化相关问题与回答");
+  assert.ok(new Set(quantization.map((item) => item.moduleId)).size >= 2, "关键词查询不应被限制在单一模块");
+  assert.equal(mcp.length, moduleContentRegistry.mcp.qa.length, "模块筛选必须返回该模块全部问题");
+  assert.ok(inferenceCache.length >= 2 && inferenceCache.every((item) => item.moduleId === "llm-inference"), "关键词与模块筛选必须组合生效");
+  assert.equal(evaluationSlice.length, 1, "类别筛选必须准确定位独立问题主题");
+});
+
 test("solution, security, and fine-tuning use distinct problem-specific knowledge views", async () => {
   const [solution, security, tuning] = await Promise.all([
     renderHtml("/modules/solution-patterns"),
@@ -442,6 +487,7 @@ test("every published module passes the shared reader, terminology, and depth co
     assert.match(html, /class="moduleReadingNav"/, `${publishedModule.slug} 缺少章节导航`);
     assert.match(html, /INTERACTIVE SYSTEM VIEW/, `${publishedModule.slug} 缺少机制或决策视图`);
     assert.match(html, /搜索客户问题/, `${publishedModule.slug} 缺少可检索实战包`);
+    assert.match(html, /href="\/questions"/, `${publishedModule.slug} 缺少全站问题查询入口`);
     assert.match(html, /href="\/references(?:#[^"]+)?"/);
 
     for (const termId of publishedModule.requiredTerms) {
@@ -464,7 +510,7 @@ test("every published module passes the shared reader, terminology, and depth co
 });
 
 test("reader pages omit internal build notes and use the shared related-module language", async () => {
-  for (const path of ["/", ...publishedModules.map((module) => module.path), "/references"]) {
+  for (const path of ["/", ...publishedModules.map((module) => module.path), "/questions", "/references"]) {
     const html = await renderHtml(path);
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
@@ -533,6 +579,7 @@ test("legacy module addresses resolve to the merged 19-module knowledge base", a
 test("every public knowledge route is anonymously readable and directly shareable", async () => {
   const routes = [
     "/",
+    "/questions",
     "/references",
     ...moduleList.map((knowledgeModule) => knowledgeModule.href),
     ...Object.keys(legacyModuleAliases).map((slug) => `/modules/${slug}`),

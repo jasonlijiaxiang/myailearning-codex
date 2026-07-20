@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
+import { filterQuestionDirectoryItems } from "./question-filter.mjs";
 
 export type ExplorerModule = {
   slug: string;
@@ -128,7 +129,7 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
 
       <div className="moduleExplorerStatus" aria-live="polite">
         <span>找到 {visible.length} 个模块{query ? `，另有 ${knowledgeMatches.length} 条知识命中` : ""}</span>
-        {(query || layer !== "all") && <button type="button" onClick={() => { setQuery(""); setLayer("all"); }}>清除筛选</button>}
+        <div><Link href="/questions">查询全部客户问题 ↗</Link>{(query || layer !== "all") && <button type="button" onClick={() => { setQuery(""); setLayer("all"); }}>清除筛选</button>}</div>
       </div>
 
       {query && knowledgeMatches.length > 0 ? (
@@ -345,6 +346,82 @@ export function QaFilterShell({ items, children }: { items: Array<{ tag: string;
       </div>
       {children}
       {visibleCount === 0 && <div className="emptySearch"><strong>没有匹配的问题</strong><p>清除筛选，或换一个更短的关键词。</p></div>}
+    </div>
+  );
+}
+
+export type QuestionDirectoryFilterItem = {
+  key: string;
+  moduleId: string;
+  tag: string;
+  text: string;
+};
+
+export type QuestionDirectoryModule = {
+  id: string;
+  label: string;
+  count: number;
+};
+
+export function QuestionDirectoryShell({
+  items,
+  modules,
+  children,
+}: {
+  items: QuestionDirectoryFilterItem[];
+  modules: QuestionDirectoryModule[];
+  children: ReactNode;
+}) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [query, setQuery] = useState("");
+  const [moduleId, setModuleId] = useState("all");
+  const [tag, setTag] = useState("all");
+  const availableTags = useMemo(() => [...new Set(items.filter((item) => moduleId === "all" || item.moduleId === moduleId).map((item) => item.tag))].sort((a, b) => a.localeCompare(b, "zh-CN")), [items, moduleId]);
+  const visibleItems = useMemo(() => filterQuestionDirectoryItems(items, { query, moduleId, tag }), [items, moduleId, query, tag]);
+  const visibleKeys = useMemo(() => new Set(visibleItems.map((item) => item.key)), [visibleItems]);
+  const visibleModules = useMemo(() => new Set(visibleItems.map((item) => item.moduleId)).size, [visibleItems]);
+
+  useEffect(() => {
+    rootRef.current?.querySelectorAll<HTMLElement>("[data-question-key]").forEach((node) => {
+      node.hidden = !visibleKeys.has(node.dataset.questionKey ?? "");
+    });
+  }, [visibleKeys]);
+
+  useEffect(() => {
+    const focusSearch = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isEditing = target?.matches("input, textarea, select, [contenteditable='true']");
+      if (((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") || (event.key === "/" && !isEditing)) {
+        event.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", focusSearch);
+    return () => window.removeEventListener("keydown", focusSearch);
+  }, []);
+
+  const clear = () => {
+    setQuery("");
+    setModuleId("all");
+    setTag("all");
+  };
+
+  return (
+    <div className="questionDirectoryExplorer" ref={rootRef}>
+      <div className="questionDirectoryToolbar">
+        <label className="questionDirectorySearch">
+          <span>搜索所有客户问题</span>
+          <input ref={searchRef} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="例如：模型切换、权限、量化、GPU 利用率……" />
+          <kbd>⌘ K</kbd>
+        </label>
+        <label><span>模块</span><select value={moduleId} onChange={(event) => { setModuleId(event.target.value); setTag("all"); }}><option value="all">全部 19 个模块</option>{modules.map((directoryModule) => <option value={directoryModule.id} key={directoryModule.id}>{directoryModule.label}（{directoryModule.count}）</option>)}</select></label>
+        <label><span>问题类别</span><select value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">全部类别</option>{availableTags.map((item) => <option value={item} key={item}>{item}</option>)}</select></label>
+        <div className="questionDirectoryStatus" aria-live="polite"><strong>{visibleItems.length}</strong><span>个问题 · {visibleModules} 个模块</span></div>
+        {(query || moduleId !== "all" || tag !== "all") && <button className="questionDirectoryClear" type="button" onClick={clear}>清除全部筛选</button>}
+      </div>
+      {children}
+      {visibleItems.length === 0 && <div className="emptySearch questionDirectoryEmpty"><strong>没有匹配的问题</strong><p>尝试更短的关键词，或清除模块与类别筛选。</p></div>}
     </div>
   );
 }

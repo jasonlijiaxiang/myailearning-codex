@@ -188,7 +188,8 @@ export default function RagModulePage() {
           </Link>
           <div className="toplinks">
             <Link href="#rag-principle">RAG 原理</Link>
-            <Link href="#qa">高频问答</Link>
+            <Link href="#qa">本模块问答</Link>
+            <Link href="/questions">全部问题</Link>
             <Link href="/references">Reference</Link>
           </div>
         </nav>

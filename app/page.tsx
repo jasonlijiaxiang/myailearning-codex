@@ -96,6 +96,7 @@ export default function Home() {
             <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>
           </Link>
           <div className="toplinks">
+            <Link href="/questions">问题查询</Link>
             <a href="#available-modules">查找模块</a>
             <a href="#map">知识地图</a>
             <Link href="/references">来源与证据 / Reference</Link>
