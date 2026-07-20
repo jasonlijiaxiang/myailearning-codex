@@ -787,16 +787,16 @@ export const llmTraining = {
 
 export const fineTuning = {
   slug: "fine-tuning",
-  definition: "微调工程（Fine-tuning）用客户数据在既有模型上继续训练，把稳定的任务行为、格式、语气或领域表达内化到权重或适配器中，并通过评估、发布和反馈闭环持续运营。",
+  definition: "微调工程（Fine-tuning）用客户数据在既有模型上继续训练，把稳定的任务行为、格式、语气或领域表达内化到权重或适配器中，并通过评估、发布、反馈和回滚持续改进。",
   position: "模型基础层的企业定制模块：承接 Prompt 与 RAG 仍无法满足的稳定行为需求，并连接训练平台、推理服务与评估治理。",
   presentation: "loop",
-  principleTitle: "从选型到回流的微调闭环",
+  principleTitle: "从方法选择到发布回滚的完整流程",
   principles: [
     {
       zh: "先区分知识、行为与能力",
       en: "Separate Knowledge, Behavior and Capability",
       explanation: "过期或私有事实优先由 RAG 提供；稳定格式、语气和任务习惯才适合微调；底座不会的复杂能力通常要换模型。",
-      decision: "沿 Prompt → RAG → Fine-tuning 逐级验证，左侧方法未形成基线前不急于训练。",
+      decision: "沿 Prompt → RAG → Fine-tuning 逐级验证，尚未与更轻的方法完成对比时不急于训练。",
     },
     {
       zh: "全参与参数高效微调是不同投资级别",
@@ -811,13 +811,13 @@ export const fineTuning = {
       decision: "先完成数据卡、样本规范和冻结测试集，再选择框架与超参数。",
     },
     {
-      zh: "考卷先于补课",
+      zh: "训练前先固定考卷",
       en: "Define the Exam Before Training",
       explanation: "微调必须同时验证目标任务提升、通用能力回归、安全与成本；训练损失下降不等于业务成功。",
-      decision: "项目启动前签署 Go / No-Go 指标、关键切片与允许退化范围。",
+      decision: "项目启动前约定通过 / 暂停指标、关键切片与允许退化范围。",
     },
     {
-      zh: "微调是持续发布循环",
+      zh: "微调需要持续发布与回滚",
       en: "Fine-tuning Is a Release Loop",
       explanation: "Adapter 或模型制品需要注册、评估、灰度、监控和回滚；坏案例应归因后回流数据，形成下一轮迭代。",
       decision: "把数据版本、基座版本、Adapter、Tokenizer、评估报告和运行镜像绑定为一个可回滚发布单元。",
@@ -827,7 +827,7 @@ export const fineTuning = {
     {
       question: "客户的问题是否真的是稳定行为问题？",
       signal: "Prompt 与示例已经优化，但格式、语气、分类或窄任务行为仍反复漂移。",
-      recommendation: "建立 Prompt/RAG 基线后，用高质量示范做小规模 SFT 或 LoRA 试验。",
+      recommendation: "先记录 Prompt / RAG 的现有表现，再用高质量示范做小规模 SFT 或 LoRA 试验。",
       boundary: "知识更新和实时业务事实不应主要写进权重。",
     },
     {
@@ -966,7 +966,7 @@ export const fineTuning = {
       stage: "部署与迭代",
       services: "托管端点、vLLM 多 LoRA、灰度、Tracing、在线评估与坏案例回流",
       value: "以较低复制成本服务多个定制任务，并持续验证质量和安全。",
-      discover: "流量隔离、SLA、回滚、通用回归与反馈闭环由谁负责？",
+      discover: "流量隔离、SLA、回滚、通用回归与反馈处理由谁负责？",
     },
   ],
   relatedSlugs: ["prompt-engineering", "rag", "llm-training", "evaluation", "llm-inference", "ai-infra-platform"],

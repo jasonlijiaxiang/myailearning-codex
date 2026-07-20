@@ -7,15 +7,15 @@
  */
 export const moduleLearningContent = Object.freeze({
   "solution-patterns": {
-    outcomes: ["把业务目标改写成可验收的决策契约", "从检索、生成、行动与人工控制组合方案", "设计能证伪方案假设的 PoC", "用质量、风险与全成本共同决定是否上线"],
+    outcomes: ["把业务目标改写成可验收的一页约定", "从检索、生成、行动与人工控制搭配方案", "设计能证伪方案假设的 PoC", "用质量、风险与全成本共同决定是否上线"],
     route: [
       { title: "从业务结果开始", learn: "识别用户、触发、输入、期望结果和不可接受结果。", checkpoint: "能写出不依赖模型名称的成功定义。" },
       { title: "把场景拆成能力链", learn: "判断哪些步骤需要检索、生成、工具执行、规则或人工审批。", checkpoint: "能解释每个组件为什么存在，以及失败后由谁接管。" },
-      { title: "用 PoC 关闭最大不确定性", learn: "先验证质量、集成、风险和成本中最可能推翻方案的假设。", checkpoint: "能给出带基线、样本、阈值和退出条件的验收表。" },
+      { title: "PoC 优先验证最大不确定性", learn: "先验证质量、集成、风险和成本中最可能推翻方案的假设。", checkpoint: "能给出包含现有表现、样本、阈值和退出条件的验收表。" },
     ],
     labs: [
-      { title: "把模糊需求改写成决策契约", scenario: "客户说“想做一个企业 AI 助手”，但没有定义用户、动作和失败责任。", tasks: ["列出三类目标用户和各自高频任务", "为每个任务写出输入、输出、失败与人工接管", "选出一个最适合先验证的窄场景"], deliverable: "一页场景决策契约与 No-Go 清单", acceptance: "任何评审者都能据此判断 PoC 是否成功，而不是依赖主观演示效果。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents"] },
-      { title: "建立三本账的方案对比", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "把模糊需求改写成一页约定", scenario: "客户说“想做一个企业 AI 助手”，但没有定义用户、动作和失败责任。", tasks: ["列出三类目标用户和各自高频任务", "为每个任务写出输入、输出、失败与人工接管", "选出一个最适合先验证的窄场景"], deliverable: "一页场景约定与暂停条件清单", acceptance: "任何评审者都能据此判断 PoC 是否成功，不依赖主观演示效果。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents"] },
+      { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
     ],
   },
   "model-landscape": {
@@ -131,7 +131,7 @@ export const moduleLearningContent = Object.freeze({
     route: [
       { title: "先证明微调是正确手段", learn: "用 Prompt、RAG、工作流和模型切换作为对照。", checkpoint: "能说明问题来自稳定行为而不是缺少最新知识。" },
       { title: "再设计数据与方法", learn: "选择 SFT、偏好优化、LoRA、QLoRA 或全参，并防止训练测试泄漏。", checkpoint: "每种方法都对应明确目标与资源约束。" },
-      { title: "最后完成发布闭环", learn: "比较基线、切片失败、服务性能、回滚和数据反馈。", checkpoint: "训练 Loss 下降不是唯一发布依据。" },
+      { title: "最后完成发布与回滚", learn: "比较现有做法、切片失败、服务性能、回滚和数据反馈。", checkpoint: "训练 Loss 下降不是唯一发布依据。" },
     ],
     labs: [
       { title: "做一次微调适用性分诊", scenario: "客户希望模型记住产品知识、遵守品牌语气并输出固定 JSON。", tasks: ["把知识、风格和结构约束分开", "分别设计 RAG、Prompt/Schema 和微调对照", "定义每项方案的成功指标与维护成本"], deliverable: "定制路线决策树与实验计划", acceptance: "不会把所有问题都送进训练，且每条路线可独立验证。", sourceIds: ["nist-genai-profile", "openai-structured-outputs", "lora-2021"] },

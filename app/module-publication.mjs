@@ -27,9 +27,12 @@ const moduleSpecs = [
 ];
 
 const pilotKnowledgeViews = Object.freeze({
+  "solution-patterns": "decision-blueprint",
   rag: "application-architecture",
   "ai-agent": "control-architecture",
+  security: "threat-path",
   llm: "theory-atlas",
+  "fine-tuning": "tuning-lifecycle",
 });
 
 export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind]) => Object.freeze({

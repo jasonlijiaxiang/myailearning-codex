@@ -126,14 +126,14 @@ test("homepage is a focused knowledge map with links to every independent module
 });
 
 test("focus surfaces provide accessible abbreviation explanations", async () => {
-  const hintTermIds = ["rag", "llm", "ai-agent", "poc", "sla", "mcp", "a2a", "bm25", "ann", "hnsw", "rrf", "api", "iam", "hitl", "qkv", "kv-cache", "ttft", "tpot", "moe"];
+  const hintTermIds = ["rag", "llm", "ai-agent", "poc", "sla", "tco", "mcp", "a2a", "bm25", "ann", "hnsw", "rrf", "api", "iam", "acl", "dlp", "hitl", "qkv", "kv-cache", "ttft", "tpot", "moe", "sft", "lora", "qlora", "dpo"];
 
   for (const termId of hintTermIds) {
     const term = requireTerm(termId);
     assert.ok(term.abbr && term.description, `缩写提示必须同时有缩写和简短说明：${termId}`);
   }
 
-  for (const path of ["/", "/modules/rag", "/modules/ai-agent", "/modules/llm"]) {
+  for (const path of ["/", "/modules/rag", "/modules/ai-agent", "/modules/llm", "/modules/solution-patterns", "/modules/security", "/modules/fine-tuning"]) {
     const html = await renderHtml(path);
     assert.match(html, /class="termHintRow"/i, `${path} 缺少缩写速查入口`);
     assert.match(html, /<details class="termHint" data-term-id="[^"]+">/i, `${path} 缩写解释必须使用可点击的原生 details`);
@@ -175,6 +175,32 @@ test("dense-reading modules derive a scannable content overview from the publica
     assert.match(html, /<dt>证据卡<\/dt>/);
     assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
   }
+});
+
+test("solution, security, and fine-tuning use distinct problem-specific knowledge views", async () => {
+  const [solution, security, tuning] = await Promise.all([
+    renderHtml("/modules/solution-patterns"),
+    renderHtml("/modules/security"),
+    renderHtml("/modules/fine-tuning"),
+  ]);
+
+  assert.match(solution, /data-knowledge-view="decision-blueprint"/);
+  assert.match(solution, /把业务目标变成可以验收的方案/);
+  assert.match(solution, /检索证据.*生成内容.*执行任务.*人工负责/s);
+  assert.match(solution, /TCO/);
+  assert.doesNotMatch(solution, /需求决策契约|三本账|能力组合/);
+
+  assert.match(security, /data-knowledge-view="threat-path"/);
+  assert.match(security, /沿一条攻击路径看清每道防线/);
+  assert.match(security, /不可信内容进入.*进入模型上下文.*应用决定是否执行.*外部系统状态变化/s);
+  assert.match(security, /IAM.*ACL.*DLP/s);
+  assert.doesNotMatch(security, /四道外部控制门/);
+
+  assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
+  assert.match(tuning, /先判断该不该训练，再管理完整发布过程/);
+  assert.match(tuning, /Prompt \/ Schema.*RAG.*Fine-tuning.*换基础模型/s);
+  assert.match(tuning, /SFT.*LoRA.*QLoRA.*DPO/s);
+  assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
 });
 
 test("RAG route contains principles, cloud-service opportunities, and evidence-backed answers", async () => {

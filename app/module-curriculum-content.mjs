@@ -7,14 +7,14 @@
  */
 export const moduleCurriculumContent = Object.freeze({
   "solution-patterns": {
-    lead: "场景方案不是产品清单，而是从业务结果、能力组合、风险控制到运营证据的一条决策链。",
+    lead: "场景方案从业务结果出发，把需要的能力、风险控制、验收证据和后续维护连接起来。",
     chapters: [
-      { title: "场景轴与技术轴", en: "Scenario × Capability", explanation: "场景轴描述谁在什么触发下要完成什么工作；技术轴描述检索、生成、行动、规则和人工分别承担哪一段。先把两条轴分开，再组合，能避免从某个模型或产品反推需求。", decision: "用业务终态决定能力组合，不用技术热度决定场景。", boundary: "同一能力在不同风险等级场景中可能需要完全不同的审批、证据和回退。", sourceIds: ["anthropic-effective-agents", "nist-genai-profile"] },
-      { title: "通用参考架构", en: "Reference Architecture", explanation: "入口、身份、上下文、模型、工具、数据、护栏、观测和人工控制构成常见骨架，但每一层都必须连接到真实责任、故障和验收。架构图只证明组件关系，不证明业务流程已经闭环。", decision: "只保留能改变质量、风险、成本或可运营性的组件。", boundary: "组件齐全不等于端到端正确，跨层契约和失败补偿仍需单独验证。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
-      { title: "PoC 与基线", en: "PoC & Baseline", explanation: "PoC 应先建立人工或现有系统基线，再选择能推翻方案的代表样本，分别验证任务成功、失败恢复、集成和运营。展示几个漂亮答案只能证明演示路径可走，不能支持生产决策。", decision: "把最大不确定性排在最先验证，而不是先做最容易展示的路径。", boundary: "PoC 样本、流量和环境与生产不同，结论必须写清适用范围和重测触发器。", sourceIds: ["ragas", "nist-genai-profile"] },
+      { title: "业务场景与技术能力", en: "Scenario × Capability", explanation: "业务场景描述谁在什么触发下要完成什么工作；技术能力说明检索、生成、行动、规则和人工分别承担哪一段。把两者分开分析，可以避免从某个模型或产品反推需求。", decision: "用最终业务状态决定需要搭配哪些能力，不用技术热度决定场景。", boundary: "同一能力在不同风险等级场景中可能需要完全不同的审批、证据和回退。", sourceIds: ["anthropic-effective-agents", "nist-genai-profile"] },
+      { title: "通用参考架构", en: "Reference Architecture", explanation: "入口、身份、上下文、模型、工具、数据、护栏、观测和人工控制构成常见骨架，但每一层都必须连接到真实责任、故障和验收。架构图只证明组件关系，不能证明业务流程已经完整运行。", decision: "只保留能改变质量、风险、成本或后续维护方式的组件。", boundary: "组件齐全不等于端到端正确，跨层约定和失败补偿仍需单独验证。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "PoC 与现有做法", en: "PoC & Baseline", explanation: "PoC 应先记录人工或现有系统的表现，再选择能推翻方案的代表样本，分别验证任务成功、失败恢复、集成和运营。展示几个漂亮答案只能证明演示路径可走，不能支持生产决策。", decision: "把最大不确定性排在最先验证，不先做最容易展示的路径。", boundary: "PoC 样本、流量和环境与生产不同，结论必须写清适用范围和重测触发器。", sourceIds: ["ragas", "nist-genai-profile"] },
       { title: "典型交互方案", en: "Assist, Search, Analyze", explanation: "客服、企业搜索、会议助手和 ChatBI 都以信息辅助为主，但数据权威性、语义口径、实时性和人工确认差异很大。生成质量之外，还要检查检索覆盖、权限、引用和最终任务完成。", decision: "先判断答案是否影响业务决策，再决定自动化深度和人审位置。", boundary: "聊天界面相似不代表后台责任相同，尤其不能把自然语言流畅度当成数据口径正确。", sourceIds: ["ragas", "nist-zero-trust"] },
       { title: "内容与行动方案", en: "Create & Act", explanation: "营销生成、AI Coding、数字人与流程 Agent 从‘给建议’走向‘产生资产或改变系统状态’。越接近外部发布、代码合并或业务写入，越需要版本、审批、权限、审计和可逆设计。", decision: "根据后果半径决定模型能建议、起草、提交还是直接执行。", boundary: "模型生成的资产仍需满足版权、品牌、安全、测试和业务责任，自动化不能转移所有者责任。", sourceIds: ["anthropic-effective-agents", "nist-genai-profile"] },
-      { title: "三本账与持续运营", en: "Quality, Risk, TCO", explanation: "模型与云资源只是技术账；数据准备、集成、评估、监控和人工复核构成工程运营账；错误决策、客户流失和补偿构成业务失败账。上线后还要把反馈和变更写回评估资产。", decision: "以每个成功业务结果的全成本比较方案，而不是只比较 Token 单价。", boundary: "早期缺少终态样本时只能报告区间和假设，不能伪造精确 ROI。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "质量、风险与全部成本", en: "Quality, Risk, TCO", explanation: "成本包括模型与云资源、数据准备、集成、评估、监控和人工复核，也包括错误决策、客户流失和补偿。上线后还要把反馈和变更写回评估数据。", decision: "以每个成功业务结果的全部成本比较方案，不只比较 Token 单价。", boundary: "早期缺少最终状态样本时只能报告区间和假设，不能伪造精确 ROI。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
     ],
   },
   "model-landscape": {

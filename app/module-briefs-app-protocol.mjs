@@ -1,14 +1,14 @@
 export const solutionPatternsBrief = {
   slug: "solution-patterns",
   definition:
-    "场景解决方案（Solution Pattern）把客户目标、业务流程、数据、风险与技术能力组织成可验证、可采购、可运营的实施路径。",
+    "场景解决方案（Solution Pattern）把客户目标、业务流程、数据、风险与技术能力组织成可以验证、采购和长期维护的实施方案。",
   position:
     "位于方案与选型层，负责从客户问题进入知识库，再把 RAG、Agent、多模态、模型、数据与云平台组合成端到端方案。",
   presentation: "decision",
-  principleTitle: "从客户结果出发，而不是从产品清单出发",
+  principleTitle: "从客户结果组织方案",
   principles: [
     {
-      zh: "需求决策契约",
+      zh: "一页需求约定",
       en: "Decision Contract",
       explanation:
         "在讨论架构前先确认业务结果（Outcome）、使用者与责任人（User & Owner）、数据与权利（Data & Rights）、风险边界（Risk）。",
@@ -16,15 +16,15 @@ export const solutionPatternsBrief = {
         "四项中有一项无法回答时，先补需求发现，不急于推荐模型或云产品。",
     },
     {
-      zh: "场景与能力组合",
+      zh: "场景需要哪些能力",
       en: "Scenario × Building Blocks",
       explanation:
         "一个方案通常由检索、生成、行动、多模态理解、数据工程、模型服务和工程保障共同组成，而不是单一模型 API。",
       decision:
-        "先判断问题需要检索、生成、行动还是它们的组合，再映射到技术与云服务。",
+        "先判断问题需要检索、生成、行动还是它们的搭配，再对应到技术与云服务。",
     },
     {
-      zh: "分阶段交付门",
+      zh: "分阶段通过条件",
       en: "Delivery Gates",
       explanation:
         "价值验证、技术 PoC、非功能试点和生产运营分别回答值得做、能否做、能否稳定运行、能否长期负责。",
@@ -54,7 +54,7 @@ export const solutionPatternsBrief = {
       signal:
         "客户能说清目标用户、当前流程、成功结果、数据来源、责任人和不可接受风险。",
       recommendation:
-        "形成一页需求决策契约，并把未知项列为验证假设。",
+        "形成一页需求约定，并把未知项列为待验证假设。",
       boundary:
         "“想用大模型”不是业务结果；没有负责人和验收方式的需求仍处于探索期。",
     },
@@ -70,7 +70,7 @@ export const solutionPatternsBrief = {
     {
       question: "PoC 应验证什么？",
       signal:
-        "客户已提供代表性样本、人工基线、业务指标和风险样本。",
+        "客户已提供代表性样本、现有人工表现、业务指标和风险样本。",
       recommendation:
         "同时验证任务质量、P95 时延、失败恢复、安全边界和每个成功任务成本。",
       boundary:
@@ -132,7 +132,7 @@ export const solutionPatternsBrief = {
           mechanism:
             "系统只在预定义步骤、工具和参数范围内执行任务，关键状态由工作流或业务系统保存。",
           decision:
-            "云服务重点转向工作流、队列、短期身份、幂等、补偿和审批；用业务终态而非回答文本验收。",
+            "云服务重点转向工作流、队列、短期身份、幂等、补偿和审批；用最终业务状态而非回答文本验收。",
           boundary:
             "模型可以选择动作，但不能自行扩大工具范围或授权范围。",
         },
@@ -142,7 +142,7 @@ export const solutionPatternsBrief = {
           mechanism:
             "模型可规划、多轮调用工具并根据观察调整路径，复合错误与资源消耗随轨迹增长。",
           decision:
-            "只有复杂度收益经基线证明后才引入，并配置预算、停止条件、沙箱、策略门、全链追踪和人工接管。",
+            "只有复杂度收益与现有做法对比后得到证明才引入，并配置预算、停止条件、沙箱、策略检查、全链追踪和人工接管。",
           boundary:
             "自主性是需要证明的成本，不是默认更高级的方案形态。",
         },
@@ -162,7 +162,7 @@ export const solutionPatternsBrief = {
           mechanism:
             "演示指标与业务结果之间没有可验证因果链，或者系统只优化了回答质量，却没有改变真实流程瓶颈。",
           decision:
-            "补齐当前基线、目标行为、可观察业务终态和对照组；云上把模型 Trace 与业务事件关联。",
+            "补齐当前做法、目标行为、可观察的最终业务状态和对照组；云上把模型 Trace 与业务事件关联。",
           boundary:
             "用户喜欢或单次回答正确不能替代业务结果。",
         },
@@ -204,7 +204,7 @@ export const solutionPatternsBrief = {
     },
   ],
   criticalBoundary:
-    "场景解决方案不是把产品图标排成架构图，而是把客户结果、责任边界、可验证指标和可运营控制连接起来；Demo 成功不等于生产可用。",
+    "合格的场景解决方案要连接客户结果、责任分工、可验证指标和后续维护方式。把产品图标排成架构图或完成一次 Demo，都不能证明系统可以投入生产。",
   cloudHooks: [
     {
       stage: "接入与身份（Access & Identity）",
@@ -215,7 +215,7 @@ export const solutionPatternsBrief = {
     {
       stage: "编排与执行（Orchestration & Execution）",
       services: "Serverless、容器、工作流、消息队列、事件总线、Agent Runtime",
-      value: "承载确定性流程、异步任务、弹性执行和失败恢复。",
+      value: "运行确定性流程和异步任务，并支持弹性执行与失败恢复。",
       discover: "哪些步骤同步完成，哪些可异步；哪些动作需要审批、补偿或人工接管？",
     },
     {
@@ -227,8 +227,8 @@ export const solutionPatternsBrief = {
     {
       stage: "工程保障（Engineering Assurance）",
       services: "评估平台、内容安全、DLP、Tracing、日志、监控、FinOps",
-      value: "把质量、风险、成本和可用性转成持续运营控制面。",
-      discover: "上线门槛、零容忍错误、SLA、审计周期和成本责任人分别是什么？",
+      value: "用评估、日志、指标和追踪持续观察质量、风险、成本与可用性。",
+      discover: "上线通过条件、零容忍错误、SLA、审计周期和成本责任人分别是什么？",
     },
   ],
   relatedSlugs: [
@@ -301,7 +301,7 @@ export const solutionPatternsBrief = {
     },
     {
       q: "客户有很多想法，应该从哪个场景开始？",
-      a: "优先选择价值明确、数据可得、风险可控、结果可验证且能在有限周期内闭环的场景。",
+      a: "优先选择价值明确、数据可得、风险可控、结果可验证，并能在有限周期内得到结论的场景。",
       depth:
         "高频不一定等于高价值，技术可行也不一定适合首发。可以按业务价值、数据准备度、集成复杂度、错误可逆性和责任人意愿排序，先做能积累评估集和运营能力的场景。",
       ask: "追问客户：哪个问题现在有人持续付出成本解决，并且结果能被系统或负责人验证？",
@@ -1797,7 +1797,7 @@ export const securityBrief = {
   position:
     "位于工程保障层，贯穿数据进入、模型调用、工具行动、输出交付和持续运营；安全控制与 Evaluation 相互配合，但不能由评估分数代替。",
   presentation: "stack",
-  principleTitle: "把模型放进受控系统，而不是要求模型自己保证安全",
+  principleTitle: "安全依靠模型外的分层控制",
   principles: [
     {
       zh: "分层威胁模型",
@@ -1816,7 +1816,7 @@ export const securityBrief = {
         "把外部内容标记为不可信，并在模型外限制其可以触发的权限和动作。",
     },
     {
-      zh: "数据与向量治理",
+      zh: "数据与向量安全管理",
       en: "Data & Vector Governance",
       explanation:
         "向量化不是匿名化；知识库仍可能发生投毒、越权检索、跨租户泄露和来源失真。",
@@ -1840,7 +1840,7 @@ export const securityBrief = {
         "模型只提出意图，应用执行身份绑定、授权、校验、审批和补偿；高风险动作必须人工确认。",
     },
     {
-      zh: "四道外部控制门",
+      zh: "输入、行动、输出与监控四层检查",
       en: "Input, Action, Output & Monitoring Gates",
       explanation:
         "输入门处理内容与来源，行动门控制权限，输出门处理泄露与不当内容，监控门发现异常和漂移。",
