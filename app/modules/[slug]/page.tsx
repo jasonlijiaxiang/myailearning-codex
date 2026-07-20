@@ -58,6 +58,7 @@ type BriefQaItem = {
   tag: string;
   basis: string;
   evidence: Array<{ sourceId: string; supports: string }>;
+  updatedAt?: string;
 };
 
 type ModuleBrief = {

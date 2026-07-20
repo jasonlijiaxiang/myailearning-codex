@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { QaFilterShell } from "./fieldbook-interactions";
+import { formatContentUpdatedAt } from "./content-update-metadata.mjs";
 
 type SourceSummary = {
   grade: string;
@@ -34,6 +35,7 @@ type QaItem = {
   tag: string;
   basis: string;
   evidence: QaEvidence[];
+  updatedAt?: string;
 };
 
 export type ModuleLearningContent = {
@@ -80,6 +82,7 @@ export type ModuleCurriculumContent = {
     decision: string;
     boundary: string;
     sourceIds: string[];
+    updatedAt?: string;
   }>;
 };
 
@@ -98,6 +101,7 @@ export type DeepDiveBlock = {
   intro: string;
   items: DeepDiveItem[];
   sourceIds: string[];
+  updatedAt?: string;
   maxColumns?: number;
   columnLabels?: {
     name: string;
@@ -106,6 +110,13 @@ export type DeepDiveBlock = {
     boundary: string;
   };
 };
+
+export function ContentUpdatedAt({ value, className }: { value?: string; className?: string }) {
+  const label = formatContentUpdatedAt(value);
+  if (!label || !value) return null;
+
+  return <time className={`contentUpdatedAt${className ? ` ${className}` : ""}`} dateTime={value}>{label}</time>;
+}
 
 function requireSource(sourceLedger: SourceLedger, sourceId: string) {
   const source = sourceLedger[sourceId];
@@ -202,7 +213,12 @@ export function ModuleDeepDiveBlocks({
           <article className={`deepDiveBlock deepDiveBlock--${block.kind}`} key={block.title}>
             <header className="deepDiveHeader">
               <span>{String(blockIndex + 1).padStart(2, "0")}</span>
-              <div><p className="miniLabel">{block.eyebrow}</p><h3>{block.title}</h3><p>{block.intro}</p></div>
+              <div>
+                <p className="miniLabel">{block.eyebrow}</p>
+                <h3>{block.title}</h3>
+                <ContentUpdatedAt value={block.updatedAt} className="deepDiveUpdatedAt" />
+                <p>{block.intro}</p>
+              </div>
             </header>
 
             {block.kind === "sequence" ? (
@@ -255,7 +271,11 @@ export function ModuleCurriculumAtlas({
           <article className="curriculumChapter" key={chapter.title}>
             <header>
               <span>{String(index + 1).padStart(2, "0")}</span>
-              <div><h3>{chapter.title}</h3><p>{chapter.en}</p></div>
+              <div>
+                <h3>{chapter.title}</h3>
+                <p>{chapter.en}</p>
+                <ContentUpdatedAt value={chapter.updatedAt} className="curriculumUpdatedAt" />
+              </div>
             </header>
             <p className="curriculumExplanation">{chapter.explanation}</p>
             <dl>
@@ -380,7 +400,7 @@ export function ModuleQaList({ items, sourceLedger }: { items: QaItem[]; sourceL
         <details id={`qa-${index + 1}`} key={item.q} open={index === 0} data-qa-tag={item.tag}>
           <summary>
             <span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span>
-            <strong>{item.q}</strong>
+            <span className="qaQuestion"><strong>{item.q}</strong><ContentUpdatedAt value={item.updatedAt} className="qaUpdatedAt" /></span>
             <span className="qaTag">{item.tag}</span>
             <span className="plus">＋</span>
           </summary>

@@ -3,6 +3,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs";
+import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatContentUpdatedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
@@ -83,6 +84,51 @@ function collectModuleSourceIds({ cards, qa, deepDives }) {
     ...deepDives.flatMap((block) => block.sourceIds),
   ]);
 }
+
+function assertOptionalUpdatedAt(value, label) {
+  if (value == null) return;
+  assert.ok(isValidContentUpdatedAt(value), `${label} 的 updatedAt 必须是策略生效后的有效日期：${value}`);
+  assert.equal(formatContentUpdatedAt(value), `更新于 ${value}`);
+}
+
+test("future subtopics and questions use optional, valid update metadata without backfilling history", async () => {
+  assert.equal(CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, "2026-07-20");
+  assert.equal(formatContentUpdatedAt(undefined), null, "历史内容缺少 updatedAt 时必须保持可渲染");
+  assert.equal(formatContentUpdatedAt("2026-07-20"), "更新于 2026-07-20");
+  assert.equal(isValidContentUpdatedAt("2026-02-30"), false);
+  assert.equal(isValidContentUpdatedAt("2026-07-19"), false);
+  assert.throws(() => formatContentUpdatedAt("2026-02-30"), /updatedAt/);
+
+  for (const publication of publishedModuleRegistry) {
+    const content = requireModuleContent(publication.slug);
+    const curriculum = publication.routeKind === "brief" ? requireModuleCurriculum(publication.slug) : null;
+
+    for (const item of content.qa) assertOptionalUpdatedAt(item.updatedAt, `${publication.slug} / ${item.q}`);
+    for (const block of content.deepDives) assertOptionalUpdatedAt(block.updatedAt, `${publication.slug} / ${block.title}`);
+    for (const chapter of curriculum?.chapters ?? []) assertOptionalUpdatedAt(chapter.updatedAt, `${publication.slug} / ${chapter.title}`);
+  }
+
+  const [components, questionsPage, questionIndex, styles, v2Styles, agentRules, moduleStandard] = await Promise.all([
+    readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/questions/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/question-index.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
+    readFile(new URL("../AGENTS.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/MODULE-BUILD-STANDARD.md", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(components, /<time className=\{`contentUpdatedAt/);
+  assert.match(components, /value=\{block\.updatedAt\}/);
+  assert.match(components, /value=\{chapter\.updatedAt\}/);
+  assert.match(components, /value=\{item\.updatedAt\}/);
+  assert.match(questionIndex, /updatedAt: item\.updatedAt \?\? null/);
+  assert.match(questionsPage, /value=\{item\.updatedAt \?\? undefined\}/);
+  assert.match(styles, /\.contentUpdatedAt/);
+  assert.match(v2Styles, /\.questionUpdatedAt/);
+  assert.match(agentRules, /历史内容不回填/);
+  assert.match(moduleStandard, /2026-07-20 之前已有内容不回填日期/);
+});
 
 test("homepage is a focused knowledge map with links to every independent module", async () => {
   const html = await renderHtml("/");

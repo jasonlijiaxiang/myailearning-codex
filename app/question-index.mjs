@@ -34,6 +34,7 @@ export const questionDirectoryItems = Object.freeze(questionDirectoryModules.fla
     ask: item.ask,
     basis: item.basis,
     evidence: item.evidence,
-    searchText: `${moduleEntry.zh} ${moduleEntry.en} ${item.tag} ${item.q} ${item.a} ${item.depth} ${item.ask} ${item.basis}`,
+    updatedAt: item.updatedAt ?? null,
+    searchText: `${moduleEntry.zh} ${moduleEntry.en} ${item.tag} ${item.q} ${item.a} ${item.depth} ${item.ask} ${item.basis} ${item.updatedAt ?? ""}`,
   })),
 ));
