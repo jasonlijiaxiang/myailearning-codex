@@ -190,6 +190,8 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(solution, /TCO/);
   assert.match(solution, /七类场景，七套验收重点/);
   assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
+  assert.match(solution, /智能客服应该看回答准确率，还是看问题解决率/);
+  assert.match(solution, /ChatBI 生成的 SQL 能运行，为什么还不能说明答案正确/);
   assert.doesNotMatch(solution, /需求决策契约|三本账|能力组合/);
 
   assert.match(security, /data-knowledge-view="threat-path"/);
@@ -198,6 +200,8 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(security, /IAM.*ACL.*DLP/s);
   assert.match(security, /指令.*数据.*模型与组件.*工具与 Agent.*输出与运营/s);
   assert.match(security, /按部署地判断适用法规/);
+  assert.match(security, /OWASP LLM Top 10 能不能直接当作安全验收清单/);
+  assert.match(security, /发生数据泄露或 Agent 越权后，第一步应该做什么/);
   assert.doesNotMatch(security, /四道外部控制门/);
 
   assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
@@ -206,6 +210,8 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(tuning, /SFT.*LoRA.*QLoRA.*DPO/s);
   assert.match(tuning, /三种参数更新方式/);
   assert.match(tuning, /数据.*训练.*任务.*服务/s);
+  assert.match(tuning, /聊天模板用错了，会对微调结果产生什么影响/);
+  assert.match(tuning, /怎样发现微调造成了灾难性遗忘/);
   assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
 
   assert.ok(moduleCurriculumContent["solution-patterns"].chapters.length >= 10, "场景方案必须覆盖主要应用原型与生产验收");
@@ -214,6 +220,11 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   for (const slug of ["solution-patterns", "security", "fine-tuning"]) {
     assert.ok(moduleLearningContent[slug].route.length >= 5, `${slug} 学习路线不能压缩为通用三步模板`);
     assert.ok(moduleLearningContent[slug].labs.length >= 4, `${slug} 至少覆盖四个不同决策或工程练习`);
+    const publishedModule = publishedModuleRegistry.find((module) => module.slug === slug);
+    const actualTags = new Set(moduleContentRegistry[slug].qa.map((item) => item.tag));
+    for (const requiredTag of publishedModule.qaCoverageTags) {
+      assert.ok(actualTags.has(requiredTag), `${slug} 客户问题缺少已登记的覆盖主题：${requiredTag}`);
+    }
   }
 });
 

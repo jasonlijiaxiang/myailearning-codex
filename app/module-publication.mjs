@@ -35,6 +35,21 @@ const pilotKnowledgeViews = Object.freeze({
   "fine-tuning": "tuning-lifecycle",
 });
 
+const pilotQaCoverageTags = Object.freeze({
+  "solution-patterns": Object.freeze([
+    "方案边界", "PoC 验收", "TCO", "场景选择", "编排选择", "智能客服", "企业搜索",
+    "内容生成", "AI Coding", "数字人", "ChatBI", "会议助手", "生产运营",
+  ]),
+  security: Object.freeze([
+    "共享责任", "提示注入", "RAG 安全", "Agent 安全", "风险盘点", "删除与撤权",
+    "供应链", "身份与授权", "法规适用性", "持续红队", "事件响应", "日志治理",
+  ]),
+  "fine-tuning": Object.freeze([
+    "路线选择", "方法选型", "数据准备", "验收", "对齐路线", "数据格式", "合成数据",
+    "训练诊断", "训练平台", "Adapter 部署", "版本兼容", "能力保留",
+  ]),
+});
+
 export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind]) => Object.freeze({
   slug,
   path: `/modules/${slug}`,
@@ -43,6 +58,7 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
   routeKind,
   visualProfile: Object.hasOwn(pilotKnowledgeViews, slug) ? "dense-reading" : "standard",
   knowledgeView: pilotKnowledgeViews[slug] ?? null,
+  qaCoverageTags: pilotQaCoverageTags[slug] ?? Object.freeze([]),
   contentContract: Object.freeze(routeKind === "dedicated"
     ? {
         principle: Object.freeze(slug === "rag"
