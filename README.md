@@ -6,9 +6,9 @@
 
 ## 本地运行
 
-准备条件：Codex 和 Node.js 22.13 或更高版本。解压项目后，从项目根目录加入或打开 Codex；项目级 Skill 会从 `.agents/skills` 自动发现。首次启用聊天采集时，通过 Codex 的 `/hooks` 检查并信任项目 Hook。
+准备条件：Node.js 22.13 或更高版本；只有需要聊天沉淀或 Codex 协作时才需要 Codex。解压项目后，从项目根目录加入或打开 Codex；项目级 Skill 会从 `.agents/skills` 自动发现。首次启用聊天采集时，通过 Codex 的 `/hooks` 检查并信任项目 Hook。
 
-如果你拿到的是同事分享的 portable ZIP，请先阅读 [`HANDOFF.md`](HANDOFF.md)，按“只阅读、聊天沉淀、参与维护”三种身份选择对应流程。
+完整使用与迁移指南见 [`HANDOFF.md`](HANDOFF.md)，其中包含 macOS、Linux、Windows 原生、Windows + WSL2 的安装、启动、验证、聊天沉淀、打包、迁移和故障排查命令。如果你拿到的是同事分享的 portable ZIP，应先按该指南验证 SHA-256，再选择“只阅读、聊天沉淀、参与维护”对应流程。
 
 ```bash
 npm ci
