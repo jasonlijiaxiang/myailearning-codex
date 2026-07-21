@@ -42,6 +42,7 @@ export default function QuestionsPage() {
           </Link>
           <div className="toplinks">
             <Link href="/">知识库首页 / Home</Link>
+            <Link href="/glossary">专业术语库</Link>
             <a href="#question-directory">查询全部问题</a>
             <Link href="/references">Reference</Link>
           </div>

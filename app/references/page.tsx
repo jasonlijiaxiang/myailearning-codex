@@ -74,6 +74,7 @@ export default function ReferencesPage() {
           </Link>
           <div className="toplinks">
             <Link href="/">知识库首页 / Home</Link>
+            <Link href="/glossary">专业术语库</Link>
             <Link href="/questions">客户问题查询</Link>
             <a href="#reference-modules">模块来源目录 / Modules</a>
           </div>

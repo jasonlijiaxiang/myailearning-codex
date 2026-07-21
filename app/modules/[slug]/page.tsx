@@ -208,7 +208,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页"><span>Cloud × AI / Presales Fieldbook</span></Link>
-          <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">本模块问答</a><Link href="/questions">全部问题</Link><Link href="/references">Reference</Link></div>
+          <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">本模块问答</a><Link href="/glossary">术语库</Link><Link href="/questions">全部问题</Link><Link href="/references">Reference</Link></div>
         </nav>
         <div className="moduleBriefHeader">
           <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V2.0</p>

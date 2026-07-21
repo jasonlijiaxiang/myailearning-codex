@@ -154,6 +154,7 @@ export default function PromptEngineeringModulePage() {
           <div className="toplinks">
             <Link href="#prompt-foundation">基础机制</Link>
             <Link href="#qa">本模块问答</Link>
+            <Link href="/glossary">术语库</Link>
             <Link href="/questions">全部问题</Link>
             <Link href="/references">Reference</Link>
           </div>

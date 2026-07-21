@@ -328,6 +328,76 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .questionDirectoryItem:nth-child(n) { border-top-color: var(--line); }
 .questionDirectoryItem:hover { border-color: var(--ink); box-shadow: inset 5px 0 0 var(--lime); }
 
+/* Homepage glossary preview: more coverage without turning the homepage into the full dictionary. */
+.homeTermGuide { align-items: start; padding-top: 54px; padding-bottom: 54px; }
+.termHintGroups { min-width: 0; border: 1px solid var(--ink); background: var(--white); }
+.termHintGroupList { display: grid; }
+.termHintGroup { position: relative; padding: 13px 15px; display: grid; grid-template-columns: 140px minmax(0,1fr); gap: 16px; align-items: center; border-bottom: 1px solid var(--line); }
+.termHintGroup h3 { margin: 0; color: var(--muted); font-size: 12px; font-weight: 800; }
+.termHintGroup > div { min-width: 0; display: flex; flex-wrap: wrap; gap: 7px; }
+.termHintGroup .termHint summary { min-height: 36px; }
+.termHintGroups > footer { min-height: 52px; padding: 11px 15px; display: flex; justify-content: space-between; gap: 20px; align-items: center; background: var(--ink); color: var(--white); }
+.termHintGroups > footer > span { color: rgba(255,255,255,.62); font-size: 12px; }
+.termHintGroups > footer a { color: var(--white); font-size: 13px; font-weight: 800; text-decoration: none; }
+.termHintGroups > footer a i { margin-left: 8px; color: var(--lime); font-style: normal; }
+.termHintGroups > footer a:hover { text-decoration: underline; text-decoration-color: var(--lime); text-underline-offset: 5px; }
+
+/* Full glossary: a searchable editorial index rather than a card wall. */
+.glossaryPage { background: var(--paper); color: var(--ink); }
+.glossaryHero { min-height: 0; padding: 0 4vw 54px; overflow: visible; background: var(--white); color: var(--ink); }
+.glossaryHero::after { display: none; }
+.glossaryHero .topbar { height: 70px; color: var(--ink); border-bottom-color: var(--line); }
+.glossaryHeroGrid { max-width: var(--wide); margin: 0 auto; padding-top: 54px; display: grid; grid-template-columns: minmax(0,1.25fr) minmax(340px,.58fr); gap: clamp(54px,7vw,110px); align-items: end; }
+.glossaryHero .eyebrow { color: var(--blue); }
+.glossaryHero h1 { margin: 0; color: var(--ink); font-family: var(--font-serif),"Songti SC",serif; font-size: clamp(48px,5vw,72px); font-weight: 500; line-height: 1.07; letter-spacing: -.045em; }
+.glossaryHero .heroLead { max-width: 820px; margin-top: 26px; color: var(--muted); font-size: 18px; line-height: 1.78; }
+.glossaryHero .primaryButton { border-radius: 2px; background: var(--lime); }
+.glossaryHero .textButton { color: var(--ink); border-bottom-color: var(--line); }
+.glossaryHeroStats { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.glossaryHeroStats > div { min-height: 128px; padding: 20px 16px; display: flex; flex-direction: column; justify-content: flex-end; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.glossaryHeroStats strong { color: var(--blue); font-family: var(--font-serif),serif; font-size: 42px; font-weight: 500; line-height: 1; }
+.glossaryHeroStats span { margin-top: 8px; color: var(--muted); font-size: 12px; }
+.glossaryHeroStats > p { grid-column: 1 / -1; margin: 0; padding: 20px; color: var(--muted); font-size: 14px; line-height: 1.7; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.glossaryDirectorySection { max-width: var(--wide); margin: 0 auto; padding: clamp(74px,7vw,108px) clamp(24px,5vw,70px); border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: var(--white); }
+.glossaryDirectoryIntro { display: grid; grid-template-columns: minmax(0,1.08fr) minmax(320px,.58fr); gap: clamp(44px,7vw,100px); align-items: end; margin-bottom: 42px; }
+.glossaryDirectoryIntro h2 { margin: 0; max-width: 880px; font-family: var(--font-serif),"Songti SC",serif; font-size: clamp(38px,4.2vw,62px); font-weight: 500; line-height: 1.1; letter-spacing: -.042em; }
+.glossaryDirectoryIntro > p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.8; }
+.glossaryToolbar { position: sticky; top: 6px; z-index: 30; padding: 15px 18px; border: 1px solid var(--ink); background: rgba(255,255,255,.97); box-shadow: 0 12px 32px rgba(11,27,59,.08); backdrop-filter: blur(12px); }
+.glossarySearch { display: grid; grid-template-columns: 210px minmax(0,1fr) 28px; gap: 16px; align-items: center; padding: 0 4px 13px; border-bottom: 1px solid var(--line); }
+.glossarySearch > span { color: var(--muted); font-size: 12px; font-weight: 800; }
+.glossarySearch input { min-width: 0; width: 100%; padding: 4px 0; border: 0; outline: 0; background: transparent; color: var(--ink); font: inherit; font-size: 18px; }
+.glossarySearch input::placeholder { color: #8b94a2; }
+.glossarySearch i { color: var(--blue); font-size: 22px; font-style: normal; }
+.glossaryFilters { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 13px; }
+.glossaryFilters button { min-height: 36px; padding: 7px 10px; border: 1px solid transparent; border-radius: 2px; background: transparent; color: var(--muted); font: inherit; font-size: 12px; font-weight: 750; cursor: pointer; }
+.glossaryFilters button:hover { background: var(--paper); color: var(--ink); }
+.glossaryFilters button.active { border-color: var(--ink); background: var(--ink); color: var(--white); }
+.glossaryStatus { min-height: 58px; padding: 18px 2px 12px; display: flex; justify-content: space-between; gap: 20px; align-items: baseline; border-bottom: 2px solid var(--ink); color: var(--muted); font-size: 13px; }
+.glossaryStatus strong { color: var(--ink); font-family: var(--font-serif),serif; font-size: 28px; font-weight: 500; }
+.glossaryStatus button { padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.glossaryGroup { content-visibility: auto; contain-intrinsic-size: 920px; border-bottom: 2px solid var(--ink); }
+.glossaryGroup > header { min-height: 112px; padding: 24px 14px; display: grid; grid-template-columns: 62px minmax(0,1fr) auto; gap: 22px; align-items: center; background: var(--paper); border-bottom: 1px solid var(--ink); }
+.glossaryGroup > header > span { color: var(--blue); font-family: var(--font-geist-mono),monospace; font-size: 12px; }
+.glossaryGroup > header h2 { margin: 0; font-family: var(--font-serif),serif; font-size: 29px; font-weight: 500; }
+.glossaryGroup > header p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.glossaryGroup > header > strong { color: var(--muted); font-size: 12px; }
+.glossaryTerm { scroll-margin-top: 164px; min-height: 132px; padding: 22px 14px; display: grid; grid-template-columns: 62px minmax(220px,.72fr) minmax(320px,1.35fr) minmax(230px,.62fr); gap: 24px; align-items: center; border-bottom: 1px solid var(--line); background: var(--white); }
+.glossaryTerm:last-child { border-bottom: 0; }
+.glossaryTerm:target { background: #f2f9e5; box-shadow: inset 5px 0 0 var(--lime); }
+.glossaryTermNo { color: var(--muted); font-family: var(--font-geist-mono),monospace; font-size: 11px; }
+.glossaryTermName h3 { margin: 0; font-size: 20px; line-height: 1.35; }
+.glossaryTermName p { margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.glossaryTermName p strong { display: inline-block; margin-left: 8px; padding: 2px 6px; background: var(--ink); color: var(--white); font-family: var(--font-geist-mono),monospace; font-size: 10px; }
+.glossaryTermDescription { margin: 0; color: var(--ink); font-size: 16px; line-height: 1.75; }
+.glossaryTerm nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.glossaryTerm nav a { padding: 5px 8px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 11px; font-weight: 750; text-decoration: none; }
+.glossaryTerm nav a:hover { border-color: var(--lime); color: var(--ink); background: #f2f9e5; }
+.glossaryEmpty { padding: 70px 24px; text-align: center; border-bottom: 1px solid var(--ink); }
+.glossaryEmpty strong { font-family: var(--font-serif),serif; font-size: 28px; font-weight: 500; }
+.glossaryEmpty p { color: var(--muted); }
+.glossaryEmpty button { padding: 9px 13px; border: 1px solid var(--ink); background: var(--white); color: var(--ink); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }
+.glossaryFooter { max-width: var(--wide); margin: 0 auto; }
+
 @media (min-width: 901px) and (max-height: 900px) {
   .heroV2 { min-height: 0; padding-bottom: 34px; }
   .heroGridV2 { min-height: 520px; padding-top: 36px; }
@@ -348,6 +418,10 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .moduleSearch { padding-bottom: 12px; border-right: 0; border-bottom: 1px solid var(--line); }
   .moduleResult { grid-template-columns: 110px minmax(190px,.65fr) minmax(240px,1fr) 26px; grid-template-areas: "meta title summary arrow" "meta en cue arrow"; }
   .moduleResult > strong { padding: 5px 0 0; border-left: 0; color: var(--muted); }
+  .glossaryHeroGrid { grid-template-columns: 1fr; align-items: start; }
+  .glossaryHeroStats { max-width: 760px; }
+  .glossaryTerm { grid-template-columns: 52px minmax(210px,.7fr) minmax(300px,1.3fr); }
+  .glossaryTerm nav { grid-column: 2 / -1; justify-content: flex-start; }
 }
 
 @media (max-width: 900px) {
@@ -363,6 +437,11 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .modulePilot .moduleBriefDefinition { margin-top: 0; }
   .moduleReadingNav { border-top: 1px solid var(--line); }
   .readingNavHead > i { width: 120px; }
+  .termHintGroup { grid-template-columns: 1fr; gap: 8px; }
+  .glossaryDirectoryIntro { grid-template-columns: 1fr; gap: 24px; }
+  .glossaryTerm { grid-template-columns: 46px minmax(0,1fr); gap: 8px 18px; }
+  .glossaryTermDescription,
+  .glossaryTerm nav { grid-column: 2; }
 }
 
 @media (max-width: 720px) {
@@ -411,9 +490,29 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .sectionLead { margin-left: 0; font-size: 17px; }
   .tableWrap table { font-size: 16px; }
   .questionHero,
-  .referenceHero { padding-bottom: 36px; }
+  .referenceHero,
+  .glossaryHero { padding: 0 20px 36px; }
   .questionHeroGrid,
-  .referenceHeroGrid { padding-top: 36px; }
+  .referenceHeroGrid,
+  .glossaryHeroGrid { padding-top: 36px; }
+  .homeTermGuide { padding-top: 38px; padding-bottom: 38px; }
+  .termHintGroups > footer { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .termHintGroup .termHint[open] { flex: 1 1 100%; }
+  .glossaryHero h1 { font-size: clamp(42px,11.2vw,54px); overflow-wrap: anywhere; }
+  .glossaryHeroStats { grid-template-columns: 1fr; }
+  .glossaryHeroStats > p { grid-column: 1; }
+  .glossaryDirectorySection { padding: 62px 20px; border-left: 0; border-right: 0; }
+  .glossaryToolbar { position: relative; top: 0; padding: 13px; }
+  .glossarySearch { grid-template-columns: minmax(0,1fr) 24px; gap: 8px; }
+  .glossarySearch > span { grid-column: 1 / -1; }
+  .glossarySearch input { font-size: 16px; }
+  .glossaryFilters { flex-wrap: nowrap; overflow-x: auto; }
+  .glossaryFilters button { flex: 0 0 auto; white-space: nowrap; }
+  .glossaryGroup > header { grid-template-columns: 42px minmax(0,1fr); gap: 14px; }
+  .glossaryGroup > header > strong { grid-column: 2; }
+  .glossaryTerm { min-height: 0; padding: 20px 4px; grid-template-columns: 34px minmax(0,1fr); gap: 7px 12px; }
+  .glossaryTermDescription { font-size: 16px; }
+  .glossaryTerm nav { justify-content: flex-start; }
 }
 
 @media (prefers-reduced-motion: reduce) {

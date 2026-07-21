@@ -50,6 +50,7 @@ npm run kb:release-check -- --mode local
 - `app/modules/ai-agent/page.tsx`：Agent 原理、受控循环、云上运行与实战问答
 - `app/modules/prompt-engineering/page.tsx`：提示词、上下文工程、发布治理与实战问答
 - `app/modules/[slug]/page.tsx`：16 个内容自适应模块及历史地址别名的独立页面入口
+- `app/glossary/page.tsx`：从统一术语注册表派生的可搜索专业术语库
 - `app/module-briefs-*.mjs`：16 个模块的原理、决策、云连接、问答与证据内容源
 - `app/rag-content.mjs`：RAG 问答与证据卡内容源
 - `app/agent-content.mjs`：Agent 问答与证据卡内容源
@@ -91,6 +92,7 @@ npm run kb:release-check -- --mode local
 - Agent：`/modules/ai-agent`
 - Prompt Engineering：`/modules/prompt-engineering`
 - 其余正式模块：由知识地图进入 `/modules/<slug>`
+- 专业术语库：`/glossary`
 - 统一来源台账：`/references`
 
 每个模块独立维护和分享；正文中的证据链接统一跳转到 Reference 页对应来源，不在模块页重复展示完整来源列表。

@@ -20,7 +20,7 @@ import { questionDirectoryItems, questionDirectoryModules } from "../app/questio
 import { evidenceCards, ragQa } from "../app/rag-content.mjs";
 import { referenceModules, sourceLedger } from "../app/reference-content.mjs";
 import { sourceFreshness } from "../app/source-freshness.mjs";
-import { requireTerm, terminology } from "../app/terminology.mjs";
+import { glossaryGroups, glossaryTermIds, homepageTermGroups, requireTerm, terminology } from "../app/terminology.mjs";
 
 async function render(path = "/") {
   assert.match(path, /^\//, "render(path) 必须接收站内绝对路径");
@@ -236,7 +236,7 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   assert.doesNotMatch(styles, /\/(?:Users|home)\//, "V3 样式不得包含本机绝对路径");
 });
 
-test("focus surfaces provide accessible abbreviation explanations", async () => {
+test("focus surfaces provide accessible terminology explanations", async () => {
   const hintTermIds = ["rag", "llm", "ai-agent", "poc", "sla", "tco", "mcp", "a2a", "bm25", "ann", "hnsw", "rrf", "api", "iam", "acl", "dlp", "hitl", "qkv", "kv-cache", "ttft", "tpot", "moe", "sft", "lora", "qlora", "dpo"];
 
   for (const termId of hintTermIds) {
@@ -244,7 +244,7 @@ test("focus surfaces provide accessible abbreviation explanations", async () => 
     assert.ok(term.abbr && term.description, `缩写提示必须同时有缩写和简短说明：${termId}`);
   }
 
-  for (const path of ["/", "/modules/rag", "/modules/ai-agent", "/modules/llm", "/modules/solution-patterns", "/modules/security", "/modules/fine-tuning"]) {
+  for (const path of ["/modules/rag", "/modules/ai-agent", "/modules/llm", "/modules/solution-patterns", "/modules/security", "/modules/fine-tuning"]) {
     const html = await renderHtml(path);
     assert.match(html, /class="termHintRow"/i, `${path} 缺少缩写速查入口`);
     assert.match(html, /<details class="termHint" data-term-id="[^"]+">/i, `${path} 缩写解释必须使用可点击的原生 details`);
@@ -252,9 +252,49 @@ test("focus surfaces provide accessible abbreviation explanations", async () => 
     assert.match(html, /悬停 \/ 点击查看全称与说明/);
   }
 
+  const homepage = await renderHtml("/");
+  assert.match(homepage, /class="termHintGroups"/i);
+  assert.match(homepage, /核心术语速查/);
+  assert.match(
+    homepage,
+    new RegExp(`查看全部[\\s\\S]{0,80}${glossaryTermIds.length}[\\s\\S]{0,80}个术语`),
+  );
+  for (const group of homepageTermGroups) {
+    assert.match(homepage, new RegExp(escapeRegExp(group.label)));
+    for (const termId of group.termIds) assert.match(homepage, new RegExp(`data-term-id="${escapeRegExp(termId)}"`));
+  }
+
   const styles = await readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8");
   assert.match(styles, /\.termHint:hover\s+\.termHintPopover\s*\{\s*display:\s*block;/, "桌面端悬停必须直接显示缩写说明");
   assert.doesNotMatch(styles, /@media\s*\(hover:\s*hover\)[\s\S]*?\.termHint:hover\s+\.termHintPopover/, "缩写悬停不得依赖浏览器的输入设备能力判断");
+});
+
+test("glossary is complete, searchable, grouped, and linked back to published modules", async () => {
+  const terminologyIds = Object.keys(terminology);
+  const homepageTermIds = homepageTermGroups.flatMap((group) => group.termIds);
+  const publishedSet = new Set(publishedModuleSlugs);
+
+  assert.deepEqual([...glossaryTermIds].sort(), terminologyIds.sort(), "每个术语必须且只能进入一个术语主题");
+  assert.equal(new Set(glossaryTermIds).size, glossaryTermIds.length, "术语库 termId 必须唯一");
+  assert.equal(new Set(homepageTermIds).size, homepageTermIds.length, "首页核心术语不得重复");
+  assert.ok(homepageTermIds.length >= glossaryGroups.length * 2, "首页必须覆盖多个知识层，不能退化为少量示例");
+  assert.ok(homepageTermIds.length < glossaryTermIds.length, "首页只承担核心入口，完整集合应留在术语库");
+
+  for (const [termId, term] of Object.entries(terminology)) {
+    assert.ok(term.description.length >= 12, `术语缺少可读的一句话说明：${termId}`);
+    assert.ok(term.moduleSlugs.length > 0, `术语缺少相关模块：${termId}`);
+    for (const slug of term.moduleSlugs) assert.ok(publishedSet.has(slug), `术语关联未知模块：${termId} -> ${slug}`);
+  }
+
+  const html = await renderHtml("/glossary");
+  assert.match(html, /专业术语库/);
+  assert.match(html, /搜索中文、英文、缩写或说明/);
+  assert.match(html, /按知识关系查词，不按字母背词/);
+  for (const group of glossaryGroups) {
+    assert.match(html, new RegExp(`id="glossary-group-${escapeRegExp(group.id)}"`));
+    assert.match(html, new RegExp(escapeRegExp(group.zh)));
+  }
+  for (const termId of glossaryTermIds) assert.match(html, new RegExp(`id="term-${escapeRegExp(termId)}"`));
 });
 
 test("evidence cards keep facts, findings, boundaries, and sources readable", async () => {
@@ -620,7 +660,7 @@ test("every published module passes the shared reader, terminology, and depth co
 });
 
 test("reader pages omit internal build notes and use the shared related-module language", async () => {
-  for (const path of ["/", ...publishedModules.map((module) => module.path), "/questions", "/references"]) {
+  for (const path of ["/", ...publishedModules.map((module) => module.path), "/glossary", "/questions", "/references"]) {
     const html = await renderHtml(path);
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
@@ -690,6 +730,7 @@ test("legacy module addresses resolve to the merged 19-module knowledge base", a
 test("every public knowledge route is anonymously readable and directly shareable", async () => {
   const routes = [
     "/",
+    "/glossary",
     "/questions",
     "/references",
     ...moduleList.map((knowledgeModule) => knowledgeModule.href),

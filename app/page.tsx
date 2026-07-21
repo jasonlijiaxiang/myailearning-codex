@@ -8,10 +8,10 @@ import { moduleContentRegistry } from "./module-content-registry.mjs";
 import { moduleCurriculumContent } from "./module-curriculum-content.mjs";
 import { moduleDiscovery } from "./module-discovery.mjs";
 import { moduleLearningContent } from "./module-learning-content.mjs";
-import { publishedModules, publishedModuleSlugs } from "./module-publication.mjs";
+import { publishedModuleSlugs } from "./module-publication.mjs";
 import { referenceModules, sourceLedger } from "./reference-content.mjs";
-import { terminology } from "./terminology.mjs";
-import { TermHintRow } from "./term-hint";
+import { glossaryTermIds, homepageTermGroups, terminology } from "./terminology.mjs";
+import { TermHintGroups } from "./term-hint";
 
 const layerCount = layers.length;
 const moduleCount = moduleList.length;
@@ -23,25 +23,21 @@ const explorerModules: ExplorerModule[] = publishedModuleSlugs.map((slug) => {
 });
 
 const moduleNames = new Map(moduleList.map((module) => [module.slug, module.zh]));
-const termOwners = new Map<string, string>();
-publishedModules.forEach((module) => module.requiredTerms.forEach((termId) => {
-  if (!termOwners.has(termId)) termOwners.set(termId, module.slug);
-}));
 const sourceModules = new Map<string, string[]>();
 referenceModules.forEach((module) => module.sourceIds.forEach((sourceId) => {
   sourceModules.set(sourceId, [...(sourceModules.get(sourceId) ?? []), module.zh]);
 }));
 
 const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
-  ...[...termOwners.entries()].map(([termId, slug]) => {
-    const term = terminology[termId as keyof typeof terminology];
+  ...Object.entries(terminology).map(([termId, term]) => {
+    const relatedNames = term.moduleSlugs.map((slug) => moduleNames.get(slug)).filter(Boolean);
     return {
       id: `term-${termId}`,
       type: "专业术语" as const,
       title: `${term.zh} · ${term.en}${term.abbr ? `（${term.abbr}）` : ""}`,
-      subtitle: `${moduleNames.get(slug)}模块`,
-      href: `/modules/${slug}`,
-      keywords: `${term.zh} ${term.en} ${term.abbr ?? ""} ${"description" in term ? term.description : ""}`,
+      subtitle: `${relatedNames.join(" / ")} · 术语库`,
+      href: `/glossary#term-${termId}`,
+      keywords: `${term.zh} ${term.en} ${term.abbr ?? ""} ${term.description} ${relatedNames.join(" ")}`,
     };
   }),
   ...Object.entries(moduleContentRegistry).flatMap(([slug, content]) => content.qa.map((item, index) => ({
@@ -96,6 +92,7 @@ export default function Home() {
           </Link>
           <div className="toplinks">
             <Link href="/questions">问题查询</Link>
+            <Link href="/glossary">术语库</Link>
             <a href="#available-modules">查找模块</a>
             <a href="#map">知识地图</a>
             <Link href="/references">来源与证据 / Reference</Link>
@@ -132,10 +129,10 @@ export default function Home() {
       <section className="homeTermGuide" aria-labelledby="home-term-guide-title">
         <div>
           <p className="kicker">FIELD GLOSSARY</p>
-          <h2 id="home-term-guide-title">现场缩写速查</h2>
-          <p>先看全称和一句话解释，再决定进入哪个模块；桌面悬停或键盘聚焦，手机和平板点击即可展开。</p>
+          <h2 id="home-term-guide-title">核心术语速查</h2>
+          <p>按模型、应用、协议与治理快速建立知识版图；这里保留跨模块高频概念，完整定义和全部术语进入独立术语库。</p>
         </div>
-        <TermHintRow label="常用概念" termIds={["rag", "llm", "ai-agent", "poc", "sla", "mcp", "a2a"]} />
+        <TermHintGroups groups={homepageTermGroups} total={glossaryTermIds.length} />
       </section>
 
       <section className="fieldbookPromise" aria-labelledby="promise-title">
