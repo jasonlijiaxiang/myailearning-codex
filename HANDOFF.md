@@ -81,7 +81,7 @@ npm run kb:release-check -- --mode local
 npm run kb:package
 ```
 
-把新 ZIP 和同名 `.zip.sha256` 一起交付。默认包仍不会包含私有 inbox、Git 历史、依赖、构建产物或个人 Sites 绑定。
+默认文件名是 `portable-knowledge-base-yyyymmddhhmm.zip`，日期使用打包机器的本地时间。把新 ZIP 和同名 `.zip.sha256` 一起交付。默认包仍不会包含私有 inbox、Git 历史、依赖、构建产物或个人 Sites 绑定。
 
 ## 7. Git 与公开发布边界
 

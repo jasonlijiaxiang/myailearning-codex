@@ -95,7 +95,7 @@ Read [visual-release-gates.md](references/visual-release-gates.md) for page/cont
 
 ### 7. Package or release deliberately
 
-- Run `npm run kb:package` for a source-level portable ZIP. In Git, stage the intended delivery set first: packaging reads index blobs, rejects unstaged tracked changes and hidden index flags, and ignores unrelated untracked files. Without Git, package only the configured allowlisted paths. Keep the personal Sites binding excluded unless the user explicitly requests `--include-site-binding` for their own authorized environment.
+- Run `npm run kb:package` for a source-level portable ZIP. Its default delivery name is `portable-knowledge-base-yyyymmddhhmm.zip`, using the packaging machine's local time. In Git, stage the intended delivery set first: packaging reads index blobs, rejects unstaged tracked changes and hidden index flags, and ignores unrelated untracked files. Without Git, package only the configured allowlisted paths. Keep the personal Sites binding excluded unless the user explicitly requests `--include-site-binding` for their own authorized environment.
 - Treat missing Git as informational in local mode.
 - Run `npm run kb:release-check -- --mode local` for a local handoff.
 - Use `--mode git` only when an upstream exists and must match local HEAD exactly before and after the gate. Install dependencies from that commit's lockfile, then build and validate from an isolated checkout; never reuse the mutable working tree or its ignored dependency directory.

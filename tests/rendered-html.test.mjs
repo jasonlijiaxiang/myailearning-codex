@@ -1179,5 +1179,6 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(moduleStandard, /大字符集中文字体不得通过 `next\/font`/);
   assert.match(qualityGates, /响应 `Link` 头不含大字符集中文字体分片/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
+  assert.match(packageJson, /--ignore-pattern outputs/, "发布与 portable 产物不得重新进入源码 lint");
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });

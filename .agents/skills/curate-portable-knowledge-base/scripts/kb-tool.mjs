@@ -1803,10 +1803,18 @@ async function packagePortable({ output, includeSiteBinding = null } = {}) {
   if (errors.length > 0) throw new Error(`Portable validation failed with ${errors.length} error(s)`);
   const config = await loadConfig();
   includeSiteBinding = includeSiteBinding ?? config.packaging.includeSiteBindingByDefault;
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const now = new Date();
+  const twoDigits = (value) => String(value).padStart(2, "0");
+  const timestamp = [
+    now.getFullYear(),
+    twoDigits(now.getMonth() + 1),
+    twoDigits(now.getDate()),
+    twoDigits(now.getHours()),
+    twoDigits(now.getMinutes()),
+  ].join("");
   const defaultOutput = path.join(
     resolveProjectPath(config.packaging.outputDirectory),
-    `${config.project.id}-${timestamp}.zip`,
+    `portable-knowledge-base-${timestamp}.zip`,
   );
   const outputFile = output ? path.resolve(output) : defaultOutput;
   if (path.extname(outputFile).toLowerCase() !== ".zip") {

@@ -42,7 +42,7 @@ npm run kb:package
 npm run kb:release-check -- --mode local
 ```
 
-`npm run kb:package` 生成源码级 ZIP 和 SHA-256 清单，默认排除任意层级的依赖、构建缓存、私有聊天、Git 历史和个人 Sites 绑定。在 Git checkout 中，打包器只读取已暂存的 index 内容：先暂存准备交付的文件，任何 tracked 文件仍有未暂存改动时会拒绝打包，其他 untracked 文件不会进入 ZIP；无 Git 项目则只读取配置中明确允许的路径。只有在自己的已授权环境中才使用 `--include-site-binding`。仓库中的 `.openai/hosting.json` 仍是本项目正式 Sites 构建与发布所需的受控绑定；“默认排除”只指 portable 包，不代表它不进入 Git 或正式构建。
+`npm run kb:package` 生成源码级 ZIP 和 SHA-256 清单，默认文件名为 `portable-knowledge-base-yyyymmddhhmm.zip`，日期使用打包机器的本地时间。打包默认排除任意层级的依赖、构建缓存、私有聊天、Git 历史和个人 Sites 绑定。在 Git checkout 中，打包器只读取已暂存的 index 内容：先暂存准备交付的文件，任何 tracked 文件仍有未暂存改动时会拒绝打包，其他 untracked 文件不会进入 ZIP；无 Git 项目则只读取配置中明确允许的路径。只有在自己的已授权环境中才使用 `--include-site-binding`。仓库中的 `.openai/hosting.json` 仍是本项目正式 Sites 构建与发布所需的受控绑定；“默认排除”只指 portable 包，不代表它不进入 Git 或正式构建。
 
 ## 主要目录
 

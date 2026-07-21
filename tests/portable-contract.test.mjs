@@ -291,6 +291,15 @@ test("portable config and ZIP enforce nested exclusions, required roots, and pai
     assert.ok(![...paths].some((item) => item.split("/").includes(".git")));
     assert.ok(![...paths].some((item) => item.split("/").includes("dist")));
 
+    const defaultPackage = runTool(root, ["package"]);
+    assert.equal(defaultPackage.status, 0, defaultPackage.stderr);
+    const defaultOutputs = await fs.readdir(path.join(root, "outputs/portable"));
+    const defaultArchive = defaultOutputs.find((name) => (
+      /^portable-knowledge-base-\d{12}\.zip$/.test(name)
+    ));
+    assert.ok(defaultArchive, `unexpected default package names: ${defaultOutputs.join(", ")}`);
+    assert.ok(defaultOutputs.includes(`${defaultArchive}.sha256`));
+
     const injected = runTool(
       root,
       ["package", "--output", output],

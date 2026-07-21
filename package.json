@@ -10,7 +10,7 @@
     "build": "node scripts/run-vinext.mjs build",
     "start": "node scripts/run-vinext.mjs start",
     "test": "npm run build && node --test tests/rendered-html.test.mjs tests/portable-knowledge.test.mjs tests/portable-capture-security.test.mjs tests/portable-contract.test.mjs tests/portable-release.test.mjs tests/portable-forward.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern outputs",
     "check": "npm run lint && npm run kb:validate && npm test",
     "kb:doctor": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs doctor",
     "kb:inbox": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs inbox",
