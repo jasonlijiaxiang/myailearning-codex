@@ -251,6 +251,10 @@ test("focus surfaces provide accessible abbreviation explanations", async () => 
     assert.match(html, /<summary aria-label="[^"]+">/i, `${path} 缩写控件缺少可访问名称`);
     assert.match(html, /悬停 \/ 点击查看全称与说明/);
   }
+
+  const styles = await readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8");
+  assert.match(styles, /\.termHint:hover\s+\.termHintPopover\s*\{\s*display:\s*block;/, "桌面端悬停必须直接显示缩写说明");
+  assert.doesNotMatch(styles, /@media\s*\(hover:\s*hover\)[\s\S]*?\.termHint:hover\s+\.termHintPopover/, "缩写悬停不得依赖浏览器的输入设备能力判断");
 });
 
 test("evidence cards keep facts, findings, boundaries, and sources readable", async () => {

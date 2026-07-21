@@ -182,7 +182,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .termStrip strong { font-size: 14px; }
 .termStrip small { font-size: 11px; }
 
-/* Abbreviation help: hover/focus on pointer devices, native details on touch. */
+/* Abbreviation help: hover/focus on desktop, native details on touch. */
 .termHintRow { position: relative; z-index: 4; margin: 0 0 18px; padding: 13px 15px; display: grid; grid-template-columns: minmax(150px,.34fr) minmax(0,1fr); gap: 13px 20px; align-items: center; border: 1px solid var(--pilot-line, var(--line)); background: rgba(255,253,247,.9); }
 .termHintRow > p { margin: 0; }
 .termHintRow > p strong { display: block; font-size: 14px; }
@@ -202,10 +202,8 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .termHintPopover > strong { display: block; margin-top: 2px; font-size: 15px; line-height: 1.4; }
 .termHintPopover > p { margin: 9px 0 0; color: rgba(255,255,255,.7); font-size: 14px; line-height: 1.6; }
 .termHint[open] .termHintPopover,
-.termHint:focus-within .termHintPopover { display: block; }
-@media (hover: hover) and (pointer: fine) {
-  .termHint:hover .termHintPopover { display: block; }
-}
+.termHint:focus-within .termHintPopover,
+.termHint:hover .termHintPopover { display: block; }
 .briefPrinciples h4 { font-size: 22px; }
 .briefPrinciples p { font-size: 16px; line-height: 1.75; }
 .briefPrinciples strong { font-size: 15px; }
