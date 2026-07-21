@@ -1,5 +1,5 @@
 /**
- * 面向读者的 23 模块知识地图。
+ * 面向读者的 21 模块知识地图。
  *
  * 初始主题与 external_reference/CC-20260717 建立归档映射，新增模块来自全局知识复核。
  * PPT 不定义模块的知识边界、章节顺序或内容上限；正文按售前判断链独立研究，
@@ -39,14 +39,12 @@ export const layers = [
   },
   {
     no: "04",
-    name: "应用交付与经营层",
-    en: "Application Delivery & Economics",
-    purpose: "把生成式应用的版本、流量、运行与单位经济组织成持续交付体系。",
+    name: "AI 应用交付与运营层",
+    en: "AI Application Delivery & Operations",
+    purpose: "把生成式应用的版本、流量、观测、成本与事故组织成持续工程闭环。",
     modules: [
-      { zh: "AI 应用工程与 GenAIOps", en: "AI Application Engineering & GenAIOps", slug: "ai-application-engineering", href: "/modules/ai-application-engineering" },
+      { zh: "AI 应用工程与运营", en: "AI Application Engineering & GenAIOps", slug: "ai-ops", href: "/modules/ai-ops" },
       { zh: "AI 网关", en: "AI Gateway", slug: "ai-gateway", href: "/modules/ai-gateway" },
-      { zh: "AI 可观测与运营", en: "AI Operations", slug: "ai-ops", href: "/modules/ai-ops" },
-      { zh: "AI FinOps 与单位经济", en: "AI FinOps & Unit Economics", slug: "ai-finops", href: "/modules/ai-finops" },
     ],
   },
   {
@@ -128,7 +126,9 @@ export const legacyModuleAliases = Object.freeze({
   "identity-authorization-boundaries": "security",
   "safety-governance": "security",
   "inference-ai-gateway": "ai-gateway",
-  "observability-finops": "ai-finops",
+  "ai-application-engineering": "ai-ops",
+  "ai-finops": "solution-patterns",
+  "observability-finops": "solution-patterns",
   "model-principles": "llm",
   "training-fine-tuning": "fine-tuning",
   "model-compression-alignment": "llm-training",

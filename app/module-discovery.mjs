@@ -2,7 +2,7 @@
  * 首页检索使用的售前任务语言。这里描述客户何时需要某个模块，不重复正文。
  */
 export const moduleDiscovery = Object.freeze({
-  "solution-patterns": Object.freeze({ summary: "把业务目标拆成可验证的 AI 能力、流程和责任边界。", cue: "客户只有宏大愿景，还没有清晰场景与验收口径" }),
+  "solution-patterns": Object.freeze({ summary: "把业务目标拆成可验证的 AI 能力、流程、责任与单位经济。", cue: "客户只有宏大愿景，还没有清晰场景、验收口径或完整成本边界" }),
   "model-landscape": Object.freeze({ summary: "从质量、时延、成本、部署与治理约束选择模型组合。", cue: "客户问哪一个模型最好，或希望同时使用多个模型" }),
   rag: Object.freeze({ summary: "用可更新、可授权、可引用的外部证据增强模型回答。", cue: "答案必须基于企业知识，并说明出处和适用范围" }),
   "ai-agent": Object.freeze({ summary: "让模型在受控循环中规划、调用工具并推进业务任务。", cue: "客户希望 AI 不只回答，还要跨系统完成动作" }),
@@ -10,12 +10,10 @@ export const moduleDiscovery = Object.freeze({
   mcp: Object.freeze({ summary: "标准化模型与工具、数据资源及提示能力之间的连接。", cue: "团队要复用工具接入，并控制远程调用与授权边界" }),
   a2a: Object.freeze({ summary: "让独立 Agent 发现、委托、协作并跟踪持久任务。", cue: "多个团队或系统拥有各自 Agent，需要跨边界协作" }),
   evaluation: Object.freeze({ summary: "把好不好用变成任务集、指标、回归和发布门禁。", cue: "PoC 看起来不错，但没人能说明是否达到上线标准" }),
-  "ai-application-engineering": Object.freeze({ summary: "把模型、Prompt、检索、工具和策略组成可测试、可发布、可回滚的应用版本。", cue: "组件分别能工作，但一次升级无法解释、重放或安全回滚" }),
   "ai-governance": Object.freeze({ summary: "用系统清单、风险分级、责任与证据持续治理 AI 生命周期。", cue: "组织正在扩大 AI 使用，却无法回答谁负责、为何允许和怎样证明" }),
   security: Object.freeze({ summary: "控制不可信输入、模型行为、敏感数据和高影响动作。", cue: "客户担心提示注入、越权、泄漏或不可逆业务动作" }),
   "ai-gateway": Object.freeze({ summary: "集中管理模型路由、配额、策略、缓存与调用治理。", cue: "模型供应商和应用增多，成本、策略与流量开始失控" }),
-  "ai-ops": Object.freeze({ summary: "把质量、轨迹、时延、成本与版本变化放进一套持续改进流程。", cue: "上线后出现退化，却无法判断是数据、模型还是应用变化" }),
-  "ai-finops": Object.freeze({ summary: "把跨模型、算力、数据和人工的成本归因到任务与成功业务结果。", cue: "账单持续增长，却无法判断由谁消耗、是否有效以及怎样优化" }),
+  "ai-ops": Object.freeze({ summary: "把跨组件版本、发布、质量、轨迹、成本与事故放进一套 GenAIOps 闭环。", cue: "组件能分别运行，但升级后无法重放、归因、灰度或安全恢复" }),
   "predictive-ai-mlops": Object.freeze({ summary: "把预测模型的数据、特征、训练、注册、发布与监控连成可复现生命周期。", cue: "传统机器学习能训练，却无法稳定上线、回滚或解释线上退化" }),
   llm: Object.freeze({ summary: "理解 Transformer、上下文、生成概率与模型能力边界。", cue: "需要解释模型为什么会生成、遗忘、幻觉或受上下文影响" }),
   "prompt-engineering": Object.freeze({ summary: "把指令、上下文、工具和输出契约组织成可发布资产。", cue: "Prompt 靠个人试错，修改后无法证明效果或安全性" }),

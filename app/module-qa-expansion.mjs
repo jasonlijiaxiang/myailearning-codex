@@ -13,9 +13,7 @@ const qa = (q, a, depth, ask, tag, basis, evidence, addedAt) => Object.freeze({
  * 共享模块的第二层客户问答。这里补充原 brief 未覆盖的生产判断，保持
  * “短答—深答—追问—证据”契约；基础问答仍归各 module-briefs 文件维护。
  */
-export const moduleQaExpansion = Object.freeze({
-  "ai-application-engineering": Object.freeze([
-    qa(
+const applicationEngineeringReleaseQa = qa(
       "已经有 CI/CD 和单元测试，为什么还需要发布评估？",
       "因为 CI/CD 主要证明代码和基础设施按契约交付，无法单独证明模型、Prompt、检索、工具组合后的语义质量与业务结果。",
       "保留现有软件门禁，再增加任务数据集、组件评估、风险切片、端到端后置条件和真实流量保护组。发布评估不是另一套流水线，而是为非确定组件补上可重复的 Go / No-Go 证据。",
@@ -27,10 +25,9 @@ export const moduleQaExpansion = Object.freeze({
         { sourceId: "openai-eval-best-practices", supports: "支持用任务特定、持续和人工校准的评估补充主观检查。" },
       ],
       "2026-07-21",
-    ),
-  ]),
-  "ai-finops": Object.freeze([
-    qa(
+    );
+
+const finopsSettlementQa = qa(
       "Showback 和 Chargeback 应该怎样选择？",
       "成本归因尚不稳定或团队处于探索期时先用 Showback 提供透明度；只有分摊规则、责任和行为影响成熟后再考虑 Chargeback。",
       "Showback 让团队看到消费和单位经济但不执行内部结算，适合发现标签缺口与共同优化。Chargeback 会改变团队行为和预算责任，必须处理共享平台、失败任务、公共能力和争议机制，避免为了避费而破坏质量与可观测性。",
@@ -42,8 +39,9 @@ export const moduleQaExpansion = Object.freeze({
         { sourceId: "finops-ai-category", supports: "支持 AI 支出需要工程、产品、财务和采购共同定义分配与投资责任。" },
       ],
       "2026-07-21",
-    ),
-  ]),
+    );
+
+export const moduleQaExpansion = Object.freeze({
   "predictive-ai-mlops": Object.freeze([
     qa(
       "预测模型上线后，多久重训一次才合理？",
@@ -73,6 +71,7 @@ export const moduleQaExpansion = Object.freeze({
     ),
   ]),
   "solution-patterns": Object.freeze([
+    finopsSettlementQa,
     qa(
       "一个场景应该做成固定工作流，还是做成 Agent？",
       "步骤和分支能提前定义时优先工作流；只有任务需要根据中间结果动态选择工具、调整计划时，才增加 Agent 循环。",
@@ -400,6 +399,7 @@ export const moduleQaExpansion = Object.freeze({
     ),
   ]),
   "ai-ops": Object.freeze([
+    applicationEngineeringReleaseQa,
     qa(
       "AI 可观测是不是把每次模型输入输出都存下来？",
       "不是。目标是能解释质量、性能、成本和风险，原文采集只是受政策约束的一种手段。",

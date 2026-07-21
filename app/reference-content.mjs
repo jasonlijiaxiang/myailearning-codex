@@ -923,7 +923,7 @@ export const sourceLedger = {
 };
 
 const referenceShortTitles = Object.freeze({
-  "solution-patterns": "Solution Patterns",
+  "solution-patterns": "Solution Patterns & AI FinOps",
   "model-landscape": "Model Landscape",
   rag: "RAG",
   "ai-agent": "Agent",
@@ -931,12 +931,10 @@ const referenceShortTitles = Object.freeze({
   mcp: "MCP",
   a2a: "A2A",
   evaluation: "Evaluation",
-  "ai-application-engineering": "AI Application Engineering",
   "ai-governance": "AI Governance",
   security: "Security",
   "ai-gateway": "AI Gateway",
-  "ai-ops": "AI Ops",
-  "ai-finops": "AI FinOps",
+  "ai-ops": "AI Application Engineering & GenAIOps",
   "predictive-ai-mlops": "Predictive AI & MLOps",
   llm: "LLM",
   "prompt-engineering": "Prompt",

@@ -1,7 +1,8 @@
 const evidence = (sourceId, supports) => ({ sourceId, supports: supports.includes("支持") ? supports : `支持${supports}` });
 
-export const aiApplicationEngineeringBrief = {
-  slug: "ai-application-engineering",
+// 这两组内容不再形成独立发布模块，而是作为跨模块知识贡献分别并入
+// AI 应用工程与运营、场景解决方案。保留集中维护，避免迁移时丢失证据与问答。
+export const aiApplicationEngineeringContribution = {
   definition: "AI 应用工程（AI Application Engineering）把模型、Prompt、检索、工具、工作流、策略、评估和运行配置视为一个可版本化、可测试、可发布、可回滚的软件系统；GenAIOps 则把这些非确定性组件的变更接入持续交付与运行改进。",
   position: "位于应用模式与工程保障之间，负责把 RAG、Agent、多模态和模型能力组合成可交付应用；它复用评估、安全、网关和可观测能力，但重点回答一次跨组件变更如何形成同一个发布单元。",
   presentation: "lifecycle",
@@ -63,8 +64,7 @@ export const aiApplicationEngineeringBrief = {
   ],
 };
 
-export const aiFinopsBrief = {
-  slug: "ai-finops",
+export const aiFinopsContribution = {
   definition: "AI FinOps 把模型 API、训练与推理算力、数据、检索、工具、网络、软件和人工运营成本，归因到具体产品、任务和成功业务结果，由工程、产品、财务、采购与管理者共同持续决策。",
   position: "横跨方案、应用、模型、数据与基础设施层，负责把技术用量翻译为单位经济性、预算、预测、异常和价值；它复用网关与可观测数据，但不等同于账单报表或单纯压低 Token 单价。",
   presentation: "loop",

@@ -10,10 +10,9 @@ import { governanceMlopsCurriculum } from "./module-briefs-governance-mlops.mjs"
  * 只保存稳定 sourceId，不复制来源元数据或外部材料结构。
  */
 const baseModuleCurriculumContent = Object.freeze({
-  ...applicationFinopsCurriculum,
   ...governanceMlopsCurriculum,
   "solution-patterns": {
-    lead: "场景方案不是一张通用架构图，而是把业务结果、数据与系统、风险控制、验收证据和后续运营连成一条能落地的路径。",
+    lead: "场景方案不是一张通用架构图，而是把业务结果、数据与系统、风险控制、验收证据、完整成本和后续运营连成一条能落地的路径。",
     chapters: [
       { title: "先把需求写成完整任务", en: "Outcome to Workflow", explanation: "明确使用者、触发条件、输入、要完成的工作、最终业务状态和异常去向，再判断检索、生成、规则、工具与人工各承担哪一段。这样可以把“做一个智能助手”改写成可验证任务。", decision: "先确认谁的工作发生什么变化，再讨论模型与云产品。", boundary: "界面相似不代表责任相同；给建议、生成资产和改变系统状态需要不同控制。", sourceIds: ["anthropic-effective-agents", "nist-genai-profile"] },
       { title: "一张架构图要能解释责任", en: "Reference Architecture", explanation: "入口、身份、上下文、模型、工具、数据、护栏、观测和人工控制构成常见骨架。每条连线还要说明数据格式、权限主体、超时重试、失败补偿和责任团队，否则只能说明组件共存。", decision: "只保留能改变质量、风险、成本或维护方式的组件。", boundary: "组件齐全不等于端到端正确，跨层约定和故障恢复要单独验证。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
@@ -26,6 +25,7 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "会议助手要跟踪行动是否落实", en: "Meeting Assistant", explanation: "采集、语音识别、说话人区分、摘要、决定与行动项抽取、确认、通知和后续系统写入组成完整链。指标不仅包括转写准确率，还包括关键决定召回、责任人与截止时间正确率。", decision: "先决定会议内容可否采集、保存和进入哪些后续系统。", boundary: "摘要会省时间，但不能自动代表参会者同意或替代正式决策记录。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
       { title: "PoC 要优先验证最可能失败的地方", en: "PoC & Baseline", explanation: "先记录人工或现有系统表现，再用代表性和反例样本分别检查任务成功、集成、权限、失败恢复和运营。样本、数据版本、环境、评审规则和停止条件都要在试验前固定。", decision: "先验证最大不确定性，不先做最容易演示的路径。", boundary: "几个漂亮答案只能证明演示路径可走，不能支持生产决策。", sourceIds: ["ragas", "nist-genai-profile"] },
       { title: "用每次成功结果计算全部成本", en: "TCO & Production", explanation: "模型与云资源只是成本的一部分；还要计入数据准备、集成、评估、监控、人工复核、失败重试、客户补偿和持续维护。上线门要同时覆盖质量、风险、容量、恢复和责任交接。", decision: "以每个成功业务结果的全部成本比较方案。", boundary: "缺少最终状态样本时只能报告假设与区间，不能给出虚假的精确 ROI。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      ...applicationFinopsCurriculum["ai-finops"].chapters,
     ],
   },
   "model-landscape": {
@@ -117,8 +117,9 @@ const baseModuleCurriculumContent = Object.freeze({
     ],
   },
   "ai-ops": {
-    lead: "AI Ops 管理的不只是服务可用性，还包括任务质量、模型与上下文版本、反馈、成本和高风险动作。",
+    lead: "AI 应用工程与运营把制品、评估、发布、观测、成本和事故放进同一生命周期，管理的不只是服务可用性。",
     chapters: [
+      ...applicationFinopsCurriculum["ai-application-engineering"].chapters,
       { title: "任务级 Trace 与 OTel", en: "End-to-end Tracing", explanation: "一次任务可能穿过网关、检索、多个模型、工具和人工等待。OpenTelemetry 的 GenAI 语义已迁入独立仓库并继续演进；团队应固定约定版本，在 Collector 归一化字段，并把业务终态与审批作为项目扩展。", decision: "以任务为根关联所有技术调用和业务结果，同时治理遥测 Schema 版本。", boundary: "Trace 完整不代表应永久保存敏感原文；标准字段也不自动表达业务成功、风险和责任。", sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-zero-trust"] },
       { title: "离线验收与在线巡检", en: "Offline & Online Evaluation", explanation: "离线评估使用可控样本比较版本，在线评估观察真实分布、反馈和业务结果。规则、Judge、人工抽样和用户行为共同形成漏斗，线上失败再进入治理后的回归集。", decision: "离线决定能否放量，在线决定是否继续、回滚或修复。", boundary: "自动 Judge 不能覆盖所有风险，反馈缺失也不表示成功。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
       { title: "三类漂移与静默退化", en: "Drift", explanation: "输入分布、数据内容和系统行为都可能漂移；外部 API、Prompt、检索和工具变化会让基础设施指标仍绿色但任务成功下降。分层切片和变更时间线比单一阈值更可靠。", decision: "把漂移信号连接到可重现样本和具体责任层。", boundary: "统计变化不一定有业务影响，业务退化也可能没有明显分布漂移。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },

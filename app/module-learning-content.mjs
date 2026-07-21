@@ -3,30 +3,30 @@ import { applicationFinopsLearning } from "./module-briefs-application-finops.mj
 import { governanceMlopsLearning } from "./module-briefs-governance-mlops.mjs";
 
 /**
- * 20 个共享模块的网页原生学习路线与实战任务。
+ * 18 个共享模块的网页原生学习路线与实战任务。
  *
  * external_reference 中的讲义只用于发现覆盖面与学习难点；这里重新按
  * “建立心智模型 -> 做出方案判断 -> 用证据验收”组织，不复刻 PPT 页序。
  * 所有公开依据仍只引用 reference-content.mjs 中的稳定 sourceId。
  */
 const baseModuleLearningContent = Object.freeze({
-  ...applicationFinopsLearning,
   ...governanceMlopsLearning,
   "solution-patterns": {
-    outcomes: ["把业务目标改写成可验收的一页约定", "能拆解客服、企业搜索、内容生成、AI Coding、数字人、ChatBI 与会议助手", "设计能证伪方案假设的 PoC", "用质量、风险与全成本共同决定是否上线"],
+    outcomes: ["把业务目标改写成可验收的一页约定", "能拆解客服、企业搜索、内容生成、AI Coding、数字人、ChatBI 与会议助手", "设计能证伪方案假设的 PoC", "用完整成本、单位经济、质量与风险共同决定是否上线", ...applicationFinopsLearning["ai-finops"].outcomes],
     route: [
       { title: "从业务结果开始", learn: "识别用户、触发、输入、期望结果和不可接受结果。", checkpoint: "能写出不依赖模型名称的成功定义。" },
       { title: "把场景拆成能力链", learn: "判断哪些步骤需要检索、生成、工具执行、规则或人工审批。", checkpoint: "能解释每个组件为什么存在，以及失败后由谁接管。" },
       { title: "选择最接近的场景原型", learn: "比较客服、搜索、内容、Coding、数字人、ChatBI 和会议助手的数据链、动作深度与风险。", checkpoint: "能复用架构骨架，同时说清该场景特有的指标和控制。" },
       { title: "把架构连线写成运行约定", learn: "为身份、数据、模型、工具、人工和观测补上接口、超时、重试与责任。", checkpoint: "架构图可以支持故障演练和责任讨论，不只是产品摆放。" },
       { title: "PoC 优先验证最大不确定性", learn: "先验证质量、集成、风险和成本中最可能推翻方案的假设。", checkpoint: "能给出包含现有表现、样本、阈值和退出条件的验收表。" },
-      { title: "用生产门完成交接", learn: "核对容量、数据更新、质量巡检、事件处理、回滚、成本和负责人。", checkpoint: "试点结论能转换成上线、补做或停止的明确决定。" },
+      { title: "用生产门与单位经济完成交接", learn: "核对容量、数据更新、质量巡检、事件处理、回滚、成本归因、成功单位和负责人。", checkpoint: "试点结论能转换成上线、补做、优化或停止的明确决定。" },
     ],
     labs: [
       { title: "把模糊需求改写成一页约定", scenario: "客户说“想做一个企业 AI 助手”，但没有定义用户、动作和失败责任。", tasks: ["列出三类目标用户和各自高频任务", "为每个任务写出输入、输出、失败与人工接管", "选出一个最适合先验证的窄场景"], deliverable: "一页场景约定与暂停条件清单", acceptance: "任何评审者都能据此判断 PoC 是否成功，不依赖主观演示效果。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents"] },
       { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
       { title: "设计一条客服解决漏斗", scenario: "客户希望机器人减少人工量，但当前只统计回复次数。", tasks: ["区分自助、坐席辅助和必须转人工的问题", "画出知识查询、业务查询、工单和转接路径", "定义解决率、放弃率、误答补偿和人工接管指标"], deliverable: "客服任务漏斗、参考架构和验收表", acceptance: "指标能区分真正解决、用户放弃和错误拦截，且高风险问题不会被自动处理。", sourceIds: ["ragas", "nist-genai-profile"] },
       { title: "为 ChatBI 加上语义与执行护栏", scenario: "管理层希望用自然语言查询经营指标，但多个部门的口径不一致。", tasks: ["选定五个有权威定义的指标", "限制只读数据域、查询成本和允许操作", "设计结果校验、引用、人工确认和错误回退"], deliverable: "语义层边界、查询流程与反例测试集", acceptance: "相同问题不会因自由生成 SQL 得到不同业务口径，模型不能写入或越权读取数据。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
+      ...applicationFinopsLearning["ai-finops"].labs,
     ],
   },
   "model-landscape": {
@@ -119,13 +119,14 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   "ai-ops": {
-    outcomes: ["把一次 AI 任务串成端到端 Trace", "连接离线验收与在线质量巡检", "识别数据、模型和系统漂移", "建立可回滚的发布与事故响应闭环"],
+    outcomes: [...applicationFinopsLearning["ai-application-engineering"].outcomes, "把一次 AI 任务串成端到端 Trace", "连接离线验收与在线质量巡检", "识别数据、模型和系统漂移", "建立可回滚的发布与事故响应闭环"],
     route: [
-      { title: "先定义任务级遥测", learn: "记录版本、输入类别、检索、模型、工具、成本、错误和业务终态。", checkpoint: "能从一次失败反查完整调用链而不过度收集原文。" },
-      { title: "再构建质量与漂移信号", learn: "组合抽样人工、规则、Judge、用户反馈和业务指标。", checkpoint: "绿色基础设施指标不会掩盖静默质量退化。" },
-      { title: "最后闭环发布与事故", learn: "用版本注册、灰度、回滚、Kill Switch 和修复样本管理变化。", checkpoint: "任何线上变更都能定位、停止、回放和复盘。" },
+      { title: "先定义任务与发布单元", learn: "绑定模型、Prompt、数据、工具、编排、策略、环境和负责人。", checkpoint: "任一输出都能回到完整配置和业务成功定义。" },
+      { title: "再建立评估与任务级遥测", learn: "分层验证候选版本，并记录输入类别、检索、模型、工具、成本、错误和业务终态。", checkpoint: "能从一次失败反查完整调用链而不过度收集原文。" },
+      { title: "最后闭环发布、事故与改进", learn: "用影子、灰度、回滚、Kill Switch、业务恢复和已裁决样本管理变化。", checkpoint: "任何线上变更都能定位、停止、回放、恢复和复盘。" },
     ],
     labs: [
+      ...applicationFinopsLearning["ai-application-engineering"].labs,
       { title: "定义最小 GenAI Trace", scenario: "一个 Agent 请求穿过网关、RAG、模型和两个工具，但当前只能看到 API 延迟。", tasks: ["定义跨组件共同 Trace 与版本字段", "区分可保留元数据和受限原文", "把最终业务成功与成本归到同一任务"], deliverable: "遥测字段表、采样和保留策略", acceptance: "一次失败可跨组件关联，且敏感数据收集遵守最小化原则。", sourceIds: ["opentelemetry-semconv", "nist-zero-trust"] },
       { title: "演练静默质量退化", scenario: "错误率和 P95 正常，但用户完成任务的比例持续下降。", tasks: ["建立模型、数据、Prompt、工具和外部依赖的变更时间线", "用分层样本和线上证据复现", "决定回滚、降级与修复样本回流"], deliverable: "事故归因图、处置记录和新增回归集", acceptance: "根因不被平均指标掩盖，修复后同类失败能被自动或抽样发现。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
     ],
