@@ -34,7 +34,6 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   border-bottom-color: var(--line);
 }
 .topbar .brand { color: var(--ink); letter-spacing: 0; }
-.topbar .brandMark { width: 36px; height: 36px; border-radius: 8px; background: var(--ink); color: var(--white); }
 .topbar .brand > span:last-child small { color: var(--muted); }
 .topbar .toplinks { gap: clamp(18px,2.3vw,34px); font-size: 14px; }
 .topbar .toplinks a { color: var(--muted); }

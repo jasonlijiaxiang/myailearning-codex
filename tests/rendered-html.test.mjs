@@ -621,6 +621,7 @@ test("reader pages omit internal build notes and use the shared related-module l
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
     assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
+    assert.doesNotMatch(html, /class="brandMark"/, `公开页头与页脚不应重新引入无含义的 CA 标记：${path}`);
     assert.doesNotMatch(
       html,
       /客户信号|来源台账|知识供应链|责任链|运营闭环|责任闭环|技术售前工作台|形成连续叙事|产品后映射/,

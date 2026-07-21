@@ -38,7 +38,6 @@ export default function QuestionsPage() {
       <header className="hero questionHero" id="top">
         <nav className="topbar" aria-label="问题查询页导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span className="brandMark">CA</span>
             <span>Cloud × AI / Presales Fieldbook</span>
           </Link>
           <div className="toplinks">

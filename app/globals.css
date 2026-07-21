@@ -59,7 +59,6 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
   z-index: 2;
 }
 .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 13px; letter-spacing: .05em; }
-.brandMark { width: 34px; height: 34px; background: var(--lime); color: var(--ink); display: inline-grid; place-items: center; font-size: 11px; font-weight: 900; border-radius: 50%; }
 .toplinks { display: flex; gap: 28px; font-size: 13px; }
 .toplinks a { text-decoration: none; color: rgba(255,255,255,.72); }
 .toplinks a:hover { color: var(--lime); }

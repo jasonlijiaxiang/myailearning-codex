@@ -186,7 +186,6 @@ export default function RagModulePage() {
       <section className="ragHero" id="rag" aria-labelledby="rag-title">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span className="brandMark">CA</span>
             <span>Cloud × AI / Presales Fieldbook</span>
           </Link>
           <div className="toplinks">
@@ -519,7 +518,7 @@ export default function RagModulePage() {
       </div>
 
       <footer>
-        <div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div>
+        <div><strong>云计算 × AI 平台售前知识库</strong></div>
         <p>RAG 独立模块 V2.0<ModuleUpdatedAt value={ragPublication?.updatedAt ?? undefined} /></p>
         <a href="#rag">返回顶部 ↑</a>
       </footer>

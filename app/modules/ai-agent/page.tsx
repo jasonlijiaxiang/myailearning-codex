@@ -224,7 +224,6 @@ export default function AgentModulePage() {
       <section className="ragHero" id="agent" aria-labelledby="agent-title">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span className="brandMark">CA</span>
             <span>Cloud × AI / Presales Fieldbook</span>
           </Link>
           <div className="toplinks">
@@ -494,7 +493,7 @@ export default function AgentModulePage() {
       </section>
       </div>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V2.0<ModuleUpdatedAt value={agentPublication?.updatedAt ?? undefined} /></p><a href="#agent">返回顶部 ↑</a></footer>
+      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V2.0<ModuleUpdatedAt value={agentPublication?.updatedAt ?? undefined} /></p><a href="#agent">返回顶部 ↑</a></footer>
     </main>
   );
 }

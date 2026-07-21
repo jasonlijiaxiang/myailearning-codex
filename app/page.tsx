@@ -92,7 +92,6 @@ export default function Home() {
       <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="主导航">
           <Link className="brand" href="/" aria-label="云与 AI 售前知识库首页">
-            <span className="brandMark">CA</span>
             <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>
           </Link>
           <div className="toplinks">

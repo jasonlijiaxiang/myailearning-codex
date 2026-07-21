@@ -207,7 +207,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页"><span className="brandMark">CA</span><span>Cloud × AI / Presales Fieldbook</span></Link>
+          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页"><span>Cloud × AI / Presales Fieldbook</span></Link>
           <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">本模块问答</a><Link href="/questions">全部问题</Link><Link href="/references">Reference</Link></div>
         </nav>
         <div className="moduleBriefHeader">
@@ -294,7 +294,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
         </div>
       </div>
 
-      <footer><div><span className="brandMark">CA</span><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V2.0<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>
+      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V2.0<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>
     </main>
   );
 }
