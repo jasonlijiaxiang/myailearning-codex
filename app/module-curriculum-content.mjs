@@ -1,4 +1,5 @@
 import { completionCurriculum } from "./module-completion-content.mjs";
+import { applicationFinopsCurriculum } from "./module-briefs-application-finops.mjs";
 import { governanceMlopsCurriculum } from "./module-briefs-governance-mlops.mjs";
 
 /**
@@ -9,6 +10,7 @@ import { governanceMlopsCurriculum } from "./module-briefs-governance-mlops.mjs"
  * 只保存稳定 sourceId，不复制来源元数据或外部材料结构。
  */
 const baseModuleCurriculumContent = Object.freeze({
+  ...applicationFinopsCurriculum,
   ...governanceMlopsCurriculum,
   "solution-patterns": {
     lead: "场景方案不是一张通用架构图，而是把业务结果、数据与系统、风险控制、验收证据和后续运营连成一条能落地的路径。",

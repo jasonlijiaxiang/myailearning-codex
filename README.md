@@ -2,7 +2,7 @@
 
 面向具有 Python / API 基础的售前人员，以中文为主、专业术语中英对照。知识库围绕概念、架构判断、证据、云服务连接和客户现场问答组织内容。
 
-当前知识地图包含 21 个正式模块；初始主题与 `external_reference/CC-20260717` 建立归档映射，全局复核后新增“预测式 AI 与 MLOps”和“AI 治理、风险与合规”。PPT 只用于发现线索和查漏，不定义网站章节、知识边界或内容上限。V2 阅读版提供全库搜索、章节导航、阅读进度、交互式机制视图和可筛选客户实战包；RAG、Agent、Prompt Engineering 使用主题定制的深度页面，其余模块继承同一阅读系统。全站来源集中在可搜索的统一 Reference 页面。
+当前知识地图包含 23 个正式模块；初始主题与 `external_reference/CC-20260717` 建立归档映射，全局复核后补入预测式 AI 与 MLOps、AI 应用工程与 GenAIOps、AI 治理以及 AI FinOps 等关键生命周期知识。PPT 只用于发现线索和查漏，不定义网站章节、知识边界或内容上限。V2 阅读版提供全库搜索、章节导航、阅读进度、交互式机制视图和可筛选客户实战包；RAG、Agent、Prompt Engineering 使用主题定制的深度页面，其余模块继承同一阅读系统。全站来源集中在可搜索的统一 Reference 页面。
 
 ## 本地运行
 
@@ -47,7 +47,7 @@ npm run kb:release-check -- --mode local
 ## 主要目录
 
 - `app/page.tsx`：知识库首页与全局知识地图
-- `app/knowledge-map.mjs`：8 层架构、21 个正式模块、历史地址别名与稳定路由的统一注册表
+- `app/knowledge-map.mjs`：9 层架构、23 个正式模块、历史地址别名与稳定路由的统一注册表
 - `app/modules/rag/page.tsx`：RAG 原理、架构、云服务连接与实战问答
 - `app/modules/ai-agent/page.tsx`：Agent 原理、受控循环、云上运行与实战问答
 - `app/modules/prompt-engineering/page.tsx`：提示词、上下文工程、发布治理与实战问答

@@ -1,5 +1,5 @@
 /**
- * 21 个正式模块的发布注册表。
+ * 23 个正式模块的发布注册表。
  *
  * dedicated 模块保留深度定制页面；brief 模块共享导航、证据与问答能力，
  * 但正文根据内容选择流程、循环、分层、光谱或决策矩阵，不强迫同一版式。
@@ -13,10 +13,12 @@ const moduleSpecs = [
   ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-07-21"],
   ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-07-21"],
   ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-07-21"],
+  ["ai-application-engineering", "ai-application-engineering-title", ["ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic"], "brief", "2026-07-21"],
   ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "governance-evidence", "continuous-assurance"], "brief", "2026-07-21"],
   ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-20"],
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-07-21"],
   ["ai-ops", "ai-ops-title", ["ai-ops", "observability", "golden-set"], "brief", "2026-07-20"],
+  ["ai-finops", "ai-finops-title", ["ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-07-21"],
   ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-07-21"],
   ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-20"],
   ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-20"],
@@ -37,10 +39,12 @@ const moduleKnowledgeViews = Object.freeze({
   mcp: "mcp-host-server-boundary",
   a2a: "delegated-task-lifecycle",
   evaluation: "evaluation-flywheel",
+  "ai-application-engineering": "genai-release-lifecycle",
   "ai-governance": "governance-assurance-loop",
   security: "threat-path",
   "ai-gateway": "gateway-policy-data-plane",
   "ai-ops": "operations-feedback-loop",
+  "ai-finops": "cost-to-value-loop",
   "predictive-ai-mlops": "predictive-model-lifecycle",
   llm: "theory-atlas",
   "prompt-engineering": "context-assembly",
@@ -89,6 +93,9 @@ const moduleQaCoverageTags = Object.freeze({
     "模型选型", "评估方法", "RAG 诊断", "Agent 评估", "评审方法", "持续评估", "黄金集治理", "发布门槛",
     "评估分工", "切片评估", "人工校准", "红队边界", "多目标评估", "统计可信度",
   ]),
+  "ai-application-engineering": Object.freeze([
+    "职责边界", "发布清单", "模型升级", "测试方法", "影子发布", "反馈治理", "平台边界", "事故归因", "建设边界",
+  ]),
   "ai-governance": Object.freeze([
     "职责边界", "框架边界", "标准边界", "系统清单", "风险分级", "第三方治理", "法规时效", "治理落地", "责任模型",
   ]),
@@ -103,6 +110,9 @@ const moduleQaCoverageTags = Object.freeze({
   "ai-ops": Object.freeze([
     "平台复用", "在线评估", "漂移归因", "事件响应", "观测边界", "SLO 设计", "业务恢复", "遥测治理",
     "采样策略", "反馈治理", "成本异常", "安全回放", "告警设计",
+  ]),
+  "ai-finops": Object.freeze([
+    "成本边界", "范围设计", "单位经济", "容量经济", "Agent 归因", "异常管理", "优化边界", "采购选型", "价值衡量",
   ]),
   "predictive-ai-mlops": Object.freeze([
     "路线选择", "特征治理", "模型注册", "漂移再训练", "效果验收", "服务形态", "发布治理", "平台边界", "更新策略",

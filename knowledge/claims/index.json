@@ -108,6 +108,30 @@
       "reviewCadenceDays": 90,
       "owner": "knowledge-curation",
       "status": "active"
+    },
+    {
+      "id": "operations.genaiops-complements-mlops-devops-dataops",
+      "claim": "截至 2026-07-21，Microsoft 的官方 AI 工作负载架构指南把应用开发、数据处理与模型管理分别连接到 DevOps、DataOps、MLOps 与 GenAIOps，并要求这些方法协同覆盖生成式应用。",
+      "scope": "该分类支持划分生成式 AI 运营责任；不表示 GenAIOps 已有跨厂商统一标准、统一制品格式或必须使用 Azure 产品。",
+      "sourceIds": ["azure-genaiops", "azure-foundation-model-lifecycle"],
+      "evidenceGrade": "B",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "active"
+    },
+    {
+      "id": "finops.ai-technology-category-and-scope",
+      "claim": "截至 2026-07-21，FinOps Foundation 的当前框架把 AI 列为技术类别，并提供专门的 FinOps for AI 指南；是否建立独立 AI Scope 仍应由业务结果和决策情境决定。",
+      "scope": "该状态描述 FinOps Foundation 当前框架与指南，不表示所有组织都必须建立独立 AI FinOps 团队、账套或成本中心。",
+      "sourceIds": ["finops-framework", "finops-ai-category", "finops-scopes"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "watch"
     }
   ]
 }

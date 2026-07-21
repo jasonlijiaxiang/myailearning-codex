@@ -1,5 +1,5 @@
 /**
- * 面向读者的 21 模块知识地图。
+ * 面向读者的 23 模块知识地图。
  *
  * 初始主题与 external_reference/CC-20260717 建立归档映射，新增模块来自全局知识复核。
  * PPT 不定义模块的知识边界、章节顺序或内容上限；正文按售前判断链独立研究，
@@ -39,19 +39,29 @@ export const layers = [
   },
   {
     no: "04",
-    name: "工程保障层",
-    en: "Engineering Assurance",
-    purpose: "把质量、安全、流量与运营变成生产控制面。",
+    name: "应用交付与经营层",
+    en: "Application Delivery & Economics",
+    purpose: "把生成式应用的版本、流量、运行与单位经济组织成持续交付体系。",
     modules: [
-      { zh: "评估", en: "Evaluation", slug: "evaluation", href: "/modules/evaluation" },
-      { zh: "AI 治理、风险与合规", en: "AI Governance, Risk & Compliance", slug: "ai-governance", href: "/modules/ai-governance" },
-      { zh: "安全", en: "AI Security", slug: "security", href: "/modules/security" },
+      { zh: "AI 应用工程与 GenAIOps", en: "AI Application Engineering & GenAIOps", slug: "ai-application-engineering", href: "/modules/ai-application-engineering" },
       { zh: "AI 网关", en: "AI Gateway", slug: "ai-gateway", href: "/modules/ai-gateway" },
       { zh: "AI 可观测与运营", en: "AI Operations", slug: "ai-ops", href: "/modules/ai-ops" },
+      { zh: "AI FinOps 与单位经济", en: "AI FinOps & Unit Economics", slug: "ai-finops", href: "/modules/ai-finops" },
     ],
   },
   {
     no: "05",
+    name: "质量、安全与治理层",
+    en: "Quality, Security & Governance",
+    purpose: "用评估、安全控制、责任和证据决定 AI 系统能否进入并持续留在生产。",
+    modules: [
+      { zh: "评估", en: "Evaluation", slug: "evaluation", href: "/modules/evaluation" },
+      { zh: "AI 治理、风险与合规", en: "AI Governance, Risk & Compliance", slug: "ai-governance", href: "/modules/ai-governance" },
+      { zh: "安全", en: "AI Security", slug: "security", href: "/modules/security" },
+    ],
+  },
+  {
+    no: "06",
     name: "预测式 AI 与 MLOps 层",
     en: "Predictive AI & MLOps",
     purpose: "把预测模型的数据、特征、训练、发布与真实效果连成持续生命周期。",
@@ -60,7 +70,7 @@ export const layers = [
     ],
   },
   {
-    no: "06",
+    no: "07",
     name: "模型与优化层",
     en: "Models & Optimization",
     purpose: "理解模型能力从何而来，以及怎样训练、定制和高效服务。",
@@ -73,7 +83,7 @@ export const layers = [
     ],
   },
   {
-    no: "07",
+    no: "08",
     name: "数据工程层",
     en: "Data Engineering",
     purpose: "把原始数据变成可信、可追溯、可检索的 AI 输入。",
@@ -82,7 +92,7 @@ export const layers = [
     ],
   },
   {
-    no: "08",
+    no: "09",
     name: "AI 基础设施层",
     en: "AI Infrastructure",
     purpose: "承载算力、网络、存储、集群与平台编排。",
@@ -118,7 +128,7 @@ export const legacyModuleAliases = Object.freeze({
   "identity-authorization-boundaries": "security",
   "safety-governance": "security",
   "inference-ai-gateway": "ai-gateway",
-  "observability-finops": "ai-ops",
+  "observability-finops": "ai-finops",
   "model-principles": "llm",
   "training-fine-tuning": "fine-tuning",
   "model-compression-alignment": "llm-training",

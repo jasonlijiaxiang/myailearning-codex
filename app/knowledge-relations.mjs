@@ -84,6 +84,11 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "golden-set", to: "evaluation", type: "component", explanation: "黄金评估集提供经确认的代表性样本，用于稳定回归比较。" }),
   Object.freeze({ from: "evaluation-layers", to: "evaluation", type: "component", explanation: "模型、组件和业务结果三层评估共同解释局部质量与端到端成效。" }),
   Object.freeze({ from: "llm-as-judge", to: "evaluation", type: "component", explanation: "模型裁判扩展语义评分规模，但需要人工校准、偏差测试和明确量表。" }),
+  Object.freeze({ from: "configuration-bundle", to: "ai-application-engineering", type: "component", explanation: "成套配置保存模型、Prompt、数据、工具、编排和策略之间的兼容关系。" }),
+  Object.freeze({ from: "ai-release-manifest", to: "ai-application-engineering", type: "component", explanation: "AI 发布清单把一次应用版本及其评估、审批和运行配置连接成可重放记录。" }),
+  Object.freeze({ from: "release-evaluation", to: "ai-application-engineering", type: "control", explanation: "发布评估用任务、风险、性能和业务门槛约束候选版本进入生产。" }),
+  Object.freeze({ from: "shadow-traffic", to: "release-evaluation", type: "component", explanation: "影子流量让候选版本接触受控真实分布，同时隔离用户响应和业务副作用。" }),
+  Object.freeze({ from: "genaiops", to: "ai-application-engineering", type: "control", explanation: "GenAIOps 把生成式应用的制品、评估、发布和生产反馈组织成工程闭环。" }),
   Object.freeze({ from: "ai-inventory", to: "ai-governance", type: "prerequisite", explanation: "AI 系统清单先明确用途、所有者与资产边界，治理才能覆盖真实生产范围。" }),
   Object.freeze({ from: "ai-risk-tiering", to: "ai-governance", type: "component", explanation: "AI 风险分级按具体用途和影响决定需要哪些增强控制与批准。" }),
   Object.freeze({ from: "impact-assessment", to: "ai-risk-tiering", type: "prerequisite", explanation: "影响评估提供受影响对象、伤害、自动化和可逆性证据，支持风险分级。" }),
@@ -115,7 +120,12 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "semantic-cache", to: "ai-gateway", type: "component", explanation: "语义缓存复用语义相近请求的已验证响应，但必须遵守身份、权限与时效边界。" }),
   Object.freeze({ from: "slo", to: "sla", type: "prerequisite", explanation: "可度量的 SLO 为服务水平承诺与持续运营提供内部目标。" }),
   Object.freeze({ from: "tco", to: "solution-patterns", type: "metric", explanation: "TCO 把采购、运行、集成、维护与失败处理纳入方案成本判断。" }),
-  Object.freeze({ from: "finops", to: "tco", type: "control", explanation: "FinOps 让工程、财务与业务持续治理单位成本、预算和价值。" }),
+  Object.freeze({ from: "finops", to: "ai-finops", type: "component", explanation: "FinOps 的协作、范围与价值框架为 AI 成本和投资治理提供运营基础。" }),
+  Object.freeze({ from: "cost-allocation", to: "ai-finops", type: "component", explanation: "成本分配把模型、平台和共享费用归到产品、任务、租户和责任中心。" }),
+  Object.freeze({ from: "cost-to-serve", to: "unit-economics", type: "prerequisite", explanation: "只有先界定完成服务的全成本，单位经济才能反映真实投入。" }),
+  Object.freeze({ from: "unit-economics", to: "ai-finops", type: "metric", explanation: "单位经济把成本连接到经过质量与业务确认的成功结果。" }),
+  Object.freeze({ from: "cost-anomaly", to: "ai-finops", type: "metric", explanation: "成本异常用于发现循环、攻击、版本变化、业务峰值或计费偏差。" }),
+  Object.freeze({ from: "ai-finops", to: "tco", type: "control", explanation: "AI FinOps 让工程、产品、财务与业务持续治理 AI 的单位成本、预算和价值。" }),
 ];
 
 /**

@@ -57,7 +57,7 @@ export default function KnowledgeGraphPage() {
       <section className={styles.howTo} aria-labelledby="knowledge-graph-how-to-title">
         <h2 id="knowledge-graph-how-to-title">怎样读这张图</h2>
         <ol>
-          <li><span>1</span><div><strong>先看全局</strong><p>从七层知识结构确认全部模块，以及由共享术语形成的知识主干。</p></div></li>
+          <li><span>1</span><div><strong>先看全局</strong><p>从九层知识结构确认全部模块，以及由共享术语形成的知识主干。</p></div></li>
           <li><span>2</span><div><strong>再选模块</strong><p>进入一跳术语视图，区分主要讲解与跨模块使用。</p></div></li>
           <li><span>3</span><div><strong>最后沿关系继续学习</strong><p>点击术语查看机制、前置、控制或指标关系，再回到正式正文。</p></div></li>
         </ol>

@@ -136,7 +136,29 @@ test("module updates and newly added questions use distinct, non-repeating date 
     }
   }
 
-  assert.deepEqual(addedQuestions, ["a2a / 服务宣称兼容 A2A 1.0，网络连通是否就足以验收？"]);
+  assert.deepEqual(addedQuestions, [
+    "a2a / 服务宣称兼容 A2A 1.0，网络连通是否就足以验收？",
+    "ai-application-engineering / GenAIOps 与传统 DevOps 有什么不同？",
+    "ai-application-engineering / 为什么只版本化 Prompt 还不够？",
+    "ai-application-engineering / 模型供应商宣布兼容升级，是否可以跳过回归？",
+    "ai-application-engineering / 怎样测试一个输出不确定的 AI 应用？",
+    "ai-application-engineering / 影子发布会不会造成重复业务动作？",
+    "ai-application-engineering / 线上失败是否应该自动加入评估集？",
+    "ai-application-engineering / RAG、Agent 和多模态应用能共用一套发布门吗？",
+    "ai-application-engineering / 出现质量事故时应该先调 Prompt 还是先换模型？",
+    "ai-application-engineering / 什么时候不值得建设完整 GenAIOps 平台？",
+    "ai-application-engineering / 已经有 CI/CD 和单元测试，为什么还需要发布评估？",
+    "ai-finops / AI FinOps 是否就是统计 Token 成本？",
+    "ai-finops / 什么时候应该建立独立 AI FinOps 范围？",
+    "ai-finops / 每百万 Token 更便宜的模型，为什么总成本可能更高？",
+    "ai-finops / GPU 利用率低是否表示应该减少容量？",
+    "ai-finops / 怎样给多 Agent 任务分摊成本？",
+    "ai-finops / 成本异常应该自动停掉 AI 服务吗？",
+    "ai-finops / 缓存命中率提高是否一定降本？",
+    "ai-finops / API 与自建模型应该怎样做成本比较？",
+    "ai-finops / AI 项目没有直接收入，怎样衡量价值？",
+    "ai-finops / Showback 和 Chargeback 应该怎样选择？",
+  ]);
 
   const [components, questionsPage, questionIndex, styles, v2Styles, agentRules, moduleStandard] = await Promise.all([
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
@@ -422,7 +444,7 @@ test("dense-reading modules derive a scannable content overview from the publica
 
 test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {
   const remainingSlugs = Object.keys(moduleExtensionViews);
-  assert.equal(remainingSlugs.length, 15, "剩余模块清单必须完整且显式");
+  assert.equal(remainingSlugs.length, 17, "剩余模块清单必须完整且显式");
   assert.equal(new Set(Object.values(moduleExtensionViews).map((view) => view.id)).size, remainingSlugs.length, "剩余模块知识视图 ID 不得复用");
 
   for (const slug of remainingSlugs) {

@@ -1,4 +1,4 @@
-const qa = (q, a, depth, ask, tag, basis, evidence) => Object.freeze({
+const qa = (q, a, depth, ask, tag, basis, evidence, addedAt) => Object.freeze({
   q,
   a,
   depth,
@@ -6,6 +6,7 @@ const qa = (q, a, depth, ask, tag, basis, evidence) => Object.freeze({
   tag,
   basis,
   evidence: Object.freeze(evidence.map((item) => Object.freeze(item))),
+  ...(addedAt ? { addedAt } : {}),
 });
 
 /**
@@ -13,6 +14,36 @@ const qa = (q, a, depth, ask, tag, basis, evidence) => Object.freeze({
  * “短答—深答—追问—证据”契约；基础问答仍归各 module-briefs 文件维护。
  */
 export const moduleQaExpansion = Object.freeze({
+  "ai-application-engineering": Object.freeze([
+    qa(
+      "已经有 CI/CD 和单元测试，为什么还需要发布评估？",
+      "因为 CI/CD 主要证明代码和基础设施按契约交付，无法单独证明模型、Prompt、检索、工具组合后的语义质量与业务结果。",
+      "保留现有软件门禁，再增加任务数据集、组件评估、风险切片、端到端后置条件和真实流量保护组。发布评估不是另一套流水线，而是为非确定组件补上可重复的 Go / No-Go 证据。",
+      "追问客户：当前测试能发现代码错误、检索错误、工具副作用和业务失败中的哪些？",
+      "发布评估",
+      "软件测试 + 非确定性评估",
+      [
+        { sourceId: "azure-foundation-model-lifecycle", supports: "支持为模型、Prompt、编排和 Grounding 数据变化建立自动测试与评估流水线。" },
+        { sourceId: "openai-eval-best-practices", supports: "支持用任务特定、持续和人工校准的评估补充主观检查。" },
+      ],
+      "2026-07-21",
+    ),
+  ]),
+  "ai-finops": Object.freeze([
+    qa(
+      "Showback 和 Chargeback 应该怎样选择？",
+      "成本归因尚不稳定或团队处于探索期时先用 Showback 提供透明度；只有分摊规则、责任和行为影响成熟后再考虑 Chargeback。",
+      "Showback 让团队看到消费和单位经济但不执行内部结算，适合发现标签缺口与共同优化。Chargeback 会改变团队行为和预算责任，必须处理共享平台、失败任务、公共能力和争议机制，避免为了避费而破坏质量与可观测性。",
+      "追问客户：内部结算希望改变什么行为？共享成本、失败成本和平台投资由谁承担？",
+      "内部结算",
+      "归因成熟度 + 行为激励",
+      [
+        { sourceId: "finops-framework", supports: "支持用分配、报告、预算、结算和单位经济管理技术价值。" },
+        { sourceId: "finops-ai-category", supports: "支持 AI 支出需要工程、产品、财务和采购共同定义分配与投资责任。" },
+      ],
+      "2026-07-21",
+    ),
+  ]),
   "predictive-ai-mlops": Object.freeze([
     qa(
       "预测模型上线后，多久重训一次才合理？",
