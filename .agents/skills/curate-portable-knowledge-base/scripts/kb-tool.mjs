@@ -40,6 +40,7 @@ const REQUIRED_PORTABLE_INCLUDES = [
   ".gitignore",
   ".node-version",
   "AGENTS.md",
+  "HANDOFF.md",
   "README.md",
   "kb.config.json",
   "package.json",
@@ -71,6 +72,7 @@ const REQUIRED_PORTABLE_FILES = [
   ".gitignore",
   ".node-version",
   "AGENTS.md",
+  "HANDOFF.md",
   "README.md",
   "kb.config.json",
   "package.json",
@@ -244,6 +246,7 @@ async function doctor({ json = false } = {}) {
 
   const requiredFiles = [
     "AGENTS.md",
+    "HANDOFF.md",
     "README.md",
     "package.json",
     "package-lock.json",

@@ -121,6 +121,7 @@ async function createFixture(root) {
         ".gitignore",
         ".node-version",
         "AGENTS.md",
+        "HANDOFF.md",
         "README.md",
         "kb.config.json",
         "package.json",
@@ -151,6 +152,7 @@ async function createFixture(root) {
   };
   await writeJson(path.join(root, "kb.config.json"), config);
   await writeFile(path.join(root, "AGENTS.md"));
+  await writeFile(path.join(root, "HANDOFF.md"));
   await writeFile(path.join(root, "README.md"));
   await writeJson(path.join(root, "package.json"), { name: "portable-contract-test" });
   await writeJson(path.join(root, "package-lock.json"), {

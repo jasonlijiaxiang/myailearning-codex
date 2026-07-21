@@ -62,6 +62,16 @@ function runHookCommand(command, { cwd, env, input }) {
   });
 }
 
+function sourceSupportsNestedHookCwd() {
+  const result = spawnSync("git", ["rev-parse", "--show-toplevel"], {
+    cwd: PROJECT_ROOT,
+    encoding: "utf8",
+    shell: false,
+  });
+  if (result.status !== 0) return false;
+  return path.resolve(result.stdout.trim()) === PROJECT_ROOT;
+}
+
 function storedZipEntries(archive) {
   const entries = new Map();
   let offset = 0;
@@ -160,7 +170,9 @@ test("Codex hooks capture visible messages and opaque transcript deltas privatel
       process.platform === "win32" ? "commandWindows" : "command"
     ];
     const prompt = runHookCommand(promptCommand, {
-      cwd: path.join(PROJECT_ROOT, "app"),
+      // A Git checkout may safely resolve the trusted project root from a child
+      // directory. A Git-less portable copy deliberately accepts only its root.
+      cwd: sourceSupportsNestedHookCwd() ? path.join(PROJECT_ROOT, "app") : PROJECT_ROOT,
       env,
       input: JSON.stringify({ ...common, hook_event_name: "UserPromptSubmit", prompt: "private user prompt" }),
     });
@@ -514,6 +526,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
           ".node-version",
           ".openai/hosting.example.json",
           "AGENTS.md",
+          "HANDOFF.md",
           "README.md",
           "kb.config.json",
           "package.json",
@@ -546,6 +559,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
     };
     await writeJson(path.join(root, "kb.config.json"), config);
     await fs.writeFile(path.join(root, "AGENTS.md"), "portable test\n");
+    await fs.writeFile(path.join(root, "HANDOFF.md"), "portable handoff\n");
     await fs.writeFile(path.join(root, "README.md"), "portable test\n");
     await writeJson(path.join(root, "package.json"), { name: "portable-test" });
     await writeJson(path.join(root, "package-lock.json"), { name: "portable-test", lockfileVersion: 3 });

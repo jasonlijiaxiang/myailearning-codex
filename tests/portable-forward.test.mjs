@@ -78,6 +78,7 @@ test("the real portable archive installs, validates, and builds from a fresh no-
     const manifest = JSON.parse(entries.get("PORTABLE-MANIFEST.json").toString("utf8"));
     const paths = new Set(manifest.files.map((file) => file.path));
     assert.equal(manifest.siteBindingIncluded, false);
+    assert.ok(paths.has("HANDOFF.md"));
     assert.ok(paths.has("package-lock.json"));
     assert.ok(paths.has("knowledge/schemas/release.schema.json"));
     assert.ok(!paths.has(".openai/hosting.json"));
@@ -100,6 +101,17 @@ test("the real portable archive installs, validates, and builds from a fresh no-
     assert.equal(doctor.status, 0, `${doctor.stdout}\n${doctor.stderr}`);
     const validation = run(NPM, ["run", "kb:validate"], extracted);
     assert.equal(validation.status, 0, `${validation.stdout}\n${validation.stderr}`);
+    const hookCheck = run(
+      process.execPath,
+      [
+        "--test",
+        "--test-name-pattern",
+        "^Codex hooks capture visible messages",
+        "tests/portable-knowledge.test.mjs",
+      ],
+      extracted,
+    );
+    assert.equal(hookCheck.status, 0, `${hookCheck.stdout}\n${hookCheck.stderr}`);
     const build = run(NPM, ["run", "build"], extracted);
     assert.equal(build.status, 0, `${build.stdout}\n${build.stderr}`);
     await fs.access(path.join(extracted, "dist", "server", "index.js"));
