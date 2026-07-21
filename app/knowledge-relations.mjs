@@ -65,6 +65,12 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "mcp", to: "tool-discovery", type: "component", explanation: "MCP 允许 AI 应用以统一方式发现工具及其参数能力。" }),
   Object.freeze({ from: "a2a", to: "agent-collaboration", type: "component", explanation: "A2A 用任务、状态与产物语义支持独立 Agent 之间的协作。" }),
   Object.freeze({ from: "guardrails", to: "generation", type: "control", explanation: "护栏可以检测、约束或阻断输出，但不能替代身份和业务授权。" }),
+  Object.freeze({ from: "vision-transformer", to: "multimodal", type: "component", explanation: "视觉 Transformer 把图像 Patch 转换为 Token，并用 Transformer 处理视觉输入。" }),
+  Object.freeze({ from: "ocr", to: "document-intelligence", type: "component", explanation: "OCR 恢复图片或扫描件中的文字与位置，是文档智能结构恢复的一部分。" }),
+  Object.freeze({ from: "asr", to: "multimodal", type: "component", explanation: "ASR 把音频转换为带时间关系的文本，为多模态理解提供语音输入。" }),
+  Object.freeze({ from: "agent-card", to: "a2a", type: "component", explanation: "Agent Card 为 A2A 协作提供身份、端点、技能和交互能力声明。" }),
+  Object.freeze({ from: "a2a-task", to: "agent-collaboration", type: "component", explanation: "A2A Task 用状态化任务对象承载跨智能体委托、进度与完成语义。" }),
+  Object.freeze({ from: "artifact", to: "a2a-task", type: "component", explanation: "Artifact 是 A2A Task 交付的任务结果，需要保留版本、权限与验收关系。" }),
 
   // 评估、训练、平台与交付
   Object.freeze({ from: "golden-set", to: "evaluation", type: "component", explanation: "黄金评估集提供经确认的代表性样本，用于稳定回归比较。" }),
@@ -78,6 +84,8 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "resource-scheduling", to: "ai-infra-platform", type: "component", explanation: "资源调度按优先级、拓扑、配额和作业需求分配稀缺算力。" }),
   Object.freeze({ from: "heterogeneous-compute", to: "ai-infra-compute", type: "component", explanation: "异构算力让不同类型加速器承载适合的训练与推理负载。" }),
   Object.freeze({ from: "model-routing", to: "ai-gateway", type: "component", explanation: "模型路由根据任务、质量、时延、成本与故障状态选择端点。" }),
+  Object.freeze({ from: "rate-limiting", to: "ai-gateway", type: "control", explanation: "限流按身份、租户、模型或时间窗口约束请求速率，保护网关下游容量。" }),
+  Object.freeze({ from: "semantic-cache", to: "ai-gateway", type: "component", explanation: "语义缓存复用语义相近请求的已验证响应，但必须遵守身份、权限与时效边界。" }),
   Object.freeze({ from: "slo", to: "sla", type: "prerequisite", explanation: "可度量的 SLO 为服务水平承诺与持续运营提供内部目标。" }),
   Object.freeze({ from: "tco", to: "solution-patterns", type: "metric", explanation: "TCO 把采购、运行、集成、维护与失败处理纳入方案成本判断。" }),
   Object.freeze({ from: "finops", to: "tco", type: "control", explanation: "FinOps 让工程、财务与业务持续治理单位成本、预算和价值。" }),

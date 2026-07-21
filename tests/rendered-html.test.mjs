@@ -331,6 +331,7 @@ test("standalone knowledge graph derives every node and relation from stable reg
   assert.ok(graphHealth.maximumDegree > 0, "图谱健康检查必须计算节点度数");
   assert.equal(graphModuleCoverage.length, moduleList.length, "全局图谱必须为每个正式模块计算覆盖度");
   assert.equal(graphModuleCoverage.filter((coverage) => coverage.termCount === 0).length, 0, "每个正式模块都必须拥有可下钻的关联术语");
+  assert.equal(graphModuleCoverage.filter((coverage) => coverage.termCount < graphOverviewPolicy.lowCoverageTermThreshold).length, 0, "每个正式模块至少要达到薄关系预警线，避免总览有模块但下钻无内容");
   assert.equal(graphModuleCoverage.every((coverage) => coverage.primaryTermCount >= 0 && coverage.primaryTermCount <= coverage.termCount), true, "主要讲解术语数量必须是关联术语的有效子集");
   assert.ok(graphOverviewLinks.length > 0 && graphOverviewLinks.length <= graphOverviewPolicy.maxConnections, "全局总览必须显示受控数量的模块关系");
   assert.ok(Math.max(...layers.map((layer) => layer.modules.length)) <= graphOverviewPolicy.maxModulesPerLayerRow, "新增模块不得在总览单层中静默挤压为不可读节点");
