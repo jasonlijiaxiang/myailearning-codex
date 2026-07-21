@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { filterQuestionDirectoryItems } from "./question-filter.mjs";
@@ -53,6 +53,34 @@ export function ReadingProgress() {
   return <div className="readingProgress" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>;
 }
 
+export function KnowledgeSearchLaunch() {
+  const [query, setQuery] = useState("");
+
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const value = query.trim();
+    window.dispatchEvent(new CustomEvent<string>("fieldbook:search", { detail: value }));
+    document.getElementById("available-modules")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <form className="heroSearch" role="search" aria-label="搜索知识库" onSubmit={submit}>
+      <label htmlFor="hero-knowledge-search">搜索模块、术语、课程、客户问题和来源</label>
+      <div>
+        <span aria-hidden="true">⌕</span>
+        <input
+          id="hero-knowledge-search"
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="例如：权限继承、KV Cache、Agent 工具调用……"
+        />
+        <button type="submit">搜索</button>
+      </div>
+    </form>
+  );
+}
+
 export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: ExplorerModule[]; knowledgeEntries?: KnowledgeSearchEntry[] }) {
   const [query, setQuery] = useState("");
   const [layer, setLayer] = useState("all");
@@ -93,6 +121,16 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
     };
     window.addEventListener("keydown", focusSearch);
     return () => window.removeEventListener("keydown", focusSearch);
+  }, []);
+
+  useEffect(() => {
+    const receiveSearch = (event: Event) => {
+      const value = event instanceof CustomEvent && typeof event.detail === "string" ? event.detail : "";
+      setQuery(value);
+      window.requestAnimationFrame(() => searchRef.current?.focus());
+    };
+    window.addEventListener("fieldbook:search", receiveSearch);
+    return () => window.removeEventListener("fieldbook:search", receiveSearch);
   }, []);
 
   return (
@@ -180,6 +218,8 @@ export function ModuleReadingNav({
   quickLinks?: Array<{ href: string; label: string }>;
 }) {
   const [active, setActive] = useState(sections[0]?.id ?? "");
+  const activeIndex = Math.max(0, sections.findIndex((section) => section.id === active));
+  const sectionProgress = sections.length > 0 ? ((activeIndex + 1) / sections.length) * 100 : 0;
 
   useEffect(() => {
     const nodes = sections
@@ -215,8 +255,9 @@ export function ModuleReadingNav({
   return (
     <aside className="moduleReadingNav" aria-label={`${moduleName} 章节导航`}>
       <div className="readingNavHead">
-        <span>正在阅读</span>
+        <span>正在阅读 · {String(activeIndex + 1).padStart(2, "0")} / {String(sections.length).padStart(2, "0")}</span>
         <strong>{moduleName}</strong>
+        <i aria-hidden="true"><span style={{ width: `${sectionProgress}%` }} /></i>
       </div>
       <ol>
         {sections.map((section, index) => (

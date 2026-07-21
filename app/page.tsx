@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
-import { ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "./fieldbook-interactions";
+import { KnowledgeSearchLaunch, ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "./fieldbook-interactions";
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { layers, moduleList } from "./knowledge-map.mjs";
 import { moduleContentRegistry } from "./module-content-registry.mjs";
@@ -105,22 +105,21 @@ export default function Home() {
 
         <div className="heroGrid heroGridV2">
           <div className="heroCopy">
-            <p className="eyebrow">TECHNICAL PRESALES FIELD MANUAL · V2.0</p>
-            <h1>把复杂 AI 技术<br />变成客户能做的决定</h1>
+            <h1>把复杂 AI 技术，<br />变成客户能做的决定</h1>
             <p className="heroLead">这里把原理、架构、失败原因、云服务、验收证据和客户回答整理成一本技术手册：既能搜索和深入阅读，也能在客户现场随手查阅。</p>
+            <KnowledgeSearchLaunch />
             <div className="heroActions">
-              <a className="primaryButton" href="#available-modules">从客户问题开始</a>
-              <a className="textButton" href="#learning-paths">按任务学习 <span>↓</span></a>
+              <a className="textButton" href="#learning-paths">按任务学习 <span>→</span></a>
+              <a className="textButton" href="#map">浏览知识地图 <span>→</span></a>
             </div>
           </div>
 
           <aside className="heroDecisionPanel" aria-label="知识库可以帮助完成的任务">
-            <p className="miniLabel">USE IT IN THE MOMENT</p>
-            <h2>客户会议前，快速完成三件事</h2>
+            <h2>同一份知识，按场景切换阅读深度</h2>
             <ol>
-              <li><span>01</span><div><strong>解释清楚</strong><p>用机制图和边界说明技术为什么有效、又会在哪里失效。</p></div></li>
-              <li><span>02</span><div><strong>选择正确</strong><p>先看客户遇到了什么问题，再比较可选方案、云服务、风险和通过条件。</p></div></li>
-              <li><span>03</span><div><strong>回答有据</strong><p>从短答进入深答、追问与一手来源，不靠模糊话术。</p></div></li>
+              <li><span>30 秒</span><div><strong>先拿到判断</strong><p>定义、适用场景、关键边界和下一步问题直接可见。</p></div></li>
+              <li><span>10 分钟</span><div><strong>理解系统机制</strong><p>沿输入、处理、输出、失败点和责任边界深入阅读。</p></div></li>
+              <li><span>客户现场</span><div><strong>搜索问题并查证</strong><p>从客户问题进入短答、深答、追问和一手来源。</p></div></li>
             </ol>
             <div className="heroDecisionFoot"><strong>{moduleCount}</strong><span>个独立模块</span><strong>{layerCount}</strong><span>层知识地图</span></div>
           </aside>

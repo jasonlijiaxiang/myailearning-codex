@@ -212,6 +212,30 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.doesNotMatch(html, /\/(?:Users|home)\//, "生产 HTML 不应包含本机绝对路径");
 });
 
+test("v3 reading system keeps discovery functional, compact, and portable", async () => {
+  const [html, moduleHtml, layoutSource, interactionSource, styles] = await Promise.all([
+    renderHtml("/"),
+    renderHtml("/modules/evaluation"),
+    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(layoutSource, /import "\.\/fieldbook-v3\.css"/);
+  assert.match(html, /<form class="heroSearch" role="search" aria-label="搜索知识库">/);
+  assert.match(html, /搜索模块、术语、课程、客户问题和来源/);
+  assert.match(interactionSource, /dispatchEvent\(new CustomEvent<string>\("fieldbook:search"/);
+  assert.match(interactionSource, /addEventListener\("fieldbook:search"/);
+  assert.match(moduleHtml, /<div class="readingNavHead"><span>正在阅读 ·/);
+  assert.match(interactionSource, /String\(activeIndex \+ 1\)\.padStart\(2, "0"\)/);
+  assert.match(styles, /--readable:\s*820px/);
+  assert.match(styles, /\.moduleResult\s*\{[^}]*display:\s*grid[^}]*grid-template-areas:/s);
+  assert.match(styles, /\.heroSearch\s*>\s*div\s*\{[^}]*grid-template-columns:/s);
+  assert.match(styles, /@media \(max-width:\s*720px\)[\s\S]*\.topbar\s*\{[^}]*flex-wrap:\s*wrap/s);
+  assert.doesNotMatch(styles, /url\s*\(/i, "V3 视觉系统不得依赖远程或运行时图片资源");
+  assert.doesNotMatch(styles, /\/(?:Users|home)\//, "V3 样式不得包含本机绝对路径");
+});
+
 test("focus surfaces provide accessible abbreviation explanations", async () => {
   const hintTermIds = ["rag", "llm", "ai-agent", "poc", "sla", "tco", "mcp", "a2a", "bm25", "ann", "hnsw", "rrf", "api", "iam", "acl", "dlp", "hitl", "qkv", "kv-cache", "ttft", "tpot", "moe", "sft", "lora", "qlora", "dpo"];
 
