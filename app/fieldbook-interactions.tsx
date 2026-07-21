@@ -192,8 +192,8 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
             <div className="moduleResultMeta"><span>{item.layerNo}</span><small>{item.layerName}</small><i aria-hidden="true">↗</i></div>
             <h3>{item.zh}</h3>
             <p className="moduleResultEn">{item.en}</p>
-            <p>{item.summary}</p>
-            <strong>什么时候看这个模块：{item.cue}</strong>
+            <p className="moduleResultSummary">{item.summary}</p>
+            <p className="moduleResultCue">{item.cue}</p>
           </Link>
         )))}
       </div>

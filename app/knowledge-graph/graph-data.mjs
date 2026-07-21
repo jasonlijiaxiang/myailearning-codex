@@ -4,8 +4,8 @@ import { moduleDiscovery } from "../module-discovery.mjs";
 import { terminology } from "../terminology.mjs";
 
 /**
- * Design 1 与 Design 2 的唯一图谱数据适配器。
- * 两种呈现不得复制模块、术语或关系内容，只能消费这里派生的稳定数据。
+ * 公开动态探索与后台覆盖门禁共用的唯一图谱数据适配器。
+ * 页面与质量检查不得复制模块、术语或关系内容，只能消费这里派生的稳定数据。
  */
 export const graphLayers = Object.freeze(layers.map((layer) => Object.freeze({
   no: layer.no,

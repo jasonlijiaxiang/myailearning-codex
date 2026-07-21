@@ -152,8 +152,8 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .moduleResultMeta i { grid-area: arrow; display: none; }
 .moduleResult h3 { grid-area: title; align-self: end; margin: 0; font-size: 21px; }
 .moduleResultEn { grid-area: en; align-self: start; margin: 0 !important; color: var(--muted); font-size: 13px !important; line-height: 1.45; }
-.moduleResult > p:not(.moduleResultEn) { grid-area: summary; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
-.moduleResult > strong { grid-area: cue; margin: 0; padding: 0 0 0 22px; border: 0; border-left: 1px solid var(--line); font-size: 14px; line-height: 1.65; }
+.moduleResultSummary { grid-area: summary; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
+.moduleResultCue { grid-area: cue; margin: 0; padding: 0 0 0 22px; border: 0; border-left: 1px solid var(--line); color: var(--ink); font-size: 14px; font-weight: 650; line-height: 1.65; }
 .moduleResult::after { content: "→"; grid-area: arrow; justify-self: end; color: var(--lime); font-size: 22px; }
 
 .knowledgeSearchResults { border-color: var(--ink); }
@@ -436,7 +436,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .moduleExplorerControls { grid-template-columns: 1fr; }
   .moduleSearch { padding-bottom: 12px; border-right: 0; border-bottom: 1px solid var(--line); }
   .moduleResult { grid-template-columns: 110px minmax(190px,.65fr) minmax(240px,1fr) 26px; grid-template-areas: "meta title summary arrow" "meta en cue arrow"; }
-  .moduleResult > strong { padding: 5px 0 0; border-left: 0; color: var(--muted); }
+  .moduleResultCue { padding: 5px 0 0; border-left: 0; color: var(--muted); }
   .glossaryHeroGrid { grid-template-columns: 1fr; align-items: start; }
   .glossaryHeroStats { max-width: 760px; }
   .glossaryTerm { grid-template-columns: 52px minmax(210px,.7fr) minmax(300px,1.3fr); }
@@ -447,8 +447,8 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .heroGridV2 { min-height: 0; grid-template-columns: 1fr; }
   .heroDecisionPanel { padding: 30px 0 0; border-left: 0; border-top: 1px solid var(--line); }
   .moduleResult { grid-template-columns: 90px minmax(0,1fr) 24px; grid-template-areas: "meta title arrow" "meta en arrow" "summary summary summary" "cue cue cue"; gap: 4px 20px; }
-  .moduleResult > p:not(.moduleResultEn) { margin-top: 14px; }
-  .moduleResult > strong { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .moduleResultSummary { margin-top: 14px; }
+  .moduleResultCue { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
   .modulePilot .moduleBriefHeader,
   .modulePilot .ragHeader { grid-template-columns: 1fr; gap: 18px; }
   .modulePilot .moduleBriefHeader { grid-template-areas: "eyebrow" "title" "definition" "position" "metrics"; }
@@ -483,7 +483,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .moduleResult { grid-template-columns: 58px minmax(0,1fr) 20px; gap: 4px 14px; padding: 20px 4px; }
   .moduleResultMeta small { display: none; }
   .moduleResult h3 { font-size: 20px; }
-  .moduleResult > p:not(.moduleResultEn) { font-size: 16px; }
+  .moduleResultSummary { font-size: 16px; }
   .moduleResult:hover { padding-left: 10px; }
   .homeTermGuide,
   .fieldbookPromise,

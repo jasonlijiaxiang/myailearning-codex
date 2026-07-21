@@ -106,8 +106,8 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .moduleResultMeta i { margin-left: auto; color: var(--ink); font-size: 19px; font-style: normal; }
 .moduleResult h3 { margin: 50px 0 3px; font-size: 25px; line-height: 1.3; }
 .moduleResultEn { margin: 0 0 22px !important; color: var(--muted); font-size: 12px !important; }
-.moduleResult > p:not(.moduleResultEn) { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
-.moduleResult > strong { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.65; }
+.moduleResultSummary { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.moduleResultCue { margin: auto 0 0; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; font-weight: 700; line-height: 1.65; }
 .emptySearch { margin-top: 15px; padding: 35px; text-align: center; border: 1px dashed var(--line); background: var(--paper); }
 .emptySearch p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 

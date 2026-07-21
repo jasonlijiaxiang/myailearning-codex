@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 
-import type { GraphLayer, GraphModule, GraphRelationType, GraphTerm } from "../knowledge-graph-explorer";
+import type { GraphLayer, GraphModule, GraphRelationType, GraphTerm } from "../graph-types";
 import styles from "./knowledge-constellation.module.css";
 
 type Relation = { id: string; from: string; to: string; type: string; explanation: string; direction: string; status: string };
@@ -25,6 +25,11 @@ const layerColors = ["#6ff4bd", "#47cfff", "#5b9cff", "#8177ff", "#b871ff", "#e7
 
 function focusKey(focus: Focus) {
   return `${focus.kind}:${focus.id}`;
+}
+
+function splitModuleTitle(title: string) {
+  const [lead, detail] = title.split(" · ", 2);
+  return detail ? { lead, detail } : { lead: title, detail: "" };
 }
 
 function edgePath(point: Pick<Point, "x" | "y">) {
@@ -176,6 +181,7 @@ export function KnowledgeConstellation({
   const selectedSubtitle = selectedModule?.en ?? selectedTerm?.en ?? "";
   const selectedDescription = selectedModule?.summary ?? selectedTerm?.description ?? "";
   const primaryModule = selectedModule ?? moduleById.get(selectedTerm?.primaryModuleId ?? "");
+  const selectedModuleTitle = selectedModule ? splitModuleTitle(selectedModule.zh) : null;
   const activeEdgeCount = Math.min(points.length, scalePolicy.maxActiveEdges);
 
   return (
@@ -246,7 +252,14 @@ export function KnowledgeConstellation({
               ))}
 
               <article className={styles.focusNode} aria-live="polite">
-                <span>{focus.kind === "module" ? "模块" : "术语"}</span><strong>{selectedTitle}</strong><small>{selectedSubtitle}</small>
+                <span>{focus.kind === "module" ? "模块" : "术语"}</span>
+                <strong>
+                  {selectedModuleTitle ? (
+                    <><span className={styles.moduleTitleLead}>{selectedModuleTitle.lead}</span><span className={styles.moduleTitleDetail}>{selectedModuleTitle.detail}</span></>
+                  ) : selectedTitle}
+                </strong>
+                <small>{selectedSubtitle}</small>
+                {selectedModule ? <Link className={styles.focusAction} href={selectedModule.href}>进入模块 <span aria-hidden="true">→</span></Link> : null}
               </article>
             </div>
           </div>

@@ -11,6 +11,7 @@ import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
 import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
+import { moduleDiscovery } from "../app/module-discovery.mjs";
 import { moduleExtensionViews } from "../app/module-extension-views.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
 import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
@@ -208,15 +209,18 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.match(html, /搜索模块与知识内容/);
   assert.match(html, /同一份知识，支持三种阅读深度/);
   assert.match(html, /不要按章节学，按任务走/);
-  assert.match(html, /href="\/knowledge-graph"[^>]*>关系图谱<\/a>/);
+  assert.match(html, /href="\/knowledge-graph"[^>]*>动态探索<\/a>/);
   assert.match(html, /查看模块之间的关系/);
-  assert.match(html, /进入全局知识关系图/);
+  assert.match(html, /进入动态知识探索/);
+  assert.doesNotMatch(html, /什么时候看这个模块：/);
   assert.doesNotMatch(html, /阅读 RAG 模块/);
   assert.equal((html.match(/class="moduleResult"/g) ?? []).length, publishedModules.length);
 
   for (const publishedModule of publishedModules) {
     assert.match(html, new RegExp(`<a(?=[^>]*class="moduleResult")(?=[^>]*href="${escapeRegExp(publishedModule.path)}")[^>]*>`));
   }
+
+  for (const discovery of Object.values(moduleDiscovery)) assert.match(html, new RegExp(escapeRegExp(discovery.cue)));
 
   for (const knowledgeModule of moduleList) {
     assert.match(html, new RegExp(`href="${escapeRegExp(knowledgeModule.href)}"`), `首页缺少模块入口：${knowledgeModule.zh}`);
@@ -324,7 +328,7 @@ test("glossary is complete, searchable, grouped, and linked back to published mo
   for (const termId of glossaryTermIds) assert.match(html, new RegExp(`id="term-${escapeRegExp(termId)}"`));
 });
 
-test("standalone knowledge graph derives every node and relation from stable registries", async () => {
+test("public dynamic knowledge graph and backend coverage gates derive from stable registries", async () => {
   const moduleIds = new Set(moduleList.map((module) => module.slug));
   const termIds = new Set(Object.keys(terminology));
   const allowedExplicitTypes = new Set(["prerequisite", "component", "control", "metric"]);
@@ -371,40 +375,26 @@ test("standalone knowledge graph derives every node and relation from stable reg
   }
 
   const html = await renderHtml("/knowledge-graph");
-  assert.match(html, /全局知识关系图/);
-  assert.match(html, /从模块进入知识点，沿明确关系理解原理、机制与边界/);
+  assert.match(html, /动态知识关系图/);
+  assert.match(html, /从模块进入知识点，沿明确关系动态探索原理、机制与边界/);
   assert.match(html, new RegExp(`${layers.length}[\\s\\S]{0,120}层知识`));
   assert.match(html, new RegExp(`${moduleList.length}[\\s\\S]{0,120}个模块`));
   assert.match(html, new RegExp(`${glossaryTermIds.length}[\\s\\S]{0,120}个术语`));
-  assert.match(html, /搜索模块或术语，例如：RAG、KV Cache、身份与授权/);
-  assert.match(html, /全局总览/);
-  assert.match(html, new RegExp(`${moduleList.length}[\\s\\S]{0,100}个正式模块`));
-  assert.match(html, /关联术语/);
-  assert.match(html, /主要讲解术语/);
-  assert.match(html, /覆盖门禁/);
-  assert.match(html, /共享术语，不表示学习先后顺序或强制关系/);
-  assert.match(html, /RAG · 检索增强生成|检索增强生成/);
-  assert.match(html, /主要讲解/);
-  assert.match(html, /相关使用/);
-  assert.match(html, /href="\/knowledge-graph\/explore"[^>]*>动态探索<\/a>/);
-  const graphExplorerSource = await readFile(new URL("../app/knowledge-graph/knowledge-graph-explorer.tsx", import.meta.url), "utf8");
-  assert.match(graphExplorerSource, /全部 \{modules\.length\} 个模块均达到完整覆盖门禁/);
-  assert.match(graphExplorerSource, /关系解释/);
+  assert.match(html, /搜索模块或术语/);
+  assert.match(html, /动态图谱|动态知识星图|聚焦显示/);
+  assert.match(html, /图中只展示已经整理的明确关系，不表示所有可能联系/);
+  assert.match(html, /aria-label="动态探索导航"/);
+  assert.match(html, /href="\/#available-modules"[^>]*>查找模块<\/a>/);
+  assert.match(html, /href="\/modules\/rag"[^>]*>进入模块/);
+  assert.match(html, /moduleTitleLead[^>]*>RAG<\/span><span[^>]*moduleTitleDetail[^>]*>检索增强生成/);
+  assert.doesNotMatch(html, /全局总览|覆盖门禁|关系总览|切换到关系总览/);
+  const graphExplorerSource = await readFile(new URL("../app/knowledge-graph/design-2/knowledge-constellation.tsx", import.meta.url), "utf8");
+  assert.match(graphExplorerSource, /splitModuleTitle/);
+  assert.match(graphExplorerSource, /className=\{styles\.focusAction\}/);
   assert.match(graphExplorerSource, /进入模块/);
-  assert.match(graphExplorerSource, /在术语库查看/);
   assert.doesNotMatch(html, /来源节点|客户问题节点|图数据库|GraphRAG/);
   assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
   assert.doesNotMatch(html, /\/(?:Users|home)\//);
-
-  const animatedHtml = await renderHtml("/knowledge-graph/explore?node=term:kv-cache");
-  assert.match(animatedHtml, /动态知识关系图/);
-  assert.match(animatedHtml, /动态图谱|动态知识星图|聚焦显示/);
-  assert.match(animatedHtml, /图中只展示已经整理的明确关系，不表示所有可能联系/);
-  assert.match(animatedHtml, /关系总览/);
-  assert.match(animatedHtml, /切换到关系总览/);
-  assert.doesNotMatch(animatedHtml, /Design 1|Design 2/);
-  assert.doesNotMatch(animatedHtml, /运行中|实时更新|来源节点|客户问题节点|图数据库|GraphRAG/);
-  assert.doesNotMatch(animatedHtml, /\b(?:Login|Sign in)\b|type="password"/i);
 });
 
 test("evidence cards keep facts, findings, boundaries, and sources readable", async () => {
@@ -770,7 +760,7 @@ test("every published module passes the shared reader, terminology, and depth co
 });
 
 test("reader pages omit internal build notes and use the shared related-module language", async () => {
-  for (const path of ["/", ...publishedModules.map((module) => module.path), "/glossary", "/questions", "/references", "/knowledge-graph", "/knowledge-graph/explore"]) {
+  for (const path of ["/", ...publishedModules.map((module) => module.path), "/glossary", "/questions", "/references", "/knowledge-graph"]) {
     const html = await renderHtml(path);
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
@@ -844,7 +834,6 @@ test("every public knowledge route is anonymously readable and directly shareabl
     "/questions",
     "/references",
     "/knowledge-graph",
-    "/knowledge-graph/explore",
     ...moduleList.map((knowledgeModule) => knowledgeModule.href),
     ...Object.keys(legacyModuleAliases).map((slug) => `/modules/${slug}`),
   ];
@@ -859,10 +848,14 @@ test("every public knowledge route is anonymously readable and directly shareabl
   }
 });
 
-test("legacy dynamic knowledge graph route redirects to the semantic explore route", async () => {
-  const response = await render("/knowledge-graph/design-2?node=term:kv-cache");
-  assert.equal(response.status, 308);
-  assert.equal(response.headers.get("location"), "http://localhost/knowledge-graph/explore");
+test("legacy knowledge graph routes redirect to the single public explorer and preserve focus", async () => {
+  for (const path of ["/knowledge-graph/explore?node=term:kv-cache", "/knowledge-graph/design-2?node=term:kv-cache"]) {
+    const response = await render(path);
+    assert.equal(response.status, 308);
+    const location = new URL(response.headers.get("location"), "http://localhost");
+    assert.equal(location.pathname, "/knowledge-graph");
+    assert.equal(location.searchParams.get("node"), "term:kv-cache");
+  }
 });
 
 test("knowledge-map registry supports changing layer and module counts without duplicate routes", () => {
