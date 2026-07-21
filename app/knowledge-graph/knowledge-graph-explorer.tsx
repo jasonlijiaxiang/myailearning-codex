@@ -11,6 +11,8 @@ export type GraphModule = { id: string; zh: string; en: string; href: string; la
 export type GraphTerm = { id: string; zh: string; en: string; abbr?: string; description: string; moduleIds: string[]; primaryModuleId: string };
 export type GraphRelation = { from: string; to: string; type: string; explanation: string };
 export type GraphRelationType = { label: string; description: string };
+export type GraphModuleCoverage = { moduleId: string; termCount: number; primaryTermCount: number };
+export type GraphOverviewLink = { id: string; from: string; to: string; termIds: string[]; sharedTermCount: number };
 
 type Focus = { kind: "module" | "term"; id: string };
 type Neighbor = {
@@ -50,13 +52,22 @@ export function KnowledgeGraphExplorer({
   terms,
   relations,
   relationTypes,
+  moduleCoverage,
+  overviewLinks,
+  overviewMinSharedTerms,
+  lowCoverageTermThreshold,
 }: {
   layers: GraphLayer[];
   modules: GraphModule[];
   terms: GraphTerm[];
   relations: GraphRelation[];
   relationTypes: Record<string, GraphRelationType>;
+  moduleCoverage: GraphModuleCoverage[];
+  overviewLinks: GraphOverviewLink[];
+  overviewMinSharedTerms: number;
+  lowCoverageTermThreshold: number;
 }) {
+  const [viewMode, setViewMode] = useState<"overview" | "detail">("overview");
   const [focus, setFocus] = useState<Focus>({ kind: "module", id: "rag" });
   const [query, setQuery] = useState("");
   const [moduleRelationMode, setModuleRelationMode] = useState<"all" | "primary">("all");
@@ -65,6 +76,20 @@ export function KnowledgeGraphExplorer({
 
   const moduleById = useMemo(() => new Map(modules.map((module) => [module.id, module])), [modules]);
   const termById = useMemo(() => new Map(terms.map((term) => [term.id, term])), [terms]);
+  const coverageByModule = useMemo(() => new Map(moduleCoverage.map((coverage) => [coverage.moduleId, coverage])), [moduleCoverage]);
+  const overviewGeometry = useMemo(() => {
+    const nodes = layers.flatMap((layer, layerIndex) => layer.moduleIds.map((moduleId, moduleIndex) => ({
+      moduleId,
+      x: 118 + ((moduleIndex + .5) * 864 / layer.moduleIds.length),
+      y: 61 + layerIndex * 100,
+    })));
+    return { nodes, pointByModule: new Map(nodes.map((node) => [node.moduleId, node])) };
+  }, [layers]);
+  const lowCoverageModules = useMemo(() => moduleCoverage
+    .filter((coverage) => coverage.termCount <= lowCoverageTermThreshold)
+    .map((coverage) => ({ ...coverage, module: moduleById.get(coverage.moduleId) }))
+    .filter((entry) => entry.module), [lowCoverageTermThreshold, moduleById, moduleCoverage]);
+  const overviewCanvasHeight = 20 + layers.length * 100;
 
   const searchResults = useMemo(() => {
     if (!deferredQuery) return [];
@@ -156,6 +181,13 @@ export function KnowledgeGraphExplorer({
 
   function selectFocus(next: Focus) {
     setFocus(next);
+    setViewMode("detail");
+    setQuery("");
+    setMobileRailOpen(false);
+  }
+
+  function showOverview() {
+    setViewMode("overview");
     setQuery("");
     setMobileRailOpen(false);
   }
@@ -188,8 +220,9 @@ export function KnowledgeGraphExplorer({
         </div>
 
         <div className={styles.modeControls} aria-label="模块关系显示范围">
-          <button type="button" className={moduleRelationMode === "all" ? styles.activeMode : ""} onClick={() => setModuleRelationMode("all")} disabled={focus.kind !== "module"}>全部关联术语</button>
-          <button type="button" className={moduleRelationMode === "primary" ? styles.activeMode : ""} onClick={() => setModuleRelationMode("primary")} disabled={focus.kind !== "module"}>只看主要讲解</button>
+          <button type="button" className={viewMode === "overview" ? styles.activeMode : ""} onClick={showOverview} aria-pressed={viewMode === "overview"}>全局总览</button>
+          <button type="button" className={viewMode === "detail" && moduleRelationMode === "all" ? styles.activeMode : ""} onClick={() => setModuleRelationMode("all")} disabled={viewMode === "overview" || focus.kind !== "module"}>全部关联术语</button>
+          <button type="button" className={viewMode === "detail" && moduleRelationMode === "primary" ? styles.activeMode : ""} onClick={() => setModuleRelationMode("primary")} disabled={viewMode === "overview" || focus.kind !== "module"}>只看主要讲解</button>
         </div>
 
         <div className={styles.legend} aria-label="关系类型图例">
@@ -200,7 +233,7 @@ export function KnowledgeGraphExplorer({
       </div>
 
       <button type="button" className={styles.mobileRailToggle} aria-expanded={mobileRailOpen} onClick={() => setMobileRailOpen((value) => !value)}>
-        <span>选择知识层与模块</span><strong>{selectedModule?.zh ?? moduleById.get(selectedTerm?.primaryModuleId ?? "")?.zh}</strong>
+        <span>选择知识层与模块</span><strong>{viewMode === "overview" ? `全部 ${modules.length} 个模块` : selectedModule?.zh ?? moduleById.get(selectedTerm?.primaryModuleId ?? "")?.zh}</strong>
         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7 5 5 5-5" /></svg>
       </button>
 
@@ -214,7 +247,7 @@ export function KnowledgeGraphExplorer({
                 {layer.moduleIds.map((moduleId) => {
                   const knowledgeModule = moduleById.get(moduleId);
                   if (!knowledgeModule) return null;
-                  const active = focus.kind === "module" && focus.id === knowledgeModule.id;
+                  const active = viewMode === "detail" && focus.kind === "module" && focus.id === knowledgeModule.id;
                   return (
                     <li key={knowledgeModule.id}>
                       <button type="button" className={active ? styles.activeModule : ""} onClick={() => selectFocus({ kind: "module", id: knowledgeModule.id })} aria-pressed={active}>
@@ -229,11 +262,52 @@ export function KnowledgeGraphExplorer({
         </aside>
 
         <div className={styles.graphRegion}>
-          <header className={styles.graphStatus}>
-            <div><span>{focus.kind === "module" ? "当前模块" : "当前术语"}</span><strong>{selectedTitle}</strong></div>
-            <p aria-live="polite">显示 {neighbors.length} 条一跳关系</p>
-          </header>
-          <div className={styles.canvas} style={{ "--canvas-height": `${canvasHeight}px`, "--center-y": `${centerY}px` } as CSSProperties}>
+          {viewMode === "overview" ? (
+            <>
+              <header className={styles.graphStatus}>
+                <div><span>全局总览</span><strong>{modules.length} 个正式模块</strong></div>
+                <p>{overviewLinks.length} 条共享术语主干</p>
+              </header>
+              <div className={styles.overviewCanvas} style={{ "--overview-height": `${overviewCanvasHeight}px` } as CSSProperties}>
+                <svg className={styles.overviewConnections} viewBox={`0 0 1000 ${overviewCanvasHeight}`} role="img" aria-label={`${modules.length} 个模块之间的共享术语关系`}>
+                  <title>{`${modules.length} 个模块全局关系总览`}</title>
+                  <desc>{`连线表示两个模块共享至少 ${overviewMinSharedTerms} 个已登记术语。`}</desc>
+                  {overviewLinks.map((link) => {
+                    const from = overviewGeometry.pointByModule.get(link.from);
+                    const to = overviewGeometry.pointByModule.get(link.to);
+                    if (!from || !to) return null;
+                    return <line key={link.id} x1={from.x} y1={from.y} x2={to.x} y2={to.y} style={{ "--shared-count": Math.min(link.sharedTermCount, 6) } as CSSProperties} />;
+                  })}
+                </svg>
+                {layers.map((layer, layerIndex) => (
+                  <section className={styles.overviewLayer} key={layer.no} style={{ "--layer-row": layerIndex, "--module-count": layer.moduleIds.length } as CSSProperties} aria-labelledby={`overview-layer-${layer.no}`}>
+                    <header><span>{layer.no}</span><div><strong id={`overview-layer-${layer.no}`}>{layer.name}</strong><small>{layer.en}</small></div></header>
+                    <div className={styles.overviewModuleGrid}>
+                      {layer.moduleIds.map((moduleId) => {
+                        const knowledgeModule = moduleById.get(moduleId);
+                        const coverage = coverageByModule.get(moduleId);
+                        if (!knowledgeModule || !coverage) return null;
+                        return (
+                          <button type="button" key={moduleId} onClick={() => selectFocus({ kind: "module", id: moduleId })} aria-label={`${knowledgeModule.zh}，${coverage.termCount} 个关联术语，${coverage.primaryTermCount} 个主要讲解术语`}>
+                            <strong>{knowledgeModule.zh}</strong>
+                            <span>{knowledgeModule.en}</span>
+                            <small>{coverage.termCount} 关联术语 · {coverage.primaryTermCount} 主要讲解</small>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+                ))}
+              </div>
+              <p className={styles.overviewBoundary}>总览连线只表示两个模块共享至少 {overviewMinSharedTerms} 个已登记术语；点击任一模块查看完整一跳关系。</p>
+            </>
+          ) : (
+            <>
+              <header className={styles.graphStatus}>
+                <div><span>{focus.kind === "module" ? "当前模块" : "当前术语"}</span><strong>{selectedTitle}</strong></div>
+                <p aria-live="polite">显示 {neighbors.length} 条一跳关系</p>
+              </header>
+              <div className={styles.canvas} style={{ "--canvas-height": `${canvasHeight}px`, "--center-y": `${centerY}px` } as CSSProperties}>
             <svg className={styles.connectors} viewBox={`0 0 1000 ${canvasHeight}`} preserveAspectRatio="none" aria-hidden="true">
               {positions.map(({ neighbor, side, y }) => (
                 <line
@@ -270,9 +344,26 @@ export function KnowledgeGraphExplorer({
               ))}
             </div>
           </div>
+            </>
+          )}
         </div>
 
         <aside className={styles.inspector} aria-label="选中节点详情">
+          {viewMode === "overview" ? (
+            <>
+              <header><span>全局视图</span><h2>{modules.length} 模块总览</h2><p>{layers.length} 个知识层</p></header>
+              <section className={styles.definition}><h3>当前覆盖</h3><p>{terms.length} 个术语已进入图谱；{overviewLinks.length} 条连线构成共享术语主干。模块卡片同时显示关联术语和主要讲解术语的准确数量。</p></section>
+              <section className={styles.context}><h3>连线边界</h3><p>连线表示共享术语，不表示学习先后顺序或强制关系，也不代表全部可能联系。</p></section>
+              <section className={styles.coverageWatch}>
+                <h3>当前关联术语较少</h3>
+                <p>以下模块目前登记了 {lowCoverageTermThreshold} 个及以下关联术语，可作为后续补充关系时的优先检查对象。</p>
+                <ul>{lowCoverageModules.map((entry) => (
+                  <li key={entry.moduleId}><button type="button" onClick={() => selectFocus({ kind: "module", id: entry.moduleId })}><span>{entry.module?.zh}</span><strong>{entry.termCount}</strong></button></li>
+                ))}</ul>
+              </section>
+            </>
+          ) : (
+            <>
           <header><span>选中{focus.kind === "module" ? "模块" : "术语"}</span><h2>{selectedTitle}</h2><p>{selectedSubtitle}</p></header>
           <section className={styles.definition}><h3>简介</h3><p>{selectedDescription}</p></section>
           {focus.kind === "module" ? (
@@ -302,6 +393,8 @@ export function KnowledgeGraphExplorer({
             {selectedTerm ? <Link className={styles.primaryAction} href={moduleById.get(selectedTerm.primaryModuleId)?.href ?? "/"}>进入主要模块 <ArrowIcon /></Link> : null}
             <Link href={`/glossary#term-${selectedTerm?.id ?? selectedModule?.id}`}>在术语库查看 <ArrowIcon /></Link>
           </nav>
+            </>
+          )}
         </aside>
       </div>
     </section>

@@ -6,7 +6,7 @@ import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs"
 import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
-import { graphHealth, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
+import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
@@ -329,6 +329,15 @@ test("standalone knowledge graph derives every node and relation from stable reg
   assert.ok(graphScalePolicy.maxActiveEdges >= graphScalePolicy.maxActiveNodes - 1, "动态图谱边数量上限必须覆盖一跳节点");
   assert.equal(graphHealth.isolatedTermIds.length, 0, "术语不得成为孤立节点");
   assert.ok(graphHealth.maximumDegree > 0, "图谱健康检查必须计算节点度数");
+  assert.equal(graphModuleCoverage.length, moduleList.length, "全局图谱必须为每个正式模块计算覆盖度");
+  assert.equal(graphModuleCoverage.filter((coverage) => coverage.termCount === 0).length, 0, "每个正式模块都必须拥有可下钻的关联术语");
+  assert.equal(graphModuleCoverage.every((coverage) => coverage.primaryTermCount >= 0 && coverage.primaryTermCount <= coverage.termCount), true, "主要讲解术语数量必须是关联术语的有效子集");
+  assert.ok(graphOverviewLinks.length > 0 && graphOverviewLinks.length <= graphOverviewPolicy.maxConnections, "全局总览必须显示受控数量的模块关系");
+  assert.ok(Math.max(...layers.map((layer) => layer.modules.length)) <= graphOverviewPolicy.maxModulesPerLayerRow, "新增模块不得在总览单层中静默挤压为不可读节点");
+  for (const link of graphOverviewLinks) {
+    assert.ok(link.sharedTermCount >= graphOverviewPolicy.minSharedTerms, "总览关系必须达到共享术语门槛");
+    assert.equal(link.termIds.length, link.sharedTermCount, "总览关系数量必须来自真实共享术语");
+  }
 
   for (const typeId of ["primary-owner", "contextual-use", ...allowedExplicitTypes]) {
     assert.ok(knowledgeRelationTypes[typeId], `知识图谱缺少关系类型说明：${typeId}`);
@@ -341,12 +350,18 @@ test("standalone knowledge graph derives every node and relation from stable reg
   assert.match(html, new RegExp(`${moduleList.length}[\\s\\S]{0,120}个模块`));
   assert.match(html, new RegExp(`${glossaryTermIds.length}[\\s\\S]{0,120}个术语`));
   assert.match(html, /搜索模块或术语，例如：RAG、KV Cache、身份与授权/);
+  assert.match(html, /全局总览/);
+  assert.match(html, new RegExp(`${moduleList.length}[\\s\\S]{0,100}个正式模块`));
+  assert.match(html, /关联术语/);
+  assert.match(html, /主要讲解术语/);
+  assert.match(html, /共享术语，不表示学习先后顺序或强制关系/);
   assert.match(html, /RAG · 检索增强生成|检索增强生成/);
   assert.match(html, /主要讲解/);
   assert.match(html, /相关使用/);
-  assert.match(html, /关系解释/);
-  assert.match(html, /进入模块/);
-  assert.match(html, /在术语库查看/);
+  const graphExplorerSource = await readFile(new URL("../app/knowledge-graph/knowledge-graph-explorer.tsx", import.meta.url), "utf8");
+  assert.match(graphExplorerSource, /关系解释/);
+  assert.match(graphExplorerSource, /进入模块/);
+  assert.match(graphExplorerSource, /在术语库查看/);
   assert.doesNotMatch(html, /来源节点|客户问题节点|图数据库|GraphRAG/);
   assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
   assert.doesNotMatch(html, /\/(?:Users|home)\//);

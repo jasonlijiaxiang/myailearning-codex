@@ -39,6 +39,46 @@ export const graphRelationTypes = Object.freeze(Object.fromEntries(
   Object.entries(knowledgeRelationTypes).map(([id, value]) => [id, Object.freeze({ ...value })]),
 ));
 
+export const graphModuleCoverage = Object.freeze(graphModules.map((module) => {
+  const relatedTerms = graphTerms.filter((term) => term.moduleIds.includes(module.id) && term.id !== module.id);
+  return Object.freeze({
+    moduleId: module.id,
+    termCount: relatedTerms.length,
+    primaryTermCount: relatedTerms.filter((term) => term.primaryModuleId === module.id).length,
+  });
+}));
+
+export const graphOverviewPolicy = Object.freeze({
+  minSharedTerms: 2,
+  maxConnections: 24,
+  lowCoverageTermThreshold: 4,
+  maxModulesPerLayerRow: 5,
+});
+
+export const graphOverviewLinks = Object.freeze((() => {
+  const links = [];
+  for (let fromIndex = 0; fromIndex < graphModules.length; fromIndex += 1) {
+    for (let toIndex = fromIndex + 1; toIndex < graphModules.length; toIndex += 1) {
+      const from = graphModules[fromIndex];
+      const to = graphModules[toIndex];
+      const termIds = graphTerms
+        .filter((term) => term.moduleIds.includes(from.id) && term.moduleIds.includes(to.id))
+        .map((term) => term.id);
+      if (termIds.length < graphOverviewPolicy.minSharedTerms) continue;
+      links.push(Object.freeze({
+        id: `${from.id}:shared-terms:${to.id}`,
+        from: from.id,
+        to: to.id,
+        termIds: Object.freeze(termIds),
+        sharedTermCount: termIds.length,
+      }));
+    }
+  }
+  return links
+    .sort((left, right) => right.sharedTermCount - left.sharedTermCount || left.id.localeCompare(right.id))
+    .slice(0, graphOverviewPolicy.maxConnections);
+})());
+
 export const graphScalePolicy = Object.freeze({
   maxActiveNodes: 24,
   maxActiveEdges: 32,

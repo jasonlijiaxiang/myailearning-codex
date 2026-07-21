@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ReadingProgress } from "../fieldbook-interactions";
-import { KnowledgeGraphExplorer, type GraphLayer, type GraphModule, type GraphRelation, type GraphTerm, type GraphRelationType } from "./knowledge-graph-explorer";
-import { graphLayers, graphModules, graphRelations, graphRelationTypes, graphTerms } from "./graph-data.mjs";
+import { KnowledgeGraphExplorer, type GraphLayer, type GraphModule, type GraphModuleCoverage, type GraphOverviewLink, type GraphRelation, type GraphTerm, type GraphRelationType } from "./knowledge-graph-explorer";
+import { graphLayers, graphModuleCoverage, graphModules, graphOverviewLinks, graphOverviewPolicy, graphRelations, graphRelationTypes, graphTerms } from "./graph-data.mjs";
 import styles from "./knowledge-graph.module.css";
 
 export const metadata: Metadata = {
@@ -46,13 +46,17 @@ export default function KnowledgeGraphPage() {
         terms={graphTerms as unknown as GraphTerm[]}
         relations={graphRelations as unknown as GraphRelation[]}
         relationTypes={graphRelationTypes as unknown as Record<string, GraphRelationType>}
+        moduleCoverage={graphModuleCoverage as unknown as GraphModuleCoverage[]}
+        overviewLinks={graphOverviewLinks as unknown as GraphOverviewLink[]}
+        overviewMinSharedTerms={graphOverviewPolicy.minSharedTerms}
+        lowCoverageTermThreshold={graphOverviewPolicy.lowCoverageTermThreshold}
       />
 
       <section className={styles.howTo} aria-labelledby="knowledge-graph-how-to-title">
         <h2 id="knowledge-graph-how-to-title">怎样读这张图</h2>
         <ol>
-          <li><span>1</span><div><strong>先选模块</strong><p>从七层知识结构中选择当前要理解的模块。</p></div></li>
-          <li><span>2</span><div><strong>再看知识点</strong><p>区分主要讲解与跨模块使用，不把所有连线理解成依赖。</p></div></li>
+          <li><span>1</span><div><strong>先看全局</strong><p>从七层知识结构确认全部模块，以及由共享术语形成的知识主干。</p></div></li>
+          <li><span>2</span><div><strong>再选模块</strong><p>进入一跳术语视图，区分主要讲解与跨模块使用。</p></div></li>
           <li><span>3</span><div><strong>最后沿关系继续学习</strong><p>点击术语查看机制、前置、控制或指标关系，再回到正式正文。</p></div></li>
         </ol>
       </section>

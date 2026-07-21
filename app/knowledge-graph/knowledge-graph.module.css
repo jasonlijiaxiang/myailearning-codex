@@ -246,6 +246,66 @@
 .graphStatus strong { overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
 .graphStatus p { flex: 0 0 auto; margin: 0; color: var(--muted); font-size: 11px; }
 
+.overviewCanvas {
+  position: relative;
+  height: var(--overview-height);
+  overflow: hidden;
+  background-image: linear-gradient(rgba(203, 210, 208, .28) 1px, transparent 1px), linear-gradient(90deg, rgba(203, 210, 208, .28) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.overviewConnections { position: absolute; z-index: 1; inset: 0; width: 100%; height: var(--overview-height); pointer-events: none; }
+.overviewConnections line {
+  stroke: var(--blue);
+  stroke-width: calc(1px + var(--shared-count) * .34px);
+  stroke-linecap: round;
+  opacity: calc(.13 + var(--shared-count) * .035);
+  vector-effect: non-scaling-stroke;
+}
+
+.overviewLayer {
+  position: absolute;
+  z-index: 2;
+  top: calc(18px + var(--layer-row) * 100px);
+  left: 0;
+  right: 0;
+  min-height: 86px;
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: center;
+  border-top: 1px solid rgba(203, 210, 208, .68);
+}
+
+.overviewLayer > header { min-width: 0; padding: 0 10px 0 14px; display: grid; grid-template-columns: 25px minmax(0, 1fr); gap: 7px; align-items: center; }
+.overviewLayer > header > span { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; background: var(--ink); color: var(--white); font: 9px var(--font-geist-mono), monospace; }
+.overviewLayer > header div { min-width: 0; }
+.overviewLayer > header strong { display: block; font-size: 10px; line-height: 1.3; }
+.overviewLayer > header small { display: block; margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 8px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+
+.overviewModuleGrid { min-width: 0; padding: 8px 10px 8px 8px; display: grid; grid-template-columns: repeat(var(--module-count), minmax(0, 1fr)); gap: 8px; }
+.overviewModuleGrid button {
+  min-width: 0;
+  min-height: 70px;
+  padding: 9px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--blue);
+  background: rgba(255, 255, 255, .96);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: 0 5px 15px rgba(11, 27, 59, .05);
+  cursor: pointer;
+}
+
+.overviewModuleGrid button:hover,
+.overviewModuleGrid button:focus-visible { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(36, 98, 168, .12); }
+.overviewModuleGrid button strong { overflow-wrap: anywhere; font-size: 11px; line-height: 1.25; }
+.overviewModuleGrid button span { margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 8px; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.overviewModuleGrid button small { margin-top: 6px; color: var(--blue); font: 8px var(--font-geist-mono), monospace; line-height: 1.25; }
+.overviewBoundary { margin: 0; padding: 13px 18px; border-top: 1px solid var(--line); background: #f8faf7; color: var(--muted); font-size: 11px; line-height: 1.6; }
+
 .canvas {
   position: relative;
   min-height: var(--canvas-height);
@@ -341,6 +401,14 @@ line.edgeMetric { stroke-dasharray: 5 5; }
 .context p { margin: 0; display: flex; gap: 10px; align-items: center; color: var(--muted); font-size: 12px; }
 .context p strong { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--blue); color: var(--white); font: 10px var(--font-geist-mono), monospace; }
 .context button { padding: 0; border: 0; background: transparent; color: var(--blue); font: inherit; font-size: 13px; font-weight: 750; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.coverageWatch > p { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.coverageWatch ul { margin: 0; padding: 0; list-style: none; }
+.coverageWatch li + li { border-top: 1px solid var(--line); }
+.coverageWatch button { width: 100%; padding: 10px 0; display: flex; justify-content: space-between; gap: 12px; border: 0; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.coverageWatch button:hover span,
+.coverageWatch button:focus-visible span { color: var(--blue); text-decoration: underline; text-underline-offset: 4px; }
+.coverageWatch button span { font-size: 12px; font-weight: 700; }
+.coverageWatch button strong { color: var(--blue); font: 12px var(--font-geist-mono), monospace; }
 .relationSummary > div { display: flex; flex-wrap: wrap; gap: 7px; }
 .relationSummary span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 7px; border: 1px solid var(--line); background: var(--white); color: var(--muted); font-size: 9px; }
 .relationSummary span i { width: 12px; height: 3px; background: var(--relation); }
@@ -398,6 +466,12 @@ line.edgeMetric { stroke-dasharray: 5 5; }
   .workspace { grid-template-columns: 220px minmax(0, 1fr); }
   .neighborNode { width: 25%; }
   .focusNode { width: 28%; }
+  .overviewLayer { grid-template-columns: 92px minmax(0, 1fr); }
+  .overviewLayer > header { padding-left: 9px; grid-template-columns: 22px minmax(0, 1fr); gap: 5px; }
+  .overviewLayer > header small,
+  .overviewModuleGrid button span { display: none; }
+  .overviewModuleGrid { gap: 5px; padding-inline: 5px; }
+  .overviewModuleGrid button { padding-inline: 7px; }
   .howTo { grid-template-columns: 1fr; gap: 34px; }
 }
 
@@ -441,6 +515,19 @@ line.edgeMetric { stroke-dasharray: 5 5; }
   .graphRegion { border-right: 0; }
   .graphStatus { height: auto; min-height: 54px; align-items: flex-start; padding-block: 11px; }
   .graphStatus div { flex-direction: column; gap: 1px; }
+  .overviewCanvas { height: auto; padding: 8px 14px 22px; }
+  .overviewConnections { display: none; }
+  .overviewLayer { position: relative; top: auto; left: auto; right: auto; min-height: 0; display: block; padding: 16px 0; }
+  .overviewLayer > header { padding: 0 0 10px; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; }
+  .overviewLayer > header > span { width: 26px; height: 26px; }
+  .overviewLayer > header strong { font-size: 12px; }
+  .overviewLayer > header small { display: block; font-size: 9px; }
+  .overviewModuleGrid { padding: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .overviewModuleGrid button { min-height: 92px; padding: 12px; }
+  .overviewModuleGrid button strong { font-size: 13px; }
+  .overviewModuleGrid button span { display: block; white-space: normal; }
+  .overviewModuleGrid button small { font-size: 9px; }
+  .overviewBoundary { padding: 14px; font-size: 12px; }
   .canvas { min-height: 0; height: auto; padding: 26px 14px; background-size: 28px 28px; }
   .canvas::after,
   .connectors { display: none; }
