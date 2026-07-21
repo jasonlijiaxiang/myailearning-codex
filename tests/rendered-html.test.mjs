@@ -5,6 +5,7 @@ import test from "node:test";
 import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs";
 import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
+import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
@@ -295,6 +296,51 @@ test("glossary is complete, searchable, grouped, and linked back to published mo
     assert.match(html, new RegExp(escapeRegExp(group.zh)));
   }
   for (const termId of glossaryTermIds) assert.match(html, new RegExp(`id="term-${escapeRegExp(termId)}"`));
+});
+
+test("standalone knowledge graph derives every node and relation from stable registries", async () => {
+  const moduleIds = new Set(moduleList.map((module) => module.slug));
+  const termIds = new Set(Object.keys(terminology));
+  const allowedExplicitTypes = new Set(["prerequisite", "component", "control", "metric"]);
+  const relationKeys = new Set();
+
+  assert.equal(Object.keys(termPrimaryModules).length, termIds.size, "每个术语必须有且只有一个主要归属模块");
+  for (const [termId, primaryModuleId] of Object.entries(termPrimaryModules)) {
+    assert.ok(termIds.has(termId), `知识图谱主要归属引用未知术语：${termId}`);
+    assert.ok(moduleIds.has(primaryModuleId), `知识图谱主要归属引用未知模块：${termId} -> ${primaryModuleId}`);
+    assert.equal(terminology[termId].moduleSlugs[0], primaryModuleId, `术语第一模块必须是主要归属：${termId}`);
+  }
+
+  for (const relation of explicitTermRelations) {
+    assert.ok(termIds.has(relation.from), `知识图谱关系引用未知起点：${relation.from}`);
+    assert.ok(termIds.has(relation.to), `知识图谱关系引用未知终点：${relation.to}`);
+    assert.ok(allowedExplicitTypes.has(relation.type), `知识图谱显式关系类型非法：${relation.type}`);
+    assert.ok(relation.explanation.length >= 18, `知识图谱关系缺少可读解释：${relation.from} -> ${relation.to}`);
+    const key = `${relation.from}:${relation.type}:${relation.to}`;
+    assert.equal(relationKeys.has(key), false, `知识图谱关系重复：${key}`);
+    relationKeys.add(key);
+  }
+
+  for (const typeId of ["primary-owner", "contextual-use", ...allowedExplicitTypes]) {
+    assert.ok(knowledgeRelationTypes[typeId], `知识图谱缺少关系类型说明：${typeId}`);
+  }
+
+  const html = await renderHtml("/knowledge-graph");
+  assert.match(html, /全局知识关系图/);
+  assert.match(html, /从模块进入知识点，沿明确关系理解原理、机制与边界/);
+  assert.match(html, new RegExp(`${layers.length}[\\s\\S]{0,120}层知识`));
+  assert.match(html, new RegExp(`${moduleList.length}[\\s\\S]{0,120}个模块`));
+  assert.match(html, new RegExp(`${glossaryTermIds.length}[\\s\\S]{0,120}个术语`));
+  assert.match(html, /搜索模块或术语，例如：RAG、KV Cache、身份与授权/);
+  assert.match(html, /RAG · 检索增强生成|检索增强生成/);
+  assert.match(html, /主要讲解/);
+  assert.match(html, /相关使用/);
+  assert.match(html, /关系解释/);
+  assert.match(html, /进入模块/);
+  assert.match(html, /在术语库查看/);
+  assert.doesNotMatch(html, /来源节点|客户问题节点|图数据库|GraphRAG/);
+  assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
+  assert.doesNotMatch(html, /\/(?:Users|home)\//);
 });
 
 test("evidence cards keep facts, findings, boundaries, and sources readable", async () => {
@@ -660,7 +706,7 @@ test("every published module passes the shared reader, terminology, and depth co
 });
 
 test("reader pages omit internal build notes and use the shared related-module language", async () => {
-  for (const path of ["/", ...publishedModules.map((module) => module.path), "/glossary", "/questions", "/references"]) {
+  for (const path of ["/", ...publishedModules.map((module) => module.path), "/glossary", "/questions", "/references", "/knowledge-graph"]) {
     const html = await renderHtml(path);
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
@@ -733,6 +779,7 @@ test("every public knowledge route is anonymously readable and directly shareabl
     "/glossary",
     "/questions",
     "/references",
+    "/knowledge-graph",
     ...moduleList.map((knowledgeModule) => knowledgeModule.href),
     ...Object.keys(legacyModuleAliases).map((slug) => `/modules/${slug}`),
   ];

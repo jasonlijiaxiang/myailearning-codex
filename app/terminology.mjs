@@ -2,8 +2,9 @@
  * 全站专业术语的唯一内容源。
  *
  * 模块、首页和术语库只引用稳定 termId。每个公开术语都包含中文名、英文名、
- * 一句话说明和相关模块；缩写只在确有通行缩写时填写。未来英文版继续复用
- * termId 与模块关系，但英文解释需要独立撰写和专业校对。
+ * 一句话说明和相关模块；moduleSlugs 第一项是主要归属模块，后续项是相关使用模块；
+ * 缩写只在确有通行缩写时填写。未来英文版继续复用 termId 与模块关系，但英文
+ * 解释需要独立撰写和专业校对。
  */
 
 function term(zh, en, description, moduleSlugs, abbr) {
@@ -25,7 +26,7 @@ export const terminology = Object.freeze({
   attention: term("注意力机制", "Attention Mechanism", "让模型按当前查询为上下文中的不同位置分配权重并聚合信息。", ["llm"]),
   qkv: term("查询、键和值", "Query, Key and Value", "注意力计算中的三组表示：提出查询、参与匹配，并提供最终聚合的信息。", ["llm"], "Q / K / V"),
   "context-window": term("上下文窗口", "Context Window", "一次请求中模型能够接收和处理的 Token 范围；容量上限不等于所有位置都能被同样可靠地利用。", ["llm", "prompt-engineering", "llm-inference"]),
-  "kv-cache": term("键值缓存", "Key-Value Cache", "复用已生成 Token 的注意力键和值，减少后续解码的重复计算。", ["llm", "llm-inference", "ai-infra-compute"], "KV Cache"),
+  "kv-cache": term("键值缓存", "Key-Value Cache", "复用已生成 Token 的注意力键和值，减少后续解码的重复计算。", ["llm-inference", "llm", "ai-infra-compute"], "KV Cache"),
   moe: term("混合专家模型", "Mixture of Experts", "每个 Token 只激活部分专家网络，以较低单次计算换取更大的总参数容量。", ["llm", "model-landscape"], "MoE"),
   multimodal: term("多模态", "Multimodal AI", "联合处理文本、图片、音频、视频或文档结构，并保留不同模态之间的对应关系。", ["multimodal", "model-landscape"]),
 
