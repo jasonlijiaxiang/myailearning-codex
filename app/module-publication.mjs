@@ -6,13 +6,13 @@
  */
 const moduleSpecs = [
   ["solution-patterns", "solution-patterns-title", ["solution-patterns"], "brief"],
-  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing"], "brief", "2026-07-20"],
+  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-07-21"],
   ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-20"],
   ["ai-agent", "agent-title", ["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-07-20"],
   ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-07-21"],
-  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization"], "brief", "2026-07-20"],
+  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-07-21"],
   ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-07-21"],
-  ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability"], "brief", "2026-07-20"],
+  ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-07-21"],
   ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-20"],
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-07-21"],
   ["ai-ops", "ai-ops-title", ["ai-ops", "observability", "golden-set"], "brief", "2026-07-20"],
@@ -21,9 +21,9 @@ const moduleSpecs = [
   ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief", "2026-07-20"],
   ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-07-20"],
   ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-20"],
-  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval"], "brief"],
-  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability"], "brief", "2026-07-20"],
-  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache"], "brief"],
+  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-21"],
+  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-07-21"],
+  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache", "hbm", "scale-up", "scale-out"], "brief", "2026-07-21"],
 ];
 
 const moduleKnowledgeViews = Object.freeze({

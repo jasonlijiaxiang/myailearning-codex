@@ -34,6 +34,9 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "tpot", to: "llm-inference", type: "metric", explanation: "TPOT 衡量首个 Token 之后持续生成每个输出 Token 的速度。" }),
   Object.freeze({ from: "batching", to: "llm-inference", type: "component", explanation: "动态批处理把等待中的请求组合计算，以改善吞吐与硬件利用率。" }),
   Object.freeze({ from: "quantization", to: "llm-inference", type: "component", explanation: "量化降低权重或激活位宽，但必须同时验证精度与运行兼容性。" }),
+  Object.freeze({ from: "access-spectrum", to: "model-landscape", type: "component", explanation: "模型开放程度把 API 服务、开放权重与开源软件放入同一选型坐标。" }),
+  Object.freeze({ from: "capability-matrix", to: "model-landscape", type: "component", explanation: "能力矩阵按任务切片比较质量、时延、成本和风险，而不是依赖单一总分。" }),
+  Object.freeze({ from: "model-lifecycle", to: "model-landscape", type: "control", explanation: "生命周期治理用模型身份、回归、灰度与回滚控制选型后的持续变化。" }),
 
   // RAG 与数据工程
   Object.freeze({ from: "retrieval", to: "rag", type: "component", explanation: "RAG 先从外部知识源检索候选证据，再进入上下文组装与生成。" }),
@@ -50,6 +53,9 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "grounding", to: "generation", type: "control", explanation: "Grounding 要求生成结果受可追踪证据约束，并能说明依据或拒绝作答。" }),
   Object.freeze({ from: "acl", to: "retrieval", type: "control", explanation: "检索必须在当前身份的访问权限范围内返回候选证据。" }),
   Object.freeze({ from: "document-intelligence", to: "chunking", type: "prerequisite", explanation: "复杂文档要先恢复文字、版面与表格结构，才能形成可靠切块。" }),
+  Object.freeze({ from: "data-contract", to: "data-engineering", type: "control", explanation: "数据契约用负责人、语义、格式、更新、权限与质量要求约束数据链。" }),
+  Object.freeze({ from: "data-lineage", to: "deletion-propagation", type: "prerequisite", explanation: "只有先掌握完整数据血缘，删除或撤权才能覆盖全部派生资产。" }),
+  Object.freeze({ from: "deletion-propagation", to: "data-engineering", type: "component", explanation: "删除传播把源数据变更同步到缓存、切块、向量、索引与评估资产。" }),
 
   // Agent、协议与安全
   Object.freeze({ from: "perceive", to: "ai-agent", type: "component", explanation: "Agent 先读取目标、环境、身份和业务状态，形成决策输入。" }),
@@ -63,6 +69,8 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "identity-authorization", to: "tool-calling", type: "control", explanation: "工具调用必须由模型外的身份与业务授权决定能否真正执行。" }),
   Object.freeze({ from: "hitl", to: "act", type: "control", explanation: "人在回路为高风险、模糊或不可逆动作提供审批与接管。" }),
   Object.freeze({ from: "mcp", to: "tool-discovery", type: "component", explanation: "MCP 允许 AI 应用以统一方式发现工具及其参数能力。" }),
+  Object.freeze({ from: "mcp-protocol-roles", to: "mcp", type: "component", explanation: "Host、Client 与 Server 的角色分工构成 MCP 连接和能力聚合边界。" }),
+  Object.freeze({ from: "mcp-primitives", to: "mcp", type: "component", explanation: "Tools、Resources 与 Prompts 是 MCP Server 对外表达能力的服务原语。" }),
   Object.freeze({ from: "a2a", to: "agent-collaboration", type: "component", explanation: "A2A 用任务、状态与产物语义支持独立 Agent 之间的协作。" }),
   Object.freeze({ from: "guardrails", to: "generation", type: "control", explanation: "护栏可以检测、约束或阻断输出，但不能替代身份和业务授权。" }),
   Object.freeze({ from: "vision-transformer", to: "multimodal", type: "component", explanation: "视觉 Transformer 把图像 Patch 转换为 Token，并用 Transformer 处理视觉输入。" }),
@@ -74,6 +82,8 @@ const explicitTermRelationInputs = [
 
   // 评估、训练、平台与交付
   Object.freeze({ from: "golden-set", to: "evaluation", type: "component", explanation: "黄金评估集提供经确认的代表性样本，用于稳定回归比较。" }),
+  Object.freeze({ from: "evaluation-layers", to: "evaluation", type: "component", explanation: "模型、组件和业务结果三层评估共同解释局部质量与端到端成效。" }),
+  Object.freeze({ from: "llm-as-judge", to: "evaluation", type: "component", explanation: "模型裁判扩展语义评分规模，但需要人工校准、偏差测试和明确量表。" }),
   Object.freeze({ from: "observability", to: "ai-ops", type: "component", explanation: "可观测性用指标、日志与 Trace 解释系统发生了什么以及为什么。" }),
   Object.freeze({ from: "pretraining", to: "llm-training", type: "component", explanation: "预训练是模型从大规模通用数据学习基础能力的训练阶段。" }),
   Object.freeze({ from: "distributed-training", to: "llm-training", type: "component", explanation: "分布式训练把模型、数据或计算切分到多个加速器并处理同步与恢复。" }),
@@ -82,7 +92,12 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "qlora", to: "lora", type: "component", explanation: "QLoRA 在量化且冻结的基础模型上训练 LoRA Adapter。" }),
   Object.freeze({ from: "dpo", to: "fine-tuning", type: "component", explanation: "DPO 使用偏好对直接优化模型对获选回答的倾向。" }),
   Object.freeze({ from: "resource-scheduling", to: "ai-infra-platform", type: "component", explanation: "资源调度按优先级、拓扑、配额和作业需求分配稀缺算力。" }),
+  Object.freeze({ from: "gang-scheduling", to: "resource-scheduling", type: "component", explanation: "成组调度要求分布式作业所需资源同时满足后才启动。" }),
+  Object.freeze({ from: "goodput", to: "ai-infra-platform", type: "metric", explanation: "有效吞吐衡量满足质量与服务目标的完成工作量，而非设备忙碌率。" }),
   Object.freeze({ from: "heterogeneous-compute", to: "ai-infra-compute", type: "component", explanation: "异构算力让不同类型加速器承载适合的训练与推理负载。" }),
+  Object.freeze({ from: "hbm", to: "vram", type: "component", explanation: "高带宽内存提供承载权重、激活与缓存所需的容量和数据供给速度。" }),
+  Object.freeze({ from: "scale-up", to: "ai-infra-compute", type: "component", explanation: "节点内扩展通过高带宽互连提升多加速器协同计算能力。" }),
+  Object.freeze({ from: "scale-out", to: "ai-infra-compute", type: "component", explanation: "跨节点扩展依靠网络、RDMA、拥塞控制与集合通信扩大计算规模。" }),
   Object.freeze({ from: "model-routing", to: "ai-gateway", type: "component", explanation: "模型路由根据任务、质量、时延、成本与故障状态选择端点。" }),
   Object.freeze({ from: "rate-limiting", to: "ai-gateway", type: "control", explanation: "限流按身份、租户、模型或时间窗口约束请求速率，保护网关下游容量。" }),
   Object.freeze({ from: "semantic-cache", to: "ai-gateway", type: "component", explanation: "语义缓存复用语义相近请求的已验证响应，但必须遵守身份、权限与时效边界。" }),

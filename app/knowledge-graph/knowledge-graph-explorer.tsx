@@ -55,7 +55,8 @@ export function KnowledgeGraphExplorer({
   moduleCoverage,
   overviewLinks,
   overviewMinSharedTerms,
-  lowCoverageTermThreshold,
+  minimumRelatedTerms,
+  minimumPrimaryTerms,
 }: {
   layers: GraphLayer[];
   modules: GraphModule[];
@@ -65,7 +66,8 @@ export function KnowledgeGraphExplorer({
   moduleCoverage: GraphModuleCoverage[];
   overviewLinks: GraphOverviewLink[];
   overviewMinSharedTerms: number;
-  lowCoverageTermThreshold: number;
+  minimumRelatedTerms: number;
+  minimumPrimaryTerms: number;
 }) {
   const [viewMode, setViewMode] = useState<"overview" | "detail">("overview");
   const [focus, setFocus] = useState<Focus>({ kind: "module", id: "rag" });
@@ -85,10 +87,10 @@ export function KnowledgeGraphExplorer({
     })));
     return { nodes, pointByModule: new Map(nodes.map((node) => [node.moduleId, node])) };
   }, [layers]);
-  const lowCoverageModules = useMemo(() => moduleCoverage
-    .filter((coverage) => coverage.termCount <= lowCoverageTermThreshold)
+  const underModeledModules = useMemo(() => moduleCoverage
+    .filter((coverage) => coverage.termCount < minimumRelatedTerms || coverage.primaryTermCount < minimumPrimaryTerms)
     .map((coverage) => ({ ...coverage, module: moduleById.get(coverage.moduleId) }))
-    .filter((entry) => entry.module), [lowCoverageTermThreshold, moduleById, moduleCoverage]);
+    .filter((entry) => entry.module), [minimumPrimaryTerms, minimumRelatedTerms, moduleById, moduleCoverage]);
   const overviewCanvasHeight = 20 + layers.length * 100;
 
   const searchResults = useMemo(() => {
@@ -355,11 +357,17 @@ export function KnowledgeGraphExplorer({
               <section className={styles.definition}><h3>当前覆盖</h3><p>{terms.length} 个术语已进入图谱；{overviewLinks.length} 条连线构成共享术语主干。模块卡片同时显示关联术语和主要讲解术语的准确数量。</p></section>
               <section className={styles.context}><h3>连线边界</h3><p>连线表示共享术语，不表示学习先后顺序或强制关系，也不代表全部可能联系。</p></section>
               <section className={styles.coverageWatch}>
-                <h3>当前关联术语较少</h3>
-                <p>以下模块目前登记了 {lowCoverageTermThreshold} 个及以下关联术语，可作为后续补充关系时的优先检查对象。</p>
-                <ul>{lowCoverageModules.map((entry) => (
-                  <li key={entry.moduleId}><button type="button" onClick={() => selectFocus({ kind: "module", id: entry.moduleId })}><span>{entry.module?.zh}</span><strong>{entry.termCount}</strong></button></li>
-                ))}</ul>
+                <h3>覆盖门禁</h3>
+                {underModeledModules.length === 0 ? (
+                  <p>全部 {modules.length} 个模块均达到完整覆盖门禁：每个模块至少 {minimumRelatedTerms} 个关联术语、{minimumPrimaryTerms} 个主要讲解术语。</p>
+                ) : (
+                  <>
+                    <p>以下模块尚未达到每个模块至少 {minimumRelatedTerms} 个关联术语、{minimumPrimaryTerms} 个主要讲解术语的门禁。</p>
+                    <ul>{underModeledModules.map((entry) => (
+                      <li key={entry.moduleId}><button type="button" onClick={() => selectFocus({ kind: "module", id: entry.moduleId })}><span>{entry.module?.zh}</span><strong>{entry.termCount} / {entry.primaryTermCount}</strong></button></li>
+                    ))}</ul>
+                  </>
+                )}
               </section>
             </>
           ) : (

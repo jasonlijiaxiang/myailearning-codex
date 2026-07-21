@@ -49,7 +49,8 @@ export default function KnowledgeGraphPage() {
         moduleCoverage={graphModuleCoverage as unknown as GraphModuleCoverage[]}
         overviewLinks={graphOverviewLinks as unknown as GraphOverviewLink[]}
         overviewMinSharedTerms={graphOverviewPolicy.minSharedTerms}
-        lowCoverageTermThreshold={graphOverviewPolicy.lowCoverageTermThreshold}
+        minimumRelatedTerms={graphOverviewPolicy.minimumRelatedTerms}
+        minimumPrimaryTerms={graphOverviewPolicy.minimumPrimaryTerms}
       />
 
       <section className={styles.howTo} aria-labelledby="knowledge-graph-how-to-title">

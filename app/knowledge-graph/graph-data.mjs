@@ -51,7 +51,8 @@ export const graphModuleCoverage = Object.freeze(graphModules.map((module) => {
 export const graphOverviewPolicy = Object.freeze({
   minSharedTerms: 2,
   maxConnections: 24,
-  lowCoverageTermThreshold: 4,
+  minimumRelatedTerms: 5,
+  minimumPrimaryTerms: 2,
   maxModulesPerLayerRow: 5,
 });
 

@@ -19,6 +19,9 @@ function term(zh, en, description, moduleSlugs, abbr) {
 
 export const terminology = Object.freeze({
   "model-landscape": term("模型格局与选型", "Model Landscape", "从任务、风险、服务约束和生命周期共同判断模型组合，而不是只看单一排行榜。", ["model-landscape"]),
+  "access-spectrum": term("模型开放程度", "Model Access Spectrum", "区分 API 服务、开放权重与开源软件，判断可控范围、部署责任和替换成本。", ["model-landscape", "ai-infra-compute"]),
+  "capability-matrix": term("能力矩阵", "Capability Matrix", "按任务切片比较质量、时延、成本与风险，避免用单一总分替代场景选型。", ["model-landscape", "evaluation"]),
+  "model-lifecycle": term("模型生命周期治理", "Model Lifecycle Governance", "持续管理模型身份、版本、回归、灰度、回滚与可替换性。", ["model-landscape", "evaluation"]),
   llm: term("大语言模型", "Large Language Model", "从大量文本中学习语言分布，并按上下文逐 Token 生成输出的模型。", ["llm", "model-landscape"], "LLM"),
   token: term("词元", "Token", "模型处理文本时使用的离散单元；它可能是一个字、词的一部分、标点或特殊符号。", ["llm", "llm-inference", "multimodal"]),
   embedding: term("向量表示", "Embedding", "把文本、图片或其他对象映射为数值向量，使系统可以比较语义或特征距离。", ["llm", "rag", "data-engineering"]),
@@ -58,6 +61,9 @@ export const terminology = Object.freeze({
   grounding: term("有据生成", "Grounding", "让模型回答受可追踪事实、来源或系统状态约束，并能说明依据或拒绝作答。", ["rag", "evaluation"]),
   "data-engineering": term("AI 数据工程", "Data Engineering for AI", "把采集、解析、质量、权限、版本、索引和删除传播组织成可运营的数据链。", ["data-engineering", "rag"]),
   "document-intelligence": term("文档智能", "Document Intelligence", "从复杂文档中恢复文字、版面、表格和证据坐标，供搜索、抽取和复核使用。", ["multimodal", "data-engineering"]),
+  "data-contract": term("数据契约", "Data Contract", "明确数据负责人、语义、格式、更新、权限、保留与质量要求。", ["data-engineering", "rag"]),
+  "data-lineage": term("数据血缘", "Data Lineage", "追踪数据从来源到解析、切块、向量、索引和评估资产的完整去向。", ["data-engineering", "security"]),
+  "deletion-propagation": term("删除传播", "Deletion Propagation", "把删除或撤权同步到缓存、对象、切块、向量、索引和评估资产，并保留完成证据。", ["data-engineering", "security", "rag"]),
 
   "ai-agent": term("智能体", "AI Agent", "能围绕目标规划步骤、调用工具并根据结果继续行动的 AI 应用。", ["ai-agent"], "Agent"),
   perceive: term("感知", "Perceive", "读取用户目标、环境事实、身份和当前业务状态，形成下一步决策所需输入。", ["ai-agent"]),
@@ -70,6 +76,8 @@ export const terminology = Object.freeze({
   "tool-calling": term("工具调用", "Tool Calling", "模型按约定结构选择工具和参数，由应用决定是否授权、执行并回传结果。", ["ai-agent", "prompt-engineering", "mcp"]),
   api: term("应用程序编程接口", "Application Programming Interface", "软件系统之间以约定格式发起请求、返回结果的接口契约。", ["ai-agent", "ai-gateway", "mcp"], "API"),
   mcp: term("模型上下文协议", "Model Context Protocol", "让 AI 应用以统一方式发现并调用外部工具、资源和提示的开放协议。", ["mcp", "ai-agent", "a2a"], "MCP"),
+  "mcp-protocol-roles": term("MCP 协议角色", "MCP Protocol Roles", "区分 Host、Client 与 Server 的连接、能力聚合和服务暴露责任。", ["mcp"]),
+  "mcp-primitives": term("MCP 服务原语", "MCP Server Primitives", "用 Tools、Resources 与 Prompts 表达动作、上下文和提示，并标明副作用边界。", ["mcp", "ai-agent"]),
   a2a: term("智能体间协议", "Agent2Agent Protocol", "用于不同智能体之间发现能力、委托任务和交换任务状态的协议。", ["a2a", "ai-agent"], "A2A"),
   "agent-card": term("Agent Card 能力名片", "Agent Card", "声明智能体身份、服务端点、技能和交互能力，供协作方进行发现与采用判断。", ["a2a"]),
   "a2a-task": term("A2A 任务", "A2A Task", "承载一次跨智能体委托的状态化工作对象，包含生命周期、消息与结果。", ["a2a"]),
@@ -79,6 +87,8 @@ export const terminology = Object.freeze({
 
   evaluation: term("评估", "Evaluation", "用固定任务、样本、指标和失败归因判断模型或系统是否达到发布门槛。", ["evaluation"]),
   "golden-set": term("黄金评估集", "Golden Evaluation Set", "经过来源确认和人工裁决、用于稳定回归比较的代表性样本集合。", ["evaluation", "ai-ops"]),
+  "evaluation-layers": term("三层评估", "Three Evaluation Layers", "分别在模型、组件和业务结果层评估质量，避免局部指标替代端到端成效。", ["evaluation", "ai-ops"]),
+  "llm-as-judge": term("模型裁判", "LLM-as-a-Judge", "用模型扩展语义评分，但必须通过人工校准、偏差测试和明确量表控制误判。", ["evaluation"]),
   security: term("AI 安全", "AI Security", "控制不可信内容、数据、模型、工具和输出造成的泄漏、越权与业务伤害。", ["security"]),
   "ai-ops": term("AI 可观测与运营", "AI Operations", "把请求、模型、检索、工具、成本和业务结果关联起来，支持诊断、治理和持续改进。", ["ai-ops", "evaluation"]),
   observability: term("可观测性", "Observability", "通过指标、日志、Trace 和版本信息解释系统发生了什么以及为什么。", ["ai-ops", "evaluation", "ai-infra-platform", "multimodal", "a2a", "ai-gateway"]),
@@ -106,9 +116,14 @@ export const terminology = Object.freeze({
 
   "ai-infra-platform": term("AI 基础设施平台", "AI Infrastructure Platform", "统一管理算力、队列、镜像、作业、模型服务和租户治理的平台层。", ["ai-infra-platform"]),
   "resource-scheduling": term("资源调度", "Resource Scheduling", "按优先级、拓扑、配额和作业需求分配稀缺计算资源。", ["ai-infra-platform"]),
+  "gang-scheduling": term("成组调度", "Gang Scheduling", "只有在分布式作业所需资源能够同时满足时才启动，避免部分占用造成空等。", ["ai-infra-platform", "llm-training"]),
+  goodput: term("有效吞吐", "Goodput", "衡量满足质量和服务目标的已完成工作量，而不是只看设备忙碌率。", ["ai-infra-platform", "ai-ops"]),
   "ai-infra-compute": term("AI 算力基础设施", "AI Compute Infrastructure", "为训练与推理提供加速器、网络、存储、能源和散热能力的基础设施。", ["ai-infra-compute"]),
   "heterogeneous-compute": term("异构算力", "Heterogeneous Compute", "在不同型号或类型的 CPU、GPU 和其他加速器之间分配适合的工作负载。", ["ai-infra-compute", "ai-infra-platform"]),
   vram: term("显存", "Video Random Access Memory", "加速器上用于存放模型权重、激活、缓存和中间结果的高速内存。", ["ai-infra-compute", "llm-inference"], "VRAM"),
+  hbm: term("高带宽内存", "High Bandwidth Memory", "为模型权重、激活和缓存提供高容量与高带宽，影响单卡可承载规模和数据供给速度。", ["ai-infra-compute", "llm-inference"], "HBM"),
+  "scale-up": term("节点内扩展", "Scale-up", "通过节点内高带宽互连扩大多加速器协同能力，减少设备间通信瓶颈。", ["ai-infra-compute", "llm-training"]),
+  "scale-out": term("跨节点扩展", "Scale-out", "通过网络、RDMA、拥塞控制和集合通信把工作扩展到多个计算节点。", ["ai-infra-compute", "llm-training"]),
 
   "solution-patterns": term("场景解决方案", "Solution Patterns", "把业务目标拆成任务边界、能力组合、验收证据和运营责任的可复用方案结构。", ["solution-patterns"]),
   "ai-gateway": term("AI 网关", "AI Gateway", "在应用与模型或工具端点之间集中执行身份、路由、预算、安全和遥测策略。", ["ai-gateway"]),
@@ -123,13 +138,13 @@ export const terminology = Object.freeze({
 });
 
 export const glossaryGroups = Object.freeze([
-  Object.freeze({ id: "model-core", zh: "模型基础与能力", en: "Model Foundations", termIds: Object.freeze(["model-landscape", "llm", "token", "embedding", "transformer", "attention", "qkv", "context-window", "kv-cache", "moe", "multimodal", "vision-transformer", "ocr", "asr"]) }),
+  Object.freeze({ id: "model-core", zh: "模型基础与能力", en: "Model Foundations", termIds: Object.freeze(["model-landscape", "access-spectrum", "capability-matrix", "model-lifecycle", "llm", "token", "embedding", "transformer", "attention", "qkv", "context-window", "kv-cache", "moe", "multimodal", "vision-transformer", "ocr", "asr"]) }),
   Object.freeze({ id: "prompt-context", zh: "提示与上下文", en: "Prompt and Context", termIds: Object.freeze(["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"]) }),
-  Object.freeze({ id: "retrieval-data", zh: "检索与数据", en: "Retrieval and Data", termIds: Object.freeze(["rag", "retrieval", "augmentation", "generation", "chunking", "sparse-retrieval", "dense-retrieval", "hybrid-search", "vector-database", "bm25", "ann", "hnsw", "reranking", "rrf", "grounding", "data-engineering", "document-intelligence"]) }),
-  Object.freeze({ id: "agents-protocols", zh: "智能体与协议", en: "Agents and Protocols", termIds: Object.freeze(["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools", "tool-calling", "api", "mcp", "a2a", "agent-card", "a2a-task", "artifact", "tool-discovery", "agent-collaboration"]) }),
-  Object.freeze({ id: "evaluation-security", zh: "评估、安全与运营", en: "Evaluation, Security and Operations", termIds: Object.freeze(["evaluation", "golden-set", "security", "ai-ops", "observability", "guardrails", "identity-authorization", "iam", "acl", "dlp", "hitl"]) }),
+  Object.freeze({ id: "retrieval-data", zh: "检索与数据", en: "Retrieval and Data", termIds: Object.freeze(["rag", "retrieval", "augmentation", "generation", "chunking", "sparse-retrieval", "dense-retrieval", "hybrid-search", "vector-database", "bm25", "ann", "hnsw", "reranking", "rrf", "grounding", "data-engineering", "document-intelligence", "data-contract", "data-lineage", "deletion-propagation"]) }),
+  Object.freeze({ id: "agents-protocols", zh: "智能体与协议", en: "Agents and Protocols", termIds: Object.freeze(["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools", "tool-calling", "api", "mcp", "mcp-protocol-roles", "mcp-primitives", "a2a", "agent-card", "a2a-task", "artifact", "tool-discovery", "agent-collaboration"]) }),
+  Object.freeze({ id: "evaluation-security", zh: "评估、安全与运营", en: "Evaluation, Security and Operations", termIds: Object.freeze(["evaluation", "golden-set", "evaluation-layers", "llm-as-judge", "security", "ai-ops", "observability", "guardrails", "identity-authorization", "iam", "acl", "dlp", "hitl"]) }),
   Object.freeze({ id: "training-inference", zh: "训练与推理", en: "Training and Inference", termIds: Object.freeze(["llm-training", "pretraining", "distributed-training", "fine-tuning", "sft", "rlhf", "lora", "qlora", "dpo", "llm-inference", "batching", "quantization", "ttft", "tpot"]) }),
-  Object.freeze({ id: "infrastructure", zh: "平台与算力", en: "Platform and Compute", termIds: Object.freeze(["ai-infra-platform", "resource-scheduling", "ai-infra-compute", "heterogeneous-compute", "vram"]) }),
+  Object.freeze({ id: "infrastructure", zh: "平台与算力", en: "Platform and Compute", termIds: Object.freeze(["ai-infra-platform", "resource-scheduling", "gang-scheduling", "goodput", "ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out"]) }),
   Object.freeze({ id: "solution-delivery", zh: "方案与交付", en: "Solution and Delivery", termIds: Object.freeze(["solution-patterns", "ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "poc", "sla", "slo", "tco", "finops"]) }),
 ]);
 
