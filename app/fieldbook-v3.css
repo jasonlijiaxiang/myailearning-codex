@@ -171,6 +171,25 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .promiseGrid p { font-size: 16px; line-height: 1.7; }
 .mapSectionV2 { background: var(--white); }
 .mapSectionV2 .sectionIntro { padding-top: 78px; }
+.mapIntroGuide { display: grid; gap: 22px; }
+.mapIntroGuide > p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
+.mapGraphLink {
+  min-height: 72px;
+  padding: 14px 4px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  border-block: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  transition: padding .16s ease, background .16s ease;
+}
+.mapGraphLink:hover, .mapGraphLink:focus-visible { padding-inline: 14px; background: #f6faed; }
+.mapGraphLink span { min-width: 0; display: grid; gap: 4px; }
+.mapGraphLink strong { font-size: 15px; }
+.mapGraphLink small { color: var(--muted); font-size: 12px; }
+.mapGraphLink i { color: var(--blue); font-size: 22px; font-style: normal; }
 .layerStackV2 { gap: 0; padding-top: 0; }
 .layerStackV2 .layer { min-height: 132px; border-bottom: 0; box-shadow: none; }
 .layerStackV2 .layer:last-child { border-bottom: 1px solid var(--line); }

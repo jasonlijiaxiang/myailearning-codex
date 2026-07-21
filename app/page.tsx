@@ -94,7 +94,7 @@ export default function Home() {
             <Link href="/questions">问题查询</Link>
             <Link href="/glossary">术语库</Link>
             <a href="#available-modules">查找模块</a>
-            <a href="#map">知识地图</a>
+            <Link href="/knowledge-graph">关系图谱</Link>
             <Link href="/references">来源与证据 / Reference</Link>
           </div>
         </nav>
@@ -156,7 +156,12 @@ export default function Home() {
                 <span className="mapStat"><strong>{moduleCount}</strong><span>个细分模块</span></span>
               </div>
             </div>
-            <p>地图按客户对话从上到下展开：先明确业务方案，再选择应用模式和互操作方式，最后落实工程、模型、数据与算力。</p>
+            <div className="mapIntroGuide">
+              <p>地图按客户对话从上到下展开：先明确业务方案，再选择应用模式和互操作方式，最后落实工程、模型、数据与算力。</p>
+              <Link className="mapGraphLink" href="/knowledge-graph">
+                <span><strong>查看模块之间的关系</strong><small>进入全局知识关系图</small></span><i aria-hidden="true">→</i>
+              </Link>
+            </div>
           </div>
 
           <div className="layerStack layerStackV2">

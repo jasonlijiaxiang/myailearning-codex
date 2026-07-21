@@ -22,6 +22,7 @@ export default function KnowledgeGraphPage() {
           </Link>
           <div className="toplinks">
             <Link href="/">知识库首页</Link>
+            <Link href="/knowledge-graph/explore">动态探索</Link>
             <Link href="/glossary">术语库</Link>
             <Link href="/references">来源与证据</Link>
           </div>
@@ -64,7 +65,7 @@ export default function KnowledgeGraphPage() {
 
       <footer className={`siteFooter ${styles.footer}`}>
         <p>全局知识关系图 / Knowledge Relationship Map</p>
-        <div><Link href="/">知识库首页</Link><Link href="/glossary">专业术语库</Link><Link href="/references">来源与证据</Link></div>
+        <div><Link href="/">知识库首页</Link><Link href="/knowledge-graph/explore">动态探索</Link><Link href="/glossary">专业术语库</Link><Link href="/references">来源与证据</Link></div>
       </footer>
     </main>
   );
