@@ -422,7 +422,7 @@ test("dense-reading modules derive a scannable content overview from the publica
 
 test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {
   const remainingSlugs = Object.keys(moduleExtensionViews);
-  assert.equal(remainingSlugs.length, 13, "剩余模块清单必须完整且显式");
+  assert.equal(remainingSlugs.length, 15, "剩余模块清单必须完整且显式");
   assert.equal(new Set(Object.values(moduleExtensionViews).map((view) => view.id)).size, remainingSlugs.length, "剩余模块知识视图 ID 不得复用");
 
   for (const slug of remainingSlugs) {
@@ -482,7 +482,7 @@ test("question directory searches every published question from one canonical in
   assert.equal((html.match(/data-question-key="[^"]+"/g) ?? []).length, questionDirectoryItems.length, "问题查询页必须服务端呈现全部正式问题");
   assert.match(html, /客户问题查询/);
   assert.match(html, /搜索所有客户问题/);
-  assert.match(html, /全部 19 个模块/);
+  assert.match(html, new RegExp(`全部 ${publishedModuleRegistry.length} 个模块`));
   assert.match(html, /问题类别/);
   assert.match(html, /展开深答、下一问与证据/);
 
@@ -798,7 +798,7 @@ test("references route is the complete centralized source ledger", async () => {
   }
 });
 
-test("legacy module addresses resolve to the merged 19-module knowledge base", async () => {
+test("legacy module addresses resolve to the current published knowledge base", async () => {
   assert.ok(Object.keys(legacyModuleAliases).length > 0);
 
   for (const [legacySlug, canonicalSlug] of Object.entries(legacyModuleAliases)) {

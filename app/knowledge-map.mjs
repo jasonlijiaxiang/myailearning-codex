@@ -1,7 +1,7 @@
 /**
- * 面向读者的 19 模块知识地图。
+ * 面向读者的 21 模块知识地图。
  *
- * 导航目的地与 external_reference/CC-20260717 的 19 个主题对应，方便资料归档与分享。
+ * 初始主题与 external_reference/CC-20260717 建立归档映射，新增模块来自全局知识复核。
  * PPT 不定义模块的知识边界、章节顺序或内容上限；正文按售前判断链独立研究，
  * 公开事实由 Reference 台账中的一手来源核验。
  */
@@ -44,6 +44,7 @@ export const layers = [
     purpose: "把质量、安全、流量与运营变成生产控制面。",
     modules: [
       { zh: "评估", en: "Evaluation", slug: "evaluation", href: "/modules/evaluation" },
+      { zh: "AI 治理、风险与合规", en: "AI Governance, Risk & Compliance", slug: "ai-governance", href: "/modules/ai-governance" },
       { zh: "安全", en: "AI Security", slug: "security", href: "/modules/security" },
       { zh: "AI 网关", en: "AI Gateway", slug: "ai-gateway", href: "/modules/ai-gateway" },
       { zh: "AI 可观测与运营", en: "AI Operations", slug: "ai-ops", href: "/modules/ai-ops" },
@@ -51,6 +52,15 @@ export const layers = [
   },
   {
     no: "05",
+    name: "预测式 AI 与 MLOps 层",
+    en: "Predictive AI & MLOps",
+    purpose: "把预测模型的数据、特征、训练、发布与真实效果连成持续生命周期。",
+    modules: [
+      { zh: "预测式 AI 与 MLOps", en: "Predictive AI & MLOps", slug: "predictive-ai-mlops", href: "/modules/predictive-ai-mlops" },
+    ],
+  },
+  {
+    no: "06",
     name: "模型与优化层",
     en: "Models & Optimization",
     purpose: "理解模型能力从何而来，以及怎样训练、定制和高效服务。",
@@ -63,7 +73,7 @@ export const layers = [
     ],
   },
   {
-    no: "06",
+    no: "07",
     name: "数据工程层",
     en: "Data Engineering",
     purpose: "把原始数据变成可信、可追溯、可检索的 AI 输入。",
@@ -72,7 +82,7 @@ export const layers = [
     ],
   },
   {
-    no: "07",
+    no: "08",
     name: "AI 基础设施层",
     en: "AI Infrastructure",
     purpose: "承载算力、网络、存储、集群与平台编排。",

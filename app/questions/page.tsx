@@ -30,6 +30,7 @@ const filterModules: QuestionDirectoryModule[] = questionDirectoryModules.map((m
 }));
 
 const uniqueTagCount = new Set(questionDirectoryItems.map((item) => item.tag)).size;
+const moduleCountLead = `把 ${questionDirectoryModules.length} 个模块的客户问题集中在一个入口。搜索客户原话、技术概念、风险或方案取舍，先拿到结论短答，再展开机制、售前下一问和题内证据。`;
 
 export default function QuestionsPage() {
   return (
@@ -52,7 +53,7 @@ export default function QuestionsPage() {
           <div className="heroCopy">
             <p className="eyebrow">CUSTOMER QUESTION DIRECTORY · 一站式问题查询</p>
             <h1>客户问题查询<br /><span>Question Directory</span></h1>
-            <p className="heroLead">把 19 个模块的客户问题集中在一个入口。搜索客户原话、技术概念、风险或方案取舍，先拿到结论短答，再展开机制、售前下一问和题内证据。</p>
+            <p className="heroLead">{moduleCountLead}</p>
             <div className="heroActions">
               <a className="primaryButton" href="#question-directory">开始查询</a>
               <Link className="textButton" href="/#map">查看知识地图 <span>↗</span></Link>

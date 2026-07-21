@@ -89,6 +89,12 @@ export const terminology = Object.freeze({
   "golden-set": term("黄金评估集", "Golden Evaluation Set", "经过来源确认和人工裁决、用于稳定回归比较的代表性样本集合。", ["evaluation", "ai-ops"]),
   "evaluation-layers": term("三层评估", "Three Evaluation Layers", "分别在模型、组件和业务结果层评估质量，避免局部指标替代端到端成效。", ["evaluation", "ai-ops"]),
   "llm-as-judge": term("模型裁判", "LLM-as-a-Judge", "用模型扩展语义评分，但必须通过人工校准、偏差测试和明确量表控制误判。", ["evaluation"]),
+  "ai-governance": term("AI 治理、风险与合规", "AI Governance, Risk & Compliance", "以系统清单、责任、风险分级、控制和持续证据管理 AI 的组织级生命周期。", ["ai-governance"], "AI GRC"),
+  "ai-inventory": term("AI 系统清单", "AI System Inventory", "按业务用途登记 AI 系统、模型、数据、所有者、地区、生产状态与风险层级。", ["ai-governance", "model-landscape"]),
+  "ai-risk-tiering": term("AI 风险分级", "AI Risk Tiering", "根据具体用途、影响对象、自动化、可逆性和规模配置相称的治理门禁。", ["ai-governance", "security"]),
+  "impact-assessment": term("AI 影响评估", "AI Impact Assessment", "识别 AI 用途对个人、组织和社会的潜在影响，并记录控制与残余风险。", ["ai-governance", "evaluation"]),
+  "governance-evidence": term("治理证据包", "Governance Evidence Package", "把用途、版本、评估、控制、审批、运行事件与复核结论连接成可审计记录。", ["ai-governance", "evaluation"]),
+  "continuous-assurance": term("持续保证", "Continuous Assurance", "通过版本化证据、监控、事件和复核证明控制在变化后仍然有效。", ["ai-governance", "ai-ops"]),
   security: term("AI 安全", "AI Security", "控制不可信内容、数据、模型、工具和输出造成的泄漏、越权与业务伤害。", ["security"]),
   "ai-ops": term("AI 可观测与运营", "AI Operations", "把请求、模型、检索、工具、成本和业务结果关联起来，支持诊断、治理和持续改进。", ["ai-ops", "evaluation"]),
   observability: term("可观测性", "Observability", "通过指标、日志、Trace 和版本信息解释系统发生了什么以及为什么。", ["ai-ops", "evaluation", "ai-infra-platform", "multimodal", "a2a", "ai-gateway"]),
@@ -99,6 +105,12 @@ export const terminology = Object.freeze({
   dlp: term("数据防泄漏", "Data Loss Prevention", "识别并阻止敏感数据通过输入、输出、日志或文件等路径被不当传递。", ["security", "data-engineering"], "DLP"),
   hitl: term("人在回路", "Human in the Loop", "在高风险、模糊或不可逆环节由人工审批、纠正或接管。", ["ai-agent", "security", "evaluation"], "HITL"),
 
+  "predictive-ai-mlops": term("预测式 AI 与 MLOps", "Predictive AI & MLOps", "把分类、回归、排序与预测模型的数据、特征、训练、发布和监控组织成可重复生命周期。", ["predictive-ai-mlops"]),
+  "feature-store": term("特征库", "Feature Store", "统一管理特征定义、历史与在线值，为训练、批量和实时推理提供一致访问。", ["predictive-ai-mlops", "data-engineering"]),
+  "model-registry": term("模型注册表", "Model Registry", "登记模型版本、指标、血缘、审批与生命周期阶段，连接候选制品和受控发布。", ["predictive-ai-mlops", "model-landscape"]),
+  "point-in-time-correctness": term("时点正确性", "Point-in-time Correctness", "确保训练样本只使用预测时点已经可获得的数据，避免未来信息泄漏。", ["predictive-ai-mlops", "data-engineering"]),
+  "training-serving-skew": term("训练—服务偏差", "Training-serving Skew", "训练与线上服务使用不同特征定义、时间语义、默认值或数据源导致的行为偏差。", ["predictive-ai-mlops", "data-engineering"]),
+  "model-drift": term("模型漂移", "Model Drift", "输入分布、目标关系或业务情境变化后，模型行为或真实效果偏离已验证范围。", ["predictive-ai-mlops", "ai-ops"]),
   "llm-training": term("大模型训练", "LLM Training", "通过数据、计算和优化更新模型参数，并以检查点、评估和版本治理控制训练结果。", ["llm-training"]),
   pretraining: term("预训练", "Pretraining", "在大规模通用数据上学习基础语言或多模态能力的训练阶段。", ["llm-training", "llm"]),
   "distributed-training": term("分布式训练", "Distributed Training", "把模型、数据或计算切分到多个加速器，同时处理通信、同步和故障恢复。", ["llm-training", "ai-infra-platform"]),
@@ -142,8 +154,8 @@ export const glossaryGroups = Object.freeze([
   Object.freeze({ id: "prompt-context", zh: "提示与上下文", en: "Prompt and Context", termIds: Object.freeze(["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"]) }),
   Object.freeze({ id: "retrieval-data", zh: "检索与数据", en: "Retrieval and Data", termIds: Object.freeze(["rag", "retrieval", "augmentation", "generation", "chunking", "sparse-retrieval", "dense-retrieval", "hybrid-search", "vector-database", "bm25", "ann", "hnsw", "reranking", "rrf", "grounding", "data-engineering", "document-intelligence", "data-contract", "data-lineage", "deletion-propagation"]) }),
   Object.freeze({ id: "agents-protocols", zh: "智能体与协议", en: "Agents and Protocols", termIds: Object.freeze(["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools", "tool-calling", "api", "mcp", "mcp-protocol-roles", "mcp-primitives", "a2a", "agent-card", "a2a-task", "artifact", "tool-discovery", "agent-collaboration"]) }),
-  Object.freeze({ id: "evaluation-security", zh: "评估、安全与运营", en: "Evaluation, Security and Operations", termIds: Object.freeze(["evaluation", "golden-set", "evaluation-layers", "llm-as-judge", "security", "ai-ops", "observability", "guardrails", "identity-authorization", "iam", "acl", "dlp", "hitl"]) }),
-  Object.freeze({ id: "training-inference", zh: "训练与推理", en: "Training and Inference", termIds: Object.freeze(["llm-training", "pretraining", "distributed-training", "fine-tuning", "sft", "rlhf", "lora", "qlora", "dpo", "llm-inference", "batching", "quantization", "ttft", "tpot"]) }),
+  Object.freeze({ id: "evaluation-security", zh: "评估、安全与治理", en: "Evaluation, Security and Governance", termIds: Object.freeze(["evaluation", "golden-set", "evaluation-layers", "llm-as-judge", "ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "governance-evidence", "continuous-assurance", "security", "ai-ops", "observability", "guardrails", "identity-authorization", "iam", "acl", "dlp", "hitl"]) }),
+  Object.freeze({ id: "training-inference", zh: "训练、MLOps 与推理", en: "Training, MLOps and Inference", termIds: Object.freeze(["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift", "llm-training", "pretraining", "distributed-training", "fine-tuning", "sft", "rlhf", "lora", "qlora", "dpo", "llm-inference", "batching", "quantization", "ttft", "tpot"]) }),
   Object.freeze({ id: "infrastructure", zh: "平台与算力", en: "Platform and Compute", termIds: Object.freeze(["ai-infra-platform", "resource-scheduling", "gang-scheduling", "goodput", "ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out"]) }),
   Object.freeze({ id: "solution-delivery", zh: "方案与交付", en: "Solution and Delivery", termIds: Object.freeze(["solution-patterns", "ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "poc", "sla", "slo", "tco", "finops"]) }),
 ]);
@@ -152,7 +164,7 @@ export const homepageTermGroups = Object.freeze([
   Object.freeze({ label: "模型与推理", termIds: Object.freeze(["llm", "token", "transformer", "attention", "kv-cache", "moe"]) }),
   Object.freeze({ label: "应用与上下文", termIds: Object.freeze(["rag", "ai-agent", "prompt-engineering", "context-engineering", "multimodal"]) }),
   Object.freeze({ label: "协议与平台", termIds: Object.freeze(["mcp", "a2a", "api", "ai-gateway", "tool-calling"]) }),
-  Object.freeze({ label: "治理与交付", termIds: Object.freeze(["evaluation", "observability", "guardrails", "poc", "sla", "tco"]) }),
+  Object.freeze({ label: "治理与交付", termIds: Object.freeze(["evaluation", "ai-governance", "observability", "guardrails", "poc", "tco"]) }),
 ]);
 
 export const glossaryTermIds = Object.freeze(glossaryGroups.flatMap((group) => group.termIds));

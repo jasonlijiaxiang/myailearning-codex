@@ -13,6 +13,34 @@ const qa = (q, a, depth, ask, tag, basis, evidence) => Object.freeze({
  * “短答—深答—追问—证据”契约；基础问答仍归各 module-briefs 文件维护。
  */
 export const moduleQaExpansion = Object.freeze({
+  "predictive-ai-mlops": Object.freeze([
+    qa(
+      "预测模型上线后，多久重训一次才合理？",
+      "没有通用周期；应由标签到达速度、数据和概念变化、业务损失与更新成本共同决定。",
+      "固定周期可以作为检查节奏，但不能直接成为发布条件。先持续观察数据质量、分布、真实效果和策略变化；达到触发门槛后生成候选模型，再通过时间切片、关键人群、稳定性和业务成本门禁，最后灰度发布。",
+      "追问客户：真实标签多久成熟？效果下降多少会改变业务决定？候选模型由谁批准上线？",
+      "更新策略",
+      "持续训练 + 独立发布门",
+      [
+        { sourceId: "google-mlops-predictive-ai", supports: "支持用新数据、触发器、数据验证和模型验证构成持续训练流程。" },
+        { sourceId: "aws-sagemaker-model-registry", supports: "支持为模型版本保留指标、审批状态与生命周期阶段。" },
+      ],
+    ),
+  ]),
+  "ai-governance": Object.freeze([
+    qa(
+      "应该由哪个团队对 AI 风险最终负责？",
+      "具体用途的业务所有者承担最终采用责任，技术、安全、数据、法务、风险和审计分别提供控制与监督。",
+      "单独设立 AI 委员会可以协调标准与重大例外，但不能吸走一线所有权。每个系统仍要有能够接受残余风险、批准上线、限制用途和停止运行的责任人，并为高风险事项设置独立挑战与审计。",
+      "追问客户：谁能批准这个用途上线，谁能在出现伤害或证据不足时立即停止？",
+      "责任模型",
+      "组织治理 + 风险所有权",
+      [
+        { sourceId: "iso-iec-42001", supports: "支持通过组织政策、目标、职责与过程建立和持续改进 AI 管理体系。" },
+        { sourceId: "nist-ai-rmf", supports: "支持将可信风险管理纳入 AI 产品、服务和系统的完整生命周期。" },
+      ],
+    ),
+  ]),
   "solution-patterns": Object.freeze([
     qa(
       "一个场景应该做成固定工作流，还是做成 Agent？",

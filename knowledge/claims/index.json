@@ -1,4 +1,113 @@
 {
   "schemaVersion": 1,
-  "items": []
+  "items": [
+    {
+      "id": "governance.nist-ai-rmf-1-revision",
+      "claim": "截至 2026-07-21，NIST 官方页面明确标注 AI RMF 1.0 正在修订，同时继续提供 1.0、Playbook 与 GenAI Profile。",
+      "scope": "仅描述 NIST AI RMF 官方发布状态；不表示 1.0 已失效，也不构成认证或法律合规结论。",
+      "sourceIds": ["nist-ai-rmf"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "governance.eu-ai-act-implementation-timeline",
+      "claim": "截至 2026-07-21，欧盟委员会页面列出 2026-08-02 的总体适用节点，并列出部分高风险系统在 2027 或 2028 年适用的更新安排。",
+      "scope": "仅记录欧盟委员会当前实施页面；具体角色、系统分类、义务和法律效力需依据正式文本及专业法律意见确认。",
+      "sourceIds": ["eu-ai-act"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-08-20",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "governance.iso-iec-42001-2023-scope",
+      "claim": "ISO/IEC 42001:2023 规定组织建立、实施、维护并持续改进 AI 管理体系的要求。",
+      "scope": "管理体系标准不直接证明某个模型输出正确、安全或自动满足所有司法辖区法律。",
+      "sourceIds": ["iso-iec-42001"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2027-01-17",
+      "reviewCadenceDays": 180,
+      "owner": "knowledge-curation",
+      "status": "active"
+    },
+    {
+      "id": "mlops.google-predictive-ai-scope",
+      "claim": "Google Cloud 的 MLOps CI/CD/CT 架构文档明确说明其主要适用于预测式 AI 系统。",
+      "scope": "文档可支持经典机器学习流水线设计，但不是 Prompt、RAG、Agent 与生成式 AI 应用工程的完整规范。",
+      "sourceIds": ["google-mlops-predictive-ai"],
+      "evidenceGrade": "B",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2027-01-17",
+      "reviewCadenceDays": 180,
+      "owner": "knowledge-curation",
+      "status": "active"
+    },
+    {
+      "id": "protocol.mcp-version-2025-11-25",
+      "claim": "截至 2026-07-21，本知识库核验的 MCP 当前规范版本为 2025-11-25，其中 Tasks 仍标记为实验性能力。",
+      "scope": "协议版本与具体 SDK、客户端、Server 和产品支持状态必须分别核验。",
+      "sourceIds": ["mcp-authorization", "mcp-tasks-2025-11-25"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "active"
+    },
+    {
+      "id": "protocol.a2a-version-1-0-0",
+      "claim": "截至 2026-07-21，A2A 官方站点提供固定的 v1.0.0 规范入口。",
+      "scope": "规范版本稳定不等于所有 SDK、云产品、网络绑定或 Agent 实现均已支持同一能力集合。",
+      "sourceIds": ["a2a-spec-1-0-0"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "active"
+    },
+    {
+      "id": "observability.otel-genai-semconv-development",
+      "claim": "截至 2026-07-21，OpenTelemetry 的生成式 AI 语义约定在独立仓库维护，当前仍处于持续开发状态。",
+      "scope": "采用方应固定版本，并自行补充业务终态、审批和风险字段；不应把开发中约定宣传为完整稳定标准。",
+      "sourceIds": ["opentelemetry-genai-semconv"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "platform.kubernetes-dra-v1-ga",
+      "claim": "Kubernetes DRA 核心 API 在 Kubernetes 1.34 进入稳定 v1 并默认启用。",
+      "scope": "核心 API GA 不表示所有新增特性、设备驱动或厂商支持矩阵均已 GA。",
+      "sourceIds": ["kubernetes-dra-1-34-ga", "kubernetes-dra"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "active"
+    },
+    {
+      "id": "china.genai-content-labeling-effective-2025-09-01",
+      "claim": "中国的人工智能生成合成内容标识办法与 GB 45438-2025 已于 2025-09-01 起施行。",
+      "scope": "工程适用性需按服务角色、内容、传播渠道和正式文本判断，不能据此给产品贴永久合规标签。",
+      "sourceIds": ["china-ai-content-labeling", "gb-45438-2025"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-10-19",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "active"
+    }
+  ]
 }

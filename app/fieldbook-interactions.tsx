@@ -422,6 +422,7 @@ export function QuestionDirectoryShell({
   const visibleItems = useMemo(() => filterQuestionDirectoryItems(items, { query, moduleId, tag }), [items, moduleId, query, tag]);
   const visibleKeys = useMemo(() => new Set(visibleItems.map((item) => item.key)), [visibleItems]);
   const visibleModules = useMemo(() => new Set(visibleItems.map((item) => item.moduleId)).size, [visibleItems]);
+  const allModulesLabel = `全部 ${modules.length} 个模块`;
 
   useEffect(() => {
     rootRef.current?.querySelectorAll<HTMLElement>("[data-question-key]").forEach((node) => {
@@ -456,7 +457,7 @@ export function QuestionDirectoryShell({
           <input ref={searchRef} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="例如：模型切换、权限、量化、GPU 利用率……" />
           <kbd>⌘ K</kbd>
         </label>
-        <label><span>模块</span><select value={moduleId} onChange={(event) => { setModuleId(event.target.value); setTag("all"); }}><option value="all">全部 19 个模块</option>{modules.map((directoryModule) => <option value={directoryModule.id} key={directoryModule.id}>{directoryModule.label}（{directoryModule.count}）</option>)}</select></label>
+        <label><span>模块</span><select value={moduleId} onChange={(event) => { setModuleId(event.target.value); setTag("all"); }}><option value="all">{allModulesLabel}</option>{modules.map((directoryModule) => <option value={directoryModule.id} key={directoryModule.id}>{directoryModule.label}（{directoryModule.count}）</option>)}</select></label>
         <label><span>问题类别</span><select value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">全部类别</option>{availableTags.map((item) => <option value={item} key={item}>{item}</option>)}</select></label>
         <div className="questionDirectoryStatus" aria-live="polite"><strong>{visibleItems.length}</strong><span>个问题 · {visibleModules} 个模块</span></div>
         {(query || moduleId !== "all" || tag !== "all") && <button className="questionDirectoryClear" type="button" onClick={clear}>清除全部筛选</button>}

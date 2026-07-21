@@ -7,6 +7,7 @@ import {
   solutionPatternsBrief,
 } from "./module-briefs-app-protocol.mjs";
 import { fineTuning, llm, llmTraining, modelLandscape } from "./module-briefs-foundations.mjs";
+import { aiGovernanceBrief, predictiveAiMlopsBrief } from "./module-briefs-governance-mlops.mjs";
 import {
   aiGatewayBrief,
   aiInfraComputeBrief,
@@ -36,9 +37,11 @@ export const moduleBriefs = Object.freeze({
   [mcpBrief.slug]: withExpandedQa(mcpBrief),
   [a2aBrief.slug]: withExpandedQa(a2aBrief),
   [evaluationBrief.slug]: withExpandedQa(evaluationBrief),
+  [aiGovernanceBrief.slug]: withExpandedQa(aiGovernanceBrief),
   [securityBrief.slug]: withExpandedQa(securityBrief),
   [aiGatewayBrief.slug]: withExpandedQa(aiGatewayBrief),
   [aiOpsBrief.slug]: withExpandedQa(aiOpsBrief),
+  [predictiveAiMlopsBrief.slug]: withExpandedQa(predictiveAiMlopsBrief),
   [llm.slug]: withExpandedQa(llm),
   [fineTuning.slug]: withExpandedQa(fineTuning),
   [llmTraining.slug]: withExpandedQa(llmTraining),
