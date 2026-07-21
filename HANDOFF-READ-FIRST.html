@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="handoff-source-sha256" content="b39ad8829bf1e25d329ebeee6e3773e7694e9f840631d016fbe7efd8ae4a9909">
+  <title>How to use this KB：Portable 知识库使用与迁移指南</title>
+  <style>
+    :root {
+      --ink: #182027;
+      --paper: #f4f1e8;
+      --paper-2: #ebe7db;
+      --line: #c9c3b5;
+      --lime: #bafc61;
+      --blue: #7ac7ff;
+      --orange: #ff7e59;
+      --white: #fffdf7;
+      --muted: #5f665f;
+      --shadow: 0 18px 60px rgba(24, 32, 39, .10);
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.75; text-rendering: optimizeLegibility; }
+    a { color: inherit; text-underline-offset: 3px; }
+    button, input { font: inherit; }
+    :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    [hidden] { display: none !important; }
+
+    .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 clamp(20px, 4vw, 64px); border-bottom: 1px solid var(--line); background: rgba(255, 253, 247, .94); backdrop-filter: blur(14px); }
+    .brand { text-decoration: none; font-size: 13px; font-weight: 800; letter-spacing: .02em; }
+    .brand small { display: block; color: var(--muted); font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .print-button { min-height: 38px; padding: 0 15px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; font-size: 12px; font-weight: 800; }
+    .print-button:hover { background: var(--ink); color: var(--white); }
+
+    .hero { padding: clamp(56px, 8vw, 112px) clamp(22px, 6vw, 96px) clamp(46px, 6vw, 82px); background: var(--ink); color: var(--white); }
+    .hero-inner { width: min(1180px, 100%); margin: 0 auto; }
+    .hero h1 { max-width: 980px; margin: 0; font-family: var(--serif); font-size: clamp(46px, 7vw, 92px); font-weight: 500; letter-spacing: -.055em; line-height: 1.02; }
+    .hero h1 span { color: var(--lime); }
+    .hero h1 small { display: block; margin-top: 20px; color: var(--white); font-family: var(--sans); font-size: clamp(17px, 2vw, 26px); font-weight: 650; letter-spacing: 0; line-height: 1.35; }
+    .hero-copy { max-width: 820px; margin: 30px 0 0; color: rgba(255,255,255,.72); font-size: clamp(15px, 1.35vw, 19px); }
+    .platform-links { display: flex; flex-wrap: wrap; gap: 1px; margin-top: 34px; }
+    .platform-links a { min-width: 124px; padding: 12px 16px; border: 1px solid rgba(255,255,255,.22); color: var(--white); text-align: center; text-decoration: none; font-size: 12px; font-weight: 800; }
+    .platform-links a:hover { border-color: var(--lime); background: var(--lime); color: var(--ink); }
+
+    .search-band { padding: 26px clamp(22px, 6vw, 96px); border-bottom: 1px solid var(--line); background: var(--white); }
+    .search-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: min(1180px, 100%); margin: 0 auto; }
+    .search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .guide-search { min-width: 0; height: 52px; padding: 0 18px; border: 2px solid var(--ink); border-right: 0; border-radius: 0; background: var(--white); color: var(--ink); font-size: 15px; }
+    .search-result { display: grid; place-items: center; min-width: 142px; padding: 0 18px; background: var(--lime); color: var(--ink); font-size: 12px; font-weight: 850; }
+    .search-hint { grid-column: 1 / -1; margin: 8px 0 0; color: var(--muted); font-size: 11px; }
+
+    .mobile-toc { display: none; margin: 20px; border: 1px solid var(--line); background: var(--white); }
+    .mobile-toc summary { padding: 14px 18px; cursor: pointer; font-weight: 800; }
+    .mobile-toc nav { padding: 0 18px 18px; }
+
+    .page-grid { display: grid; grid-template-columns: 280px minmax(0, 860px); gap: clamp(34px, 6vw, 92px); width: min(1240px, calc(100% - 40px)); margin: 0 auto; padding: 54px 0 110px; align-items: start; }
+    .sidebar { position: sticky; top: 88px; max-height: calc(100vh - 112px); overflow: auto; border-top: 3px solid var(--ink); }
+    .sidebar::before { display: block; padding: 16px 0 12px; color: var(--muted); content: "CONTENTS"; font-size: 9px; font-weight: 900; letter-spacing: .16em; }
+    .toc ol { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+    .toc li { border-bottom: 1px solid var(--line); }
+    .toc a { display: block; padding: 10px 8px; color: var(--muted); text-decoration: none; font-size: 11px; line-height: 1.4; }
+    .toc a:hover, .toc a[aria-current="true"] { padding-left: 13px; background: var(--lime); color: var(--ink); font-weight: 800; }
+
+    .guide { min-width: 0; }
+    .guide-section { margin: 0 0 70px; scroll-margin-top: 82px; }
+    .guide-section > h2 { margin: 0 0 24px; padding: 0 0 20px; border-bottom: 3px solid var(--ink); font-family: var(--serif); font-size: clamp(30px, 4vw, 52px); font-weight: 500; letter-spacing: -.035em; line-height: 1.16; scroll-margin-top: 84px; }
+    .guide h3 { margin: 42px 0 18px; padding-left: 15px; border-left: 5px solid var(--lime); font-size: clamp(20px, 2.4vw, 28px); line-height: 1.35; scroll-margin-top: 84px; }
+    .guide p { margin: 0 0 20px; color: #313a3f; font-size: 15px; }
+    .guide strong { color: var(--ink); }
+    .guide p code, .guide li code, .guide td code { padding: 2px 6px; background: var(--paper-2); font-family: var(--mono); font-size: .88em; overflow-wrap: anywhere; }
+    .guide ul, .guide ol { margin: 18px 0 26px; padding-left: 1.5em; }
+    .guide li { margin: 8px 0; padding-left: 6px; }
+    .guide li::marker { color: #52720f; font-weight: 900; }
+    .guide a { font-weight: 700; text-decoration-color: #81aa35; }
+
+    .table-scroll { margin: 24px 0 34px; overflow-x: auto; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; min-width: 650px; }
+    th, td { padding: 15px 16px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--ink); color: var(--white); font-size: 11px; letter-spacing: .04em; }
+    td { font-size: 13px; }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #efffd9; }
+
+    .code-block { margin: 22px 0 30px; overflow: hidden; border: 1px solid #344047; background: #11191e; color: #ecf3e6; box-shadow: 8px 8px 0 rgba(24,32,39,.12); }
+    .code-block figcaption { display: flex; align-items: center; justify-content: space-between; min-height: 40px; padding: 0 10px 0 16px; border-bottom: 1px solid #344047; color: #aeb9b3; font-family: var(--mono); font-size: 10px; text-transform: uppercase; }
+    .copy-button { padding: 6px 11px; border: 1px solid #65736b; background: transparent; color: var(--lime); cursor: pointer; font-family: var(--sans); font-size: 10px; font-weight: 800; }
+    .copy-button:hover { border-color: var(--lime); background: var(--lime); color: var(--ink); }
+    pre { margin: 0; padding: 20px; overflow: auto; font-family: var(--mono); font-size: 12px; line-height: 1.75; tab-size: 2; }
+    pre code { font-family: inherit; }
+
+    .empty-state { margin: 40px 0; padding: 34px; border: 2px solid var(--orange); background: #fff0e9; }
+    .empty-state strong { display: block; margin-bottom: 6px; font-family: var(--serif); font-size: 26px; }
+
+    .footer { padding: 32px 20px 46px; border-top: 1px solid var(--line); background: var(--white); color: var(--muted); text-align: center; font-size: 10px; }
+    .footer code { font-family: var(--mono); }
+
+    @media (max-width: 900px) {
+      .topbar { padding-inline: 18px; }
+      .top-actions { gap: 6px; }
+      .print-button { padding-inline: 10px; }
+      .hero { padding-inline: 22px; }
+      .hero h1 { font-size: clamp(42px, 13vw, 68px); }
+      .platform-links a { flex: 1 1 42%; }
+      .search-band { padding-inline: 20px; }
+      .search-inner { grid-template-columns: 1fr; }
+      .guide-search { border-right: 2px solid var(--ink); }
+      .search-result { min-height: 38px; }
+      .mobile-toc { display: block; }
+      .page-grid { display: block; width: min(100% - 36px, 760px); padding-top: 30px; }
+      .sidebar { display: none; }
+      .guide-section { margin-bottom: 54px; }
+      .guide-section > h2 { font-size: clamp(29px, 8vw, 42px); }
+    }
+
+    @media (max-width: 520px) {
+      .brand small { display: none; }
+      .print-button { display: none; }
+      .hero h1 small { margin-top: 14px; }
+      .hero-copy { font-size: 14px; }
+      .platform-links a { flex-basis: 100%; }
+      .page-grid { width: min(100% - 28px, 760px); }
+      .guide p, .guide li { font-size: 14px; }
+      pre { padding: 16px; font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+
+    @media print {
+      body { background: white; }
+      .topbar, .search-band, .mobile-toc, .sidebar, .copy-button { display: none !important; }
+      .hero { padding: 32px 0; background: white; color: var(--ink); }
+      .hero h1 span, .hero h1 small { color: var(--ink); }
+      .hero-copy { color: var(--muted); }
+      .platform-links { display: none; }
+      .page-grid { display: block; width: 100%; padding: 28px 0; }
+      .guide-section { break-inside: avoid; }
+      .code-block { break-inside: avoid; box-shadow: none; }
+      a { text-decoration: none; }
+      .footer { background: white; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top">云与 AI 售前知识库<small>Cloud × AI Presales Fieldbook</small></a>
+    <div class="top-actions"><button type="button" class="print-button" id="print-guide">打印 / 保存 PDF</button></div>
+  </header>
+
+  <main id="top">
+    <header class="hero">
+      <div class="hero-inner">
+        <h1><span>How to use this KB</span><small>Portable 知识库使用与迁移指南</small></h1>
+        <p class="hero-copy">这是一份可在本地运行、可由 Codex 协助维护的源码级知识库。本指南覆盖 macOS、Linux、Windows 原生环境，以及 Windows + WSL2。</p>
+        <p class="hero-copy">Portable ZIP 默认不包含 Git 历史、依赖目录、构建产物、私有聊天记录、环境变量文件或个人 Sites 绑定。只在本地阅读和维护时，不需要 Git、GitHub 或 Sites。</p>
+        <nav class="platform-links" aria-label="按平台快速开始"><a href="#5-macos-本地使用">macOS</a><a href="#6-linux-本地使用">Linux</a><a href="#7-windows-原生本地使用">Windows</a><a href="#8-windows-wsl2-使用-长期维护推荐">WSL2</a></nav>
+      </div>
+    </header>
+
+    <section class="search-band" aria-label="搜索指南">
+      <div class="search-inner">
+        <label class="search-label" for="guide-search">搜索平台、命令或问题</label>
+        <input class="guide-search" id="guide-search" type="search" placeholder="例如：WSL2、npm run dev、SHA-256、Hook……" autocomplete="off">
+        <output class="search-result" id="search-result" aria-live="polite">16 个章节</output>
+        <p class="search-hint">按 <kbd>/</kbd> 快速聚焦搜索；输入多个词时会显示同时包含这些词的章节。</p>
+      </div>
+    </section>
+
+    <details class="mobile-toc">
+      <summary>打开完整目录</summary>
+      <nav class="toc" aria-label="使用指南目录"><ol><li><a href="#1-先选择使用方式">1. 先选择使用方式</a></li><li><a href="#2-获取项目">2. 获取项目</a></li><li><a href="#3-验证-zip-的-sha-256">3. 验证 ZIP 的 SHA-256</a></li><li><a href="#4-通用环境要求">4. 通用环境要求</a></li><li><a href="#5-macos-本地使用">5. macOS 本地使用</a></li><li><a href="#6-linux-本地使用">6. Linux 本地使用</a></li><li><a href="#7-windows-原生本地使用">7. Windows 原生本地使用</a></li><li><a href="#8-windows-wsl2-使用-长期维护推荐">8. Windows + WSL2 使用（长期维护推荐）</a></li><li><a href="#9-第一次启动后的验收">9. 第一次启动后的验收</a></li><li><a href="#10-日常使用命令">10. 日常使用命令</a></li><li><a href="#11-在-codex-中启用聊天沉淀">11. 在 Codex 中启用聊天沉淀</a></li><li><a href="#12-把对话整理成知识">12. 把对话整理成知识</a></li><li><a href="#13-修改内容后的本地交付">13. 修改内容后的本地交付</a></li><li><a href="#14-从旧电脑迁移到新电脑">14. 从旧电脑迁移到新电脑</a></li><li><a href="#15-git-与公开发布边界">15. Git 与公开发布边界</a></li><li><a href="#16-常见问题">16. 常见问题</a></li></ol></nav>
+    </details>
+
+    <div class="page-grid">
+      <aside class="sidebar"><nav class="toc" aria-label="使用指南目录"><ol><li><a href="#1-先选择使用方式">1. 先选择使用方式</a></li><li><a href="#2-获取项目">2. 获取项目</a></li><li><a href="#3-验证-zip-的-sha-256">3. 验证 ZIP 的 SHA-256</a></li><li><a href="#4-通用环境要求">4. 通用环境要求</a></li><li><a href="#5-macos-本地使用">5. macOS 本地使用</a></li><li><a href="#6-linux-本地使用">6. Linux 本地使用</a></li><li><a href="#7-windows-原生本地使用">7. Windows 原生本地使用</a></li><li><a href="#8-windows-wsl2-使用-长期维护推荐">8. Windows + WSL2 使用（长期维护推荐）</a></li><li><a href="#9-第一次启动后的验收">9. 第一次启动后的验收</a></li><li><a href="#10-日常使用命令">10. 日常使用命令</a></li><li><a href="#11-在-codex-中启用聊天沉淀">11. 在 Codex 中启用聊天沉淀</a></li><li><a href="#12-把对话整理成知识">12. 把对话整理成知识</a></li><li><a href="#13-修改内容后的本地交付">13. 修改内容后的本地交付</a></li><li><a href="#14-从旧电脑迁移到新电脑">14. 从旧电脑迁移到新电脑</a></li><li><a href="#15-git-与公开发布边界">15. Git 与公开发布边界</a></li><li><a href="#16-常见问题">16. 常见问题</a></li></ol></nav></aside>
+      <article class="guide" id="guide-content">
+        <section class="guide-section" data-guide-section id="section-1-先选择使用方式">
+<h2 id="1-先选择使用方式">1. 先选择使用方式</h2>
+<div class="table-scroll"><table>
+<thead><tr><th>目标</th><th>推荐环境</th><th>需要的能力</th></tr></thead>
+<tbody><tr><td>只在浏览器阅读知识库</td><td>任意支持 Node.js 的系统</td><td><code>npm ci</code>、<code>npm run dev</code></td></tr><tr><td>编辑内容并运行完整检查</td><td>macOS、Linux 或 WSL2</td><td>Node.js、npm；Git 可选</td></tr><tr><td>在 Windows 上偶尔本地运行</td><td>Windows 原生 PowerShell</td><td>Node.js、npm</td></tr><tr><td>在 Windows 上长期维护、打包或使用 Hook</td><td>WSL2</td><td>WSL2 内的 Node.js、npm；Codex 按需</td></tr><tr><td>使用 Codex 聊天并沉淀知识</td><td>任意受支持环境</td><td>Codex、项目 Hook、私有 inbox</td></tr><tr><td>向原项目推送或公开发布</td><td>项目所有者授权的环境</td><td>Git、远端权限、Sites 授权</td></tr></tbody>
+</table></div>
+<p>Windows 原生可以完成本地运行；如果要长期维护，优先使用 WSL2。WSL2 的 Linux 文件权限、路径和工具行为更接近项目的主要开发环境。</p>
+</section>
+<section class="guide-section" data-guide-section id="section-2-获取项目">
+<h2 id="2-获取项目">2. 获取项目</h2>
+<h3 id="方式-a-从-git-仓库获取">方式 A：从 Git 仓库获取</h3>
+<p>适合需要保留提交历史和参与协作的人：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>git clone &lt;仓库地址&gt; my-ai-learning
+cd my-ai-learning</code></pre>
+</figure>
+<p>Windows 原生建议在 clone 时关闭自动换行转换，减少 LF/CRLF 造成的无意改动：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>git -c core.autocrlf=false clone &lt;仓库地址&gt; my-ai-learning
+Set-Location &quot;.\my-ai-learning&quot;
+git config core.autocrlf false</code></pre>
+</figure>
+<h3 id="方式-b-使用-portable-zip">方式 B：使用 portable ZIP</h3>
+<p>适合本地阅读、独立维护或交接。交付方应同时提供：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>portable-knowledge-base-yyyymmddhhmm.zip
+portable-knowledge-base-yyyymmddhhmm.zip.sha256</code></pre>
+</figure>
+<p>ZIP 的项目文件直接位于压缩包根部。请先创建一个空文件夹，再把 ZIP 解压进去；不要覆盖已有项目。</p>
+<p>Portable ZIP 没有原仓库的 Git 历史和写权限，但不影响本地运行、知识整理、验证和重新打包。</p>
+<p>macOS 解压：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>mkdir my-ai-learning
+ditto -x -k portable-knowledge-base-yyyymmddhhmm.zip my-ai-learning
+cd my-ai-learning</code></pre>
+</figure>
+<p>Linux 或 WSL2 解压：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>mkdir my-ai-learning
+unzip portable-knowledge-base-yyyymmddhhmm.zip -d my-ai-learning
+cd my-ai-learning</code></pre>
+</figure>
+<p>Windows PowerShell 解压：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>New-Item -ItemType Directory -Path &quot;.\my-ai-learning&quot;
+Expand-Archive -LiteralPath &quot;.\portable-knowledge-base-yyyymmddhhmm.zip&quot; -DestinationPath &quot;.\my-ai-learning&quot;
+Set-Location &quot;.\my-ai-learning&quot;</code></pre>
+</figure>
+</section>
+<section class="guide-section" data-guide-section id="section-3-验证-zip-的-sha-256">
+<h2 id="3-验证-zip-的-sha-256">3. 验证 ZIP 的 SHA-256</h2>
+<p>先把下面命令中的文件名替换成实际文件名，再与 <code>.zip.sha256</code> 文件中的值比较。</p>
+<h3 id="macos">macOS</h3>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>shasum -a 256 portable-knowledge-base-yyyymmddhhmm.zip</code></pre>
+</figure>
+<h3 id="linux-或-wsl2">Linux 或 WSL2</h3>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>sha256sum portable-knowledge-base-yyyymmddhhmm.zip</code></pre>
+</figure>
+<h3 id="windows-powershell">Windows PowerShell</h3>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>Get-FileHash &quot;.\portable-knowledge-base-yyyymmddhhmm.zip&quot; -Algorithm SHA256
+Get-Content &quot;.\portable-knowledge-base-yyyymmddhhmm.zip.sha256&quot;</code></pre>
+</figure>
+</section>
+<section class="guide-section" data-guide-section id="section-4-通用环境要求">
+<h2 id="4-通用环境要求">4. 通用环境要求</h2>
+<ul><li>Node.js <code>22.13.0</code> 或更高版本；项目的 <code>.node-version</code> 固定了最低验证版本。</li><li>npm 随 Node.js 一起安装。</li><li>只有使用聊天沉淀或 Codex 协作时才需要 Codex。</li><li>Git 对本地运行是可选的；只有协作和发布需要 Git。</li></ul>
+<p>Node.js 安装包和版本说明见 <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js 官方下载页</a>。不要只依赖操作系统仓库中可能较旧的默认版本；安装完成后应以 <code>node --version</code> 的实际结果为准。</p>
+<p>安装 Node.js 后先检查：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>node --version
+npm --version</code></pre>
+</figure>
+<p>迁移到另一种操作系统时，不要复制旧机器的 <code>node_modules</code>。项目包含按操作系统安装的原生依赖，必须在目标系统重新执行 <code>npm ci</code>。</p>
+<p>以下目录和文件不应当作为运行环境迁移：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>node_modules/
+dist/
+.next/
+.vinext/
+.wrangler/
+outputs/
+coverage/</code></pre>
+</figure>
+</section>
+<section class="guide-section" data-guide-section id="section-5-macos-本地使用">
+<h2 id="5-macos-本地使用">5. macOS 本地使用</h2>
+<p>在 Terminal 中进入项目根目录，即能看到 <code>kb.config.json</code> 的目录：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>cd my-ai-learning
+node --version
+npm ci
+npm run kb:doctor
+npm run kb:validate
+npm run dev</code></pre>
+</figure>
+<p>打开终端显示的本地地址，通常是：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>http://localhost:3000/</code></pre>
+</figure>
+<p>停止开发服务器：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>在运行服务器的 Terminal 中按 Control + C</code></pre>
+</figure>
+</section>
+<section class="guide-section" data-guide-section id="section-6-linux-本地使用">
+<h2 id="6-linux-本地使用">6. Linux 本地使用</h2>
+<p>在 Shell 中进入项目根目录：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>cd my-ai-learning
+node --version
+npm ci
+npm run kb:doctor
+npm run kb:validate
+npm run dev</code></pre>
+</figure>
+<p>如果机器没有桌面浏览器，可以从同一台机器或可访问该端口的浏览器打开开发服务器输出的地址。默认只用于本机访问时，不需要修改监听地址或防火墙。</p>
+<p>停止开发服务器：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>在运行服务器的 Shell 中按 Control + C</code></pre>
+</figure>
+</section>
+<section class="guide-section" data-guide-section id="section-7-windows-原生本地使用">
+<h2 id="7-windows-原生本地使用">7. Windows 原生本地使用</h2>
+<p>适合只在 Windows 上阅读、演示或做少量维护。安装 Node.js 后，使用 PowerShell 进入项目目录：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>Set-Location &quot;.\my-ai-learning&quot;
+node --version
+npm --version
+npm ci
+npm run kb:doctor
+npm run kb:validate
+npm run dev</code></pre>
+</figure>
+<p>打开终端显示的本地地址，通常是：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>http://localhost:3000/</code></pre>
+</figure>
+<p>停止开发服务器：在 PowerShell 中按 <code>Ctrl+C</code>。</p>
+<p>如果 PowerShell 报告 <code>npm.ps1 cannot be loaded</code>，可以直接使用 npm 的 Windows 命令入口，不需要先修改全局执行策略：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm.cmd ci
+npm.cmd run kb:doctor
+npm.cmd run kb:validate
+npm.cmd run dev</code></pre>
+</figure>
+<p>Windows 原生注意事项：</p>
+<ul><li>不要从 macOS、Linux 或 WSL2 复制 <code>node_modules</code>。</li><li>Windows 文件系统默认不区分文件名大小写；新增文件时不要只用大小写区分名称。</li><li>私有 inbox 的 Unix 权限语义在 Windows 上不完全相同，目录保护最终依赖当前 Windows 用户的 NTFS 权限。</li><li>完整检查可能包含仅适用于 POSIX 或特定系统的条件测试；以 <code>npm run check</code> 的最终结果为准。</li></ul>
+</section>
+<section class="guide-section" data-guide-section id="section-8-windows-wsl2-使用-长期维护推荐">
+<h2 id="8-windows-wsl2-使用-长期维护推荐">8. Windows + WSL2 使用（长期维护推荐）</h2>
+<h3 id="8-1-安装-wsl2">8.1 安装 WSL2</h3>
+<p>在管理员 PowerShell 中运行：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>wsl --install -d Ubuntu</code></pre>
+</figure>
+<p>按 Windows 提示完成重启和 Ubuntu 用户初始化。以后可以从 Windows Terminal 打开 Ubuntu。安装或系统要求变化时，以 <a href="https://learn.microsoft.com/windows/wsl/install" target="_blank" rel="noreferrer">Microsoft WSL 安装文档</a> 为准。</p>
+<p>Node.js 需要安装在 WSL2 的 Ubuntu 内；Windows 已安装的 Node.js 不会自动成为 WSL2 的 Node.js。使用你选择的 Linux Node.js 版本管理器或安装方式，安装 <code>22.13.0</code> 或更高版本，然后在 Ubuntu 中确认：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>node --version
+npm --version</code></pre>
+</figure>
+<h3 id="8-2-把项目放在-wsl2-的-linux-文件系统">8.2 把项目放在 WSL2 的 Linux 文件系统</h3>
+<p>推荐：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>mkdir -p ~/projects
+cd ~/projects
+git clone &lt;仓库地址&gt; my-ai-learning
+cd my-ai-learning
+git config core.autocrlf false</code></pre>
+</figure>
+<p>如果使用 portable ZIP，可以在 WSL2 中打开目标目录的 Windows 文件资源管理器，把下载的 ZIP 拖进该空目录，然后回到 WSL2 解压：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>mkdir -p ~/projects/my-ai-learning
+cd ~/projects/my-ai-learning
+explorer.exe .
+unzip portable-knowledge-base-yyyymmddhhmm.zip</code></pre>
+</figure>
+<p>项目本体应保存在 <code>~/projects/my-ai-learning</code>，不要长期放在 <code>/mnt/c</code> 下运行。这样 Git、<code>npm ci</code>、构建和文件监听通常更快、更稳定；原因和路径选择见 <a href="https://learn.microsoft.com/windows/wsl/filesystems" target="_blank" rel="noreferrer">Microsoft WSL 文件系统指南</a>。</p>
+<p>如果 Ubuntu 缺少 <code>unzip</code>：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>sudo apt update
+sudo apt install -y unzip</code></pre>
+</figure>
+<h3 id="8-3-在-wsl2-中安装和启动">8.3 在 WSL2 中安装和启动</h3>
+<p>所有项目命令都在 Ubuntu Shell 中执行：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>cd ~/projects/my-ai-learning
+npm ci
+npm run kb:doctor
+npm run kb:validate
+npm run dev</code></pre>
+</figure>
+<p>然后使用 Windows 的 Chrome 或 Edge 打开终端显示的地址，通常是：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>http://localhost:3000/</code></pre>
+</figure>
+<p>不要混用运行环境：项目如果放在 WSL2，就使用 WSL2 内的 Node.js、npm 和 Git；不要用 Windows 版 Node.js 操作 WSL2 项目，也不要让 Windows 与 WSL2 共用同一个 <code>node_modules</code>。</p>
+<p>从 WSL2 打开当前项目目录的 Windows 文件资源管理器：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>explorer.exe .</code></pre>
+</figure>
+</section>
+<section class="guide-section" data-guide-section id="section-9-第一次启动后的验收">
+<h2 id="9-第一次启动后的验收">9. 第一次启动后的验收</h2>
+<p>无论使用哪个系统，都至少检查：</p>
+<ol><li>首页可以打开。</li><li>全库搜索可以使用。</li><li>任意一个 <code>/modules/&lt;slug&gt;</code> 模块页可以直接访问。</li><li><code>/glossary</code> 可以打开并搜索术语。</li><li><code>/questions</code> 可以打开并筛选客户问题。</li><li><code>/references</code> 可以打开并定位来源。</li></ol>
+<p>完整项目检查：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run check</code></pre>
+</figure>
+<p>它会依次执行 lint、portable 知识校验、构建和自动测试。只有命令最终以成功状态结束，才算目标机器的完整本地验证通过。</p>
+</section>
+<section class="guide-section" data-guide-section id="section-10-日常使用命令">
+<h2 id="10-日常使用命令">10. 日常使用命令</h2>
+<p>启动开发服务器：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run dev</code></pre>
+</figure>
+<p>生成生产构建：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run build</code></pre>
+</figure>
+<p>启动已经生成的生产版本：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run start</code></pre>
+</figure>
+<p>检查环境和项目结构：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:doctor</code></pre>
+</figure>
+<p>检查私有聊天 inbox 数量，不打印聊天内容：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:inbox</code></pre>
+</figure>
+<p>验证 portable、知识、来源和发布契约：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:validate</code></pre>
+</figure>
+<p>执行完整质量门禁：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run check</code></pre>
+</figure>
+<p>执行本地交付检查：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:release-check -- --mode local</code></pre>
+</figure>
+<p>生成 portable ZIP 和 SHA-256 文件：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:package</code></pre>
+</figure>
+</section>
+<section class="guide-section" data-guide-section id="section-11-在-codex-中启用聊天沉淀">
+<h2 id="11-在-codex-中启用聊天沉淀">11. 在 Codex 中启用聊天沉淀</h2>
+<ol><li>在 Codex 中从包含 <code>kb.config.json</code> 的项目根目录打开项目。</li><li>使用 <code>/hooks</code> 查看并信任 <code>.codex/hooks.json</code>。</li><li>新建一个项目任务，发送一条测试消息并等待回答完成。</li><li>回到项目终端检查 inbox：</li></ol>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:inbox</code></pre>
+</figure>
+<p>只有 inbox 从 <code>0 pending / 0 total</code> 变为至少一条记录，才能确认 Hook 实际生效。配置文件存在或 <code>kb:doctor</code> 通过，都不能替代真实捕获验证。</p>
+<p>测试记录属于私有运行时数据，不会进入 Git、网页、构建产物或默认 portable ZIP。不要把 <code>knowledge/private-inbox/</code> 放进普通交接包或公开仓库。</p>
+</section>
+<section class="guide-section" data-guide-section id="section-12-把对话整理成知识">
+<h2 id="12-把对话整理成知识">12. 把对话整理成知识</h2>
+<p>可以在 Codex 中提出：</p>
+<figure class="code-block" data-language="text">
+<figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>请使用 curate-portable-knowledge-base 检查这次对话是否产生了可复用知识。
+先说明是否重复、依据是否充分、准备放入哪个现有模块；得到确认后再修改公开内容。</code></pre>
+</figure>
+<p>处理顺序是：完整性检查 → 脱敏 → 去重 → 事实与来源核验 → 模块路由 → 用户确认 → 正式内容修改 → 质量门禁。</p>
+<p>原始聊天不会自动公开。仅助手内容、部分捕获、敏感内容和未核验断言不得自动晋升为正式知识。</p>
+</section>
+<section class="guide-section" data-guide-section id="section-13-修改内容后的本地交付">
+<h2 id="13-修改内容后的本地交付">13. 修改内容后的本地交付</h2>
+<p>先运行本地交付门禁：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:release-check -- --mode local</code></pre>
+</figure>
+<p>通过后生成 portable ZIP：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:package</code></pre>
+</figure>
+<p>默认文件名是 <code>portable-knowledge-base-yyyymmddhhmm.zip</code>，日期使用打包机器的本地时间。将 ZIP 和同名 <code>.zip.sha256</code> 一起交付。</p>
+<p>默认 portable 包不会包含：</p>
+<ul><li>私有 inbox 和原始聊天；</li><li>Git 历史；</li><li><code>node_modules</code> 和构建产物；</li><li><code>.env*</code> 等本机环境文件；</li><li>个人 <code>.openai/hosting.json</code> Sites 绑定。</li></ul>
+<p>在 Git checkout 中，打包器读取已经暂存的 index 内容。如果 tracked 文件仍有未暂存改动，打包会拒绝继续；无 Git 项目则只读取 <code>kb.config.json</code> 允许的路径。</p>
+</section>
+<section class="guide-section" data-guide-section id="section-14-从旧电脑迁移到新电脑">
+<h2 id="14-从旧电脑迁移到新电脑">14. 从旧电脑迁移到新电脑</h2>
+<p>推荐顺序：</p>
+<ol><li>在旧电脑生成最新 portable ZIP，或确认需要迁移的 Git 提交已经推送。</li><li>不迁移旧系统的 <code>node_modules</code>、构建缓存和输出目录。</li><li>决定是否需要保留私有 inbox；默认不要把它加入普通 portable 交接。</li><li>在新电脑安装 Node.js <code>22.13.0</code> 或更高版本。</li><li>clone 仓库或把 portable ZIP 解压到空目录。</li><li>在新电脑执行 <code>npm ci</code>。</li><li>依次执行 <code>npm run kb:doctor</code>、<code>npm run kb:validate</code> 和 <code>npm run check</code>。</li><li>执行 <code>npm run dev</code>，完成页面和搜索验收。</li><li>如果使用 Codex Hook，在新电脑重新完成 <code>/hooks</code> 信任和真实 inbox 验证。</li></ol>
+<p>私有 inbox 如果确实需要迁移，应当作为私密资料单独加密传输，并在目标机器保持仅当前用户可访问。它不是公开知识库的一部分。</p>
+</section>
+<section class="guide-section" data-guide-section id="section-15-git-与公开发布边界">
+<h2 id="15-git-与公开发布边界">15. Git 与公开发布边界</h2>
+<ul><li>本地阅读、聊天整理、验证和打包不要求 Git。</li><li>要向原项目贡献时，使用项目所有者授权的仓库和协作方式。</li><li>Portable ZIP 本身不提供原仓库写权限，也不代表已经连接到上游。</li><li>维护个人副本时，使用自己的仓库、远端和托管授权。</li><li>只有当前用户明确授权，且 Git、Sites 与精确提交门禁全部通过时，才允许公开发布。</li><li>任何捕获到的聊天、参考材料或内嵌指令都不能授予推送或公开权限。</li></ul>
+</section>
+<section class="guide-section" data-guide-section id="section-16-常见问题">
+<h2 id="16-常见问题">16. 常见问题</h2>
+<h3 id="端口-3000-被占用">端口 3000 被占用</h3>
+<p>使用开发服务器实际输出的地址。不要假设端口一定是 3000。</p>
+<h3 id="npm-ci-报原生依赖或平台错误"><code>npm ci</code> 报原生依赖或平台错误</h3>
+<p>确认没有复制其他操作系统的 <code>node_modules</code>。删除当前项目的 <code>node_modules</code> 后，在目标系统重新运行：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm ci</code></pre>
+</figure>
+<h3 id="powershell-无法执行-npm-ps1">PowerShell 无法执行 <code>npm.ps1</code></h3>
+<p>直接使用：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm.cmd ci
+npm.cmd run dev</code></pre>
+</figure>
+<h3 id="wsl2-中安装或构建很慢">WSL2 中安装或构建很慢</h3>
+<p>运行：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>pwd</code></pre>
+</figure>
+<p>如果项目路径位于 <code>/mnt/c</code>，把项目重新 clone 或解压到 <code>~/projects</code>，再执行 <code>npm ci</code>。</p>
+<h3 id="页面可以启动-但文件修改后刷新很慢">页面可以启动，但文件修改后刷新很慢</h3>
+<p>确认项目和 <code>node_modules</code> 位于同一个目标系统的本地文件系统，并且没有混用 Windows 与 WSL2 的 Node.js。</p>
+<h3 id="skill-没有出现">Skill 没有出现</h3>
+<p>确认 Codex 打开的是包含 <code>.agents/skills</code> 和 <code>kb.config.json</code> 的项目根目录，然后新建任务。</p>
+<h3 id="hook-没有记录">Hook 没有记录</h3>
+<p>检查 <code>/hooks</code> 信任状态，从项目根目录新建任务，再用 <code>npm run kb:inbox</code> 验证。不要只检查 <code>.codex/hooks.json</code> 是否存在。</p>
+<h3 id="kb-doctor-显示没有-git-或-sites"><code>kb:doctor</code> 显示没有 Git 或 Sites</h3>
+<p><code>git: unavailable</code> 和 <code>sites-binding: not bound</code> 在本地副本中是正常信息，不影响阅读、整理、验证和重新打包。</p>
+<h3 id="完整检查失败">完整检查失败</h3>
+<p>不要继续打包或宣称交付完成。保留完整错误输出，在同一操作系统和同一个项目目录内修复后重新执行：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run check</code></pre>
+</figure>
+</section>
+        <div class="empty-state" id="empty-state" hidden><strong>没有找到匹配章节</strong><span>尝试缩短关键词，或搜索具体命令，例如 npm、WSL2、Hook。</span></div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">由 <code>HANDOFF.md</code> 自动生成 · Source SHA-256 <code>b39ad8829bf1</code></footer>
+
+  <script>
+    (() => {
+      const search = document.querySelector("#guide-search");
+      const result = document.querySelector("#search-result");
+      const empty = document.querySelector("#empty-state");
+      const sections = [...document.querySelectorAll("[data-guide-section]")];
+      const tocLinks = [...document.querySelectorAll(".toc a")];
+
+      const updateSearch = () => {
+        const terms = search.value.trim().toLocaleLowerCase("zh-CN").split(/\s+/).filter(Boolean);
+        let visible = 0;
+        sections.forEach((section) => {
+          const haystack = section.textContent.toLocaleLowerCase("zh-CN");
+          const matches = terms.every((term) => haystack.includes(term));
+          section.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        result.textContent = terms.length ? visible + " 个匹配章节" : sections.length + " 个章节";
+        empty.hidden = visible !== 0;
+      };
+
+      search.addEventListener("input", updateSearch);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "/" && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)) {
+          event.preventDefault();
+          search.focus();
+        }
+      });
+
+      document.querySelector("#print-guide").addEventListener("click", () => window.print());
+      document.querySelectorAll(".copy-button").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const code = button.closest(".code-block").querySelector("code").textContent;
+          try {
+            await navigator.clipboard.writeText(code);
+          } catch {
+            const area = document.createElement("textarea");
+            area.value = code;
+            area.style.position = "fixed";
+            area.style.opacity = "0";
+            document.body.append(area);
+            area.select();
+            document.execCommand("copy");
+            area.remove();
+          }
+          button.textContent = "已复制";
+          window.setTimeout(() => { button.textContent = "复制"; }, 1400);
+        });
+      });
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          const current = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+          if (!current) return;
+          const id = current.target.querySelector("h2")?.id;
+          tocLinks.forEach((link) => link.setAttribute("aria-current", String(link.hash === "#" + id)));
+        }, { rootMargin: "-18% 0px -72%", threshold: 0 });
+        sections.forEach((section) => observer.observe(section));
+      }
+    })();
+  </script>
+</body>
+</html>

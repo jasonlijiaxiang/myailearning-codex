@@ -526,6 +526,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
           ".node-version",
           ".openai/hosting.example.json",
           "AGENTS.md",
+          "HANDOFF-READ-FIRST.html",
           "HANDOFF.md",
           "README.md",
           "kb.config.json",
@@ -559,6 +560,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
     };
     await writeJson(path.join(root, "kb.config.json"), config);
     await fs.writeFile(path.join(root, "AGENTS.md"), "portable test\n");
+    await fs.writeFile(path.join(root, "HANDOFF-READ-FIRST.html"), "<!doctype html><title>Portable handoff</title>\n");
     await fs.writeFile(path.join(root, "HANDOFF.md"), "portable handoff\n");
     await fs.writeFile(path.join(root, "README.md"), "portable test\n");
     await writeJson(path.join(root, "package.json"), { name: "portable-test" });

@@ -53,6 +53,7 @@
       ".node-version",
       ".openai/hosting.example.json",
       "AGENTS.md",
+      "HANDOFF-READ-FIRST.html",
       "HANDOFF.md",
       "README.md",
       "kb.config.json",

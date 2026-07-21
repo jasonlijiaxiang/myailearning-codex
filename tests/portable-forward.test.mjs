@@ -78,6 +78,7 @@ test("the real portable archive installs, validates, and builds from a fresh no-
     const manifest = JSON.parse(entries.get("PORTABLE-MANIFEST.json").toString("utf8"));
     const paths = new Set(manifest.files.map((file) => file.path));
     assert.equal(manifest.siteBindingIncluded, false);
+    assert.ok(paths.has("HANDOFF-READ-FIRST.html"));
     assert.ok(paths.has("HANDOFF.md"));
     assert.ok(paths.has("package-lock.json"));
     assert.ok(paths.has("knowledge/schemas/release.schema.json"));
@@ -90,6 +91,12 @@ test("the real portable archive installs, validates, and builds from a fresh no-
     const extracted = path.join(root, "extracted");
     await fs.mkdir(extracted);
     await extractStoredEntries(entries, extracted);
+
+    const handoffHtml = await fs.readFile(path.join(extracted, "HANDOFF-READ-FIRST.html"), "utf8");
+    assert.match(handoffHtml, /<title>How to use this KB/);
+    assert.match(handoffHtml, /Windows \+ WSL2/);
+    assert.match(handoffHtml, /class="copy-button"/);
+    assert.match(handoffHtml, /name="handoff-source-sha256"/);
 
     const install = run(
       NPM,
