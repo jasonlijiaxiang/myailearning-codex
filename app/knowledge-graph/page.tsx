@@ -3,46 +3,13 @@ import Link from "next/link";
 
 import { ReadingProgress } from "../fieldbook-interactions";
 import { KnowledgeGraphExplorer, type GraphLayer, type GraphModule, type GraphRelation, type GraphTerm, type GraphRelationType } from "./knowledge-graph-explorer";
-import { layers, moduleList } from "../knowledge-map.mjs";
-import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../knowledge-relations.mjs";
-import { moduleDiscovery } from "../module-discovery.mjs";
-import { terminology } from "../terminology.mjs";
+import { graphLayers, graphModules, graphRelations, graphRelationTypes, graphTerms } from "./graph-data.mjs";
 import styles from "./knowledge-graph.module.css";
 
 export const metadata: Metadata = {
   title: "全局知识关系图 | 云计算 × AI 平台售前知识库",
   description: "从知识模块进入专业术语，沿明确关系理解云计算与 AI 平台的原理、机制与边界。",
 };
-
-const graphLayers: GraphLayer[] = layers.map((layer) => ({
-  no: layer.no,
-  name: layer.name,
-  en: layer.en,
-  moduleIds: layer.modules.map((module) => module.slug),
-}));
-
-const graphModules: GraphModule[] = moduleList.map((module) => ({
-  id: module.slug,
-  zh: module.zh,
-  en: module.en,
-  href: module.href,
-  layerNo: module.layerNo,
-  layerName: module.layerName,
-  summary: moduleDiscovery[module.slug as keyof typeof moduleDiscovery].summary,
-}));
-
-const graphTerms: GraphTerm[] = Object.entries(terminology).map(([termId, term]) => ({
-  id: termId,
-  zh: term.zh,
-  en: term.en,
-  abbr: term.abbr,
-  description: term.description,
-  moduleIds: [...term.moduleSlugs],
-  primaryModuleId: termPrimaryModules[termId],
-}));
-
-const graphRelations: GraphRelation[] = explicitTermRelations.map((relation) => ({ ...relation }));
-const graphRelationTypes = Object.fromEntries(Object.entries(knowledgeRelationTypes).map(([id, value]) => [id, { ...value }])) as Record<string, GraphRelationType>;
 
 export default function KnowledgeGraphPage() {
   return (
@@ -74,11 +41,11 @@ export default function KnowledgeGraphPage() {
       </header>
 
       <KnowledgeGraphExplorer
-        layers={graphLayers}
-        modules={graphModules}
-        terms={graphTerms}
-        relations={graphRelations}
-        relationTypes={graphRelationTypes}
+        layers={graphLayers as unknown as GraphLayer[]}
+        modules={graphModules as unknown as GraphModule[]}
+        terms={graphTerms as unknown as GraphTerm[]}
+        relations={graphRelations as unknown as GraphRelation[]}
+        relationTypes={graphRelationTypes as unknown as Record<string, GraphRelationType>}
       />
 
       <section className={styles.howTo} aria-labelledby="knowledge-graph-how-to-title">

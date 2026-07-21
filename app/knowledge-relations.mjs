@@ -21,7 +21,7 @@ export const termPrimaryModules = Object.freeze(Object.fromEntries(
   Object.entries(terminology).map(([termId, term]) => [termId, term.moduleSlugs[0]]),
 ));
 
-export const explicitTermRelations = Object.freeze([
+const explicitTermRelationInputs = [
   // 模型基础与推理
   Object.freeze({ from: "token", to: "llm", type: "component", explanation: "大语言模型以 Token 作为输入处理与逐步生成的离散单元。" }),
   Object.freeze({ from: "transformer", to: "llm", type: "component", explanation: "Transformer 是现代大语言模型的主要基础架构。" }),
@@ -81,7 +81,18 @@ export const explicitTermRelations = Object.freeze([
   Object.freeze({ from: "slo", to: "sla", type: "prerequisite", explanation: "可度量的 SLO 为服务水平承诺与持续运营提供内部目标。" }),
   Object.freeze({ from: "tco", to: "solution-patterns", type: "metric", explanation: "TCO 把采购、运行、集成、维护与失败处理纳入方案成本判断。" }),
   Object.freeze({ from: "finops", to: "tco", type: "control", explanation: "FinOps 让工程、财务与业务持续治理单位成本、预算和价值。" }),
-]);
+];
+
+/**
+ * 每条正式关系具有稳定 ID、方向和发布状态。后续如接入来源台账，可在不改变
+ * Design 1 / Design 2 的情况下继续补充 sourceIds 与 reviewedAt。
+ */
+export const explicitTermRelations = Object.freeze(explicitTermRelationInputs.map((relation) => Object.freeze({
+  id: `${relation.from}:${relation.type}:${relation.to}`,
+  direction: "directed",
+  status: "published",
+  ...relation,
+})));
 
 const relationTypeIds = new Set(Object.keys(knowledgeRelationTypes));
 const relationKeys = new Set();
@@ -97,7 +108,7 @@ for (const relation of explicitTermRelations) {
     throw new Error(`Knowledge graph relation uses invalid explicit type: ${relation.type}`);
   }
   if (relation.from === relation.to) throw new Error(`Knowledge graph relation cannot self-link: ${relation.from}`);
-  const key = `${relation.from}:${relation.type}:${relation.to}`;
+  const key = relation.id;
   if (relationKeys.has(key)) throw new Error(`Duplicate knowledge graph relation: ${key}`);
   relationKeys.add(key);
 }

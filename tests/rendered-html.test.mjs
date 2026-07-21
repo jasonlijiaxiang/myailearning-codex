@@ -6,6 +6,7 @@ import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs"
 import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
+import { graphHealth, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
@@ -316,10 +317,18 @@ test("standalone knowledge graph derives every node and relation from stable reg
     assert.ok(termIds.has(relation.to), `知识图谱关系引用未知终点：${relation.to}`);
     assert.ok(allowedExplicitTypes.has(relation.type), `知识图谱显式关系类型非法：${relation.type}`);
     assert.ok(relation.explanation.length >= 18, `知识图谱关系缺少可读解释：${relation.from} -> ${relation.to}`);
+    assert.equal(relation.id, `${relation.from}:${relation.type}:${relation.to}`, "知识图谱关系必须拥有可预测的稳定 ID");
+    assert.equal(relation.direction, "directed", "知识图谱显式关系必须声明方向");
+    assert.equal(relation.status, "published", "公开图谱只消费正式关系");
     const key = `${relation.from}:${relation.type}:${relation.to}`;
     assert.equal(relationKeys.has(key), false, `知识图谱关系重复：${key}`);
     relationKeys.add(key);
   }
+
+  assert.ok(graphScalePolicy.maxActiveNodes >= 16 && graphScalePolicy.maxActiveNodes <= 32, "动态图谱必须限制同时显示的节点数量");
+  assert.ok(graphScalePolicy.maxActiveEdges >= graphScalePolicy.maxActiveNodes - 1, "动态图谱边数量上限必须覆盖一跳节点");
+  assert.equal(graphHealth.isolatedTermIds.length, 0, "术语不得成为孤立节点");
+  assert.ok(graphHealth.maximumDegree > 0, "图谱健康检查必须计算节点度数");
 
   for (const typeId of ["primary-owner", "contextual-use", ...allowedExplicitTypes]) {
     assert.ok(knowledgeRelationTypes[typeId], `知识图谱缺少关系类型说明：${typeId}`);
@@ -341,6 +350,14 @@ test("standalone knowledge graph derives every node and relation from stable reg
   assert.doesNotMatch(html, /来源节点|客户问题节点|图数据库|GraphRAG/);
   assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
   assert.doesNotMatch(html, /\/(?:Users|home)\//);
+
+  const animatedHtml = await renderHtml("/knowledge-graph/design-2?node=term:kv-cache");
+  assert.match(animatedHtml, /知识星图 Design 2/);
+  assert.match(animatedHtml, /动态图谱|动态知识星图|聚焦显示/);
+  assert.match(animatedHtml, /图中只展示已经整理的明确关系，不表示所有可能联系/);
+  assert.match(animatedHtml, /返回 Design 1 阅读模式/);
+  assert.doesNotMatch(animatedHtml, /运行中|实时更新|来源节点|客户问题节点|图数据库|GraphRAG/);
+  assert.doesNotMatch(animatedHtml, /\b(?:Login|Sign in)\b|type="password"/i);
 });
 
 test("evidence cards keep facts, findings, boundaries, and sources readable", async () => {
@@ -706,7 +723,7 @@ test("every published module passes the shared reader, terminology, and depth co
 });
 
 test("reader pages omit internal build notes and use the shared related-module language", async () => {
-  for (const path of ["/", ...publishedModules.map((module) => module.path), "/glossary", "/questions", "/references", "/knowledge-graph"]) {
+  for (const path of ["/", ...publishedModules.map((module) => module.path), "/glossary", "/questions", "/references", "/knowledge-graph", "/knowledge-graph/design-2"]) {
     const html = await renderHtml(path);
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
@@ -780,6 +797,7 @@ test("every public knowledge route is anonymously readable and directly shareabl
     "/questions",
     "/references",
     "/knowledge-graph",
+    "/knowledge-graph/design-2",
     ...moduleList.map((knowledgeModule) => knowledgeModule.href),
     ...Object.keys(legacyModuleAliases).map((slug) => `/modules/${slug}`),
   ];
