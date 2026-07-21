@@ -19,24 +19,7 @@ Windows 原生可以完成本地运行；如果要长期维护，优先使用 WS
 
 ## 2. 获取项目
 
-### 方式 A：从 Git 仓库获取
-
-适合需要保留提交历史和参与协作的人：
-
-```bash
-git clone <仓库地址> my-ai-learning
-cd my-ai-learning
-```
-
-Windows 原生建议在 clone 时关闭自动换行转换，减少 LF/CRLF 造成的无意改动：
-
-```powershell
-git -c core.autocrlf=false clone <仓库地址> my-ai-learning
-Set-Location ".\my-ai-learning"
-git config core.autocrlf false
-```
-
-### 方式 B：使用 portable ZIP
+### 使用 portable ZIP
 
 适合本地阅读、独立维护或交接。交付方应同时提供：
 
@@ -128,6 +111,23 @@ coverage/
 
 ## 5. macOS 本地使用
 
+### 5.1 安装 Node.js
+
+推荐使用 `nvm` 安装 Node.js 22。以下命令来自 [Node.js 官方下载页](https://nodejs.org/en/download) 推荐的安装方式：
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install 22
+nvm alias default 22
+node --version
+npm --version
+```
+
+如果关闭 Terminal 后 `nvm` 命令不可用，重新打开 Terminal；安装细节和 Shell 配置见 [nvm 官方说明](https://github.com/nvm-sh/nvm#installing-and-updating)。
+
+### 5.2 安装依赖并启动
+
 在 Terminal 中进入项目根目录，即能看到 `kb.config.json` 的目录：
 
 ```bash
@@ -153,6 +153,23 @@ http://localhost:3000/
 
 ## 6. Linux 本地使用
 
+### 6.1 安装 Node.js
+
+在 Ubuntu、Debian 及其他常见 Linux 发行版中，可以使用 `nvm` 安装 Node.js 22：
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install 22
+nvm alias default 22
+node --version
+npm --version
+```
+
+如果新终端仍找不到 `nvm`，按照 [nvm 官方说明](https://github.com/nvm-sh/nvm#troubleshooting-on-linux) 检查 `~/.bashrc`、`~/.zshrc` 或当前 Shell 的启动文件。
+
+### 6.2 安装依赖并启动
+
 在 Shell 中进入项目根目录：
 
 ```bash
@@ -174,7 +191,28 @@ npm run dev
 
 ## 7. Windows 原生本地使用
 
-适合只在 Windows 上阅读、演示或做少量维护。安装 Node.js 后，使用 PowerShell 进入项目目录：
+适合只在 Windows 上阅读、演示或做少量维护。
+
+### 7.1 安装 Node.js
+
+在 PowerShell 中使用 Windows Package Manager 安装 Node.js 的最新 LTS 版本：
+
+```powershell
+winget install --id OpenJS.NodeJS.LTS -e --source winget
+```
+
+安装完成后关闭并重新打开 PowerShell，再确认版本：
+
+```powershell
+node --version
+npm --version
+```
+
+如果系统没有 `winget`，从 [Node.js 官方下载页](https://nodejs.org/en/download) 下载 Windows Installer（`.msi`）并按默认选项安装；也可以按照 [Microsoft WinGet 安装说明](https://learn.microsoft.com/windows/package-manager/winget/) 先安装 App Installer。最终的 Node.js 版本必须不低于 `22.13.0`。
+
+### 7.2 安装依赖并启动
+
+使用 PowerShell 进入项目目录：
 
 ```powershell
 Set-Location ".\my-ai-learning"
@@ -222,9 +260,15 @@ wsl --install -d Ubuntu
 
 按 Windows 提示完成重启和 Ubuntu 用户初始化。以后可以从 Windows Terminal 打开 Ubuntu。安装或系统要求变化时，以 [Microsoft WSL 安装文档](https://learn.microsoft.com/windows/wsl/install) 为准。
 
-Node.js 需要安装在 WSL2 的 Ubuntu 内；Windows 已安装的 Node.js 不会自动成为 WSL2 的 Node.js。使用你选择的 Linux Node.js 版本管理器或安装方式，安装 `22.13.0` 或更高版本，然后在 Ubuntu 中确认：
+Node.js 需要安装在 WSL2 的 Ubuntu 内；Windows 已安装的 Node.js 不会自动成为 WSL2 的 Node.js。在 Ubuntu Shell 中安装 `nvm` 和 Node.js 22：
 
 ```bash
+sudo apt update
+sudo apt install -y curl ca-certificates
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install 22
+nvm alias default 22
 node --version
 npm --version
 ```
@@ -234,18 +278,13 @@ npm --version
 推荐：
 
 ```bash
-mkdir -p ~/projects
-cd ~/projects
-git clone <仓库地址> my-ai-learning
-cd my-ai-learning
-git config core.autocrlf false
-```
-
-如果使用 portable ZIP，可以在 WSL2 中打开目标目录的 Windows 文件资源管理器，把下载的 ZIP 拖进该空目录，然后回到 WSL2 解压：
-
-```bash
 mkdir -p ~/projects/my-ai-learning
 cd ~/projects/my-ai-learning
+```
+
+在 WSL2 中打开目标目录的 Windows 文件资源管理器，把下载的 portable ZIP 拖进该空目录，然后回到 WSL2 解压：
+
+```bash
 explorer.exe .
 unzip portable-knowledge-base-yyyymmddhhmm.zip
 ```
@@ -418,11 +457,11 @@ npm run kb:package
 
 推荐顺序：
 
-1. 在旧电脑生成最新 portable ZIP，或确认需要迁移的 Git 提交已经推送。
+1. 在旧电脑生成最新 portable ZIP 和同名 SHA-256 文件。
 2. 不迁移旧系统的 `node_modules`、构建缓存和输出目录。
 3. 决定是否需要保留私有 inbox；默认不要把它加入普通 portable 交接。
 4. 在新电脑安装 Node.js `22.13.0` 或更高版本。
-5. clone 仓库或把 portable ZIP 解压到空目录。
+5. 验证 ZIP 的 SHA-256，再把 portable ZIP 解压到空目录。
 6. 在新电脑执行 `npm ci`。
 7. 依次执行 `npm run kb:doctor`、`npm run kb:validate` 和 `npm run check`。
 8. 执行 `npm run dev`，完成页面和搜索验收。
@@ -470,7 +509,7 @@ npm.cmd run dev
 pwd
 ```
 
-如果项目路径位于 `/mnt/c`，把项目重新 clone 或解压到 `~/projects`，再执行 `npm ci`。
+如果项目路径位于 `/mnt/c`，把 portable ZIP 重新解压到 `~/projects`，再执行 `npm ci`。
 
 ### 页面可以启动，但文件修改后刷新很慢
 

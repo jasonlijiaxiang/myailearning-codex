@@ -97,6 +97,9 @@ test("the real portable archive installs, validates, and builds from a fresh no-
     assert.match(handoffHtml, /Windows \+ WSL2/);
     assert.match(handoffHtml, /class="copy-button"/);
     assert.match(handoffHtml, /name="handoff-source-sha256"/);
+    assert.doesNotMatch(handoffHtml, /从 Git 仓库获取|git clone/);
+    assert.match(handoffHtml, /nvm install 22/);
+    assert.match(handoffHtml, /winget install --id OpenJS\.NodeJS\.LTS/);
 
     const install = run(
       NPM,

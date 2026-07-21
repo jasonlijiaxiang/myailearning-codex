@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="handoff-source-sha256" content="b39ad8829bf1e25d329ebeee6e3773e7694e9f840631d016fbe7efd8ae4a9909">
+  <meta name="handoff-source-sha256" content="e3a776e568b9d748dbd94a46f67d4aaf90d143428c8e125eaa30f5c377bf4a3d">
   <title>How to use this KB：Portable 知识库使用与迁移指南</title>
   <style>
     :root {
@@ -190,21 +190,7 @@
 </section>
 <section class="guide-section" data-guide-section id="section-2-获取项目">
 <h2 id="2-获取项目">2. 获取项目</h2>
-<h3 id="方式-a-从-git-仓库获取">方式 A：从 Git 仓库获取</h3>
-<p>适合需要保留提交历史和参与协作的人：</p>
-<figure class="code-block" data-language="bash">
-<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
-<pre><code>git clone &lt;仓库地址&gt; my-ai-learning
-cd my-ai-learning</code></pre>
-</figure>
-<p>Windows 原生建议在 clone 时关闭自动换行转换，减少 LF/CRLF 造成的无意改动：</p>
-<figure class="code-block" data-language="powershell">
-<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
-<pre><code>git -c core.autocrlf=false clone &lt;仓库地址&gt; my-ai-learning
-Set-Location &quot;.\my-ai-learning&quot;
-git config core.autocrlf false</code></pre>
-</figure>
-<h3 id="方式-b-使用-portable-zip">方式 B：使用 portable ZIP</h3>
+<h3 id="使用-portable-zip">使用 portable ZIP</h3>
 <p>适合本地阅读、独立维护或交接。交付方应同时提供：</p>
 <figure class="code-block" data-language="text">
 <figcaption><span>text</span><button type="button" class="copy-button">复制</button></figcaption>
@@ -280,6 +266,19 @@ coverage/</code></pre>
 </section>
 <section class="guide-section" data-guide-section id="section-5-macos-本地使用">
 <h2 id="5-macos-本地使用">5. macOS 本地使用</h2>
+<h3 id="5-1-安装-node-js">5.1 安装 Node.js</h3>
+<p>推荐使用 <code>nvm</code> 安装 Node.js 22。以下命令来自 <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js 官方下载页</a> 推荐的安装方式：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+\. &quot;$HOME/.nvm/nvm.sh&quot;
+nvm install 22
+nvm alias default 22
+node --version
+npm --version</code></pre>
+</figure>
+<p>如果关闭 Terminal 后 <code>nvm</code> 命令不可用，重新打开 Terminal；安装细节和 Shell 配置见 <a href="https://github.com/nvm-sh/nvm#installing-and-updating" target="_blank" rel="noreferrer">nvm 官方说明</a>。</p>
+<h3 id="5-2-安装依赖并启动">5.2 安装依赖并启动</h3>
 <p>在 Terminal 中进入项目根目录，即能看到 <code>kb.config.json</code> 的目录：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
@@ -303,6 +302,19 @@ npm run dev</code></pre>
 </section>
 <section class="guide-section" data-guide-section id="section-6-linux-本地使用">
 <h2 id="6-linux-本地使用">6. Linux 本地使用</h2>
+<h3 id="6-1-安装-node-js">6.1 安装 Node.js</h3>
+<p>在 Ubuntu、Debian 及其他常见 Linux 发行版中，可以使用 <code>nvm</code> 安装 Node.js 22：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+\. &quot;$HOME/.nvm/nvm.sh&quot;
+nvm install 22
+nvm alias default 22
+node --version
+npm --version</code></pre>
+</figure>
+<p>如果新终端仍找不到 <code>nvm</code>，按照 <a href="https://github.com/nvm-sh/nvm#troubleshooting-on-linux" target="_blank" rel="noreferrer">nvm 官方说明</a> 检查 <code>~/.bashrc</code>、<code>~/.zshrc</code> 或当前 Shell 的启动文件。</p>
+<h3 id="6-2-安装依赖并启动">6.2 安装依赖并启动</h3>
 <p>在 Shell 中进入项目根目录：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
@@ -322,7 +334,22 @@ npm run dev</code></pre>
 </section>
 <section class="guide-section" data-guide-section id="section-7-windows-原生本地使用">
 <h2 id="7-windows-原生本地使用">7. Windows 原生本地使用</h2>
-<p>适合只在 Windows 上阅读、演示或做少量维护。安装 Node.js 后，使用 PowerShell 进入项目目录：</p>
+<p>适合只在 Windows 上阅读、演示或做少量维护。</p>
+<h3 id="7-1-安装-node-js">7.1 安装 Node.js</h3>
+<p>在 PowerShell 中使用 Windows Package Manager 安装 Node.js 的最新 LTS 版本：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>winget install --id OpenJS.NodeJS.LTS -e --source winget</code></pre>
+</figure>
+<p>安装完成后关闭并重新打开 PowerShell，再确认版本：</p>
+<figure class="code-block" data-language="powershell">
+<figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>node --version
+npm --version</code></pre>
+</figure>
+<p>如果系统没有 <code>winget</code>，从 <a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer">Node.js 官方下载页</a> 下载 Windows Installer（<code>.msi</code>）并按默认选项安装；也可以按照 <a href="https://learn.microsoft.com/windows/package-manager/winget/" target="_blank" rel="noreferrer">Microsoft WinGet 安装说明</a> 先安装 App Installer。最终的 Node.js 版本必须不低于 <code>22.13.0</code>。</p>
+<h3 id="7-2-安装依赖并启动">7.2 安装依赖并启动</h3>
+<p>使用 PowerShell 进入项目目录：</p>
 <figure class="code-block" data-language="powershell">
 <figcaption><span>powershell</span><button type="button" class="copy-button">复制</button></figcaption>
 <pre><code>Set-Location &quot;.\my-ai-learning&quot;
@@ -359,28 +386,29 @@ npm.cmd run dev</code></pre>
 <pre><code>wsl --install -d Ubuntu</code></pre>
 </figure>
 <p>按 Windows 提示完成重启和 Ubuntu 用户初始化。以后可以从 Windows Terminal 打开 Ubuntu。安装或系统要求变化时，以 <a href="https://learn.microsoft.com/windows/wsl/install" target="_blank" rel="noreferrer">Microsoft WSL 安装文档</a> 为准。</p>
-<p>Node.js 需要安装在 WSL2 的 Ubuntu 内；Windows 已安装的 Node.js 不会自动成为 WSL2 的 Node.js。使用你选择的 Linux Node.js 版本管理器或安装方式，安装 <code>22.13.0</code> 或更高版本，然后在 Ubuntu 中确认：</p>
+<p>Node.js 需要安装在 WSL2 的 Ubuntu 内；Windows 已安装的 Node.js 不会自动成为 WSL2 的 Node.js。在 Ubuntu Shell 中安装 <code>nvm</code> 和 Node.js 22：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
-<pre><code>node --version
+<pre><code>sudo apt update
+sudo apt install -y curl ca-certificates
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.6/install.sh | bash
+\. &quot;$HOME/.nvm/nvm.sh&quot;
+nvm install 22
+nvm alias default 22
+node --version
 npm --version</code></pre>
 </figure>
 <h3 id="8-2-把项目放在-wsl2-的-linux-文件系统">8.2 把项目放在 WSL2 的 Linux 文件系统</h3>
 <p>推荐：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
-<pre><code>mkdir -p ~/projects
-cd ~/projects
-git clone &lt;仓库地址&gt; my-ai-learning
-cd my-ai-learning
-git config core.autocrlf false</code></pre>
+<pre><code>mkdir -p ~/projects/my-ai-learning
+cd ~/projects/my-ai-learning</code></pre>
 </figure>
-<p>如果使用 portable ZIP，可以在 WSL2 中打开目标目录的 Windows 文件资源管理器，把下载的 ZIP 拖进该空目录，然后回到 WSL2 解压：</p>
+<p>在 WSL2 中打开目标目录的 Windows 文件资源管理器，把下载的 portable ZIP 拖进该空目录，然后回到 WSL2 解压：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
-<pre><code>mkdir -p ~/projects/my-ai-learning
-cd ~/projects/my-ai-learning
-explorer.exe .
+<pre><code>explorer.exe .
 unzip portable-knowledge-base-yyyymmddhhmm.zip</code></pre>
 </figure>
 <p>项目本体应保存在 <code>~/projects/my-ai-learning</code>，不要长期放在 <code>/mnt/c</code> 下运行。这样 Git、<code>npm ci</code>、构建和文件监听通常更快、更稳定；原因和路径选择见 <a href="https://learn.microsoft.com/windows/wsl/filesystems" target="_blank" rel="noreferrer">Microsoft WSL 文件系统指南</a>。</p>
@@ -512,7 +540,7 @@ npm run dev</code></pre>
 <section class="guide-section" data-guide-section id="section-14-从旧电脑迁移到新电脑">
 <h2 id="14-从旧电脑迁移到新电脑">14. 从旧电脑迁移到新电脑</h2>
 <p>推荐顺序：</p>
-<ol><li>在旧电脑生成最新 portable ZIP，或确认需要迁移的 Git 提交已经推送。</li><li>不迁移旧系统的 <code>node_modules</code>、构建缓存和输出目录。</li><li>决定是否需要保留私有 inbox；默认不要把它加入普通 portable 交接。</li><li>在新电脑安装 Node.js <code>22.13.0</code> 或更高版本。</li><li>clone 仓库或把 portable ZIP 解压到空目录。</li><li>在新电脑执行 <code>npm ci</code>。</li><li>依次执行 <code>npm run kb:doctor</code>、<code>npm run kb:validate</code> 和 <code>npm run check</code>。</li><li>执行 <code>npm run dev</code>，完成页面和搜索验收。</li><li>如果使用 Codex Hook，在新电脑重新完成 <code>/hooks</code> 信任和真实 inbox 验证。</li></ol>
+<ol><li>在旧电脑生成最新 portable ZIP 和同名 SHA-256 文件。</li><li>不迁移旧系统的 <code>node_modules</code>、构建缓存和输出目录。</li><li>决定是否需要保留私有 inbox；默认不要把它加入普通 portable 交接。</li><li>在新电脑安装 Node.js <code>22.13.0</code> 或更高版本。</li><li>验证 ZIP 的 SHA-256，再把 portable ZIP 解压到空目录。</li><li>在新电脑执行 <code>npm ci</code>。</li><li>依次执行 <code>npm run kb:doctor</code>、<code>npm run kb:validate</code> 和 <code>npm run check</code>。</li><li>执行 <code>npm run dev</code>，完成页面和搜索验收。</li><li>如果使用 Codex Hook，在新电脑重新完成 <code>/hooks</code> 信任和真实 inbox 验证。</li></ol>
 <p>私有 inbox 如果确实需要迁移，应当作为私密资料单独加密传输，并在目标机器保持仅当前用户可访问。它不是公开知识库的一部分。</p>
 </section>
 <section class="guide-section" data-guide-section id="section-15-git-与公开发布边界">
@@ -542,7 +570,7 @@ npm.cmd run dev</code></pre>
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
 <pre><code>pwd</code></pre>
 </figure>
-<p>如果项目路径位于 <code>/mnt/c</code>，把项目重新 clone 或解压到 <code>~/projects</code>，再执行 <code>npm ci</code>。</p>
+<p>如果项目路径位于 <code>/mnt/c</code>，把 portable ZIP 重新解压到 <code>~/projects</code>，再执行 <code>npm ci</code>。</p>
 <h3 id="页面可以启动-但文件修改后刷新很慢">页面可以启动，但文件修改后刷新很慢</h3>
 <p>确认项目和 <code>node_modules</code> 位于同一个目标系统的本地文件系统，并且没有混用 Windows 与 WSL2 的 Node.js。</p>
 <h3 id="skill-没有出现">Skill 没有出现</h3>
@@ -563,7 +591,7 @@ npm.cmd run dev</code></pre>
     </div>
   </main>
 
-  <footer class="footer">由 <code>HANDOFF.md</code> 自动生成 · Source SHA-256 <code>b39ad8829bf1</code></footer>
+  <footer class="footer">由 <code>HANDOFF.md</code> 自动生成 · Source SHA-256 <code>e3a776e568b9</code></footer>
 
   <script>
     (() => {
