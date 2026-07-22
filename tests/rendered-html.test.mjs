@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs";
-import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
+import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt, isValidIsoDate } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
@@ -94,10 +95,28 @@ function assertOptionalContentDate(value, label, formatter, prefix) {
   assert.equal(formatter(value), `${prefix} ${value}`);
 }
 
+function legacyUndatedQuestionSetSha256(qa) {
+  const identities = qa
+    .filter((item) => !item.addedAt)
+    .map((item) => item.q.normalize("NFKC").trim().replace(/\s+/g, " "))
+    .sort();
+  return createHash("sha256").update(JSON.stringify(identities), "utf8").digest("hex");
+}
+
 function assertNoItemDateMetadata(item, label) {
   assert.equal(Object.hasOwn(item, "updatedAt"), false, `${label} 不得显示逐项最近更新时间`);
   assert.equal(Object.hasOwn(item, "addedAt"), false, `${label} 不得误用新增问答日期`);
 }
+
+test("historical undated-question baseline binds identity instead of only quantity", () => {
+  const original = [{ q: "历史问题 A" }, { q: "历史问题 B" }];
+  const sameCountReplacement = [{ q: "历史问题 A" }, { q: "新增但漏填日期的问题" }];
+  assert.equal(original.length, sameCountReplacement.length);
+  assert.notEqual(
+    legacyUndatedQuestionSetSha256(original),
+    legacyUndatedQuestionSetSha256(sameCountReplacement),
+  );
+});
 
 test("module updates and newly added questions use distinct, non-repeating date metadata", async () => {
   assert.equal(CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, "2026-07-20");
@@ -110,7 +129,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
   assert.throws(() => formatModuleUpdatedAt("2026-02-30"), /updatedAt/);
   assert.throws(() => formatQuestionAddedAt("2026-02-30"), /addedAt/);
 
-  const addedQuestions = [];
+  let postPolicyModuleCount = 0;
 
   for (const publication of publishedModuleRegistry) {
     const content = requireModuleContent(publication.slug);
@@ -118,12 +137,26 @@ test("module updates and newly added questions use distinct, non-repeating date 
     const learning = publication.routeKind === "brief" ? requireModuleLearning(publication.slug) : null;
 
     assert.equal(Object.hasOwn(publication, "addedAt"), false, `${publication.slug} 的模块日期不得使用 addedAt`);
+    assert.ok(isValidIsoDate(publication.introducedAt), `${publication.slug} / introducedAt 必须是有效 YYYY-MM-DD 日期`);
+    assert.match(publication.legacyUndatedQuestionSetSha256, /^[0-9a-f]{64}$/, `${publication.slug} / legacyUndatedQuestionSetSha256 必须登记稳定身份集合摘要`);
     assertOptionalContentDate(publication.updatedAt, `${publication.slug} / updatedAt`, formatModuleUpdatedAt, "最近更新于");
+    if (publication.updatedAt) {
+      assert.ok(publication.updatedAt >= publication.introducedAt, `${publication.slug} 的 updatedAt 不得早于 introducedAt`);
+    }
+    const requiresInitialQuestionDates = publication.introducedAt >= CONTENT_UPDATE_POLICY_EFFECTIVE_DATE;
+    if (requiresInitialQuestionDates) postPolicyModuleCount += 1;
     for (const item of content.qa) {
       assert.equal(Object.hasOwn(item, "updatedAt"), false, `${publication.slug} / ${item.q} 不得把既有题改写误标为 updatedAt`);
       assertOptionalContentDate(item.addedAt, `${publication.slug} / ${item.q} / addedAt`, formatQuestionAddedAt, "新增于");
-      if (item.addedAt) addedQuestions.push(`${publication.slug} / ${item.q}`);
+      if (requiresInitialQuestionDates) {
+        assert.ok(item.addedAt >= publication.introducedAt, `${publication.slug} 在日期策略生效后引入，问答 addedAt 不得早于 introducedAt`);
+      }
     }
+    assert.equal(
+      legacyUndatedQuestionSetSha256(content.qa),
+      publication.legacyUndatedQuestionSetSha256,
+      `${publication.slug} 的无日期历史问答身份集合必须保持审计基线；新增问题必须设置 addedAt`,
+    );
     for (const block of content.deepDives) assertNoItemDateMetadata(block, `${publication.slug} / ${block.title}`);
     for (const card of content.evidenceCards) assertNoItemDateMetadata(card, `${publication.slug} / ${card.title}`);
     for (const chapter of curriculum?.chapters ?? []) assertNoItemDateMetadata(chapter, `${publication.slug} / ${chapter.title}`);
@@ -137,29 +170,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
     }
   }
 
-  assert.deepEqual(addedQuestions, [
-    "solution-patterns / AI FinOps 是否就是统计 Token 成本？",
-    "solution-patterns / 什么时候应该建立独立 AI FinOps 范围？",
-    "solution-patterns / 每百万 Token 更便宜的模型，为什么总成本可能更高？",
-    "solution-patterns / API 与自建模型应该怎样做成本比较？",
-    "solution-patterns / AI 项目没有直接收入，怎样衡量价值？",
-    "solution-patterns / Showback 和 Chargeback 应该怎样选择？",
-    "a2a / 服务宣称兼容 A2A 1.0，网络连通是否就足以验收？",
-    "ai-ops / GenAIOps 与传统 DevOps 有什么不同？",
-    "ai-ops / 为什么只版本化 Prompt 还不够？",
-    "ai-ops / 模型供应商宣布兼容升级，是否可以跳过回归？",
-    "ai-ops / 怎样测试一个输出不确定的 AI 应用？",
-    "ai-ops / 影子发布会不会造成重复业务动作？",
-    "ai-ops / 线上失败是否应该自动加入评估集？",
-    "ai-ops / RAG、Agent 和多模态应用能共用一套发布门吗？",
-    "ai-ops / 出现质量事故时应该先调 Prompt 还是先换模型？",
-    "ai-ops / 什么时候不值得建设完整 GenAIOps 平台？",
-    "ai-ops / GPU 利用率低是否表示应该减少容量？",
-    "ai-ops / 怎样给多 Agent 任务分摊成本？",
-    "ai-ops / 成本异常应该自动停掉 AI 服务吗？",
-    "ai-ops / 缓存命中率提高是否一定降本？",
-    "ai-ops / 已经有 CI/CD 和单元测试，为什么还需要发布评估？",
-  ]);
+  assert.ok(postPolicyModuleCount > 0, "日期策略生效后引入的新模块必须进入初始问答日期检查");
 
   const [components, questionsPage, questionIndex, styles, v2Styles, agentRules, moduleStandard] = await Promise.all([
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
@@ -468,7 +479,7 @@ test("customer questions follow module decision coverage instead of a shared num
   const finalQuestionCounts = auditedSlugs.map((slug) => requireModuleContent(slug).qa.length);
 
   assert.deepEqual([...new Set(addedQuestionCounts)].sort((a, b) => a - b), [3, 4, 5, 6], "模块补充问题不应来自统一的固定配额");
-  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [11, 12, 13, 14, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
+  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [11, 12, 13, 14, 15, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
   assert.equal(finalQuestionCounts.filter((count) => count === 8).length, 0, "已审计模块不得保留统一 8 题的机械结果");
 
   for (const slug of auditedSlugs) {

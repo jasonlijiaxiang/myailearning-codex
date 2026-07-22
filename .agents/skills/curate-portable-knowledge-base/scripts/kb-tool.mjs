@@ -4,6 +4,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { inflateRawSync } from "node:zlib";
 import {
   acquirePrivateLock,
   atomicWriteJson,
@@ -48,6 +49,7 @@ const REQUIRED_PORTABLE_INCLUDES = [
   "package-lock.json",
   "app",
   "public",
+  "knowledge/attachment-distribution.json",
   "knowledge/claims",
   "knowledge/release-manifest.json",
   "knowledge/schemas",
@@ -69,6 +71,7 @@ const REQUIRED_PORTABLE_FILES = [
   ".agents/skills/curate-portable-knowledge-base/scripts/hook-bootstrap.mjs",
   ".agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs",
   ".agents/skills/curate-portable-knowledge-base/scripts/private-runtime.mjs",
+  ".agents/skills/curate-portable-knowledge-base/references/handoff-audit.md",
   ".codex/hooks.json",
   ".gitignore",
   ".node-version",
@@ -79,6 +82,7 @@ const REQUIRED_PORTABLE_FILES = [
   "kb.config.json",
   "package.json",
   "package-lock.json",
+  "knowledge/attachment-distribution.json",
   "app/module-publication.mjs",
   "app/module-content-registry.mjs",
   "app/reference-content.mjs",
@@ -86,6 +90,7 @@ const REQUIRED_PORTABLE_FILES = [
   "knowledge/claims/index.json",
   "knowledge/release-manifest.json",
   "knowledge/schemas/candidate.schema.json",
+  "knowledge/schemas/attachment-distribution.schema.json",
   "knowledge/schemas/claim.schema.json",
   "knowledge/schemas/release.schema.json",
   "scripts/release-check.mjs",
@@ -94,6 +99,24 @@ const SAFE_QUALITY_COMMANDS = Object.freeze([
   "npm run kb:validate",
   "npm run lint",
   "npm test",
+]);
+const HANDOFF_AUDIENCES = Object.freeze(["internal", "external"]);
+const HANDOFF_CONTROL_FILES = new Set(["README.md", "MANIFEST.md", ".gitkeep"]);
+const OFFICE_ATTACHMENT_EXTENSIONS = new Set([
+  ".docm",
+  ".docx",
+  ".potm",
+  ".potx",
+  ".ppsm",
+  ".ppsx",
+  ".pptm",
+  ".pptx",
+  ".xlam",
+  ".xlsb",
+  ".xlsm",
+  ".xlsx",
+  ".xltm",
+  ".xltx",
 ]);
 const EXPECTED_HOOK_COMMAND_SHA256 = "0bc700775252b8391ef3ec898ed0e48d536bc4e2ac3aa97c90c9dd11cc73724f";
 const EXPECTED_HOOK_TIMEOUT_SECONDS = 20;
@@ -254,7 +277,10 @@ async function doctor({ json = false } = {}) {
     "package.json",
     "package-lock.json",
     ".agents/skills/curate-portable-knowledge-base/SKILL.md",
+    ".agents/skills/curate-portable-knowledge-base/references/handoff-audit.md",
     ".codex/hooks.json",
+    ...(config.handoff?.attachmentPolicy ? [config.handoff.attachmentPolicy] : []),
+    ...(config.handoff?.attachmentSchema ? [config.handoff.attachmentSchema] : []),
     config.curation.publicationRegistry,
     config.curation.contentRegistry,
     config.curation.sourceLedger,
@@ -804,6 +830,15 @@ async function validate({
   if (config.publishing?.defaultMode !== "local") {
     errors.push("Portable default publishing mode must remain local");
   }
+  const sourceRepositoryVisibility = config.publishing?.sourceRepository?.visibility;
+  if (sourceRepositoryVisibility != null
+    && !["private", "public"].includes(sourceRepositoryVisibility)) {
+    errors.push("publishing.sourceRepository.visibility must be private or public when configured");
+  }
+  const sitesVisibility = config.publishing?.sites?.visibility;
+  if (sitesVisibility != null && !["private", "public"].includes(sitesVisibility)) {
+    errors.push("publishing.sites.visibility must be private or public when configured");
+  }
   if (!Number.isInteger(config.capture?.rawRetentionDays) || config.capture.rawRetentionDays <= 0) {
     errors.push("capture.rawRetentionDays must be a positive integer");
   }
@@ -832,6 +867,34 @@ async function validate({
   const siteBinding = portablePath(config.publishing?.sites?.binding ?? "").replace(/\/$/, "");
   if (siteBinding !== ".openai/hosting.json") {
     errors.push("publishing.sites.binding is fixed at .openai/hosting.json for portable isolation");
+  }
+  if (config.handoff?.defaultAudience !== "internal") {
+    errors.push("handoff.defaultAudience must remain internal; external distribution requires an explicit CLI audience");
+  }
+  if (!Array.isArray(config.handoff?.attachmentRoots)
+    || config.handoff.attachmentRoots.length === 0) {
+    errors.push("handoff.attachmentRoots must contain at least one source-material root");
+  }
+  const attachmentRoots = [];
+  for (const root of config.handoff?.attachmentRoots ?? []) {
+    try {
+      const canonical = canonicalProjectRelative(root);
+      if (attachmentRoots.includes(canonical)) {
+        errors.push(`handoff.attachmentRoots contains a duplicate root: ${canonical}`);
+      } else {
+        attachmentRoots.push(canonical);
+      }
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
+  const attachmentPolicyPath = config.handoff?.attachmentPolicy;
+  const attachmentSchemaPath = config.handoff?.attachmentSchema;
+  if (attachmentPolicyPath !== "knowledge/attachment-distribution.json") {
+    errors.push("handoff.attachmentPolicy must point to knowledge/attachment-distribution.json");
+  }
+  if (attachmentSchemaPath !== "knowledge/schemas/attachment-distribution.schema.json") {
+    errors.push("handoff.attachmentSchema must point to knowledge/schemas/attachment-distribution.schema.json");
   }
   const candidates = portablePath(config.curation?.candidates ?? "");
   const privateRuntime = `${privateInbox}/.runtime`;
@@ -906,6 +969,15 @@ async function validate({
   if (!packageExcludes.has(siteBinding)) {
     errors.push("Personal Sites binding must be excluded from portable packages by default");
   }
+  if (attachmentPolicyPath && !packageIncludes.has(attachmentPolicyPath)) {
+    errors.push("Portable package must include the attachment distribution policy");
+  }
+  for (const root of attachmentRoots) {
+    const covered = [...packageIncludes].some((included) => (
+      root === included || root.startsWith(`${included}/`)
+    ));
+    if (!covered) errors.push(`Portable package must include attachment root: ${root}`);
+  }
 
   const projectPaths = [
     config.capture.privateInbox,
@@ -918,6 +990,9 @@ async function validate({
     config.curation.sourceLedger,
     config.curation.terminology,
     config.publishing.sites.binding,
+    config.handoff?.attachmentPolicy,
+    config.handoff?.attachmentSchema,
+    ...(config.handoff?.attachmentRoots ?? []),
     config.packaging.outputDirectory,
   ];
   for (const relative of projectPaths) {
@@ -1023,13 +1098,65 @@ async function validate({
     items: [],
   });
   const releases = await readJson(resolveProjectPath(config.curation.releaseManifest), null);
+  const attachmentPolicy = attachmentPolicyPath
+    ? await readJson(resolveProjectPath(attachmentPolicyPath), null)
+    : null;
   const claimSchema = await readJson(resolveProjectPath("knowledge/schemas/claim.schema.json"));
   const candidateSchema = await readJson(resolveProjectPath("knowledge/schemas/candidate.schema.json"));
+  const attachmentSchema = attachmentSchemaPath
+    ? await readJson(resolveProjectPath(attachmentSchemaPath))
+    : null;
   const releaseSchema = await readJson(resolveProjectPath(
     config.curation.releaseSchema ?? "knowledge/schemas/release.schema.json",
   ));
   if (!releaseSchema || typeof releaseSchema !== "object") {
     errors.push("Release manifest schema is missing or invalid");
+  }
+  if (!attachmentSchema || typeof attachmentSchema !== "object") {
+    errors.push("Attachment distribution schema is missing or invalid");
+  }
+  if (!attachmentPolicy || attachmentPolicy.schemaVersion !== 2
+    || !Array.isArray(attachmentPolicy.items)) {
+    errors.push("Attachment distribution policy must contain schemaVersion 2 and an items array");
+  } else {
+    if (attachmentSchema) {
+      validateSchemaValue(attachmentPolicy, attachmentSchema, "Attachment distribution policy", errors);
+    }
+    if (attachmentPolicy.$schema !== "./schemas/attachment-distribution.schema.json") {
+      errors.push("Attachment distribution policy must reference ./schemas/attachment-distribution.schema.json");
+    }
+    const seenAttachmentPaths = new Set();
+    for (const item of attachmentPolicy.items) {
+      let itemPath;
+      try {
+        itemPath = canonicalProjectRelative(item?.path);
+      } catch (error) {
+        errors.push(error.message);
+        continue;
+      }
+      if (seenAttachmentPaths.has(itemPath)) {
+        errors.push(`Attachment distribution policy contains duplicate path: ${itemPath}`);
+      }
+      seenAttachmentPaths.add(itemPath);
+      const insideRoot = attachmentRoots.some((root) => (
+        itemPath === root || itemPath.startsWith(`${root}/`)
+      ));
+      if (!insideRoot) {
+        errors.push(`Attachment policy path is outside configured attachment roots: ${itemPath}`);
+      }
+      if (!await exists(resolveProjectPath(itemPath))) {
+        errors.push(`Attachment policy references a missing file: ${itemPath}`);
+      }
+      if (!validDate(item.reviewedAt)) {
+        errors.push(`Attachment policy ${itemPath} has an invalid reviewedAt date`);
+      }
+      if (item.authorization === "denied" && (item.allowedAudiences?.length ?? 0) > 0) {
+        errors.push(`Denied attachment policy cannot allow an audience: ${itemPath}`);
+      }
+      if (item.authorization === "confirmed" && (item.allowedAudiences?.length ?? 0) === 0) {
+        errors.push(`Confirmed attachment policy must allow at least one audience: ${itemPath}`);
+      }
+    }
   }
   let sourceLedger = {};
   let moduleIds = new Set();
@@ -1051,6 +1178,7 @@ async function validate({
   } else {
     uniqueIds(claims.items, "Claim registry", errors);
     const claimIds = new Set(claims.items.map((claim) => claim?.id).filter(Boolean));
+    const claimById = new Map(claims.items.map((claim) => [claim?.id, claim]));
     const today = new Date().toISOString().slice(0, 10);
     for (const claim of claims.items) {
       validateSchemaValue(claim, claimSchema, `Claim ${claim?.id ?? "unknown"}`, errors);
@@ -1079,6 +1207,33 @@ async function validate({
       }
       if (claim.supersedes && !claimIds.has(claim.supersedes)) {
         errors.push(`Claim ${claim.id} supersedes unknown claim ${claim.supersedes}`);
+      }
+      if (claim.announcement) {
+        const { targetClaimId, scheduledFor } = claim.announcement;
+        const target = claimById.get(targetClaimId);
+        if (!target) {
+          errors.push(`Claim ${claim.id} announces replacement of unknown claim ${targetClaimId}`);
+        } else if (targetClaimId === claim.id) {
+          errors.push(`Claim ${claim.id} cannot announce itself as a replacement target`);
+        } else {
+          if (claim.status !== "watch") {
+            errors.push(`Claim ${claim.id} with a scheduled replacement announcement must be watch`);
+          }
+          if (target.status !== "watch") {
+            errors.push(`Claim ${targetClaimId} targeted by a scheduled replacement announcement must be watch`);
+          }
+          if (validDate(scheduledFor)) {
+            if (validDate(claim.verifiedAt) && scheduledFor < claim.verifiedAt) {
+              errors.push(`Claim ${claim.id} scheduled replacement predates its verification`);
+            }
+            if (validDate(claim.reviewBy) && claim.reviewBy > scheduledFor) {
+              errors.push(`Claim ${claim.id} reviewBy exceeds scheduled replacement date ${scheduledFor}`);
+            }
+            if (validDate(target.reviewBy) && target.reviewBy > scheduledFor) {
+              errors.push(`Claim ${targetClaimId} reviewBy exceeds announced replacement date ${scheduledFor}`);
+            }
+          }
+        }
       }
     }
   }
@@ -1248,7 +1403,7 @@ async function validate({
     }
   }
 
-  const trackedKnowledge = JSON.stringify({ claims, releases });
+  const trackedKnowledge = JSON.stringify({ attachmentPolicy, claims, releases });
   if (/\/(?:Users|home)\/|[A-Za-z]:\\|file:\/\//.test(trackedKnowledge)) {
     errors.push("Portable knowledge metadata contains an absolute path");
   }
@@ -1523,6 +1678,287 @@ async function collectPortableSourceFiles(config, includeSiteBinding, exactExclu
   return sources;
 }
 
+function configuredAttachmentRoots(config) {
+  return (config.handoff?.attachmentRoots ?? []).map((root) => portablePath(root).replace(/\/$/, ""));
+}
+
+function isConfiguredAttachmentPath(relative, config) {
+  const normalized = portablePath(relative);
+  if (HANDOFF_CONTROL_FILES.has(path.posix.basename(normalized))) return false;
+  return configuredAttachmentRoots(config).some((root) => (
+    normalized !== root && normalized.startsWith(`${root}/`)
+  ));
+}
+
+function findZipEndRecord(data) {
+  const minimum = Math.max(0, data.length - 65_557);
+  for (let offset = data.length - 22; offset >= minimum; offset -= 1) {
+    if (data.readUInt32LE(offset) === 0x06054b50) return offset;
+  }
+  throw new Error("ZIP end record is missing");
+}
+
+function attachmentZipEntries(data) {
+  const end = findZipEndRecord(data);
+  const count = data.readUInt16LE(end + 10);
+  const centralSize = data.readUInt32LE(end + 12);
+  const centralOffset = data.readUInt32LE(end + 16);
+  if (centralOffset + centralSize > end) throw new Error("ZIP central directory is invalid");
+  const entries = new Map();
+  let offset = centralOffset;
+  for (let index = 0; index < count; index += 1) {
+    if (offset + 46 > end || data.readUInt32LE(offset) !== 0x02014b50) {
+      throw new Error("ZIP central entry is invalid");
+    }
+    const flags = data.readUInt16LE(offset + 8);
+    const method = data.readUInt16LE(offset + 10);
+    const compressedSize = data.readUInt32LE(offset + 20);
+    const size = data.readUInt32LE(offset + 24);
+    const nameLength = data.readUInt16LE(offset + 28);
+    const extraLength = data.readUInt16LE(offset + 30);
+    const commentLength = data.readUInt16LE(offset + 32);
+    const localOffset = data.readUInt32LE(offset + 42);
+    const nameEnd = offset + 46 + nameLength;
+    if (nameEnd > end || localOffset + 30 > centralOffset) {
+      throw new Error("ZIP entry bounds are invalid");
+    }
+    const name = data.subarray(offset + 46, nameEnd).toString("utf8");
+    if (!name || name.includes("\\") || path.posix.isAbsolute(name)
+      || path.posix.normalize(name) !== name || name.startsWith("../")) {
+      throw new Error("ZIP entry path is unsafe");
+    }
+    if ((flags & 0x0001) !== 0) throw new Error("Encrypted ZIP metadata is unsupported");
+    entries.set(name, { method, compressedSize, size, localOffset });
+    offset = nameEnd + extraLength + commentLength;
+  }
+  return entries;
+}
+
+function readAttachmentZipEntry(archive, entry) {
+  if (!entry) return null;
+  if (entry.size > 4 * 1024 * 1024 || entry.compressedSize > 4 * 1024 * 1024) {
+    throw new Error("Attachment metadata entry is too large");
+  }
+  const nameLength = archive.readUInt16LE(entry.localOffset + 26);
+  const extraLength = archive.readUInt16LE(entry.localOffset + 28);
+  const start = entry.localOffset + 30 + nameLength + extraLength;
+  const end = start + entry.compressedSize;
+  if (end > archive.length) throw new Error("Attachment metadata entry exceeds archive bounds");
+  const compressed = archive.subarray(start, end);
+  let output;
+  if (entry.method === 0) output = Buffer.from(compressed);
+  else if (entry.method === 8) {
+    output = inflateRawSync(compressed, { maxOutputLength: 4 * 1024 * 1024 });
+  }
+  else throw new Error(`Attachment metadata compression method ${entry.method} is unsupported`);
+  if (output.length !== entry.size) throw new Error("Attachment metadata entry size does not match");
+  return output;
+}
+
+function decodeXmlValue(value) {
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)))
+    .replace(/&#([0-9]+);/g, (_, code) => String.fromCodePoint(Number.parseInt(code, 10)))
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function xmlElement(xml, qualifiedName) {
+  const escaped = qualifiedName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = new RegExp(`<${escaped}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${escaped}>`, "i").exec(xml);
+  return match ? decodeXmlValue(match[1]) : "";
+}
+
+function inspectAttachmentMetadata(source) {
+  const extension = path.posix.extname(source.relative).toLowerCase();
+  const metadata = {
+    creators: [],
+    lastModifiedBy: [],
+    company: [],
+    manager: [],
+    speakerNoteCount: 0,
+    embeddedFileCount: 0,
+    inspection: "not-supported",
+  };
+  if (OFFICE_ATTACHMENT_EXTENSIONS.has(extension)) {
+    try {
+      const entries = attachmentZipEntries(source.data);
+      const core = readAttachmentZipEntry(source.data, entries.get("docProps/core.xml"));
+      const app = readAttachmentZipEntry(source.data, entries.get("docProps/app.xml"));
+      const coreXml = core?.toString("utf8") ?? "";
+      const appXml = app?.toString("utf8") ?? "";
+      for (const [key, value] of [
+        ["creators", xmlElement(coreXml, "dc:creator")],
+        ["lastModifiedBy", xmlElement(coreXml, "cp:lastModifiedBy")],
+        ["company", xmlElement(appXml, "Company")],
+        ["manager", xmlElement(appXml, "Manager")],
+      ]) {
+        if (value && !metadata[key].includes(value)) metadata[key].push(value);
+      }
+      const names = [...entries.keys()];
+      metadata.speakerNoteCount = names.filter((name) => (
+        /^ppt\/notesSlides\/notesSlide\d+\.xml$/i.test(name)
+      )).length;
+      metadata.embeddedFileCount = names.filter((name) => (
+        /^ppt\/embeddings\//i.test(name) || /^word\/embeddings\//i.test(name)
+      )).length;
+      metadata.inspection = "inspected";
+    } catch (error) {
+      metadata.inspection = "error";
+      metadata.inspectionError = error.message;
+    }
+  } else if (extension === ".pdf") {
+    const text = source.data.subarray(0, Math.min(source.data.length, 4 * 1024 * 1024)).toString("latin1");
+    const author = /\/Author\s*\(([^)]{1,512})\)/i.exec(text)?.[1]?.trim();
+    if (author) metadata.creators.push(author);
+    metadata.inspection = "inspected";
+  }
+  return metadata;
+}
+
+function attachmentPolicyFromSources(config, sources) {
+  const policyPath = portablePath(config.handoff.attachmentPolicy);
+  const policySource = sources.find((source) => source.relative === policyPath);
+  if (!policySource) throw new Error(`Portable attachment policy is missing: ${policyPath}`);
+  let policy;
+  try {
+    policy = JSON.parse(policySource.data.toString("utf8"));
+  } catch (error) {
+    throw new Error(`Portable attachment policy is invalid JSON: ${error.message}`);
+  }
+  return policy;
+}
+
+function auditPortableAttachments(config, sources, audience) {
+  if (!HANDOFF_AUDIENCES.includes(audience)) {
+    throw new Error(`Handoff audience must be one of: ${HANDOFF_AUDIENCES.join(", ")}`);
+  }
+  const policy = attachmentPolicyFromSources(config, sources);
+  const policyMap = new Map((policy.items ?? []).map((item) => [portablePath(item.path), item]));
+  const attachments = sources
+    .filter((source) => isConfiguredAttachmentPath(source.relative, config))
+    .map((source) => {
+      const policyItem = policyMap.get(source.relative);
+      const sha256 = hash(source.data);
+      const authorizationMatch = policyItem ? policyItem.sha256 === sha256 : null;
+      const authorization = authorizationMatch ? policyItem.authorization : "unknown";
+      const allowedAudiences = authorizationMatch ? policyItem.allowedAudiences : [];
+      return {
+        path: source.relative,
+        sha256,
+        policySha256: policyItem?.sha256 ?? null,
+        authorizationMatch,
+        authorization,
+        allowedAudiences,
+        metadata: inspectAttachmentMetadata(source),
+      };
+    });
+  const warnings = [];
+  const errors = [];
+  for (const item of attachments) {
+    if (item.authorizationMatch === false) {
+      const message = `Attachment content SHA-256 does not match its authorization record for ${audience} distribution: ${item.path}`;
+      if (audience === "external") errors.push(message);
+      else warnings.push(message);
+    }
+    if (item.authorization === "denied") {
+      errors.push(`Attachment distribution is denied: ${item.path}`);
+      continue;
+    }
+    if (item.authorization === "confirmed" && !item.allowedAudiences.includes(audience)) {
+      errors.push(`Attachment authorization does not include ${audience}: ${item.path}`);
+      continue;
+    }
+    if (item.authorization === "unknown" && item.authorizationMatch !== false) {
+      const message = `Attachment authorization is unknown for ${audience} distribution: ${item.path}`;
+      if (audience === "external") errors.push(message);
+      else warnings.push(message);
+    }
+    if (item.metadata.inspection === "error") {
+      warnings.push(`Attachment metadata could not be inspected: ${item.path} (${item.metadata.inspectionError})`);
+    }
+  }
+  const metadataVisible = attachments.filter((item) => (
+    item.metadata.creators.length > 0
+    || item.metadata.lastModifiedBy.length > 0
+    || item.metadata.company.length > 0
+    || item.metadata.manager.length > 0
+    || item.metadata.speakerNoteCount > 0
+    || item.metadata.embeddedFileCount > 0
+  )).length;
+  return {
+    audience,
+    summary: {
+      total: attachments.length,
+      confirmed: attachments.filter((item) => item.authorization === "confirmed").length,
+      unknown: attachments.filter((item) => item.authorization === "unknown").length,
+      denied: attachments.filter((item) => item.authorization === "denied").length,
+      metadataVisible,
+    },
+    attachments,
+    warnings,
+    errors,
+  };
+}
+
+function attachmentAuditManifest(audit) {
+  return {
+    audience: audit.audience,
+    summary: audit.summary,
+    attachments: audit.attachments,
+  };
+}
+
+function printAttachmentAudit(audit, { json = false } = {}) {
+  if (json) {
+    console.log(JSON.stringify(audit, null, 2));
+    return;
+  }
+  console.log(
+    `Handoff attachments: audience=${audit.audience}; total=${audit.summary.total}; `
+    + `confirmed=${audit.summary.confirmed}; unknown=${audit.summary.unknown}; `
+    + `denied=${audit.summary.denied}; metadata-visible=${audit.summary.metadataVisible}`,
+  );
+  for (const item of audit.attachments) {
+    const attribution = [
+      ...item.metadata.creators.map((value) => `creator=${value}`),
+      ...item.metadata.lastModifiedBy.map((value) => `lastModifiedBy=${value}`),
+      ...item.metadata.company.map((value) => `company=${value}`),
+      ...item.metadata.manager.map((value) => `manager=${value}`),
+    ];
+    console.log(
+      `ATTACHMENT ${item.path} authorization=${item.authorization} `
+      + `audiences=${item.allowedAudiences.join(",") || "none"} `
+      + `notes=${item.metadata.speakerNoteCount} embedded=${item.metadata.embeddedFileCount}`
+      + `${attribution.length > 0 ? ` ${attribution.join("; ")}` : ""}`,
+    );
+  }
+  for (const warning of audit.warnings) console.warn(`WARNING ${warning}`);
+  for (const error of audit.errors) console.error(`ERROR ${error}`);
+}
+
+async function handoffAudit({ audience = null, json = false } = {}) {
+  const validationErrors = await validate({ quiet: true, skipRetentionSweep: true });
+  if (validationErrors.length > 0) {
+    throw new Error(`Portable validation failed with ${validationErrors.length} error(s)`);
+  }
+  const config = await loadConfig();
+  const selectedAudience = audience ?? config.handoff.defaultAudience;
+  const sources = await collectPortableSourceFiles(config, false);
+  const audit = auditPortableAttachments(config, sources, selectedAudience);
+  printAttachmentAudit(audit, { json });
+  if (audit.errors.length > 0) {
+    throw new Error(`Handoff attachment audit failed with ${audit.errors.length} error(s)`);
+  }
+  return audit;
+}
+
 function crcTable() {
   const table = new Uint32Array(256);
   for (let index = 0; index < 256; index += 1) {
@@ -1677,7 +2113,7 @@ async function publishArchivePair(archiveTemporary, outputFile, sidecarTemporary
   if (sidecarBackedUp) await fs.rm(sidecarBackup, { force: true });
 }
 
-function verifyPortableZip(archive, config, includeSiteBinding) {
+function verifyPortableZip(archive, config, includeSiteBinding, audience) {
   const endOffset = archive.length - 22;
   if (endOffset < 0 || archive.readUInt32LE(endOffset) !== 0x06054b50) {
     throw new Error("Portable ZIP is missing a valid end-of-central-directory record");
@@ -1755,8 +2191,10 @@ function verifyPortableZip(archive, config, includeSiteBinding) {
     || manifest.projectId !== config.project.id
     || !Number.isFinite(Date.parse(manifest.generatedAt ?? ""))
     || manifest.siteBindingIncluded !== includeSiteBinding
+    || manifest.distributionAudience !== audience
     || !sameStringArray(manifest.qualityCommands, qualityCommands(config))
-    || !Array.isArray(manifest.files)) {
+    || !Array.isArray(manifest.files)
+    || !manifest.attachmentAudit) {
     throw new Error("Portable ZIP manifest contract is invalid");
   }
   const manifestPaths = new Set();
@@ -1798,14 +2236,26 @@ function verifyPortableZip(archive, config, includeSiteBinding) {
   if (includeSiteBinding && !manifestPaths.has(portablePath(config.publishing.sites.binding))) {
     throw new Error("Portable ZIP manifest is missing the explicitly requested Sites binding");
   }
+  const archiveSources = [...entries.entries()]
+    .filter(([name]) => name !== "PORTABLE-MANIFEST.json")
+    .map(([relative, data]) => ({ relative, data, modified: INDEX_FILE_MODIFIED_AT }));
+  const attachmentAudit = auditPortableAttachments(config, archiveSources, audience);
+  if (attachmentAudit.errors.length > 0
+    || JSON.stringify(manifest.attachmentAudit) !== JSON.stringify(attachmentAuditManifest(attachmentAudit))) {
+    throw new Error("Portable ZIP attachment audit does not match its manifest");
+  }
   return manifest;
 }
 
-async function packagePortable({ output, includeSiteBinding = null } = {}) {
+async function packagePortable({ output, includeSiteBinding = null, audience = null } = {}) {
   const errors = await validate({ quiet: true });
   if (errors.length > 0) throw new Error(`Portable validation failed with ${errors.length} error(s)`);
   const config = await loadConfig();
   includeSiteBinding = includeSiteBinding ?? config.packaging.includeSiteBindingByDefault;
+  audience = audience ?? config.handoff.defaultAudience;
+  if (!HANDOFF_AUDIENCES.includes(audience)) {
+    throw new Error(`Handoff audience must be one of: ${HANDOFF_AUDIENCES.join(", ")}`);
+  }
   const now = new Date();
   const twoDigits = (value) => String(value).padStart(2, "0");
   const timestamp = [
@@ -1838,6 +2288,11 @@ async function packagePortable({ output, includeSiteBinding = null } = {}) {
     }
   }
   const files = await collectPortableSourceFiles(config, includeSiteBinding, exactExcludes);
+  const attachmentAudit = auditPortableAttachments(config, files, audience);
+  printAttachmentAudit(attachmentAudit);
+  if (attachmentAudit.errors.length > 0) {
+    throw new Error(`Handoff attachment audit failed with ${attachmentAudit.errors.length} error(s)`);
+  }
   const entries = [];
   const manifestFiles = [];
   const maximumArchiveBytes = config.packaging.maxArchiveBytes;
@@ -1863,6 +2318,8 @@ async function packagePortable({ output, includeSiteBinding = null } = {}) {
     generatedAt: new Date().toISOString(),
     projectId: config.project.id,
     siteBindingIncluded: includeSiteBinding,
+    distributionAudience: audience,
+    attachmentAudit: attachmentAuditManifest(attachmentAudit),
     qualityCommands: qualityCommands(config),
     files: manifestFiles,
   };
@@ -1895,7 +2352,7 @@ async function packagePortable({ output, includeSiteBinding = null } = {}) {
   try {
     const archive = await fs.readFile(archiveTemporary);
     if (archive.length !== archiveBytes) throw new Error("Portable ZIP size differs from its preflight");
-    verifyPortableZip(archive, config, includeSiteBinding);
+    verifyPortableZip(archive, config, includeSiteBinding, audience);
     const archiveHash = hash(archive);
     await fs.writeFile(sidecarTemporary, `${archiveHash}  ${path.basename(outputFile)}\n`);
     await publishArchivePair(archiveTemporary, outputFile, sidecarTemporary, sidecar);
@@ -1909,12 +2366,16 @@ async function packagePortable({ output, includeSiteBinding = null } = {}) {
 }
 
 function parseOptions(args) {
-  const options = { json: false, includeSiteBinding: null, output: null };
+  const options = { json: false, includeSiteBinding: null, output: null, audience: null };
   for (let index = 0; index < args.length; index += 1) {
     if (args[index] === "--json") options.json = true;
     if (args[index] === "--include-site-binding") options.includeSiteBinding = true;
     if (args[index] === "--output") {
       options.output = args[index + 1];
+      index += 1;
+    }
+    if (args[index] === "--audience") {
+      options.audience = args[index + 1];
       index += 1;
     }
   }
@@ -1926,11 +2387,12 @@ const [command = "help", ...args] = process.argv.slice(2);
 try {
   if (command === "doctor") await doctor(parseOptions(args));
   else if (command === "inbox") await inbox(parseOptions(args));
+  else if (command === "handoff-audit") await handoffAudit(parseOptions(args));
   else if (command === "validate") await validate();
   else if (command === "mark") await mark(args[0], args[1], args.slice(2).join(" "));
   else if (command === "package") await packagePortable(parseOptions(args));
   else {
-    console.log("Usage: kb-tool.mjs <doctor|inbox|validate|mark|package>");
+    console.log("Usage: kb-tool.mjs <doctor|inbox|handoff-audit|validate|mark|package>");
     process.exitCode = command === "help" ? 0 : 2;
   }
 } catch (error) {

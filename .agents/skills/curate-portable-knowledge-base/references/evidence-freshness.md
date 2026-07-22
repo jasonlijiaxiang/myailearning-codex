@@ -36,6 +36,8 @@ Use the project policy unless its configuration says otherwise:
 
 These are maximum intervals. Recheck immediately after relevant announcements, standard revisions, broken sources, security events, or field evidence.
 
+An officially announced future version, effective date, preview, beta, or release candidate is an immediate review signal. Create or update a scoped `watch` claim, distinguish announced behavior from current availability, and set a milestone-triggered review at or before the announced date. Recheck again when the final release, delay, withdrawal, or replacement appears; a calendar cadence must not suppress these event-driven reviews.
+
 ## Efficient freshness audit
 
 1. Scan locally for overdue, invalid, replaced, or change-signaled claims and sources.
@@ -43,3 +45,5 @@ These are maximum intervals. Recheck immediately after relevant announcements, s
 3. Update the claim, source, dependent content, related questions, and replacement history together.
 4. Run content and release gates.
 5. Report “all current” when nothing requires revalidation; do not perform indiscriminate browsing.
+
+When a source is split, renamed, or replaced, inventory reverse references before editing and search for the old ID afterward. Update modules, Q&A, evidence, claims, candidates, releases, aliases, and tests together; retain the old ID only in explicit replacement history.

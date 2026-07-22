@@ -326,7 +326,7 @@ const ragQaCandidates = [
     evidence: [
       { sourceId: "ragas", supports: "支持将上下文相关性、回答相关性与忠实度分开衡量。" },
       { sourceId: "nist-genai-profile", supports: "支持部署后持续测量、监测和管理生成式 AI 风险。" },
-      { sourceId: "opentelemetry-semconv", supports: "支持用标准化遥测关联模型与应用链路；业务质量字段仍需项目定义。" },
+      { sourceId: "opentelemetry-genai-semconv", supports: "支持用标准化遥测关联模型与应用链路；业务质量字段仍需项目定义。" },
     ],
   },
   {
@@ -530,7 +530,7 @@ const ragQaCandidates = [
     basis: "持续风险管理 + 标准遥测 + 离线评估",
     evidence: [
       { sourceId: "nist-genai-profile", supports: "支持部署后持续测量、监测和管理风险，不把一次离线评测视为终点。" },
-      { sourceId: "opentelemetry-semconv", supports: "支持以标准化遥测关联生成式 AI 调用与应用链路；业务体验指标需项目定义。" },
+      { sourceId: "opentelemetry-genai-semconv", supports: "支持以标准化遥测关联生成式 AI 调用与应用链路；业务体验指标需项目定义。" },
       { sourceId: "ragas", supports: "支持离线拆分上下文与生成质量；不支持这些指标足以代表完整线上体验。" },
     ],
   },
@@ -614,7 +614,7 @@ const ragQaCandidates = [
       { sourceId: "ragas", supports: "支持把上下文相关性、回答相关性与忠实度分开评估。" },
       { sourceId: "alce-2023", supports: "支持把引用正确性和引用完整性分别纳入验收。" },
       { sourceId: "nist-genai-profile", supports: "支持按风险情境建立测量、管理与持续监控门槛。" },
-      { sourceId: "opentelemetry-semconv", supports: "支持用标准遥测记录模型与应用链路，为 P95 和故障证据提供基础。" },
+      { sourceId: "opentelemetry-genai-semconv", supports: "支持用标准遥测记录模型与应用链路，为 P95 和故障证据提供基础。" },
     ],
   },
 ];

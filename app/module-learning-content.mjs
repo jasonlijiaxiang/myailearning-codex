@@ -23,7 +23,7 @@ const baseModuleLearningContent = Object.freeze({
     ],
     labs: [
       { title: "把模糊需求改写成一页约定", scenario: "客户说“想做一个企业 AI 助手”，但没有定义用户、动作和失败责任。", tasks: ["列出三类目标用户和各自高频任务", "为每个任务写出输入、输出、失败与人工接管", "选出一个最适合先验证的窄场景"], deliverable: "一页场景约定与暂停条件清单", acceptance: "任何评审者都能据此判断 PoC 是否成功，不依赖主观演示效果。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents"] },
-      { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
       { title: "设计一条客服解决漏斗", scenario: "客户希望机器人减少人工量，但当前只统计回复次数。", tasks: ["区分自助、坐席辅助和必须转人工的问题", "画出知识查询、业务查询、工单和转接路径", "定义解决率、放弃率、误答补偿和人工接管指标"], deliverable: "客服任务漏斗、参考架构和验收表", acceptance: "指标能区分真正解决、用户放弃和错误拦截，且高风险问题不会被自动处理。", sourceIds: ["ragas", "nist-genai-profile"] },
       { title: "为 ChatBI 加上语义与执行护栏", scenario: "管理层希望用自然语言查询经营指标，但多个部门的口径不一致。", tasks: ["选定五个有权威定义的指标", "限制只读数据域、查询成本和允许操作", "设计结果校验、引用、人工确认和错误回退"], deliverable: "语义层边界、查询流程与反例测试集", acceptance: "相同问题不会因自由生成 SQL 得到不同业务口径，模型不能写入或越权读取数据。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
       ...applicationFinopsLearning["ai-finops"].labs,
@@ -38,7 +38,7 @@ const baseModuleLearningContent = Object.freeze({
     ],
     labs: [
       { title: "构建模型可行域", scenario: "客户要处理中文合同、图片附件和敏感数据，同时要求低延迟。", tasks: ["把硬约束和偏好分开", "为每项约束定义可验证证据", "形成候选、待验证和淘汰三组"], deliverable: "模型可行域矩阵与淘汰理由", acceptance: "每个候选都满足硬约束，未知能力不会被写成已确认事实。", sourceIds: ["openai-models", "google-models", "anthropic-models"] },
-      { title: "设计分层模型路由", scenario: "大多数请求简单，但少量长文档和高风险请求决定总体体验。", tasks: ["按任务复杂度与风险划分请求层级", "为每层定义主模型、回退和停止条件", "设计能检测路由误判的日志与评估"], deliverable: "路由策略、回退图与上线门槛", acceptance: "成本优化不会静默降低高风险任务质量，版本变化可回放验证。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "设计分层模型路由", scenario: "大多数请求简单，但少量长文档和高风险请求决定总体体验。", tasks: ["按任务复杂度与风险划分请求层级", "为每层定义主模型、回退和停止条件", "设计能检测路由误判的日志与评估"], deliverable: "路由策略、回退图与上线门槛", acceptance: "成本优化不会静默降低高风险任务质量，版本变化可回放验证。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
     ],
   },
   multimodal: {
@@ -50,19 +50,20 @@ const baseModuleLearningContent = Object.freeze({
     ],
     labs: [
       { title: "比较原生模型与解析管线", scenario: "一批 PDF 同时包含正文、表格、扫描页和签章，客户希望可追溯问答。", tasks: ["建立版式、语言和扫描质量分层样本", "比较原生视觉问答与 OCR/版面解析后的结构完整性", "记录页码、区域和表格单元格级证据"], deliverable: "两条路线的质量—成本—可追溯性对比", acceptance: "结论覆盖最难文档类型，且每个答案可回到原始页和区域。", sourceIds: ["docling-report", "pp-ocr-2020", "colpali-2025"] },
-      { title: "拆解实时语音体验", scenario: "客服语音助手平均延迟可接受，但用户仍频繁打断或重复问题。", tasks: ["分解端点检测、识别、推理、合成和网络延迟", "加入打断、噪声、口音和沉默场景", "分别记录任务完成率和轮次修复成本"], deliverable: "端到端时延瀑布图与体验故障清单", acceptance: "能区分模型慢、管线慢和交互策略错误，并给出对应修复责任。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "拆解实时语音体验", scenario: "客服语音助手平均延迟可接受，但用户仍频繁打断或重复问题。", tasks: ["分解端点检测、识别、推理、合成和网络延迟", "加入打断、噪声、口音和沉默场景", "分别记录任务完成率和轮次修复成本"], deliverable: "端到端时延瀑布图与体验故障清单", acceptance: "能区分模型慢、管线慢和交互策略错误，并给出对应修复责任。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"] },
     ],
   },
   mcp: {
-    outcomes: ["解释 Host、Client、Server 与三类原语", "按部署形态选择传输和信任边界", "把工具发现与身份授权分开", "为远程 MCP 建立生产发布门"],
+    outcomes: ["解释 Host、Client、Server 与三类原语", "区分当前正式版与已公告但尚未生效的 RC", "按部署形态选择传输和信任边界", "把工具发现与身份授权分开", "为远程 MCP 建立生产发布门"],
     route: [
-      { title: "理解协议对象", learn: "掌握能力协商、Tools、Resources、Prompts 与生命周期。", checkpoint: "能为一项现有能力选择正确原语。" },
+      { title: "理解协议对象与版本", learn: "掌握 Tools、Resources、Prompts，并区分 2025-11-25 正式生命周期与 2026-07-28 RC 的候选变化。", checkpoint: "能为一项能力选择正确原语，并说明结论适用的协议版本。" },
       { title: "画出调用与信任链", learn: "追踪用户、Host、Client、Server 和下游系统之间的身份与数据。", checkpoint: "能指出每一步由谁认证、授权、校验和审计。" },
       { title: "完成生产化", learn: "处理版本、超时、幂等、限流、撤销、隔离与供应链风险。", checkpoint: "能把远程 MCP 当作高权限集成而不是普通插件。" },
     ],
     labs: [
       { title: "把现有 API 包装成最小 MCP Server", scenario: "客户有一个只读订单查询 API，希望多个 Agent 客户端复用。", tasks: ["定义工具 Schema 和错误语义", "保留调用者身份并实施最小权限", "加入超时、审计和敏感字段过滤"], deliverable: "协议契约、调用序列与安全检查表", acceptance: "工具可被发现但不能绕过原 API 权限，错误和撤销路径可测试。", sourceIds: ["mcp-architecture", "mcp-authorization", "mcp-security"] },
       { title: "比较本地与远程部署", scenario: "同一 Server 可通过本地 stdio 或远程 Streamable HTTP 提供。", tasks: ["分别画出进程、网络和凭据边界", "比较更新、隔离、可观测和故障半径", "为开发、受控桌面和企业共享三种场景选型"], deliverable: "部署决策记录与迁移触发条件", acceptance: "选择与信任边界一致，不把本地安全假设直接搬到远程。", sourceIds: ["mcp-architecture", "mcp-security", "nist-zero-trust"] },
+      { title: "评审一次 MCP 版本迁移", scenario: "团队正在运行 2025-11-25，并希望为已公布的 2026-07-28 RC 提前做兼容准备。", tasks: ["冻结当前 Client、Server、SDK、网关与扩展清单", "对比 initialize、session、Tasks 与授权变化", "设计隔离验证、并行兼容、最终版复核和回滚门"], deliverable: "按版本拆分的迁移影响矩阵与验证计划", acceptance: "RC 不被写成已生效正式版，所有破坏性变化都有受影响组件、验证证据和切换条件。", sourceIds: ["mcp-lifecycle-2025-11-25", "mcp-tasks-2025-11-25", "mcp-2026-07-28-rc"] },
     ],
   },
   a2a: {
@@ -86,7 +87,7 @@ const baseModuleLearningContent = Object.freeze({
     ],
     labs: [
       { title: "从二十条真实问题建立黄金集", scenario: "团队只有零散用户反馈，没有系统评估数据。", tasks: ["按意图、风险和难度分层", "为每条样本写可接受答案与不可接受行为", "选择规则、Judge 或人工并做小样本校准"], deliverable: "带版本、标签和评分说明的最小黄金集", acceptance: "不同评审者对关键失败有一致判断，且每类业务风险都有代表样本。", sourceIds: ["nist-genai-profile", "ragas"] },
-      { title: "定位一次总分下降", scenario: "新版本总体得分下降，但部分用户反馈体验变好。", tasks: ["分解样本、模型、Prompt、检索、工具和评分器版本", "检查分层结果与量尺漂移", "确定回滚、修复或接受变化的证据"], deliverable: "归因树与发布决策记录", acceptance: "结论能区分系统变化和评估变化，不以单一平均分替代分析。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "定位一次总分下降", scenario: "新版本总体得分下降，但部分用户反馈体验变好。", tasks: ["分解样本、模型、Prompt、检索、工具和评分器版本", "检查分层结果与量尺漂移", "确定回滚、修复或接受变化的证据"], deliverable: "归因树与发布决策记录", acceptance: "结论能区分系统变化和评估变化，不以单一平均分替代分析。", sourceIds: ["opentelemetry-genai-semconv", "nist-genai-profile"] },
     ],
   },
   security: {
@@ -114,7 +115,7 @@ const baseModuleLearningContent = Object.freeze({
       { title: "最后验证端到端结果", learn: "关联应用任务、网关决策、模型调用、工具动作和业务终态。", checkpoint: "能证明降本没有以质量、隐私或可靠性为代价。" },
     ],
     labs: [
-      { title: "设计一次受控路由发布", scenario: "团队要把 30% 简单请求切到更便宜的模型。", tasks: ["定义可路由流量与保护组", "离线回放并以影子模式验证", "设置分组指标、放量门槛和自动回退"], deliverable: "策略版本、验证证据与回滚手册", acceptance: "高风险请求不进入实验，质量和尾延迟退化能在用户投诉前被发现。", sourceIds: ["cloudflare-ai-gateway", "opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "设计一次受控路由发布", scenario: "团队要把 30% 简单请求切到更便宜的模型。", tasks: ["定义可路由流量与保护组", "离线回放并以影子模式验证", "设置分组指标、放量门槛和自动回退"], deliverable: "策略版本、验证证据与回滚手册", acceptance: "高风险请求不进入实验，质量和尾延迟退化能在用户投诉前被发现。", sourceIds: ["cloudflare-ai-gateway", "opentelemetry-genai-semconv", "nist-genai-profile"] },
       { title: "评估语义缓存是否值得", scenario: "FAQ 流量高，但问题包含个人信息、时效信息和相似但不同的业务条件。", tasks: ["划分可缓存与禁止缓存请求", "定义相似阈值、租户隔离和失效条件", "比较命中率、错误复用风险和真实成本"], deliverable: "缓存策略与误命中测试集", acceptance: "缓存键包含必要权限与版本边界，收益基于业务成功而非仅命中率。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
     ],
   },
@@ -127,8 +128,8 @@ const baseModuleLearningContent = Object.freeze({
     ],
     labs: [
       ...applicationFinopsLearning["ai-application-engineering"].labs,
-      { title: "定义最小 GenAI Trace", scenario: "一个 Agent 请求穿过网关、RAG、模型和两个工具，但当前只能看到 API 延迟。", tasks: ["定义跨组件共同 Trace 与版本字段", "区分可保留元数据和受限原文", "把最终业务成功与成本归到同一任务"], deliverable: "遥测字段表、采样和保留策略", acceptance: "一次失败可跨组件关联，且敏感数据收集遵守最小化原则。", sourceIds: ["opentelemetry-semconv", "nist-zero-trust"] },
-      { title: "演练静默质量退化", scenario: "错误率和 P95 正常，但用户完成任务的比例持续下降。", tasks: ["建立模型、数据、Prompt、工具和外部依赖的变更时间线", "用分层样本和线上证据复现", "决定回滚、降级与修复样本回流"], deliverable: "事故归因图、处置记录和新增回归集", acceptance: "根因不被平均指标掩盖，修复后同类失败能被自动或抽样发现。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv"] },
+      { title: "定义最小 GenAI Trace", scenario: "一个 Agent 请求穿过网关、RAG、模型和两个工具，但当前只能看到 API 延迟。", tasks: ["定义跨组件共同 Trace 与版本字段", "区分可保留元数据和受限原文", "把最终业务成功与成本归到同一任务"], deliverable: "遥测字段表、采样和保留策略", acceptance: "一次失败可跨组件关联，且敏感数据收集遵守最小化原则。", sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-zero-trust"] },
+      { title: "演练静默质量退化", scenario: "错误率和 P95 正常，但用户完成任务的比例持续下降。", tasks: ["建立模型、数据、Prompt、工具和外部依赖的变更时间线", "用分层样本和线上证据复现", "决定回滚、降级与修复样本回流"], deliverable: "事故归因图、处置记录和新增回归集", acceptance: "根因不被平均指标掩盖，修复后同类失败能被自动或抽样发现。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
     ],
   },
   llm: {
@@ -180,7 +181,7 @@ const baseModuleLearningContent = Object.freeze({
       { title: "最后做优化与容量验证", learn: "针对交互、长上下文、Agent 和批处理分别基准。", checkpoint: "优化结论包含质量、成本、稳定性和故障恢复。" },
     ],
     labs: [
-      { title: "建立四类负载基准", scenario: "平台宣称高 Tokens/s，但真实聊天和 Agent 体验不稳定。", tasks: ["定义短交互、长上下文、工具循环和离线批处理", "记录 TTFT、TPOT、吞吐、P95、显存和质量", "改变并发、输入输出长度和批策略"], deliverable: "容量曲线与负载专属 SLO", acceptance: "不再用单一平均吞吐代表所有场景，容量点包含稳定运行证据。", sourceIds: ["vllm-2023", "opentelemetry-semconv"] },
+      { title: "建立四类负载基准", scenario: "平台宣称高 Tokens/s，但真实聊天和 Agent 体验不稳定。", tasks: ["定义短交互、长上下文、工具循环和离线批处理", "记录 TTFT、TPOT、吞吐、P95、显存和质量", "改变并发、输入输出长度和批策略"], deliverable: "容量曲线与负载专属 SLO", acceptance: "不再用单一平均吞吐代表所有场景，容量点包含稳定运行证据。", sourceIds: ["vllm-2023", "opentelemetry-genai-semconv"] },
       { title: "验证一次量化决策", scenario: "团队希望用 4-bit 量化把模型放进更小 GPU。", tasks: ["比较权重、KV Cache 和运行时显存", "用客户任务集评估质量和长尾失败", "测量目标硬件上的时延、吞吐和稳定性"], deliverable: "质量—性能—成本三维对比", acceptance: "结论限定到具体模型、量化方法、硬件和负载，不把更小等同于必然更快。", sourceIds: ["vllm-2023", "nist-genai-profile"] },
     ],
   },

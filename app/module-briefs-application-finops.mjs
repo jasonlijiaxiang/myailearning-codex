@@ -93,7 +93,7 @@ export const aiFinopsContribution = {
       { name: "优化与验证", en: "Optimize", mechanism: "调整架构、用量、价格和运营流程，并用保护组验证。", decision: "先去浪费，再改变能力。", boundary: "成本下降可能伴随质量或风险转移。" },
       { name: "预算与复盘", en: "Operate", mechanism: "按实验、规模化和生产稳定阶段预测、预警与复盘投资。", decision: "让预算跟随学习证据。", boundary: "创新期预测误差不能用生产稳定期标准解释。" },
     ] },
-    { kind: "matrix", eyebrow: "COST STACK", title: "AI 全成本的六个责任域", intro: "同一任务可能同时消耗托管模型、基础设施、数据、工具和人工。", sourceIds: ["finops-ai-category", "finops-ai-overview", "opentelemetry-semconv"], items: [
+    { kind: "matrix", eyebrow: "COST STACK", title: "AI 全成本的六个责任域", intro: "同一任务可能同时消耗托管模型、基础设施、数据、工具和人工。", sourceIds: ["finops-ai-category", "finops-ai-overview", "opentelemetry-genai-semconv"], items: [
       { name: "模型与 Token", en: "Model", mechanism: "输入、输出、缓存、批处理、微调和供应商费率。", decision: "按任务与版本归因。", boundary: "每 Token 单价不等于每次成功成本。" },
       { name: "算力与平台", en: "Compute", mechanism: "GPU、CPU、内存、存储、网络、队列、闲置与软件。", decision: "用 Goodput 与 SLO 衡量。", boundary: "高利用率可能损害在线余量。" },
       { name: "数据与检索", en: "Data", mechanism: "采集、清洗、Embedding、索引、查询、更新与删除传播。", decision: "按数据产品和使用者分摊。", boundary: "少检索可能增加错误和人工。" },
@@ -115,7 +115,7 @@ export const aiFinopsContribution = {
     { q: "什么时候应该建立独立 AI FinOps 范围？", a: "只有当 AI 的业务目标、波动、归因或治理要求需要不同决策时；不是所有 AI 费用都要另立范围。", depth: "可以先在现有云或产品范围增加 AI 标签与指标。如果领导层需要独立投资节奏、跨技术类别归因或不同创新容忍度，再建立有明确退出条件的范围。", ask: "追问客户：独立范围将改善哪一项预算、架构或投资决定？", tag: "范围设计", basis: "FinOps Scopes", evidence: [evidence("finops-scopes", "新范围只应在不同业务结果、约束或决策情境需要时建立。"), evidence("finops-ai-category", "AI 费用可按组织目标形成差异化关注范围，但不要求全部纳入。")], addedAt: "2026-07-21" },
     { q: "每百万 Token 更便宜的模型，为什么总成本可能更高？", a: "因为它可能需要更长 Prompt、更多输出、更多重试、检索或人工修正，最终成功率也可能更低。", depth: "应在同一任务和质量门槛下比较输入、输出、缓存、工具、重试、P95、失败和人工成本。更高单价模型若减少轮次和返工，单位成功成本反而可能更低。", ask: "追问客户：当前成本按调用、Token，还是按合格业务结果比较？", tag: "单位经济", basis: "技术用量 + 成功结果", evidence: [evidence("finops-framework", "Unit Economics 属于量化业务价值的核心能力。"), evidence("finops-ai-category", "AI 需要把成本与模型输出消费者和业务产出连接。")], addedAt: "2026-07-21" },
     { q: "GPU 利用率低是否表示应该减少容量？", a: "不一定。在线服务可能为尾部时延、故障和突发流量保留余量，训练也可能受数据、网络或成组调度限制。", depth: "同时看 Goodput、排队、SLO、拓扑碎片、故障、峰谷和单位达标结果成本。先定位闲置原因，再决定共享、调度、预留或缩容。", ask: "追问客户：低利用期间是否仍满足必要余量？等待的是计算、数据、网络还是成组资源？", tag: "容量经济", basis: "有效产出 + 服务余量", evidence: [evidence("finops-ai-overview", "AI 成本治理需要优化 GPU 分配并持续关联使用和结果。"), evidence("finops-ai-category", "架构与工作负载放置应服务成本和业务价值。")], addedAt: "2026-07-21" },
-    { q: "怎样给多 Agent 任务分摊成本？", a: "先用统一父任务 ID 关联子 Agent、模型、检索、工具与人工，再按可解释的消费者或业务结果归集。", depth: "共享组件可按请求、资源时间或约定比例分摊，但要公开规则和未分配金额。不要把子调用成本丢给平台公共池，否则无法比较编排收益和循环浪费。", ask: "追问客户：一次最终任务能否追到所有子任务、重试、工具和人工升级？", tag: "Agent 归因", basis: "端到端任务 + 分摊规则", evidence: [evidence("finops-ai-category", "多层 AI 架构和多 Agent 工作负载会增加成本分配复杂度。"), evidence("opentelemetry-semconv", "生成式 AI Trace 可关联模型调用和使用量属性。")], addedAt: "2026-07-21" },
+    { q: "怎样给多 Agent 任务分摊成本？", a: "先用统一父任务 ID 关联子 Agent、模型、检索、工具与人工，再按可解释的消费者或业务结果归集。", depth: "共享组件可按请求、资源时间或约定比例分摊，但要公开规则和未分配金额。不要把子调用成本丢给平台公共池，否则无法比较编排收益和循环浪费。", ask: "追问客户：一次最终任务能否追到所有子任务、重试、工具和人工升级？", tag: "Agent 归因", basis: "端到端任务 + 分摊规则", evidence: [evidence("finops-ai-category", "多层 AI 架构和多 Agent 工作负载会增加成本分配复杂度。"), evidence("opentelemetry-genai-semconv", "生成式 AI Trace 可关联模型调用和使用量属性。")], addedAt: "2026-07-21" },
     { q: "成本异常应该自动停掉 AI 服务吗？", a: "通常不应仅凭费用阈值自动全停。应结合任务、风险、业务影响和异常来源采取限流、降级、审批或隔离。", depth: "突增可能来自攻击、循环、供应商计费变化，也可能是正常业务高峰。高风险写操作可快速阻断，核心服务则优先使用预算上限、保护组和已验证降级。", ask: "追问客户：哪些支出异常意味着攻击或故障，哪些代表正常业务增长？", tag: "异常管理", basis: "成本异常 + 业务连续性", evidence: [evidence("finops-ai-category", "AI 支出波动和异常管理需要更高频、情境化处理。"), evidence("finops-framework", "异常管理属于理解使用与成本的能力。")], addedAt: "2026-07-21" },
     { q: "缓存命中率提高是否一定降本？", a: "不一定。误命中、过期、跨租户泄漏和失效维护可能增加业务风险与人工成本。", depth: "只对可复用、权限一致、时效明确的请求测净收益，同时记录命中后的任务成功、错误复用、存储、检索和失效成本。高命中率不能替代正确性。", ask: "追问客户：哪些响应可被谁复用、多久有效，错误复用的代价是什么？", tag: "优化边界", basis: "缓存收益 + 风险门槛", evidence: [evidence("finops-ai-category", "使用优化需与业务价值和风险共同判断。"), evidence("nist-zero-trust", "资源访问不能因技术复用绕过身份与策略验证。")], addedAt: "2026-07-21" },
     { q: "API 与自建模型应该怎样做成本比较？", a: "在同一质量、容量和责任边界下比较全成本，而不是拿 API 标价对比 GPU 采购价。", depth: "API 要计调用、数据、配额、地域和供应连续性；自建要计设备、闲置、能耗、网络、软件、团队、升级、故障和退出。结果以稳定工作负载下每个达标任务成本呈现。", ask: "追问客户：负载、质量和增长是否已稳定到足以支持长期容量承诺？", tag: "采购选型", basis: "TCO + 工作负载放置", evidence: [evidence("finops-framework", "架构与工作负载放置、费率优化和单位经济共同支持技术价值。"), evidence("finops-ai-category", "AI 支出横跨托管服务、基础设施和多种采购渠道。")], addedAt: "2026-07-21" },
@@ -139,7 +139,7 @@ export const applicationFinopsCurriculum = {
       { title: "分层测试与契约", en: "Layered Tests", explanation: "分别验证代码、Prompt、检索、工具、策略、性能和端到端业务结果，并为非确定输出设置量表与人工校准。", decision: "让失败指向可负责组件。", boundary: "总分不能掩盖高风险小切片。", sourceIds: ["aws-genai-lifecycle", "openai-eval-best-practices"] },
       { title: "外循环与成套发布", en: "Outer Loop", explanation: "通过离线门、影子、灰度、保护组和回滚，把评估通过的配置组合送入生产并保留版本证据。", decision: "每次放量都有停止条件。", boundary: "部署成功不代表真实分布下可接受。", sourceIds: ["azure-foundation-model-lifecycle", "azure-genaiops"] },
       { title: "模型与依赖变化", en: "Change Management", explanation: "模型升级会影响 Prompt、工具、数据、硬件和成本；远程工具、知识库与策略变化也可能使原批准失效。", decision: "按影响半径决定重测范围。", boundary: "API 兼容不是语义兼容。", sourceIds: ["azure-foundation-model-lifecycle"] },
-      { title: "线上证据与事故", en: "Production Evidence", explanation: "Trace 连接版本、输入类别、检索、工具、质量、风险、成本和业务终态，事故先恢复再归因。", decision: "用已验证发布清单完成回滚。", boundary: "告警消失不代表客户影响结束。", sourceIds: ["azure-genaiops", "opentelemetry-semconv"] },
+      { title: "线上证据与事故", en: "Production Evidence", explanation: "Trace 连接版本、输入类别、检索、工具、质量、风险、成本和业务终态，事故先恢复再归因。", decision: "用已验证发布清单完成回滚。", boundary: "告警消失不代表客户影响结束。", sourceIds: ["azure-genaiops", "opentelemetry-genai-semconv"] },
       { title: "平台化与团队责任", en: "Platform & Ownership", explanation: "平台统一制品登记、评估执行、发布、策略和遥测，应用团队负责任务、数据、失败和业务结果。", decision: "从重复控制和高风险变更中提炼平台能力。", boundary: "平台不能替应用团队接受业务风险。", sourceIds: ["azure-genaiops", "google-genai-app-lifecycle"] },
     ],
   },
@@ -148,7 +148,7 @@ export const applicationFinopsCurriculum = {
     chapters: [
       { title: "FinOps 框架与 AI 范围", en: "Framework & Scope", explanation: "FinOps 通过工程、财务和业务协作最大化技术价值；AI 可作为技术类别或特定业务 Scope，但范围由要改善的决策定义。", decision: "只在独立范围能改善决策时建立。", boundary: "AI 标签不是新的组织孤岛。", sourceIds: ["finops-framework", "finops-scopes", "finops-ai-category"] },
       { title: "AI 全成本地图", en: "Cost Map", explanation: "模型、算力、数据、工具、网络、软件、保证和人工共同构成 Cost to Serve，并跨实验、生产和退役变化。", decision: "从服务链确定直接与间接成本边界。", boundary: "账单只覆盖部分真实投入。", sourceIds: ["finops-ai-category", "finops-ai-overview"] },
-      { title: "用量采集与任务归因", en: "Usage & Allocation", explanation: "把供应商用量、基础设施、Trace、标签、合同和共享平台费用连接到产品、任务、租户、版本和负责人。", decision: "优先覆盖能改变决定的维度。", boundary: "无法归因的共享费应显式报告。", sourceIds: ["finops-ai-category", "opentelemetry-semconv"] },
+      { title: "用量采集与任务归因", en: "Usage & Allocation", explanation: "把供应商用量、基础设施、Trace、标签、合同和共享平台费用连接到产品、任务、租户、版本和负责人。", decision: "优先覆盖能改变决定的维度。", boundary: "无法归因的共享费应显式报告。", sourceIds: ["finops-ai-category", "opentelemetry-genai-semconv"] },
       { title: "单位经济与成功定义", en: "Unit Economics", explanation: "Token、GPU 小时和调用是成本驱动项，成功回答、解决工单和完成任务才是价值单位。", decision: "技术单位与业务单位同时保留。", boundary: "没有质量门的输出数量不是价值。", sourceIds: ["finops-framework", "finops-ai-category"] },
       { title: "预算、预测与生命周期", en: "Budget & Forecast", explanation: "探索期不确定性高，生产期需要稳定预测和异常门槛；投资阶段改变预算周期、承诺方式和允许偏差。", decision: "用证据决定扩大、限制或停止。", boundary: "实验波动不能直接套用成熟生产预算。", sourceIds: ["finops-ai-category", "finops-scopes"] },
       { title: "架构与使用优化", en: "Architect & Optimize", explanation: "路由、缓存、上下文、批处理、量化、调度和工作负载放置从不同环节改变成本，并会重新分配质量、容量与运营责任。", decision: "先消除失败、重复和闲置，再改变能力。", boundary: "优化必须通过质量、风险和 SLO 门。", sourceIds: ["finops-framework", "finops-ai-overview"] },
@@ -182,7 +182,7 @@ export const applicationFinopsLearning = {
     labs: [
       { title: "计算一个客服 Agent 的单位成功成本", scenario: "团队只知道月度模型账单，不知道每次解决问题的成本。", tasks: ["连接会话、检索、模型、工具、人工和工单终态", "定义成功、转人工和失败", "按场景与版本计算成本区间"], deliverable: "成本地图、分摊规则与单位经济看板", acceptance: "主要成本可追到业务结果，未分配与假设被明确展示。", sourceIds: ["finops-ai-category", "finops-framework"] },
       { title: "比较 API 与自建推理", scenario: "调用量增长后团队计划采购 GPU 替代托管 API。", tasks: ["固定模型质量、长度、并发与 SLO", "计算 API、设备、闲置、能耗、网络、软件和人员", "做规模、利用率和供应变化敏感性分析"], deliverable: "同责任边界的 TCO 与决策区间", acceptance: "结论基于每个达标任务成本，并给出规模不确定时的停止条件。", sourceIds: ["finops-framework", "finops-ai-category"] },
-      { title: "处置一次 Agent 成本异常", scenario: "夜间成本突然增长十倍，但接口错误率保持正常。", tasks: ["按任务、模型、版本、轮次、重试和工具切片", "区分业务增长、攻击、循环和计费变化", "设计限流、隔离、降级与恢复验证"], deliverable: "异常归因、处置记录和防回归门", acceptance: "在不盲目停掉核心业务的情况下阻止浪费并确认业务恢复。", sourceIds: ["finops-ai-category", "opentelemetry-semconv"] },
+      { title: "处置一次 Agent 成本异常", scenario: "夜间成本突然增长十倍，但接口错误率保持正常。", tasks: ["按任务、模型、版本、轮次、重试和工具切片", "区分业务增长、攻击、循环和计费变化", "设计限流、隔离、降级与恢复验证"], deliverable: "异常归因、处置记录和防回归门", acceptance: "在不盲目停掉核心业务的情况下阻止浪费并确认业务恢复。", sourceIds: ["finops-ai-category", "opentelemetry-genai-semconv"] },
     ],
   },
 };

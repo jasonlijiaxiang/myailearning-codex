@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "attachment-distribution.schema.json",
+  "title": "Portable attachment distribution policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schemaVersion", "items"],
+  "properties": {
+    "$schema": {
+      "const": "./schemas/attachment-distribution.schema.json"
+    },
+    "schemaVersion": {
+      "const": 2
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "authorization",
+          "allowedAudiences",
+          "basis",
+          "reviewedAt",
+          "reviewer"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "authorization": {
+            "enum": ["confirmed", "denied"]
+          },
+          "allowedAudiences": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": ["internal", "external"]
+            }
+          },
+          "basis": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "reviewer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

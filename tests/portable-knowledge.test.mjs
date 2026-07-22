@@ -515,6 +515,12 @@ test("portable tools pass without Git and exclude private runtime and personal S
         defaultMode: "local",
         sites: { binding: ".openai/hosting.json" },
       },
+      handoff: {
+        defaultAudience: "internal",
+        attachmentRoots: ["docs/attachments"],
+        attachmentPolicy: "knowledge/attachment-distribution.json",
+        attachmentSchema: "knowledge/schemas/attachment-distribution.schema.json",
+      },
       packaging: {
         outputDirectory: "outputs/portable",
         maxArchiveBytes: 268435456,
@@ -534,6 +540,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
           "package-lock.json",
           "app",
           "public",
+          "knowledge/attachment-distribution.json",
           "knowledge/claims",
           "knowledge/release-manifest.json",
           "knowledge/schemas",
@@ -571,6 +578,14 @@ test("portable tools pass without Git and exclude private runtime and personal S
     await fs.writeFile(
       path.join(root, ".agents/skills/curate-portable-knowledge-base/SKILL.md"),
       '---\nname: curate-portable-knowledge-base\ndescription: "Portable test skill."\n---\n\nTest.\n',
+    );
+    await fs.mkdir(
+      path.join(root, ".agents/skills/curate-portable-knowledge-base/references"),
+      { recursive: true },
+    );
+    await fs.writeFile(
+      path.join(root, ".agents/skills/curate-portable-knowledge-base/references/handoff-audit.md"),
+      "# Handoff audit fixture\n",
     );
     const skillScripts = path.join(
       root,
@@ -611,6 +626,10 @@ test("portable tools pass without Git and exclude private runtime and personal S
     await fs.writeFile(path.join(root, "tests/tool.test.mjs"), "export {};\n");
     await fs.mkdir(path.join(root, "knowledge/schemas"), { recursive: true });
     await fs.copyFile(
+      path.join(PROJECT_ROOT, "knowledge/schemas/attachment-distribution.schema.json"),
+      path.join(root, "knowledge/schemas/attachment-distribution.schema.json"),
+    );
+    await fs.copyFile(
       path.join(PROJECT_ROOT, "knowledge/schemas/claim.schema.json"),
       path.join(root, "knowledge/schemas/claim.schema.json"),
     );
@@ -623,6 +642,11 @@ test("portable tools pass without Git and exclude private runtime and personal S
       path.join(root, "knowledge/schemas/release.schema.json"),
     );
     await writeJson(path.join(root, "knowledge/claims/index.json"), { schemaVersion: 1, items: [] });
+    await writeJson(path.join(root, "knowledge/attachment-distribution.json"), {
+      $schema: "./schemas/attachment-distribution.schema.json",
+      schemaVersion: 2,
+      items: [],
+    });
     await writeJson(path.join(root, "knowledge/release-manifest.json"), {
       $schema: "./schemas/release.schema.json",
       schemaVersion: 1,

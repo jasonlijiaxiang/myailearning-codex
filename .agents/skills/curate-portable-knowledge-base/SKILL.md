@@ -67,6 +67,7 @@ Search the existing public content and private candidates before creating anythi
 - Keep only theory, formulae, examples, visuals, and interactions that change understanding or decisions.
 - Treat PPTs, chats, vendor materials, and secondary summaries as discovery inputs rather than automatic public evidence.
 - Verify changeable claims against current primary sources before integration.
+- Treat an announced future version, preview, beta, or release candidate as a `watch` signal. Record the announced milestone and schedule a recheck at or before it; do not wait for the ordinary cadence or describe it as current behavior.
 - Record claim scope, evidence grade, verification date, next review date, owner, state, and replacement link when applicable.
 - Keep a C-grade clue private or under review; never publish it as a certain claim.
 
@@ -78,7 +79,9 @@ For `existing-app-registry`:
 
 - Update the configured primary content owner instead of adding a parallel source of truth.
 - Reuse stable terminology and source IDs.
+- Before splitting or replacing a source ID, enumerate reverse references across modules, Q&A, evidence, claims, candidates, releases, aliases, tests, and maintenance records. After migration, classify every remaining old-ID occurrence; an unexplained active reference blocks completion.
 - Recheck related customer questions, deep answers, evidence cards, related modules, exercises, and Reference grouping.
+- Review semantic near-duplicates across modules as a human editorial decision. Similarity tools may nominate candidates, but only merge passages that make the same decision; keep distinct module-specific consequences and boundaries.
 - Derive publication and route behavior from the configured registries; do not introduce a second hardcoded module list.
 - Preserve the current shared components and visual design. Add no module-specific CSS patch, fixed-count layout branch, login dependency, or local absolute path.
 - Leave a candidate private when integrating it would require unsupported facts, unclear user intent, or a design/content change outside scope.
@@ -95,11 +98,14 @@ Read [visual-release-gates.md](references/visual-release-gates.md) for page/cont
 
 ### 7. Package or release deliberately
 
+- Before a formal share, read [handoff-audit.md](references/handoff-audit.md) and declare the audience as `internal` or `external` for each actual distribution surface. Run `npm run kb:handoff-audit -- --audience <audience>` and review attachment authorization plus embedded author metadata. Unknown authorization may remain a visible warning for an internal handoff, but it never authorizes external redistribution.
+- Bind every attachment authorization to both its canonical project path and current SHA-256. A same-path content replacement invalidates the record and returns the attachment to `unknown` until it is reviewed and authorized again.
 - Run `npm run kb:package` for a source-level portable ZIP. Its default delivery name is `portable-knowledge-base-yyyymmddhhmm.zip`, using the packaging machine's local time. In Git, stage the intended delivery set first: packaging reads index blobs, rejects unstaged tracked changes and hidden index flags, and ignores unrelated untracked files. Without Git, package only the configured allowlisted paths. Keep the personal Sites binding excluded unless the user explicitly requests `--include-site-binding` for their own authorized environment.
+- Do not silently remove author metadata, speaker notes, or embedded files from attachments. Obtain authorization, replace or exclude the attachment, or deliberately accept the internal-only warning. External packaging must fail until every included attachment has explicit matching authorization in the configured policy.
 - Treat missing Git as informational in local mode.
 - Run `npm run kb:release-check -- --mode local` for a local handoff.
-- Use `--mode git` only when an upstream exists and must match local HEAD exactly before and after the gate. Install dependencies from that commit's lockfile, then build and validate from an isolated checkout; never reuse the mutable working tree or its ignored dependency directory.
-- Use `--mode sites` only after the exact-commit Git gate and Sites binding are valid and match the generated artifact; then use the live Sites workflow and wait for deployment status `succeeded`.
+- Use `--mode git` only when an upstream exists and must match local HEAD exactly before and after the gate. Declare the configured source-repository visibility; a public source repository is an `external` distribution surface and must pass the attachment audit against the full committed source. Install dependencies from that commit's lockfile, then build and validate from an isolated checkout; never reuse the mutable working tree or its ignored dependency directory.
+- Use `--mode sites` only after the exact-commit Git gate and Sites binding are valid and match the generated artifact. Audit the actual staged Sites artifact, rather than applying the source-repository attachment inventory to a build that omits those attachments; then use the live Sites workflow and wait for deployment status `succeeded`.
 - Never describe an archive, Git push, saved version, HTTP 200, or pending deployment as a completed public release by itself.
 
 ## Convert failures into durable capability

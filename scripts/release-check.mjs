@@ -1,4 +1,5 @@
 import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   cpSync,
   existsSync,
@@ -6,6 +7,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
   realpathSync,
   renameSync,
   rmSync,
@@ -18,21 +20,31 @@ import { fileURLToPath } from "node:url";
 
 const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ALLOWED_MODES = new Set(["local", "git", "sites"]);
+const ALLOWED_AUDIENCES = new Set(["internal", "external"]);
 const SITE_PROJECT_ID_PATTERN = /^appgprj_[0-9a-f]{32}$/i;
 
 function parseArguments(argv) {
   let mode = "local";
+  let audience = "internal";
+  const seen = new Set();
   for (let index = 0; index < argv.length; index += 1) {
-    if (argv[index] !== "--mode" || !argv[index + 1] || index + 2 !== argv.length) {
-      throw new Error("Usage: npm run kb:release-check -- --mode <local|git|sites>");
+    const option = argv[index];
+    if (!["--mode", "--audience"].includes(option) || seen.has(option) || !argv[index + 1]) {
+      throw new Error(
+        "Usage: npm run kb:release-check -- --mode <local|git|sites> --audience <internal|external>",
+      );
     }
-    mode = argv[index + 1];
+    seen.add(option);
+    if (option === "--mode") mode = argv[index + 1];
+    if (option === "--audience") audience = argv[index + 1];
     index += 1;
   }
-  if (!ALLOWED_MODES.has(mode)) {
-    throw new Error("Usage: npm run kb:release-check -- --mode <local|git|sites>");
+  if (!ALLOWED_MODES.has(mode) || !ALLOWED_AUDIENCES.has(audience)) {
+    throw new Error(
+      "Usage: npm run kb:release-check -- --mode <local|git|sites> --audience <internal|external>",
+    );
   }
-  return { mode };
+  return { mode, audience };
 }
 
 function parseConfig(text, source) {
@@ -50,6 +62,22 @@ function parseConfig(text, source) {
     throw new Error(`${source} quality.commands must contain non-empty command strings`);
   }
   return config;
+}
+
+function requireReleaseAudience(config, mode, audience) {
+  const visibility = mode === "git"
+    ? config?.publishing?.sourceRepository?.visibility
+    : config?.publishing?.sites?.visibility;
+  const label = mode === "git"
+    ? "publishing.sourceRepository.visibility"
+    : "publishing.sites.visibility";
+  if (!["private", "public"].includes(visibility)) {
+    throw new Error(`${mode} release mode requires ${label} to be private or public`);
+  }
+  if (visibility === "public" && audience !== "external") {
+    throw new Error(`${mode} release mode publishes to a public surface and requires --audience external`);
+  }
+  return visibility;
 }
 
 function git(args, { cwd = PROJECT_ROOT } = {}) {
@@ -254,6 +282,12 @@ async function runQualityCommands(config, cwd, releaseSha = null) {
   }
 }
 
+async function runHandoffAudit(config, cwd, audience, releaseSha = null) {
+  if (!config?.handoff?.attachmentPolicy) return;
+  console.log(`Running handoff attachment audit for ${audience} distribution.`);
+  await runCommand(`npm run kb:handoff-audit -- --audience ${audience}`, cwd, releaseSha);
+}
+
 function addExactWorktree(sha, mode) {
   const temporaryRoot = mkdtempSync(path.join(os.tmpdir(), "kb-release-"));
   const sourceRoot = path.join(temporaryRoot, "source");
@@ -328,6 +362,107 @@ function requireSitesBindingUnchanged(sitesBinding) {
   }
 }
 
+function collectRegularFiles(root, label, current = root) {
+  if (!existsSync(current)) return [];
+  const stat = lstatSync(current);
+  if (stat.isSymbolicLink()) {
+    throw new Error(`${label} refuses symbolic links: ${path.relative(root, current) || "."}`);
+  }
+  if (stat.isFile()) return [current];
+  if (!stat.isDirectory()) return [];
+  return readdirSync(current)
+    .sort((left, right) => left.localeCompare(right, "en"))
+    .flatMap((name) => collectRegularFiles(root, label, path.join(current, name)));
+}
+
+function sha256File(file) {
+  return createHash("sha256").update(readFileSync(file)).digest("hex");
+}
+
+function auditSitesArtifactAttachments(config, sourceRoot, stagingRoot, audience) {
+  const roots = config?.handoff?.attachmentRoots ?? [];
+  const policyPath = config?.handoff?.attachmentPolicy;
+  if (!Array.isArray(roots) || roots.length === 0 || !policyPath) {
+    return { audience, summary: { total: 0, confirmed: 0, unknown: 0, denied: 0 }, attachments: [] };
+  }
+
+  const artifactRoot = path.join(stagingRoot, "dist");
+  const artifactHashes = new Map();
+  for (const file of collectRegularFiles(artifactRoot, "Sites artifact attachment audit")) {
+    const digest = sha256File(file);
+    const relative = path.relative(artifactRoot, file).split(path.sep).join("/");
+    const entries = artifactHashes.get(digest) ?? [];
+    entries.push(relative);
+    artifactHashes.set(digest, entries);
+  }
+
+  let policy;
+  try {
+    const absolutePolicy = path.resolve(sourceRoot, policyPath);
+    const policyRelative = path.relative(sourceRoot, absolutePolicy);
+    if (!policyRelative || policyRelative.startsWith("..") || path.isAbsolute(policyRelative)) {
+      throw new Error(`policy path leaves the exact source checkout: ${policyPath}`);
+    }
+    policy = JSON.parse(readFileSync(absolutePolicy, "utf8"));
+  } catch (error) {
+    throw new Error(`Sites artifact attachment audit could not read its policy: ${error.message}`);
+  }
+  const policyMap = new Map((policy.items ?? []).map((item) => [item.path, item]));
+  const attachments = [];
+  for (const configuredRoot of roots) {
+    const absoluteRoot = path.resolve(sourceRoot, configuredRoot);
+    const rootRelative = path.relative(sourceRoot, absoluteRoot);
+    if (!rootRelative || rootRelative.startsWith("..") || path.isAbsolute(rootRelative)) {
+      throw new Error(`Sites artifact attachment root leaves the exact source checkout: ${configuredRoot}`);
+    }
+    for (const file of collectRegularFiles(absoluteRoot, "Sites source attachment audit")) {
+      const sha256 = sha256File(file);
+      const artifactPaths = artifactHashes.get(sha256);
+      if (!artifactPaths) continue;
+      const sourcePath = path.relative(sourceRoot, file).split(path.sep).join("/");
+      const policyItem = policyMap.get(sourcePath);
+      const authorizationMatch = policyItem ? policyItem.sha256 === sha256 : null;
+      attachments.push({
+        path: sourcePath,
+        sha256,
+        artifactPaths,
+        authorizationMatch,
+        authorization: authorizationMatch ? policyItem.authorization : "unknown",
+        allowedAudiences: authorizationMatch ? policyItem.allowedAudiences : [],
+      });
+    }
+  }
+
+  const warnings = [];
+  const errors = [];
+  for (const item of attachments) {
+    if (item.authorization === "denied") {
+      errors.push(`Sites artifact includes an attachment denied for distribution: ${item.path}`);
+    } else if (item.authorization === "confirmed" && !item.allowedAudiences.includes(audience)) {
+      errors.push(`Sites artifact attachment authorization does not include ${audience}: ${item.path}`);
+    } else if (item.authorization === "unknown") {
+      const mismatch = item.authorizationMatch === false ? " after its content SHA-256 changed" : "";
+      const message = `Sites artifact attachment authorization is unknown${mismatch}: ${item.path}`;
+      if (audience === "external") errors.push(message);
+      else warnings.push(message);
+    }
+  }
+  const audit = {
+    audience,
+    summary: {
+      total: attachments.length,
+      confirmed: attachments.filter((item) => item.authorization === "confirmed").length,
+      unknown: attachments.filter((item) => item.authorization === "unknown").length,
+      denied: attachments.filter((item) => item.authorization === "denied").length,
+    },
+    attachments,
+  };
+  console.log(`Sites artifact attachment audit found ${attachments.length} distributed attachment(s).`);
+  for (const warning of warnings) console.warn(`Warning: ${warning}`);
+  if (errors.length > 0) throw new Error(errors.join("\n"));
+  return audit;
+}
+
 async function ensureSitesBuild(config, sourceRoot, sha) {
   const serverEntry = path.join(sourceRoot, "dist", "server", "index.js");
   if (!existsSync(serverEntry)) {
@@ -349,7 +484,7 @@ async function ensureSitesBuild(config, sourceRoot, sha) {
   }
 }
 
-function stageSitesArtifact(config, sourceRoot, gitState, sitesBinding) {
+function stageSitesArtifact(config, sourceRoot, gitState, sitesBinding, audience) {
   const outputsRoot = path.join(PROJECT_ROOT, "outputs");
   if (existsSync(outputsRoot) && !lstatSync(outputsRoot).isDirectory()) {
     throw new Error("Sites release mode requires outputs to be a real directory");
@@ -369,6 +504,12 @@ function stageSitesArtifact(config, sourceRoot, gitState, sitesBinding) {
   if (existsSync(drizzle)) {
     cpSync(drizzle, path.join(stagingRoot, "drizzle"), { recursive: true });
   }
+  const attachmentAudit = auditSitesArtifactAttachments(
+    config,
+    sourceRoot,
+    stagingRoot,
+    audience,
+  );
   writeFileSync(
     path.join(stagingRoot, "release.json"),
     `${JSON.stringify({
@@ -381,6 +522,8 @@ function stageSitesArtifact(config, sourceRoot, gitState, sitesBinding) {
         sha: gitState.remoteSha,
       },
       projectId: sitesBinding.binding.project_id,
+      distributionAudience: audience,
+      attachmentAudit,
       bindingSource: sitesBinding.source,
       qualityCommands: config.quality.commands,
     }, null, 2)}\n`,
@@ -398,13 +541,14 @@ function publishStagedArtifact(artifact) {
 }
 
 async function main() {
-  const { mode } = parseArguments(process.argv.slice(2));
+  const { mode, audience } = parseArguments(process.argv.slice(2));
 
   if (mode === "local") {
     const config = parseConfig(
       readFileSync(path.join(PROJECT_ROOT, "kb.config.json"), "utf8"),
       "kb.config.json",
     );
+    await runHandoffAudit(config, PROJECT_ROOT, audience);
     await runQualityCommands(config, PROJECT_ROOT);
     console.log("Release checks passed for local mode.");
     return;
@@ -412,6 +556,7 @@ async function main() {
 
   const initialGitState = inspectExactGitState(mode);
   const config = readCommittedConfig(initialGitState.sha, mode);
+  requireReleaseAudience(config, mode, audience);
   verifyCommittedIncludes(initialGitState.sha, config, mode);
   const sitesBinding = mode === "sites" ? readSitesBinding(config, initialGitState.sha) : null;
   let worktree = null;
@@ -419,6 +564,9 @@ async function main() {
 
   try {
     worktree = addExactWorktree(initialGitState.sha, mode);
+    if (mode === "git") {
+      await runHandoffAudit(config, worktree.sourceRoot, audience, initialGitState.sha);
+    }
     await installExactDependencies(worktree.sourceRoot, initialGitState.sha);
     if (sitesBinding) installSitesBinding(worktree.sourceRoot, sitesBinding);
     await runQualityCommands(config, worktree.sourceRoot, initialGitState.sha);
@@ -430,6 +578,7 @@ async function main() {
         worktree.sourceRoot,
         initialGitState,
         sitesBinding,
+        audience,
       );
       requireSitesBindingUnchanged(sitesBinding);
     }

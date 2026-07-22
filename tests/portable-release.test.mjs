@@ -40,13 +40,21 @@ function runGit(cwd, args, options = {}) {
   return result;
 }
 
-function releaseConfig(command, { sites = false, include = [] } = {}) {
+function releaseConfig(command, {
+  sites = false,
+  include = [],
+  sourceVisibility = "private",
+  sitesVisibility = "private",
+  handoff = null,
+} = {}) {
   return {
     schemaVersion: 1,
     quality: { commands: [command] },
-    publishing: sites
-      ? { sites: { binding: ".openai/hosting.json" } }
-      : {},
+    publishing: {
+      sourceRepository: { visibility: sourceVisibility },
+      ...(sites ? { sites: { binding: ".openai/hosting.json", visibility: sitesVisibility } } : {}),
+    },
+    ...(handoff ? { handoff } : {}),
     packaging: { include },
   };
 }
@@ -96,8 +104,10 @@ async function createGitFixture({ qualityScript, config, files = {} } = {}) {
   return { root, project, remote, sha };
 }
 
-function runRelease(project, mode, env = {}) {
-  return run(process.execPath, [path.join(project, "scripts", "release-check.mjs"), "--mode", mode], {
+function runRelease(project, mode, env = {}, audience = null) {
+  const args = [path.join(project, "scripts", "release-check.mjs"), "--mode", mode];
+  if (audience) args.push("--audience", audience);
+  return run(process.execPath, args, {
     cwd: project,
     env,
   });
@@ -133,6 +143,110 @@ test("local release mode uses configured quality commands without requiring Git"
     assert.deepEqual(record.argv, ["--configured-command"]);
   } finally {
     await removeFixture(root);
+  }
+});
+
+test("local release mode runs the configured handoff audit with an explicit audience", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "portable-release-handoff-"));
+  try {
+    const marker = path.join(root, "handoff-marker.json");
+    await copyReleaseScript(root);
+    await writeJson(path.join(root, "kb.config.json"), {
+      ...releaseConfig("node scripts/quality.mjs"),
+      handoff: { attachmentPolicy: "knowledge/attachment-distribution.json" },
+    });
+    await writeJson(path.join(root, "package.json"), {
+      name: "portable-release-handoff",
+      private: true,
+      scripts: {
+        "kb:handoff-audit": "node scripts/handoff-audit.mjs",
+      },
+    });
+    await write(
+      path.join(root, "scripts", "handoff-audit.mjs"),
+      [
+        'import { writeFileSync } from "node:fs";',
+        "writeFileSync(process.env.HANDOFF_TEST_MARKER, JSON.stringify(process.argv.slice(2)));",
+        "",
+      ].join("\n"),
+    );
+    await write(path.join(root, "scripts", "quality.mjs"), "// successful quality gate\n");
+
+    const result = run(
+      process.execPath,
+      [path.join(root, "scripts", "release-check.mjs"), "--mode", "local", "--audience", "external"],
+      { cwd: root, env: { HANDOFF_TEST_MARKER: marker } },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /handoff attachment audit for external distribution/);
+    assert.deepEqual(JSON.parse(await fs.readFile(marker, "utf8")), ["--audience", "external"]);
+  } finally {
+    await removeFixture(root);
+  }
+});
+
+test("public Git and Sites release surfaces reject an internal audience", async (t) => {
+  for (const mode of ["git", "sites"]) {
+    await t.test(mode, async () => {
+      const fixture = await createGitFixture({
+        config: releaseConfig("node scripts/quality.mjs", {
+          sites: mode === "sites",
+          sourceVisibility: "public",
+          sitesVisibility: "public",
+        }),
+      });
+      try {
+        const result = runRelease(fixture.project, mode);
+        assert.notEqual(result.status, 0);
+        assert.match(result.stderr, /public surface and requires --audience external/);
+      } finally {
+        await removeFixture(fixture.root);
+      }
+    });
+  }
+});
+
+test("public Git external release cannot bypass unknown attachment audit", async () => {
+  const packageManifest = {
+    name: "public-git-handoff-fixture",
+    version: "1.0.0",
+    private: true,
+    scripts: { "kb:handoff-audit": "node scripts/handoff-audit.mjs" },
+  };
+  const fixture = await createGitFixture({
+    config: releaseConfig("node scripts/quality.mjs", {
+      sourceVisibility: "public",
+      handoff: { attachmentPolicy: "knowledge/attachment-distribution.json" },
+    }),
+    files: {
+      "package.json": `${JSON.stringify(packageManifest, null, 2)}\n`,
+      "package-lock.json": `${JSON.stringify({
+        name: packageManifest.name,
+        version: packageManifest.version,
+        lockfileVersion: 3,
+        requires: true,
+        packages: {
+          "": {
+            name: packageManifest.name,
+            version: packageManifest.version,
+          },
+        },
+      }, null, 2)}\n`,
+      "scripts/handoff-audit.mjs": [
+        'if (process.argv.slice(2).join(" ") !== "--audience external") process.exit(9);',
+        'console.error("Attachment authorization is unknown for external distribution: external_reference/unknown.pptx");',
+        "process.exit(1);",
+        "",
+      ].join("\n"),
+    },
+  });
+  try {
+    const result = runRelease(fixture.project, "git", {}, "external");
+    assert.notEqual(result.status, 0);
+    assert.match(result.stdout, /handoff attachment audit for external distribution/);
+    assert.match(result.stderr, /Attachment authorization is unknown for external distribution/);
+  } finally {
+    await removeFixture(fixture.root);
   }
 });
 
@@ -393,6 +507,69 @@ test("sites release exports an exact-commit build with the verified binding", as
     assert.equal(metadata.upstream.sha, fixture.sha);
     assert.equal(metadata.projectId, binding.project_id);
     assert.equal(metadata.bindingSource, "release-environment");
+    assert.equal(metadata.attachmentAudit.summary.total, 0);
+  } finally {
+    await removeFixture(fixture.root);
+  }
+});
+
+test("public Sites audits the staged artifact instead of blocking on omitted source attachments", async () => {
+  const qualityScript = [
+    'import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";',
+    'mkdirSync("dist/server", { recursive: true });',
+    'mkdirSync("dist/.openai", { recursive: true });',
+    'writeFileSync("dist/server/index.js", "export {};\\n");',
+    'copyFileSync(".openai/hosting.json", "dist/.openai/hosting.json");',
+    'if (process.env.RELEASE_TEST_COPY_ATTACHMENT === "1") {',
+    '  mkdirSync("dist/downloads", { recursive: true });',
+    '  copyFileSync("external_reference/unknown.pptx", "dist/downloads/unknown.pptx");',
+    '}',
+    "",
+  ].join("\n");
+  const fixture = await createGitFixture({
+    qualityScript,
+    config: releaseConfig("node scripts/quality.mjs", {
+      sites: true,
+      sourceVisibility: "public",
+      sitesVisibility: "public",
+      include: ["external_reference", "knowledge/attachment-distribution.json"],
+      handoff: {
+        attachmentRoots: ["external_reference"],
+        attachmentPolicy: "knowledge/attachment-distribution.json",
+      },
+    }),
+    files: {
+      "external_reference/unknown.pptx": "UNKNOWN ATTACHMENT\n",
+      "knowledge/attachment-distribution.json": `${JSON.stringify({
+        $schema: "./schemas/attachment-distribution.schema.json",
+        schemaVersion: 2,
+        items: [],
+      }, null, 2)}\n`,
+    },
+  });
+  try {
+    await writeJson(path.join(fixture.project, ".openai", "hosting.json"), {
+      project_id: "appgprj_cccccccccccccccccccccccccccccccc",
+      d1: null,
+      r2: null,
+    });
+
+    let result = runRelease(fixture.project, "sites", {}, "external");
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /Sites artifact attachment audit found 0 distributed attachment/);
+    const artifact = path.join(fixture.project, "outputs", "release", fixture.sha);
+    const metadata = JSON.parse(await fs.readFile(path.join(artifact, "release.json"), "utf8"));
+    assert.equal(metadata.distributionAudience, "external");
+    assert.equal(metadata.attachmentAudit.summary.total, 0);
+
+    result = runRelease(
+      fixture.project,
+      "sites",
+      { RELEASE_TEST_COPY_ATTACHMENT: "1" },
+      "external",
+    );
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /Sites artifact attachment authorization is unknown/);
   } finally {
     await removeFixture(fixture.root);
   }

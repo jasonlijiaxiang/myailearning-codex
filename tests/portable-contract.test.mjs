@@ -6,6 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { deflateRawSync } from "node:zlib";
 
 const TEST_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(TEST_DIR, "..");
@@ -81,6 +82,95 @@ function storedZipEntries(archive) {
   return entries;
 }
 
+function crc32(value) {
+  let crc = 0xffffffff;
+  for (const byte of value) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) {
+      crc = (crc & 1) ? (0xedb88320 ^ (crc >>> 1)) : (crc >>> 1);
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function storedZip(entries) {
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+  for (const [relative, value] of entries) {
+    const name = Buffer.from(relative, "utf8");
+    const data = Buffer.isBuffer(value) ? value : Buffer.from(value);
+    const crc = crc32(data);
+    const local = Buffer.alloc(30);
+    local.writeUInt32LE(0x04034b50, 0);
+    local.writeUInt16LE(20, 4);
+    local.writeUInt16LE(0x0800, 6);
+    local.writeUInt16LE(0, 8);
+    local.writeUInt32LE(crc, 14);
+    local.writeUInt32LE(data.length, 18);
+    local.writeUInt32LE(data.length, 22);
+    local.writeUInt16LE(name.length, 26);
+    const central = Buffer.alloc(46);
+    central.writeUInt32LE(0x02014b50, 0);
+    central.writeUInt16LE(0x031e, 4);
+    central.writeUInt16LE(20, 6);
+    central.writeUInt16LE(0x0800, 8);
+    central.writeUInt16LE(0, 10);
+    central.writeUInt32LE(crc, 16);
+    central.writeUInt32LE(data.length, 20);
+    central.writeUInt32LE(data.length, 24);
+    central.writeUInt16LE(name.length, 28);
+    central.writeUInt32LE((0o100644 << 16) >>> 0, 38);
+    central.writeUInt32LE(offset, 42);
+    localParts.push(local, name, data);
+    centralParts.push(central, name);
+    offset += local.length + name.length + data.length;
+  }
+  const centralDirectory = Buffer.concat(centralParts);
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(entries.length, 8);
+  end.writeUInt16LE(entries.length, 10);
+  end.writeUInt32LE(centralDirectory.length, 12);
+  end.writeUInt32LE(offset, 16);
+  return Buffer.concat([...localParts, centralDirectory, end]);
+}
+
+function deflatedZip(relative, value, declaredSize = value.length) {
+  const name = Buffer.from(relative, "utf8");
+  const data = Buffer.isBuffer(value) ? value : Buffer.from(value);
+  const compressed = deflateRawSync(data);
+  const crc = crc32(data);
+  const local = Buffer.alloc(30);
+  local.writeUInt32LE(0x04034b50, 0);
+  local.writeUInt16LE(20, 4);
+  local.writeUInt16LE(0x0800, 6);
+  local.writeUInt16LE(8, 8);
+  local.writeUInt32LE(crc, 14);
+  local.writeUInt32LE(compressed.length, 18);
+  local.writeUInt32LE(declaredSize, 22);
+  local.writeUInt16LE(name.length, 26);
+  const central = Buffer.alloc(46);
+  central.writeUInt32LE(0x02014b50, 0);
+  central.writeUInt16LE(0x031e, 4);
+  central.writeUInt16LE(20, 6);
+  central.writeUInt16LE(0x0800, 8);
+  central.writeUInt16LE(8, 10);
+  central.writeUInt32LE(crc, 16);
+  central.writeUInt32LE(compressed.length, 20);
+  central.writeUInt32LE(declaredSize, 24);
+  central.writeUInt16LE(name.length, 28);
+  central.writeUInt32LE((0o100644 << 16) >>> 0, 38);
+  const centralOffset = local.length + name.length + compressed.length;
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(1, 8);
+  end.writeUInt16LE(1, 10);
+  end.writeUInt32LE(central.length + name.length, 12);
+  end.writeUInt32LE(centralOffset, 16);
+  return Buffer.concat([local, name, compressed, central, name, end]);
+}
+
 async function createFixture(root) {
   const config = {
     schemaVersion: 1,
@@ -111,6 +201,12 @@ async function createFixture(root) {
       defaultMode: "local",
       sites: { binding: ".openai/hosting.json" },
     },
+    handoff: {
+      defaultAudience: "internal",
+      attachmentRoots: ["docs/attachments"],
+      attachmentPolicy: "knowledge/attachment-distribution.json",
+      attachmentSchema: "knowledge/schemas/attachment-distribution.schema.json",
+    },
     packaging: {
       outputDirectory: "outputs/portable",
       maxArchiveBytes: 32 * 1024 * 1024,
@@ -129,6 +225,7 @@ async function createFixture(root) {
         "package-lock.json",
         "app",
         "public",
+        "knowledge/attachment-distribution.json",
         "knowledge/claims",
         "knowledge/release-manifest.json",
         "knowledge/schemas",
@@ -170,6 +267,10 @@ async function createFixture(root) {
     path.join(root, ".agents/skills/curate-portable-knowledge-base/SKILL.md"),
     '---\nname: curate-portable-knowledge-base\ndescription: "Contract fixture."\n---\n',
   );
+  await writeFile(
+    path.join(root, ".agents/skills/curate-portable-knowledge-base/references/handoff-audit.md"),
+    "# Handoff audit fixture\n",
+  );
   for (const script of ["capture-turn.mjs", "hook-bootstrap.mjs", "kb-tool.mjs", "private-runtime.mjs"]) {
     await writeFile(
       path.join(root, ".agents/skills/curate-portable-knowledge-base/scripts", script),
@@ -196,13 +297,23 @@ async function createFixture(root) {
   await writeFile(path.join(root, "tests/smoke.test.mjs"), "export {};\n");
   await writeFile(path.join(root, "docs/kept.txt"), "KEPT\n");
   await fs.mkdir(path.join(root, "knowledge/private-inbox"), { recursive: true });
+  await writeJson(path.join(root, "knowledge/attachment-distribution.json"), {
+    $schema: "./schemas/attachment-distribution.schema.json",
+    schemaVersion: 2,
+    items: [],
+  });
   await writeJson(path.join(root, "knowledge/claims/index.json"), { schemaVersion: 1, items: [] });
   await writeJson(path.join(root, "knowledge/release-manifest.json"), {
     $schema: "./schemas/release.schema.json",
     schemaVersion: 1,
     releases: [],
   });
-  for (const schema of ["candidate.schema.json", "claim.schema.json", "release.schema.json"]) {
+  for (const schema of [
+    "attachment-distribution.schema.json",
+    "candidate.schema.json",
+    "claim.schema.json",
+    "release.schema.json",
+  ]) {
     await fs.mkdir(path.join(root, "knowledge/schemas"), { recursive: true });
     await fs.copyFile(
       path.join(PROJECT_ROOT, "knowledge/schemas", schema),
@@ -336,6 +447,166 @@ test("portable config and ZIP enforce nested exclusions, required roots, and pai
     assert.notEqual(unsafeConfig.status, 0);
     assert.match(unsafeConfig.stderr, /quality\.commands must be exactly/);
     assert.match(unsafeConfig.stderr, /includeSiteBindingByDefault must remain false/);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+});
+
+test("handoff attachment audit inventories attribution, warns internally, and blocks unknown external distribution", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "portable-contract-handoff-"));
+  try {
+    await createFixture(root);
+    const attachmentPath = "docs/attachments/training.pptx";
+    const core = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<cp:coreProperties xmlns:cp="urn:cp" xmlns:dc="urn:dc">',
+      "<dc:creator>Fixture Author</dc:creator>",
+      "<cp:lastModifiedBy>Fixture Editor</cp:lastModifiedBy>",
+      "</cp:coreProperties>",
+    ].join("");
+    const app = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      "<Properties><Company>Fixture Company</Company><Manager>Fixture Manager</Manager></Properties>",
+    ].join("");
+    const attachment = storedZip([
+      ["docProps/core.xml", core],
+      ["docProps/app.xml", app],
+      ["ppt/notesSlides/notesSlide1.xml", "<notes>private review note</notes>"],
+      ["ppt/embeddings/Workbook1.xlsx", Buffer.from([0, 1, 2, 3])],
+    ]);
+    await writeFile(path.join(root, attachmentPath), attachment);
+
+    let audit = runTool(root, ["handoff-audit", "--audience", "internal", "--json"]);
+    assert.equal(audit.status, 0, audit.stderr);
+    let report = JSON.parse(audit.stdout);
+    assert.deepEqual(report.summary, {
+      total: 1,
+      confirmed: 0,
+      unknown: 1,
+      denied: 0,
+      metadataVisible: 1,
+    });
+    assert.deepEqual(report.attachments[0].metadata.creators, ["Fixture Author"]);
+    assert.deepEqual(report.attachments[0].metadata.lastModifiedBy, ["Fixture Editor"]);
+    assert.deepEqual(report.attachments[0].metadata.company, ["Fixture Company"]);
+    assert.deepEqual(report.attachments[0].metadata.manager, ["Fixture Manager"]);
+    assert.equal(report.attachments[0].metadata.speakerNoteCount, 1);
+    assert.equal(report.attachments[0].metadata.embeddedFileCount, 1);
+    assert.equal(report.warnings.length, 1);
+
+    audit = runTool(root, ["handoff-audit", "--audience", "external", "--json"]);
+    assert.notEqual(audit.status, 0);
+    report = JSON.parse(audit.stdout);
+    assert.equal(report.errors.length, 1);
+    assert.match(audit.stderr, /Handoff attachment audit failed/);
+
+    await writeJson(path.join(root, "knowledge/attachment-distribution.json"), {
+      $schema: "./schemas/attachment-distribution.schema.json",
+      schemaVersion: 2,
+      items: [{
+        path: attachmentPath,
+        authorization: "confirmed",
+        allowedAudiences: ["internal", "external"],
+        basis: "Fixture record intentionally omits its content digest.",
+        reviewedAt: new Date().toISOString().slice(0, 10),
+        reviewer: "fixture-reviewer",
+      }],
+    });
+    const missingDigest = runTool(root, ["validate"]);
+    assert.notEqual(missingDigest.status, 0);
+    assert.match(missingDigest.stderr, /Attachment distribution policy\.items\[0\]\.sha256 is required/);
+
+    await writeJson(path.join(root, "knowledge/attachment-distribution.json"), {
+      $schema: "./schemas/attachment-distribution.schema.json",
+      schemaVersion: 2,
+      items: [{
+        path: attachmentPath,
+        sha256: sha256(attachment),
+        authorization: "confirmed",
+        allowedAudiences: ["internal", "external"],
+        basis: "Fixture owner explicitly authorized redistribution.",
+        reviewedAt: new Date().toISOString().slice(0, 10),
+        reviewer: "fixture-reviewer",
+      }],
+    });
+    audit = runTool(root, ["handoff-audit", "--audience", "external", "--json"]);
+    assert.equal(audit.status, 0, audit.stderr);
+    report = JSON.parse(audit.stdout);
+    assert.equal(report.summary.confirmed, 1);
+    assert.equal(report.errors.length, 0);
+
+    const output = path.join(root, "external.zip");
+    const packaged = runTool(root, ["package", "--audience", "external", "--output", output]);
+    assert.equal(packaged.status, 0, packaged.stderr);
+    const entries = storedZipEntries(await fs.readFile(output));
+    const manifest = JSON.parse(entries.get("PORTABLE-MANIFEST.json").toString("utf8"));
+    assert.equal(manifest.distributionAudience, "external");
+    assert.equal(manifest.attachmentAudit.summary.confirmed, 1);
+    assert.deepEqual(
+      manifest.attachmentAudit.attachments[0].metadata.creators,
+      ["Fixture Author"],
+    );
+
+    const replacementAttachment = Buffer.concat([attachment, Buffer.from("replacement bytes")]);
+    await writeFile(path.join(root, attachmentPath), replacementAttachment);
+    audit = runTool(root, ["handoff-audit", "--audience", "external", "--json"]);
+    assert.notEqual(audit.status, 0);
+    report = JSON.parse(audit.stdout);
+    assert.equal(report.summary.confirmed, 0);
+    assert.equal(report.summary.unknown, 1);
+    assert.equal(report.attachments[0].authorizationMatch, false);
+    assert.equal(report.attachments[0].sha256, sha256(replacementAttachment));
+    assert.equal(report.attachments[0].policySha256, sha256(attachment));
+    assert.match(report.errors[0], /content SHA-256 does not match/);
+
+    audit = runTool(root, ["handoff-audit", "--audience", "internal", "--json"]);
+    assert.equal(audit.status, 0, audit.stderr);
+    report = JSON.parse(audit.stdout);
+    assert.equal(report.summary.unknown, 1);
+    assert.match(report.warnings[0], /content SHA-256 does not match/);
+
+    await writeJson(path.join(root, "knowledge/attachment-distribution.json"), {
+      $schema: "./schemas/attachment-distribution.schema.json",
+      schemaVersion: 2,
+      items: [{
+        path: attachmentPath,
+        sha256: sha256(replacementAttachment),
+        authorization: "denied",
+        allowedAudiences: [],
+        basis: "Fixture denial.",
+        reviewedAt: new Date().toISOString().slice(0, 10),
+        reviewer: "fixture-reviewer",
+      }],
+    });
+    const denied = runTool(root, ["handoff-audit", "--audience", "internal"]);
+    assert.notEqual(denied.status, 0);
+    assert.match(denied.stderr, /Attachment distribution is denied/);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+});
+
+test("handoff metadata inspection caps deflated ZIP output", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "portable-contract-handoff-inflate-"));
+  try {
+    await createFixture(root);
+    const attachmentPath = "docs/attachments/oversized-metadata.pptx";
+    const archive = deflatedZip(
+      "docProps/core.xml",
+      Buffer.alloc(5 * 1024 * 1024, 0x41),
+      1,
+    );
+    await writeFile(path.join(root, attachmentPath), archive);
+
+    const audit = runTool(root, ["handoff-audit", "--audience", "internal", "--json"]);
+    assert.equal(audit.status, 0, audit.stderr);
+    const report = JSON.parse(audit.stdout);
+    assert.equal(report.attachments[0].metadata.inspection, "error");
+    assert.match(
+      report.attachments[0].metadata.inspectionError,
+      /larger than 4194304 bytes|maxOutputLength|Cannot create a Buffer/i,
+    );
+    assert.ok(report.warnings.some((warning) => /metadata could not be inspected/.test(warning)));
   } finally {
     await fs.rm(root, { recursive: true, force: true });
   }
@@ -761,6 +1032,51 @@ test("candidate, claim, and release registries enforce deduplication, evidence, 
     validation = runTool(root, ["validate"]);
     assert.notEqual(validation.status, 0);
     assert.match(validation.stderr, /exceeds its 30-day cadence/);
+
+    const scheduledFor = addDays(today, 7);
+    const currentClaim = {
+      id: "claim-current",
+      claim: "The current standard remains effective until the announced replacement is verified.",
+      scope: "contract fixture",
+      sourceIds: ["known-source"],
+      evidenceGrade: "A",
+      verifiedAt: today,
+      reviewBy: addDays(today, 30),
+      reviewCadenceDays: 30,
+      owner: "fixture",
+      status: "watch",
+    };
+    const announcedReplacement = {
+      id: "claim-announcement",
+      claim: "A replacement release candidate has been announced for a future date.",
+      scope: "The announcement is not yet an effective final standard.",
+      sourceIds: ["known-source"],
+      evidenceGrade: "A",
+      verifiedAt: today,
+      reviewBy: scheduledFor,
+      reviewCadenceDays: 30,
+      owner: "fixture",
+      status: "watch",
+      announcement: {
+        kind: "scheduled-replacement",
+        targetClaimId: "claim-current",
+        scheduledFor,
+      },
+    };
+    await writeJson(path.join(root, "knowledge/claims/index.json"), {
+      schemaVersion: 1,
+      items: [currentClaim, announcedReplacement],
+    });
+    validation = runTool(root, ["validate"]);
+    assert.notEqual(validation.status, 0);
+    assert.match(validation.stderr, /claim-current reviewBy exceeds announced replacement date/);
+
+    await writeJson(path.join(root, "knowledge/claims/index.json"), {
+      schemaVersion: 1,
+      items: [{ ...currentClaim, reviewBy: scheduledFor }, announcedReplacement],
+    });
+    validation = runTool(root, ["validate"]);
+    assert.equal(validation.status, 0, validation.stderr);
 
     await writeJson(path.join(root, "knowledge/claims/index.json"), { schemaVersion: 1, items: [] });
     await writeJson(path.join(root, "knowledge/release-manifest.json"), {

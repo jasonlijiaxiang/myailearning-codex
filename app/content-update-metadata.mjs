@@ -2,7 +2,7 @@ export const CONTENT_UPDATE_POLICY_EFFECTIVE_DATE = "2026-07-20";
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-export function isValidContentUpdatedAt(value) {
+export function isValidIsoDate(value) {
   if (typeof value !== "string" || !ISO_DATE_PATTERN.test(value)) return false;
 
   const [year, month, day] = value.split("-").map(Number);
@@ -10,8 +10,11 @@ export function isValidContentUpdatedAt(value) {
 
   return parsed.getUTCFullYear() === year
     && parsed.getUTCMonth() === month - 1
-    && parsed.getUTCDate() === day
-    && value >= CONTENT_UPDATE_POLICY_EFFECTIVE_DATE;
+    && parsed.getUTCDate() === day;
+}
+
+export function isValidContentUpdatedAt(value) {
+  return isValidIsoDate(value) && value >= CONTENT_UPDATE_POLICY_EFFECTIVE_DATE;
 }
 
 function formatContentDate(value, fieldName, prefix) {

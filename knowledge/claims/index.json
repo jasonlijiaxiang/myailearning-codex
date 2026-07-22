@@ -51,15 +51,32 @@
     },
     {
       "id": "protocol.mcp-version-2025-11-25",
-      "claim": "截至 2026-07-21，本知识库核验的 MCP 当前规范版本为 2025-11-25，其中 Tasks 仍标记为实验性能力。",
-      "scope": "协议版本与具体 SDK、客户端、Server 和产品支持状态必须分别核验。",
-      "sourceIds": ["mcp-authorization", "mcp-tasks-2025-11-25"],
+      "claim": "截至 2026-07-21，MCP 当前正式规范仍为 2025-11-25，其中 Tasks 仍是实验性能力；官方已公布 2026-07-28 RC，但该 RC 尚未成为生效的最终规范。",
+      "scope": "仅描述 2026-07-21 的正式版与已公告 RC 状态；协议版本与具体 SDK、客户端、Server 和产品支持必须分别核验。",
+      "sourceIds": ["mcp-lifecycle-2025-11-25", "mcp-tasks-2025-11-25", "mcp-2026-07-28-rc"],
       "evidenceGrade": "A",
       "verifiedAt": "2026-07-21",
-      "reviewBy": "2026-10-19",
+      "reviewBy": "2026-07-28",
       "reviewCadenceDays": 90,
       "owner": "knowledge-curation",
-      "status": "active"
+      "status": "watch"
+    },
+    {
+      "id": "protocol.mcp-announced-replacement-2026-07-28",
+      "claim": "截至 2026-07-21，MCP 官方已发布标记为 2026-07-28 的 Release Candidate，并计划于 2026-07-28 发布最终规范；RC 公告列出移除 initialize/initialized 与协议级 session、Tasks 转为扩展以及授权强化等破坏性变化。",
+      "scope": "该记录只证明 RC 与计划发布日期已经公告，不表示 2026-07-28 最终规范已经发布或任何 SDK、客户端、Server 与产品已经兼容。",
+      "sourceIds": ["mcp-2026-07-28-rc"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-21",
+      "reviewBy": "2026-07-28",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch",
+      "announcement": {
+        "kind": "scheduled-replacement",
+        "targetClaimId": "protocol.mcp-version-2025-11-25",
+        "scheduledFor": "2026-07-28"
+      }
     },
     {
       "id": "protocol.a2a-version-1-0-0",

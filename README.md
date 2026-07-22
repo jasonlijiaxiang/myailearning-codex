@@ -38,8 +38,9 @@ npm run check
 npm run kb:doctor
 npm run kb:inbox
 npm run kb:validate
-npm run kb:package
-npm run kb:release-check -- --mode local
+npm run kb:handoff-audit -- --audience internal
+npm run kb:package -- --audience internal
+npm run kb:release-check -- --mode local --audience internal
 ```
 
 修改 `HANDOFF.md` 后，同步生成并检查 HTML：
@@ -50,6 +51,8 @@ npm run handoff:check
 ```
 
 `npm run kb:package` 生成源码级 ZIP 和 SHA-256 清单，默认文件名为 `portable-knowledge-base-yyyymmddhhmm.zip`，日期使用打包机器的本地时间。打包默认排除任意层级的依赖、构建缓存、私有聊天、Git 历史和个人 Sites 绑定。在 Git checkout 中，打包器只读取已暂存的 index 内容：先暂存准备交付的文件，任何 tracked 文件仍有未暂存改动时会拒绝打包，其他 untracked 文件不会进入 ZIP；无 Git 项目则只读取配置中明确允许的路径。只有在自己的已授权环境中才使用 `--include-site-binding`。仓库中的 `.openai/hosting.json` 仍是本项目正式 Sites 构建与发布所需的受控绑定；“默认排除”只指 portable 包，不代表它不进入 Git 或正式构建。
+
+正式分享前必须按实际分发面声明 `internal` 或 `external` audience。附件审计会报告授权状态、当前 SHA-256、嵌入作者元数据、演讲者备注和嵌入文件，但不会自动改写附件；未知授权或同路径内容变化导致的摘要不匹配，在内部交接中保持可见警告，在外部分发中会阻断。公开源仓库属于 `external`，公开 Sites 则审实际 staged artifact；授权记录维护在 `knowledge/attachment-distribution.json`，摘要生成与复核步骤见 `HANDOFF.md`。
 
 ## 主要目录
 
@@ -80,6 +83,7 @@ npm run handoff:check
 - `kb.config.json`：portable、聊天采集、知识整理和可选发布模式的统一配置
 - `.agents/skills/curate-portable-knowledge-base/`：项目级知识整理 Skill
 - `.codex/hooks.json`：私有聊天采集入口
+- `knowledge/attachment-distribution.json`：原始附件的分发授权范围与人工复核台账
 - `knowledge/claims/`：动态事实生命周期台账
 - `knowledge/private-inbox/`：仅本机可见、不会发布的聊天采集区
 

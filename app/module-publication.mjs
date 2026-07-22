@@ -5,28 +5,54 @@
  * 但正文根据内容选择流程、循环、分层、光谱或决策矩阵，不强迫同一版式。
  */
 const moduleSpecs = [
-  ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-07-21"],
-  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-07-21"],
-  ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-20"],
-  ["ai-agent", "agent-title", ["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-07-20"],
-  ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-07-21"],
-  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-07-21"],
-  ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-07-21"],
-  ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-07-21"],
-  ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "governance-evidence", "continuous-assurance"], "brief", "2026-07-21"],
-  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-20"],
-  ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-07-21"],
-  ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-07-21"],
-  ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-07-21"],
-  ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-20"],
-  ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-20"],
-  ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief", "2026-07-20"],
-  ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-07-20"],
-  ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-20"],
-  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-21"],
-  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-07-21"],
-  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache", "hbm", "scale-up", "scale-out"], "brief", "2026-07-21"],
+  ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-07-21", "2026-07-17"],
+  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-07-21", "2026-07-17"],
+  ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-21", "2026-07-17"],
+  ["ai-agent", "agent-title", ["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-07-21", "2026-07-17"],
+  ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-07-21", "2026-07-17"],
+  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-07-21", "2026-07-17"],
+  ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-07-21", "2026-07-17"],
+  ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-07-21", "2026-07-17"],
+  ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "governance-evidence", "continuous-assurance"], "brief", "2026-07-21", "2026-07-21"],
+  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-20", "2026-07-17"],
+  ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-07-21", "2026-07-17"],
+  ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-07-21", "2026-07-17"],
+  ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-07-21", "2026-07-21"],
+  ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-20", "2026-07-17"],
+  ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-21", "2026-07-17"],
+  ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief", "2026-07-21", "2026-07-17"],
+  ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-07-20", "2026-07-17"],
+  ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-21", "2026-07-17"],
+  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-21", "2026-07-17"],
+  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-07-21", "2026-07-17"],
+  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache", "hbm", "scale-up", "scale-out"], "brief", "2026-07-21", "2026-07-17"],
 ];
+
+// 2026-07-20 日期策略生效前无 addedAt 问题的稳定身份集合摘要。
+// 摘要算法见 MODULE-BUILD-STANDARD；新增问题必须携带 addedAt，不能用同数量替换绕过。
+const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
+  "solution-patterns": "52a7b6302cb7bafde13c1d47e1f25e06eb103debf951508a765d7ae67341f110",
+  "model-landscape": "710518d2e7495dd0a4ab3b5a5f4ca5a6eb25398ffc81ebedb832aaf4b7be4f12",
+  rag: "5feec1dd0340b3d5d58d6b05c1a3dc0f094046b88c52471b2bc83b0aa524a713",
+  "ai-agent": "53b2a8990c5769cdddd525727b6135d534dd4bbadc5501fa4fc32555e85bf114",
+  multimodal: "93ef70cba5eb1c013be9aaa5d8139ad07490c4f8f05159fd20b25718ab4f9293",
+  mcp: "0e77279a34c57ab3814cf800dd0f9f9874955adbcf0e1097d88d6999c267cc61",
+  a2a: "7f302462d608a14f80957008e03ff4dfcdcb1c136d71eb6b4957998223a253b0",
+  evaluation: "8581cb82f539cb8948f4f98047bc3683184dc5dec7baf38b198f1c669df6011a",
+  "ai-governance": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  security: "46aaf8b0343c74c5b240bf2cb086f80d6d388696f35dd5e5ae3c848de9583e51",
+  "ai-gateway": "342cad66994dc68ec21c90a7b31753746f7d2935c2d0dcacf0f0c80fa5a619d1",
+  "ai-ops": "c94ef422a8f447daa9336ce65ebae56958cb1550c5b3e73b5f70e12cce8ec88f",
+  "predictive-ai-mlops": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  llm: "026090fc37ab854e455179f9a940f13674784b0cb67d8338f31ac1789c554cac",
+  "prompt-engineering": "ce3b16efe824db7e6014597082739fb3789aa304aa88bd3e7a0e02a5b2f39870",
+  "fine-tuning": "32309070485d6a96e18382bfb09f74f991f842911f3609bb238e2b7f58ab02cc",
+  "llm-training": "1ec338b98689954956857f62e3dc3769777c435979e372ded82dcb8250ed863b",
+  "llm-inference": "1a732d72e0a2f584fe4fcd76f56b7913afe8fdc63d50080556095c9bb1adf973",
+  "data-engineering": "bd739a88b2905ba7ab67b7c900ab4f39efc924cd7133357ad11e165c49f3d234",
+  "ai-infra-platform": "b1d9886106ef81384e0bb1593c441a8760ca4d1ce1aae6978d9fd002535ffa70",
+  "ai-infra-compute": "5739e718d368d17dd46a01cd35bcc7eb1c7d158c3bd84b3a66153abf1343ef9e",
+});
 
 const moduleKnowledgeViews = Object.freeze({
   "solution-patterns": "decision-blueprint",
@@ -54,12 +80,12 @@ const moduleKnowledgeViews = Object.freeze({
 
 const moduleQaCoverageTags = Object.freeze({
   "solution-patterns": Object.freeze([
-    "方案边界", "PoC 验收", "TCO", "场景选择", "编排选择", "智能客服", "企业搜索",
+    "方案边界", "PoC 验收", "TCO", "场景选择", "架构组合", "智能客服", "企业搜索",
     "内容生成", "AI Coding", "数字人", "ChatBI", "会议助手", "生产运营",
     "成本边界", "范围设计", "单位经济", "采购选型", "价值衡量", "内部结算",
   ]),
   "model-landscape": Object.freeze([
-    "选型方法", "供应连续性", "TCO", "生命周期", "组合策略", "版本治理", "Benchmark 边界", "退出策略",
+    "选型方法", "供应连续性", "TCO", "生命周期", "组合策略", "版本治理", "候选初筛", "退出策略",
     "任务分层", "模型身份", "部署责任", "上下文边界",
   ]),
   rag: Object.freeze([
@@ -143,12 +169,14 @@ const moduleQaCoverageTags = Object.freeze({
   ]),
 });
 
-export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind, updatedAt]) => Object.freeze({
+export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, requiredTerms, routeKind, updatedAt, introducedAt]) => Object.freeze({
   slug,
   path: `/modules/${slug}`,
   titleId,
   requiredTerms: Object.freeze(requiredTerms),
   routeKind,
+  introducedAt,
+  legacyUndatedQuestionSetSha256: moduleLegacyUndatedQuestionSetSha256[slug],
   updatedAt: updatedAt ?? null,
   visualProfile: Object.hasOwn(moduleKnowledgeViews, slug) ? "dense-reading" : "standard",
   knowledgeView: moduleKnowledgeViews[slug] ?? null,
