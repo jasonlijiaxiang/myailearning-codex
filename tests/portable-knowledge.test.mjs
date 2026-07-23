@@ -482,6 +482,24 @@ test("portable builds treat the personal Sites binding as optional", async () =>
   assert.match(viteConfig, /ENOENT/);
 });
 
+test("local lecture attachments remain outside the Git source distribution", async () => {
+  const [gitignore, readme, handoff] = await Promise.all([
+    fs.readFile(path.join(PROJECT_ROOT, ".gitignore"), "utf8"),
+    fs.readFile(path.join(PROJECT_ROOT, "README.md"), "utf8"),
+    fs.readFile(path.join(PROJECT_ROOT, "HANDOFF.md"), "utf8"),
+  ]);
+  assert.match(gitignore, /^\/external_reference\/CC-20260717\/$/m);
+  assert.match(readme, /CC-20260717\/.*不属于 GitHub 源码交付/);
+  assert.match(handoff, /CC-20260717\/.*不属于 Git 源码交付/);
+
+  const tracked = spawnSync("git", ["ls-files", "external_reference/CC-20260717/**"], {
+    cwd: PROJECT_ROOT,
+    encoding: "utf8",
+    shell: false,
+  });
+  if (tracked.status === 0) assert.equal(tracked.stdout.trim(), "");
+});
+
 test("portable tools pass without Git and exclude private runtime and personal Sites binding", async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "portable-kb-package-"));
   let output;
@@ -515,6 +533,12 @@ test("portable tools pass without Git and exclude private runtime and personal S
         defaultMode: "local",
         sites: { binding: ".openai/hosting.json" },
       },
+      handoff: {
+        defaultAudience: "internal",
+        attachmentRoots: ["docs/attachments"],
+        attachmentPolicy: "knowledge/attachment-distribution.json",
+        attachmentSchema: "knowledge/schemas/attachment-distribution.schema.json",
+      },
       packaging: {
         outputDirectory: "outputs/portable",
         maxArchiveBytes: 268435456,
@@ -534,6 +558,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
           "package-lock.json",
           "app",
           "public",
+          "knowledge/attachment-distribution.json",
           "knowledge/claims",
           "knowledge/release-manifest.json",
           "knowledge/schemas",
@@ -571,6 +596,14 @@ test("portable tools pass without Git and exclude private runtime and personal S
     await fs.writeFile(
       path.join(root, ".agents/skills/curate-portable-knowledge-base/SKILL.md"),
       '---\nname: curate-portable-knowledge-base\ndescription: "Portable test skill."\n---\n\nTest.\n',
+    );
+    await fs.mkdir(
+      path.join(root, ".agents/skills/curate-portable-knowledge-base/references"),
+      { recursive: true },
+    );
+    await fs.writeFile(
+      path.join(root, ".agents/skills/curate-portable-knowledge-base/references/handoff-audit.md"),
+      "# Handoff audit fixture\n",
     );
     const skillScripts = path.join(
       root,
@@ -611,6 +644,10 @@ test("portable tools pass without Git and exclude private runtime and personal S
     await fs.writeFile(path.join(root, "tests/tool.test.mjs"), "export {};\n");
     await fs.mkdir(path.join(root, "knowledge/schemas"), { recursive: true });
     await fs.copyFile(
+      path.join(PROJECT_ROOT, "knowledge/schemas/attachment-distribution.schema.json"),
+      path.join(root, "knowledge/schemas/attachment-distribution.schema.json"),
+    );
+    await fs.copyFile(
       path.join(PROJECT_ROOT, "knowledge/schemas/claim.schema.json"),
       path.join(root, "knowledge/schemas/claim.schema.json"),
     );
@@ -623,6 +660,11 @@ test("portable tools pass without Git and exclude private runtime and personal S
       path.join(root, "knowledge/schemas/release.schema.json"),
     );
     await writeJson(path.join(root, "knowledge/claims/index.json"), { schemaVersion: 1, items: [] });
+    await writeJson(path.join(root, "knowledge/attachment-distribution.json"), {
+      $schema: "./schemas/attachment-distribution.schema.json",
+      schemaVersion: 2,
+      items: [],
+    });
     await writeJson(path.join(root, "knowledge/release-manifest.json"), {
       $schema: "./schemas/release.schema.json",
       schemaVersion: 1,

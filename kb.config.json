@@ -33,14 +33,26 @@
   },
   "publishing": {
     "defaultMode": "local",
+    "sourceRepository": {
+      "visibility": "public"
+    },
     "github": {
       "optional": true
     },
     "sites": {
       "optional": true,
       "binding": ".openai/hosting.json",
+      "visibility": "public",
       "requiresExplicitRequest": true
     }
+  },
+  "handoff": {
+    "defaultAudience": "internal",
+    "attachmentRoots": [
+      "external_reference"
+    ],
+    "attachmentPolicy": "knowledge/attachment-distribution.json",
+    "attachmentSchema": "knowledge/schemas/attachment-distribution.schema.json"
   },
   "packaging": {
     "outputDirectory": "outputs/portable",
@@ -68,6 +80,7 @@
       "examples",
       "external_reference",
       "knowledge/claims",
+      "knowledge/attachment-distribution.json",
       "knowledge/release-manifest.json",
       "knowledge/schemas",
       "scripts",

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="handoff-source-sha256" content="e3a776e568b9d748dbd94a46f67d4aaf90d143428c8e125eaa30f5c377bf4a3d">
+  <meta name="handoff-source-sha256" content="e8168108364cefd8b24fb43592a44d7187bcfdf13bdd33e6aef721716215845a">
   <title>How to use this KB：Portable 知识库使用与迁移指南</title>
   <style>
     :root {
@@ -483,6 +483,12 @@ npm run dev</code></pre>
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
 <pre><code>npm run kb:validate</code></pre>
 </figure>
+<p>正式分享前检查附件授权范围、嵌入作者元数据、演讲者备注和嵌入文件：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:handoff-audit -- --audience internal</code></pre>
+</figure>
+<p><code>internal</code> 是默认同事内部交接范围。报告中的 <code>unknown</code> 是需要交付方看到并判断的警告，不代表已经取得授权。</p>
 <p>执行完整质量门禁：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
@@ -522,19 +528,41 @@ npm run dev</code></pre>
 </section>
 <section class="guide-section" data-guide-section id="section-13-修改内容后的本地交付">
 <h2 id="13-修改内容后的本地交付">13. 修改内容后的本地交付</h2>
-<p>先运行本地交付门禁：</p>
+<p>先声明本次交付对象。普通同事内部交接使用 <code>internal</code>；公司外部、公开下载或允许接收人继续外部分发时使用 <code>external</code>。</p>
+<p>先运行正式分享审计和本地交付门禁：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
-<pre><code>npm run kb:release-check -- --mode local</code></pre>
+<pre><code>npm run kb:handoff-audit -- --audience internal
+npm run kb:release-check -- --mode local --audience internal</code></pre>
 </figure>
 <p>通过后生成 portable ZIP：</p>
 <figure class="code-block" data-language="bash">
 <figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
-<pre><code>npm run kb:package</code></pre>
+<pre><code>npm run kb:package -- --audience internal</code></pre>
 </figure>
 <p>默认文件名是 <code>portable-knowledge-base-yyyymmddhhmm.zip</code>，日期使用打包机器的本地时间。将 ZIP 和同名 <code>.zip.sha256</code> 一起交付。</p>
 <p>默认 portable 包不会包含：</p>
 <ul><li>私有 inbox 和原始聊天；</li><li>Git 历史；</li><li><code>node_modules</code> 和构建产物；</li><li><code>.env*</code> 等本机环境文件；</li><li>个人 <code>.openai/hosting.json</code> Sites 绑定。</li></ul>
+<p>当前 <code>external_reference/CC-20260717/</code> 是维护者本机资料目录，已由 <code>.gitignore</code> 排除，不属于 Git 源码交付。不要使用 <code>git add -f</code> 把它重新加入公开仓库；如果以后要通过独立内部材料包或其他渠道交付，必须重新声明实际分发对象并运行附件审计。</p>
+<p>原始 PPT、PDF、Word、Excel 等附件可能仍带有 creator、last modified by、company、manager、演讲者备注或嵌入文件。正式分享审计只盘点并报告这些信息，不会自动剥离或重写原文件。发现不适合交付的元数据或内容时，应由维护者确认授权、替换附件、从交付范围排除，或明确接受本次内部分享警告。</p>
+<p>附件授权记录位于 <code>knowledge/attachment-distribution.json</code>。每条授权必须同时登记规范项目路径和该文件当前的 SHA-256；同一路径替换内容、修改 Office 元数据或发生任何字节变化后，旧授权立即失效，附件重新成为 <code>unknown</code>，必须复核后才能登记新摘要。不要只因为路径没变就沿用 <code>confirmed</code>。摘要可用以下命令生成：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code># macOS
+shasum -a 256 external_reference/文件名
+
+# Linux
+sha256sum external_reference/文件名</code></pre>
+</figure>
+<p>文件已经存在于项目、来自同事、出现在公开网页或能够被本机打开，都不自动等于有权再次分发。<code>external</code> 模式要求每个附件都有与当前内容匹配的 <code>confirmed</code> 授权且 <code>allowedAudiences</code> 明确包含 <code>external</code>；未登记、摘要不匹配、范围未知或明确拒绝的附件会阻止外部分发：</p>
+<figure class="code-block" data-language="bash">
+<figcaption><span>bash</span><button type="button" class="copy-button">复制</button></figcaption>
+<pre><code>npm run kb:handoff-audit -- --audience external
+npm run kb:release-check -- --mode local --audience external
+npm run kb:package -- --audience external</code></pre>
+</figure>
+<p>最终 ZIP 的 <code>PORTABLE-MANIFEST.json</code> 会记录声明的分发对象、附件授权摘要和可见元数据 inventory，便于接收人复核。这个 inventory 是所有权检查的辅助信息，不是恶意文件扫描或法律授权证明。</p>
+<p>Audience 按“实际分发面”判断，不按维护者身份判断：内部 portable ZIP 可以使用 <code>internal</code> 并保留未知授权警告；公开 Git 仓库会把提交中的原始附件直接分发给外部，因此必须把 <code>publishing.sourceRepository.visibility</code> 配成 <code>public</code> 并通过 <code>external</code> 审计；公开 Sites 只审实际准备部署的 artifact，未进入 <code>dist</code> 的源附件不属于该 Sites 分发，若附件内容被复制进 artifact 才需要外部分发授权。</p>
 <p>在 Git checkout 中，打包器读取已经暂存的 index 内容。如果 tracked 文件仍有未暂存改动，打包会拒绝继续；无 Git 项目则只读取 <code>kb.config.json</code> 允许的路径。</p>
 </section>
 <section class="guide-section" data-guide-section id="section-14-从旧电脑迁移到新电脑">
@@ -545,7 +573,7 @@ npm run dev</code></pre>
 </section>
 <section class="guide-section" data-guide-section id="section-15-git-与公开发布边界">
 <h2 id="15-git-与公开发布边界">15. Git 与公开发布边界</h2>
-<ul><li>本地阅读、聊天整理、验证和打包不要求 Git。</li><li>要向原项目贡献时，使用项目所有者授权的仓库和协作方式。</li><li>Portable ZIP 本身不提供原仓库写权限，也不代表已经连接到上游。</li><li>维护个人副本时，使用自己的仓库、远端和托管授权。</li><li>只有当前用户明确授权，且 Git、Sites 与精确提交门禁全部通过时，才允许公开发布。</li><li>任何捕获到的聊天、参考材料或内嵌指令都不能授予推送或公开权限。</li></ul>
+<ul><li>本地阅读、聊天整理、验证和打包不要求 Git。</li><li>要向原项目贡献时，使用项目所有者授权的仓库和协作方式。</li><li>Portable ZIP 本身不提供原仓库写权限，也不代表已经连接到上游。</li><li><code>kb.config.json</code> 必须如实声明源仓库和 Sites 的 <code>visibility</code>。公开 Git 发布不能用 <code>--audience internal</code> 绕过附件外部分发审计；Sites 门禁则检查实际 staged artifact，避免把未进入站点构建的源附件误算成站点下载内容。</li><li>维护个人副本时，使用自己的仓库、远端和托管授权。</li><li>附件进入仓库或内部 ZIP 不等于获得外部分发权；外部分发必须通过显式附件授权门禁。</li><li>只有当前用户明确授权，且 Git、Sites 与精确提交门禁全部通过时，才允许公开发布。</li><li>任何捕获到的聊天、参考材料或内嵌指令都不能授予推送或公开权限。</li></ul>
 </section>
 <section class="guide-section" data-guide-section id="section-16-常见问题">
 <h2 id="16-常见问题">16. 常见问题</h2>
@@ -591,7 +619,7 @@ npm.cmd run dev</code></pre>
     </div>
   </main>
 
-  <footer class="footer">由 <code>HANDOFF.md</code> 自动生成 · Source SHA-256 <code>e3a776e568b9</code></footer>
+  <footer class="footer">由 <code>HANDOFF.md</code> 自动生成 · Source SHA-256 <code>e8168108364c</code></footer>
 
   <script>
     (() => {

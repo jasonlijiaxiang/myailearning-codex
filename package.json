@@ -16,6 +16,7 @@
     "handoff:check": "node scripts/build-handoff-html.mjs --check",
     "kb:doctor": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs doctor",
     "kb:inbox": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs inbox",
+    "kb:handoff-audit": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs handoff-audit",
     "kb:validate": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs validate",
     "kb:mark": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs mark",
     "kb:package": "node .agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs package",

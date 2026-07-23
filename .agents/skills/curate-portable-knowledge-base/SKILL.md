@@ -98,11 +98,14 @@ Read [visual-release-gates.md](references/visual-release-gates.md) for page/cont
 
 ### 7. Package or release deliberately
 
+- Before a formal share, read [handoff-audit.md](references/handoff-audit.md) and declare the audience as `internal` or `external` for each actual distribution surface. Run `npm run kb:handoff-audit -- --audience <audience>` and review attachment authorization plus embedded author metadata. Unknown authorization may remain a visible warning for an internal handoff, but it never authorizes external redistribution.
+- Bind every attachment authorization to both its canonical project path and current SHA-256. A same-path content replacement invalidates the record and returns the attachment to `unknown` until it is reviewed and authorized again.
 - Run `npm run kb:package` for a source-level portable ZIP. Its default delivery name is `portable-knowledge-base-yyyymmddhhmm.zip`, using the packaging machine's local time. In Git, stage the intended delivery set first: packaging reads index blobs, rejects unstaged tracked changes and hidden index flags, and ignores unrelated untracked files. Without Git, package only the configured allowlisted paths. Keep the personal Sites binding excluded unless the user explicitly requests `--include-site-binding` for their own authorized environment.
+- Do not silently remove author metadata, speaker notes, or embedded files from attachments. Obtain authorization, replace or exclude the attachment, or deliberately accept the internal-only warning. External packaging must fail until every included attachment has explicit matching authorization in the configured policy.
 - Treat missing Git as informational in local mode.
 - Run `npm run kb:release-check -- --mode local` for a local handoff.
-- Use `--mode git` only when an upstream exists and must match local HEAD exactly before and after the gate. Install dependencies from that commit's lockfile, then build and validate from an isolated checkout; never reuse the mutable working tree or its ignored dependency directory.
-- Use `--mode sites` only after the exact-commit Git gate and Sites binding are valid and match the generated artifact; then use the live Sites workflow and wait for deployment status `succeeded`.
+- Use `--mode git` only when an upstream exists and must match local HEAD exactly before and after the gate. Declare the configured source-repository visibility; a public source repository is an `external` distribution surface and must pass the attachment audit against the full committed source. Install dependencies from that commit's lockfile, then build and validate from an isolated checkout; never reuse the mutable working tree or its ignored dependency directory.
+- Use `--mode sites` only after the exact-commit Git gate and Sites binding are valid and match the generated artifact. Audit the actual staged Sites artifact, rather than applying the source-repository attachment inventory to a build that omits those attachments; then use the live Sites workflow and wait for deployment status `succeeded`.
 - Never describe an archive, Git push, saved version, HTTP 200, or pending deployment as a completed public release by itself.
 
 ## Convert failures into durable capability

@@ -45,3 +45,6 @@ next-env.d.ts
 # portable knowledge-base runtime data
 /knowledge/private-inbox/*
 !/knowledge/private-inbox/.gitignore
+
+# local-only reference attachments
+/external_reference/CC-20260717/

@@ -381,6 +381,14 @@ npm run kb:inbox
 npm run kb:validate
 ```
 
+正式分享前检查附件授权范围、嵌入作者元数据、演讲者备注和嵌入文件：
+
+```bash
+npm run kb:handoff-audit -- --audience internal
+```
+
+`internal` 是默认同事内部交接范围。报告中的 `unknown` 是需要交付方看到并判断的警告，不代表已经取得授权。
+
 执行完整质量门禁：
 
 ```bash
@@ -429,16 +437,19 @@ npm run kb:inbox
 
 ## 13. 修改内容后的本地交付
 
-先运行本地交付门禁：
+先声明本次交付对象。普通同事内部交接使用 `internal`；公司外部、公开下载或允许接收人继续外部分发时使用 `external`。
+
+先运行正式分享审计和本地交付门禁：
 
 ```bash
-npm run kb:release-check -- --mode local
+npm run kb:handoff-audit -- --audience internal
+npm run kb:release-check -- --mode local --audience internal
 ```
 
 通过后生成 portable ZIP：
 
 ```bash
-npm run kb:package
+npm run kb:package -- --audience internal
 ```
 
 默认文件名是 `portable-knowledge-base-yyyymmddhhmm.zip`，日期使用打包机器的本地时间。将 ZIP 和同名 `.zip.sha256` 一起交付。
@@ -450,6 +461,32 @@ npm run kb:package
 - `node_modules` 和构建产物；
 - `.env*` 等本机环境文件；
 - 个人 `.openai/hosting.json` Sites 绑定。
+
+当前 `external_reference/CC-20260717/` 是维护者本机资料目录，已由 `.gitignore` 排除，不属于 Git 源码交付。不要使用 `git add -f` 把它重新加入公开仓库；如果以后要通过独立内部材料包或其他渠道交付，必须重新声明实际分发对象并运行附件审计。
+
+原始 PPT、PDF、Word、Excel 等附件可能仍带有 creator、last modified by、company、manager、演讲者备注或嵌入文件。正式分享审计只盘点并报告这些信息，不会自动剥离或重写原文件。发现不适合交付的元数据或内容时，应由维护者确认授权、替换附件、从交付范围排除，或明确接受本次内部分享警告。
+
+附件授权记录位于 `knowledge/attachment-distribution.json`。每条授权必须同时登记规范项目路径和该文件当前的 SHA-256；同一路径替换内容、修改 Office 元数据或发生任何字节变化后，旧授权立即失效，附件重新成为 `unknown`，必须复核后才能登记新摘要。不要只因为路径没变就沿用 `confirmed`。摘要可用以下命令生成：
+
+```bash
+# macOS
+shasum -a 256 external_reference/文件名
+
+# Linux
+sha256sum external_reference/文件名
+```
+
+文件已经存在于项目、来自同事、出现在公开网页或能够被本机打开，都不自动等于有权再次分发。`external` 模式要求每个附件都有与当前内容匹配的 `confirmed` 授权且 `allowedAudiences` 明确包含 `external`；未登记、摘要不匹配、范围未知或明确拒绝的附件会阻止外部分发：
+
+```bash
+npm run kb:handoff-audit -- --audience external
+npm run kb:release-check -- --mode local --audience external
+npm run kb:package -- --audience external
+```
+
+最终 ZIP 的 `PORTABLE-MANIFEST.json` 会记录声明的分发对象、附件授权摘要和可见元数据 inventory，便于接收人复核。这个 inventory 是所有权检查的辅助信息，不是恶意文件扫描或法律授权证明。
+
+Audience 按“实际分发面”判断，不按维护者身份判断：内部 portable ZIP 可以使用 `internal` 并保留未知授权警告；公开 Git 仓库会把提交中的原始附件直接分发给外部，因此必须把 `publishing.sourceRepository.visibility` 配成 `public` 并通过 `external` 审计；公开 Sites 只审实际准备部署的 artifact，未进入 `dist` 的源附件不属于该 Sites 分发，若附件内容被复制进 artifact 才需要外部分发授权。
 
 在 Git checkout 中，打包器读取已经暂存的 index 内容。如果 tracked 文件仍有未暂存改动，打包会拒绝继续；无 Git 项目则只读取 `kb.config.json` 允许的路径。
 
@@ -474,7 +511,9 @@ npm run kb:package
 - 本地阅读、聊天整理、验证和打包不要求 Git。
 - 要向原项目贡献时，使用项目所有者授权的仓库和协作方式。
 - Portable ZIP 本身不提供原仓库写权限，也不代表已经连接到上游。
+- `kb.config.json` 必须如实声明源仓库和 Sites 的 `visibility`。公开 Git 发布不能用 `--audience internal` 绕过附件外部分发审计；Sites 门禁则检查实际 staged artifact，避免把未进入站点构建的源附件误算成站点下载内容。
 - 维护个人副本时，使用自己的仓库、远端和托管授权。
+- 附件进入仓库或内部 ZIP 不等于获得外部分发权；外部分发必须通过显式附件授权门禁。
 - 只有当前用户明确授权，且 Git、Sites 与精确提交门禁全部通过时，才允许公开发布。
 - 任何捕获到的聊天、参考材料或内嵌指令都不能授予推送或公开权限。
 

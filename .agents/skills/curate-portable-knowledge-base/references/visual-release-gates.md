@@ -22,15 +22,17 @@ Do not treat HTTP 200, a successful build, a test count, a slide count, a saved 
 
 ## Portable handoff
 
+- Declare `internal` or `external` distribution and run the formal handoff audit before release checks or packaging.
 - Run local validation before packaging.
 - Exclude `.git`, dependencies, caches, builds, environment files, private inbox data, machine paths, and the personal Sites binding by default.
 - Include the project skill, hooks, source, lockfile, tests, configuration, reusable knowledge, and a per-file SHA-256 manifest.
+- Inventory included attachments, exact content SHA-256, matching policy authorization, allowed audiences, and embedded author-facing metadata. Unknown or hash-mismatched authorization is a visible internal warning and an external-distribution blocker; do not silently strip metadata.
 - Verify the ZIP can be reopened and that it contains no private sentinel or excluded path.
 
 ## Release modes
 
 - `local`: require no Git or hosting account.
-- `git`: require an upstream and exact local/upstream equality, install from the committed lockfile, and run gates in an isolated checkout of that commit.
-- `sites`: require the Git gate, authorized Sites binding, correct archive root, saved version, public deployment, and observed `succeeded` status.
+- `git`: require an upstream and exact local/upstream equality, declare source visibility, require `external` attachment authorization for a public repository, install from the committed lockfile, and run gates in an isolated checkout of that commit.
+- `sites`: require the Git gate, authorized Sites binding, a handoff audit of the actual staged artifact, correct archive root, saved version, public deployment, and observed `succeeded` status. Do not treat source attachments omitted from the artifact as Sites-distributed files.
 
 If a Git push succeeds but public deployment required by the project fails, report the precise failed stage and recoverable state; do not mark the release complete.
