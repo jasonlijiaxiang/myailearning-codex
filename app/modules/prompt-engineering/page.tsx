@@ -222,6 +222,14 @@ export default function PromptEngineeringModulePage() {
               </article>
             </div>
 
+            <BalancedGrid className="technicalNotes" maxColumns={4}>
+              <article><p className="miniLabel">ONE TURN</p><h4>Prompt Engineering</h4><p>解决“这一轮应该怎样告诉模型”，主要设计任务说明、示例、约束和输出契约。</p></article>
+              <article><p className="miniLabel">EACH CALL</p><h4>Context Engineering</h4><p>解决“每一步让模型看到什么”，负责选择和组织身份、历史、证据、工具与当前状态。</p></article>
+              <article><p className="miniLabel">WHOLE RUN</p><h4>Harness Engineering</h4><p>解决“整个任务怎样运行、行动、验证、恢复和受控”，把模型置于可执行的反馈循环中。</p></article>
+              <article><p className="miniLabel">WHOLE PRODUCT</p><h4>Agent Engineering</h4><p>解决“怎样把模型、Harness、业务系统、体验、治理和运营做成完整产品”。</p></article>
+            </BalancedGrid>
+            <p className="paperBoundary"><strong>边界：</strong>四者不是互斥职位或成熟度等级。Prompt 与 Context 是 Harness 每次调用的重要输入；Harness 是 Agent 产品的运行与控制层；Agent Engineering 再把业务流程、用户体验和长期运营纳入交付。<Link href="/modules/ai-agent#harness">进入 Agent 模块查看 Harness 机制与评估方法 ↗</Link></p>
+
             <div className="principleDepth">
               <header className="principleDepthIntro">
                 <p className="miniLabel">PRESALES MECHANISM</p>

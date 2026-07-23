@@ -111,6 +111,14 @@ export const agentEvidenceCards = [
     boundary: "持久化运行时不自动让外部副作用幂等；工具仍需调用账本、去重与补偿。",
     sourceId: "azure-durable-orchestration",
   },
+  {
+    metric: "Model × Harness",
+    title: "同一模型不等于固定的 Agent 能力",
+    finding: "Harness-Bench 把模型与 Harness 作为组合进行比较，显示工具、上下文、执行循环和验证机制会改变端到端任务表现。",
+    boundary: "该研究仍是预印本，且结论依赖任务、模型快照、Harness 版本、预算和运行环境；不能据此生成永久产品总榜。",
+    sourceId: "harness-bench-2026",
+    accent: true,
+  },
 ];
 
 const agentQaCandidates = [
@@ -596,6 +604,34 @@ const agentQaCandidates = [
       { sourceId: "webarena-2024", supports: "支持用可验证终态衡量长链任务，说明不能只评单步回答或语言流畅度。" },
       { sourceId: "openai-agent-guide", supports: "支持设置护栏、停止条件和高风险人工介入，并从受控范围逐步扩展。" },
     ],
+  },
+  {
+    q: "Agent Harness 到底是什么？它和 Agent Framework、MCP 有什么区别？",
+    a: "Harness 是让 Agent 任务真正运行起来的执行与控制环境；Framework 是开发抽象，MCP 是连接工具和上下文的协议，三者解决的问题不同。",
+    depth: "Harness 负责把模型放进一个可行动、可验证、可恢复的系统：装配上下文，暴露和调用工具，保存 Run 状态，执行权限与预算，处理重试、审批、沙箱、观测和终态验证。Framework 可以提供其中部分代码结构，MCP 可以标准化工具、资源和 Prompt 的连接，但都不会自动补齐业务授权、恢复与验收。一个产品常同时拥有 Framework、协议适配器和自己的 Harness；比较时要看真实责任，而不是只看名称。",
+    ask: "追问客户：当前系统由谁装配上下文、执行工具、保存状态、验证终态并在失败后恢复？哪些能力只是框架 API 或协议连接？",
+    tag: "Harness 边界",
+    basis: "官方 Harness 文档 + MCP 职责边界",
+    evidence: [
+      { sourceId: "microsoft-agent-harness", supports: "支持 Harness 围绕 Agent 运行承接上下文、中间件、工具和执行控制的具体框架抽象。" },
+      { sourceId: "openai-harness-engineering", supports: "支持环境、工具、可执行验证和反馈循环共同决定 Agent 是否能可靠工作。" },
+      { sourceId: "mcp-architecture", supports: "支持 MCP 负责 Host、Client、Server 与 Tools / Resources / Prompts 的连接职责，而不定义完整 Agent 运行治理。" },
+    ],
+    addedAt: "2026-07-23",
+  },
+  {
+    q: "为什么同一个模型放进不同 Agent 工具，实际效果可能完全不同？",
+    a: "因为用户体验到的是“模型 × Harness × 任务 × 环境”的组合结果，不是裸模型分数；上下文、工具、循环、验证、权限和恢复方式都会改变成功率与成本。",
+    depth: "即使模型完全相同，两套 Agent 工具也可能在仓库扫描、指令优先级、上下文压缩、工具描述、补丁策略、命令沙箱、错误重试、测试触发、浏览器能力和停止条件上不同。公平比较要固定任务、代码快照、模型版本、预算、网络与权限，分别记录端到端成功、轨迹错误、P95、Token、人工介入和可恢复性，再做多次运行与失败切片。只比较一次 Demo 或产品自报 Benchmark，无法把模型和 Harness 的贡献分开。",
+    ask: "追问客户：比较时能否固定模型、任务、预算和环境？差异来自上下文、工具、验证、权限、恢复还是产品交互？",
+    tag: "Harness 评估",
+    basis: "跨 Harness 研究 + Agent 评估方法",
+    evidence: [
+      { sourceId: "harness-bench-2026", supports: "支持在多模型与真实工作流中测量 Harness 造成的表现差异，同时保留研究版本边界。" },
+      { sourceId: "anthropic-agent-evals", supports: "支持把多轮任务、工具、环境和评分器作为 Agent 评估整体，而不是只评最终文本。" },
+      { sourceId: "configuring-agentic-coding-tools", supports: "支持 Coding Agent 配置与工具环境会影响软件工程任务结果。" },
+    ],
+    addedAt: "2026-07-23",
   },
 ];
 

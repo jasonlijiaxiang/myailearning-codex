@@ -66,6 +66,9 @@ export const terminology = Object.freeze({
   "deletion-propagation": term("删除传播", "Deletion Propagation", "把删除或撤权同步到缓存、对象、切块、向量、索引和评估资产，并保留完成证据。", ["data-engineering", "security", "rag"]),
 
   "ai-agent": term("智能体", "AI Agent", "能围绕目标规划步骤、调用工具并根据结果继续行动的 AI 应用。", ["ai-agent"], "Agent"),
+  harness: term("Harness", "Agent Harness", "围绕模型运行任务的执行与控制环境，负责上下文装配、工具调用、状态、验证、权限、恢复和观测。", ["ai-agent", "evaluation"]),
+  "harness-engineering": term("Harness Engineering", "Harness Engineering", "设计和改进 Agent 的运行、行动、验证、恢复与受控机制，使模型能力能够稳定转化为任务结果。", ["ai-agent", "evaluation"]),
+  "agent-engineering": term("Agent 工程", "Agent Engineering", "把模型、Harness、业务系统、用户体验、治理和运营机制组合成可交付、可维护的完整 Agent 产品。", ["ai-agent", "ai-ops"]),
   perceive: term("感知", "Perceive", "读取用户目标、环境事实、身份和当前业务状态，形成下一步决策所需输入。", ["ai-agent"]),
   reason: term("思考", "Reason", "基于目标、规则和观察选择下一动作、请求更多信息或停止。", ["ai-agent"]),
   act: term("行动", "Act", "把模型提出的动作意图交给外部控制层校验、授权和执行。", ["ai-agent"]),
@@ -164,7 +167,7 @@ export const glossaryGroups = Object.freeze([
   Object.freeze({ id: "model-core", zh: "模型基础与能力", en: "Model Foundations", termIds: Object.freeze(["model-landscape", "access-spectrum", "capability-matrix", "model-lifecycle", "llm", "token", "embedding", "transformer", "attention", "qkv", "context-window", "kv-cache", "moe", "multimodal", "vision-transformer", "ocr", "asr"]) }),
   Object.freeze({ id: "prompt-context", zh: "提示与上下文", en: "Prompt and Context", termIds: Object.freeze(["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"]) }),
   Object.freeze({ id: "retrieval-data", zh: "检索与数据", en: "Retrieval and Data", termIds: Object.freeze(["rag", "retrieval", "augmentation", "generation", "chunking", "sparse-retrieval", "dense-retrieval", "hybrid-search", "vector-database", "bm25", "ann", "hnsw", "reranking", "rrf", "grounding", "data-engineering", "document-intelligence", "data-contract", "data-lineage", "deletion-propagation"]) }),
-  Object.freeze({ id: "agents-protocols", zh: "智能体与协议", en: "Agents and Protocols", termIds: Object.freeze(["ai-agent", "perceive", "reason", "act", "observe", "planning", "memory", "tools", "tool-calling", "api", "mcp", "mcp-protocol-roles", "mcp-primitives", "a2a", "agent-card", "a2a-task", "artifact", "tool-discovery", "agent-collaboration"]) }),
+  Object.freeze({ id: "agents-protocols", zh: "智能体与协议", en: "Agents and Protocols", termIds: Object.freeze(["ai-agent", "harness", "harness-engineering", "agent-engineering", "perceive", "reason", "act", "observe", "planning", "memory", "tools", "tool-calling", "api", "mcp", "mcp-protocol-roles", "mcp-primitives", "a2a", "agent-card", "a2a-task", "artifact", "tool-discovery", "agent-collaboration"]) }),
   Object.freeze({ id: "evaluation-security", zh: "应用交付、评估、安全与治理", en: "Application Delivery, Evaluation, Security and Governance", termIds: Object.freeze(["evaluation", "golden-set", "evaluation-layers", "llm-as-judge", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "governance-evidence", "continuous-assurance", "security", "ai-ops", "observability", "guardrails", "identity-authorization", "iam", "acl", "dlp", "hitl"]) }),
   Object.freeze({ id: "training-inference", zh: "训练、MLOps 与推理", en: "Training, MLOps and Inference", termIds: Object.freeze(["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift", "llm-training", "pretraining", "distributed-training", "fine-tuning", "sft", "rlhf", "lora", "qlora", "dpo", "llm-inference", "batching", "quantization", "ttft", "tpot"]) }),
   Object.freeze({ id: "infrastructure", zh: "平台与算力", en: "Platform and Compute", termIds: Object.freeze(["ai-infra-platform", "resource-scheduling", "gang-scheduling", "goodput", "ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out"]) }),
@@ -173,7 +176,7 @@ export const glossaryGroups = Object.freeze([
 
 export const homepageTermGroups = Object.freeze([
   Object.freeze({ label: "模型与推理", termIds: Object.freeze(["llm", "token", "transformer", "attention", "kv-cache", "moe"]) }),
-  Object.freeze({ label: "应用与上下文", termIds: Object.freeze(["rag", "ai-agent", "prompt-engineering", "context-engineering", "multimodal"]) }),
+  Object.freeze({ label: "应用与上下文", termIds: Object.freeze(["rag", "ai-agent", "harness", "prompt-engineering", "context-engineering", "multimodal"]) }),
   Object.freeze({ label: "协议与平台", termIds: Object.freeze(["mcp", "a2a", "api", "ai-gateway", "tool-calling"]) }),
   Object.freeze({ label: "治理与交付", termIds: Object.freeze(["evaluation", "ai-application-engineering", "ai-governance", "observability", "ai-finops", "tco"]) }),
 ]);

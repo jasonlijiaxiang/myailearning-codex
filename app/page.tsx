@@ -93,6 +93,7 @@ export default function Home() {
           <div className="toplinks">
             <Link href="/questions">问题查询</Link>
             <Link href="/glossary">术语库</Link>
+            <Link href="/coding-agents">Coding Agent 选型</Link>
             <a href="#available-modules">查找模块</a>
             <Link href="/knowledge-graph">动态探索</Link>
             <Link href="/references">来源与证据 / Reference</Link>

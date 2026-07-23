@@ -309,6 +309,20 @@ export const moduleQaExpansion = Object.freeze({
         { sourceId: "nist-genai-profile", supports: "支持部署前后持续测量和管理风险。" },
       ],
     ),
+    qa(
+      "怎样公平比较两套 Agent Harness？业界是否已有统一标准？",
+      "先固定任务、模型、版本、环境、权限和预算，再比较端到端成功、过程安全、效率、恢复与可观测性；目前还没有一个能覆盖所有 Agent 类型的统一 Harness 总分。",
+      "公平实验至少记录任务与代码快照、模型和推理配置、Harness 版本、工具与网络、最大轮次、Token / 时间预算、重试和人工介入。结果按任务类型与风险切片，联合观察成功率、关键步骤、违规动作、P95、每个成功任务成本、崩溃恢复和复现率。SWE-bench、Terminal-Bench 等只覆盖特定任务；Harness-Bench 正在尝试分离 Harness 效应，NIST 也在推进 Agent 标准工作，但都不能替代客户自己的任务集与风险门槛。",
+      "追问客户：需要比较的是模型能力、产品 Harness、开发体验还是企业治理？哪些变量能固定，哪类错误必须单独为零？",
+      "Harness 评估",
+      "受控实验 + 多维门槛 + 标准成熟度边界",
+      [
+        { sourceId: "harness-bench-2026", supports: "支持显式比较模型与 Harness 组合，并说明 Harness 效应需要在受控工作流中测量。" },
+        { sourceId: "anthropic-agent-evals", supports: "支持对 Agent 的任务、环境、工具轨迹和评分逻辑进行系统评估。" },
+        { sourceId: "nist-agent-standards", supports: "支持 Agent 标准化工作仍在推进，不支持宣称已有覆盖所有 Harness 的统一认证。" },
+      ],
+      "2026-07-23",
+    ),
   ]),
   security: Object.freeze([
     qa(

@@ -88,6 +88,39 @@ const agentActions = [
 
 const agentActionRows = balanceGridRows(agentActions, 2);
 
+const engineeringScopes = [
+  { scope: "一次交互", name: "Prompt Engineering", question: "这一轮应该怎样告诉模型？", owns: "任务说明、示例、约束与输出契约。" },
+  { scope: "每次调用", name: "Context Engineering", question: "每一步应该让模型看到什么？", owns: "身份、历史、证据、工具定义与当前状态的选择和装配。" },
+  { scope: "完整任务", name: "Harness Engineering", question: "整个任务如何运行、行动、验证、恢复和受控？", owns: "运行循环、工具执行、状态、权限、预算、验证、恢复和观测。" },
+  { scope: "完整产品", name: "Agent 工程 · Agent Engineering", question: "如何把模型、Harness 与业务系统做成可运营产品？", owns: "业务流程、体验、组织责任、发布、治理与长期运营。" },
+];
+
+const harnessLayers = [
+  { title: "内层 Harness", en: "Inner Harness", body: "直接围绕模型调用：上下文装配、工具选择与参数、循环、压缩、停止、结构化输出和局部评分。" },
+  { title: "外层 Harness", en: "Outer Harness", body: "围绕完整任务运行：身份与审批、沙箱、工作区、检查点、重试、终态验证、Trace、发布与人工接管。" },
+];
+
+const harnessNeighbors = [
+  { name: "Tool", role: "提供一个可调用能力", boundary: "不负责完整任务循环与恢复。" },
+  { name: "MCP", role: "标准化工具、资源与 Prompt 的连接", boundary: "不自动提供业务授权和终态验证。" },
+  { name: "Skill / Rule", role: "提供可复用知识、步骤或约束", boundary: "通常由 Harness 发现、注入和执行。" },
+  { name: "Workflow", role: "以代码或流程图确定路径与状态", boundary: "可包住 Agent，也可被 Harness 调用。" },
+  { name: "Framework", role: "提供开发抽象和组件 API", boundary: "实现范围可能只覆盖部分 Harness。" },
+  { name: "Sandbox", role: "隔离命令、代码、网络和文件副作用", boundary: "是 Harness 的执行控制之一。" },
+  { name: "Agent Platform", role: "把运行时、身份、观测与运营产品化", boundary: "通常承载一个或多个 Harness。" },
+];
+
+const harnessEvaluationDimensions = [
+  "任务成功与关键后置条件",
+  "多次运行稳定性与复现率",
+  "Token、P95 与成功任务成本",
+  "工具、权限和轨迹正确性",
+  "策略违规与不可逆误执行",
+  "崩溃恢复、幂等和人工接管",
+  "Trace、版本与失败归因",
+  "模型、环境与业务迁移成本",
+];
+
 const architecturePatterns = [
   { name: "确定性工作流 · Deterministic Workflow", cue: "步骤清楚、规则稳定、错误代价高", pipeline: "固定步骤 → 条件分支 → 人工审批", boundary: "最易测试和审计；不要为追求 Agent 标签而增加自治。" },
   { name: "单智能体 · Single Agent", cue: "步骤动态但职责集中", pipeline: "模型 ↔ 工具 ↔ 环境反馈，循环至退出", boundary: "默认起点；工具和上下文膨胀时质量会退化。" },
@@ -160,6 +193,7 @@ const cloudHooks = [
 const agentReadingSections: ReadingSection[] = [
   { id: "concept-map", label: "知识连接", eyebrow: "相关模块" },
   { id: "agent-principle", label: "工作循环", eyebrow: "四个关键动作" },
+  { id: "harness", label: "Harness", eyebrow: "运行、验证与恢复" },
   { id: "boundaries", label: "模式边界", eyebrow: "不要滥用 Agent" },
   { id: "capabilities", label: "关键组件", eyebrow: "规划、记忆与工具" },
   { id: "memory-interaction", label: "状态与互操作", eyebrow: "事实、记忆与协议" },
@@ -228,6 +262,7 @@ export default function AgentModulePage() {
           </Link>
           <div className="toplinks">
             <Link href="#agent-principle">Agent 原理</Link>
+            <Link href="/coding-agents">Coding Agent 选型</Link>
             <Link href="#qa">本模块问答</Link>
             <Link href="/glossary">术语库</Link>
             <Link href="/questions">全部问题</Link>
@@ -348,8 +383,55 @@ export default function AgentModulePage() {
             <AgentRunLab />
           </div>
 
+          <div className="subsection" id="harness" data-quality-section="principle">
+            <div className="subHead"><span>2.3</span><div><p className="kicker">AGENT RUNTIME &amp; CONTROL</p><h3>Harness：把模型能力变成可运行、可验证的任务系统</h3></div></div>
+            <p className="sectionLead">这里保留英文 Harness，不强行指定单一中文译名。它不是又一个模型，也不只是 Agent Framework：它是围绕模型与环境建立的<strong>执行、反馈和控制系统</strong>。可以先用一个工作公式理解：<strong>Agent System = Model + Harness + Environment + Domain Rules</strong>。</p>
+
+            <div className="tableWrap">
+              <table>
+                <thead><tr><th>工程范围</th><th>名称</th><th>主要问题</th><th>主要责任</th></tr></thead>
+                <tbody>
+                  {engineeringScopes.map((item) => <tr className={item.name === "Harness Engineering" ? "highlight" : undefined} key={item.name}><th>{item.scope}</th><td>{item.name}</td><td>{item.question}</td><td>{item.owns}</td></tr>)}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="memoryCompare retrievalCompare">
+              {harnessLayers.map((item, index) => (
+                <article className={index === 1 ? "externalMemory" : undefined} key={item.en}>
+                  <p className="miniLabel">{item.en.toLocaleUpperCase("en-US")}</p>
+                  <h4>{item.title} · {item.en}</h4>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
+
+            <CriticalBoundary>用户感受到的效果不是“模型能力”的单变量结果，而是<strong>Model × Harness × Task × Environment</strong>。同一个模型放进不同 Coding Agent，可能因为上下文策略、工具、补丁方式、命令沙箱、验证循环和恢复机制不同而得到完全不同的结果。</CriticalBoundary>
+
+            <BalancedGrid className="technicalNotes" maxColumns={4}>
+              {harnessNeighbors.map((item) => <article key={item.name}><p className="miniLabel">NEIGHBORING CONCEPT</p><h4>{item.name}</h4><p>{item.role}</p><small>{item.boundary}</small></article>)}
+            </BalancedGrid>
+
+            <div className="gates">
+              <h4>怎样判断一套 Harness 更好</h4>
+              <div className="gateList">{harnessEvaluationDimensions.map((item) => <span key={item}>{item}</span>)}</div>
+              <p>先固定任务、模型快照、代码或数据、网络、权限和预算，再进行多次运行与失败注入。SWE-bench、Terminal-Bench、SWE-ReBench 等只能回答特定任务；Harness-Bench 正尝试分离 Harness 效应，NIST 也在推进 Agent 标准工作，但目前没有覆盖所有 Agent 的统一总分。</p>
+            </div>
+
+            <div className="workedExample">
+              <div className="exampleQuestion"><span>持续更新的选型资料</span><strong>Coding Agent 产品与 Harness 选型雷达</strong></div>
+              <div className="exampleSteps">
+                <article><span>01</span><h4>官方事实<small>Product Facts</small></h4><p>确认产品形态、模型策略、执行环境、权限与生命周期，不用媒体印象代替产品文档。</p></article>
+                <article><span>02</span><h4>独立测评<small>Benchmarks</small></h4><p>按任务和实验配置读取排行榜，明确模型、Harness、预算、日期和复现条件。</p></article>
+                <article><span>03</span><h4>客户 PoC<small>Field Validation</small></h4><p>用同一真实仓库、权限、任务和验收标准复测，最终按客户约束做选择。</p></article>
+              </div>
+              <Link className="paperAnchor" href="/coding-agents">打开 Coding Agent 产品与 Harness 选型雷达 ↗</Link>
+            </div>
+            <div className="deepDiveSources" aria-label="本节依据"><span>本节依据</span><Link href="/references#source-openai-harness-engineering">OpenAI Harness Engineering ↘</Link><Link href="/references#source-anthropic-agent-evals">Anthropic Agent Evals ↘</Link><Link href="/references#source-harness-bench-2026">Harness-Bench ↘</Link></div>
+          </div>
+
           <div className="subsection" id="boundaries">
-            <div className="subHead"><span>2.3</span><div><p className="kicker">BOUNDARY MAP</p><h3>智能体、工作流、RAG 与聊天机器人的边界</h3></div></div>
+            <div className="subHead"><span>2.4</span><div><p className="kicker">BOUNDARY MAP</p><h3>智能体、工作流、RAG 与聊天机器人的边界</h3></div></div>
             <div className="tableWrap">
               <table>
                 <thead><tr><th>模式</th><th>谁决定下一步</th><th>主要作用</th><th>是否改变外部状态</th><th>售前判断</th></tr></thead>
@@ -365,7 +447,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="capabilities">
-            <div className="subHead"><span>2.4</span><div><p className="kicker">CORE COMPONENTS</p><h3>规划、记忆与工具：让四个动作持续运转</h3></div></div>
+            <div className="subHead"><span>2.5</span><div><p className="kicker">CORE COMPONENTS</p><h3>规划、记忆与工具：让四个动作持续运转</h3></div></div>
             <p className="sectionLead">四个动作描述 Agent 每一轮“做什么”，三类组件说明它“靠什么持续完成多步任务”。规划决定路径，记忆保留必要信息，工具连接外部世界；三者共享一个可恢复、可审计的运行状态（Run State）。</p>
             <div className="mechanicGrid" data-count={coreCapabilities.length} data-odd={coreCapabilities.length % 2 === 1 ? "true" : "false"}>
               {coreCapabilityRows.flatMap((row) => row.map((item, index) => (
@@ -401,7 +483,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="memory-interaction">
-            <div className="subHead"><span>2.5</span><div><p className="kicker">MEMORY &amp; INTERACTION</p><h3>记忆分层与外部交互边界</h3></div></div>
+            <div className="subHead"><span>2.6</span><div><p className="kicker">MEMORY &amp; INTERACTION</p><h3>记忆分层与外部交互边界</h3></div></div>
             <p className="sectionLead">Agent 的 Memory 不是一个不断增长的聊天框。任务状态、会话、长期记忆和权威事实有不同的写入责任、保留期和授权方式；工具调用、MCP、A2A 与 Computer Use 也解决不同连接问题。</p>
             <div className="tableWrap">
               <table>
@@ -419,7 +501,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="patterns">
-            <div className="subHead"><span>2.6</span><div><p className="kicker">ARCHITECTURE PATTERNS</p><h3>从确定性到动态编排的四种模式</h3></div></div>
+            <div className="subHead"><span>2.7</span><div><p className="kicker">ARCHITECTURE PATTERNS</p><h3>从确定性到动态编排的四种模式</h3></div></div>
             <div className="variantList">
               {architecturePatterns.map((item) => (
                 <article key={item.name}><div><p className="miniLabel">{item.cue}</p><h4>{item.name}</h4></div><p className="variantPipeline">{item.pipeline}</p><p>{item.boundary}</p></article>
@@ -432,7 +514,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="architecture">
-            <div className="subHead"><span>2.7</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>Agent 生产参考架构</h3></div></div>
+            <div className="subHead"><span>2.8</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>Agent 生产参考架构</h3></div></div>
             <div className="chainWrap">
               <div className="chainLabel"><strong>设计与治理链</strong><span>Design &amp; governance</span></div>
               <div className="flow">
@@ -450,13 +532,13 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="agent-independent-depth" data-quality-section="deep-dive">
-            <div className="subHead"><span>2.8</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>让 Agent 成为可托管的生产执行系统</h3></div></div>
+            <div className="subHead"><span>2.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>让 Agent 成为可托管的生产执行系统</h3></div></div>
             <p className="sectionLead">本节围绕一次真实任务的生命周期展开：Run 如何结束、工具怎样安全执行、崩溃后怎样恢复、记忆与委托怎样缩小信任。重点是客户长期托管能力，而不是框架功能清单。</p>
             <ModuleDeepDiveBlocks blocks={agentDeepDives} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>2.9</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
+            <div className="subHead"><span>2.10</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro"><p>Agent 会把模型服务延伸到运行时、API、身份、数据、安全和运维。售前应先用厂商中立的能力描述拆解需求，再对应到当前云产品、地域、配额和计费。</p><span>模型只是其中一部分</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
             <div className="cloudTable tableWrap">
               <table><thead><tr><th>Agent 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
@@ -471,7 +553,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.10</span><div><p className="kicker">POC PLAYBOOK</p><h3>按自治风险逐级验证 Agent</h3></div></div>
+            <div className="subHead"><span>2.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>按自治风险逐级验证 Agent</h3></div></div>
             <div className="pocGrid">
               <article><span>SHADOW</span><h4>任务与最终状态</h4><p>先以观察或建议模式运行，固定真实任务、可验证的最终状态、风险等级和现有人工 / 工作流表现。</p></article>
               <article><span>READ ONLY</span><h4>最小可用工具流程</h4><p>接入完成任务必需的最少只读工具；验证身份、结构化参数、超时、停止、Trace 和后置条件。</p></article>
@@ -482,12 +564,12 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>2.11</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
+            <div className="subHead"><span>2.12</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={agentEvidenceCards} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>2.12</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+            <div className="subHead"><span>2.13</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
             <ModuleQaList items={agentQa} sourceLedger={sourceLedger} />
           </div>
         </div>

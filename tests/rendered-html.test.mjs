@@ -3,6 +3,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs";
+import { codingAgentBenchmarks, codingAgentLandscapePolicy, codingAgentProducts } from "../app/coding-agent-landscape.mjs";
 import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
@@ -144,7 +145,10 @@ test("module updates and newly added questions use distinct, non-repeating date 
     "solution-patterns / API 与自建模型应该怎样做成本比较？",
     "solution-patterns / AI 项目没有直接收入，怎样衡量价值？",
     "solution-patterns / Showback 和 Chargeback 应该怎样选择？",
+    "ai-agent / Agent Harness 到底是什么？它和 Agent Framework、MCP 有什么区别？",
+    "ai-agent / 为什么同一个模型放进不同 Agent 工具，实际效果可能完全不同？",
     "a2a / 服务宣称兼容 A2A 1.0，网络连通是否就足以验收？",
+    "evaluation / 怎样公平比较两套 Agent Harness？业界是否已有统一标准？",
     "ai-ops / GenAIOps 与传统 DevOps 有什么不同？",
     "ai-ops / 为什么只版本化 Prompt 还不够？",
     "ai-ops / 模型供应商宣布兼容升级，是否可以跳过回归？",
@@ -204,6 +208,7 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.match(html, /<h2 id="map-title">知识地图<\/h2>/);
   assert.match(html, new RegExp(`aria-label="${layers.length} 层架构，${moduleList.length} 个细分模块"`));
   assert.match(html, /href="\/references"/);
+  assert.match(html, /href="\/coding-agents"/);
   assert.match(html, /Reference/);
   assert.match(html, /从当前客户问题开始/);
   assert.match(html, /搜索模块与知识内容/);
@@ -241,6 +246,37 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.doesNotMatch(html, /BUILD BRIEF|语言规范 \/ Language Standard|编辑原则：|跨模块阅读规则/);
   assert.doesNotMatch(html, /中文为主|中文主版本|术语中英对照/);
   assert.doesNotMatch(html, /\/(?:Users|home)\//, "生产 HTML 不应包含本机绝对路径");
+});
+
+test("coding agent landscape separates product facts, benchmark evidence, and freshness", async () => {
+  const html = await renderHtml("/coding-agents");
+  const claims = JSON.parse(await readFile(new URL("../knowledge/claims/index.json", import.meta.url), "utf8"));
+  const claimIds = new Set(claims.items.map((item) => item.id));
+
+  assert.equal(codingAgentLandscapePolicy.productCount, codingAgentProducts.length);
+  assert.equal(codingAgentLandscapePolicy.reviewCadenceDays, 30);
+  assert.ok(codingAgentProducts.some((item) => item.market === "中国"), "产品雷达必须包含中国市场产品");
+  assert.ok(codingAgentProducts.some((item) => item.market === "国际"), "产品雷达必须包含国际市场产品");
+  assert.ok(codingAgentProducts.some((item) => item.status === "watch"), "动态生命周期变化必须进入 watch 状态");
+  assert.ok(codingAgentBenchmarks.length >= 4, "产品雷达必须提供多个不同任务范围的基准入口");
+
+  for (const item of codingAgentProducts) {
+    assert.ok(claimIds.has(item.claimId), `${item.name} 缺少动态事实 claim`);
+    assert.equal(item.verifiedAt, codingAgentLandscapePolicy.verifiedAt);
+    assert.equal(item.nextReviewAt, codingAgentLandscapePolicy.nextReviewAt);
+    for (const sourceId of item.sourceIds) assert.ok(sourceLedger[sourceId], `${item.name} 引用未知来源：${sourceId}`);
+  }
+
+  assert.match(html, /产品与 Harness 选型雷达/);
+  assert.match(html, /Model × Harness × Task × Environment/);
+  assert.match(html, /排行榜是证据入口，不是采购结论/);
+  assert.match(html, /中国与国际 Coding Agent 产品雷达/);
+  assert.match(html, /搜索产品、厂商或 Harness 能力/);
+  assert.match(html, /下次复核不晚于[\s\S]*2026-08-22/);
+  assert.match(html, /Codex/);
+  assert.match(html, /Claude Code/);
+  assert.match(html, /Qwen Code/);
+  assert.match(html, /CodeBuddy/);
 });
 
 test("v3 reading system keeps discovery functional, compact, and portable", async () => {
@@ -468,7 +504,7 @@ test("customer questions follow module decision coverage instead of a shared num
   const finalQuestionCounts = auditedSlugs.map((slug) => requireModuleContent(slug).qa.length);
 
   assert.deepEqual([...new Set(addedQuestionCounts)].sort((a, b) => a - b), [3, 4, 5, 6], "模块补充问题不应来自统一的固定配额");
-  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [11, 12, 13, 14, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
+  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [11, 12, 13, 14, 15, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
   assert.equal(finalQuestionCounts.filter((count) => count === 8).length, 0, "已审计模块不得保留统一 8 题的机械结果");
 
   for (const slug of auditedSlugs) {
