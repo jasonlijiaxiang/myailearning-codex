@@ -113,7 +113,7 @@ export const aiGatewayBrief = {
       title: "网关策略变更的五步安全发布链",
       intro:
         "路由、限流、内容检查或日志策略都可能改变生产结果；把策略当配置直接全量生效，会让网关自身成为不可追踪的变更源。",
-      sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "cloudflare-ai-gateway"],
+      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv", "cloudflare-ai-gateway"],
       items: [
         {
           name: "冻结策略包",
@@ -158,7 +158,7 @@ export const aiGatewayBrief = {
       title: "网关上线后最容易被误判的五类故障",
       intro:
         "许多问题表面上像模型慢、提供方不稳或用户超额，根因却是网关与上游、下游控制重复或语义丢失。",
-      sourceIds: ["opentelemetry-semconv", "cloudflare-ai-gateway", "nist-zero-trust"],
+      sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "cloudflare-ai-gateway", "nist-zero-trust"],
       items: [
         {
           name: "尾延迟突然放大",
@@ -238,7 +238,7 @@ export const aiGatewayBrief = {
       basis: "云服务能力边界 + 可观测标准",
       evidence: [
         { sourceId: "cloudflare-ai-gateway", supports: "支持 AI 网关可集中提供代理、分析、缓存、限流和模型提供方治理等能力的产品实例。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持用生成式 AI 语义约定统一描述模型调用遥测；业务结果仍需应用补充。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持用生成式 AI 语义约定统一描述模型调用遥测；业务结果仍需应用补充。" },
       ],
     },
     {
@@ -251,7 +251,7 @@ export const aiGatewayBrief = {
       basis: "风险管理 + 在线验证",
       evidence: [
         { sourceId: "nist-genai-profile", supports: "支持按情境和风险容忍度持续测量生成式 AI 系统，而不是仅凭功能宣称上线。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持记录提供方、模型、token、时延与错误等可比较遥测字段。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持记录提供方、模型、token、时延与错误等可比较遥测字段。" },
       ],
     },
     {
@@ -287,7 +287,7 @@ export const aiGatewayBrief = {
       title: "跨模型遥测需要共同字段",
       finding: "OpenTelemetry 为生成式 AI 的模型调用、Agent 与相关事件提供语义约定，使不同框架和提供方的 trace 可以使用共同结构。",
       boundary: "标准化字段不等于自动获得业务成功率、风险标签或成本归属；这些仍需应用与组织补充。",
-      sourceId: "opentelemetry-semconv",
+      sourceId: "opentelemetry-genai-semconv",
       accent: true,
     },
     {
@@ -422,7 +422,7 @@ export const llmInferenceBrief = {
       title: "五种线上症状如何定位到真正瓶颈",
       intro:
         "先用分阶段指标缩小范围，再用 profile 和受控实验确认；直接加卡可能掩盖调度、缓存或软件回退。",
-      sourceIds: ["vllm-2023", "flashattention-2022", "opentelemetry-semconv"],
+      sourceIds: ["vllm-2023", "flashattention-2022", "opentelemetry-genai-semconv"],
       items: [
         {
           name: "TTFT 上升但生成速度正常",
@@ -467,7 +467,7 @@ export const llmInferenceBrief = {
       title: "四类负载必须分开建容量基线",
       intro:
         "平均输入长度和平均并发无法代表真实服务；同一套引擎参数在不同负载形状上可能给出相反结论。",
-      sourceIds: ["vllm-2023", "opentelemetry-semconv", "nist-genai-profile"],
+      sourceIds: ["vllm-2023", "opentelemetry-genai-semconv", "nist-genai-profile"],
       maxColumns: 2,
       items: [
         {
@@ -554,7 +554,7 @@ export const llmInferenceBrief = {
       basis: "KV Cache 原理 + PoC 压测",
       evidence: [
         { sourceId: "vllm-2023", supports: "支持 KV Cache 容量、碎片和共享方式直接影响可并发请求数量。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持记录模型请求、token、时延和错误等运行信息，以便关联容量测试。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持记录模型请求、token、时延和错误等运行信息，以便关联容量测试。" },
       ],
     },
     {
@@ -605,7 +605,7 @@ export const llmInferenceBrief = {
       title: "平均响应时间不足以验收推理",
       finding: "推理服务应至少区分首 token、token 间、排队与端到端时延，并关联模型、token 和错误信息。",
       boundary: "具体 SLO 必须由交互、批处理和 Agent 等业务场景分别确定。",
-      sourceId: "opentelemetry-semconv",
+      sourceId: "opentelemetry-genai-semconv",
     },
   ],
 };
@@ -725,7 +725,7 @@ export const aiOpsBrief = {
       title: "一次 AI 质量事故的五步归因回路",
       intro:
         "生成式系统的输出不可完全复现，但当时的输入分组、完整发布版本、外部结果和判定依据必须可还原。",
-      sourceIds: ["opentelemetry-semconv", "nist-genai-profile", "nist-zero-trust"],
+      sourceIds: ["opentelemetry-genai-semconv", "nist-genai-profile", "nist-zero-trust"],
       items: [
         {
           name: "冻结事故样本",
@@ -770,7 +770,7 @@ export const aiOpsBrief = {
       title: "五个看似正确、实际可能误导的运营指标",
       intro:
         "单一指标通常只描述系统的一面；每个信号都要配对业务终态、分组和独立校验后才能用于发布或成本判断。",
-      sourceIds: ["nist-genai-profile", "opentelemetry-semconv"],
+      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"],
       items: [
         {
           name: "平均质量分上升",
@@ -849,7 +849,7 @@ export const aiOpsBrief = {
       tag: "平台复用",
       basis: "OpenTelemetry 语义约定 + 分层可观测",
       evidence: [
-        { sourceId: "opentelemetry-semconv", supports: "支持为生成式 AI 模型与 Agent 定义可接入通用遥测体系的语义字段。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持为生成式 AI 模型与 Agent 定义可接入通用遥测体系的语义字段。" },
         { sourceId: "nist-genai-profile", supports: "支持在部署前后持续测量生成式 AI 风险与性能。" },
       ],
     },
@@ -874,7 +874,7 @@ export const aiOpsBrief = {
       tag: "漂移归因",
       basis: "版本治理 + 对照实验",
       evidence: [
-        { sourceId: "opentelemetry-semconv", supports: "支持在生成式 AI trace 中记录模型、操作和调用属性；应用版本仍需组织补充。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持在生成式 AI trace 中记录模型、操作和调用属性；应用版本仍需组织补充。" },
         { sourceId: "nist-genai-profile", supports: "支持持续监测变化、影响与新出现风险。" },
       ],
     },
@@ -898,7 +898,7 @@ export const aiOpsBrief = {
       title: "一次任务而非一次请求",
       finding: "OpenTelemetry 的生成式 AI 语义约定可描述模型调用、Agent 操作及相关事件，为跨组件追踪提供共同结构。",
       boundary: "标准不会自动定义业务成功、风险等级或需要保存的原文内容。",
-      sourceId: "opentelemetry-semconv",
+      sourceId: "opentelemetry-genai-semconv",
       accent: true,
     },
     {
@@ -1812,7 +1812,7 @@ export const aiInfraPlatformBrief = {
       evidence: [
         { sourceId: "vllm-2023", supports: "支持 vLLM 聚焦 LLM serving 与 KV Cache 管理。" },
         { sourceId: "nvidia-gpu-operator", supports: "支持 GPU Operator 聚焦 Kubernetes GPU 软件组件的部署与生命周期。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持生成式 AI 服务还需要跨组件的标准化遥测。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持生成式 AI 服务还需要跨组件的标准化遥测。" },
       ],
     },
   ],
@@ -1837,7 +1837,7 @@ export const aiInfraPlatformBrief = {
       title: "资源指标要连接模型与业务任务",
       finding: "OpenTelemetry 生成式 AI 语义约定为模型和 Agent 调用提供共同遥测结构，可与基础设施 trace 和指标关联。",
       boundary: "GPU 利用率与模型调用字段仍不能自动证明业务成功，需要应用终态补充。",
-      sourceId: "opentelemetry-semconv",
+      sourceId: "opentelemetry-genai-semconv",
     },
   ],
 };

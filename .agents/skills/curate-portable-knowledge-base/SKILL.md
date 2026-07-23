@@ -67,6 +67,7 @@ Search the existing public content and private candidates before creating anythi
 - Keep only theory, formulae, examples, visuals, and interactions that change understanding or decisions.
 - Treat PPTs, chats, vendor materials, and secondary summaries as discovery inputs rather than automatic public evidence.
 - Verify changeable claims against current primary sources before integration.
+- Treat an announced future version, preview, beta, or release candidate as a `watch` signal. Record the announced milestone and schedule a recheck at or before it; do not wait for the ordinary cadence or describe it as current behavior.
 - Record claim scope, evidence grade, verification date, next review date, owner, state, and replacement link when applicable.
 - Keep a C-grade clue private or under review; never publish it as a certain claim.
 
@@ -78,7 +79,9 @@ For `existing-app-registry`:
 
 - Update the configured primary content owner instead of adding a parallel source of truth.
 - Reuse stable terminology and source IDs.
+- Before splitting or replacing a source ID, enumerate reverse references across modules, Q&A, evidence, claims, candidates, releases, aliases, tests, and maintenance records. After migration, classify every remaining old-ID occurrence; an unexplained active reference blocks completion.
 - Recheck related customer questions, deep answers, evidence cards, related modules, exercises, and Reference grouping.
+- Review semantic near-duplicates across modules as a human editorial decision. Similarity tools may nominate candidates, but only merge passages that make the same decision; keep distinct module-specific consequences and boundaries.
 - Derive publication and route behavior from the configured registries; do not introduce a second hardcoded module list.
 - Preserve the current shared components and visual design. Add no module-specific CSS patch, fixed-count layout branch, login dependency, or local absolute path.
 - Leave a candidate private when integrating it would require unsupported facts, unclear user intent, or a design/content change outside scope.

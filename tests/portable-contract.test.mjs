@@ -762,6 +762,51 @@ test("candidate, claim, and release registries enforce deduplication, evidence, 
     assert.notEqual(validation.status, 0);
     assert.match(validation.stderr, /exceeds its 30-day cadence/);
 
+    const scheduledFor = addDays(today, 7);
+    const currentClaim = {
+      id: "claim-current",
+      claim: "The current standard remains effective until the announced replacement is verified.",
+      scope: "contract fixture",
+      sourceIds: ["known-source"],
+      evidenceGrade: "A",
+      verifiedAt: today,
+      reviewBy: addDays(today, 30),
+      reviewCadenceDays: 30,
+      owner: "fixture",
+      status: "watch",
+    };
+    const announcedReplacement = {
+      id: "claim-announcement",
+      claim: "A replacement release candidate has been announced for a future date.",
+      scope: "The announcement is not yet an effective final standard.",
+      sourceIds: ["known-source"],
+      evidenceGrade: "A",
+      verifiedAt: today,
+      reviewBy: scheduledFor,
+      reviewCadenceDays: 30,
+      owner: "fixture",
+      status: "watch",
+      announcement: {
+        kind: "scheduled-replacement",
+        targetClaimId: "claim-current",
+        scheduledFor,
+      },
+    };
+    await writeJson(path.join(root, "knowledge/claims/index.json"), {
+      schemaVersion: 1,
+      items: [currentClaim, announcedReplacement],
+    });
+    validation = runTool(root, ["validate"]);
+    assert.notEqual(validation.status, 0);
+    assert.match(validation.stderr, /claim-current reviewBy exceeds announced replacement date/);
+
+    await writeJson(path.join(root, "knowledge/claims/index.json"), {
+      schemaVersion: 1,
+      items: [{ ...currentClaim, reviewBy: scheduledFor }, announcedReplacement],
+    });
+    validation = runTool(root, ["validate"]);
+    assert.equal(validation.status, 0, validation.stderr);
+
     await writeJson(path.join(root, "knowledge/claims/index.json"), { schemaVersion: 1, items: [] });
     await writeJson(path.join(root, "knowledge/release-manifest.json"), {
       $schema: "./schemas/release.schema.json",

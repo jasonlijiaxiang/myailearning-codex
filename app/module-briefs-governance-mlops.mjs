@@ -53,7 +53,7 @@ export const predictiveAiMlopsBrief = {
     { q: "在线和批量预测应该怎样选择？", a: "由决策时限、特征新鲜度和调用规模决定；能提前计算的任务不必承担在线端点复杂度。", depth: "批量适合周期评分和大规模排序，在线适合会话或事件驱动决策。两者都要管理模型、特征和结果版本，并准备缺失数据与端点故障的降级。", ask: "追问客户：最晚在何时得到分数仍能改变业务动作？", tag: "服务形态", basis: "特征访问与推理时限", evidence: [evidence("aws-sagemaker-feature-store", "区分低延迟在线特征与训练、批量使用的离线历史存储。")] },
     { q: "MLOps 平台建成后，数据科学家就能直接自动上线吗？", a: "不应默认如此。平台可以自动执行验证和交付，但生产替换权限应与风险、职责和回滚能力匹配。", depth: "低风险模型可在严格门槛下提高自动化，高影响模型需要模型所有者、业务和风险角色共同批准。所有路径都要记录审批依据与生产版本。", ask: "追问客户：哪些模型会影响资格、价格、资源分配或安全？", tag: "发布治理", basis: "模型生命周期 + 组织责任", evidence: [evidence("aws-sagemaker-model-registry", "模型注册表支持审批状态和生命周期阶段，但具体组织授权仍需自行定义。")] },
     { q: "生成式 AI 与预测式 AI 能否共用一套 MLOps？", a: "可以共用资产版本、评估、发布、权限和观测底座，但不能共用全部质量指标和运行对象。", depth: "预测模型围绕特征、标签、分数和漂移；生成式系统还涉及 Prompt、检索、工具、非确定输出和人工复核。平台应共享控制面，保留不同工作负载的专用证据。", ask: "追问客户：准备共享的是平台能力，还是把两类系统强行放进同一流水线？", tag: "平台边界", basis: "生命周期分工", evidence: [evidence("google-mlops-predictive-ai", "明确文档主要适用于预测式 AI，因此其做法不能无差别覆盖生成式系统。")] },
-  ],
+  ].map((item) => ({ ...item, addedAt: "2026-07-21" })),
   evidenceCards: [
     { metric: "适用边界", title: "经典 MLOps 主要描述预测式 AI", finding: "Google Cloud 的官方 MLOps 架构明确说明主要适用于预测式 AI，并以 CI、CD 与 CT 组织自动化。", boundary: "该架构不是生成式 AI 应用工程的完整规范。", sourceId: "google-mlops-predictive-ai", accent: true },
     { metric: "特征一致", title: "在线与离线特征承担不同读取模式", finding: "Feature Store 可同时提供低延迟在线最新值与供训练、批量使用的离线历史。", boundary: "使用同一产品不自动保证 point-in-time 正确、许可或数据质量。", sourceId: "aws-sagemaker-feature-store" },
@@ -115,7 +115,7 @@ export const aiGovernanceBrief = {
     { q: "使用第三方模型后，治理责任是否转给供应商？", a: "不会。供应商负责其承诺范围，采用方仍要对具体用途、数据、配置、集成和最终决定负责。", depth: "采购需要验证版本、地域、数据处理、评估、事件通知、停服、分包商和退出路径；上线后还要监控供应商变化是否使原批准失效。", ask: "追问客户：合同是否承诺模型变更通知、数据边界、事件协作和可退出性？", tag: "第三方治理", basis: "共享责任 + 持续治理", evidence: [evidence("iso-iec-42001", "标准同时适用于提供或使用 AI 产品与服务的组织。"), evidence("nist-ai-rmf", "风险框架覆盖 AI 产品、服务和系统的开发与使用。")] },
     { q: "欧盟 AI Act 的时间表可以一次写死吗？", a: "不可以。官方页面显示实施安排仍可能因后续政治协议和修法而变化，应按具体日期重新核验。", depth: "截至本次核验，页面列出 2026 年 8 月的总体适用节点，并列出部分高风险规则延至 2027 或 2028 的更新安排。知识库只维护动态声明和复核日期，具体义务由法务确认。", ask: "追问客户：组织扮演 provider、deployer 还是其他角色？系统属于哪个地区和用途？", tag: "法规时效", basis: "欧盟委员会官方实施页面", evidence: [evidence("eu-ai-act", "官方页面给出当前适用时间表，并记录 2026 年政治协议后的调整。")] },
     { q: "怎样避免治理变成只填表？", a: "让每项声明连接到可测试控制和运行证据，并让重大变更自动触发复核。", depth: "高价值证据包括数据和模型版本、评估结果、访问策略、审批、红队、人工接管、投诉、事件和退役证明。抽样验证文档与生产实际一致，而不是只检查字段是否填写。", ask: "追问客户：哪三项关键控制能从政策一路追到生产运行证据？", tag: "治理落地", basis: "持续保证", evidence: [evidence("iso-iec-42001", "要求建立、实施、维护并持续改进管理体系。"), evidence("nist-ai-rmf", "将风险管理贯穿设计、开发、使用与评估。")] },
-  ],
+  ].map((item) => ({ ...item, addedAt: "2026-07-21" })),
   evidenceCards: [
     { metric: "动态状态", title: "NIST AI RMF 1.0 正在修订", finding: "NIST 官方页面当前明确标注 AI RMF 1.0 is being revised，并保留 1.0、Playbook 与 GenAI Profile 的入口。", boundary: "修订状态不使现有框架失效，但动态结论必须设置复核。", sourceId: "nist-ai-rmf", accent: true },
     { metric: "体系对象", title: "ISO/IEC 42001 管理组织过程", finding: "ISO 官方说明该标准规定建立、实施、维护和持续改进 AI 管理体系的要求。", boundary: "管理体系标准不是单个模型正确率、安全性或法律合规的保证。", sourceId: "iso-iec-42001" },

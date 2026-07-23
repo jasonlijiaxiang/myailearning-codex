@@ -194,7 +194,7 @@ export const solutionPatternsBrief = {
             "托管云服务承担基础设施责任，不承担客户业务事实和最终决策责任。",
         },
       ],
-      sourceIds: ["nist-genai-profile", "opentelemetry-semconv"],
+      sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
       columnLabels: {
         name: "失真现象",
         mechanism: "根因机制",
@@ -275,7 +275,7 @@ export const solutionPatternsBrief = {
           supports: "支持按场景风险设置部署前后评估与 Go/No-Go 决策。",
         },
         {
-          sourceId: "opentelemetry-semconv",
+          sourceId: "opentelemetry-genai-semconv",
           supports: "支持用生成式 AI 语义记录模型调用与 Agent 轨迹，为结果回溯提供基础。",
         },
       ],
@@ -290,7 +290,7 @@ export const solutionPatternsBrief = {
       basis: "任务成本模型 + 可观测数据",
       evidence: [
         {
-          sourceId: "opentelemetry-semconv",
+          sourceId: "opentelemetry-genai-semconv",
           supports: "支持用标准化遥测关联模型、工具调用、时延和使用量。",
         },
         {
@@ -343,7 +343,7 @@ export const solutionPatternsBrief = {
       title: "用业务单位计算 TCO",
       finding: "把模型、工具、基础设施、失败重试和人工运营合并，才能比较方案的真实经济性。",
       boundary: "成本结论依赖客户负载和架构，不能把单一 PoC 账单外推为采购承诺。",
-      sourceId: "opentelemetry-semconv",
+      sourceId: "opentelemetry-genai-semconv",
     },
     {
       metric: "权限 + 证据",
@@ -575,7 +575,7 @@ export const multimodalBrief = {
             "无法回到原始媒体的正确答案仍不适合作为高风险证据。",
         },
       ],
-      sourceIds: ["vit-2021", "clip-2021", "docling-report", "opentelemetry-semconv"],
+      sourceIds: ["vit-2021", "clip-2021", "docling-report", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
       columnLabels: {
         name: "客户症状",
         mechanism: "可能丢失层",
@@ -661,7 +661,7 @@ export const multimodalBrief = {
           supports: "支持图像通过 Patch 序列进入 Transformer，说明分辨率与序列规模相关。",
         },
         {
-          sourceId: "opentelemetry-semconv",
+          sourceId: "opentelemetry-genai-semconv",
           supports: "支持用端到端遥测拆分模型和处理链路的时延与用量。",
         },
       ],
@@ -678,6 +678,10 @@ export const multimodalBrief = {
         {
           sourceId: "opentelemetry-semconv",
           supports: "支持以 Trace 关联多个处理阶段，而不是只观察单个模型请求。",
+        },
+        {
+          sourceId: "opentelemetry-genai-semconv",
+          supports: "支持关联生成式 AI 模型与工具调用的专用遥测属性。",
         },
         {
           sourceId: "nist-genai-profile",
@@ -751,7 +755,7 @@ export const mcpBrief = {
       zh: "主机、客户端与服务端",
       en: "Host, Client & Server",
       explanation:
-        "Host 管理用户体验、权限和多个连接；Client 与一个 Server 建立协议会话；Server 暴露受控能力。",
+        "Host 管理用户体验、权限和多个连接；在当前正式版 2025-11-25 中，Client 与一个 Server 建立协议会话；Server 暴露受控能力。",
       decision:
         "设计时明确哪一层持有身份、呈现确认、执行策略并记录审计，不能把责任交给协议名称。",
     },
@@ -767,9 +771,9 @@ export const mcpBrief = {
       zh: "能力协商与生命周期",
       en: "Capability Negotiation & Lifecycle",
       explanation:
-        "连接初始化时交换版本与能力，随后发现可用原语并发起调用；客户端不能假设所有 Server 支持相同功能。",
+        "当前正式版 2025-11-25 在连接初始化时交换版本与能力；已公布但尚未生效的 2026-07-28 RC 计划移除 initialize 与协议级 session，改用自包含请求和按请求元数据。",
       decision:
-        "客户端必须处理能力缺失、版本差异、调用失败、取消和断线，而不是只实现成功路径。",
+        "客户端必须固定协议基线，并分别测试当前正式版与候选迁移路径中的能力缺失、版本差异、调用失败、取消和断线。",
     },
     {
       zh: "传输决定信任边界",
@@ -806,6 +810,15 @@ export const mcpBrief = {
         "本地进程优先 stdio；远程共享服务使用 HTTP，并接入企业 OAuth、API Gateway、限流和审计。",
       boundary:
         "stdio 不等于无风险，HTTP 也不自动具备认证；安全取决于完整部署边界。",
+    },
+    {
+      question: "如何评估已公布的 2026-07-28 RC？",
+      signal:
+        "团队准备把当前 2025-11-25 实现直接切换到 RC，或把公告中的无状态核心、Tasks 扩展和授权强化当作已经生效。",
+      recommendation:
+        "继续以 2025-11-25 作为当前生产基线，在隔离兼容轨中验证 RC；等最终规范发布，并确认所用 SDK、Client 与 Server 的支持后再决定切换和回滚窗口。",
+      boundary:
+        "RC 已公布和计划发布日期确定，不等于最终规范已经发布，也不证明生态实现已经兼容。",
     },
     {
       question: "能力应建成 Tool、Resource 还是 Prompt？",
@@ -857,14 +870,14 @@ export const mcpBrief = {
             "能解析端点或读取工具描述不等于服务可信。",
         },
         {
-          name: "协商协议与能力",
-          en: "Initialize & Negotiate",
+          name: "先固定版本再协商能力",
+          en: "Version Before Capability",
           mechanism:
-            "Client 与 Server 交换协议版本和能力，随后发现当前会话可用的 Tools、Resources 与 Prompts。",
+            "当前正式版 2025-11-25 通过 initialize/initialized 与协议会话交换版本和能力；2026-07-28 RC 则计划移除握手与协议级 session，以自包含请求和 server/discover 支持版本与能力发现。",
           decision:
-            "固定兼容范围并测试能力缺失、版本变化、取消和断线；通过网关记录 Server 与 Schema 版本。",
+            "固定兼容范围，为两条协议路径建立契约测试；通过网关记录请求使用的协议、Server、扩展与 Tool Schema 版本。",
           boundary:
-            "客户端不能根据上一次连接缓存无限期假设能力不变。",
+            "RC 尚未成为最终规范；客户端既不能把候选行为当作现行要求，也不能根据上一次连接无限期假设能力不变。",
         },
         {
           name: "建立用户或工作负载授权",
@@ -897,7 +910,7 @@ export const mcpBrief = {
             "HTTP 成功和结构合法都不等于业务动作成功或返回内容可信。",
         },
       ],
-      sourceIds: ["mcp-architecture", "mcp-authorization", "mcp-security", "nist-zero-trust"],
+      sourceIds: ["mcp-architecture", "mcp-lifecycle-2025-11-25", "mcp-2026-07-28-rc", "mcp-authorization", "mcp-security", "nist-zero-trust"],
     },
     {
       kind: "matrix",
@@ -1058,6 +1071,26 @@ export const mcpBrief = {
         },
       ],
     },
+    {
+      q: "MCP 2026-07-28 RC 已公布，生产系统应该立即切换吗？",
+      a: "不应该把 RC 当成已生效的正式规范。今天仍以 2025-11-25 为正式基线，同时可以在隔离环境准备迁移。",
+      depth:
+        "迁移测试要分别覆盖 initialize/initialized 与协议 session 的移除、按请求版本和能力元数据、server/discover、Tasks 从实验性核心能力迁到扩展后的生命周期，以及授权强化。最终规范发布后，还要核对 SDK、Client、Server 与网关支持，再设置并行兼容、灰度和回滚；不要把 RC 通过测试写成正式版兼容声明。",
+      ask: "追问客户：当前实现固定了哪个协议版本？哪些 SDK、Server、网关和自建扩展会受破坏性变化影响？",
+      tag: "契约版本",
+      basis: "正式版基线 + RC 迁移边界",
+      evidence: [
+        {
+          sourceId: "mcp-lifecycle-2025-11-25",
+          supports: "支持当前正式版 2025-11-25 的初始化、协议版本与能力协商机制。",
+        },
+        {
+          sourceId: "mcp-2026-07-28-rc",
+          supports: "支持 2026-07-28 RC 已公布、最终版计划日期与主要破坏性迁移边界；不支持宣称最终版已经生效。",
+        },
+      ],
+      addedAt: "2026-07-21",
+    },
   ],
   evidenceCards: [
     {
@@ -1088,6 +1121,13 @@ export const mcpBrief = {
       finding: "工具描述、外部内容、凭据和自动执行范围仍可能造成投毒与越权。",
       boundary: "必须由网关、身份、Allowlist、审批与审计补足协议之外的控制。",
       sourceId: "mcp-security",
+    },
+    {
+      metric: "2025-11-25 → 2026-07-28 RC",
+      title: "当前正式版与已公告替代版必须分开",
+      finding: "截至 2026-07-21，2025-11-25 仍是正式基线；官方已公布包含无状态核心、Tasks 扩展和授权强化的下一版 RC。",
+      boundary: "RC 公告不是最终规范或生态兼容证明，计划发布日期到达后必须重新核验。",
+      sourceId: "mcp-2026-07-28-rc",
     },
   ],
 };
@@ -1251,7 +1291,7 @@ export const a2aBrief = {
             "Task completed 只表示提供方结束执行，不自动证明产物满足调用方业务标准。",
         },
       ],
-      sourceIds: ["a2a-concepts", "a2a-specification", "opentelemetry-semconv"],
+      sourceIds: ["a2a-concepts", "a2a-specification", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
     },
     {
       kind: "scenario",
@@ -1408,6 +1448,10 @@ export const a2aBrief = {
         {
           sourceId: "opentelemetry-semconv",
           supports: "支持使用 Trace Context 和统一遥测关联跨服务调用。",
+        },
+        {
+          sourceId: "opentelemetry-genai-semconv",
+          supports: "支持关联 Agent 运行与工具调用的专用遥测属性；跨组织任务审计字段仍需双方定义。",
         },
       ],
     },
@@ -1599,7 +1643,7 @@ export const evaluationBrief = {
             "评估集是控制资产，不应同时充当无限公开的开发提示。",
         },
       ],
-      sourceIds: ["nist-genai-profile", "ragas", "opentelemetry-semconv"],
+      sourceIds: ["nist-genai-profile", "ragas", "opentelemetry-genai-semconv"],
       columnLabels: {
         name: "异常现象",
         mechanism: "可能原因",
@@ -1665,7 +1709,7 @@ export const evaluationBrief = {
             "离线通过不能证明真实流量下无需监控或回滚。",
         },
       ],
-      sourceIds: ["nist-genai-profile", "opentelemetry-semconv"],
+      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"],
       maxColumns: 3,
     },
   ],
@@ -1803,7 +1847,7 @@ export const evaluationBrief = {
       title: "评估结果要进入发布决策",
       finding: "模型、检索、工具和策略变更都应触发回归，并以硬门控制发布。",
       boundary: "可观测数据提供证据，但业务成功和风险门槛仍需客户定义。",
-      sourceId: "opentelemetry-semconv",
+      sourceId: "opentelemetry-genai-semconv",
     },
   ],
 };

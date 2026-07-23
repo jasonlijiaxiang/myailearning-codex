@@ -1051,6 +1051,7 @@ async function validate({
   } else {
     uniqueIds(claims.items, "Claim registry", errors);
     const claimIds = new Set(claims.items.map((claim) => claim?.id).filter(Boolean));
+    const claimById = new Map(claims.items.map((claim) => [claim?.id, claim]));
     const today = new Date().toISOString().slice(0, 10);
     for (const claim of claims.items) {
       validateSchemaValue(claim, claimSchema, `Claim ${claim?.id ?? "unknown"}`, errors);
@@ -1079,6 +1080,33 @@ async function validate({
       }
       if (claim.supersedes && !claimIds.has(claim.supersedes)) {
         errors.push(`Claim ${claim.id} supersedes unknown claim ${claim.supersedes}`);
+      }
+      if (claim.announcement) {
+        const { targetClaimId, scheduledFor } = claim.announcement;
+        const target = claimById.get(targetClaimId);
+        if (!target) {
+          errors.push(`Claim ${claim.id} announces replacement of unknown claim ${targetClaimId}`);
+        } else if (targetClaimId === claim.id) {
+          errors.push(`Claim ${claim.id} cannot announce itself as a replacement target`);
+        } else {
+          if (claim.status !== "watch") {
+            errors.push(`Claim ${claim.id} with a scheduled replacement announcement must be watch`);
+          }
+          if (target.status !== "watch") {
+            errors.push(`Claim ${targetClaimId} targeted by a scheduled replacement announcement must be watch`);
+          }
+          if (validDate(scheduledFor)) {
+            if (validDate(claim.verifiedAt) && scheduledFor < claim.verifiedAt) {
+              errors.push(`Claim ${claim.id} scheduled replacement predates its verification`);
+            }
+            if (validDate(claim.reviewBy) && claim.reviewBy > scheduledFor) {
+              errors.push(`Claim ${claim.id} reviewBy exceeds scheduled replacement date ${scheduledFor}`);
+            }
+            if (validDate(target.reviewBy) && target.reviewBy > scheduledFor) {
+              errors.push(`Claim ${targetClaimId} reviewBy exceeds announced replacement date ${scheduledFor}`);
+            }
+          }
+        }
       }
     }
   }

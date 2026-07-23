@@ -698,6 +698,18 @@ export const sourceLedger = {
     note: "定义 Host、Client、Server、数据层、传输层及 Tools / Resources / Prompts 等核心原语；协议不规定 AI 应用怎样管理模型或上下文。",
     verifiedAt: "2026-07-17", href: "https://modelcontextprotocol.io/docs/learn/architecture",
   },
+  "mcp-lifecycle-2025-11-25": {
+    grade: "O", kind: "官方协议文档", shortTitle: "MCP 2025-11-25 Lifecycle",
+    title: "Lifecycle — Model Context Protocol 2025-11-25",
+    note: "固定当前正式版 2025-11-25 的初始化、版本与能力协商、运行和关闭语义；这些连接级机制不能外推到已公告但尚未生效的 2026-07-28 RC。",
+    verifiedAt: "2026-07-21", href: "https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle",
+  },
+  "mcp-2026-07-28-rc": {
+    grade: "O", kind: "官方协议文档", shortTitle: "MCP 2026-07-28 RC",
+    title: "The 2026-07-28 MCP Specification Release Candidate",
+    note: "截至 2026-07-21，官方已公布标记为 2026-07-28 的 RC，并计划于 2026-07-28 发布最终规范；公告列出无状态核心、移除 initialize 与协议会话、Tasks 转为扩展及授权强化等破坏性变化，但 RC 不等于已生效的最终规范。",
+    verifiedAt: "2026-07-21", href: "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+  },
   "mcp-authorization": {
     grade: "O", kind: "官方技术文档", shortTitle: "MCP Authorization",
     title: "Authorization — Model Context Protocol Specification",

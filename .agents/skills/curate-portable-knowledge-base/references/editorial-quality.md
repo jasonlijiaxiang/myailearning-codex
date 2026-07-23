@@ -18,6 +18,15 @@ Read this reference when a capture may change public knowledge content.
 - Use progressive reading: conclusion, mechanism, and boundary first; details, cases, diagnostics, and evidence next.
 - Let knowledge determine the number of sections, diagrams, questions, examples, exercises, and sources. Never enforce a content quota for visual symmetry.
 - Merge near-duplicate questions. Keep a question only when it changes architecture, risk, acceptance, communication, or next action.
+- Review semantic near-duplicates across module bodies, questions, boundaries, exercises, and evidence summaries. Similarity scores may surface candidates but cannot decide equivalence: a human must distinguish duplicate decisions from complementary depth, intentional cross-links, and module-specific consequences.
+- When merging, keep one canonical owner, preserve materially different boundaries or actions, and recheck every referring module. Do not manufacture wording differences merely to make duplicates look unique.
+
+## Preserve publication and question chronology
+
+- Keep a module's first-publication date (`introducedAt`) separate from its latest substantive revision date (`updatedAt`). A later edit never rewrites the first-publication date.
+- Apply `addedAt` only to a whole question first introduced after the project's date policy took effect. Editing an existing answer, evidence, or wording does not make the question newly added.
+- Bind pre-policy questions that intentionally lack `addedAt` to a stable identity baseline, such as a SHA-256 of the sorted, canonically normalized question-text set. A count is not an identity baseline: deleting an old question and adding an undated replacement with the same count must fail.
+- Change that identity baseline only as part of an explicit audit of a real historical-question rewrite or removal. Never refresh it to admit a newly added question that omitted `addedAt`.
 
 ## Absorb external material correctly
 

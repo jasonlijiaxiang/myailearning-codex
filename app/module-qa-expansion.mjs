@@ -54,6 +54,7 @@ export const moduleQaExpansion = Object.freeze({
         { sourceId: "google-mlops-predictive-ai", supports: "支持用新数据、触发器、数据验证和模型验证构成持续训练流程。" },
         { sourceId: "aws-sagemaker-model-registry", supports: "支持为模型版本保留指标、审批状态与生命周期阶段。" },
       ],
+      "2026-07-21",
     ),
   ]),
   "ai-governance": Object.freeze([
@@ -68,17 +69,18 @@ export const moduleQaExpansion = Object.freeze({
         { sourceId: "iso-iec-42001", supports: "支持通过组织政策、目标、职责与过程建立和持续改进 AI 管理体系。" },
         { sourceId: "nist-ai-rmf", supports: "支持将可信风险管理纳入 AI 产品、服务和系统的完整生命周期。" },
       ],
+      "2026-07-21",
     ),
   ]),
   "solution-patterns": Object.freeze([
     finopsSettlementQa,
     qa(
-      "一个场景应该做成固定工作流，还是做成 Agent？",
-      "步骤和分支能提前定义时优先工作流；只有任务需要根据中间结果动态选择工具、调整计划时，才增加 Agent 循环。",
-      "工作流更容易测试、审计和估算成本，Agent 则能处理开放路径，但会引入状态、停止条件、工具误用和重试放大。较稳妥的路线是先画出确定性主流程，再把真正需要判断的节点交给模型，并为每个自治节点设置预算、终态和人工接管。",
-      "追问客户：哪些步骤现在由人根据新信息临场决定？这些判断能否列出可接受结果和升级条件？",
-      "编排选择",
-      "复杂度递增原则 + 风险治理",
+      "工作流、Agent 和人工审批应该怎样组合成一个可交付方案？",
+      "用确定性工作流承接固定状态与交易规则，把开放判断限制在 Agent 节点，把高影响例外交给人工；三者通过明确输入、输出和权威终态连接。",
+      "先画业务主链和权威系统：工作流负责顺序、幂等、补偿与状态推进，Agent 只处理路径难以预先穷举的判断并输出可校验提案，人工审批放在不可逆动作或风险无法自动裁决的位置。每个节点都要约定预算、超时、失败升级和 Trace，避免把混合架构做成一个无边界的自治循环。",
+      "追问客户：哪些状态必须由系统确定推进？哪些开放判断值得交给 Agent，哪些高影响例外必须由谁批准？",
+      "架构组合",
+      "确定性主链 + 有界自治 + 人工责任",
       [
         { sourceId: "anthropic-effective-agents", supports: "支持从简单可组合模式开始，仅在任务确需灵活决策时增加 Agent 复杂度。" },
         { sourceId: "nist-genai-profile", supports: "支持按具体使用情境测量并管理生成式 AI 的系统级风险。" },
@@ -141,7 +143,7 @@ export const moduleQaExpansion = Object.freeze({
       "内容工厂 + 实时服务",
       [
         { sourceId: "nist-genai-profile", supports: "支持按使用情境、影响和人工监督强度区别治理生成式 AI。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持对模型调用阶段和端到端链路建立可关联遥测。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持对模型调用阶段和端到端链路建立可关联遥测。" },
       ],
     ),
     qa(
@@ -165,7 +167,7 @@ export const moduleQaExpansion = Object.freeze({
       "信息提取 + 行动确认",
       [
         { sourceId: "nist-genai-profile", supports: "支持对生成式 AI 的隐私、透明度和人工监督进行全生命周期治理。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持把模型处理与后续工具动作关联到同一任务记录。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持把模型处理与后续工具动作关联到同一任务记录。" },
       ],
     ),
     qa(
@@ -177,7 +179,7 @@ export const moduleQaExpansion = Object.freeze({
       "变更管理 + 责任分工",
       [
         { sourceId: "nist-genai-profile", supports: "支持为生成式 AI 风险、数据和变更建立明确治理责任。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持用版本化遥测把模型、工具和结果变化关联起来。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持用版本化遥测把模型、工具和结果变化关联起来。" },
       ],
     ),
   ]),
@@ -255,7 +257,7 @@ export const moduleQaExpansion = Object.freeze({
       "协议契约 + 运营治理",
       [
         { sourceId: "mcp-architecture", supports: "支持 MCP 通过协议能力和生命周期交互连接 Host 与 Server。" },
-        { sourceId: "opentelemetry-semconv", supports: "支持对生成式 AI 和 Agent 调用建立可关联的遥测语义。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持对生成式 AI 和 Agent 调用建立可关联的遥测语义。" },
       ],
     ),
   ]),
@@ -305,7 +307,7 @@ export const moduleQaExpansion = Object.freeze({
       "持续评估",
       "离线回归 + 在线反馈",
       [
-        { sourceId: "opentelemetry-semconv", supports: "支持用生成式 AI 语义关联模型调用、Agent 与基础遥测。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持用生成式 AI 语义关联模型调用、Agent 与基础遥测。" },
         { sourceId: "nist-genai-profile", supports: "支持部署前后持续测量和管理风险。" },
       ],
     ),
@@ -381,7 +383,7 @@ export const moduleQaExpansion = Object.freeze({
       "日志治理",
       "可观测性 + 数据最小化",
       [
-        { sourceId: "opentelemetry-semconv", supports: "支持记录生成式 AI 调用属性，同时允许敏感内容由实施方按政策控制。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持记录生成式 AI 调用属性，同时允许敏感内容由实施方按政策控制。" },
         { sourceId: "nist-genai-profile", supports: "支持治理生成式 AI 数据隐私、透明度与生命周期风险。" },
       ],
     ),
@@ -407,7 +409,7 @@ export const moduleQaExpansion = Object.freeze({
       "可靠性",
       "重试预算 + 可观测性",
       [
-        { sourceId: "opentelemetry-semconv", supports: "支持用统一生成式 AI 遥测关联请求、调用和 Agent 轨迹。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持用统一生成式 AI 遥测关联请求、调用和 Agent 轨迹。" },
         { sourceId: "cloudflare-ai-gateway", supports: "支持 AI 网关处于模型流量集中控制路径，因而需要明确其缓存、限流和故障策略。" },
       ],
     ),
@@ -422,7 +424,7 @@ export const moduleQaExpansion = Object.freeze({
       "观测边界",
       "生成式 AI 遥测 + 数据治理",
       [
-        { sourceId: "opentelemetry-semconv", supports: "支持以标准语义描述生成式 AI 调用和 Agent 遥测。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持以标准语义描述生成式 AI 调用和 Agent 遥测。" },
         { sourceId: "nist-genai-profile", supports: "支持在可观测和隐私风险之间建立治理与测量控制。" },
       ],
     ),
@@ -434,7 +436,7 @@ export const moduleQaExpansion = Object.freeze({
       "SLO 设计",
       "业务终态 + 分层可观测",
       [
-        { sourceId: "opentelemetry-semconv", supports: "支持关联生成式 AI 请求、响应、token、模型和 Agent 等观测信号。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持关联生成式 AI 请求、响应、token、模型和 Agent 等观测信号。" },
         { sourceId: "nist-genai-profile", supports: "支持根据风险容忍度设定、监测和管理生成式 AI 性能与风险。" },
       ],
     ),
@@ -653,10 +655,10 @@ export const moduleQaExpansion = Object.freeze({
   ]),
   "data-engineering": Object.freeze([
     qa(
-      "AI 数据管线为什么必须支持删除和撤权传播？",
-      "因为内容一旦被复制到切块、向量、缓存和评估集，源系统删除并不会自动让所有副本失效。",
-      "应为每个文档建立稳定 ID、版本、权限和血缘，把删除与撤权作为一等事件传播到解析产物、索引、语义缓存、训练或评估副本。流程要有承诺窗口、重试、隔离和完成证明，并能区分法律删除、业务撤回和版本替换。",
-      "追问客户：一份文档会产生哪些派生副本？删除或撤权后多长时间内必须不可检索，谁验证完成？",
+      "删除与撤权传播应该怎样设置可验收的 SLO？",
+      "以受影响主体无法再检索、复用或命中旧内容作为终点，分别约定各派生层的传播窗口、失败处理和完成证明。",
+      "应为每个文档建立稳定 ID、版本、权限和血缘，把删除与撤权作为一等事件传播到解析产物、索引、语义缓存、训练或评估副本。按风险定义发现时间、传播时间和最终负向探针，记录重试、隔离、例外与负责人，并区分法律删除、业务撤回和版本替换。任务显示成功不等于用户侧已经不可见。",
+      "追问客户：一份文档会产生哪些派生副本？各层多久必须失效，谁用什么身份和负向查询签署完成？",
       "生命周期",
       "零信任 + 数据血缘",
       [
@@ -665,10 +667,10 @@ export const moduleQaExpansion = Object.freeze({
       ],
     ),
     qa(
-      "复杂 PDF 解析后看起来有文字，为什么 RAG 仍答不好？",
-      "因为纯文本存在不代表标题层级、表格关系、阅读顺序、页码和区域定位被正确保留。",
-      "解析质量要按文档类型检查结构保真，而不仅是字符数量。表头与单元格错位、多栏顺序颠倒、脚注丢失都会让切块和检索得到错误证据；应保留原始坐标、解析置信度和失败队列，对关键文档做抽样复核。",
-      "追问客户：问题集中在哪些版式？答案是否依赖表格、图注、脚注或跨页上下文，能否定位回原页面？",
+      "复杂 PDF 上线前，怎样证明解析质量足以支持 RAG？",
+      "按真实版式建立结构与问答验收集，同时验证标题、表格、阅读顺序、跨页关系和原页定位，不能只看字符准确率。",
+      "先按扫描件、多栏、表格、图注、脚注和跨页内容分层抽样，检查结构保真、切块边界、证据召回与引用定位。保留原始坐标、解析器版本、置信度和失败队列；关键业务表格由领域人员复核。只有代表性问题能稳定返回完整且可回到原页的证据，解析结果才适合进入生产索引。",
+      "追问客户：最难的版式有哪些？每类至少用哪些真实问题验收，谁能裁决表格关系和原页证据是否正确？",
       "解析质量",
       "文档理解 + 可追溯性",
       [

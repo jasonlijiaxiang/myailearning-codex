@@ -220,10 +220,10 @@ const agentQaCandidates = [
     ],
   },
   {
-    q: "怎样避免 Agent 调错 API、越权或造成不可逆损失？",
-    a: "不要让模型直接拥有业务权限。模型只提出调用意图，应用层完成身份绑定、授权、参数校验、策略判断和真实执行。",
+    q: "怎样把工具授权、人工审批和后置验证放进 Agent 执行链？",
+    a: "不要让模型直接拥有业务权限。模型只提出调用意图，应用层在执行前完成身份绑定、授权、参数校验和策略判断，执行后再读取权威业务状态。",
     depth: "按工具风险分级：只读查询可自动执行；可逆写入可先预览再确认；资金、生产配置、删除和对外发送等高风险动作应要求审批或双人复核。凭据放在密钥系统，不进入 Prompt；以用户或工作负载身份做最小权限授权；所有调用记录输入摘要、策略结果、执行响应与关联 trace。",
-    ask: "追问客户：哪些动作不可逆？使用用户授权还是服务账号？是否要求逐次同意、额度或审批流？",
+    ask: "追问客户：哪些动作不可逆？使用用户授权还是服务账号？谁审批，执行后由哪个权威系统证明动作真正完成？",
     tag: "安全",
     basis: "零信任原则 + 云平台控制",
     evidence: [
@@ -265,6 +265,7 @@ const agentQaCandidates = [
     basis: "可观测标准 + 云平台能力",
     evidence: [
       { sourceId: "opentelemetry-semconv", supports: "支持用统一语义约定组织 traces、metrics、logs 和 events；具体业务字段需自行定义。" },
+      { sourceId: "opentelemetry-genai-semconv", supports: "支持模型、Agent、工具与 token 等生成式 AI 专用遥测语义；业务终态和风险字段仍需项目扩展。" },
       { sourceId: "google-agent-platform", supports: "支持托管 Agent 运行时连接 Trace、Monitoring、Logging 与评估服务。" },
     ],
   },
@@ -564,6 +565,7 @@ const agentQaCandidates = [
     evidence: [
       { sourceId: "webarena-2024", supports: "支持在可复现环境中用可验证终态评估完整网页任务，而非只看生成文本。" },
       { sourceId: "opentelemetry-semconv", supports: "支持用统一语义关联 traces、metrics、logs 与 events；业务轨迹字段仍需项目扩展。" },
+      { sourceId: "opentelemetry-genai-semconv", supports: "支持关联模型、Agent 与工具调用的专用遥测属性；完整业务轨迹仍需项目定义。" },
       { sourceId: "nist-genai-profile", supports: "支持部署前后持续测量、风险分级和人工监督。" },
     ],
   },
