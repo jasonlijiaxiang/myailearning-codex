@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="handoff-source-sha256" content="e8168108364cefd8b24fb43592a44d7187bcfdf13bdd33e6aef721716215845a">
+  <meta name="handoff-source-sha256" content="d93becb3ae881d1616ce60e279076ba8b9803e830c5ab372883af1e5a25c991b">
   <title>How to use this KB：Portable 知识库使用与迁移指南</title>
   <style>
     :root {
@@ -543,7 +543,7 @@ npm run kb:release-check -- --mode local --audience internal</code></pre>
 <p>默认文件名是 <code>portable-knowledge-base-yyyymmddhhmm.zip</code>，日期使用打包机器的本地时间。将 ZIP 和同名 <code>.zip.sha256</code> 一起交付。</p>
 <p>默认 portable 包不会包含：</p>
 <ul><li>私有 inbox 和原始聊天；</li><li>Git 历史；</li><li><code>node_modules</code> 和构建产物；</li><li><code>.env*</code> 等本机环境文件；</li><li>个人 <code>.openai/hosting.json</code> Sites 绑定。</li></ul>
-<p>当前 <code>external_reference/CC-20260717/</code> 是维护者本机资料目录，已由 <code>.gitignore</code> 排除，不属于 Git 源码交付。不要使用 <code>git add -f</code> 把它重新加入公开仓库；如果以后要通过独立内部材料包或其他渠道交付，必须重新声明实际分发对象并运行附件审计。</p>
+<p>整个 <code>external_reference/</code> 是维护者本机资料区，已由 <code>.gitignore</code> 排除，不属于 Git 源码交付。不要使用 <code>git add -f</code> 把其中内容重新加入公开仓库；如果以后要通过独立内部材料包或其他渠道交付，必须重新声明实际分发对象并运行附件审计。</p>
 <p>原始 PPT、PDF、Word、Excel 等附件可能仍带有 creator、last modified by、company、manager、演讲者备注或嵌入文件。正式分享审计只盘点并报告这些信息，不会自动剥离或重写原文件。发现不适合交付的元数据或内容时，应由维护者确认授权、替换附件、从交付范围排除，或明确接受本次内部分享警告。</p>
 <p>附件授权记录位于 <code>knowledge/attachment-distribution.json</code>。每条授权必须同时登记规范项目路径和该文件当前的 SHA-256；同一路径替换内容、修改 Office 元数据或发生任何字节变化后，旧授权立即失效，附件重新成为 <code>unknown</code>，必须复核后才能登记新摘要。不要只因为路径没变就沿用 <code>confirmed</code>。摘要可用以下命令生成：</p>
 <figure class="code-block" data-language="bash">
@@ -619,7 +619,7 @@ npm.cmd run dev</code></pre>
     </div>
   </main>
 
-  <footer class="footer">由 <code>HANDOFF.md</code> 自动生成 · Source SHA-256 <code>e8168108364c</code></footer>
+  <footer class="footer">由 <code>HANDOFF.md</code> 自动生成 · Source SHA-256 <code>d93becb3ae88</code></footer>
 
   <script>
     (() => {

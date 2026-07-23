@@ -482,22 +482,26 @@ test("portable builds treat the personal Sites binding as optional", async () =>
   assert.match(viteConfig, /ENOENT/);
 });
 
-test("local lecture attachments remain outside the Git source distribution", async () => {
-  const [gitignore, readme, handoff] = await Promise.all([
+test("local reference materials remain outside Git source distribution", async () => {
+  const [gitignore, readme, handoff, configSource] = await Promise.all([
     fs.readFile(path.join(PROJECT_ROOT, ".gitignore"), "utf8"),
     fs.readFile(path.join(PROJECT_ROOT, "README.md"), "utf8"),
     fs.readFile(path.join(PROJECT_ROOT, "HANDOFF.md"), "utf8"),
+    fs.readFile(path.join(PROJECT_ROOT, "kb.config.json"), "utf8"),
   ]);
-  assert.match(gitignore, /^\/external_reference\/CC-20260717\/$/m);
-  assert.match(readme, /CC-20260717\/.*不属于 GitHub 源码交付/);
-  assert.match(handoff, /CC-20260717\/.*不属于 Git 源码交付/);
+  const config = JSON.parse(configSource);
+  assert.match(gitignore, /^\/external_reference\/\*$/m);
+  assert.match(gitignore, /^!\/external_reference\/\.gitkeep$/m);
+  assert.match(readme, /整个 `external_reference\/`.*不属于 GitHub 源码交付/);
+  assert.match(handoff, /整个 `external_reference\/`.*不属于 Git 源码交付/);
+  assert.equal(config.packaging.include.includes("external_reference"), true);
 
-  const tracked = spawnSync("git", ["ls-files", "external_reference/CC-20260717/**"], {
+  const tracked = spawnSync("git", ["ls-files", "external_reference/**"], {
     cwd: PROJECT_ROOT,
     encoding: "utf8",
     shell: false,
   });
-  if (tracked.status === 0) assert.equal(tracked.stdout.trim(), "");
+  if (tracked.status === 0) assert.equal(tracked.stdout.trim(), "external_reference/.gitkeep");
 });
 
 test("portable tools pass without Git and exclude private runtime and personal Sites binding", async () => {

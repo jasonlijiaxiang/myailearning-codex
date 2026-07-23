@@ -46,5 +46,6 @@ next-env.d.ts
 /knowledge/private-inbox/*
 !/knowledge/private-inbox/.gitignore
 
-# local-only reference attachments
-/external_reference/CC-20260717/
+# local-only reference materials
+/external_reference/*
+!/external_reference/.gitkeep

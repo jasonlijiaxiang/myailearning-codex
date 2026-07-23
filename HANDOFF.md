@@ -462,7 +462,7 @@ npm run kb:package -- --audience internal
 - `.env*` 等本机环境文件；
 - 个人 `.openai/hosting.json` Sites 绑定。
 
-当前 `external_reference/CC-20260717/` 是维护者本机资料目录，已由 `.gitignore` 排除，不属于 Git 源码交付。不要使用 `git add -f` 把它重新加入公开仓库；如果以后要通过独立内部材料包或其他渠道交付，必须重新声明实际分发对象并运行附件审计。
+整个 `external_reference/` 是维护者本机资料区，已由 `.gitignore` 排除，不属于 Git 源码交付。不要使用 `git add -f` 把其中内容重新加入公开仓库；如果以后要通过独立内部材料包或其他渠道交付，必须重新声明实际分发对象并运行附件审计。
 
 原始 PPT、PDF、Word、Excel 等附件可能仍带有 creator、last modified by、company、manager、演讲者备注或嵌入文件。正式分享审计只盘点并报告这些信息，不会自动剥离或重写原文件。发现不适合交付的元数据或内容时，应由维护者确认授权、替换附件、从交付范围排除，或明确接受本次内部分享警告。
 

@@ -2,7 +2,7 @@
 
 面向具有 Python / API 基础的售前人员，以中文为主、专业术语中英对照。知识库围绕概念、架构判断、证据、云服务连接和客户现场问答组织内容。
 
-当前知识地图包含 21 个正式模块；初始主题与 `external_reference/CC-20260717` 建立归档映射，全局复核后补入预测式 AI 与 MLOps、AI 应用工程、AI 治理以及 AI FinOps 等关键生命周期知识，并按独立决策价值把应用工程并入 GenAIOps、把 AI FinOps 主要并入场景解决方案。PPT 只用于发现线索和查漏，不定义网站章节、知识边界或内容上限。V2 阅读版提供全库搜索、章节导航、阅读进度、交互式机制视图和可筛选客户实战包；RAG、Agent、Prompt Engineering 使用主题定制的深度页面，其余模块继承同一阅读系统。全站来源集中在可搜索的统一 Reference 页面。
+当前知识地图包含 21 个正式模块；初始主题曾参照维护者本机 `external_reference/CC-20260717` 中的资料建立归档映射，全局复核后补入预测式 AI 与 MLOps、AI 应用工程、AI 治理以及 AI FinOps 等关键生命周期知识，并按独立决策价值把应用工程并入 GenAIOps、把 AI FinOps 主要并入场景解决方案。PPT 只用于发现线索和查漏，不定义网站章节、知识边界或内容上限。V2 阅读版提供全库搜索、章节导航、阅读进度、交互式机制视图和可筛选客户实战包；RAG、Agent、Prompt Engineering 使用主题定制的深度页面，其余模块继承同一阅读系统。全站来源集中在可搜索的统一 Reference 页面。
 
 ## 本地运行
 
@@ -54,7 +54,7 @@ npm run handoff:check
 
 正式分享前必须按实际分发面声明 `internal` 或 `external` audience。附件审计会报告授权状态、当前 SHA-256、嵌入作者元数据、演讲者备注和嵌入文件，但不会自动改写附件；未知授权或同路径内容变化导致的摘要不匹配，在内部交接中保持可见警告，在外部分发中会阻断。公开源仓库属于 `external`，公开 Sites 则审实际 staged artifact；授权记录维护在 `knowledge/attachment-distribution.json`，摘要生成与复核步骤见 `HANDOFF.md`。
 
-`external_reference/CC-20260717/` 是维护者本机保留的讲义资料目录，已由 `.gitignore` 排除，不属于 GitHub 源码交付。不要使用 `git add -f` 强制加入；如需通过其他渠道单独交付，仍须按实际分发对象重新审计授权与文件内容。
+整个 `external_reference/` 是维护者本机保留的参考资料区，已由 `.gitignore` 排除，不属于 GitHub 源码交付。不要使用 `git add -f` 强制加入；如需通过其他渠道单独交付，仍须按实际分发对象重新审计授权与文件内容。
 
 ## 主要目录
 
@@ -80,7 +80,7 @@ npm run handoff:check
 - `docs/MODULE-BUILD-STANDARD.md`：由 RAG 提炼的模块建设、证据、云服务与验收标准
 - `docs/MODULE-QUALITY-GATES.md`：历史问题追溯、防复发机制与新模块 Definition of Done
 - `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则
-- `external_reference/`：原始参考资料投放区；其中 `CC-20260717/` 仅保留在维护者本机，不进入 GitHub
+- `external_reference/`：仅保留在维护者本机的参考资料投放区，不进入 GitHub
 - `.openai/hosting.json`：公开站点发布配置
 - `kb.config.json`：portable、聊天采集、知识整理和可选发布模式的统一配置
 - `.agents/skills/curate-portable-knowledge-base/`：项目级知识整理 Skill
