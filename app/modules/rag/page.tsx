@@ -10,6 +10,7 @@ import { sourceLedger } from "../../reference-content.mjs";
 import { evidenceCards, ragDeepDives, ragQa } from "../../rag-content.mjs";
 import { RagArchitecturePrimer } from "../../module-pilot-views";
 import { getPublishedModule } from "../../module-publication.mjs";
+import { englishModulePath } from "../../i18n/locale-config.mjs";
 
 export const metadata: Metadata = {
   title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 const ragPublication = getPublishedModule("rag");
+const ragEnglishPath = englishModulePath("rag");
 
 const conceptLinks = [
   { concept: "LLM 与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解模型的参数化记忆、token 与注意力边界。" },
@@ -194,6 +196,7 @@ export default function RagModulePage() {
             <Link href="/glossary">术语库</Link>
             <Link href="/questions">全部问题</Link>
             <Link href="/references">Reference</Link>
+            {ragEnglishPath ? <Link href={ragEnglishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
           </div>
         </nav>
         <div className="ragHeader">

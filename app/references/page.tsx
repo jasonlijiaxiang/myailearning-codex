@@ -77,6 +77,7 @@ export default function ReferencesPage() {
             <Link href="/glossary">专业术语库</Link>
             <Link href="/questions">客户问题查询</Link>
             <a href="#reference-modules">模块来源目录 / Modules</a>
+            <Link href="/en/references" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
         </nav>
 

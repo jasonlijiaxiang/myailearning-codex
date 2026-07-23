@@ -10,6 +10,7 @@ import { AgentRunLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { AgentControlPrimer } from "../../module-pilot-views";
 import { getPublishedModule } from "../../module-publication.mjs";
+import { englishModulePath } from "../../i18n/locale-config.mjs";
 
 export const metadata: Metadata = {
   title: "Agent · 智能体 | 云计算 × AI 平台售前知识库",
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 const agentPublication = getPublishedModule("ai-agent");
+const agentEnglishPath = englishModulePath("ai-agent");
 
 const conceptLinks = [
   { concept: "模型与推理", owner: "大语言模型原理", href: "/modules/llm", relation: "能力底座", local: "模型负责理解状态和选择下一步，但不应直接获得业务权限。" },
@@ -267,6 +269,7 @@ export default function AgentModulePage() {
             <Link href="/glossary">术语库</Link>
             <Link href="/questions">全部问题</Link>
             <Link href="/references">Reference</Link>
+            {agentEnglishPath ? <Link href={agentEnglishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
           </div>
         </nav>
         <div className="ragHeader">

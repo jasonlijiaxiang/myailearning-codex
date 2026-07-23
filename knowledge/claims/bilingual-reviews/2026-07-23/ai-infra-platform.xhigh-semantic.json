@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-infra-platform-xhigh-semantic",
+  "scope": {
+    "moduleId": "ai-infra-platform",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:8652dd397b18cdd5ea8fe522bea7bfb182ad5e148f7f942dcc0ba5e5f4d675be",
+    "enContentHash": "sha256:0ecc3fea80ed0a1bd9994cf9c7abaded760ad125901bd638252e6c6042b50c4b",
+    "termIds": [
+      "ai-infra-platform",
+      "batching",
+      "distributed-training",
+      "finops",
+      "gang-scheduling",
+      "goodput",
+      "heterogeneous-compute",
+      "observability",
+      "resource-scheduling"
+    ],
+    "sourceIds": [
+      "checkfreq-2021",
+      "kubernetes-dra",
+      "kubernetes-dra-1-34-ga",
+      "kueue-all-or-nothing",
+      "kueue-fair-sharing",
+      "nist-zero-trust",
+      "nvidia-gpu-operator",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "slurm-multifactor-priority",
+      "slurm-overview",
+      "torchsnapshot-checkpoint",
+      "vllm-2023"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Question order, evidence relationships, evidence-card relationships, and addedAt values match the canonical owner.",
+        "Mechanism, decision, failure, control, and evidence boundaries were cross-reviewed against the Chinese source and primary evidence."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

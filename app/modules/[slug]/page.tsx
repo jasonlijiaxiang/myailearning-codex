@@ -15,6 +15,7 @@ import { getPublishedModule, hasDedicatedModule } from "../../module-publication
 import { sourceLedger } from "../../reference-content.mjs";
 import { requireTerm } from "../../terminology.mjs";
 import { SharedModulePrimer } from "../../module-pilot-views";
+import { englishModulePath } from "../../i18n/locale-config.mjs";
 
 type ModulePageProps = { params: Promise<{ slug: string }> };
 
@@ -164,6 +165,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const terms = publication.requiredTerms.map((termId: string) => requireTerm(termId) as Term);
   const hasDeepDives = Boolean(brief.deepDives?.length);
   const usesDenseReadingProfile = publication.visualProfile === "dense-reading";
+  const englishPath = englishModulePath(currentModule.canonicalSlug);
   const readingSections: ReadingSection[] = [
     { id: "related-modules", label: "相关模块", eyebrow: "建立连接" },
     { id: "study-guide", label: "学习与实战", eyebrow: "知道如何掌握" },
@@ -208,7 +210,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页"><span>Cloud × AI / Presales Fieldbook</span></Link>
-          <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">本模块问答</a><Link href="/glossary">术语库</Link><Link href="/questions">全部问题</Link><Link href="/references">Reference</Link></div>
+          <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">本模块问答</a><Link href="/glossary">术语库</Link><Link href="/questions">全部问题</Link><Link href="/references">Reference</Link>{englishPath ? <Link href={englishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}</div>
         </nav>
         <div className="moduleBriefHeader">
           <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V2.0</p>

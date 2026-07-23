@@ -60,7 +60,7 @@ export const moduleQaExpansion = Object.freeze({
   "ai-governance": Object.freeze([
     qa(
       "应该由哪个团队对 AI 风险最终负责？",
-      "具体用途的业务所有者承担最终采用责任，技术、安全、数据、法务、风险和审计分别提供控制与监督。",
+      "每个 AI 用途都必须明确一名有权接受残余风险、限制用途和停止运行的责任人。由具体用途的业务所有者担任是常见做法，但标准不会为所有治理模式或司法辖区统一规定某一种组织职能。",
       "单独设立 AI 委员会可以协调标准与重大例外，但不能吸走一线所有权。每个系统仍要有能够接受残余风险、批准上线、限制用途和停止运行的责任人，并为高风险事项设置独立挑战与审计。",
       "追问客户：谁能批准这个用途上线，谁能在出现伤害或证据不足时立即停止？",
       "责任模型",
@@ -610,8 +610,8 @@ export const moduleQaExpansion = Object.freeze({
       "扩展效率",
       "计算最优训练 + 分布式系统",
       [
-        { sourceId: "chinchilla-2022", supports: "支持在给定计算预算下协调模型规模与训练 token，而非只扩大单一维度。" },
-        { sourceId: "flashattention-2022", supports: "支持内存访问模式会显著影响注意力训练效率。" },
+        { sourceId: "megatron-3d-parallelism-2021", supports: "支持数据、张量和流水线并行的通信、等待与气泡会限制大规模训练扩展；论文结果不外推到其他配置。" },
+        { sourceId: "nccl-collectives", supports: "支持训练常用集合通信原语及其诊断范围，但不保证线性扩展。" },
       ],
     ),
     qa(
@@ -622,8 +622,8 @@ export const moduleQaExpansion = Object.freeze({
       "可靠性",
       "训练状态 + 生命周期治理",
       [
-        { sourceId: "chinchilla-2022", supports: "支持训练结果由计算预算、数据和模型规模共同决定，恢复不能只看参数文件。" },
-        { sourceId: "nist-genai-profile", supports: "支持对生成式 AI 生命周期、变更和恢复责任进行治理与记录。" },
+        { sourceId: "torchsnapshot-checkpoint", supports: "支持显式保存和恢复模型、优化器、学习率调度器、自定义应用状态与 RNG；数据游标和拓扑仍需训练应用另行定义。" },
+        { sourceId: "checkfreq-2021", supports: "支持将数据加载状态、Checkpoint 频率和写入开销纳入恢复设计；论文机制不替代目标栈的恢复演练。" },
       ],
     ),
   ]),
@@ -648,8 +648,8 @@ export const moduleQaExpansion = Object.freeze({
       "精度选择",
       "推理系统 + 场景评估",
       [
-        { sourceId: "vllm-2023", supports: "支持服务效率由模型内存管理、调度和执行栈共同决定。" },
-        { sourceId: "nist-genai-profile", supports: "支持在模型或系统优化后重新测量质量与风险。" },
+        { sourceId: "gptq-2023", supports: "支持低位权重量化在论文测试配置中的压缩和推理收益；不证明任意服务栈的端到端成本都会降低。" },
+        { sourceId: "nist-genai-profile", supports: "支持优化后重新测量质量、性能和风险；成本归因仍需项目数据。" },
       ],
     ),
   ]),
@@ -726,8 +726,8 @@ export const moduleQaExpansion = Object.freeze({
       "网络选型",
       "并行拓扑 + 性能剖析",
       [
-        { sourceId: "chinchilla-2022", supports: "支持训练规划需要在给定计算预算下综合模型和数据规模。" },
-        { sourceId: "flashattention-2022", supports: "支持通过剖析数据移动理解实际性能瓶颈。" },
+        { sourceId: "nccl-collectives", supports: "支持 GPU 间 AllReduce、AllGather、ReduceScatter、All-to-All 等通信原语及诊断；不保证某类网络对任意作业都更快。" },
+        { sourceId: "megatron-3d-parallelism-2021", supports: "支持数据、张量和流水线并行会受跨节点通信与等待影响；论文性能只适用于其模型、硬件和并行配置。" },
       ],
     ),
   ]),

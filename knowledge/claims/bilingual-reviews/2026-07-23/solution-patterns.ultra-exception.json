@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-solution-patterns-ultra-exception",
+  "scope": {
+    "moduleId": "solution-patterns",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:6dafd45e38ee7bfab4873fafd0960e9885da35352bc360e47a1052e6405ceef2",
+    "enContentHash": "sha256:ed091310a81aba8db90dd72e3bf6af8bbe999ee1075fd27776b13e88de9acc41",
+    "termIds": [
+      "ai-finops",
+      "cost-allocation",
+      "cost-anomaly",
+      "cost-to-serve",
+      "finops",
+      "poc",
+      "sla",
+      "slo",
+      "solution-patterns",
+      "tco",
+      "unit-economics"
+    ],
+    "sourceIds": [
+      "anthropic-effective-agents",
+      "finops-ai-category",
+      "finops-ai-overview",
+      "finops-framework",
+      "finops-scopes",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "owasp-prompt-injection",
+      "owasp-vector-weaknesses",
+      "ragas"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

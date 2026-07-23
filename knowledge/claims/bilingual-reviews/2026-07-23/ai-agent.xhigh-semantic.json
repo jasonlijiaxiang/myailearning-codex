@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-agent-xhigh-semantic",
+  "scope": {
+    "moduleId": "ai-agent",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:728e19fc6a2adf287b4251bebd4ebb8a1939ef7ded7c7db878dc2dadf747640d",
+    "enContentHash": "sha256:918e6aad1dc394d4b6a84bbb821a92eae582492affa3d9b730282412833ee009",
+    "termIds": [
+      "act",
+      "agent-engineering",
+      "ai-agent",
+      "harness",
+      "harness-engineering",
+      "memory",
+      "observe",
+      "perceive",
+      "planning",
+      "reason",
+      "tool-calling",
+      "tools"
+    ],
+    "sourceIds": [
+      "a2a-concepts",
+      "a2a-task-lifecycle",
+      "anthropic-agent-evals",
+      "anthropic-effective-agents",
+      "anthropic-tool-search",
+      "aws-agentcore",
+      "aws-agentcore-memory",
+      "azure-durable-hitl",
+      "azure-durable-orchestration",
+      "azure-foundry-agent-service",
+      "configuring-agentic-coding-tools",
+      "google-agent-platform",
+      "harness-bench-2026",
+      "mcp-architecture",
+      "microsoft-agent-harness",
+      "nist-agent-standards",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "oauth-token-exchange",
+      "openai-agent-guide",
+      "openai-agents-hitl",
+      "openai-agents-run-loop",
+      "openai-function-calling",
+      "openai-harness-engineering",
+      "openai-model-spec-hidden-cot",
+      "openapi-3-1-1",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "react-2023",
+      "webarena-2024"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Question order, evidence relationships, evidence-card relationships, and addedAt values match the canonical owner.",
+        "Mechanism, decision, failure, control, and evidence boundaries were cross-reviewed against the Chinese source and primary evidence."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

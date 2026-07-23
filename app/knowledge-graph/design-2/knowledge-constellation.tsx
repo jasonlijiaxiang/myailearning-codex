@@ -22,6 +22,78 @@ type Point = Neighbor & { x: number; y: number };
 
 const DEFAULT_FOCUS: Focus = { kind: "module", id: "rag" };
 const layerColors = ["#6ff4bd", "#47cfff", "#5b9cff", "#8177ff", "#b871ff", "#e76dc7", "#ffad46"];
+const graphCopy = {
+  zh: {
+    graphAria: "动态知识星图",
+    search: "搜索模块或术语",
+    results: "搜索结果",
+    module: "模块",
+    term: "术语",
+    noResults: "没有找到匹配的模块或术语。",
+    chooseModule: "选择模块",
+    scopePrefix: "聚焦显示",
+    scopeSuffix: "条一跳关系；未显示不代表没有联系。",
+    layerRail: "知识层与模块",
+    closeRail: "关闭模块列表",
+    edgeSuffix: "条一跳关系",
+    edgeTitle: "的明确一跳关系",
+    edgeDescription: "选择节点后仅点亮与它直接相连的模块或术语，其他模块作为背景位置参考。",
+    enterModule: "进入模块",
+    canvasControls: "画布控制",
+    zoomIn: "放大",
+    zoomOut: "缩小",
+    fit: "适应画布",
+    reset: "重置视图",
+    play: "继续动画",
+    pause: "暂停动画",
+    legend: "关系图例",
+    inspector: "选中节点详情",
+    selected: "选中",
+    primaryOwner: "主要归属",
+    currentlyShowing: "当前显示",
+    relationCount: "条关系",
+    relationExplanation: "关系解释",
+    enterPrimary: "进入主要模块",
+    viewGlossary: "在术语库查看",
+    glossaryHref: "/glossary",
+    homeHref: "/",
+  },
+  en: {
+    graphAria: "Dynamic knowledge constellation",
+    search: "Search modules or terms",
+    results: "Search results",
+    module: "Module",
+    term: "Term",
+    noResults: "No matching module or term was found.",
+    chooseModule: "Choose a module",
+    scopePrefix: "Showing",
+    scopeSuffix: "direct relationships; omitted nodes may still be related.",
+    layerRail: "Knowledge layers and modules",
+    closeRail: "Close module list",
+    edgeSuffix: "direct relationships",
+    edgeTitle: "— explicit direct relationships",
+    edgeDescription: "Selecting a node highlights only its directly connected modules or terms; other modules remain as positional context.",
+    enterModule: "Open module",
+    canvasControls: "Canvas controls",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    fit: "Fit canvas",
+    reset: "Reset view",
+    play: "Resume motion",
+    pause: "Pause motion",
+    legend: "Relationship legend",
+    inspector: "Selected node details",
+    selected: "Selected",
+    primaryOwner: "Primary owner",
+    currentlyShowing: "Currently showing",
+    relationCount: "relationships",
+    relationExplanation: "Relationship explanation",
+    enterPrimary: "Open primary module",
+    viewGlossary: "View in glossary",
+    glossaryHref: "/en/glossary",
+    homeHref: "/en",
+  },
+} as const;
 
 function focusKey(focus: Focus) {
   return `${focus.kind}:${focus.id}`;
@@ -67,6 +139,7 @@ export function KnowledgeConstellation({
   relations,
   relationTypes,
   scalePolicy,
+  language = "zh",
 }: {
   layers: readonly GraphLayer[];
   modules: readonly GraphModule[];
@@ -74,7 +147,10 @@ export function KnowledgeConstellation({
   relations: readonly Relation[];
   relationTypes: Readonly<Record<string, GraphRelationType>>;
   scalePolicy: Readonly<{ maxActiveNodes: number; maxActiveEdges: number }>;
+  language?: keyof typeof graphCopy;
 }) {
+  const copy = graphCopy[language];
+  const locale = language === "en" ? "en-US" : "zh-CN";
   const moduleById = useMemo(() => new Map(modules.map((knowledgeModule) => [knowledgeModule.id, knowledgeModule])), [modules]);
   const termById = useMemo(() => new Map(terms.map((term) => [term.id, term])), [terms]);
   const [focus, setFocus] = useState<Focus>(DEFAULT_FOCUS);
@@ -82,7 +158,7 @@ export function KnowledgeConstellation({
   const [zoom, setZoom] = useState(1);
   const [motionPaused, setMotionPaused] = useState(false);
   const [railOpen, setRailOpen] = useState(false);
-  const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase("zh-CN"));
+  const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase(locale));
 
   useEffect(() => {
     function syncFocusFromUrl() {
@@ -105,14 +181,14 @@ export function KnowledgeConstellation({
 
   const searchResults = useMemo(() => {
     if (!deferredQuery) return [];
-    const moduleMatches = modules.flatMap((module) => `${module.zh} ${module.en} ${module.summary}`.toLocaleLowerCase("zh-CN").includes(deferredQuery)
+    const moduleMatches = modules.flatMap((module) => `${module.zh} ${module.en} ${module.summary}`.toLocaleLowerCase(locale).includes(deferredQuery)
       ? [{ kind: "module" as const, id: module.id, title: module.zh, subtitle: module.en }]
       : []);
-    const termMatches = terms.flatMap((term) => `${term.zh} ${term.en} ${term.abbr ?? ""} ${term.description}`.toLocaleLowerCase("zh-CN").includes(deferredQuery)
+    const termMatches = terms.flatMap((term) => `${term.zh} ${term.en} ${term.abbr ?? ""} ${term.description}`.toLocaleLowerCase(locale).includes(deferredQuery)
       ? [{ kind: "term" as const, id: term.id, title: term.zh, subtitle: term.abbr ?? term.en }]
       : []);
     return [...moduleMatches, ...termMatches].slice(0, 10);
-  }, [deferredQuery, modules, terms]);
+  }, [deferredQuery, locale, modules, terms]);
 
   const neighbors = useMemo<Neighbor[]>(() => {
     if (focus.kind === "module") {
@@ -127,9 +203,13 @@ export function KnowledgeConstellation({
           title: term.abbr ?? term.zh,
           subtitle: term.abbr ? term.zh : term.en,
           relationType,
-          explanation: relationType === "primary-owner"
-            ? `${moduleById.get(focus.id)?.zh} 是“${term.zh}”的主要归属模块。`
-            : `${moduleById.get(focus.id)?.zh} 在局部判断中使用“${term.zh}”；主要解释位于“${owner?.zh ?? "其归属模块"}”。`,
+          explanation: language === "en"
+            ? relationType === "primary-owner"
+              ? `${moduleById.get(focus.id)?.zh} is the primary module for ${term.zh}.`
+              : `${moduleById.get(focus.id)?.zh} uses ${term.zh} in a specific decision context; the primary explanation belongs to ${owner?.zh ?? "its owning module"}.`
+            : relationType === "primary-owner"
+              ? `${moduleById.get(focus.id)?.zh} 是“${term.zh}”的主要归属模块。`
+              : `${moduleById.get(focus.id)?.zh} 在局部判断中使用“${term.zh}”；主要解释位于“${owner?.zh ?? "其归属模块"}”。`,
         }];
       }).slice(0, scalePolicy.maxActiveNodes - 1);
     }
@@ -146,7 +226,9 @@ export function KnowledgeConstellation({
         title: knowledgeModule.zh,
         subtitle: knowledgeModule.en,
         relationType,
-        explanation: relationType === "primary-owner" ? `“${knowledgeModule.zh}”是该知识点的主要归属模块。` : `“${knowledgeModule.zh}”在局部判断中使用该知识点。`,
+        explanation: language === "en"
+          ? relationType === "primary-owner" ? `${knowledgeModule.zh} is the primary owner of this concept.` : `${knowledgeModule.zh} uses this concept in a specific decision context.`
+          : relationType === "primary-owner" ? `“${knowledgeModule.zh}”是该知识点的主要归属模块。` : `“${knowledgeModule.zh}”在局部判断中使用该知识点。`,
       }];
     });
     const semanticNeighbors: Neighbor[] = relations.flatMap((relation) => {
@@ -154,10 +236,13 @@ export function KnowledgeConstellation({
       const id = relation.from === focus.id ? relation.to : relation.from;
       const term = termById.get(id);
       if (!term || selected.moduleIds.includes(id)) return [];
-      return [{ key: `term:${id}:${relation.type}`, kind: "term", id, title: term.abbr ?? term.zh, subtitle: term.abbr ? term.zh : term.en, relationType: relation.type, explanation: relation.explanation }];
+      const explanation = language === "en"
+        ? `${relationTypes[relation.type]?.description ?? "This is an explicit direct relationship."} Here, ${selected.zh} connects directly to ${term.zh}.`
+        : relation.explanation;
+      return [{ key: `term:${id}:${relation.type}`, kind: "term", id, title: term.abbr ?? term.zh, subtitle: term.abbr ? term.zh : term.en, relationType: relation.type, explanation }];
     });
     return [...moduleNeighbors, ...semanticNeighbors].slice(0, scalePolicy.maxActiveNodes - 1);
-  }, [focus, moduleById, relations, scalePolicy.maxActiveNodes, termById, terms]);
+  }, [focus, language, moduleById, relationTypes, relations, scalePolicy.maxActiveNodes, termById, terms]);
 
   const points = useMemo<Point[]>(() => neighbors.map((neighbor, index) => {
     const count = neighbors.length;
@@ -185,31 +270,31 @@ export function KnowledgeConstellation({
   const activeEdgeCount = Math.min(points.length, scalePolicy.maxActiveEdges);
 
   return (
-    <section className={`${styles.explorer} ${motionPaused ? styles.paused : ""}`} aria-label="动态知识星图">
+    <section className={`${styles.explorer} ${motionPaused ? styles.paused : ""}`} aria-label={copy.graphAria}>
       <div className={styles.toolbar}>
         <div className={styles.searchWrap}>
           <label className={styles.search}>
-            <span className={styles.srOnly}>搜索模块或术语</span>
+            <span className={styles.srOnly}>{copy.search}</span>
             <Icon name="search" />
-            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜索模块或术语" />
+            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={copy.search} />
           </label>
           {deferredQuery ? (
-            <div className={styles.searchResults} aria-label="搜索结果">
+            <div className={styles.searchResults} aria-label={copy.results}>
               {searchResults.length ? searchResults.map((result) => (
                 <button type="button" key={`${result.kind}:${result.id}`} onClick={() => selectFocus({ kind: result.kind, id: result.id })}>
-                  <span>{result.kind === "module" ? "模块" : "术语"}</span><strong>{result.title}</strong><small>{result.subtitle}</small>
+                  <span>{result.kind === "module" ? copy.module : copy.term}</span><strong>{result.title}</strong><small>{result.subtitle}</small>
                 </button>
-              )) : <p>没有找到匹配的模块或术语。</p>}
+              )) : <p>{copy.noResults}</p>}
             </div>
           ) : null}
         </div>
-        <button type="button" className={styles.modulePicker} aria-expanded={railOpen} onClick={() => setRailOpen((value) => !value)}><Icon name="layers" />选择模块</button>
-        <p className={styles.scopeNote}>聚焦显示 {activeEdgeCount} 条一跳关系；未显示不代表没有联系。</p>
+        <button type="button" className={styles.modulePicker} aria-expanded={railOpen} onClick={() => setRailOpen((value) => !value)}><Icon name="layers" />{copy.chooseModule}</button>
+        <p className={styles.scopeNote}>{copy.scopePrefix} {activeEdgeCount} {copy.scopeSuffix}</p>
       </div>
 
       <div className={styles.workspace}>
-        <aside className={`${styles.rail} ${railOpen ? styles.railOpen : ""}`} aria-label="知识层与模块">
-          <header><strong>知识层与模块</strong><button type="button" onClick={() => setRailOpen(false)} aria-label="关闭模块列表">×</button></header>
+        <aside className={`${styles.rail} ${railOpen ? styles.railOpen : ""}`} aria-label={copy.layerRail}>
+          <header><strong>{copy.layerRail}</strong><button type="button" onClick={() => setRailOpen(false)} aria-label={copy.closeRail}>×</button></header>
           {layers.map((layer, layerIndex) => (
             <section key={layer.no} style={{ "--layer-color": layerColors[layerIndex] } as CSSProperties}>
               <h2><span>{layer.no}</span>{layer.name}</h2>
@@ -226,9 +311,9 @@ export function KnowledgeConstellation({
           <div className={styles.canvas} style={{ "--graph-scale": zoom } as CSSProperties}>
             <div className={styles.starfield} aria-hidden="true" />
             <div className={styles.graphPlane}>
-              <svg className={styles.edges} viewBox="0 0 1000 700" role="img" aria-label={`${selectedTitle} 的 ${activeEdgeCount} 条一跳关系`}>
-                <title>{`${selectedTitle} 的明确一跳关系`}</title>
-                <desc>选择节点后仅点亮与它直接相连的模块或术语，其他模块作为背景位置参考。</desc>
+              <svg className={styles.edges} viewBox="0 0 1000 700" role="img" aria-label={`${selectedTitle}: ${activeEdgeCount} ${copy.edgeSuffix}`}>
+                <title>{`${selectedTitle} ${copy.edgeTitle}`}</title>
+                <desc>{copy.edgeDescription}</desc>
                 {points.slice(0, scalePolicy.maxActiveEdges).map((point) => (
                   <g key={point.key} className={styles[`edge_${point.relationType}`] ?? ""}>
                     <path d={edgePath(point)} />
@@ -242,7 +327,7 @@ export function KnowledgeConstellation({
                 const x = 500 + Math.cos(angle) * 458;
                 const y = 350 + Math.sin(angle) * 315;
                 const active = focus.kind === "module" && focus.id === module.id;
-                return <button type="button" key={module.id} className={`${styles.ambientModule} ${active ? styles.ambientActive : ""}`} style={{ "--x": `${(x / 10).toFixed(3)}%`, "--y": `${(y / 7).toFixed(3)}%`, "--layer-color": layerColors[Math.max(0, Number(module.layerNo) - 1)] } as CSSProperties} onClick={() => selectFocus({ kind: "module", id: module.id })} aria-label={`模块：${module.zh}`}><i /><span>{module.zh}</span></button>;
+                return <button type="button" key={module.id} className={`${styles.ambientModule} ${active ? styles.ambientActive : ""}`} style={{ "--x": `${(x / 10).toFixed(3)}%`, "--y": `${(y / 7).toFixed(3)}%`, "--layer-color": layerColors[Math.max(0, Number(module.layerNo) - 1)] } as CSSProperties} onClick={() => selectFocus({ kind: "module", id: module.id })} aria-label={`${copy.module}: ${module.zh}`}><i /><span>{module.zh}</span></button>;
               })}
 
               {points.map((point, index) => (
@@ -252,40 +337,40 @@ export function KnowledgeConstellation({
               ))}
 
               <article className={styles.focusNode} aria-live="polite">
-                <span>{focus.kind === "module" ? "模块" : "术语"}</span>
+                <span>{focus.kind === "module" ? copy.module : copy.term}</span>
                 <strong>
                   {selectedModuleTitle ? (
                     <><span className={styles.moduleTitleLead}>{selectedModuleTitle.lead}</span><span className={styles.moduleTitleDetail}>{selectedModuleTitle.detail}</span></>
                   ) : selectedTitle}
                 </strong>
                 <small>{selectedSubtitle}</small>
-                {selectedModule ? <Link className={styles.focusAction} href={selectedModule.href}>进入模块 <span aria-hidden="true">→</span></Link> : null}
+                {selectedModule ? <Link className={styles.focusAction} href={selectedModule.href}>{copy.enterModule} <span aria-hidden="true">→</span></Link> : null}
               </article>
             </div>
           </div>
 
-          <div className={styles.canvasControls} aria-label="画布控制">
-            <button type="button" onClick={() => setZoom((value) => Math.min(1.2, +(value + .1).toFixed(1)))} aria-label="放大"><Icon name="plus" /></button>
-            <button type="button" onClick={() => setZoom((value) => Math.max(.8, +(value - .1).toFixed(1)))} aria-label="缩小"><Icon name="minus" /></button>
-            <button type="button" onClick={() => setZoom(1)} aria-label="适应画布"><Icon name="fit" /></button>
-            <button type="button" onClick={() => { setZoom(1); selectFocus(DEFAULT_FOCUS); }} aria-label="重置视图"><Icon name="reset" /></button>
-            <button type="button" aria-pressed={motionPaused} onClick={() => setMotionPaused((value) => !value)} aria-label={motionPaused ? "继续动画" : "暂停动画"}><Icon name={motionPaused ? "play" : "pause"} /></button>
+          <div className={styles.canvasControls} aria-label={copy.canvasControls}>
+            <button type="button" onClick={() => setZoom((value) => Math.min(1.2, +(value + .1).toFixed(1)))} aria-label={copy.zoomIn}><Icon name="plus" /></button>
+            <button type="button" onClick={() => setZoom((value) => Math.max(.8, +(value - .1).toFixed(1)))} aria-label={copy.zoomOut}><Icon name="minus" /></button>
+            <button type="button" onClick={() => setZoom(1)} aria-label={copy.fit}><Icon name="fit" /></button>
+            <button type="button" onClick={() => { setZoom(1); selectFocus(DEFAULT_FOCUS); }} aria-label={copy.reset}><Icon name="reset" /></button>
+            <button type="button" aria-pressed={motionPaused} onClick={() => setMotionPaused((value) => !value)} aria-label={motionPaused ? copy.play : copy.pause}><Icon name={motionPaused ? "play" : "pause"} /></button>
           </div>
 
-          <div className={styles.legend} aria-label="关系图例">
+          <div className={styles.legend} aria-label={copy.legend}>
             {Object.entries(relationTypes).map(([id, type]) => <span key={id}><i className={styles[`legend_${id}`] ?? ""} />{type.label}</span>)}
           </div>
         </div>
 
-        <aside className={styles.inspector} aria-label="选中节点详情">
+        <aside className={styles.inspector} aria-label={copy.inspector}>
           <div className={styles.handle} aria-hidden="true" />
-          <header><span>选中{focus.kind === "module" ? "模块" : "术语"}</span><h2>{selectedTitle}</h2><p>{selectedSubtitle}</p></header>
+          <header><span>{copy.selected}{language === "en" ? " " : ""}{focus.kind === "module" ? copy.module : copy.term}</span><h2>{selectedTitle}</h2><p>{selectedSubtitle}</p></header>
           <p className={styles.description}>{selectedDescription}</p>
-          <div className={styles.meta}><span>主要归属</span><strong>{primaryModule?.zh}</strong><span>当前显示</span><strong>{activeEdgeCount} 条关系</strong></div>
-          <section><h3>关系解释</h3><ul>{neighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.explanation}</p></li>)}</ul></section>
+          <div className={styles.meta}><span>{copy.primaryOwner}</span><strong>{primaryModule?.zh}</strong><span>{copy.currentlyShowing}</span><strong>{activeEdgeCount} {copy.relationCount}</strong></div>
+          <section><h3>{copy.relationExplanation}</h3><ul>{neighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.explanation}</p></li>)}</ul></section>
           <nav>
-            <Link href={primaryModule?.href ?? "/"}>进入主要模块</Link>
-            <Link href={`/glossary#term-${selectedTerm?.id ?? selectedModule?.id}`}>在术语库查看</Link>
+            <Link href={primaryModule?.href ?? copy.homeHref}>{copy.enterPrimary}</Link>
+            <Link href={`${copy.glossaryHref}#term-${selectedTerm?.id ?? selectedModule?.id}`}>{copy.viewGlossary}</Link>
           </nav>
         </aside>
       </div>

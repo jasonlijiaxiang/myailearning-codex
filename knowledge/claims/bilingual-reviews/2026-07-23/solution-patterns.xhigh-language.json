@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-solution-patterns-xhigh-language",
+  "scope": {
+    "moduleId": "solution-patterns",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:6dafd45e38ee7bfab4873fafd0960e9885da35352bc360e47a1052e6405ceef2",
+    "enContentHash": "sha256:ed091310a81aba8db90dd72e3bf6af8bbe999ee1075fd27776b13e88de9acc41",
+    "termIds": [
+      "ai-finops",
+      "cost-allocation",
+      "cost-anomaly",
+      "cost-to-serve",
+      "finops",
+      "poc",
+      "sla",
+      "slo",
+      "solution-patterns",
+      "tco",
+      "unit-economics"
+    ],
+    "sourceIds": [
+      "anthropic-effective-agents",
+      "finops-ai-category",
+      "finops-ai-overview",
+      "finops-framework",
+      "finops-scopes",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "owasp-prompt-injection",
+      "owasp-vector-weaknesses",
+      "ragas"
+    ]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [
+    {
+      "gateId": "technical-english",
+      "status": "PASS",
+      "evidence": [
+        "American-English and unexplained-Chinese-prose gates pass.",
+        "Reader-facing copy uses professional technical English without language-status filler.",
+        "Module navigation preserves the canonical reading-role order."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

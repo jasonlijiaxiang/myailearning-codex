@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-infra-platform-ultra-exception",
+  "scope": {
+    "moduleId": "ai-infra-platform",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:8652dd397b18cdd5ea8fe522bea7bfb182ad5e148f7f942dcc0ba5e5f4d675be",
+    "enContentHash": "sha256:0ecc3fea80ed0a1bd9994cf9c7abaded760ad125901bd638252e6c6042b50c4b",
+    "termIds": [
+      "ai-infra-platform",
+      "batching",
+      "distributed-training",
+      "finops",
+      "gang-scheduling",
+      "goodput",
+      "heterogeneous-compute",
+      "observability",
+      "resource-scheduling"
+    ],
+    "sourceIds": [
+      "checkfreq-2021",
+      "kubernetes-dra",
+      "kubernetes-dra-1-34-ga",
+      "kueue-all-or-nothing",
+      "kueue-fair-sharing",
+      "nist-zero-trust",
+      "nvidia-gpu-operator",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "slurm-multifactor-priority",
+      "slurm-overview",
+      "torchsnapshot-checkpoint",
+      "vllm-2023"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

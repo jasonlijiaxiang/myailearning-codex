@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-rag-ultra-exception",
+  "scope": {
+    "moduleId": "rag",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:a523272fa1c010df90300d13934b5420d6275abdb7b22b7fd17b77db6b51bfb0",
+    "enContentHash": "sha256:a85951ea222e759c75d8edd83167e548c39167336b8687b9b9fdeba95cc1a1db",
+    "termIds": [
+      "ann",
+      "augmentation",
+      "bm25",
+      "dense-retrieval",
+      "generation",
+      "grounding",
+      "hnsw",
+      "rag",
+      "reranking",
+      "retrieval",
+      "rrf",
+      "sparse-retrieval"
+    ],
+    "sourceIds": [
+      "alce-2023",
+      "aws-bedrock-kb-sync",
+      "aws-bedrock-query-decomposition",
+      "azure-search-document-acl",
+      "azure-search-index-alias",
+      "azure-search-indexer-lifecycle",
+      "azure-search-query-rewrite",
+      "bert-reranker",
+      "bm25-book",
+      "chunking-study",
+      "colpali-2025",
+      "contextual-retrieval",
+      "docling-report",
+      "dpr-2020",
+      "fid-2021",
+      "fine-tuning-or-retrieval",
+      "graphrag",
+      "hnsw-2016",
+      "hyde-2023",
+      "lost-middle",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "owasp-prompt-injection",
+      "owasp-vector-weaknesses",
+      "pp-ocr-2020",
+      "rag-original-2020",
+      "rag-survey",
+      "ragas",
+      "replug-2024",
+      "self-rag"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

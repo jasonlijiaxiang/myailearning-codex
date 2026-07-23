@@ -59,16 +59,34 @@ export function ModuleHeroMetrics({
   sectionCount,
   questionCount,
   evidenceCount,
+  labels = {
+    ariaLabel: "模块内容概览",
+    sections: "阅读章节",
+    sectionUnit: "章",
+    questions: "客户问题",
+    questionUnit: "题",
+    evidence: "证据卡",
+    evidenceUnit: "张",
+  },
 }: {
   sectionCount: number;
   questionCount: number;
   evidenceCount: number;
+  labels?: {
+    ariaLabel: string;
+    sections: string;
+    sectionUnit?: string;
+    questions: string;
+    questionUnit?: string;
+    evidence: string;
+    evidenceUnit?: string;
+  };
 }) {
   return (
-    <dl className="moduleHeroMetrics" aria-label="模块内容概览">
-      <div><dt>阅读章节</dt><dd><strong>{sectionCount}</strong><span>章</span></dd></div>
-      <div><dt>客户问题</dt><dd><strong>{questionCount}</strong><span>题</span></dd></div>
-      <div><dt>证据卡</dt><dd><strong>{evidenceCount}</strong><span>张</span></dd></div>
+    <dl className="moduleHeroMetrics" aria-label={labels.ariaLabel}>
+      <div><dt>{labels.sections}</dt><dd><strong>{sectionCount}</strong>{labels.sectionUnit ? <span>{labels.sectionUnit}</span> : null}</dd></div>
+      <div><dt>{labels.questions}</dt><dd><strong>{questionCount}</strong>{labels.questionUnit ? <span>{labels.questionUnit}</span> : null}</dd></div>
+      <div><dt>{labels.evidence}</dt><dd><strong>{evidenceCount}</strong>{labels.evidenceUnit ? <span>{labels.evidenceUnit}</span> : null}</dd></div>
     </dl>
   );
 }

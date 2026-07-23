@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-infra-compute-xhigh-semantic",
+  "scope": {
+    "moduleId": "ai-infra-compute",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:d436c1e60523ef8a9d28a4f517bde7d804a93af48a3e8281df59136d54820d6c",
+    "enContentHash": "sha256:6bdd2f1d69523ac43ae197f13f57ccdc77254108511a0dfa23db0913c9415c4c",
+    "termIds": [
+      "access-spectrum",
+      "ai-infra-compute",
+      "hbm",
+      "heterogeneous-compute",
+      "kv-cache",
+      "scale-out",
+      "scale-up",
+      "tco",
+      "vram"
+    ],
+    "sourceIds": [
+      "chinchilla-2022",
+      "flashattention-2022",
+      "megatron-3d-parallelism-2021",
+      "nccl-collectives",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "nvidia-dgx-h100-data-center",
+      "nvidia-gpu-operator",
+      "opentelemetry-semconv",
+      "torchsnapshot-checkpoint",
+      "vllm-2023"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Question order, evidence relationships, evidence-card relationships, and addedAt values match the canonical owner.",
+        "Mechanism, decision, failure, control, and evidence boundaries were cross-reviewed against the Chinese source and primary evidence."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

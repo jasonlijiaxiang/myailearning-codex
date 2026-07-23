@@ -566,8 +566,8 @@ export const llmInferenceBrief = {
       tag: "优化边界",
       basis: "系统工程 + 业务评估",
       evidence: [
-        { sourceId: "nist-genai-profile", supports: "支持模型或系统变更后按使用情境重新测量质量和风险。" },
-        { sourceId: "vllm-2023", supports: "支持模型服务性能需要同时考虑内存管理、批处理与实际工作负载。" },
+        { sourceId: "gptq-2023", supports: "支持一种权重量化方法在论文特定模型与硬件上的内存、精度和速度结果；不支持跨模型、任务、内核或硬件的普遍保证。" },
+        { sourceId: "nist-genai-profile", supports: "支持模型或系统变更后按使用情境重新测量性能与风险。" },
       ],
     },
     {
@@ -1784,8 +1784,10 @@ export const aiInfraPlatformBrief = {
       tag: "调度选型",
       basis: "工作负载与责任矩阵",
       evidence: [
-        { sourceId: "kubernetes-dra", supports: "支持 Kubernetes 对加速器等设备进行结构化资源声明和调度。" },
-        { sourceId: "nvidia-gpu-operator", supports: "支持在 Kubernetes 中自动化 GPU 软件栈的部署与生命周期。" },
+        { sourceId: "slurm-overview", supports: "支持 Slurm 作为集群资源分配、并行作业执行与队列仲裁系统，并列出拓扑、回填、Gang Scheduling、抢占和优先级插件；不证明任意站点已启用这些能力。" },
+        { sourceId: "kueue-all-or-nothing", supports: "支持 Kubernetes 上同步分布式作业的一种全有或全无准入与重新排队机制；不代表 Kubernetes 原生调度器自动提供完整 Gang Scheduling。" },
+        { sourceId: "kueue-fair-sharing", supports: "支持 Kueue 的配额、优先级、借用、抢占与加权公平共享；组织仍需定义公平目标和中断成本。" },
+        { sourceId: "kubernetes-dra", supports: "支持 Kubernetes 通过结构化声明选择和准备设备；DRA 不替代队列、公平共享或作业生命周期。" },
       ],
     },
     {

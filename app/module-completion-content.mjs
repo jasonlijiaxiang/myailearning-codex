@@ -32,7 +32,7 @@ export const completionCurriculum = Object.freeze({
     { title: "从告警到业务恢复", en: "Incident Recovery", explanation: "事故处理需要区分检测、止损、隔离、技术恢复、业务状态确认和客户影响评估。回滚模型或 Prompt 后，还要确认工具副作用、缓存和异步任务是否一致。", decision: "为高风险路径预先准备分层开关、责任人和恢复证据。", boundary: "错误率恢复正常或服务重新返回 200，都不能证明业务影响已经结束。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
   ]),
   "llm-training": freezeItems([
-    { title: "实验谱系与可复现制品", en: "Experiment Lineage", explanation: "训练结果需要关联代码、数据、Tokenizer、初始化权重、超参数、随机种子、并行配置、Checkpoint、评估和运行环境。长作业恢复后也要验证状态连续。", decision: "把可复现证据作为模型制品的一部分，而不是依赖运行人员记忆。", boundary: "记录所有参数仍不能消除硬件、内核和非确定性执行带来的差异。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+    { title: "实验谱系与可复现制品", en: "Experiment Lineage", explanation: "训练结果需要关联代码、数据、Tokenizer、初始化权重、超参数、随机种子、并行配置、Checkpoint、评估和运行环境。长作业恢复后也要验证状态连续。", decision: "把可复现证据作为模型制品的一部分，而不是依赖运行人员记忆。", boundary: "TorchSnapshot 展示了显式应用状态与 RNG 保存的框架契约；记录所有参数仍不能消除硬件、内核和非确定性执行带来的差异。", sourceIds: ["torchsnapshot-checkpoint", "checkfreq-2021"] },
   ]),
   "llm-inference": freezeItems([
     { title: "版本发布与请求连续性", en: "Serving Release", explanation: "模型、引擎、量化格式、Tokenizer、聊天模板和路由策略共同决定服务行为。灰度要同时观察质量、TTFT、TPOT、拒绝率、成本和在途请求处理。", decision: "把推理栈作为一个发布单元验证，并预先定义排空、回滚和缓存处理。", boundary: "进程健康和权重加载成功不能证明协议兼容、质量不退化或请求状态连续。", sourceIds: ["vllm-2023", "opentelemetry-genai-semconv"] },
@@ -118,7 +118,7 @@ export const completionLearning = Object.freeze({
       { title: "用有效进度验收集群", learn: "同时观察计算、通信、I/O、失败、恢复和合格模型产出。", checkpoint: "不再用 GPU 小时或瞬时利用率代替训练结果。" },
     ]),
     labs: freezeLabs([
-      { title: "复盘一次长训练中断", scenario: "多节点训练在中途故障后从 Checkpoint 恢复，但最终结果异常。", tasks: ["核对数据游标、随机状态、优化器、调度器和拓扑", "比较恢复前后 Loss、吞吐和未见任务表现", "补齐 Checkpoint 周期、校验和恢复演练"], deliverable: "训练恢复一致性报告", acceptance: "能证明训练状态连续，或明确必须回退到哪个可信点。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "复盘一次长训练中断", scenario: "多节点训练在中途故障后从 Checkpoint 恢复，但最终结果异常。", tasks: ["核对数据游标、随机状态、优化器、调度器和拓扑", "比较恢复前后 Loss、吞吐和未见任务表现", "补齐 Checkpoint 周期、校验和恢复演练"], deliverable: "训练恢复一致性报告", acceptance: "能证明训练状态连续，或明确必须回退到哪个可信点。", sourceIds: ["torchsnapshot-checkpoint", "checkfreq-2021"] },
     ]),
   }),
   "llm-inference": Object.freeze({
@@ -189,12 +189,12 @@ export const completionQa = Object.freeze({
     { q: "观测数据保留越多，是否越容易排查 AI 问题？", a: "不一定。需要的是可关联、可解释且合法的证据；无目的保存全文会增加泄露与治理成本。", depth: "先列运营问题，再选择任务 ID、版本、阶段、错误、时延、成本和业务结果等结构化字段。正文只在确有必要时按风险采样、脱敏和受控访问，并设置用途与保留期。没有版本和业务结果的大量日志，通常仍无法归因。", ask: "追问客户：必须回答哪些排障或审计问题？哪些字段足够，哪些原文确有合法保存理由？", tag: "遥测治理", basis: "最小必要 + 可归因性", evidence: [{ sourceId: "opentelemetry-genai-semconv", supports: "支持用标准属性描述生成式 AI 和 Agent 遥测，不要求默认保存全部正文。" }, { sourceId: "nist-genai-profile", supports: "支持在测量需求与隐私、数据治理风险之间进行管理。" }] },
   ]),
   "llm-training": freezeQa([
-    { q: "训练恢复后 Loss 连续，为什么还不能证明状态正确？", a: "Loss 连续只是一项信号；数据游标、随机状态、优化器、学习率、并行拓扑和样本顺序仍可能漂移。", depth: "恢复演练应比较 Checkpoint 元数据、下一批样本、优化器与调度器状态、吞吐和未见任务表现。对大规模训练还要核对数据重复或跳过、集群成员变化和数值精度。无法证明连续时，应回退到更早的可信 Checkpoint。", ask: "追问客户：Checkpoint 保存了哪些状态？恢复后如何发现样本重复、遗漏或优化器重置？", tag: "训练恢复", basis: "分布式状态 + 评估证据", evidence: [{ sourceId: "nist-genai-profile", supports: "支持记录模型生命周期、测试限制和变更后的风险。" }, { sourceId: "opentelemetry-semconv", supports: "支持将运行事件与系统遥测关联，为恢复诊断提供基础。" }] },
+    { q: "训练恢复后 Loss 连续，为什么还不能证明状态正确？", a: "Loss 连续只是一项信号；数据游标、随机状态、优化器、学习率、并行拓扑和样本顺序仍可能漂移。", depth: "恢复演练应比较 Checkpoint 元数据、下一批样本、优化器与调度器状态、吞吐和未见任务表现。对大规模训练还要核对数据重复或跳过、集群成员变化和数值精度。无法证明连续时，应回退到更早的可信 Checkpoint。", ask: "追问客户：Checkpoint 保存了哪些状态？恢复后如何发现样本重复、遗漏或优化器重置？", tag: "训练恢复", basis: "分布式状态 + 评估证据", evidence: [{ sourceId: "torchsnapshot-checkpoint", supports: "支持显式保存与恢复模型、优化器、学习率调度器、自定义应用状态和 RNG；数据游标与拓扑仍需按训练应用另行登记。" }, { sourceId: "checkfreq-2021", supports: "支持把数据加载状态和 Checkpoint 频率纳入恢复连续性设计；论文结果不能替代目标训练栈的恢复演练。" }] },
     { q: "参数更多、训练 Token 更多，是否一定能得到更好的模型？", a: "不能。收益取决于数据质量、模型与数据配比、架构、优化和目标任务，规模扩大还会增加通信与失败成本。", depth: "Scaling Law 是特定实验设定下的经验关系，可用于形成预算假设，但不能脱离数据质量和目标任务外推。训练前应比较更好数据、继续预训练、微调或更换模型；训练中用未见任务和效率证据决定是否继续。", ask: "追问客户：目标能力缺口是什么？增加参数、数据或训练阶段分别依据什么证据？", tag: "Scaling 边界", basis: "计算最优 + 任务验证", evidence: [{ sourceId: "chinchilla-2022", supports: "支持在论文实验设定下模型规模与训练数据应共同扩展，而非只增加参数。" }, { sourceId: "nist-genai-profile", supports: "支持在具体使用情境中测量模型能力与风险。" }] },
   ]),
   "llm-inference": freezeQa([
     { q: "模型权重能装进显存，为什么并发一上来仍会 OOM？", a: "因为权重只是固定内存；KV Cache、激活、工作区、碎片和并发序列还会持续占用显存。", depth: "容量模型要按层数、KV 头、头维度、精度、输入与输出长度和并发计算缓存，再加运行时工作区与安全余量。最大上下文和最大并发通常不能同时兑现；批处理和缓存策略也会改变峰值。", ask: "追问客户：真实输入、输出和并发分布是什么？最长请求占比与可排队时间是多少？", tag: "显存容量", basis: "KV Cache + 运行时内存", evidence: [{ sourceId: "vllm-2023", supports: "支持 KV Cache 块管理、连续批处理和显存碎片会影响推理容量。" }] },
-    { q: "量化后吞吐提高，为什么仍可能不值得上线？", a: "因为需要同时验证目标任务质量、长上下文、尾延迟、硬件内核、稳定性和每个成功任务成本。", depth: "量化格式减少内存或带宽，但不同硬件与算子收益不同，质量损失可能集中在少数高价值切片。发布前用相同负载比较 TTFT、TPOT、吞吐、拒绝率、能耗和关键任务，并验证模型、Tokenizer、模板和引擎组合可回滚。", ask: "追问客户：量化要解决的是容量、延迟还是成本？哪些任务退化不能接受？", tag: "量化发布", basis: "性能与质量共同验收", evidence: [{ sourceId: "vllm-2023", supports: "支持推理引擎的内存与调度优化需要结合具体模型和负载。" }, { sourceId: "nist-genai-profile", supports: "支持模型变更后持续评估性能与风险。" }] },
+    { q: "量化后吞吐提高，为什么仍可能不值得上线？", a: "因为需要同时验证目标任务质量、长上下文、尾延迟、硬件内核、稳定性和每个成功任务成本。", depth: "量化格式减少内存或带宽，但不同硬件与算子收益不同，质量损失可能集中在少数高价值切片。发布前用相同负载比较 TTFT、TPOT、吞吐、拒绝率、能耗和关键任务，并验证模型、Tokenizer、模板和引擎组合可回滚。", ask: "追问客户：量化要解决的是容量、延迟还是成本？哪些任务退化不能接受？", tag: "量化发布", basis: "性能与质量共同验收", evidence: [{ sourceId: "gptq-2023", supports: "支持量化可减少权重位宽并在论文特定模型与硬件上带来内存和速度收益；不能外推到其他任务、内核或硬件。" }, { sourceId: "nist-genai-profile", supports: "支持模型变更后持续评估性能与风险。" }] },
   ]),
   "data-engineering": freezeQa([
     { q: "同一份数据能否同时用于 RAG、评估和训练？", a: "可以共享来源，但不能默认共享用途；三者的许可、更新、标签、泄漏和删除要求不同。", depth: "RAG 需要当前权威版本和查询时权限，评估需要稳定且未被调参污染的样本，训练还涉及复制、长期保留和权重记忆。应从同一来源身份派生用途明确的数据版本，分别登记使用权、截止条件和删除传播。", ask: "追问客户：数据所有者允许哪些用途？评估样本如何避免进入训练，撤回后各下游多久生效？", tag: "用途治理", basis: "数据血缘 + 使用目的", evidence: [{ sourceId: "nist-genai-profile", supports: "支持管理生成式 AI 数据来源、用途、隐私和生命周期风险。" }, { sourceId: "nist-zero-trust", supports: "支持资源访问按当前主体和具体资源授权。" }] },
@@ -206,6 +206,6 @@ export const completionQa = Object.freeze({
   ]),
   "ai-infra-compute": freezeQa([
     { q: "为什么不能直接用峰值 FLOPS 比较 AI 加速器？", a: "峰值只适用于特定精度和理想算子；真实性能还受内存、互联、软件内核、数据供给和工作负载形状限制。", depth: "用目标模型、精度、序列、批量和框架做端到端长跑，分别观察计算利用、HBM 带宽、通信、数据等待和恢复。训练与推理的瓶颈也不同，单一峰值无法解释首字、吞吐或扩展效率。", ask: "追问客户：目标负载偏计算、内存还是通信受限？候选硬件在哪一层形成瓶颈？", tag: "规格边界", basis: "Roofline 思路 + 端到端验证", evidence: [{ sourceId: "flashattention-2022", supports: "支持通过减少 HBM 读写改善注意力效率，说明内存访问可成为关键瓶颈。" }, { sourceId: "nist-genai-profile", supports: "支持在具体系统与使用情境中验证性能和风险。" }] },
-    { q: "多加一倍 GPU，为什么训练速度没有接近翻倍？", a: "设备增加会同时放大通信、同步、数据供给、负载不均和故障开销，扩展效率通常不是线性的。", depth: "比较单卡、单节点和多节点剖析，定位 AllReduce 或 All-to-All、拓扑、拥塞、数据加载、Checkpoint 和 Straggler。MoE 还可能出现专家负载不均。只有在最窄层改善后，增加设备才可能转成有效吞吐。", ask: "追问客户：扩容后哪项等待时间增长最快？单节点和多节点的有效训练进度分别是多少？", tag: "扩展效率", basis: "通信与系统长跑", evidence: [{ sourceId: "opentelemetry-semconv", supports: "支持通过分布式遥测关联调用与基础设施阶段；训练通信仍需框架指标补充。" }, { sourceId: "chinchilla-2022", supports: "支持模型、数据和计算应共同考虑，不能只以设备数量代表训练收益。" }] },
+    { q: "多加一倍 GPU，为什么训练速度没有接近翻倍？", a: "设备增加会同时放大通信、同步、数据供给、负载不均和故障开销，扩展效率通常不是线性的。", depth: "比较单卡、单节点和多节点剖析，定位 AllReduce 或 All-to-All、拓扑、拥塞、数据加载、Checkpoint 和 Straggler。MoE 还可能出现专家负载不均。只有在最窄层改善后，增加设备才可能转成有效吞吐。", ask: "追问客户：扩容后哪项等待时间增长最快？单节点和多节点的有效训练进度分别是多少？", tag: "扩展效率", basis: "通信与系统长跑", evidence: [{ sourceId: "megatron-3d-parallelism-2021", supports: "支持数据、张量与流水线并行在大规模训练中受到跨节点通信和等待限制；论文扩展效率仅适用于其测试配置。" }, { sourceId: "nccl-collectives", supports: "支持 AllReduce、All-to-All 等集合通信及诊断能力，但不保证具体作业或网络获得线性扩展。" }] },
   ]),
 });

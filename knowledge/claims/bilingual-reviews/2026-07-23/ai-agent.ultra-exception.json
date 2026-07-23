@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-agent-ultra-exception",
+  "scope": {
+    "moduleId": "ai-agent",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:728e19fc6a2adf287b4251bebd4ebb8a1939ef7ded7c7db878dc2dadf747640d",
+    "enContentHash": "sha256:918e6aad1dc394d4b6a84bbb821a92eae582492affa3d9b730282412833ee009",
+    "termIds": [
+      "act",
+      "agent-engineering",
+      "ai-agent",
+      "harness",
+      "harness-engineering",
+      "memory",
+      "observe",
+      "perceive",
+      "planning",
+      "reason",
+      "tool-calling",
+      "tools"
+    ],
+    "sourceIds": [
+      "a2a-concepts",
+      "a2a-task-lifecycle",
+      "anthropic-agent-evals",
+      "anthropic-effective-agents",
+      "anthropic-tool-search",
+      "aws-agentcore",
+      "aws-agentcore-memory",
+      "azure-durable-hitl",
+      "azure-durable-orchestration",
+      "azure-foundry-agent-service",
+      "configuring-agentic-coding-tools",
+      "google-agent-platform",
+      "harness-bench-2026",
+      "mcp-architecture",
+      "microsoft-agent-harness",
+      "nist-agent-standards",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "oauth-token-exchange",
+      "openai-agent-guide",
+      "openai-agents-hitl",
+      "openai-agents-run-loop",
+      "openai-function-calling",
+      "openai-harness-engineering",
+      "openai-model-spec-hidden-cot",
+      "openapi-3-1-1",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "react-2023",
+      "webarena-2024"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

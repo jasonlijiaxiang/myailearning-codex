@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-gateway-ultra-exception",
+  "scope": {
+    "moduleId": "ai-gateway",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:430bc684dffa5ec63241942d0dec6acd7aa12333ef31783dc50979e80fd7ecbc",
+    "enContentHash": "sha256:10edd01eac7672a10d4f1237a75701c4b53b17f2c5f59833ff878933a3f840f8",
+    "termIds": [
+      "ai-gateway",
+      "api",
+      "finops",
+      "guardrails",
+      "identity-authorization",
+      "model-routing",
+      "observability",
+      "rate-limiting",
+      "semantic-cache",
+      "shadow-traffic",
+      "slo"
+    ],
+    "sourceIds": [
+      "cloudflare-ai-gateway",
+      "mcp-authorization",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

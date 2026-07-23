@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-llm-training-xhigh-language",
+  "scope": {
+    "moduleId": "llm-training",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:a31233b6f8ecc6bb395015f134b2c7dc763fc367fc51a16210359661cdcb8d9f",
+    "enContentHash": "sha256:af31d08cc7e14b486b38ff4ea7f7d63d70a2c864c9d576f428fc0ac68ad4202a",
+    "termIds": [
+      "distributed-training",
+      "evaluation",
+      "fine-tuning",
+      "gang-scheduling",
+      "llm-training",
+      "pretraining",
+      "rlhf",
+      "scale-out",
+      "scale-up",
+      "sft",
+      "transformer"
+    ],
+    "sourceIds": [
+      "checkfreq-2021",
+      "chinchilla-2022",
+      "deepseek-r1-2025",
+      "dpo-2023",
+      "flashattention-2022",
+      "hf-trl-data-formats",
+      "hf-trl-sft-trainer",
+      "instructgpt-2022",
+      "megatron-3d-parallelism-2021",
+      "nccl-collectives",
+      "nist-genai-profile",
+      "openai-model-spec-hidden-cot",
+      "opentelemetry-semconv",
+      "torchsnapshot-checkpoint",
+      "transformer-2017"
+    ]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [
+    {
+      "gateId": "technical-english",
+      "status": "PASS",
+      "evidence": [
+        "American-English and unexplained-Chinese-prose gates pass.",
+        "Reader-facing copy uses professional technical English without language-status filler.",
+        "Module navigation preserves the canonical reading-role order."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-fine-tuning-xhigh-language",
+  "scope": {
+    "moduleId": "fine-tuning",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:93bcc231d5fa5ce5c2d2049b2a1065dbd598a074102d9c1fe68126362fc5e5ab",
+    "enContentHash": "sha256:389d64642a0d4b05e1e9f21d68d15fa11873b49f6e68defa0ead167a5e785068",
+    "termIds": [
+      "dpo",
+      "evaluation",
+      "fine-tuning",
+      "lora",
+      "qlora"
+    ],
+    "sourceIds": [
+      "deepseek-r1-2025",
+      "dpo-2023",
+      "hf-trl-chat-templates",
+      "hf-trl-data-formats",
+      "hf-trl-dpo-trainer",
+      "hf-trl-peft",
+      "hf-trl-sft-trainer",
+      "instructgpt-2022",
+      "lora-2021",
+      "nist-genai-profile",
+      "openai-eval-best-practices",
+      "openai-structured-outputs",
+      "qlora-2023",
+      "vllm-2023"
+    ]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [
+    {
+      "gateId": "technical-english",
+      "status": "PASS",
+      "evidence": [
+        "American-English and unexplained-Chinese-prose gates pass.",
+        "Reader-facing copy uses professional technical English without language-status filler.",
+        "Module navigation preserves the canonical reading-role order."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

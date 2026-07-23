@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-solution-patterns-xhigh-author",
+  "scope": {
+    "moduleId": "solution-patterns",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:6dafd45e38ee7bfab4873fafd0960e9885da35352bc360e47a1052e6405ceef2",
+    "enContentHash": "sha256:ed091310a81aba8db90dd72e3bf6af8bbe999ee1075fd27776b13e88de9acc41",
+    "termIds": [
+      "ai-finops",
+      "cost-allocation",
+      "cost-anomaly",
+      "cost-to-serve",
+      "finops",
+      "poc",
+      "sla",
+      "slo",
+      "solution-patterns",
+      "tco",
+      "unit-economics"
+    ],
+    "sourceIds": [
+      "anthropic-effective-agents",
+      "finops-ai-category",
+      "finops-ai-overview",
+      "finops-framework",
+      "finops-scopes",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "owasp-prompt-injection",
+      "owasp-vector-weaknesses",
+      "ragas"
+    ]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [
+    {
+      "gateId": "english-module-contract",
+      "status": "PASS",
+      "evidence": [
+        "The English module resolves every canonical term and source ID.",
+        "Stable section, question, content-item, and evidence-card IDs are present.",
+        "The complete-edition audit passes for this module."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

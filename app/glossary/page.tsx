@@ -48,6 +48,7 @@ export default function GlossaryPage() {
             <Link href="/questions">问题查询</Link>
             <a href="#glossary-directory">术语目录</a>
             <Link href="/references">来源与证据 / Reference</Link>
+            <Link href="/en/glossary" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
         </nav>
 

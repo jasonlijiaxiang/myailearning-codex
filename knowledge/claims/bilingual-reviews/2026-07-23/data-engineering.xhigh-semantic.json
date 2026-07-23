@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-data-engineering-xhigh-semantic",
+  "scope": {
+    "moduleId": "data-engineering",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:8c612dce5618d63d6f8e00376bab60f0b2353c2e5351a437a35047ad98ac70f6",
+    "enContentHash": "sha256:12da0dee560cb466d957d5bf6cab482dfb018074a88f8cc76a839ceb1cc17a76",
+    "termIds": [
+      "ann",
+      "bm25",
+      "chunking",
+      "data-contract",
+      "data-engineering",
+      "data-lineage",
+      "deletion-propagation",
+      "dense-retrieval",
+      "dlp",
+      "document-intelligence",
+      "embedding",
+      "feature-store",
+      "hnsw",
+      "hybrid-search",
+      "ocr",
+      "point-in-time-correctness",
+      "rag",
+      "retrieval",
+      "sparse-retrieval",
+      "training-serving-skew",
+      "vector-database"
+    ],
+    "sourceIds": [
+      "docling-report",
+      "hnsw-2016",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-semconv",
+      "pp-ocr-2020"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Question order, evidence relationships, evidence-card relationships, and addedAt values match the canonical owner.",
+        "Mechanism, decision, failure, control, and evidence boundaries were cross-reviewed against the Chinese source and primary evidence."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

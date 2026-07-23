@@ -1,0 +1,757 @@
+import {
+  evidenceCards as canonicalEvidenceCards,
+  ragDeepDives as canonicalDeepDives,
+  ragQa as canonicalQa,
+} from "../../../rag-content.mjs";
+
+const cards = (title, intro, items) => ({ type: "cards", title, intro, items });
+const steps = (title, intro, items) => ({ type: "steps", title, intro, items });
+const table = (title, intro, columns, items) => ({ type: "table", title, intro, columns, items });
+const boundary = (id, title, body) => ({
+  type: "boundary",
+  title,
+  items: [{ id, title, body }],
+});
+
+const terms = Object.freeze({
+  rag: {
+    name: "Retrieval-Augmented Generation",
+    abbr: "RAG",
+    definition: "A pattern that retrieves external evidence and supplies it to a model so that the answer can be checked against its sources.",
+  },
+  retrieval: {
+    name: "Retrieval",
+    definition: "Finding candidate evidence in documents, databases, or indexes in response to a query.",
+  },
+  augmentation: {
+    name: "Augmentation",
+    definition: "Adding retrieved evidence, tool results, or business context to the model input for the current request.",
+  },
+  generation: {
+    name: "Generation",
+    definition: "Producing text, code, or structured output token by token from the current context.",
+  },
+  "sparse-retrieval": {
+    name: "Sparse Retrieval",
+    definition: "Term-based retrieval that is especially effective for exact names, identifiers, and specialist vocabulary.",
+  },
+  "dense-retrieval": {
+    name: "Dense Retrieval",
+    definition: "Retrieval that compares vector representations to find semantically similar content.",
+  },
+  reranking: {
+    name: "Reranking",
+    definition: "Applying a more precise relevance model to an existing candidate set; a reranker cannot recover evidence that was never retrieved.",
+  },
+  grounding: {
+    name: "Grounding",
+    definition: "Constraining an answer with traceable evidence or authoritative system state, while allowing the system to qualify or decline unsupported claims.",
+  },
+  bm25: {
+    name: "Best Matching 25",
+    abbr: "BM25",
+    definition: "A classic keyword-ranking method based on term frequency, inverse document frequency, and document-length normalization.",
+  },
+  ann: {
+    name: "Approximate Nearest Neighbor",
+    abbr: "ANN",
+    definition: "A family of methods that trades a controlled amount of search accuracy for speed at large vector-search scale.",
+  },
+  hnsw: {
+    name: "Hierarchical Navigable Small World",
+    abbr: "HNSW",
+    definition: "A widely used ANN index that organizes vectors in a multilayer proximity graph.",
+  },
+  rrf: {
+    name: "Reciprocal Rank Fusion",
+    abbr: "RRF",
+    definition: "A rank-based method for combining several result lists, commonly sparse and dense retrieval results.",
+  },
+});
+
+const sources = Object.freeze({
+  "bm25-book": { kind: "Authoritative textbook", shortTitle: "Okapi BM25", note: "Explains the probabilistic ranking basis of sparse retrieval, including term frequency, inverse document frequency, and document-length normalization." },
+  "dpr-2020": { kind: "Peer-reviewed paper", shortTitle: "DPR", note: "Introduces dense passage retrieval with a dual encoder. Its 9–19 percentage-point top-20 improvement is specific to the evaluated open-domain QA datasets and Lucene-BM25 baseline." },
+  "hnsw-2016": { kind: "Primary research paper", shortTitle: "HNSW", note: "Explains the multilayer proximity graph used by a common approximate nearest-neighbor index and the trade-off between search cost and recall." },
+  "rag-survey": { kind: "Research survey", shortTitle: "RAG Survey", note: "Surveys basic, advanced, and modular RAG, covering retrieval, augmentation, generation, and evaluation choices." },
+  graphrag: { kind: "Primary research paper", shortTitle: "GraphRAG", note: "Uses entity graphs, communities, and community summaries for corpus-wide synthesis questions; it does not replace ordinary fact retrieval." },
+  "chunking-study": { kind: "Task-specific research", shortTitle: "Code RAG Chunking Study", note: "A controlled chunking study for retrieval-augmented code completion. It supports task-specific testing, not reuse of its settings for contracts, PDFs, or scans." },
+  "rag-original-2020": { kind: "Peer-reviewed paper", shortTitle: "Original RAG Paper", note: "Defines the original RAG formulation and its combination of parametric and retrieved memory, including the training scope of that research system." },
+  "bert-reranker": { kind: "Primary research paper", shortTitle: "BERT Reranker", note: "Describes a two-stage query–passage reranking pattern. It can reorder retrieved candidates but cannot recover evidence outside the candidate set." },
+  "fid-2021": { kind: "Peer-reviewed paper", shortTitle: "Fusion-in-Decoder", note: "Shows a method for encoding multiple passages separately and combining them in the decoder. Passage-count findings remain specific to the reported experiments." },
+  "replug-2024": { kind: "Peer-reviewed paper", shortTitle: "REPLUG", note: "Demonstrates a modular route in which a black-box language model remains frozen while an external retriever is trained and retrieved documents are added to the input." },
+  "self-rag": { kind: "Primary research paper", shortTitle: "Self-RAG", note: "Studies on-demand retrieval and reflection tokens for evaluating evidence and generation. It does not mean that a conventional RAG system automatically self-checks." },
+  "lost-middle": { kind: "Peer-reviewed journal paper", shortTitle: "Lost in the Middle", note: "Reports position-sensitive long-context performance in specific multi-document QA and key–value retrieval experiments; it does not prove that every model behaves identically or that RAG always wins." },
+  "contextual-retrieval": { kind: "Vendor experiment", shortTitle: "Contextual Retrieval", note: "Reports a top-20 retrieval failure rate changing from 5.7% to 2.9%, then to 1.9% with reranking, in a specific vendor experiment. Treat it as a PoC hypothesis, not a customer commitment." },
+  ragas: { kind: "Peer-reviewed paper", shortTitle: "RAGAS", note: "Proposes Faithfulness, Answer Relevance, and Context Relevance as automated, reference-free RAG evaluation dimensions; it does not define business, safety, P95, or cost thresholds." },
+  "nist-genai-profile": { kind: "Official risk-management framework", shortTitle: "NIST AI 600-1", note: "Organizes generative-AI risk work around Govern, Map, Measure, and Manage. It is a voluntary risk-management resource, not product certification or a RAG performance standard." },
+  "nist-zero-trust": { kind: "Official architecture publication", shortTitle: "NIST SP 800-207", note: "Requires authentication and authorization before access to enterprise resources rather than implicit trust based on network location. Retrieval filtering is one RAG implementation of that principle." },
+  "owasp-prompt-injection": { kind: "Community security guidance", shortTitle: "OWASP LLM01", note: "Identifies prompt injection as a major generative-AI application risk and states that RAG, fine-tuning, or a system prompt alone does not eliminate it." },
+  "owasp-vector-weaknesses": { kind: "Community security guidance", shortTitle: "OWASP LLM08", note: "Covers cross-context leakage, fine-grained access control, logical isolation, source validation, and retrieval logging in vector and embedding systems." },
+  "docling-report": { kind: "Technical report", shortTitle: "Docling", note: "Describes PDF conversion, layout analysis, and table-structure recognition. Successful conversion does not itself establish downstream RAG accuracy." },
+  "pp-ocr-2020": { kind: "Primary research paper", shortTitle: "PP-OCR", note: "Describes an OCR pipeline combining text detection, direction classification, and recognition. Results do not guarantee performance for arbitrary scan quality." },
+  "colpali-2025": { kind: "Primary research paper", shortTitle: "ColPali", note: "Studies multi-vector visual retrieval directly from document-page images. Quality and cost still require validation on the customer corpus." },
+  "fine-tuning-or-retrieval": { kind: "Task-specific research", shortTitle: "Fine-Tuning or Retrieval?", note: "Compares retrieval and unsupervised fine-tuning for new-fact injection in a particular experimental setting. It does not show that every form of fine-tuning is unsuitable for knowledge work." },
+  "alce-2023": { kind: "Primary research paper", shortTitle: "ALCE", note: "Separates whether a citation supports its associated claim from whether all important claims receive citations. Its evaluation results are not a customer-system accuracy guarantee." },
+  "opentelemetry-genai-semconv": { kind: "Official technical specification", shortTitle: "OpenTelemetry GenAI Conventions", note: "Defines evolving telemetry conventions for generative AI, retrieval, agents, and tools. Projects still need their own business-quality, access-control, and evidence-coverage fields." },
+  "opentelemetry-semconv": { kind: "Official technical specification", shortTitle: "OpenTelemetry Semantic Conventions", note: "Provides core and cross-component telemetry semantics for correlating traces. RAG-specific quality and consistency checks remain application responsibilities." },
+  "hyde-2023": { kind: "Primary research paper", shortTitle: "HyDE", note: "Studies hypothetical-document embeddings for zero-shot dense retrieval. The generated hypothetical document is a retrieval aid, not evidence for the answer." },
+  "azure-search-query-rewrite": { kind: "Official product documentation", shortTitle: "Azure Query Rewrite", note: "Documents a preview query-rewriting capability that preserves the original query and creates alternatives, while warning that exact unique terms can be lost. Capability maturity and limits are product-specific and require current verification." },
+  "aws-bedrock-query-decomposition": { kind: "Official product documentation", shortTitle: "Bedrock Query Decomposition", note: "Documents optional decomposition of complex queries into subqueries and the resulting increase in query activity. It does not guarantee better answers." },
+  "aws-bedrock-kb-sync": { kind: "Official product documentation", shortTitle: "Bedrock Knowledge Base Sync", note: "Documents propagation of additions, changes, and deletions through a managed knowledge-base synchronization process. Connector and governance coverage must still be checked." },
+  "azure-search-indexer-lifecycle": { kind: "Official product documentation", shortTitle: "Azure Indexer Lifecycle", note: "Documents separate reset, run, rebuild, and deletion behavior, including orphaned-document and ACL high-water-mark limitations. These are product-specific implementation boundaries." },
+  "azure-search-index-alias": { kind: "Official product documentation", shortTitle: "Azure Index Alias", note: "Documents a stable alias that can point to a search index and support controlled cutover and rollback. Equivalent capability cannot be assumed for every service." },
+  "azure-search-document-acl": { kind: "Official product documentation", shortTitle: "Azure Document-Level Access", note: "Documents document-level access-control features in a managed search service. Availability, stage, region, and constraints require current verification." },
+});
+
+const expectedSourceIds = Object.freeze(Object.keys(sources));
+
+const sections = [
+  {
+    id: "concept-map",
+    eyebrow: "KNOWLEDGE CONNECTIONS",
+    title: "Where RAG sits in the knowledge map",
+    lead: "RAG is the composition of retrieval and generation. The underlying model, data, security, and platform concepts retain their own canonical owners; this section provides only the local context needed to reason about the complete system.",
+    blocks: [
+      steps("Start with the two operating chains", "Locate data responsibility, online-answer responsibility, and acceptance evidence before discussing a vector database or model product.", [
+        { id: "offline-connect-parse", title: "Connect and parse", subtitle: "OFFLINE KNOWLEDGE CHAIN", body: "Preserve headings, tables, page numbers, and source coordinates. Route failed content to a controlled processing queue." },
+        { id: "offline-chunk-describe", title: "Chunk and describe", subtitle: "OFFLINE KNOWLEDGE CHAIN", body: "Create version, access, time, product, and parent–child metadata rather than storing an isolated text fragment." },
+        { id: "offline-index-refresh", title: "Index and refresh", subtitle: "OFFLINE KNOWLEDGE CHAIN", body: "Support exact-term and semantic retrieval while propagating additions, changes, withdrawals, and deletions." },
+        { id: "offline-quality-gate", title: "Run a quality gate", subtitle: "OFFLINE KNOWLEDGE CHAIN", body: "Use reference questions to prove that evidence is retrievable, current, and unavailable to unauthorized identities." },
+        { id: "online-query-contract", title: "Establish the query contract", subtitle: "ONLINE ANSWER CHAIN", body: "Identify intent, entities, time, product version, and the current user identity." },
+        { id: "online-retrieve-rerank", title: "Retrieve and rerank", subtitle: "ONLINE ANSWER CHAIN", body: "Use keyword and vector retrieval to broaden recall, then filter, fuse, and rerank candidates." },
+        { id: "online-context-assembly", title: "Assemble the context", subtitle: "ONLINE ANSWER CHAIN", body: "Remove duplicates, resolve conflicts, manage the token budget, and retain stable source IDs." },
+        { id: "online-generate-abstain", title: "Answer or abstain", subtitle: "ONLINE ANSWER CHAIN", body: "Bind material claims to evidence and stop when evidence is insufficient, stale, conflicting, or outside the user's access scope." },
+      ]),
+      cards("Shared controls across both chains", "These controls are application responsibilities, not properties of the generation model alone.", [
+        { id: "shared-identity-access", title: "Identity and access", body: "Bind the subject, tenant, document, and field-level permissions to retrieval and caching." },
+        { id: "shared-version-freshness", title: "Version and freshness", body: "Track the authoritative source, effective date, withdrawal, and re-indexing state." },
+        { id: "shared-evaluation-observation", title: "Evaluation and observability", body: "Measure Recall@K, faithfulness, citations, abstention, latency, and cost per successful outcome." },
+      ]),
+      cards("Related modules and ownership", "Follow each link for the full treatment; the descriptions here explain only why the concept matters to RAG.", [
+        { id: "related-llm-context", title: "LLMs and context windows", subtitle: "Foundation Models", body: "Understand parametric memory, tokens, and attention limits.", decision: "Prerequisite", cells: ["/modules/llm"] },
+        { id: "related-embedding", title: "Embeddings", subtitle: "Foundation Models", body: "Understand vector representations and why similarity is not factual correctness.", decision: "Prerequisite", cells: ["/modules/llm"] },
+        { id: "related-parsing-chunking", title: "Parsing, OCR, and chunks", subtitle: "AI Data Engineering", body: "Determine whether raw material becomes complete, locatable, and withdrawable retrieval units.", decision: "Knowledge supply", cells: ["/modules/data-engineering"] },
+        { id: "related-search-vector-store", title: "Search and vector stores", subtitle: "AI Data Engineering", body: "Provide sparse and dense search, filtering, indexing, and incremental refresh; they are not a complete RAG system.", decision: "Retrieval engine", cells: ["/modules/data-engineering"] },
+        { id: "related-prompt-grounding", title: "Prompting and grounding", subtitle: "Prompt Engineering", body: "Assemble evidence, answer rules, citation format, and abstention conditions into the model input.", decision: "Generation constraint", cells: ["/modules/prompt-engineering"] },
+        { id: "related-evaluation-security-gateway", title: "Evaluation, security, and gateways", subtitle: "Evaluation", body: "Use metrics and traces to observe retrieval, generation, access, risk, cost, and service objectives.", decision: "Production control", cells: ["/modules/evaluation"] },
+        { id: "related-agent-graphrag", title: "Agents and GraphRAG", subtitle: "AI Agents", body: "Multi-step retrieval, tool use, and corpus-wide synthesis are composed extensions rather than replacements for the base evidence chain.", decision: "Downstream extension", cells: ["/modules/ai-agent"] },
+        { id: "related-runtime-platform", title: "Containers, serverless, and compute", subtitle: "AI Infrastructure Platform", body: "Run parsing jobs, retrieval services, and model inference under variable load.", decision: "Runtime foundation", cells: ["/modules/ai-infra-platform"] },
+      ]),
+    ],
+  },
+  {
+    id: "rag-principle",
+    eyebrow: "FOUNDATION AND MECHANICS",
+    title: "How retrieval-augmented generation works",
+    lead: "A production RAG system must locate usable evidence, place it in the final context, and produce an answer whose material claims can be checked. Retrieval success alone is not the outcome.",
+    blocks: [
+      table("Two forms of memory", "RAG combines a model's learned parameters with evidence retrieved at request time.", ["Memory", "What it contains", "How it changes", "Key limitation"], [
+        { id: "parametric-memory", title: "Parametric memory", cells: ["Patterns encoded in model weights", "Training or fine-tuning", "It is difficult to update, withdraw, attribute, or permission item by item."] },
+        { id: "non-parametric-memory", title: "Retrieved external memory", cells: ["Documents, records, and indexed evidence", "Source and index updates", "It remains useful only if parsing, versioning, access control, and retrieval are correct."] },
+      ]),
+      steps("The three-part mechanism", "Retrieval, augmentation, and generation solve different problems and fail independently.", [
+        { id: "mechanism-retrieval", title: "Retrieval", body: "Select candidate passages or records that may support the answer. The first objective is evidence availability, not polished prose." },
+        { id: "mechanism-augmentation", title: "Augmentation", body: "Assemble valid evidence, metadata, instructions, and the token budget into the actual model context." },
+        { id: "mechanism-generation", title: "Generation", body: "Use the assembled evidence to answer, cite, qualify, or abstain. The model must not invent authority that the evidence does not provide." },
+      ]),
+      steps("Four engineering stages", "These stages make the basic mechanism observable and testable.", [
+        { id: "engineering-candidate-retrieval", title: "Candidate retrieval", subtitle: "Candidate Retrieval", body: "Maximize the chance that supporting evidence enters the candidate set. Observe Recall@K before and after access filters." },
+        { id: "engineering-filter-rerank", title: "Filter and rerank", subtitle: "Filtering and Reranking", body: "Enforce access and validity constraints, then move stronger supporting evidence toward the top. Measure ranking gain and added latency." },
+        { id: "engineering-context-assembly", title: "Assemble the context", subtitle: "Context Assembly", body: "Handle duplicates, versions, conflicts, ordering, token limits, and source identity. This is not a blind Top-K concatenation." },
+        { id: "engineering-grounded-generation", title: "Generate from evidence", subtitle: "Evidence-grounded Generation", body: "Separate fact, inference, and recommendation; abstain when support is insufficient; preserve a path back to the original evidence." },
+      ]),
+      cards("Three limits that must not be confused", undefined, [
+        { id: "limit-recall-upper-bound", title: "Recall sets the ceiling for evidence use", body: "If the reference evidence never enters the candidate set, the generator cannot create a verifiable citation. A lucky answer from parametric memory is not a successful evidence chain." },
+        { id: "limit-relevance-truth", title: "Relevance is not truth", body: "A retrieval score estimates match to the query; it does not establish that a source is authoritative, current, or applicable to this customer." },
+        { id: "limit-context-not-weights", title: "Augmentation changes context, not weights", body: "A typical enterprise RAG request serializes evidence as input tokens. It changes the current generation conditions but does not permanently write that evidence into the model parameters." },
+      ]),
+      steps("Worked example: a product data-retention question", "Question: ‘What is the data-retention period for the enterprise edition?’", [
+        { id: "example-retrieve", title: "Retrieve", body: "Find candidate evidence in product documentation, contractual terms, and current notices, filtered for the caller's identity." },
+        { id: "example-augment", title: "Augment", body: "Add effective dates, product version, original excerpts, and citation requirements to the context." },
+        { id: "example-generate", title: "Generate", body: "Compare the evidence and state its scope. If it is insufficient or conflicting, abstain and request authoritative confirmation." },
+      ]),
+      boundary("principle-evidence-chain-boundary", "Critical boundary", "RAG quality is an evidence chain: retrieve it, rank it, fit it, use it faithfully, and cite it. Failure at any stage can produce a fluent but unverifiable answer."),
+      steps("System lens: follow one query", "Answer quality is the product of the whole evidence chain.", [
+        { id: "lens-query-understand", title: "Understand the question", subtitle: "Query Contract", body: "Identify intent, entities, time, product version, and caller identity.", decision: "Output: executable queries and filters." },
+        { id: "lens-query-broad-recall", title: "Retrieve broadly", subtitle: "Candidate Retrieval", body: "Use keyword and vector retrieval to preserve both exact identifiers and semantic variants.", decision: "Check: did the reference evidence enter Top-K?" },
+        { id: "lens-query-filter-rerank", title: "Filter and rerank", subtitle: "Filter and Rerank", body: "Apply access and version filters before ranking the evidence that truly supports the question.", decision: "Check: recall before and after filtering, and ranking gain." },
+        { id: "lens-query-assemble", title: "Assemble evidence", subtitle: "Context Assembly", body: "Resolve conflicts, remove duplicates, order evidence, manage tokens, and retain source IDs.", decision: "Output: an auditable final evidence package." },
+        { id: "lens-query-answer", title: "Answer or abstain", subtitle: "Generate or Abstain", body: "Answer and cite from evidence; stop when support is inadequate.", decision: "Check: does evidence support every material claim?" },
+      ]),
+      steps("System lens: trace one failed answer", "A single wrong answer can represent several different incidents.", [
+        { id: "lens-failure-not-ingested", title: "Knowledge never entered", body: "Synchronization failed, parsing lost a table, deletion state was wrong, or the authoritative version was not identified.", decision: "Evidence: document- and chunk-level processing trace." },
+        { id: "lens-failure-chunk-broken", title: "Evidence was split incorrectly", body: "Chunk boundaries broke a heading, table, condition, or parent–child relationship.", decision: "Evidence: reference-passage coverage by chunk." },
+        { id: "lens-failure-not-retrieved", title: "The candidate was not retrieved", body: "Query rewriting, embeddings, keyword fields, or filters did not match.", decision: "Evidence: Recall@K before and after filters." },
+        { id: "lens-failure-context-omitted", title: "Evidence was displaced from the context", body: "The correct candidate ranked too low, duplicates consumed the budget, or the token budget was too small.", decision: "Evidence: final context snapshot." },
+        { id: "lens-failure-model-misused", title: "The model misused the evidence", body: "It ignored qualifications, merged conflicting sources, or failed to abstain.", decision: "Evidence: claim–citation alignment and abstention evaluation." },
+      ]),
+      steps("System lens: map cloud responsibilities", "Use vendor-neutral capability language before mapping to current products.", [
+        { id: "lens-cloud-supply", title: "Knowledge supply", body: "Object storage, connectors, change data capture, document intelligence, and batch processing.", decision: "Accept: propagation targets for additions, changes, and deletions." },
+        { id: "lens-cloud-retrieval", title: "Retrieval foundation", body: "Managed search, vector stores, caches, relational data, and graph queries.", decision: "Accept: candidate recall after access filtering." },
+        { id: "lens-cloud-model", title: "Model capabilities", body: "Embeddings, rerankers, generation models, and model routing.", decision: "Accept: quality, latency, and cost per successful outcome." },
+        { id: "lens-cloud-secure-runtime", title: "Secure runtime", body: "API gateways, containers, serverless, IAM, key management, and private networking.", decision: "Accept: no unauthorized disclosure, peak-load behavior, and recovery." },
+        { id: "lens-cloud-operations", title: "Continuous operations", body: "Tracing, evaluation, alerts, versioning, and FinOps.", decision: "Accept: detect regression, roll back safely, and identify ownership." },
+      ]),
+      steps("How to use the interactive retrieval lab", "Hold the customer question constant and change only the retrieval strategy. Observe whether the reference evidence rises, disappears, or is hidden by a plausible distractor.", [
+        { id: "lab-instruction-select-scenario", title: "Choose a query scenario", body: "Read the customer query, retrieval challenge, and reference evidence before looking at a ranking." },
+        { id: "lab-instruction-switch-strategy", title: "Switch retrieval strategy", body: "Compare keyword BM25, vector retrieval, Hybrid + RRF, and reranking under the same scenario." },
+        { id: "lab-instruction-read-result", title: "Read the complete result", body: "Inspect the reference-evidence position, Top-3 candidate IDs, match signals, failure boundary, and decision takeaway—not just the first candidate." },
+      ]),
+      cards("Interactive retrieval lab: scenarios", "Switch among the three customer questions, then compare keyword, vector, hybrid, and reranking strategies. Rankings are illustrative diagnostic examples, not benchmark results.", [
+        { id: "lab-exact-policy", title: "Exact policy term", body: "Query: ‘How long are enterprise-edition audit logs retained?’ Product name and audit-log retention are strong terms, but the answer must come from the current version rather than a general security guide.", decision: "Reference evidence: Enterprise Security and Compliance Specification v2026.06, Audit Logs." },
+        { id: "lab-semantic-rewrite", title: "Semantic paraphrase", body: "Query: ‘When the policy is revised, can the knowledge base update automatically?’ The customer does not use engineering terms such as incremental synchronization, effective version, or index rebuild.", decision: "Reference evidence: Knowledge Update and Version-Effectivity Rules, Incremental Synchronization and Withdrawal." },
+        { id: "lab-compound-constraints", title: "Compound constraints", body: "Query: ‘For a financial customer in Asia Pacific, private deployment is mandatory and data must remain in-region. Which option qualifies?’ Industry, region, network, and residency are all hard constraints.", decision: "Reference evidence: Financial Services APAC Private Deployment Matrix v3.2, Regional and Data-Residency Table." },
+      ]),
+      table("Interactive retrieval lab: strategy results", "Each row preserves the ranked candidates, the failure to watch for, and the decision implication.", ["Scenario and strategy", "Ranked candidates", "Failure mode", "Conclusion"], [
+        { id: "lab-exact-policy-bm25", title: "Exact policy · BM25", cells: ["1 SEC-2606 — Enterprise Security and Compliance Specification v2026.06; exact product, audit-log, and retention match; correct. 2 OPS-118 — Log Service Capacity Planning Guide. 3 SEC-2509 — Enterprise Security Specification v2025.09; strong lexical match, obsolete version.", "Paraphrases such as ‘how long is the record kept?’ or OCR loss can sharply reduce rank.", "BM25 is a strong low-cost baseline for stable product names, terms, and versions; version filtering remains mandatory."] },
+        { id: "lab-exact-policy-vector", title: "Exact policy · Vector", cells: ["1 OPS-118 — Log Service Capacity Planning Guide; semantically similar, not a product commitment. 2 SEC-2606 — Enterprise Security and Compliance Specification v2026.06; relevant and current; correct. 3 REG-041 — Financial Data-Retention Guidance; guidance, not the product scope.", "Semantic similarity does not establish applicability; generic guidance can outrank an exact product term.", "Vector retrieval catches paraphrases but cannot replace product, region, and version filters."] },
+        { id: "lab-exact-policy-hybrid", title: "Exact policy · Hybrid + RRF", cells: ["1 SEC-2606 — Enterprise Security and Compliance Specification v2026.06; retrieved by both routes; correct. 2 OPS-118 — Log Service Capacity Planning Guide. 3 SEC-2509 — Enterprise Security Specification v2025.09; lexical match, demoted by version.", "Without access, version, and product filters before fusion, both routes can amplify the wrong candidate.", "Hybrid retrieval is a useful enterprise baseline, provided metadata filters are enforced at a controlled stage."] },
+        { id: "lab-exact-policy-rerank", title: "Exact policy · Rerank", cells: ["1 SEC-2606 — Enterprise Security and Compliance Specification v2026.06; complete question–passage match and current; correct. 2 SEC-2509 — Enterprise Security Specification v2025.09; direct but old. 3 OPS-118 — Log Service Capacity Planning Guide; related, not a commitment.", "Reranking can only reorder retrieved material; it cannot repair a missing candidate.", "When candidates differ by version or scope, reranking may be more valuable than continuously increasing Top-K."] },
+        { id: "lab-semantic-rewrite-bm25", title: "Semantic paraphrase · BM25", cells: ["1 DOC-014 — Knowledge Base Product FAQ. 2 SYNC-031 — Content Synchronization Troubleshooting. 3 OPS-063 — Model Version Upgrade Guide. GOV-208, the correct version-effectivity rule, is absent from Top-3.", "The authoritative document uses ‘effective version’ and ‘withdrawal’, which share little surface text with the customer's wording.", "Prepare paraphrase slices in the PoC rather than relying only on literal query terms."] },
+        { id: "lab-semantic-rewrite-vector", title: "Semantic paraphrase · Vector", cells: ["1 GOV-208 — Knowledge Update and Version-Effectivity Rules; covers revision, synchronization, and effectivity; correct. 2 SYNC-031 — Content Synchronization Troubleshooting. 3 DOC-014 — Knowledge Base Product FAQ.", "Several documents about updates may still differ on withdrawal, latency, and consistency.", "Semantic retrieval can bridge conversational and engineering language, but the answer must expose effectivity, rollback, and observable state."] },
+        { id: "lab-semantic-rewrite-hybrid", title: "Semantic paraphrase · Hybrid + RRF", cells: ["1 GOV-208 — Knowledge Update and Version-Effectivity Rules; semantic retrieval plus exact version/effectivity terms; correct. 2 SYNC-031 — Content Synchronization Troubleshooting. 3 DOC-014 — Knowledge Base Product FAQ.", "If chunking separates synchronization, indexing, and effectivity, fusion still sees incomplete evidence.", "Evaluate hybrid retrieval together with chunking, inherited headings, and version metadata."] },
+        { id: "lab-semantic-rewrite-rerank", title: "Semantic paraphrase · Rerank", cells: ["1 GOV-208 — Knowledge Update and Version-Effectivity Rules; complete treatment of synchronization, effectivity, withdrawal, and latency; correct. 2 SYNC-031 — Content Synchronization Troubleshooting. 3 DOC-014 — Knowledge Base Product FAQ.", "A domain-weak reranker can prefer a fluent but shallow passage and adds latency and cost.", "Rerank a small, clean candidate set and measure nDCG, answer citation quality, and latency on business questions."] },
+        { id: "lab-compound-constraints-bm25", title: "Compound constraints · BM25", cells: ["1 NET-071 — Private Network Access Configuration; strong private-network match, missing industry and residency. 2 FIN-AP32 — Financial Services APAC Private Deployment Matrix v3.2; all four constraints; correct. 3 FIN-GEN — Financial Services Solution Overview.", "One frequent constraint can dominate ranking even when the document fails the other mandatory conditions.", "BM25 exposes strong constraint terms, but qualification needs field filters or later constraint-aware ranking."] },
+        { id: "lab-compound-constraints-vector", title: "Compound constraints · Vector", cells: ["1 FIN-GEN — Financial Services Solution Overview; semantically broad, no residency commitment. 2 FIN-AP32 — Financial Services APAC Private Deployment Matrix v3.2; complete constraints; correct. 3 NET-071 — Private Network Access Configuration.", "Vector similarity can favor fluent overviews over a table row containing decisive Boolean constraints.", "For compliance qualification, structured fields and table parsing can matter more than semantic resemblance."] },
+        { id: "lab-compound-constraints-hybrid", title: "Compound constraints · Hybrid + RRF", cells: ["1 NET-071 — Private Network Access Configuration; strong terms, incomplete. 2 FIN-AP32 — Financial Services APAC Private Deployment Matrix v3.2; stable two-route retrieval and complete; correct. 3 FIN-GEN — Financial Services Solution Overview.", "RRF combines ranks; it does not understand that ‘must’ denotes a hard constraint.", "Hybrid recall helps find the evidence; hard filters and constraint-aware reranking put it in the right position."] },
+        { id: "lab-compound-constraints-rerank", title: "Compound constraints · Rerank", cells: ["1 FIN-AP32 — Financial Services APAC Private Deployment Matrix v3.2; industry, region, private network, and residency all match; correct. 2 NET-071 — Private Network Access Configuration. 3 FIN-GEN — Financial Services Solution Overview.", "If the regional matrix is not parsed as row-level evidence, the reranker still cannot see all constraints.", "For qualification questions, prefer metadata filters → hybrid retrieval → constraint-aware reranking → citation to the original table."] },
+      ]),
+    ],
+  },
+  {
+    id: "retrieval-basics",
+    eyebrow: "RETRIEVAL MECHANICS",
+    title: "How the retrieval chain creates—and loses—evidence",
+    blocks: [
+      cards("Four retrieval mechanics", undefined, [
+        { id: "retrieval-parsing-chunking", title: "Parsing and chunking", body: "Preserve text, tables, headings, pages, and layout relationships, then create independently retrievable units. Small chunks lose context; large chunks dilute evidence and consume tokens.", decision: "Primary owner: parsing, OCR, and data-quality operations." },
+        { id: "retrieval-sparse", title: "Sparse retrieval", subtitle: "BM25", body: "Ranks documents using query terms, their rarity, and document length. It is often strong for identifiers, names, error codes, dates, and exact phrases.", decision: "Primary owner: search and indexing." },
+        { id: "retrieval-dense", title: "Dense retrieval", subtitle: "Embeddings", body: "Maps queries and documents to vectors and finds nearby representations. It bridges paraphrases but can confuse semantic resemblance with factual applicability.", decision: "Primary owner: embedding service and vector search." },
+        { id: "retrieval-filter-rerank", title: "Filtering and reranking", body: "Use high-throughput retrieval for candidates, then a more precise model for query–candidate comparison. Apply access, date, product, and region filters before context assembly.", decision: "Primary owner: retrieval engineering and security." },
+      ]),
+      table("Compare retrieval methods", undefined, ["Mechanism", "What it compares", "Strength", "Typical blind spot", "Design guidance"], [
+        { id: "compare-bm25", title: "BM25 / Sparse", cells: ["Terms, frequency, rarity, and document length", "Exact terminology, identifiers, and names", "Paraphrases and cross-language expressions", "Retain original fields and a keyword index."] },
+        { id: "compare-dense", title: "Dense / Embedding", cells: ["Semantic distance in a vector space", "Natural language, paraphrases, and ambiguous intent", "Exact values, negation, and fine-grained conditions", "Choose the embedding model using task data."] },
+        { id: "compare-hybrid", title: "Hybrid", cells: ["A fusion of sparse and dense candidates", "Mixed enterprise corpora", "Fusion policy still requires evaluation", "Use it as a primary enterprise PoC comparison, not as an assumed winner."] },
+        { id: "compare-reranker", title: "Reranker", cells: ["Joint relevance of the question and candidate", "Improving ranking within a candidate set", "Added latency and cost", "Rerank a limited candidate set and monitor incremental value."] },
+      ]),
+      cards("Technical notes", undefined, [
+        { id: "note-cosine-similarity", title: "Cosine similarity", body: "Intuitively, it compares the direction of query and document vectors. A higher score usually means closer semantics, but scores are meaningful only within the same embedding model, task, and index configuration." },
+        { id: "note-ann-hnsw", title: "ANN and HNSW", body: "Large vector stores avoid exact comparison with every vector. HNSW uses a multilayer neighbor graph to trade index memory, build time, and recall for query speed." },
+        { id: "note-task-dependent-chunking", title: "Chunk size is task-dependent", body: "Fixed-length, heading-aware, semantic, and parent–child chunks suit different documents. Test recall, context completeness, latency, and tokens on real questions." },
+      ]),
+    ],
+  },
+  {
+    id: "production-rag",
+    eyebrow: "PRODUCTION DIAGNOSTICS",
+    title: "From broad recall to explainable diagnosis",
+    lead: "Keyword and vector retrieval often maximize recall independently; RRF merges rank lists, and a reranker then makes a finer query–evidence judgment. Neither stage can recover evidence that was never retrieved.",
+    blocks: [
+      steps("A production retrieval pipeline", undefined, [
+        { id: "production-dual-recall", title: "Retrieve broadly on two routes", subtitle: "Sparse + Dense", body: "Keywords preserve identifiers and names; vectors bridge paraphrases. Both routes must respect the current identity." },
+        { id: "production-rank-fusion", title: "Fuse rankings", subtitle: "Rank Fusion / RRF", body: "Combine candidates using rank positions rather than assuming BM25 and vector raw scores share a comparable scale." },
+        { id: "production-cross-encoder", title: "Rerank precisely", subtitle: "Cross-encoder Rerank", body: "Apply the more expensive joint judgment only to a limited candidate set, measuring ranking gain and added latency." },
+        { id: "production-evidence-assembly", title: "Assemble evidence", subtitle: "Context and Citation", body: "Send only current, non-conflicting, permission-valid, and citable evidence to the generator." },
+      ]),
+      table("Failure-chain diagnosis", undefined, ["Failure stage", "Customer-visible symptom", "Check first", "Typical control"], [
+        { id: "failure-source-parsing", title: "Source data and parsing", cells: ["The document exists, but the correct passage never appears in the index.", "Parsing fidelity, pages, tables, headings, version, and deletion state", "Route parsing by document type; preserve source coordinates and a failure queue."] },
+        { id: "failure-chunk-index", title: "Chunking and indexing", cells: ["Evidence is split, drowned in noise, or an obsolete chunk remains retrievable.", "Chunk boundaries, parent–child links, duplication, and index version", "Compare structural, semantic, and parent–child chunking on real questions."] },
+        { id: "failure-candidate-recall", title: "Candidate retrieval", cells: ["The reference evidence is absent from candidate Top-K.", "Candidate Recall@K, recall before and after filters, and query type", "Use keyword and vector retrieval, with identity and metadata filters."] },
+        { id: "failure-fusion-rerank", title: "Fusion and reranking", cells: ["The right evidence is retrieved but does not reach the final context.", "Fusion rank, MRR/nDCG, reranker gain, and latency", "Use RRF across score spaces, then rerank a limited candidate set."] },
+        { id: "failure-context-assembly", title: "Context assembly", cells: ["Citations lack version, evidence conflicts, ordering is wrong, or text is truncated.", "Final-context coverage, token budget, version, and conflict policy", "Deduplicate, compress, order, and preserve stable source IDs."] },
+        { id: "failure-generation-citation", title: "Generation and citation", cells: ["The evidence is correct, but the answer misreads, omits, or answers when it should abstain.", "Faithfulness, citation correctness, abstention, and factual correctness", "Strengthen the output contract, abstain on insufficient support, and review high-risk answers."] },
+      ]),
+      boundary("production-model-upgrade-boundary", "Do not start with a larger generator", "A larger generation model can help only with the subset of failures in which the correct evidence already reached the final context but was not used well. It cannot recover evidence lost during parsing, chunking, retrieval, or access filtering."),
+    ],
+  },
+  {
+    id: "rag-variants",
+    eyebrow: "RAG PATTERNS",
+    title: "Base architecture and extension patterns",
+    lead: "Use the simplest retrieval chain that meets the task. Add planning, graphs, vision, or structured querying only when a measured failure requires it.",
+    blocks: [
+      cards("Four commonly used labels", "The labels describe broad architecture families rather than standardized product tiers.", [
+        { id: "variant-basic-rag", title: "Basic / single-pass RAG", subtitle: "Often called Naive RAG in research surveys", body: "Chunk → vector retrieval → Top-K → generation.", decision: "Use for a quick baseline with one knowledge source and simple queries.", boundary: "Fast to implement, but sensitive to chunking, recall, and noisy context." },
+        { id: "variant-advanced-rag", title: "Advanced RAG", body: "Query rewriting → hybrid retrieval → filtering → reranking → compression → generation.", decision: "Use for enterprise knowledge questions that need more controlled quality.", boundary: "Improved control comes with more components, latency, and evaluation complexity." },
+        { id: "variant-agentic-rag", title: "Modular or agentic RAG", body: "Plan → select a source → perform iterative retrieval or tool calls → synthesize.", decision: "Use for cross-system or genuinely multi-step questions.", boundary: "Add budgets, permissions, stopping rules, and trajectory evaluation; do not route every request through the loop." },
+        { id: "variant-graphrag", title: "GraphRAG", body: "Extract entities and relationships → build communities → produce summaries → retrieve locally or globally.", decision: "Use for relationship-dense corpora and corpus-wide synthesis questions.", boundary: "Indexing and update costs are high; ordinary fact lookup still needs ordinary retrieval." },
+      ]),
+      table("Choose an extension by the problem it solves", undefined, ["Pattern", "Best suited to", "Capability added", "Primary cost", "Selection boundary"], [
+        { id: "extension-advanced", title: "Basic / Advanced RAG", cells: ["Single-hop facts, policies, products, and knowledge Q&A", "Hybrid retrieval, filtering, reranking, and citations", "A common production baseline", "Do not let sophisticated labels distract from basic evidence-chain quality."] },
+        { id: "extension-agentic", title: "Agentic RAG", cells: ["Multi-step decomposition, source selection, query rewriting, or tool use", "Routing, planning, loops, budgets, and trajectory evaluation", "More calls and failure paths", "Enable it only for complex slices that demonstrate incremental value."] },
+        { id: "extension-graph", title: "GraphRAG", cells: ["Relationship-rich, cross-document, and global-theme questions", "Entities, relationships, communities, and hierarchical summaries", "Heavier indexing, updates, and operations", "Precise facts and ordinary Q&A usually continue to need conventional retrieval."] },
+        { id: "extension-multimodal", title: "Multimodal RAG", cells: ["Answers that depend on layout, charts, drawings, or images", "OCR, captions, unified embeddings, or page-level multi-vector retrieval", "Visual processing, storage, and evaluation", "Use specialist parsing for fixed fields; use vision models for open-ended visual understanding."] },
+        { id: "extension-structured", title: "Structured-data RAG", cells: ["Metrics, transactions, and relational data", "A semantic layer, controlled text-to-SQL, access controls, and result validation", "Metric governance and SQL safety", "Route document lookup and numerical computation separately; do not treat table rows as ordinary text chunks."] },
+      ]),
+      boundary("variant-ownership-boundary", "Keep architecture ownership clear", "Basic, advanced, and modular retrieval patterns belong to RAG. Agent planning and tool execution are developed in the Agent module, while knowledge-graph construction and governance are developed in Data Engineering."),
+    ],
+  },
+  {
+    id: "when-to-use",
+    eyebrow: "FIT CHECK",
+    title: "When RAG is—and is not—the right first move",
+    blocks: [
+      cards("Strong fit", undefined, [
+        { id: "fit-frequently-changing", title: "Knowledge changes frequently", body: "The system needs minute- or hour-level refresh targets." },
+        { id: "fit-source-required", title: "Answers need evidence", body: "Users require a source, page, or original excerpt." },
+        { id: "fit-permissioned-data", title: "Content is permissioned", body: "Visibility differs by user, department, customer, or tenant." },
+        { id: "fit-growing-corpus", title: "The corpus keeps growing", body: "It cannot be sent reliably as one complete context." },
+        { id: "fit-diagnostic-separation", title: "Failure must be attributable", body: "Operators need to separate retrieval, context, and generation errors." },
+      ]),
+      cards("Compare with a simpler or different approach", undefined, [
+        { id: "compare-small-stable-corpus", title: "The corpus is small and stable", body: "Sending the full corpus as context may be simpler." },
+        { id: "compare-behavior-problem", title: "The need is stable style or behavior", body: "Prompting or fine-tuning may address the problem more directly." },
+        { id: "compare-transactional-computation", title: "The answer requires live transactions or computation", body: "Use controlled databases, APIs, and business logic rather than document retrieval alone." },
+        { id: "compare-no-authority", title: "There is no authoritative source owner", body: "Retrieval cannot repair unresolved content authority and version conflicts." },
+        { id: "compare-no-abstention", title: "Errors are severe but abstention is forbidden", body: "The governance design is unsuitable; high-risk operation needs a safe stop or accountable review path." },
+      ]),
+    ],
+  },
+  {
+    id: "architecture",
+    eyebrow: "REFERENCE ARCHITECTURE",
+    title: "The two-chain RAG reference architecture",
+    blocks: [
+      steps("Offline knowledge chain", "Transform source material into evidence that can be updated, permissioned, located, and withdrawn.", [
+        { id: "architecture-source-systems", title: "Source systems", subtitle: "Source Systems", body: "Authoritative files, databases, content systems, and SaaS applications." },
+        { id: "architecture-parse-ocr", title: "Parsing and OCR", subtitle: "Parsing and OCR", body: "Recover text, tables, headings, pages, and visual structure." },
+        { id: "architecture-chunk-metadata", title: "Chunking and metadata", subtitle: "Chunking and Metadata", body: "Create stable evidence units with version, validity, lineage, and source coordinates." },
+        { id: "architecture-access-mapping", title: "Access mapping", subtitle: "Access Mapping", body: "Carry tenant, group, user, document, and field-level authorization into retrieval." },
+        { id: "architecture-sparse-vector-index", title: "Sparse and vector indexes", subtitle: "Sparse + Vector Indexing", body: "Support exact-term and semantic candidate retrieval with controlled refresh." },
+      ]),
+      steps("Online answer chain", "Transform a customer question into an evidence-grounded answer or an explicit abstention.", [
+        { id: "architecture-query-understanding", title: "Query understanding", subtitle: "Query Understanding", body: "Extract intent, entities, time, product version, and hard constraints." },
+        { id: "architecture-hybrid-retrieval", title: "Hybrid retrieval", subtitle: "Hybrid Retrieval", body: "Combine sparse and dense routes to improve candidate coverage." },
+        { id: "architecture-filter-rerank", title: "Filtering and reranking", subtitle: "Filtering and Reranking", body: "Apply access and validity constraints, then refine relevance within the candidate set." },
+        { id: "architecture-context-assembly", title: "Context assembly", subtitle: "Context Assembly", body: "Resolve duplicates, conflicts, ordering, and the token budget while retaining provenance." },
+        { id: "architecture-generation-citation", title: "Generation, citation, or abstention", subtitle: "Generation / Citation / Abstention", body: "Answer only to the degree justified by accessible, current evidence." },
+      ]),
+      boundary("architecture-shared-control-boundary", "Shared controls and responsibility", "Both chains use evaluation sets, prompt versions, source lineage, access policies, tracing, cost controls, and service objectives. The model generates from evidence; the application remains responsible for identity, authorization, tool execution, and final business actions."),
+    ],
+  },
+  {
+    id: "choice",
+    eyebrow: "CHOICE MATRIX",
+    title: "Compare four knowledge and behavior strategies",
+    blocks: [
+      table("Select by the problem, not by fashion", undefined, ["Approach", "Best suited to", "Update and citation", "Primary cost", "Decision guidance"], [
+        { id: "choice-long-context", title: "Long context", cells: ["A small, stable, closed corpus", "Simple refresh; citations need additional design", "Input cost, latency, and position sensitivity", "Use it as the simplest baseline before adding retrieval."] },
+        { id: "choice-rag", title: "RAG", cells: ["Dynamic, multi-source, permissioned knowledge that needs evidence", "Strong support for incremental updates and withdrawal", "Data-pipeline and evaluation complexity", "A common enterprise knowledge-Q&A architecture, subject to customer validation."] },
+        { id: "choice-fine-tuning", title: "Fine-tuning", cells: ["Stable behavior, style, format, and domain patterns", "Knowledge refresh is slower and sources are difficult to attribute", "Dataset construction, training, and regression testing", "Use it for behavior; do not treat it as a substitute for retrieval."] },
+        { id: "choice-agentic-retrieval", title: "Agentic retrieval", cells: ["Multi-step questions, cross-system work, planning, and tools", "Strong but with a longer execution chain", "Latency, unpredictability, and access risk", "Introduce it only for task slices that need adaptive planning."] },
+      ]),
+    ],
+  },
+  {
+    id: "rag-independent-depth",
+    eyebrow: "PRODUCTION-GRADE EXTENSIONS",
+    title: "From a retrieval demo to a sustainable evidence system",
+    lead: "Production RAG requires explicit query planning, lifecycle propagation, claim-level evidence, and controlled index migration.",
+    blocks: [
+      steps("Plan the query before deciding whether and how to retrieve", "Complex retrieval is not the act of embedding the user's sentence unchanged. Preserve the original request, extract hard constraints, choose a source, and add rewriting or decomposition only when it creates measurable recall value.", [
+        { id: "deep-query-preserve-original", title: "Preserve the original question", subtitle: "Preserve Original Query", body: "Store the user's wording together with identity, conversation, and time so that model numbers, negation, dates, and qualifications remain recoverable.", decision: "Keep every rewrite alongside the original and compare its contribution in the trace.", boundary: "A generated rewrite is not new user authorization and cannot overwrite business constraints.", sourceIds: canonicalDeepDives[0].sourceIds },
+        { id: "deep-query-classify-risk", title: "Classify intent and risk", subtitle: "Classify Intent and Risk", body: "Distinguish exact lookup, semantic explanation, relationship synthesis, structured query, and no-retrieval cases, and assign an answer-risk level.", decision: "Use keyword or structured retrieval for exact identifiers; reserve planning for genuinely complex questions.", boundary: "Misclassification routes the request to the wrong source.", sourceIds: canonicalDeepDives[0].sourceIds },
+        { id: "deep-query-hard-filters", title: "Extract hard filters", subtitle: "Extract Hard Filters", body: "Turn tenant, region, product version, effective date, document type, and caller identity into deterministic filters.", decision: "Validate filters in the application rather than hiding them in natural-language instructions.", boundary: "Overly strict filters lose recall; loose filters can disclose data or mix versions.", sourceIds: canonicalDeepDives[0].sourceIds },
+        { id: "deep-query-route-retrieval", title: "Route retrieval", subtitle: "Route Retrieval", body: "Choose among keyword, vector, SQL, graph, API, or no retrieval, with a budget and stopping rule for each route.", decision: "Establish a single-route baseline before using real failures to justify combinations.", boundary: "More retrievers add latency, cost, and failure paths; they do not automatically add accuracy.", sourceIds: canonicalDeepDives[0].sourceIds },
+        { id: "deep-query-rewrite-decompose", title: "Rewrite or decompose only when needed", subtitle: "Rewrite or Decompose", body: "Split multi-intent requests and consider query expansion or HyDE for a measured semantic gap, recording the incremental hit from every subquery.", decision: "Enable this only for clearly complex slices and validate candidate recall and task success.", boundary: "A HyDE hypothetical document may hallucinate; it can help locate real evidence but is not evidence itself.", sourceIds: canonicalDeepDives[0].sourceIds },
+      ]),
+      steps("Treat additions, changes, deletions, and access revocation as separate freshness chains", "A successful synchronization job does not prove that obsolete content is no longer retrievable. Validate each knowledge change through indexes, caches, access state, and the final answer.", [
+        { id: "deep-lifecycle-version-source", title: "Version the source", subtitle: "Version the Source", body: "Store source_version, valid_from, valid_to, supersedes, indexed_at, and acl_version on the evidence unit.", decision: "Define the authoritative version and conflict policy before setting a synchronization interval.", boundary: "A modification timestamp cannot fully represent business effectivity and access changes.", sourceIds: canonicalDeepDives[1].sourceIds },
+        { id: "deep-lifecycle-change-events", title: "Propagate change events", subtitle: "Propagate Change Events", body: "Use change data capture, object events, or scheduled jobs to distinguish additions, changes, deletions, and ACL updates.", decision: "Give each change type a target, failure queue, and accountable owner.", boundary: "Some ACL changes do not update content timestamps and can bypass ordinary high-water-mark detection.", sourceIds: canonicalDeepDives[1].sourceIds },
+        { id: "deep-lifecycle-rebuild-artifacts", title: "Rebuild index artifacts", subtitle: "Rebuild Index Artifacts", body: "Version parsing, chunking, embeddings, and indexes. Keep the previous serviceable version during failure and isolate partial output.", decision: "After the job finishes, sample content, coordinates, permissions, and versions.", boundary: "Resetting or rerunning a job does not necessarily remove orphaned documents that disappeared from the source.", sourceIds: canonicalDeepDives[1].sourceIds },
+        { id: "deep-lifecycle-delete-invalidate", title: "Delete and invalidate", subtitle: "Delete and Invalidate", body: "Use tombstones or explicit deletion to remove vector and sparse-index entries, summaries, answer caches, and access snapshots.", decision: "Treat deletion and access revocation as higher-priority negative acceptance paths than ordinary additions.", boundary: "Deleting a source file before notifying the index can leave an orphan that is difficult to trace.", sourceIds: canonicalDeepDives[1].sourceIds },
+        { id: "deep-lifecycle-consistency-probe", title: "Run an end-to-end consistency probe", subtitle: "Consistency Probe", body: "Continuously query deleted, revoked, and superseded examples to prove that text, metadata, and cached answers are no longer returned.", decision: "Measure the target at the final result under a real user identity, not at the job-status screen.", boundary: "Probes and logs must also comply with sensitive-data and retention policies.", sourceIds: canonicalDeepDives[1].sourceIds },
+      ]),
+      table("Compile evidence at claim level", "The context is not a bag of passages. It is a controlled set of current, accessible evidence objects that can support specific claims.", ["Object", "Mechanism", "Acceptance question", "Failure mode"], [
+        { id: "deep-evidence-object", title: "Evidence object", cells: ["Carry source ID, original coordinates, version, validity, ACL, authority, and extraction method.", "Can every answer fragment return reliably to the original?", "A link without version and coordinates cannot prove what was available at the time."], sourceIds: canonicalDeepDives[2].sourceIds },
+        { id: "deep-evidence-conflict-set", title: "Conflict set", cells: ["Group versions, regions, or terms that address the same subject and decide whether to select, present, or abstain by scope.", "Has the customer defined the authoritative source and conflict owner?", "Passing conflicting passages to the model transfers the decision to stochastic generation."], sourceIds: canonicalDeepDives[2].sourceIds },
+        { id: "deep-evidence-claim-attribution", title: "Claim attribution", cells: ["Split the answer into verifiable claims, bind direct evidence to each one, and measure citation correctness separately from coverage.", "Does every material number, deadline, and conclusion have direct support?", "A related document does not necessarily support the whole answer."], sourceIds: canonicalDeepDives[2].sourceIds },
+        { id: "deep-evidence-scope-abstain", title: "Qualify or abstain", cells: ["When evidence is insufficient, stale, conflicting, or unauthorized, narrow the answer, state uncertainty, or escalate.", "Which claims require evidence and which may be labeled professional judgment?", "Adding links after generation is decoration, not an auditable evidence chain."], sourceIds: canonicalDeepDives[2].sourceIds },
+      ]),
+      cards("Zero-downtime migration checklist", "Changing an embedding model or index is a data migration and retrieval release. Online service can continue, but a full backfill and dual-version validation are usually still required.", [
+        { id: "deep-migration-stable-snapshot", title: "Stable chunk IDs and corpus snapshot", subtitle: "Stable IDs and Snapshot", body: "Freeze or label a corpus version and build the new index with stable document and chunk IDs.", decision: "Match each reference item across the old and new indexes.", boundary: "Vectors from different embedding models are not directly comparable in one vector space.", sourceIds: canonicalDeepDives[3].sourceIds },
+        { id: "deep-migration-dual-index", title: "Dual-index changes", subtitle: "Dual Indexing", body: "Propagate additions, changes, deletions, and ACL changes to both indexes during migration.", decision: "Provide replay, compensation, and consistency alerts for failed dual writes.", boundary: "Dual indexes temporarily increase storage, compute, and operating complexity.", sourceIds: canonicalDeepDives[3].sourceIds },
+        { id: "deep-migration-shadow", title: "Shadow queries and slice comparison", subtitle: "Shadow Queries", body: "Replay representative traffic and compare candidate recall, ranking, P95, cost, and unauthorized negative cases.", decision: "Check high-risk slices as well as overall averages.", boundary: "HTTP success and a higher average score cannot conceal failure in a critical slice.", sourceIds: canonicalDeepDives[3].sourceIds },
+        { id: "deep-migration-cutover", title: "Alias or gateway cutover", subtitle: "Alias / Gateway Cutover", body: "Move a small traffic share through an index alias or application route and retain the old index for rollback.", decision: "Define the cutover unit, observation period, and rollback trigger.", boundary: "Index aliases are product-specific; verify lifecycle stage and limitations at the time of use.", sourceIds: canonicalDeepDives[3].sourceIds },
+        { id: "deep-migration-negative-verification", title: "Negative verification before retirement", subtitle: "Negative Verification", body: "Prove that obsolete content and revoked identities are absent from the new index, cache, and final answer.", decision: "Name the owner who signs off deletion, access, and audit consistency before the old index is retired.", boundary: "Positive-recall comparison alone misses the most severe access and deletion regressions.", sourceIds: canonicalDeepDives[3].sourceIds },
+      ]),
+    ],
+  },
+  {
+    id: "rag-evidence-practice",
+    eyebrow: "DATA WITH CAVEATS",
+    title: "Evidence that can be cited—and what it cannot prove",
+    lead: "Use each finding only within the workload, dataset, product, or method described by its source. The cards are decision evidence, not universal promises.",
+    blocks: [
+      boundary("evidence-card-usage-boundary", "Evidence-card rule", "Retain the metric, experimental conditions, and non-extrapolation boundary together. Never detach a number from the workload and baseline that produced it."),
+    ],
+  },
+  {
+    id: "cloud-opportunities",
+    eyebrow: "CLOUD OPPORTUNITY MAP",
+    title: "Map RAG capabilities to cloud opportunities",
+    lead: "Describe the required capability in vendor-neutral terms first, then map it to current products, regions, quotas, service levels, and charging units.",
+    blocks: [
+      table("Capability-to-service discovery map", undefined, ["RAG stage", "Relevant cloud capabilities", "Customer value", "Discovery question"], [
+        { id: "cloud-data-ingestion", title: "Data ingestion", cells: ["Object storage, databases, file services, SaaS connectors, CDC, and messaging", "Consolidate sources and establish incremental synchronization.", "Where is the data, and how quickly must additions, changes, and deletions take effect?"] },
+        { id: "cloud-document-understanding", title: "Document understanding", cells: ["OCR, document intelligence, batch processing, functions, and container jobs", "Turn PDFs, scans, tables, and images into traceable content.", "What proportion is scanned, multi-column, or table-heavy?"] },
+        { id: "cloud-data-governance", title: "Data governance", cells: ["Catalogs, metadata, quality, masking, master data, and lineage", "Identify authority, version, ownership, and retention.", "Who approves content, and which source wins when versions conflict?"] },
+        { id: "cloud-retrieval-index", title: "Retrieval and indexing", cells: ["Managed search, vector stores, relational databases, caches, and knowledge graphs", "Provide keyword, semantic, filtered, and relationship queries.", "What share of real questions is exact lookup, semantic retrieval, or relationship analysis?"] },
+        { id: "cloud-model-capability", title: "Model capability", cells: ["Model services, embeddings, rerankers, fine-tuning, and inference", "Supply vectorization, reranking, generation, and model replaceability.", "May data leave the environment, and how do quality, language, and latency rank?"] },
+        { id: "cloud-application-runtime", title: "Application runtime", cells: ["Serverless, containers, Kubernetes, API gateways, and load balancing", "Operate the knowledge and answer chains as an elastic online service.", "What are concurrency, peak factor, P95, and availability objectives?"] },
+        { id: "cloud-security-compliance", title: "Security and compliance", cells: ["IAM, key management, WAF, private connectivity, and audit", "Carry identity, access policy, and key controls through retrieval and generation.", "Where is the source of access truth, and is isolation required by tenant, document, row, or field?"] },
+        { id: "cloud-operations-optimization", title: "Operations and optimization", cells: ["Logs, tracing, APM, evaluation, alerts, and FinOps", "Diagnose failures, measure continuously, and calculate cost per successful answer.", "Who owns quality, and how will the team respond when performance degrades?"] },
+      ]),
+      cards("Illustrative capability bundles", "These are responsibility maps, not current product SKUs.", [
+        { id: "bundle-secure-assistant", title: "Secure enterprise knowledge assistant", subtitle: "BUNDLE A", body: "Object storage or document intelligence + managed search or vector retrieval + model service + API gateway + IAM/key management + observability.", decision: "Buying roles: business, data owner, security, and application teams." },
+        { id: "bundle-realtime-sync", title: "Near-real-time knowledge synchronization", subtitle: "BUNDLE B", body: "Database or SaaS + CDC or event bus + serverless processing + incremental indexing + cache invalidation + audit.", decision: "Buying roles: data platform, integration, and business operations." },
+        { id: "bundle-private-scale", title: "Privately operated service at scale", subtitle: "BUNDLE C", body: "Kubernetes or GPU inference + private model gateway + vector retrieval + elastic caching + APM and FinOps.", decision: "Buying roles: platform, infrastructure, information security, and procurement." },
+      ]),
+      boundary("cloud-product-mapping-boundary", "Product mapping is time-sensitive", "A later overlay may map capability → product → limitation → charging unit without changing the durable explanation. Every mapping must state product version, region, lifecycle stage, and verification date."),
+    ],
+  },
+  {
+    id: "poc",
+    eyebrow: "POC PLAYBOOK",
+    title: "Set RAG PoC acceptance criteria by risk",
+    blocks: [
+      cards("Four evidence gates", undefined, [
+        { id: "poc-baseline", title: "Problem and baseline", subtitle: "BASELINE", body: "Select representative tasks by business risk. Freeze real questions, expected answers, evidence locations, identities, and current-process performance. Let the distribution determine sample size." },
+        { id: "poc-data-proof", title: "Knowledge and access proof", subtitle: "DATA PROOF", body: "Connect the smallest authoritative corpus and validate parsing, chunking, version, access, additions, deletions, and revocation, recording every processing version." },
+        { id: "poc-quality-proof", title: "Retrieval and answer proof", subtitle: "QUALITY PROOF", body: "Change one major variable at a time and compare candidate recall, reranking, final context, claim-level citations, and abstention rather than relying on perceived answer quality." },
+        { id: "poc-operations", title: "Load, security, and handover", subtitle: "OPERATIONS", body: "Test conflicts, unauthorized access, malicious documents, stale content, peaks, and rollback. Advance only after the current gate passes; duration follows scope and risk." },
+      ]),
+      cards("Candidate pass or pause measures", "Exact thresholds must come from customer risk and the current baseline; do not turn generic values into contract commitments.", [
+        { id: "gate-recall", title: "Candidate Recall@K" },
+        { id: "gate-citation", title: "Citation correctness" },
+        { id: "gate-task-success", title: "Critical-task success" },
+        { id: "gate-latency", title: "P95 and time to first token" },
+        { id: "gate-cost", title: "Cost per successful outcome" },
+        { id: "gate-access", title: "Unauthorized disclosure = 0" },
+        { id: "gate-freshness", title: "Update and deletion service objectives" },
+        { id: "gate-human-acceptance", title: "Human acceptance rate" },
+      ]),
+    ],
+  },
+  {
+    id: "rag-customer-question-guide",
+    eyebrow: "CUSTOMER QUESTION PACK",
+    title: "Common customer questions with decision-ready answers",
+    lead: "Each question provides a short answer, technical detail, a recommended discovery question, and evidence with an explicit support boundary.",
+    blocks: [
+      boundary("qa-evidence-boundary", "How to use the question pack", "Use the short answer in the meeting, open the technical detail when the customer challenges the reasoning, and follow the source links before turning any product-specific or quantitative statement into a commitment."),
+    ],
+  },
+];
+
+const qaCopy = [
+  {
+    id: "long-context-vs-rag",
+    q: "Context windows are already very long. Why do we still need RAG?",
+    a: "A long context determines how much can be supplied; retrieval determines what should be supplied. Enterprise RAG also needs a data chain and application controls for freshness, access, and provenance. If the corpus is small, stable, and safely supplied in full, direct long context may be simpler.",
+    depth: "Do not compare token limits alone. Compare effective recall, position sensitivity, time to first token, repeated-input cost, access filtering, and refresh objectives. Research has found position-sensitive behavior in specific multi-document QA and key–value retrieval experiments, so fitting information into the window does not prove that the model will use it reliably. The customer baseline must decide whether retrieval adds value.",
+    ask: "How large is the corpus, how often does it change, does access vary by user, and must answers cite their source?",
+    tag: "Architecture decision", basis: "Research evidence + engineering limits + customer baseline",
+    supports: ["Shows position-sensitive use of long context; it does not show that RAG is always better.", "Supports the basic combination of parametric memory with externally retrieved memory."],
+  },
+  {
+    id: "retrieved-right-document-still-wrong",
+    q: "If RAG retrieved the right document, why can the answer still be wrong? Does RAG eliminate hallucinations?",
+    a: "No. RAG makes evidence available, but retrieval success does not prove that the evidence entered the final context, that the model used it faithfully, or that the evidence itself is authoritative, current, and applicable.",
+    depth: "Separate four layers: Candidate Recall asks whether the reference evidence entered the candidate set; final-context coverage asks whether it survived filtering and reranking; Faithfulness asks whether the answer is supported by that context; Factual Correctness asks whether the evidence and conclusion match authoritative facts. An answer may faithfully repeat an obsolete document and still be wrong, or may happen to be correct without an auditable evidence chain.",
+    ask: "Which source is authoritative, who resolves conflicting versions, may the system abstain, and which answers require human review?",
+    tag: "Risk boundary", basis: "Research metrics + risk boundary",
+    supports: ["Supports evaluating context relevance, answer relevance, and faithfulness separately.", "Supports evaluating evidence and generation after retrieval; it does not mean conventional RAG self-checks automatically.", "Supports continuous measurement and risk management beyond a single model metric."],
+  },
+  {
+    id: "vector-database-required",
+    q: "Does every RAG system need a vector database?",
+    a: "No. Start from query types and existing infrastructure. Exact identifiers, names, and dates may favor BM25 or structured queries; semantic variation may justify vectors; when both error types matter, compare hybrid retrieval.",
+    depth: "A vector store is candidate-retrieval infrastructure, not a complete RAG system. A robust design often combines dense and sparse retrieval with metadata filters, then reranks only when needed. Smaller deployments can reuse an existing search engine or database extension. With HNSW, establish recall, latency, and memory baselines before tuning ef or M; premature index tuning is low value while the corpus and query distribution are still unstable.",
+    ask: "Are users looking for paraphrases, exact facts, or filtered records, and where do the existing search and database paths fail on real questions?",
+    tag: "Product selection", basis: "Retrieval research + engineering selection",
+    supports: ["Supports the basic mechanism of term-based sparse retrieval.", "Supports dense candidate retrieval and documents its dataset boundary.", "Supports a two-stage design in which query–passage reranking follows candidate retrieval."],
+  },
+  {
+    id: "document-exists-no-answer",
+    q: "The document exists. Why does the system still fail to answer?",
+    a: "First locate where the correct evidence disappeared: ingestion, candidate retrieval, access filtering, reranking, final-context assembly, or model use. Do not begin by replacing the generator with a larger model.",
+    depth: "Use a diagnostic set that records the expected answer, evidence location, version, and caller identity. Check parsing completeness → Candidate Recall@K → recall after filters → reranked position → final-context coverage → answer faithfulness. A reranker cannot recover evidence outside the candidate set. A stronger generator can directly help only when the evidence reached the final context but was used incorrectly.",
+    ask: "Can the customer provide real failed questions across major tasks and risk levels, with the correct document, passage, version, and access identity?",
+    tag: "Failure diagnosis", basis: "Research evidence + layered diagnosis",
+    supports: ["Supports measuring candidate retrieval separately with top-K passage accuracy.", "Supports finer ranking inside a candidate set, but not recovery of missing evidence.", "Supports separating context quality from generation faithfulness."],
+  },
+  {
+    id: "rag-vs-fine-tuning",
+    q: "How should we choose between RAG and fine-tuning?",
+    a: "Use RAG as the first baseline when knowledge changes, needs citations, or must be withdrawn. Evaluate fine-tuning when the model must follow a stable style, format, or specialized behavior. The two can be combined.",
+    depth: "Fine-tuning encodes patterns in parameters, making item-level refresh and attribution harder. RAG supplies evidence at request time, which is easier to update and withdraw. A task-specific study found retrieval stronger than the compared unsupervised fine-tuning route for new-fact injection, but that result does not show that every form of fine-tuning is unsuitable for knowledge work. Identify whether the residual error is evidence supply or answer behavior before training.",
+    ask: "Is the changing requirement factual knowledge or answer behavior, how frequently does it change, and is item-level provenance required?",
+    tag: "Approach selection", basis: "Task-specific research + engineering judgment",
+    supports: ["Supports the reported RAG comparison for new-fact injection within the paper's setting, not every form of fine-tuning.", "Supports a modular route that freezes the model and keeps retrieval outside it."],
+  },
+  {
+    id: "department-customer-access-control",
+    q: "How do we enforce different access rights for departments and customers?",
+    a: "The application and retrieval service must enforce access; a prompt is not an access-control mechanism. Identity, tenant, groups, and document authorization must affect candidate generation, caches, and audit records.",
+    depth: "Retain source ACLs in the index or use logical or physical isolation according to risk. Filter by tenant, user, and group during retrieval; include the access context in cache keys; minimize sensitive logs while retaining hit provenance. Zero-trust architecture requires authentication and authorization before resource access, while OWASP identifies cross-context leakage risks in multi-tenant vector systems. For sensitive use, make zero unauthorized disclosure an acceptance criterion and test it adversarially.",
+    ask: "Which authoritative system supplies permissions, and are tenant-, document-, row-, field-, or immediate-revocation controls required?",
+    tag: "Security", basis: "Official principle + RAG security guidance",
+    supports: ["Supports authentication and authorization before resource access; retrieval filtering is one RAG implementation of that principle.", "Directly supports multi-tenant isolation, fine-grained access control, and retrieval logging."],
+  },
+  {
+    id: "source-update-freshness",
+    q: "How quickly will a source-document update appear in answers?",
+    a: "This is a data-freshness service objective, not a model property. Measure discovery, parsing, indexing, cache invalidation, access revocation, and deletion propagation separately, then set targets by business risk.",
+    depth: "Useful engineering fields include source_version, effective_at, indexed_at, and deletion_at, but NIST does not prescribe those fields. Minutes, hours, or days are not universal standards; the customer requirement, current service capability, and PoC measurements must establish the target. Deletion and access revocation are usually more sensitive than addition and should have separate end-to-end tests.",
+    ask: "Which data is most sensitive, and how quickly must additions, changes, deletions, and access revocations take effect?",
+    tag: "Freshness", basis: "Governance principle + customer service objective / PoC",
+    supports: ["Supports governance of provenance, lifecycle, and continuing risk; it does not prescribe a universal minute-level service objective."],
+  },
+  {
+    id: "prove-rag-beyond-demo",
+    q: "How do we prove RAG value rather than build an impressive demo?",
+    a: "Do not report one answer-accuracy number. Freeze the same real questions and authoritative evidence, then test candidate retrieval, ranking and context, generation, business outcomes, engineering performance, and security separately.",
+    depth: "Sample by task and risk from real logs, workflows, and known failures. Freeze the question, expected answer, evidence, caller identity, version, and risk level, and separate training or tuning data from final evaluation. Measure Recall@K for candidates; MRR/nDCG and final-context coverage for ranking; faithfulness, citations, and abstention for generation; task success and human acceptance end to end; and P95, cost per successful answer, update/deletion objectives, and unauthorized-access tests for engineering. Report critical slices alongside averages.",
+    ask: "Where will real questions come from, who can adjudicate answers and evidence, and which failures must never be hidden by an average?",
+    tag: "Evaluation", basis: "Research metrics + engineering acceptance",
+    supports: ["Supports Faithfulness, Answer Relevance, and Context Relevance as distinct automated dimensions.", "Supports independent top-K passage retrieval measurement at the candidate stage.", "Supports combining automated evaluation, human evaluation, and continuous risk management."],
+  },
+  {
+    id: "pdf-scans-tables-images",
+    q: "Can RAG work well with PDFs, scans, tables, and images?",
+    a: "Yes, but digital PDFs, scans, and visually rich pages are different data types. PDF parsing, OCR, and visual document retrieval solve different problems, and any one of them can set the quality ceiling.",
+    depth: "Plain-text extraction can scramble columns, table headers, footnotes, and cross-page tables; scans additionally require detection and recognition. Route by document type: retain layout, page coordinates, and structured tables for digital PDFs; measure critical-field completeness for scans; consider visual page retrieval when charts or spatial relationships carry the evidence. Parser success is not acceptance—sample whether reference evidence reaches the candidate set from the original page and whether citations return to a page or region under the customer's language and compute conditions.",
+    ask: "What proportion falls into each document type, how good are the scans, and which answers depend on tables, charts, or layout relationships?",
+    tag: "Data engineering", basis: "Parsing, OCR, and visual-retrieval research + customer-document PoC",
+    supports: ["Supports PDF conversion, layout analysis, and table recovery; it does not establish downstream RAG accuracy.", "Supports an OCR route with text detection, direction classification, and recognition; it does not guarantee arbitrary scan quality.", "Supports multi-vector visual retrieval from page images; customer quality and cost still require testing."],
+  },
+  {
+    id: "latency-and-cost",
+    q: "How do we control latency and cost?",
+    a: "Remove ineffective stages before shrinking the model. Price both offline knowledge processing and the complete online cost per successful answer; generation tokens are only one component.",
+    depth: "Measure parsing, OCR, embeddings, indexing, candidate retrieval, reranking, final context, generation, cache, network, telemetry, and human operations separately. Tune candidate count, rerank count, and final-context count independently; skip retrieval when classification shows it adds no value; rerank only valuable candidates and compress the context. Include retries, peak reserve, and human escalation in unit economics, and report a range based on customer load and current cloud prices rather than extrapolating a PoC bill.",
+    ask: "What are document change volume, query volume, peak concurrency, P95 target, success rate, human-escalation rate, and current cloud prices?",
+    tag: "FinOps", basis: "Relevant research + engineering judgment; numbers come from the customer PoC",
+    supports: ["Supports quality A/B testing of hybrid retrieval and reranking in a specific experiment; it provides no universal cost or latency threshold.", "Supports benefits from aggregating multiple passages in a specific task, while keeping passage-count conclusions task-bound."],
+  },
+  {
+    id: "malicious-instructions-in-documents",
+    q: "Can malicious instructions inside retrieved documents attack a RAG system?",
+    a: "Yes. Retrieved material is untrusted data, not a system instruction. RAG and fine-tuning do not inherently eliminate prompt injection.",
+    depth: "Controls include source allowlists, ingestion scanning and signing, separation of instructions from evidence, least-privilege tools, output validation, confirmation for sensitive actions, anomalous-retrieval monitoring, and red-team tests. Vector and embedding layers also need controls for poisoning, cross-tenant leakage, and source confusion. If an agent can act, knowledge retrieval and tool authorization must remain separate trust domains.",
+    ask: "Does the system only answer, or can it send messages, place orders, or change configuration, and can external parties write to its knowledge sources?",
+    tag: "Security", basis: "Community security guidance",
+    supports: ["Directly supports that RAG and fine-tuning do not completely eliminate prompt injection.", "Supports vector-store poisoning, access-control, and cross-context leakage risks."],
+  },
+  {
+    id: "joint-training-required",
+    q: "Must an enterprise jointly train the retriever and generator end to end?",
+    a: "No. Most teams can first combine independent embeddings, search, reranking, and a frozen model service into an evaluable baseline. Consider training only after evidence shows that general components cannot meet a domain requirement.",
+    depth: "The original RAG paper jointly optimized a query encoder and BART generator while keeping the document encoder and index fixed; that is a research-system design, not an enterprise delivery requirement. A modular architecture lets retrieval, reranking, and generation evolve and be priced independently. REPLUG also demonstrates optimizing retrieval outside a frozen black-box model. End-to-end training adds sample, index-refresh, regression, and version-coupling costs.",
+    ask: "Will the customer use a hosted model API with no training access or a self-hosted model, do query–evidence–answer examples exist, and is the main failure in retrieval or generation?",
+    tag: "Training strategy", basis: "Original paper + modular research",
+    supports: ["Supports the original system's training scope and its fixed document encoder and index.", "Supports optimizing a retriever outside a frozen black-box language model."],
+  },
+  {
+    id: "top-k-and-reranker",
+    q: "Is a larger Top-K always better, and why use a reranker after vector retrieval?",
+    a: "No. Candidate Top-K is a recall budget; final-context K is a model-input budget. A larger candidate set may improve recall but also adds latency and noise. A reranker makes a finer query–document judgment within the retrieved set and cannot recover a missing document.",
+    depth: "The first sparse or dense stage aims for high-throughput coverage. The reranker improves precision over a smaller set, and only evidence that passes access, version, duplicate, and conflict controls enters the context. Add reranking when reference evidence already enters the candidate set but ranks too low, and when the quality gain justifies added P95 and cost. Observe Candidate Recall@K, post-rerank MRR/nDCG, final evidence coverage, and incremental overhead separately.",
+    ask: "Is the correct evidence missing from the candidate set, or retrieved but ranked outside the final context, and how much does reranking improve high-value questions?",
+    tag: "Retrieval tuning", basis: "Retrieval and reranking research + customer PoC",
+    supports: ["Supports top-K passage retrieval accuracy at the candidate stage.", "Supports finer reranking after retrieval but not recovery outside the candidate set.", "Supports multi-passage aggregation within a task and shows why passage-count findings should not be copied across workloads."],
+  },
+  {
+    id: "hybrid-rrf-reranker",
+    q: "What different problems do Hybrid Search, RRF, and a reranker solve?",
+    a: "Hybrid Search broadens candidate coverage through keyword and vector routes; RRF combines their rank lists; a reranker then makes a finer query–evidence judgment over a limited candidate set. They are separate stages, not three names for one capability.",
+    depth: "BM25 and vector scores come from different spaces and should not be assumed numerically comparable. RRF primarily uses positions in each result list. A reranker reads the question and candidate text jointly and is generally more expensive, so it follows retrieval. Measure incremental recall from each route, Candidate Recall after fusion, ranking quality after reranking, and added P95 rather than only the final prose answer.",
+    ask: "Do failed queries miss exact identifiers, semantic paraphrases, or evidence that was retrieved but ranked too low?",
+    tag: "Retrieval architecture", basis: "Retrieval research + vendor-experiment boundary",
+    supports: ["Supports sparse ranking based on terms, rarity, and document length.", "Supports joint query–passage reranking after candidate retrieval.", "Supports testing hybrid retrieval and reranking on the customer corpus, not a universal gain commitment."],
+  },
+  {
+    id: "production-quality-regression",
+    q: "RAG quality declined after several months in production. How should we investigate?",
+    a: "Compare a frozen evaluation set with adjudicated production failures, then trace changes through data, chunks, retrieval, reranking, context, and generation. Do not start by changing prompts or models on intuition.",
+    depth: "Good offline scores can coexist with poor production experience when question distribution, permissions, personalization, latency, or failure paths are missing from evaluation. Inspect source documents, parser, embeddings, index, filters, reranker, model, prompt, and cache versions, sliced by source, query type, tenant, risk, and time. HTTP success is not answer-quality success. Add production failures to the regression set only after human adjudication.",
+    ask: "When did the decline begin, which users and tasks are affected, and can each failure be reconstructed to candidates, final context, permissions, model, and prompt version?",
+    tag: "Production operations", basis: "Continuous evaluation + risk management",
+    supports: ["Supports separate measurement of context relevance, answer relevance, and faithfulness.", "Supports post-deployment measurement, monitoring, and management of generative-AI risk.", "Supports standardized telemetry for model and application traces; business-quality fields remain project-defined."],
+  },
+  {
+    id: "agentic-retrieval-query-decomposition", q: "Does agentic retrieval or query decomposition always improve accuracy?",
+    a: "No. These methods may improve effective recall for multi-intent, multi-hop, or source-selection questions. Exact identifiers, short facts, and simple single-hop requests can become slower or worse when rewriting drops terms and adds calls.",
+    depth: "Keep separate slices for exact lookup, semantic explanation, multi-hop comparison, and cross-source tasks, with the original query as the baseline. For each rewrite or subquery, record incremental candidate hits, duplicate evidence, additional P95 latency and cost, and final task success. Preserve identifiers, dates, and negation conditions explicitly. If decomposition adds no new evidence, fall back to deterministic single-pass retrieval. Route only the slices that demonstrate value, enforce budgets and stopping rules, and never treat a generated hypothetical passage as answer evidence. Azure's documented query-rewrite capability is currently marked as preview and requires current product verification.",
+    ask: "Which real questions need multiple sources or steps, and which unique identifiers, dates, or negation conditions must never be lost during rewriting?",
+    tag: "Query planning", basis: "Query-planning research + product-specific mechanisms",
+    supports: ["Supports hypothetical-document embeddings as a retrieval aid; the generated document is not evidence.", "Supports retaining the original query while generating alternatives and notes that exact unique terms can be lost.", "Supports optional decomposition of complex queries and the possibility of additional query activity."],
+  },
+  {
+    id: "deletion-and-access-revocation", q: "The document was deleted or the user lost access. Why can the system still answer from it?",
+    a: "Source systems, parsed artifacts, keyword and vector indexes, summaries, caches, and access snapshots are separate copies. If any layer misses the deletion or revocation event, deleted, stale, or no-longer-authorized content may remain exposed.",
+    depth: "Trace source_version, deletion tombstones, index jobs, orphaned documents, ACL versions, answer caches, and final citations. Cache keys must include tenant, user, or access version; authorization should be checked again on use; revocation should actively invalidate affected entries. Give additions, changes, deletions, and revocations separate objectives and negative probes. A successful job status is not completion until a revoked identity can no longer retrieve text, metadata, or cached answers.",
+    ask: "Which derived stores and caches hold content, how do caches distinguish identity, and how quickly must deletion and revocation be proven end to end?",
+    tag: "Freshness and access", basis: "Official synchronization behavior + zero-trust acceptance",
+    supports: ["Supports propagation of additions, changes, and deletions through incremental knowledge-base synchronization.", "Supports that reset does not automatically remove orphaned documents and that some ACL changes can bypass high-water-mark detection.", "Supports authorization at each resource access rather than trust in an obsolete access snapshot."],
+  },
+  {
+    id: "citations-trust-compliance", q: "If an answer includes citations, can we treat it as trustworthy or compliant?",
+    a: "No. Check whether each citation directly supports its claim, whether all material claims are covered, whether the source version is current and applicable, and whether the user is authorized to view it.",
+    depth: "Split the answer into verifiable numbers, deadlines, conditions, and conclusions, and bind each to original coordinates. Evaluate citation correctness separately from citation completeness. A related link may not support the conclusion, while an accurate quotation may still come from an obsolete or inapplicable version. High-risk workflows also need the evidence object, conflict decision, and human-review record.",
+    ask: "Which claims require direct evidence, who chooses the authoritative version, and can every citation return to an original location the user is allowed to access?",
+    tag: "Evidence governance", basis: "Peer-reviewed citation evaluation + risk governance",
+    supports: ["Supports evaluating whether citations entail claims separately from whether important claims are fully covered.", "Supports continuing governance of provenance, validity, transparency, and generative-AI risk."],
+  },
+  {
+    id: "embedding-index-zero-downtime", q: "Must RAG go offline when we change the embedding model or rebuild the index?",
+    a: "A new embedding model usually requires a full vector backfill, but online service need not stop. Run old and new indexes together, dual-write changes, shadow queries, cut over gradually, and retain the old index for rollback.",
+    depth: "Freeze or label a corpus snapshot and stable chunk IDs, then complete embeddings in the new index. During migration, send additions, changes, deletions, and ACL updates to both sides. Compare recall, ranking, P95, cost, and unauthorized negative cases on the same question set before gradual alias or application routing. Retire the old index only after deletion and revocation consistency is proven.",
+    ask: "Can the platform dual-write indexes, and are stable document IDs, a routing layer, shadow traffic, rollback time, and temporary storage budget available?",
+    tag: "Zero-downtime migration", basis: "Official index capability + controlled-release method",
+    supports: ["Supports a stable alias as one product-specific mechanism for index cutover and rollback.", "Supports that rebuild, incremental synchronization, and deletion have distinct index lifecycles.", "Supports correlating shadow traffic and component versions through standard telemetry; quality gates remain project-defined."],
+  },
+  {
+    id: "chunk-size-overlap", q: "What chunk size and overlap should we use?",
+    a: "There is no universal optimum. A chunk should be independently understandable, locatable, and permissionable; compare strategies on customer questions for recall, noise, context cost, and citation precision.",
+    depth: "Small chunks split conditions, headers, and context; large chunks dilute the subject, duplicate input, and consume the window. Start from headings, paragraphs, clauses, tables, or code structure, then test parent–child expansion, adjacent chunks, or semantic splitting against failures. Overlap may protect boundaries but increases index size and duplicate candidates. Code-task research establishes the need for controlled tests, not settings for contracts or scans.",
+    ask: "Does evidence normally fit in a sentence, clause, table, or several sections, and must citations return to an exact page or region?",
+    tag: "Chunking strategy", basis: "Task-specific research + customer-corpus experiment",
+    supports: ["Supports that chunking changes a particular code-RAG task and that settings are task-bound.", "Supports treating chunking and pre-retrieval augmentation as independently designed RAG stages.", "Supports position sensitivity in long contexts; it does not show that larger chunks reliably improve answers."],
+  },
+  {
+    id: "chunk-metadata-parent-page-version", q: "Why must chunks retain parent links, pages, versions, and metadata?",
+    a: "Retrieval finds a fragment, but a customer verifies original business evidence. Stable document and chunk IDs, source coordinates, version, validity, ACL, and parent relationships enable context expansion, precise citation, withdrawal, and audit.",
+    depth: "Parent links support small-chunk retrieval with a fuller parent for answering; pages and layout coordinates support return to the source; version and validity prevent mixed terms; ACL controls visibility; stable IDs align incremental updates, deletions, and blue–green indexes. These fields must come from authoritative systems and deterministic processing rather than model guesses.",
+    ask: "Does the content system already provide stable document IDs, versions, effective dates, owners, and ACLs, and must citations resolve to a document, page, or table cell?",
+    tag: "Metadata governance", basis: "Document parsing + lifecycle and risk governance",
+    supports: ["Supports preserving layout, structure, and tables as a technical basis for source coordinates.", "Supports the independent lifecycle of indexed content and why reset/run cannot replace update and deletion design.", "Supports governance of provenance, validity, and lifecycle; the exact metadata fields are an engineering design."],
+  },
+  {
+    id: "graphrag-everywhere", q: "Is GraphRAG an upgrade from vector RAG that every knowledge base should adopt?",
+    a: "No. GraphRAG is mainly suited to relationship discovery, theme synthesis, and global questions across many documents. Single-hop facts, exact terms, and routine service questions should keep ordinary retrieval as the baseline.",
+    depth: "GraphRAG extracts entities and relationships, builds communities, and produces hierarchical summaries, adding indexing time, model calls, update-consistency work, and quality governance. Test it only when failed questions truly require cross-document relationships or global synthesis and when entity, relation, and summary quality can be evaluated. It does not replace source citation, access filtering, or ordinary fact retrieval.",
+    ask: "What proportion of real questions requires cross-document synthesis or relationship reasoning, who validates entities and relations, and how often does the knowledge change?",
+    tag: "GraphRAG", basis: "Primary GraphRAG paper + RAG architecture survey",
+    supports: ["Supports entity graphs, communities, and community summaries for corpus-wide synthesis questions.", "Supports selecting advanced or modular RAG by problem rather than treating complexity as a universal upgrade."],
+  },
+  {
+    id: "ocr-vs-visual-retrieval", q: "For multimodal documents, should we use OCR first or retrieve with a vision model?",
+    a: "It depends on whether the answer depends on text, structure, or pixels. Parse and OCR prose and fixed fields for search, permissions, and citation; compare page-level visual retrieval or a fused route when charts, layout, or spatial relationships carry the evidence.",
+    depth: "OCR produces editable text and fields but can lose layout, legends, and spatial relations. Page-image representations retain layout but add vectors, compute, explanation, and coordinate challenges. Slice the PoC by digital PDF, scan, table, chart, and image, then compare evidence recall, citation location, P95, and cost. The usual production result is routing or fusion, not one method for every document.",
+    ask: "Do answers come mainly from text, table cells, chart trends, or page layout, and are exact quotation, field-level access, and source coordinates required?",
+    tag: "Multimodal retrieval", basis: "OCR, document parsing, and visual-retrieval research",
+    supports: ["Supports OCR based on text detection, direction classification, and recognition.", "Supports layout analysis and table recovery for digital documents; it does not preserve every visual meaning.", "Supports multi-vector visual retrieval from document-page images; customer quality and cost remain to be tested."],
+  },
+  {
+    id: "structured-data-vectorization", q: "Can we chunk metrics and transactions from a database and put them directly into a vector store?",
+    a: "Usually not. Data requiring exact calculation, filtering, aggregation, and current definitions should be queried through controlled SQL, a semantic layer, or a business API. Vector retrieval is better for finding definitions, documentation, and relevant entities.",
+    depth: "Route document lookup and calculation separately. Retrieval may identify a metric and candidate data source; a deterministic query enforces access, time range, aggregation, and numerical result; the model explains the result. Text chunks of transaction tables create stale snapshots, duplicates, wrong aggregation, and missing row/column access. Structured queries also need schema allowlists, SQL validation, resource budgets, and result versioning.",
+    ask: "Is the user asking for a definition or a calculation, where is the authoritative metric definition, and are semantic-layer, row/column access, audit, and read-only execution available?",
+    tag: "Structured data", basis: "Modular RAG + data and risk governance",
+    supports: ["Supports routing different retrieval and augmentation components by task, not vectorizing every data source.", "Supports governance of data validity, access risk, and outputs; SQL controls remain an engineering extension.", "Supports traceable evidence for important conclusions; a structured result should preserve query, time, and source."],
+  },
+  {
+    id: "rag-trace-fields", q: "What should one RAG trace record for effective diagnosis?",
+    a: "At minimum: request and identity context, query plan, candidates and scores from every route, filtering reasons, reranked order, final context, source versions, model and prompt versions, latency, tokens, abstention, and error reason.",
+    depth: "Traces must be correlatable while minimizing sensitive data. Store stable source IDs, hashes, or controlled snapshots instead of indiscriminate long-term text. Record input/output counts, versions, and duration at each stage. OpenTelemetry maintains evolving GenAI conventions covering retrieval, agents, and tools; pin the adopted version and add project fields for candidate recall, ACL decisions, evidence coverage, and business success.",
+    ask: "Can one answer be traced back to candidates, filter reasons, final evidence, and component versions, and which logged fields contain sensitive data?",
+    tag: "Observability", basis: "Standard telemetry + risk and privacy boundary",
+    supports: ["Supports dedicated telemetry semantics for GenAI, retrieval, agents, and tools and notes that the conventions are evolving.", "Supports core cross-component tracing; specialized GenAI fields are maintained separately.", "Supports risk monitoring and records in the actual use context.", "Supports retrieval logging and controls against cross-context leakage; logs themselves need access control."],
+  },
+  {
+    id: "capacity-planning", q: "How should we plan RAG capacity before production traffic arrives?",
+    a: "Model offline throughput and online peaks separately. Offline work covers document change, parsing and embedding speed, index build, and backfill windows; online work covers concurrency, candidates, filters, reranking, generation, and cache hits.",
+    depth: "Run stepped loads using representative documents and queries. Record throughput, P50/P95/P99, queues, memory, index size, and failures per stage, then add peak factor, regional redundancy, and rebuild reserve. HNSW, reranking, and multi-passage generation have different resource curves, so a single QPS estimate is inadequate. Autoscaling must also distinguish stateless services from stateful indexes whose expansion, rebalancing, and backfill are slower.",
+    ask: "What are corpus size and change rate, peak concurrency, P95 target, regional requirement, index rebuild window, and degradation policy?",
+    tag: "Capacity planning", basis: "Retrieval and generation mechanisms + load testing",
+    supports: ["Supports trade-offs among ANN structure, search quality, and compute.", "Supports reranking as an additional compute stage after retrieval.", "Supports that passage count changes generation-side work; customer capacity still requires testing.", "Supports collecting trace performance with standard telemetry; capacity fields remain project-specific."],
+  },
+  {
+    id: "regional-failure-degradation", q: "How should RAG degrade and recover when an index, embedding service, or model region fails?",
+    a: "Define service tiers by business risk first: cached response, keyword-only retrieval, standby index or model, or mandatory abstention. Recovery must restore knowledge-version and access consistency, not merely return HTTP 200.",
+    depth: "Keep rebuildable source data, versioned parse artifacts, and index configuration; retain replay and failure queues for change events; use backup, multi-zone, or dual-version strategies for critical indexes. Exercises must test RTO, permitted staleness, deletion and revocation on fallback paths, and replay of missed changes. Every cached fallback must preserve identity and version boundaries; high-risk questions should abstain rather than use uncertain old evidence.",
+    ask: "How stale may evidence be, which queries may degrade, which must abstain, and can the index be rebuilt from sources within the target time?",
+    tag: "Failure recovery", basis: "Official synchronization and index lifecycle + risk management",
+    supports: ["Supports synchronization as the mechanism by which source changes reach a managed knowledge base.", "Supports distinct rebuild, incremental run, deletion, and orphaned-document recovery boundaries.", "Supports continuing risk response; the business defines RTO and RPO.", "Supports tracing degradation and recovery; the project must implement consistency probes."],
+  },
+  {
+    id: "managed-vs-composable", q: "Should we use a managed RAG service or assemble search, vector storage, and orchestration ourselves?",
+    a: "Choose by team capability, time to value, data boundaries, and real differentiation. Managed services can reduce index, access, synchronization, and elasticity work but require current limit checks. A self-managed stack offers more control and retains upgrade, capacity, security, and recovery responsibility.",
+    depth: "Write a capability contract covering connectors and deletion, parsing, sparse/vector/filter/rerank, identity and ACL, network, model choice, traces, quota, region, service levels, backup, and charging. Verify it against current vendor documentation rather than treating ‘managed RAG’ as one standard product. If a managed route satisfies 80% of the requirement, it can test the business first while truly differentiating or constrained stages are extended. The 80% figure is a decision example, not an industry statistic.",
+    ask: "Which stages truly require customization, which operating responsibilities will the team accept, and do managed services cover the target region, network, and data requirements?",
+    tag: "Cloud-service selection", basis: "Official product mechanisms + responsibility analysis",
+    supports: ["Supports managed data-source synchronization, not every connector or governance requirement.", "Supports document-level access in a specific managed search service; current limitations and lifecycle stage require verification.", "Supports index-alias cutover in a specific service; equivalent capability is not universal.", "Supports explicit supply-chain and responsibility boundaries rather than treating managed service as risk transfer."],
+  },
+  {
+    id: "poc-production-readiness", q: "How should a RAG PoC be accepted before production?",
+    a: "Test one representative, production-capable minimum loop, not a handful of convenient questions. Freeze data, questions, identities, versions, load, and failure gates, and agree pass, remediate, and stop decisions before testing.",
+    depth: "Cover real parsing and updates; candidate recall, ranking, and final evidence; factual correctness, faithfulness, citation, and abstention; high-risk and unauthorized negative cases; P95, peak load, and cost per successful outcome; addition, change, deletion, and revocation propagation; and failure and rollback. Report by task and risk slice so averages cannot offset critical failure. A PoC supports feasibility only for the tested data, versions, and load; it is not a promise for every future workload.",
+    ask: "Who makes the production decision, which failures are automatic no-go conditions, and how different will production scale, change rate, and access complexity be from the PoC?",
+    tag: "PoC acceptance", basis: "RAG evaluation + citation evaluation + risk and observability",
+    supports: ["Supports separate measurement of context relevance, answer relevance, and faithfulness.", "Supports separate citation correctness and completeness checks.", "Supports risk-context measurement, management, and continuing monitoring gates.", "Supports standard telemetry for the model and application chain as a basis for P95 and failure evidence."],
+  },
+];
+
+const qa = Object.freeze(qaCopy.map((copy, index) => {
+  const canonical = canonicalQa[index];
+  if (!canonical || copy.supports.length !== canonical.evidence.length) {
+    throw new Error(`RAG English QA evidence mismatch at ${copy.id}`);
+  }
+  return Object.freeze({
+    id: copy.id,
+    q: copy.q,
+    a: copy.a,
+    depth: copy.depth,
+    ask: copy.ask,
+    tag: copy.tag,
+    basis: copy.basis,
+    evidence: Object.freeze(canonical.evidence.map((item, evidenceIndex) => Object.freeze({ sourceId: item.sourceId, supports: copy.supports[evidenceIndex] }))),
+    ...(canonical.addedAt ? { addedAt: canonical.addedAt } : {}),
+  });
+}));
+
+const evidenceCopy = [
+  { id: "dpr-top-20-improvement", metric: "+9–19 pp", title: "Top-20 passage retrieval accuracy", finding: "Across the open-domain QA datasets evaluated in the paper, DPR achieved this absolute improvement over its Lucene-BM25 baseline.", boundary: "The datasets and baseline are specific; this is not a promise that dense retrieval will outperform BM25 on a customer corpus." },
+  { id: "ragas-three-dimensions", metric: "3", title: "RAGAS automated evaluation dimensions", finding: "Faithfulness, Answer Relevance, and Context Relevance examine evidence use, answer relevance, and retrieved-context relevance separately.", boundary: "Business outcome, performance, security, and cost are additional engineering acceptance areas in this fieldbook, not part of the paper's three dimensions." },
+  { id: "contextual-retrieval-failure-rate", metric: "5.7% → 1.9%", title: "Top-20 retrieval failure rate", finding: "In Anthropic's specific experiment, contextual dense retrieval + BM25 + reranking produced this result.", boundary: "This is vendor evidence. Use it to form a hybrid-retrieval A/B hypothesis, not a procurement or outcome commitment." },
+  { id: "replug-black-box-route", metric: "Black-box", title: "A modular route with a frozen model", finding: "REPLUG demonstrates a route in which a black-box language model is frozen while a trainable external retriever supplies documents.", boundary: "It supports decoupling retrieval from the model; it does not establish enterprise access, rollback, or observability controls." },
+  { id: "long-context-position-sensitivity", metric: "Position-sensitive", title: "Long context is not used uniformly", finding: "In the paper's experiments, relevant information placed in the middle of the context often performed worse than information near the beginning or end.", boundary: "The result comes from particular models and tasks. It supports a position-sensitivity baseline, not a conclusion that RAG always wins." },
+  { id: "claim-level-citation-quality", metric: "Claim-level", title: "Citation correctness and completeness are different", finding: "ALCE treats whether a citation supports its claim and whether all material claims receive citations as separate evaluation questions.", boundary: "The method supports decomposing citation quality; its results cannot be reused as a customer-system accuracy rate." },
+  { id: "deletion-not-reset", metric: "Delete ≠ reset", title: "Knowledge freshness is end-to-end state", finding: "Azure documentation states that reset/run does not automatically remove orphaned documents and that some ACL changes can bypass ordinary high-water-mark detection.", boundary: "This is a product-specific boundary. It supports deletion and revocation acceptance tests but does not establish the behavior of other services." },
+];
+
+const evidenceCards = Object.freeze(evidenceCopy.map((copy, index) => Object.freeze({
+  ...copy,
+  sourceId: canonicalEvidenceCards[index].sourceId,
+  ...(canonicalEvidenceCards[index].accent ? { accent: true } : {}),
+})));
+
+const usedSourceIds = new Set([
+  ...canonicalQa.flatMap((item) => item.evidence.map((entry) => entry.sourceId)),
+  ...canonicalDeepDives.flatMap((item) => item.sourceIds),
+  ...canonicalEvidenceCards.map((item) => item.sourceId),
+]);
+if (canonicalQa.length !== qaCopy.length || canonicalEvidenceCards.length !== evidenceCopy.length || canonicalDeepDives.length !== 4) {
+  throw new Error("RAG English content no longer matches the canonical content cardinality");
+}
+if (usedSourceIds.size !== expectedSourceIds.length || expectedSourceIds.some((sourceId) => !usedSourceIds.has(sourceId))) {
+  throw new Error("RAG English source notes do not match the canonical source set");
+}
+
+export const englishModule = Object.freeze({
+  slug: "rag",
+  title: "Retrieval-Augmented Generation",
+  subtitle: "RAG",
+  definition: "Use current, traceable external evidence to improve model answers—and operate the complete path from source ingestion and retrieval to evidence-grounded generation under explicit evaluation, access, and lifecycle controls.",
+  position: "RAG is an application architecture for evidence-dependent answers. It does not transfer responsibility for source authority, identity, authorization, business actions, or production operation to the model.",
+  relatedSlugs: Object.freeze(["llm", "data-engineering", "prompt-engineering", "evaluation", "ai-agent", "ai-infra-platform"]),
+  sections: Object.freeze(sections),
+  qa,
+  evidenceCards,
+  terms,
+  sources,
+});
