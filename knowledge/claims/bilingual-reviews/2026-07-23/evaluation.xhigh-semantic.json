@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-evaluation-xhigh-semantic",
+  "scope": {
+    "moduleId": "evaluation",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:1a40d90c116d7528d35667df2b63a5f0de67586c4db4247319c07aa4d32a9888",
+    "enContentHash": "sha256:317333cfa98597c07c3c3d73df8807593fe167700d6aee5d5348ca5d910ef136",
+    "termIds": [
+      "ai-ops",
+      "capability-matrix",
+      "evaluation",
+      "evaluation-layers",
+      "golden-set",
+      "governance-evidence",
+      "grounding",
+      "hitl",
+      "impact-assessment",
+      "llm-as-judge",
+      "model-lifecycle",
+      "observability",
+      "poc",
+      "release-evaluation"
+    ],
+    "sourceIds": [
+      "anthropic-effective-agents",
+      "llm-as-judge-2023",
+      "nist-genai-profile",
+      "opentelemetry-genai-semconv",
+      "ragas",
+      "react-2023"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Question order, evidence relationships, evidence-card relationships, and addedAt values match the canonical owner.",
+        "Mechanism, decision, failure, control, and evidence boundaries were cross-reviewed against the Chinese source and primary evidence."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-llm-xhigh-language",
+  "scope": {
+    "moduleId": "llm",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:24e19032ffc161c1684dcb011dbd97fe0681cc829513cadc3a170f088521f010",
+    "enContentHash": "sha256:179cc5c6bfe46fd4b072e203b9fa68be0c6af881b4ba45ca14ecfe144ffe7df5",
+    "termIds": [
+      "attention",
+      "context-window",
+      "embedding",
+      "generation",
+      "kv-cache",
+      "llm",
+      "moe",
+      "pretraining",
+      "qkv",
+      "token",
+      "transformer"
+    ],
+    "sourceIds": [
+      "anthropic-models",
+      "chinchilla-2022",
+      "deepseek-r1-2025",
+      "dpr-2020",
+      "flashattention-2022",
+      "google-models",
+      "gqa-2023",
+      "instructgpt-2022",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "openai-model-spec-hidden-cot",
+      "openai-models",
+      "sentencepiece-2018",
+      "switch-transformer-2022",
+      "transformer-2017",
+      "vllm-2023"
+    ]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [
+    {
+      "gateId": "technical-english",
+      "status": "PASS",
+      "evidence": [
+        "American-English and unexplained-Chinese-prose gates pass.",
+        "Reader-facing copy uses professional technical English without language-status filler.",
+        "Module navigation preserves the canonical reading-role order."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

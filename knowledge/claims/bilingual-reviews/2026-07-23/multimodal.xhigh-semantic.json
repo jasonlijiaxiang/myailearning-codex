@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-multimodal-xhigh-semantic",
+  "scope": {
+    "moduleId": "multimodal",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:cb89c54c2659006a383b509ab5fb59f7d4287417bc98c9c62707db9bd5d1f580",
+    "enContentHash": "sha256:c15e86ac1c34d51ca25a715984bcf6933a047cb27337fb8ca59754df4ef381b4",
+    "termIds": [
+      "asr",
+      "document-intelligence",
+      "multimodal",
+      "ocr",
+      "vision-transformer"
+    ],
+    "sourceIds": [
+      "c2pa-2-4",
+      "china-ai-content-labeling",
+      "clip-2021",
+      "colpali-2025",
+      "docling-report",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "owasp-prompt-injection",
+      "pp-ocr-2020",
+      "vit-2021"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Question order, evidence relationships, evidence-card relationships, and addedAt values match the canonical owner.",
+        "Mechanism, decision, failure, control, and evidence boundaries were cross-reviewed against the Chinese source and primary evidence."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

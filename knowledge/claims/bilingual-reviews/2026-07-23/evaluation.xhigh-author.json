@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-evaluation-xhigh-author",
+  "scope": {
+    "moduleId": "evaluation",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:1a40d90c116d7528d35667df2b63a5f0de67586c4db4247319c07aa4d32a9888",
+    "enContentHash": "sha256:317333cfa98597c07c3c3d73df8807593fe167700d6aee5d5348ca5d910ef136",
+    "termIds": [
+      "ai-ops",
+      "capability-matrix",
+      "evaluation",
+      "evaluation-layers",
+      "golden-set",
+      "governance-evidence",
+      "grounding",
+      "hitl",
+      "impact-assessment",
+      "llm-as-judge",
+      "model-lifecycle",
+      "observability",
+      "poc",
+      "release-evaluation"
+    ],
+    "sourceIds": [
+      "anthropic-effective-agents",
+      "llm-as-judge-2023",
+      "nist-genai-profile",
+      "opentelemetry-genai-semconv",
+      "ragas",
+      "react-2023"
+    ]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [
+    {
+      "gateId": "english-module-contract",
+      "status": "PASS",
+      "evidence": [
+        "The English module resolves every canonical term and source ID.",
+        "Stable section, question, content-item, and evidence-card IDs are present.",
+        "The complete-edition audit passes for this module."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

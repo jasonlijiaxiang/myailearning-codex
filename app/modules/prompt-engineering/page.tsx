@@ -10,6 +10,7 @@ import { ModuleExtensionPrimer } from "../../module-pilot-views";
 import { promptDeepDives, promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { getPublishedModule } from "../../module-publication.mjs";
+import { englishModulePath } from "../../i18n/locale-config.mjs";
 
 export const metadata: Metadata = {
   title: "提示词工程 · Prompt Engineering | 云计算 × AI 平台售前知识库",
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 const promptPublication = getPublishedModule("prompt-engineering");
+const promptEnglishPath = englishModulePath("prompt-engineering");
 
 const conceptLinks = [
   { concept: "模型原理与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解 token、上下文容量、指令遵循与生成不确定性。" },
@@ -157,6 +159,7 @@ export default function PromptEngineeringModulePage() {
             <Link href="/glossary">术语库</Link>
             <Link href="/questions">全部问题</Link>
             <Link href="/references">Reference</Link>
+            {promptEnglishPath ? <Link href={promptEnglishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
           </div>
         </nav>
         <div className="ragHeader">

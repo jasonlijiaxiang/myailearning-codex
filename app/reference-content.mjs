@@ -626,6 +626,24 @@ export const sourceLedger = {
     note: "研究模型规模与训练 token 配比的计算最优关系；结论受论文模型族、数据和训练设定限制，不能直接换算客户训练预算。",
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2203.15556",
   },
+  "megatron-3d-parallelism-2021": {
+    grade: "A", kind: "一手系统论文", shortTitle: "Megatron 3D Parallelism",
+    title: "Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM",
+    note: "直接研究数据、张量与流水线并行的组合，以及跨节点通信、等待和流水线气泡对大规模训练扩展的影响；论文中的吞吐与扩展效率只适用于其模型、硬件、并行配置和实验规模，不能外推为任意集群收益。",
+    verifiedAt: "2026-07-22", href: "https://arxiv.org/abs/2104.04473",
+  },
+  "torchsnapshot-checkpoint": {
+    grade: "O", kind: "官方技术文档", shortTitle: "TorchSnapshot Checkpoint",
+    title: "Getting Started — TorchSnapshot",
+    note: "说明分布式训练快照可显式保存和恢复模型、优化器、学习率调度器、自定义应用状态与 RNG 状态，并区分同步和一致的异步快照；这是 PyTorch 生态的具体实现契约，不证明其他框架会自动保存数据游标或所有业务所需状态。",
+    verifiedAt: "2026-07-22", href: "https://meta-pytorch.org/torchsnapshot/stable/getting_started.html",
+  },
+  "checkfreq-2021": {
+    grade: "A", kind: "同行评审系统论文", shortTitle: "CheckFreq",
+    title: "CheckFreq: Frequent, Fine-Grained DNN Checkpointing",
+    note: "研究按在线剖析动态选择 Checkpoint 频率、流水化写入，并通过可恢复迭代器保存数据加载状态；它支持解释频率、I/O 开销和数据连续性的取舍，但实验结果不能直接确定客户集群的最佳间隔。",
+    verifiedAt: "2026-07-22", href: "https://www.usenix.org/conference/fast21/presentation/mohan",
+  },
   "lora-2021": {
     grade: "A", kind: "同行评审论文", shortTitle: "LoRA",
     title: "LoRA: Low-Rank Adaptation of Large Language Models",
@@ -673,6 +691,18 @@ export const sourceLedger = {
     title: "Efficient Memory Management for Large Language Model Serving with PagedAttention",
     note: "提出 PagedAttention 与面向 LLM Serving 的 KV Cache 内存管理；论文吞吐结果受模型、硬件和负载限制。",
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2309.06180",
+  },
+  "gptq-2023": {
+    grade: "A", kind: "一手研究论文", shortTitle: "GPTQ",
+    title: "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers",
+    note: "提出一遍式权重量化并在论文所测 GPT/OPT 模型与 A100/A6000 配置上报告内存、精度和端到端速度结果；这些数字不能外推到其他模型、位宽、内核、硬件、任务切片或服务成本。",
+    verifiedAt: "2026-07-22", href: "https://arxiv.org/abs/2210.17323",
+  },
+  "speculative-decoding-2023": {
+    grade: "A", kind: "同行评审论文", shortTitle: "Speculative Decoding",
+    title: "Fast Inference from Transformers via Speculative Decoding",
+    note: "给出由近似模型提出多个 Token、目标模型并行验证且保持目标分布的投机解码方法；论文加速结果受草稿质量、模型、硬件和实现限制，不证明所有请求都会提速。",
+    verifiedAt: "2026-07-22", href: "https://proceedings.mlr.press/v202/leviathan23a.html",
   },
   "vllm-prefix-caching": {
     grade: "P", kind: "官方技术文档", shortTitle: "vLLM Prefix Caching",
@@ -793,6 +823,42 @@ export const sourceLedger = {
     title: "Dynamic Resource Allocation — Kubernetes",
     note: "说明 Kubernetes 中按设备属性、拓扑与声明分配资源的机制；功能状态和字段与 Kubernetes 版本相关。",
     verifiedAt: "2026-07-21", href: "https://kubernetes.io/docs/concepts/scheduling-eviction/dynamic-resource-allocation/",
+  },
+  "kueue-all-or-nothing": {
+    grade: "O", kind: "官方技术文档", shortTitle: "Kueue All-or-Nothing",
+    title: "Setup All-or-nothing with ready Pods — Kueue",
+    note: "说明同步分布式训练或 MPI 作业可能需要所有 Pod 同时运行，并记录 Kueue waitForPodsReady 的超时、驱逐与重新排队语义；这是 Kueue 的一种简单全有或全无实现，不代表 Kubernetes 原生调度器或所有作业控制器都自动提供 Gang Scheduling。",
+    verifiedAt: "2026-07-22", href: "https://kueue.sigs.k8s.io/docs/tasks/manage/setup_wait_for_pods_ready/",
+  },
+  "kueue-fair-sharing": {
+    grade: "O", kind: "官方技术文档", shortTitle: "Kueue Fair Sharing",
+    title: "Preemption — Kueue",
+    note: "说明 Kueue 的配额、优先级、借用、抢占与加权公平共享机制，并区分经典抢占和 Fair Sharing；这些机制提供策略工具，不替组织定义公平目标、业务优先级、SLO 或可接受的中断成本。",
+    verifiedAt: "2026-07-22", href: "https://kueue.sigs.k8s.io/docs/concepts/preemption/",
+  },
+  "slurm-overview": {
+    grade: "O", kind: "官方技术文档", shortTitle: "Slurm Overview",
+    title: "Slurm Workload Manager — Overview",
+    note: "定义 Slurm 的集群资源分配、并行作业启动与监控、队列仲裁，并列出拓扑选择、Gang Scheduling、回填、抢占、资源限制和多因子优先级插件；官方能力清单不证明某个站点已启用或正确配置这些功能。",
+    verifiedAt: "2026-07-22", href: "https://slurm.schedmd.com/overview.html",
+  },
+  "slurm-multifactor-priority": {
+    grade: "O", kind: "官方技术文档", shortTitle: "Slurm Multifactor Priority",
+    title: "Slurm Workload Manager — Multifactor Priority Plugin",
+    note: "说明 Slurm 可使用 FIFO，也可按年龄、Fair-share、作业规模、分区、QOS 与站点因素组合优先级；文档支持调度机制比较，但不能替具体组织决定什么是公平或保证业务期限。",
+    verifiedAt: "2026-07-22", href: "https://slurm.schedmd.com/priority_multifactor.html",
+  },
+  "nccl-collectives": {
+    grade: "O", kind: "官方技术文档", shortTitle: "NCCL Collectives",
+    title: "NVIDIA Collective Communication Library Documentation",
+    note: "记录 GPU 间 AllReduce、AllGather、ReduceScatter、All-to-All 等集合通信、通信器、网络与拓扑诊断能力；它定义通信原语与实现边界，不证明某个训练作业会达到线性扩展或某种网络一定更快。",
+    verifiedAt: "2026-07-22", href: "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html",
+  },
+  "nvidia-dgx-h100-data-center": {
+    grade: "P", kind: "官方架构指南", shortTitle: "DGX H100 Data Center Design",
+    title: "NVIDIA DGX SuperPOD: Data Center Design Featuring NVIDIA DGX H100 Systems",
+    note: "针对 DGX H100 SuperPOD 给出电力、散热、机柜密度、网络布线、气流和运维协同要求；它直接证明机架空间不是完整设施验收，但具体数值仅适用于该参考架构，不能外推到其他加速器或客户站点。",
+    verifiedAt: "2026-07-22", href: "https://docs.nvidia.com/dgx-superpod/design-guides/dgx-superpod-data-center-design-h100/latest/index.html",
   },
   "kubernetes-dra-1-34-ga": {
     grade: "O", kind: "官方技术文档", shortTitle: "Kubernetes DRA GA",

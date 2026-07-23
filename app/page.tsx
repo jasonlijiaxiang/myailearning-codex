@@ -96,6 +96,7 @@ export default function Home() {
             <a href="#available-modules">查找模块</a>
             <Link href="/knowledge-graph">动态探索</Link>
             <Link href="/references">来源与证据 / Reference</Link>
+            <Link href="/en" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
         </nav>
 

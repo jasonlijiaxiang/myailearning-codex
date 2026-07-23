@@ -11,6 +11,8 @@ export type ExplorerModule = {
   href: string;
   zh: string;
   en: string;
+  title?: string;
+  subtitle?: string;
   layerNo: string;
   layerName: string;
   summary: string;
@@ -19,11 +21,69 @@ export type ExplorerModule = {
 
 export type KnowledgeSearchEntry = {
   id: string;
-  type: "客户问答" | "课程章节" | "实战练习" | "专业术语" | "来源证据";
+  type: string;
   title: string;
   subtitle: string;
   href: string;
   keywords: string;
+};
+
+type SearchLaunchLabels = {
+  ariaLabel: string;
+  label: string;
+  placeholder: string;
+  submit: string;
+};
+
+type ModuleExplorerLabels = {
+  kicker: string;
+  title: string;
+  intro: string;
+  searchLabel: string;
+  placeholder: string;
+  filterAria: string;
+  allLayers: string;
+  foundPrefix: string;
+  moduleNoun: string;
+  knowledgeHitsPrefix: string;
+  knowledgeHitsSuffix: string;
+  questionsLink: string;
+  clear: string;
+  knowledgeAria: string;
+  knowledgeHeading: string;
+  showingPrefix: string;
+  showingSuffix: string;
+  emptyTitle: string;
+  emptyBody: string;
+};
+
+const defaultSearchLaunchLabels: SearchLaunchLabels = {
+  ariaLabel: "搜索知识库",
+  label: "搜索模块、术语、课程、客户问题和来源",
+  placeholder: "例如：权限继承、KV Cache、Agent 工具调用……",
+  submit: "搜索",
+};
+
+const defaultModuleExplorerLabels: ModuleExplorerLabels = {
+  kicker: "FIND THE RIGHT MODULE",
+  title: "从当前客户问题开始",
+  intro: "不必按目录顺序学习。输入客户正在讨论的技术、场景或风险，直接进入相关模块。",
+  searchLabel: "搜索模块与知识内容",
+  placeholder: "例如：知识更新、量化、工具调用、GPU 利用率……",
+  filterAria: "按知识层筛选",
+  allLayers: "全部",
+  foundPrefix: "找到",
+  moduleNoun: "个模块",
+  knowledgeHitsPrefix: "另有",
+  knowledgeHitsSuffix: "条知识命中",
+  questionsLink: "查询全部客户问题 ↗",
+  clear: "清除筛选",
+  knowledgeAria: "知识内容搜索结果",
+  knowledgeHeading: "直接进入知识内容",
+  showingPrefix: "显示前",
+  showingSuffix: "条匹配",
+  emptyTitle: "没有直接匹配的模块",
+  emptyBody: "换一个业务问题或清除知识层筛选。",
 };
 
 export function ReadingProgress() {
@@ -53,7 +113,7 @@ export function ReadingProgress() {
   return <div className="readingProgress" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>;
 }
 
-export function KnowledgeSearchLaunch() {
+export function KnowledgeSearchLaunch({ labels = defaultSearchLaunchLabels }: { labels?: SearchLaunchLabels }) {
   const [query, setQuery] = useState("");
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -64,8 +124,8 @@ export function KnowledgeSearchLaunch() {
   };
 
   return (
-    <form className="heroSearch" role="search" aria-label="搜索知识库" onSubmit={submit}>
-      <label htmlFor="hero-knowledge-search">搜索模块、术语、课程、客户问题和来源</label>
+    <form className="heroSearch" role="search" aria-label={labels.ariaLabel} onSubmit={submit}>
+      <label htmlFor="hero-knowledge-search">{labels.label}</label>
       <div>
         <span aria-hidden="true">⌕</span>
         <input
@@ -73,15 +133,27 @@ export function KnowledgeSearchLaunch() {
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="例如：权限继承、KV Cache、Agent 工具调用……"
+          placeholder={labels.placeholder}
         />
-        <button type="submit">搜索</button>
+        <button type="submit">{labels.submit}</button>
       </div>
     </form>
   );
 }
 
-export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: ExplorerModule[]; knowledgeEntries?: KnowledgeSearchEntry[] }) {
+export function ModuleExplorer({
+  modules,
+  knowledgeEntries = [],
+  labels = defaultModuleExplorerLabels,
+  locale = "zh-CN",
+  questionsHref = "/questions",
+}: {
+  modules: ExplorerModule[];
+  knowledgeEntries?: KnowledgeSearchEntry[];
+  labels?: ModuleExplorerLabels;
+  locale?: string;
+  questionsHref?: string;
+}) {
   const [query, setQuery] = useState("");
   const [layer, setLayer] = useState("all");
   const searchRef = useRef<HTMLInputElement>(null);
@@ -92,21 +164,21 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
   }, [modules]);
 
   const visible = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase("zh-CN");
+    const normalized = query.trim().toLocaleLowerCase(locale);
     return modules.filter((item) => {
       const inLayer = layer === "all" || item.layerNo === layer;
-      const haystack = `${item.zh} ${item.en} ${item.layerName} ${item.summary} ${item.cue}`.toLocaleLowerCase("zh-CN");
+      const haystack = `${item.title ?? item.zh} ${item.subtitle ?? item.en} ${item.zh} ${item.en} ${item.layerName} ${item.summary} ${item.cue}`.toLocaleLowerCase(locale);
       return inLayer && (!normalized || haystack.includes(normalized));
     });
-  }, [layer, modules, query]);
+  }, [layer, locale, modules, query]);
 
   const knowledgeMatches = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase("zh-CN");
+    const normalized = query.trim().toLocaleLowerCase(locale);
     if (!normalized) return [];
     return knowledgeEntries
-      .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase("zh-CN").includes(normalized))
+      .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase(locale).includes(normalized))
       .slice(0, 12);
-  }, [knowledgeEntries, query]);
+  }, [knowledgeEntries, locale, query]);
   const visibleRows = useMemo(() => balanceGridRows(visible, 3), [visible]);
   const knowledgeMatchRows = useMemo(() => balanceGridRows(knowledgeMatches, 2), [knowledgeMatches]);
 
@@ -137,26 +209,26 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
     <section className="moduleExplorer" aria-labelledby="module-explorer-title">
       <div className="moduleExplorerIntro">
         <div>
-          <p className="kicker">FIND THE RIGHT MODULE</p>
-          <h2 id="module-explorer-title">从当前客户问题开始</h2>
+          <p className="kicker">{labels.kicker}</p>
+          <h2 id="module-explorer-title">{labels.title}</h2>
         </div>
-        <p>不必按目录顺序学习。输入客户正在讨论的技术、场景或风险，直接进入相关模块。</p>
+        <p>{labels.intro}</p>
       </div>
 
       <div className="moduleExplorerControls">
         <label className="moduleSearch">
-          <span>搜索模块与知识内容</span>
+          <span>{labels.searchLabel}</span>
           <input
             ref={searchRef}
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="例如：知识更新、量化、工具调用、GPU 利用率……"
+            placeholder={labels.placeholder}
           />
           <kbd>⌘ K</kbd>
         </label>
-        <div className="layerFilters" aria-label="按知识层筛选">
-          <button type="button" className={layer === "all" ? "active" : ""} onClick={() => setLayer("all")}>全部</button>
+        <div className="layerFilters" aria-label={labels.filterAria}>
+          <button type="button" className={layer === "all" ? "active" : ""} onClick={() => setLayer("all")}>{labels.allLayers}</button>
           {layers.map((item) => (
             <button type="button" className={layer === item.no ? "active" : ""} onClick={() => setLayer(item.no)} key={item.no}>
               {item.name.replace("层", "")}
@@ -166,13 +238,13 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
       </div>
 
       <div className="moduleExplorerStatus" aria-live="polite">
-        <span>找到 {visible.length} 个模块{query ? `，另有 ${knowledgeMatches.length} 条知识命中` : ""}</span>
-        <div><Link href="/questions">查询全部客户问题 ↗</Link>{(query || layer !== "all") && <button type="button" onClick={() => { setQuery(""); setLayer("all"); }}>清除筛选</button>}</div>
+        <span>{labels.foundPrefix} {visible.length} {labels.moduleNoun}{query ? `, ${labels.knowledgeHitsPrefix} ${knowledgeMatches.length} ${labels.knowledgeHitsSuffix}` : ""}</span>
+        <div><Link href={questionsHref}>{labels.questionsLink}</Link>{query || layer !== "all" ? <button type="button" onClick={() => { setQuery(""); setLayer("all"); }}>{labels.clear}</button> : null}</div>
       </div>
 
       {query && knowledgeMatches.length > 0 ? (
-        <div className="knowledgeSearchResults" aria-label="知识内容搜索结果">
-          <header><strong>直接进入知识内容</strong><span>显示前 {knowledgeMatches.length} 条匹配</span></header>
+        <div className="knowledgeSearchResults" aria-label={labels.knowledgeAria}>
+          <header><strong>{labels.knowledgeHeading}</strong><span>{labels.showingPrefix} {knowledgeMatches.length} {labels.showingSuffix}</span></header>
           <div data-count={knowledgeMatches.length} data-odd={knowledgeMatches.length % 2 === 1 ? "true" : "false"}>
             {knowledgeMatchRows.flatMap((row) => row.map((item) => (
               <Link href={item.href} key={item.id} style={{ "--search-span": gridSpan(row.length) } as CSSProperties}>
@@ -190,14 +262,14 @@ export function ModuleExplorer({ modules, knowledgeEntries = [] }: { modules: Ex
         {visibleRows.flatMap((row) => row.map((item) => (
           <Link className="moduleResult" href={item.href} key={item.slug} style={{ "--result-span": gridSpan(row.length) } as CSSProperties}>
             <div className="moduleResultMeta"><span>{item.layerNo}</span><small>{item.layerName}</small><i aria-hidden="true">↗</i></div>
-            <h3>{item.zh}</h3>
-            <p className="moduleResultEn">{item.en}</p>
+            <h3>{item.title ?? item.zh}</h3>
+            <p className="moduleResultEn">{item.subtitle ?? item.en}</p>
             <p className="moduleResultSummary">{item.summary}</p>
             <p className="moduleResultCue">{item.cue}</p>
           </Link>
         )))}
       </div>
-      {visible.length === 0 && <div className="emptySearch"><strong>没有直接匹配的模块</strong><p>换一个业务问题或清除知识层筛选。</p></div>}
+      {visible.length === 0 ? <div className="emptySearch"><strong>{labels.emptyTitle}</strong><p>{labels.emptyBody}</p></div> : null}
     </section>
   );
 }
@@ -212,14 +284,17 @@ export function ModuleReadingNav({
   moduleName,
   sections,
   quickLinks,
+  labels = { navigation: "章节导航", progress: "正在阅读", quickLinks: "快速入口" },
 }: {
   moduleName: string;
   sections: ReadingSection[];
   quickLinks?: Array<{ href: string; label: string }>;
+  labels?: { navigation: string; progress: string; quickLinks: string };
 }) {
   const [active, setActive] = useState(sections[0]?.id ?? "");
   const activeIndex = Math.max(0, sections.findIndex((section) => section.id === active));
   const sectionProgress = sections.length > 0 ? ((activeIndex + 1) / sections.length) * 100 : 0;
+  const progressLabel = `${labels.progress} · ${String(activeIndex + 1).padStart(2, "0")} / ${String(sections.length).padStart(2, "0")}`;
 
   useEffect(() => {
     const nodes = sections
@@ -253,9 +328,9 @@ export function ModuleReadingNav({
   }, [sections]);
 
   return (
-    <aside className="moduleReadingNav" aria-label={`${moduleName} 章节导航`}>
+    <aside className="moduleReadingNav" aria-label={`${moduleName} ${labels.navigation}`}>
       <div className="readingNavHead">
-        <span>正在阅读 · {String(activeIndex + 1).padStart(2, "0")} / {String(sections.length).padStart(2, "0")}</span>
+        <span>{progressLabel}</span>
         <strong>{moduleName}</strong>
         <i aria-hidden="true"><span style={{ width: `${sectionProgress}%` }} /></i>
       </div>
@@ -269,7 +344,7 @@ export function ModuleReadingNav({
           </li>
         ))}
       </ol>
-      {quickLinks?.length ? <div className="readingNavModes"><span>快速入口</span>{quickLinks.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}</div> : null}
+      {quickLinks?.length ? <div className="readingNavModes"><span>{labels.quickLinks}</span>{quickLinks.map((item) => <a href={item.href} key={item.href}>{item.label}</a>)}</div> : null}
     </aside>
   );
 }

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-agent-ultra-exception",
+  "scope": {
+    "moduleId": "ai-agent",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:4accb7462dc384b607cd521cf911099d6a8f999867448f813ac128c37a955de6",
+    "enContentHash": "sha256:1a94014fb02b2bcd1dd9a8caed3ad1661bb702927ddcc0e854cef4cfbabd7d41",
+    "termIds": [
+      "act",
+      "ai-agent",
+      "memory",
+      "observe",
+      "perceive",
+      "planning",
+      "reason",
+      "tool-calling",
+      "tools"
+    ],
+    "sourceIds": [
+      "a2a-concepts",
+      "a2a-task-lifecycle",
+      "anthropic-effective-agents",
+      "anthropic-tool-search",
+      "aws-agentcore",
+      "aws-agentcore-memory",
+      "azure-durable-hitl",
+      "azure-durable-orchestration",
+      "azure-foundry-agent-service",
+      "google-agent-platform",
+      "mcp-architecture",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "oauth-token-exchange",
+      "openai-agent-guide",
+      "openai-agents-hitl",
+      "openai-agents-run-loop",
+      "openai-function-calling",
+      "openai-model-spec-hidden-cot",
+      "openapi-3-1-1",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "react-2023",
+      "webarena-2024"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

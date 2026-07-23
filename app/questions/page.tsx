@@ -46,6 +46,7 @@ export default function QuestionsPage() {
             <Link href="/glossary">专业术语库</Link>
             <a href="#question-directory">查询全部问题</a>
             <Link href="/references">Reference</Link>
+            <Link href="/en/questions" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
         </nav>
 

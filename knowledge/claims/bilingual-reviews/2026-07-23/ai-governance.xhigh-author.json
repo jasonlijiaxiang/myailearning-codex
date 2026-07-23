@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-governance-xhigh-author",
+  "scope": {
+    "moduleId": "ai-governance",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:b112eba29fce7b8e92ab840a98a8c04b5eef7a64b99c461d99b5dad5a9a0acd4",
+    "enContentHash": "sha256:ebffc2f54602542d8f4fce05ba3816f1c8a02695a6bcc6ba1a3a0af4707a83f5",
+    "termIds": [
+      "ai-governance",
+      "ai-inventory",
+      "ai-risk-tiering",
+      "continuous-assurance",
+      "governance-evidence",
+      "impact-assessment"
+    ],
+    "sourceIds": [
+      "eu-ai-act",
+      "iso-iec-42001",
+      "nist-ai-rmf",
+      "nist-genai-profile"
+    ]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [
+    {
+      "gateId": "english-module-contract",
+      "status": "PASS",
+      "evidence": [
+        "The English module resolves every canonical term and source ID.",
+        "Stable section, question, content-item, and evidence-card IDs are present.",
+        "The complete-edition audit passes for this module."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

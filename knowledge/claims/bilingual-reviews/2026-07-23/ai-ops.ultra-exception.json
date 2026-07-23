@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-ops-ultra-exception",
+  "scope": {
+    "moduleId": "ai-ops",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:ef0a45bbd7998549f8598500b7fcd04ec82aa24af185b05a91252cb5391b4233",
+    "enContentHash": "sha256:c434b296672d93c1ff8cce020b37ec00a2da5da4f178dfbb286773f76a225992",
+    "termIds": [
+      "ai-application-engineering",
+      "ai-ops",
+      "ai-release-manifest",
+      "configuration-bundle",
+      "cost-allocation",
+      "cost-anomaly",
+      "genaiops",
+      "golden-set",
+      "observability",
+      "release-evaluation",
+      "shadow-traffic"
+    ],
+    "sourceIds": [
+      "aws-genai-lifecycle",
+      "azure-foundation-model-lifecycle",
+      "azure-genaiops",
+      "finops-ai-category",
+      "finops-ai-overview",
+      "finops-framework",
+      "google-genai-app-lifecycle",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "openai-eval-best-practices",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

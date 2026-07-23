@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-a2a-ultra-exception",
+  "scope": {
+    "moduleId": "a2a",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:83167af353a57311b9edc918b3340cf8b52efd648a8f134a9160c236cb152bb7",
+    "enContentHash": "sha256:265f272471487ac1b5e35ece8e0707dc9644ea4c487367bc51657ca39f3bf374",
+    "termIds": [
+      "a2a",
+      "a2a-task",
+      "agent-card",
+      "agent-collaboration",
+      "artifact",
+      "identity-authorization"
+    ],
+    "sourceIds": [
+      "a2a-concepts",
+      "a2a-spec-1-0-0",
+      "a2a-specification",
+      "anthropic-effective-agents",
+      "mcp-architecture",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

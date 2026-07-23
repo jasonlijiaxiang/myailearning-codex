@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-gateway-xhigh-language",
+  "scope": {
+    "moduleId": "ai-gateway",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:430bc684dffa5ec63241942d0dec6acd7aa12333ef31783dc50979e80fd7ecbc",
+    "enContentHash": "sha256:10edd01eac7672a10d4f1237a75701c4b53b17f2c5f59833ff878933a3f840f8",
+    "termIds": [
+      "ai-gateway",
+      "api",
+      "finops",
+      "guardrails",
+      "identity-authorization",
+      "model-routing",
+      "observability",
+      "rate-limiting",
+      "semantic-cache",
+      "shadow-traffic",
+      "slo"
+    ],
+    "sourceIds": [
+      "cloudflare-ai-gateway",
+      "mcp-authorization",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv"
+    ]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [
+    {
+      "gateId": "technical-english",
+      "status": "PASS",
+      "evidence": [
+        "American-English and unexplained-Chinese-prose gates pass.",
+        "Reader-facing copy uses professional technical English without language-status filler.",
+        "Module navigation preserves the canonical reading-role order."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

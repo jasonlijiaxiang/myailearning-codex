@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-predictive-ai-mlops-ultra-exception",
+  "scope": {
+    "moduleId": "predictive-ai-mlops",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:7c248d1ab7b04ec87ee34416b7a50a35188ba8d0412a43458672b06d10d6b92f",
+    "enContentHash": "sha256:5a59d94a579d7e7192c50bda3cf8ca2eaa8cd7ab75b3229fcba70d1fda7643e1",
+    "termIds": [
+      "feature-store",
+      "model-drift",
+      "model-registry",
+      "point-in-time-correctness",
+      "predictive-ai-mlops",
+      "training-serving-skew"
+    ],
+    "sourceIds": [
+      "aws-sagemaker-feature-store",
+      "aws-sagemaker-model-registry",
+      "azure-ml-registries",
+      "google-mlops-predictive-ai",
+      "nist-genai-profile"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The B1-B6 exception families are resolved and the shared-copy ownership policy covers the live conflict set.",
+        "All canonical reading roles are present and all complete-edition, lint, build, and browser gates pass.",
+        "No remaining content blocker was found in the final adjudication."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

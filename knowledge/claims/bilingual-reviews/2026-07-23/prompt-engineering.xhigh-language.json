@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-prompt-engineering-xhigh-language",
+  "scope": {
+    "moduleId": "prompt-engineering",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:a66f88d6a04d0c8d60c1b6751284f4457ee6f5289165e284d2b33eca63c0bca0",
+    "enContentHash": "sha256:5934482e25398b91756761b0259dfe66ade2b38d048d6442a8a48c83b0769c66",
+    "termIds": [
+      "context",
+      "context-engineering",
+      "instructions",
+      "prompt-engineering",
+      "prompt-injection",
+      "structured-outputs",
+      "tools-schema"
+    ],
+    "sourceIds": [
+      "anthropic-effective-agents",
+      "anthropic-prompt-overview",
+      "anthropic-tool-definitions",
+      "anthropic-tool-search",
+      "google-prompt-introduction",
+      "google-prompt-strategies",
+      "google-system-instructions",
+      "lost-middle",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "openai-eval-best-practices",
+      "openai-function-calling",
+      "openai-model-spec-command",
+      "openai-model-spec-hidden-cot",
+      "openai-prompt-caching",
+      "openai-prompting-guide",
+      "openai-source-sink-injection",
+      "openai-structured-outputs",
+      "openapi-3-1-1",
+      "owasp-prompt-injection",
+      "react-2023"
+    ]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [
+    {
+      "gateId": "technical-english",
+      "status": "PASS",
+      "evidence": [
+        "American-English and unexplained-Chinese-prose gates pass.",
+        "Reader-facing copy uses professional technical English without language-status filler.",
+        "Module navigation preserves the canonical reading-role order."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

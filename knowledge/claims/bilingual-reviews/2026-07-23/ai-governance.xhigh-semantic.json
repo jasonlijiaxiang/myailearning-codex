@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-governance-xhigh-semantic",
+  "scope": {
+    "moduleId": "ai-governance",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:b112eba29fce7b8e92ab840a98a8c04b5eef7a64b99c461d99b5dad5a9a0acd4",
+    "enContentHash": "sha256:ebffc2f54602542d8f4fce05ba3816f1c8a02695a6bcc6ba1a3a0af4707a83f5",
+    "termIds": [
+      "ai-governance",
+      "ai-inventory",
+      "ai-risk-tiering",
+      "continuous-assurance",
+      "governance-evidence",
+      "impact-assessment"
+    ],
+    "sourceIds": [
+      "eu-ai-act",
+      "iso-iec-42001",
+      "nist-ai-rmf",
+      "nist-genai-profile"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Question order, evidence relationships, evidence-card relationships, and addedAt values match the canonical owner.",
+        "Mechanism, decision, failure, control, and evidence boundaries were cross-reviewed against the Chinese source and primary evidence."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}
