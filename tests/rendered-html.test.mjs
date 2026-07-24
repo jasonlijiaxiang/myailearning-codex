@@ -494,6 +494,25 @@ test("focused pilots use relationship-driven reading paths instead of standalone
     assert.ok(html.indexOf('id="principle"') < html.indexOf('id="evidence"'), `${publishedModule.slug} 必须先给出模块独有的判断主线`);
     assert.ok(html.indexOf('id="qa"') < html.indexOf('id="related-modules"'), `${publishedModule.slug} 应在完成主论证后再给相关模块`);
   }
+
+  const [solution, mcp, inference] = await Promise.all([
+    renderHtml("/modules/solution-patterns"),
+    renderHtml("/modules/mcp"),
+    renderHtml("/modules/llm-inference"),
+  ]);
+  assert.match(solution, /class="solutionDecisionLoop"/);
+  assert.match(solution, /证据不足：回到任务边界或能力搭配/);
+  assert.match(solution, /class="solutionCapabilityMatrix"/);
+  assert.doesNotMatch(solution, /class="solutionDecisionRail"/);
+  assert.match(mcp, /class="mcpArchitectureExplorer"/);
+  assert.match(mcp, /MCP 协议边界/);
+  assert.match(mcp, /一次工具调用的典型路径/);
+  assert.doesNotMatch(mcp, /class="mcpResponsibilityMap"/);
+  assert.match(inference, /class="inferenceExplorer"/);
+  assert.match(inference, /TTFT · 首 token 时间/);
+  assert.match(inference, /上下文长度/);
+  assert.match(inference, /并发请求数/);
+  assert.doesNotMatch(inference, /class="inferenceBudgetLedger"/);
 });
 
 test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {

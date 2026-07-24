@@ -567,6 +567,237 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .inferenceBudgetLedger article p { margin: 9px 0 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
 .inferenceBudgetLedger article strong { display: block; margin-top: 9px; font-size: 13px; line-height: 1.55; }
 
+/* Web-native explainers: each topic uses the visual grammar of its knowledge relationship. */
+.solutionBlueprint { border: 0; background: #fff; }
+.solutionDecisionLoop { margin-top: 38px; padding: 28px 0 0; border-top: 2px solid var(--ink); }
+.solutionDecisionLoop ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); list-style: none; }
+.solutionDecisionLoop li { position: relative; min-width: 0; }
+.solutionDecisionLoop li > i { position: absolute; top: 50px; right: -9px; z-index: 2; color: var(--ink); font-size: 20px; font-style: normal; }
+.solutionDecisionLoop button {
+  width: 100%;
+  min-height: 150px;
+  padding: 16px 18px 20px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 12px;
+  border: 0;
+  border-bottom: 2px solid #bec9b4;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.solutionDecisionLoop button:hover,
+.solutionDecisionLoop button:focus-visible { background: #f8faf5; border-color: var(--blue); outline: none; }
+.solutionDecisionLoop li.isActive button { border-color: var(--lime); background: linear-gradient(180deg,#fff 0%,#f5f9e9 100%); transform: translateY(-4px); }
+.solutionDecisionLoop button > span { color: #4d715f; font: 800 12px/1 var(--font-geist-mono),monospace; }
+.solutionDecisionLoop button > strong { font-size: clamp(19px,1.7vw,25px); line-height: 1.2; }
+.solutionDecisionLoop button > small { max-width: 190px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.solutionFeedbackPaths { width: 100%; height: auto; overflow: visible; }
+.solutionFeedbackPaths path { fill: none; stroke: #7d9370; stroke-width: 2; }
+.solutionFeedbackPaths .evidenceReturn { stroke-dasharray: 6 7; }
+.solutionFeedbackPaths marker path { fill: #7d9370; stroke: none; }
+.solutionFeedbackPaths text { fill: #58705f; font: 700 12px/1.2 var(--font-geist),sans-serif; text-anchor: middle; }
+.solutionStageDetail {
+  min-height: 142px;
+  padding: 22px 24px;
+  display: grid;
+  grid-template-columns: minmax(250px,.75fr) minmax(320px,1.1fr) minmax(180px,.45fr);
+  gap: 24px 38px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.solutionStageDetail > div:first-child { display: grid; grid-template-columns: 42px minmax(0,1fr); gap: 4px 14px; }
+.solutionStageDetail > div:first-child span { grid-row: 1 / 3; color: var(--blue); font: 800 13px/1 var(--font-geist-mono),monospace; }
+.solutionStageDetail h3 { margin: 0; font-size: 23px; }
+.solutionStageDetail p { margin: 5px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.solutionStageDetail > div:nth-child(2) { padding-left: 22px; border-left: 4px solid var(--lime); }
+.solutionStageDetail > div:nth-child(2) small { display: block; color: #58705f; font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+.solutionStageDetail > div:nth-child(2) strong { display: block; margin-top: 7px; font-size: 16px; line-height: 1.5; }
+.solutionStageDetail > p:last-child { margin: 0; font-size: 12px; }
+.solutionCapabilityMatrix { margin-top: 50px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); }
+.solutionCapabilityMatrixHead,
+.solutionCapabilityMatrixRow { display: grid; grid-template-columns: minmax(140px,.45fr) minmax(220px,1fr) minmax(190px,.7fr) minmax(260px,1.15fr); gap: 18px 28px; align-items: center; }
+.solutionCapabilityMatrixHead { padding: 12px 0; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+.solutionCapabilityMatrixRow { padding: 18px 0; border-top: 1px solid var(--line); }
+.solutionCapabilityMatrixRow > strong { display: flex; gap: 12px; align-items: center; font-size: 17px; }
+.solutionCapabilityMatrixRow > strong span { display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 auto; border: 1px solid #7d9370; border-radius: 50%; color: #325346; }
+.solutionCapabilityMatrixRow p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.solutionCapabilityMatrixRow p:last-child { color: var(--ink); font-weight: 700; }
+
+.mcpArchitectureExplorer { margin-top: 38px; border-top: 2px solid var(--ink); }
+.mcpArchitectureCanvas {
+  min-height: 390px;
+  padding: 26px 0 0;
+  display: grid;
+  grid-template-columns: repeat(12,minmax(0,1fr));
+  grid-template-rows: 84px minmax(250px,1fr);
+  gap: 12px 0;
+}
+.mcpArchitectureCanvas button { font-family: inherit; }
+.mcpUserNode { grid-column: 1 / 4; display: grid; grid-template-columns: 1fr 24px; align-items: center; }
+.mcpUserNode button,
+.mcpRoleNode {
+  min-width: 0;
+  padding: 15px 16px;
+  display: grid;
+  gap: 5px;
+  border: 1px solid #aab7a0;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: opacity .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.mcpUserNode button:hover,
+.mcpUserNode button:focus-visible,
+.mcpRoleNode:hover,
+.mcpRoleNode:focus-visible,
+.mcpArchitectureCanvas button[aria-pressed="true"] { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(145,194,24,.18); transform: translateY(-2px); }
+.mcpArchitectureCanvas button span { color: var(--blue); font: 800 11px/1 var(--font-geist-mono),monospace; letter-spacing: .07em; }
+.mcpArchitectureCanvas button strong { font-size: 14px; line-height: 1.4; }
+.mcpUserNode > i { justify-self: center; color: var(--blue); font-size: 24px; font-style: normal; transform: rotate(-45deg); }
+.mcpArchitectureBand { position: relative; min-width: 0; padding: 18px; border-top: 1px solid #aab7a0; border-bottom: 1px solid #aab7a0; }
+.mcpArchitectureBand > header { min-height: 46px; display: grid; gap: 3px; }
+.mcpArchitectureBand > header strong { font-size: 13px; }
+.mcpArchitectureBand > header span { color: var(--muted); font-size: 11px; line-height: 1.4; }
+.mcpArchitectureBand--application { grid-column: 1 / 4; background: #f8faf5; border-left: 1px solid #aab7a0; }
+.mcpArchitectureBand--protocol { grid-column: 4 / 10; display: grid; grid-template-columns: minmax(0,1fr) 96px minmax(0,1fr); gap: 18px; background: #f3f7fb; }
+.mcpArchitectureBand--business { grid-column: 10 / 13; background: #f8faf5; border-right: 1px solid #aab7a0; }
+.mcpArchitectureBand--protocol > header { grid-column: 1 / -1; }
+.mcpRoleNode { width: 100%; align-self: center; min-height: 100px; }
+.mcpProtocolLink { align-self: center; display: grid; place-items: center; gap: 5px; color: var(--blue); text-align: center; }
+.mcpProtocolLink span { font: 800 9px/1.2 var(--font-geist-mono),monospace; }
+.mcpProtocolLink i { font-size: 27px; font-style: normal; }
+.mcpArchitectureBand--application::after,
+.mcpArchitectureBand--protocol::after {
+  content: "→";
+  position: absolute;
+  top: 58%;
+  right: -13px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #325346;
+  color: var(--lime);
+  font-size: 14px;
+  font-weight: 900;
+}
+.mcpArchitectureExplorer[data-active-role] .mcpArchitectureCanvas button:not([aria-pressed="true"]) { opacity: .54; }
+.mcpRoleDetail {
+  min-height: 122px;
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: minmax(180px,.45fr) minmax(0,1.55fr);
+  gap: 28px;
+  border-bottom: 1px solid var(--line);
+}
+.mcpRoleDetail > div span { color: var(--blue); font: 800 11px/1 var(--font-geist-mono),monospace; }
+.mcpRoleDetail h3 { margin: 8px 0 0; font-size: 23px; }
+.mcpRoleDetail dl { margin: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.mcpRoleDetail dl > div { padding-left: 18px; border-left: 3px solid var(--line); }
+.mcpRoleDetail dl > div:last-child { border-color: var(--lime); }
+.mcpRoleDetail dt { color: var(--muted); font-size: 11px; font-weight: 800; }
+.mcpRoleDetail dd { margin: 7px 0 0; font-size: 14px; line-height: 1.55; }
+.mcpInteractiveTrace { margin: 44px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); list-style: none; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.mcpInteractiveTrace li { position: relative; min-width: 0; }
+.mcpInteractiveTrace li > i { position: absolute; top: 25px; right: -8px; z-index: 2; color: var(--muted); font-style: normal; }
+.mcpInteractiveTrace button { width: 100%; min-height: 120px; padding: 16px; display: grid; grid-template-columns: 26px minmax(0,1fr); gap: 5px 8px; border: 0; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+.mcpInteractiveTrace button:hover,
+.mcpInteractiveTrace button:focus-visible,
+.mcpInteractiveTrace li.isActive button { background: #f5f9e9; outline: none; }
+.mcpInteractiveTrace button span { grid-row: 1 / 3; color: var(--blue); font: 800 11px/1 var(--font-geist-mono),monospace; }
+.mcpInteractiveTrace button strong { font-size: 15px; }
+.mcpInteractiveTrace button small { grid-column: 2; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+.inferenceExplorer { margin-top: 38px; border-top: 2px solid var(--ink); }
+.inferenceTimeline { padding-top: 28px; }
+.inferenceTimeline > header,
+.inferenceMemoryMap > header { display: flex; gap: 16px; align-items: baseline; }
+.inferenceTimeline > header h3,
+.inferenceMemoryMap > header h3 { margin: 0; padding-left: 12px; border-left: 4px solid var(--lime); font-size: clamp(24px,2.2vw,31px); }
+.inferenceTimeline > header p,
+.inferenceMemoryMap > header p { margin: 0; color: var(--muted); font-size: 14px; }
+.inferenceTimeline ol { margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: .9fr 1.2fr .8fr 1.2fr .9fr; list-style: none; }
+.inferenceTimeline li { min-width: 0; }
+.inferenceTimeline button {
+  width: 100%;
+  min-height: 116px;
+  padding: 15px 18px;
+  display: grid;
+  grid-template-columns: 25px minmax(0,1fr);
+  gap: 5px 8px;
+  border: 1px solid #aeb9a6;
+  border-right: 0;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.inferenceTimeline li:last-child button { border-right: 1px solid #aeb9a6; }
+.inferenceTimeline button:hover,
+.inferenceTimeline button:focus-visible,
+.inferenceTimeline li.isActive button { position: relative; z-index: 2; background: #f2f8df; outline: none; box-shadow: inset 0 -4px 0 var(--lime); }
+.inferenceTimeline button span { grid-row: 1 / 3; color: var(--blue); font: 800 11px/1 var(--font-geist-mono),monospace; }
+.inferenceTimeline button strong { font-size: 16px; }
+.inferenceTimeline button small { grid-column: 2; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.latencyMeasures { display: grid; grid-template-columns: repeat(10,minmax(0,1fr)); gap: 7px 0; padding: 18px 0 0; }
+.latencyMeasures span { position: relative; padding-top: 8px; border-top: 2px solid; color: var(--muted); font-size: 11px; font-weight: 750; text-align: center; }
+.latencyMeasures span::before,
+.latencyMeasures span::after { content: ""; position: absolute; top: -4px; width: 1px; height: 7px; background: currentColor; }
+.latencyMeasures span::before { left: 0; }
+.latencyMeasures span::after { right: 0; }
+.latencyQueue { grid-column: 1 / 3; border-color: #82917b; }
+.latencyTtft { grid-column: 3 / 6; border-color: #4f9a75; color: #397f5e !important; }
+.latencyTpot { grid-column: 6 / 9; border-color: #92be19; color: #668900 !important; }
+.latencyE2e { grid-column: 1 / -1; border-color: var(--ink); color: var(--ink) !important; }
+.inferencePhaseDetail { min-height: 78px; margin-top: 18px; padding: 15px 18px; display: grid; grid-template-columns: 190px 150px minmax(0,1fr); gap: 18px; align-items: center; border-left: 4px solid var(--lime); background: #f8faf5; }
+.inferencePhaseDetail span { color: var(--blue); font: 800 11px/1.4 var(--font-geist-mono),monospace; }
+.inferencePhaseDetail strong { font-size: 17px; }
+.inferencePhaseDetail p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.inferenceMemoryMap { margin-top: 50px; padding-top: 28px; display: grid; grid-template-columns: minmax(0,1fr) 310px; gap: 24px 34px; border-top: 1px solid var(--line); }
+.inferenceMemoryMap > header { grid-column: 1 / -1; }
+.memoryComposition { min-width: 0; display: grid; gap: 9px; }
+.memoryRow { min-height: 62px; display: grid; grid-template-columns: 210px minmax(0,1fr); gap: 18px; align-items: center; }
+.memoryRow > span { display: grid; gap: 3px; }
+.memoryRow > span strong { font-size: 14px; }
+.memoryRow > span small { color: var(--muted); font-size: 11px; }
+.memoryRow > i { position: relative; width: var(--memory-width,80%); min-height: 38px; padding: 10px 14px; display: flex; align-items: center; background: #0b2148; color: #fff; font-size: 12px; font-style: normal; line-height: 1.4; transition: width .28s ease, background .18s ease; }
+.memoryRow--weights > i { --memory-width: 82%; }
+.memoryRow--kv > i { --memory-width: var(--kv-width,62%); background: #8bae2a; }
+.memoryRow--workspace > i { --memory-width: 56%; background: #cfd9e5; color: var(--ink); }
+.memoryRow--headroom > i { --memory-width: 94%; border: 1px dashed #9ca99a; background: #f7f9f4; color: var(--muted); }
+.inferenceExplorer[data-context="short"][data-concurrency="low"] { --kv-width: 36%; }
+.inferenceExplorer[data-context="medium"][data-concurrency="low"],
+.inferenceExplorer[data-context="short"][data-concurrency="medium"] { --kv-width: 48%; }
+.inferenceExplorer[data-context="long"][data-concurrency="low"],
+.inferenceExplorer[data-context="medium"][data-concurrency="medium"],
+.inferenceExplorer[data-context="short"][data-concurrency="high"] { --kv-width: 62%; }
+.inferenceExplorer[data-context="long"][data-concurrency="medium"],
+.inferenceExplorer[data-context="medium"][data-concurrency="high"] { --kv-width: 78%; }
+.inferenceExplorer[data-context="long"][data-concurrency="high"] { --kv-width: 94%; }
+.inferenceExplorer[data-phase="prefill"] .memoryRow--workspace > i { --memory-width: 70%; background: #b9c9dc; }
+.inferenceExplorer[data-phase="decode"] .memoryRow--kv > i,
+.inferenceExplorer[data-phase="first-token"] .memoryRow--kv > i { filter: saturate(1.2); }
+.inferenceControls { padding: 18px; align-self: start; border: 1px solid #aeb9a6; background: #fff; }
+.inferenceControls fieldset { margin: 0; padding: 0 0 18px; display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; border: 0; }
+.inferenceControls fieldset + fieldset { padding-top: 2px; }
+.inferenceControls legend { width: 100%; margin-bottom: 9px; color: var(--ink); font-size: 13px; font-weight: 800; }
+.inferenceControls button { min-height: 38px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+.inferenceControls button:hover,
+.inferenceControls button:focus-visible,
+.inferenceControls button[aria-pressed="true"] { border-color: #8cb31d; background: #f2f8df; outline: none; }
+.inferenceControls output { padding: 15px; display: grid; gap: 6px; border-top: 1px solid var(--line); }
+.inferenceControls output span { color: var(--muted); font-size: 11px; font-weight: 800; }
+.inferenceControls output strong { font-size: 14px; line-height: 1.45; }
+
 .focusedDecisionLedger { margin-top: 54px; border-top: 2px solid var(--ink); }
 .focusedDecisionLedger > header { padding: 24px 0; display: grid; grid-template-columns: minmax(240px,.65fr) minmax(360px,1.35fr); gap: 18px 44px; align-items: end; }
 .focusedDecisionLedger > header .kicker { grid-column: 1 / -1; }
@@ -639,6 +870,32 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .inferenceRequestRail { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .mcpResponsibilityMap article:nth-child(2) { border-right: 0; }
   .inferenceRequestRail li:nth-child(2) { border-right: 0; }
+  .solutionDecisionLoop ol { grid-template-columns: repeat(3,minmax(0,1fr)); row-gap: 16px; }
+  .solutionDecisionLoop li > i,
+  .solutionFeedbackPaths { display: none; }
+  .solutionStageDetail { margin-top: 24px; grid-template-columns: minmax(220px,.8fr) minmax(300px,1.2fr); }
+  .solutionStageDetail > p:last-child { grid-column: 1 / -1; }
+  .solutionCapabilityMatrixHead,
+  .solutionCapabilityMatrixRow { grid-template-columns: minmax(130px,.45fr) minmax(220px,1fr) minmax(250px,1.1fr); }
+  .solutionCapabilityMatrixHead span:nth-child(3),
+  .solutionCapabilityMatrixRow p:nth-child(3) { display: none; }
+  .mcpArchitectureCanvas { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: auto; gap: 12px; }
+  .mcpUserNode { grid-column: 1 / -1; max-width: 340px; }
+  .mcpArchitectureBand--application,
+  .mcpArchitectureBand--protocol,
+  .mcpArchitectureBand--business { grid-column: auto; border: 1px solid #aab7a0; }
+  .mcpArchitectureBand--protocol { grid-column: 1 / -1; grid-row: 3; }
+  .mcpArchitectureBand--application::after,
+  .mcpArchitectureBand--protocol::after { display: none; }
+  .mcpRoleDetail { grid-template-columns: 1fr; }
+  .mcpInteractiveTrace { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .mcpInteractiveTrace li > i { display: none; }
+  .inferenceTimeline ol { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .inferenceTimeline button { border-right: 1px solid #aeb9a6; }
+  .inferenceMemoryMap { grid-template-columns: 1fr; }
+  .inferenceMemoryMap > header { grid-column: 1; }
+  .inferenceControls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 20px; }
+  .inferenceControls output { grid-column: 1 / -1; }
   .focusedDecisionLedger > header { grid-template-columns: 1fr; }
   .focusedDecisionLedger > header .kicker { grid-column: 1; }
   .focusedDecisionRows article { grid-template-columns: 38px minmax(0,1fr); }
@@ -691,7 +948,15 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .moduleFocused .moduleBriefHeader { padding-top: 24px; }
   .modulePilot .moduleBriefHeader .moduleHeroTitle,
   .modulePilot .ragHeader .moduleHeroTitle { font-size: clamp(43px,11vw,55px); }
-  .moduleFocused .moduleBriefHeader .moduleHeroTitle { font-size: clamp(38px,10vw,48px); }
+  .moduleFocused .topbar { padding-top: 10px; }
+  .moduleFocused .topbar .toplinks { display: flex; gap: 22px; padding: 8px 0 2px; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+  .moduleFocused .topbar .toplinks::-webkit-scrollbar { display: none; }
+  .moduleFocused .topbar .toplinks a { flex: 0 0 auto; white-space: nowrap; }
+  .moduleFocused .moduleBriefHeader { gap: 10px; padding-top: 18px; }
+  .moduleFocused .moduleBriefHeader .moduleHeroTitle { margin-bottom: 8px; font-size: clamp(35px,9.2vw,41px) !important; line-height: 1.05; }
+  .moduleFocused .moduleBriefHeader .moduleHeroTitle > span { margin-top: 7px; font-size: 13px; }
+  .moduleFocused .moduleBriefDefinition { font-size: 17px; line-height: 1.58; }
+  .moduleFocused .moduleBriefPosition { font-size: 13px; line-height: 1.55; }
   .moduleHeroMetrics { grid-template-columns: repeat(3,1fr); }
   .moduleHeroMetrics > div { padding: 10px; }
   .moduleHeroMetrics dd strong { font-size: 23px; }
@@ -713,6 +978,49 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .inferenceBudgetLedger { grid-template-columns: 1fr; }
   .mcpResponsibilityMap article,
   .inferenceRequestRail li { border-right: 0; }
+  .solutionDecisionLoop { padding-top: 18px; }
+  .solutionDecisionLoop ol { grid-template-columns: 1fr; gap: 0; }
+  .solutionDecisionLoop li { padding-left: 32px; border-left: 1px solid #9baa91; }
+  .solutionDecisionLoop li::before { content: ""; position: absolute; top: 31px; left: -5px; width: 9px; height: 9px; border-radius: 50%; background: #779064; }
+  .solutionDecisionLoop li.isActive::before { background: var(--lime); box-shadow: 0 0 0 4px rgba(145,194,24,.18); }
+  .solutionDecisionLoop button { min-height: 0; padding: 18px 16px; grid-template-columns: 38px minmax(0,1fr); grid-template-rows: auto auto; gap: 4px 10px; }
+  .solutionDecisionLoop button > span { grid-row: 1 / 3; }
+  .solutionDecisionLoop button > small { max-width: none; }
+  .solutionStageDetail { margin-top: 22px; padding: 18px 0; grid-template-columns: 1fr; gap: 18px; }
+  .solutionStageDetail > div:nth-child(2) { padding-left: 16px; }
+  .solutionCapabilityMatrixHead { display: none; }
+  .solutionCapabilityMatrixRow { padding: 20px 0; grid-template-columns: 1fr; gap: 9px; }
+  .solutionCapabilityMatrixRow p:nth-child(3) { display: block; }
+  .mcpArchitectureCanvas { min-height: 0; padding-top: 20px; grid-template-columns: 1fr; }
+  .mcpUserNode,
+  .mcpArchitectureBand--application,
+  .mcpArchitectureBand--protocol,
+  .mcpArchitectureBand--business { grid-column: 1; grid-row: auto; max-width: none; }
+  .mcpUserNode { grid-template-columns: 1fr; }
+  .mcpUserNode > i { display: none; }
+  .mcpArchitectureBand--protocol { grid-template-columns: 1fr; }
+  .mcpArchitectureBand--protocol > header { grid-column: 1; }
+  .mcpProtocolLink { min-height: 44px; }
+  .mcpProtocolLink i { transform: rotate(90deg); }
+  .mcpRoleDetail { padding: 18px 0; }
+  .mcpRoleDetail dl { grid-template-columns: 1fr; }
+  .mcpInteractiveTrace { margin-top: 28px; grid-template-columns: 1fr; }
+  .mcpInteractiveTrace button { min-height: 0; }
+  .inferenceTimeline > header,
+  .inferenceMemoryMap > header { align-items: flex-start; flex-direction: column; }
+  .inferenceTimeline ol { grid-template-columns: 1fr; }
+  .inferenceTimeline button { min-height: 0; }
+  .latencyMeasures { grid-template-columns: 1fr; gap: 12px; }
+  .latencyQueue,
+  .latencyTtft,
+  .latencyTpot,
+  .latencyE2e { grid-column: 1; }
+  .inferencePhaseDetail { grid-template-columns: 1fr; gap: 7px; }
+  .inferenceMemoryMap { margin-top: 38px; }
+  .memoryRow { grid-template-columns: 1fr; gap: 8px; }
+  .memoryRow > i { min-width: 150px; }
+  .inferenceControls { grid-template-columns: 1fr; }
+  .inferenceControls output { grid-column: 1; }
   .inferenceBudgetLedger > section { padding: 24px 0; }
   .inferenceBudgetLedger > section + section { border-top: 1px solid var(--line); border-left: 0; }
   .focusedDecisionRows article { grid-template-columns: 28px minmax(0,1fr); gap: 14px; }

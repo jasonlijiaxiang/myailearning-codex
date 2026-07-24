@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+import {
+  InferenceLifecycleExplorer,
+  McpResponsibilityExplorer,
+  SolutionDecisionLoop,
+} from "./focused-visual-explainers";
 import { requireModuleExtensionView } from "./module-extension-views.mjs";
 import { TermHintRow } from "./term-hint";
 
@@ -201,24 +206,21 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
         <div><p className="kicker">DECISION BLUEPRINT</p><h2 id="solution-pattern-primer-title">把业务目标变成可以验收的方案</h2></div>
         <p>场景方案从业务变化出发，依次确定任务边界、需要搭配的能力、验收证据和后续负责人；产品名称在这些问题明确后再进入。</p>
       </header>
-      <TermHintRow label="方案讨论常用缩写" termIds={["poc", "sla", "tco", "rag", "ai-agent"]} />
       <div className="solutionBlueprint">
-        <ol className="solutionDecisionRail" aria-label="从业务目标到可运营方案的五道决策门">
-          {solutionDecisionStages.map(([no, title, en, question, output]) => (
-            <li key={no}><span>{no}</span><h3>{title}<small>{en}</small></h3><p>{question}</p><strong>{output}</strong></li>
-          ))}
-        </ol>
-        <div className="solutionCapabilityGrid" aria-label="检索、生成、行动和人工控制的选择">
+        <SolutionDecisionLoop stages={solutionDecisionStages.map(([no, title, , question, output]) => ({ no, title, question, output }))} />
+        <div className="solutionCapabilityMatrix" role="table" aria-label="检索、生成、行动和人工控制的选择">
+          <div className="solutionCapabilityMatrixHead" role="row"><span>动作</span><span>什么时候需要</span><span>常见选择</span><span>不可忽略的边界</span></div>
           {solutionCapabilityChoices.map((item) => (
-            <article key={item.en}>
-              <span>{item.verb}</span>
-              <div><p className="miniLabel">{item.en}</p><h3>{item.title}</h3></div>
-              <dl><div><dt>什么时候需要</dt><dd>{item.when}</dd></div><div><dt>常见选择</dt><dd>{item.choice}</dd></div></dl>
+            <div className="solutionCapabilityMatrixRow" role="row" key={item.en}>
+              <strong><span>{item.verb}</span>{item.title}</strong>
+              <p>{item.when}</p>
+              <p>{item.choice}</p>
               <p>{item.boundary}</p>
-            </article>
+            </div>
           ))}
         </div>
       </div>
+      <TermHintRow label="方案讨论常用缩写" termIds={["poc", "sla", "tco", "rag", "ai-agent"]} />
       {decisionRows.length ? (
         <section className="focusedDecisionLedger" aria-labelledby="solution-decision-ledger-title">
           <header><p className="kicker">PROBLEM CONTRACT</p><h3 id="solution-decision-ledger-title">先把问题写成一页可反驳的方案契约</h3><p>下面不是通用功能表，而是把客户实际情况、建议与失败边界放在同一行。任何一行无法验证，都不应进入采购清单。</p></header>
@@ -254,18 +256,23 @@ function McpFocusedPrimer({ brief }: { brief: FocusedBrief }) {
         <div><p className="kicker">PROTOCOL RESPONSIBILITY MAP</p><h2 id="mcp-focused-title">先分清四方责任，再讨论工具接入</h2></div>
         <p>协议解决能力如何被发现和调用；身份从哪里来、业务系统是否授权、调用结果是否可信，仍由协议外的应用与平台控制共同完成。</p>
       </header>
+      <McpResponsibilityExplorer
+        roles={[
+          { id: "user", code: "USER", title: "用户", owner: "提出业务目标、确认高风险动作并判断最终结果。", boundary: "不负责协议实现，也不应被迫理解工具内部细节。" },
+          { id: "host", code: "HOST", title: "承载用户目标", owner: "组织上下文、用户交互、Client 生命周期与最终体验。", boundary: "不能把用户身份、同意和审批责任下放给模型。" },
+          { id: "client", code: "CLIENT", title: "维护协议会话", owner: "与一个 Server 建立隔离连接，完成能力协商与消息路由。", boundary: "会调用不代表已经获得业务系统授权。" },
+          { id: "server", code: "SERVER", title: "暴露能力契约", owner: "提供 Tool、Resource、Prompt 以及结果和错误语义。", boundary: "不能绕过下游系统的身份、权限与审计控制。" },
+          { id: "system", code: "SYSTEM", title: "执行真实业务", owner: "校验主体、策略、数据权限并形成权威业务状态。", boundary: "不通过 MCP 暴露内部实现细节，也不把协议连接当作最终授权。" },
+        ]}
+        sequence={[
+          { code: "01", title: "发现", detail: "Client 读取 Server 声明的能力与 Schema" },
+          { code: "02", title: "选择", detail: "Host 根据用户目标选择必要能力" },
+          { code: "03", title: "授权", detail: "应用与业务系统确认主体和权限" },
+          { code: "04", title: "执行", detail: "Server 调用下游系统完成受控动作" },
+          { code: "05", title: "回读", detail: "结果逐层返回并由 Host 呈现给用户" },
+        ]}
+      />
       <TermHintRow label="MCP 角色与能力" termIds={view.termIds} />
-      <div className="mcpResponsibilityMap" aria-label="MCP 四个责任面">
-        {[
-          ["HOST", "承载用户目标", "组织上下文、用户交互与最终体验", "不能把用户身份和审批责任下放给模型"],
-          ["CLIENT", "维护协议会话", "发现能力、协商上下文并发起调用", "会调用不代表已经获得业务授权"],
-          ["SERVER", "暴露能力契约", "提供 Tool、Resource、Prompt 与结果语义", "必须声明输入、错误、权限与版本边界"],
-          ["SYSTEM", "执行真实业务", "校验主体、策略、数据权限并改变状态", "最终授权与审计必须落在业务系统"],
-        ].map(([code, title, detail, boundary]) => <article key={code}><span>{code}</span><h3>{title}</h3><p>{detail}</p><strong>{boundary}</strong></article>)}
-      </div>
-      <ol className="mcpInvocationSequence" aria-label="从能力发现到结果回读的调用链">
-        {view.steps.map((step) => <li key={step.code}><span>{step.code}</span><div><p className="miniLabel">{step.en}</p><h3>{step.title}</h3><p>{step.detail}</p><strong>{step.signal}</strong></div></li>)}
-      </ol>
       <section className="focusedDecisionLedger" aria-labelledby="mcp-decision-title">
         <header><p className="kicker">ADOPTION CHECK</p><h3 id="mcp-decision-title">哪些条件不成立时，不要急着引入 MCP</h3></header>
         <div className="focusedDecisionRows">
@@ -287,14 +294,14 @@ function InferenceFocusedPrimer({ brief }: { brief: FocusedBrief }) {
         <div><p className="kicker">LATENCY × MEMORY × CAPACITY</p><h2 id="inference-focused-title">把“推理慢”拆成一条可以测量的请求链</h2></div>
         <p>先区分排队、Prefill、Decode 与结果传输，再把时间指标和显存占用对应起来。只有定位瓶颈，批处理、量化、缓存或扩容才有明确目的。</p>
       </header>
+      <InferenceLifecycleExplorer phases={[
+        { id: "queue", no: "01", title: "排队", detail: "等待调度、批次和计算资源。", metric: "排队等待时间" },
+        { id: "prefill", no: "02", title: "Prefill", detail: "并行处理输入上下文，建立首 token 所需状态。", metric: "TTFT 的主要计算阶段" },
+        { id: "first-token", no: "03", title: "首 token", detail: "第一个输出到达，用户开始感知响应。", metric: "TTFT · 首 token 时间" },
+        { id: "decode", no: "04", title: "Decode", detail: "逐 token 生成后续输出，受内存带宽与调度影响。", metric: "TPOT / ITL · token 间延迟" },
+        { id: "delivery", no: "05", title: "结果传输", detail: "网关缓冲、网络与客户端渲染共同影响最终体验。", metric: "端到端延迟 · E2E" },
+      ]} />
       <TermHintRow label="推理性能常用缩写" termIds={view.termIds} />
-      <ol className="inferenceRequestRail" aria-label="推理请求生命周期">
-        {view.steps.map((step) => <li key={step.code}><span>{step.code}</span><div><p className="miniLabel">{step.en}</p><h3>{step.title}</h3><p>{step.detail}</p><strong>{step.signal}</strong></div></li>)}
-      </ol>
-      <div className="inferenceBudgetLedger" aria-label="时间预算与容量预算">
-        <section><p className="kicker">TIME BUDGET</p><h3>用户等在哪里</h3>{brief.principles.slice(0, 3).map((item) => <article key={item.en}><h4>{item.zh}<small>{item.en}</small></h4><p>{item.explanation}</p><strong>{item.decision}</strong></article>)}</section>
-        <section><p className="kicker">MEMORY BUDGET</p><h3>并发为什么被吃掉</h3>{brief.principles.slice(3).map((item) => <article key={item.en}><h4>{item.zh}<small>{item.en}</small></h4><p>{item.explanation}</p><strong>{item.decision}</strong></article>)}</section>
-      </div>
       <section className="focusedDecisionLedger" aria-labelledby="inference-diagnostic-title">
         <header><p className="kicker">DIAGNOSTIC LEDGER</p><h3 id="inference-diagnostic-title">症状不是结论：每个优化动作都要对应一个可观察信号</h3></header>
         <div className="focusedDecisionRows">
