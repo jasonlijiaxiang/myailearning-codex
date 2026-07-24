@@ -6,6 +6,7 @@ import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
 import { getModuleBySlug } from "../knowledge-map.mjs";
 import { ModuleHeroMetrics } from "../module-content-components";
 import { requireModuleExtensionView } from "../module-extension-views.mjs";
+import { ModuleKnowledgeExplorer, type ExtensionView } from "../module-visual-explorers";
 import { getPublishedModule } from "../module-publication.mjs";
 import { sourceLedger } from "../reference-content.mjs";
 import { englishSourceCopy } from "./en/registry.mjs";
@@ -85,24 +86,28 @@ function EnglishTermHintRow({ module, primer }: { module: EnglishModule; primer:
 }
 
 function EnglishModulePrimer({ module, primer }: { module: EnglishModule; primer: EnglishPrimer }) {
+  const explorerView: ExtensionView = {
+    id: primer.id,
+    layout: primer.layout,
+    title: primer.title,
+    steps: primer.steps.map((step) => ({
+      code: step.code,
+      title: step.title,
+      en: step.label,
+      detail: step.detail,
+      signal: step.signal,
+    })),
+    checks: primer.checks,
+  };
+
   return (
     <section className={`pilotPrimer extensionPrimer extensionPrimer--${primer.layout}`} data-knowledge-view={primer.id} aria-labelledby={`${module.slug}-english-primer-title`}>
       <header className="pilotPrimerHeader">
         <div><p className="kicker">{primer.eyebrow}</p><h2 id={`${module.slug}-english-primer-title`}>{primer.title}</h2></div>
         <p>{primer.intro}</p>
       </header>
+      <ModuleKnowledgeExplorer view={explorerView} locale="en" />
       <EnglishTermHintRow module={module} primer={primer} />
-      <div className="extensionPrimerBody">
-        <ol className="extensionPrimerMap" aria-label={`${primer.title}: key stages`}>
-          {primer.steps.map((step) => (
-            <li key={step.code}><span>{step.code}</span><div><p className="miniLabel">{step.label}</p><h3>{step.title}</h3><p>{step.detail}</p><strong>{step.signal}</strong></div></li>
-          ))}
-        </ol>
-        <aside className="extensionPrimerChecks" aria-label="Decision checks">
-          <p className="miniLabel">DECISION CHECKS</p>
-          {primer.checks.map((check, index) => <article key={check.title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{check.title}</h3><p>{check.detail}</p></div></article>)}
-        </aside>
-      </div>
       <footer className="pilotPrimerActions"><strong>Presales use</strong><p>{primer.application}</p><nav aria-label={`${module.title} further reading`}>{primer.links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}</nav></footer>
     </section>
   );

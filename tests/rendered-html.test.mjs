@@ -530,8 +530,10 @@ test("remaining modules complete their own knowledge views, learning expansions,
       assert.match(html, /class="focusedDecisionLedger"/);
     } else {
       assert.match(html, new RegExp(escapeRegExp(view.title)));
-      assert.match(html, /class="extensionPrimerMap"/);
-      assert.match(html, /class="extensionPrimerChecks"/);
+      assert.match(html, /data-knowledge-explorer="interactive"/);
+      assert.match(html, new RegExp(`moduleKnowledgeExplorer--${escapeRegExp(view.layout)}`));
+      assert.doesNotMatch(html, /class="extensionPrimerMap"/);
+      assert.doesNotMatch(html, /class="extensionPrimerChecks"/);
     }
   }
 
@@ -548,6 +550,31 @@ test("remaining modules complete their own knowledge views, learning expansions,
     for (const step of completionLearning[slug].route) assert.ok(learning.route.includes(step));
     for (const lab of completionLearning[slug].labs) assert.ok(learning.labs.includes(lab));
     for (const question of completionQa[slug]) assert.ok(content.qa.includes(question));
+  }
+});
+
+test("all published modules expose a web-native core visualization instead of a static card primer", async () => {
+  const specializedVisuals = new Map([
+    ["solution-patterns", "solutionDecisionLoop"],
+    ["rag", "ragDualChainExplorer"],
+    ["ai-agent", "agentAuthorityExplorer"],
+    ["mcp", "mcpArchitectureExplorer"],
+    ["security", "securityBarrierExplorer"],
+    ["llm", "llmGenerationExplorer"],
+    ["fine-tuning", "tuningRouteExplorer"],
+    ["llm-inference", "inferenceExplorer"],
+  ]);
+
+  assert.equal(publishedModuleSlugs.length, 21);
+  for (const slug of publishedModuleSlugs) {
+    const html = await renderHtml(`/modules/${slug}`);
+    const specializedClass = specializedVisuals.get(slug);
+    if (specializedClass) {
+      assert.match(html, new RegExp(`class="${specializedClass}`), `${slug} 缺少模块独有的网页图解`);
+    } else {
+      assert.match(html, /class="moduleKnowledgeExplorer /, `${slug} 缺少按知识关系选择的交互图解`);
+      assert.match(html, /data-knowledge-explorer="interactive"/);
+    }
   }
 });
 

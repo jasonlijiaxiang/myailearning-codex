@@ -159,6 +159,8 @@ test("English module pages render the canonical knowledge view before the shared
   assert.match(englishModulePage, /publication\.knowledgeView/);
   assert.match(englishModulePage, /deriveEnglishPrimer/);
   assert.match(englishModulePage, /<EnglishModulePrimer module=\{module\} primer=\{primer\} \/>/);
+  assert.match(englishModulePage, /<ModuleKnowledgeExplorer view=\{explorerView\} locale="en" \/>/, "English modules must share the canonical interactive knowledge view");
+  assert.doesNotMatch(englishModulePage, /className="extensionPrimerMap"/, "English modules must not fall back to the old static card rail");
   assert.match(englishModulePage, /usesFocusedReadingProfile \? relatedSection : null/, "focused pages must place related modules after the main argument");
   for (const slug of englishModuleSlugs) assert.ok(getPublishedModule(slug)?.knowledgeView, `${slug} needs a canonical bilingual knowledge view`);
   for (const [slug, module] of Object.entries(englishModuleRegistry)) {

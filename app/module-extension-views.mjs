@@ -156,7 +156,7 @@ export const moduleExtensionViews = Object.freeze({
   }),
   "ai-ops": Object.freeze({
     id: "operations-feedback-loop",
-    layout: "lifecycle",
+    layout: "loop",
     eyebrow: "GENAI DELIVERY & OPERATIONS",
     title: "AI 应用交付的是可重放、可归因、可恢复的发布单元",
     intro: "模型、Prompt、检索、工具、编排、策略和运行环境共同决定行为；同一条工程闭环必须覆盖组装、验证、发布、观测与恢复。",
