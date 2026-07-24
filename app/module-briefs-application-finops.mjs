@@ -24,7 +24,7 @@ export const aiApplicationEngineeringContribution = {
   deepDiveTitle: "从组件版本走向可重放的应用发布单元",
   deepDiveLead: "生成式 AI 的生产风险常来自组件组合而非单个模型。应用工程要能回答某次输出到底由哪组资产、策略和外部状态共同产生。",
   deepDives: [
-    { kind: "sequence", eyebrow: "GENAI DELIVERY", title: "生成式 AI 应用的七段交付链", intro: "每一段都要有输入、输出、负责人、证据和回退，而不是只把 Prompt 放进 Git。", sourceIds: ["google-genai-app-lifecycle", "azure-foundation-model-lifecycle", "aws-genai-lifecycle"], items: [
+    { kind: "sequence", eyebrow: "GENAI DELIVERY", title: "生成式 AI 应用的四段交付链", intro: "每一段都要有输入、输出、负责人、证据和回退，而不是只把 Prompt 放进 Git。", sourceIds: ["google-genai-app-lifecycle", "azure-foundation-model-lifecycle", "aws-genai-lifecycle"], items: [
       { name: "定义与选型", en: "Frame & Select", mechanism: "固定任务、风险、质量、时延和成本，再选择模型与应用模式。", decision: "保留非生成式基线。", boundary: "模型榜单不能替代客户任务。" },
       { name: "组装与实验", en: "Compose & Experiment", mechanism: "组合 Prompt、上下文、检索、工具、工作流和策略，在固定数据集上比较。", decision: "单变量实验优先。", boundary: "局部提升可能破坏其他组件契约。" },
       { name: "验证与发布", en: "Validate & Release", mechanism: "分层测试后形成配置清单，经影子、灰度和保护组进入生产。", decision: "Go / No-Go 绑定版本证据。", boundary: "构建成功不能证明语义正确。" },

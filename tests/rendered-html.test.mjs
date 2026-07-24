@@ -18,6 +18,7 @@ import { moduleExtensionViews } from "../app/module-extension-views.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
 import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
+import { moduleRepresentationAssessment } from "../app/module-representation-assessment.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { promptQa } from "../app/prompt-content.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
@@ -553,7 +554,7 @@ test("remaining modules complete their own knowledge views, learning expansions,
   }
 });
 
-test("all published modules expose a web-native core visualization instead of a static card primer", async () => {
+test("registered core knowledge views render as web-native visuals without making them a module quota", async () => {
   const specializedVisuals = new Map([
     ["solution-patterns", "solutionDecisionLoop"],
     ["rag", "ragDualChainExplorer"],
@@ -565,8 +566,9 @@ test("all published modules expose a web-native core visualization instead of a 
     ["llm-inference", "inferenceExplorer"],
   ]);
 
-  assert.equal(publishedModuleSlugs.length, 21);
-  for (const slug of publishedModuleSlugs) {
+  const modulesWithCoreViews = publishedModuleRegistry.filter((module) => module.knowledgeView);
+  assert.ok(modulesWithCoreViews.length > 0);
+  for (const { slug } of modulesWithCoreViews) {
     const html = await renderHtml(`/modules/${slug}`);
     const specializedClass = specializedVisuals.get(slug);
     if (specializedClass) {
@@ -575,6 +577,36 @@ test("all published modules expose a web-native core visualization instead of a 
       assert.match(html, /class="moduleKnowledgeExplorer /, `${slug} 缺少按知识关系选择的交互图解`);
       assert.match(html, /data-knowledge-explorer="interactive"/);
     }
+  }
+});
+
+test("content representation is assessed per relationship and produces natural visual counts", async () => {
+  assert.deepEqual(Object.keys(moduleRepresentationAssessment), publishedModuleSlugs);
+  const visualCounts = Object.values(moduleRepresentationAssessment).map((assessment) => assessment.visualDeepDiveCount);
+  assert.ok(new Set(visualCounts).size > 1, "深挖图解数量必须由内容关系产生自然差异，不能收敛成模块配额");
+
+  for (const slug of publishedModuleSlugs) {
+    const content = requireModuleContent(slug);
+    const assessment = moduleRepresentationAssessment[slug];
+    assert.equal(assessment.deepDives.length, content.deepDives.length, `${slug} 的深挖内容没有完成表达审计`);
+    assert.deepEqual(assessment.deepDives.map((item) => item.title), content.deepDives.map((block) => block.title));
+
+    const html = await renderHtml(`/modules/${slug}`);
+    const visualCount = (html.match(/data-adaptive-visual="(?:sequence|diagnostic|matrix|scenario)"/g) ?? []).length;
+    const checklistCount = (html.match(/data-adaptive-prose="checklist"/g) ?? []).length;
+    assert.equal(visualCount, assessment.visualDeepDiveCount, `${slug} 不应按固定数量渲染深挖图解`);
+    assert.equal(checklistCount, content.deepDives.filter((block) => block.kind === "checklist").length, `${slug} 的 Checklist 应保持为清单而不是伪图解`);
+  }
+});
+
+test("course maps use progressive reading instead of another wall of equal cards", async () => {
+  const curriculumModules = publishedModuleRegistry.filter((module) => module.routeKind === "brief" && module.readingProfile !== "focused");
+  for (const publication of curriculumModules) {
+    const html = await renderHtml(publication.path);
+    const curriculum = requireModuleCurriculum(publication.slug);
+    assert.match(html, /data-curriculum-representation="progressive-outline"/);
+    assert.equal((html.match(/class="curriculumChapter"/g) ?? []).length, curriculum.chapters.length);
+    assert.doesNotMatch(html, /curriculumChapterGrid/);
   }
 });
 

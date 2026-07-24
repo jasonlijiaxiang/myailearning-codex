@@ -16,7 +16,7 @@ const moduleSpecs = [
   ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "governance-evidence", "continuous-assurance"], "brief", "2026-07-22", "2026-07-21"],
   ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-20", "2026-07-17"],
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-07-21", "2026-07-17"],
-  ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-07-21", "2026-07-17"],
+  ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-07-24", "2026-07-17"],
   ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-07-21", "2026-07-21"],
   ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-20", "2026-07-17"],
   ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-23", "2026-07-17"],

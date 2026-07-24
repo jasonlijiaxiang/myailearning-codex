@@ -2,8 +2,10 @@ import { Children, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
+import { DeepDiveRelationView } from "./deep-dive-relation-view";
 import { QaFilterShell } from "./fieldbook-interactions";
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
+import { requireDeepDiveRepresentation } from "./module-representation-assessment.mjs";
 
 type SourceSummary = {
   grade: string;
@@ -243,8 +245,8 @@ export function ModuleDeepDiveBlocks({
               </div>
             </header>
 
-            {block.kind === "sequence" ? (
-              <ol className="deepDiveSequence" data-count={block.items.length}>
+            {requireDeepDiveRepresentation(block.kind) === "editorial-checklist" ? (
+              <ol className="deepDiveEditorialChecklist" data-adaptive-prose="checklist">
                 {block.items.map((item, index) => (
                   <li key={item.name}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
@@ -252,22 +254,8 @@ export function ModuleDeepDiveBlocks({
                   </li>
                 ))}
               </ol>
-            ) : block.kind === "checklist" || block.kind === "scenario" ? (
-              <BalancedGrid className={`deepDiveCards deepDiveCards--${block.kind}`} maxColumns={block.maxColumns ?? 3}>
-                {block.items.map((item) => (
-                  <article key={item.name}>
-                    <p className="miniLabel">{item.en ?? block.eyebrow}</p>
-                    <h4>{item.name}</h4>
-                    <p>{item.mechanism}</p>
-                    <strong>{item.decision}</strong>
-                    {item.boundary ? <small>{item.boundary}</small> : null}
-                  </article>
-                ))}
-              </BalancedGrid>
             ) : (
-              <div className="tableWrap deepDiveTable"><table><thead><tr><th>{labels.name}</th><th>{labels.mechanism}</th><th>{labels.decision}</th><th>{labels.boundary}</th></tr></thead><tbody>
-                {block.items.map((item) => <tr key={item.name}><th>{item.name}{item.en ? <small>{item.en}</small> : null}</th><td>{item.mechanism}</td><td>{item.decision}</td><td>{item.boundary ?? "—"}</td></tr>)}
-              </tbody></table></div>
+              <DeepDiveRelationView block={{ ...block, columnLabels: labels }} />
             )}
 
             <DeepDiveSourceLinks sourceIds={block.sourceIds} sourceLedger={sourceLedger} />
@@ -286,27 +274,31 @@ export function ModuleCurriculumAtlas({
   sourceLedger: SourceLedger;
 }) {
   return (
-    <div className="curriculumAtlas">
+    <div className="curriculumAtlas" data-curriculum-representation="progressive-outline">
       <p className="curriculumAtlasLead">{content.lead}</p>
-      <BalancedGrid className="curriculumChapterGrid" maxColumns={2}>
+      <div className="curriculumOutline">
         {content.chapters.map((chapter, index) => (
-          <article className="curriculumChapter" key={chapter.title}>
-            <header>
+          <details className="curriculumChapter" open={index === 0} key={chapter.title}>
+            <summary>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <h3>{chapter.title}</h3>
                 <p>{chapter.en}</p>
               </div>
-            </header>
-            <p className="curriculumExplanation">{chapter.explanation}</p>
-            <dl>
-              <div><dt>售前判断</dt><dd>{chapter.decision}</dd></div>
-              <div><dt>关键边界</dt><dd>{chapter.boundary}</dd></div>
-            </dl>
-            <DeepDiveSourceLinks sourceIds={chapter.sourceIds} sourceLedger={sourceLedger} />
-          </article>
+              <strong>{chapter.decision}</strong>
+              <i aria-hidden="true" />
+            </summary>
+            <div className="curriculumChapterBody">
+              <p className="curriculumExplanation">{chapter.explanation}</p>
+              <dl>
+                <div><dt>售前判断</dt><dd>{chapter.decision}</dd></div>
+                <div><dt>关键边界</dt><dd>{chapter.boundary}</dd></div>
+              </dl>
+              <DeepDiveSourceLinks sourceIds={chapter.sourceIds} sourceLedger={sourceLedger} />
+            </div>
+          </details>
         ))}
-      </BalancedGrid>
+      </div>
     </div>
   );
 }

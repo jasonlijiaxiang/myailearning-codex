@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import { englishModuleRegistry, englishQuestions, englishSourceCopy, englishTermCopy } from "../app/i18n/en/registry.mjs";
+import { englishRepresentationAssessment } from "../app/i18n/english-representation-assessment.mjs";
 import { buildEnglishSectionGroups, focusedEnglishModuleSlugs, focusedSectionRoleOrder, sharedSectionRoleOrder } from "../app/i18n/english-section-outline.mjs";
 import { englishModuleSlugs } from "../app/i18n/locale-config.mjs";
 import { requireModuleContent } from "../app/module-content-registry.mjs";
@@ -158,17 +159,37 @@ test("English module pages render the canonical knowledge view before the shared
   const englishModulePage = await readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8");
   assert.match(englishModulePage, /publication\.knowledgeView/);
   assert.match(englishModulePage, /deriveEnglishPrimer/);
-  assert.match(englishModulePage, /<EnglishModulePrimer module=\{module\} primer=\{primer\} \/>/);
+  assert.match(englishModulePage, /primer \? <EnglishModulePrimer module=\{module\} primer=\{primer\} \/> : null/);
   assert.match(englishModulePage, /<ModuleKnowledgeExplorer view=\{explorerView\} locale="en" \/>/, "English modules must share the canonical interactive knowledge view");
   assert.doesNotMatch(englishModulePage, /className="extensionPrimerMap"/, "English modules must not fall back to the old static card rail");
+  assert.match(englishModulePage, /<DeepDiveRelationView[\s\S]*locale="en"/, "English step relationships should use the shared adaptive relation view");
   assert.match(englishModulePage, /usesFocusedReadingProfile \? relatedSection : null/, "focused pages must place related modules after the main argument");
-  for (const slug of englishModuleSlugs) assert.ok(getPublishedModule(slug)?.knowledgeView, `${slug} needs a canonical bilingual knowledge view`);
+  for (const slug of englishModuleSlugs) assert.ok(getPublishedModule(slug), `${slug} needs a canonical bilingual publication contract`);
   for (const [slug, module] of Object.entries(englishModuleRegistry)) {
     if (!module.primer) continue;
     assert.equal(module.primer.id, getPublishedModule(slug).knowledgeView, `${slug} explicit primer must use the canonical knowledge-view ID`);
     assert.ok(module.primer.steps.length >= 3, `${slug} explicit primer needs a real mechanism sequence`);
     assert.ok(module.primer.checks.length >= 3, `${slug} explicit primer needs decision checks`);
     module.primer.termIds.forEach((termId) => assert.ok(module.terms[termId], `${slug} primer term must resolve to English copy`));
+  }
+});
+
+test("English content representation is assessed block by block without a visual quota", () => {
+  assert.deepEqual(Object.keys(englishRepresentationAssessment).sort(), [...englishModuleSlugs].sort());
+  const visualCounts = Object.values(englishRepresentationAssessment).map((assessment) => assessment.visualStepCount);
+  assert.ok(visualCounts.includes(0), "some modules should remain prose-first when their steps are learning guidance");
+  assert.ok(Math.max(...visualCounts) > 2, "relationship-rich modules may need several interactive views");
+  assert.ok(new Set(visualCounts).size >= 4, "visual counts should vary with the authored relationships");
+
+  for (const [slug, module] of Object.entries(englishModuleRegistry)) {
+    const expectedBlockCount = module.sections.reduce((total, section) => total + section.blocks.length, 0);
+    const assessment = englishRepresentationAssessment[slug];
+    assert.equal(assessment.blocks.length, expectedBlockCount, `${slug} must assess every English content block`);
+    assert.equal(
+      assessment.blocks.filter((block) => block.representation === "editorial-steps").length,
+      module.sections.flatMap((section) => section.blocks).filter((block) => block.type === "steps").length - assessment.visualStepCount,
+      `${slug} must keep non-relational step content as readable prose`,
+    );
   }
 });
 

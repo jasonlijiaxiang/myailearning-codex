@@ -354,6 +354,7 @@ export function ModuleExtensionPrimer({ slug }: { slug: string }) {
 }
 
 export function SharedModulePrimer({ slug, knowledgeView, brief }: { slug: string; knowledgeView: string | null; brief?: FocusedBrief }) {
+  if (!knowledgeView) return null;
   if (knowledgeView === "theory-atlas") return <LlmTheoryPrimer />;
   if (knowledgeView === "decision-blueprint") return <SolutionPatternPrimer brief={brief} />;
   if (knowledgeView === "mcp-host-server-boundary" && brief) return <McpFocusedPrimer brief={brief} />;

@@ -5,11 +5,13 @@ import { ModuleReadingNav, ReadingProgress, type ReadingSection } from "../field
 import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
 import { getModuleBySlug } from "../knowledge-map.mjs";
 import { ModuleHeroMetrics } from "../module-content-components";
+import { DeepDiveRelationView } from "../deep-dive-relation-view";
 import { requireModuleExtensionView } from "../module-extension-views.mjs";
 import { ModuleKnowledgeExplorer, type ExtensionView } from "../module-visual-explorers";
 import { getPublishedModule } from "../module-publication.mjs";
 import { sourceLedger } from "../reference-content.mjs";
 import { englishSourceCopy } from "./en/registry.mjs";
+import { shouldVisualizeEnglishSteps } from "./english-representation-assessment.mjs";
 import { buildEnglishSectionGroups } from "./english-section-outline.mjs";
 import { englishModuleSlugs } from "./locale-config.mjs";
 
@@ -198,7 +200,26 @@ function CardItem({ item }: { item: BlockItem }) {
   );
 }
 
-function ContentBlockView({ block }: { block: ContentBlock }) {
+function EditorialStepList({ block }: { block: ContentBlock }) {
+  return (
+    <ol className="deepDiveEditorialChecklist adaptiveEditorialSequence" data-adaptive-prose="steps">
+      {block.items.map((item, index) => (
+        <li id={item.id} key={item.id}>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <div>
+            <h4>{item.title}{item.subtitle ? <small>{item.subtitle}</small> : null}</h4>
+            {item.body ? <p>{item.body}</p> : null}
+            {item.decision ? <strong>{item.decision}</strong> : null}
+            {item.boundary ? <em>{item.boundary}</em> : null}
+            <SourceLinks sourceIds={item.sourceIds} />
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId: string }) {
   if (block.type === "boundary") {
     return (
       <aside className="callout" data-importance="critical">
@@ -228,15 +249,36 @@ function ContentBlockView({ block }: { block: ContentBlock }) {
   }
 
   if (block.type === "steps") {
+    const sourceIds = [...new Set(block.items.flatMap((item) => item.sourceIds ?? []))];
+    if (!shouldVisualizeEnglishSteps(sectionId, block)) {
+      return (
+        <div>
+          {block.title ? <h3>{block.title}</h3> : null}
+          {block.intro ? <p>{block.intro}</p> : null}
+          <EditorialStepList block={block} />
+        </div>
+      );
+    }
     return (
       <div>
         {block.title ? <h3>{block.title}</h3> : null}
         {block.intro ? <p>{block.intro}</p> : null}
-        <ol className="deepDiveSequence" data-count={block.items.length}>
-          {block.items.map((item, index) => (
-            <li id={item.id} key={item.id}><span>{String(index + 1).padStart(2, "0")}</span><div><h4>{item.title}{item.subtitle ? <small>{item.subtitle}</small> : null}</h4>{item.body ? <p>{item.body}</p> : null}{item.decision ? <strong>{item.decision}</strong> : null}{item.boundary ? <em>{item.boundary}</em> : null}<SourceLinks sourceIds={item.sourceIds} /></div></li>
-          ))}
-        </ol>
+        <DeepDiveRelationView
+          locale="en"
+          block={{
+            kind: "sequence",
+            title: block.title ?? "Process",
+            items: block.items.map((item) => ({
+              id: item.id,
+              name: item.title,
+              en: item.subtitle,
+              mechanism: item.body ?? "Establish the mechanism and observable state for this step.",
+              decision: item.decision ?? "Define the decision signal before moving forward.",
+              boundary: item.boundary,
+            })),
+          }}
+        />
+        <SourceLinks sourceIds={sourceIds} />
       </div>
     );
   }
@@ -270,7 +312,7 @@ function EnglishSectionGroupView({ group, number }: { group: EnglishSectionGroup
         <div id={section.id === group.id ? undefined : section.id} key={section.id}>
           {!singleSection ? <div className="moduleBriefIntro"><p className="miniLabel">{section.eyebrow}</p><h3>{section.title}</h3></div> : null}
           {section.lead ? <p className="sectionLead">{section.lead}</p> : null}
-          {section.blocks.map((block, index) => <ContentBlockView block={block} key={`${section.id}-${index}`} />)}
+          {section.blocks.map((block, index) => <ContentBlockView block={block} sectionId={section.id} key={`${section.id}-${index}`} />)}
         </div>
       ))}
     </section>
@@ -282,8 +324,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
   if (!publication) throw new Error(`English module is not published in Chinese: ${module.slug}`);
   const canonicalModule = getModuleBySlug(module.slug);
   if (!canonicalModule) throw new Error(`English module is missing from the knowledge map: ${module.slug}`);
-  if (!publication.knowledgeView) throw new Error(`English module is missing its canonical knowledge view: ${module.slug}`);
-  const primer = module.primer ?? deriveEnglishPrimer(module, publication.knowledgeView);
+  const primer = publication.knowledgeView ? module.primer ?? deriveEnglishPrimer(module, publication.knowledgeView) : null;
   const sectionGroups = buildEnglishSectionGroups(module) as EnglishSectionGroup[];
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
   const cloudGroups = sectionGroups.filter((group) => group.role === "cloud");
@@ -342,7 +383,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
           { href: `/modules/${module.slug}`, label: "中文原版" },
         ]} labels={{ navigation: "section navigation", progress: "Reading", quickLinks: "Quick links" }} />
         <div className="moduleArticleContent">
-          <EnglishModulePrimer module={module} primer={primer} />
+          {primer ? <EnglishModulePrimer module={module} primer={primer} /> : null}
           {!usesFocusedReadingProfile ? relatedSection : null}
 
           {mainGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}

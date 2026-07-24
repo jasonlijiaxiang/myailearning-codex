@@ -1846,3 +1846,346 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .tuningRouteDecision > i { transform: rotate(90deg); }
   .tuningRouteDecision dl { grid-template-columns: 1fr; }
 }
+
+/* Adaptive content representation: prose, tables, paths and checklists follow the relationship. */
+.modulePilot .curriculumAtlasLead {
+  margin: 0;
+  padding: 0 0 30px;
+  border: 0;
+  background: transparent;
+  color: #233148;
+  font-size: clamp(19px,2vw,24px);
+  line-height: 1.65;
+}
+.curriculumOutline { border-top: 1px solid #aeb8c4; }
+.curriculumOutline .curriculumChapter {
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #c9d0d8;
+  background: #fff;
+}
+.curriculumChapter summary {
+  min-height: 112px;
+  padding: 22px 8px;
+  display: grid;
+  grid-template-columns: 48px minmax(210px,.8fr) minmax(260px,1.2fr) 34px;
+  align-items: center;
+  gap: 18px;
+  color: inherit;
+  cursor: pointer;
+  list-style: none;
+}
+.curriculumChapter summary::-webkit-details-marker { display: none; }
+.curriculumChapter summary > span {
+  align-self: start;
+  padding-top: 7px;
+  color: #55736a;
+  font: 800 11px/1 var(--font-geist-mono),monospace;
+}
+.curriculumChapter summary h3 { margin: 0; font-size: clamp(20px,2.1vw,27px); line-height: 1.28; }
+.curriculumChapter summary div > p { margin: 6px 0 0; color: #738092; font: 700 11px/1.35 var(--font-geist-mono),monospace; letter-spacing: .02em; }
+.curriculumChapter summary > strong { color: #3f4d60; font-size: 15px; line-height: 1.65; }
+.curriculumChapter summary > i {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #aeb8c4;
+  border-radius: 50%;
+}
+.curriculumChapter summary > i::before,
+.curriculumChapter summary > i::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 8px;
+  width: 12px;
+  height: 1px;
+  background: #39485c;
+}
+.curriculumChapter summary > i::after { transform: rotate(90deg); transition: transform .18s ease; }
+.curriculumChapter[open] summary { background: linear-gradient(90deg,#f8fce9 0,#fff 66%); box-shadow: inset 5px 0 0 #91c218; }
+.curriculumChapter[open] summary > i { border-color: #6e8f27; }
+.curriculumChapter[open] summary > i::after { transform: rotate(0); }
+.curriculumChapterBody {
+  padding: 8px 64px 30px;
+  display: grid;
+  grid-template-columns: minmax(0,1.2fr) minmax(280px,.8fr);
+  gap: 20px 38px;
+}
+.curriculumChapterBody .curriculumExplanation {
+  margin: 0;
+  color: #556274;
+  font-size: 17px;
+  line-height: 1.78;
+}
+.curriculumChapterBody dl { margin: 0; display: grid; gap: 8px; }
+.curriculumChapterBody dl > div { padding: 13px 16px; border-left: 3px solid #8796a8; background: #f5f7f9; }
+.curriculumChapterBody dl > div:last-child { border-left-color: #b75c3d; background: #fff7f3; }
+.curriculumChapterBody dt { color: #667386; font: 800 10px/1 var(--font-geist-mono),monospace; letter-spacing: .06em; }
+.curriculumChapterBody dd { margin: 6px 0 0; font-size: 14px; line-height: 1.62; }
+.curriculumChapterBody .deepDiveSources { grid-column: 1 / -1; margin: 0; padding: 12px 0 0; border: 0; background: transparent; }
+
+.modulePilot .deepDiveList { gap: 58px; }
+.modulePilot .deepDiveBlock { border: 0; border-top: 1px solid #9da8b5; background: #fff; }
+.modulePilot .deepDiveHeader { grid-template-columns: 56px minmax(0,1fr); border-bottom: 0; }
+.modulePilot .deepDiveHeader > span { align-items: start; padding-top: 39px; border-right: 0; }
+.modulePilot .deepDiveHeader > div { max-width: 980px; padding: 30px 0 24px; }
+.modulePilot .deepDiveHeader h3 { margin: 7px 0 10px; font-size: clamp(26px,3vw,40px); }
+.modulePilot .deepDiveHeader p:last-child { font-size: 17px; line-height: 1.7; }
+.modulePilot .deepDiveSources { border-top-color: #d5dbe2; background: #f8fafb; }
+
+.deepDiveRelation {
+  --relation-accent: #91c218;
+  --relation-accent-soft: #f5fadf;
+  border-top: 1px solid #d2d8df;
+  border-bottom: 1px solid #d2d8df;
+  background: #fff;
+}
+.relationSequence { padding: 34px 24px 28px; }
+.relationSequence ol {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(128px,1fr));
+  list-style: none;
+}
+.relationSequence li { position: relative; min-width: 0; }
+.relationSequence li > i {
+  position: absolute;
+  top: 39px;
+  right: -10px;
+  z-index: 2;
+  width: 20px;
+  height: 1px;
+  background: #7c8999;
+}
+.relationSequence li > i::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid #7c8999;
+  border-right: 1px solid #7c8999;
+  transform: rotate(45deg);
+}
+.relationSequence button {
+  width: calc(100% - 12px);
+  min-height: 105px;
+  padding: 14px;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  border: 1px solid #adb7c3;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.relationSequence button[aria-pressed="true"] { border: 2px solid #70961b; background: var(--relation-accent-soft); transform: translateY(-5px); }
+.relationSequence button span,
+.relationScenario button span,
+.relationDiagnostic nav button span { color: #587168; font: 800 10px/1 var(--font-geist-mono),monospace; }
+.relationSequence button strong,
+.relationScenario button strong { font-size: 15px; line-height: 1.35; }
+.relationSequence button small,
+.relationScenario button small { color: #738092; font-size: 10px; line-height: 1.3; }
+.relationDetail {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid #aeb8c4;
+  border-bottom: 1px solid #aeb8c4;
+}
+.relationDetail > div { padding: 18px 20px; border-right: 1px solid #d0d6dd; }
+.relationDetail > div:last-child { border-right: 0; }
+.relationDetail span,
+.diagnosticPath span,
+.relationMatrixFocus span,
+.scenarioQuestion span {
+  display: block;
+  margin-bottom: 8px;
+  color: #5b7169;
+  font: 800 10px/1 var(--font-geist-mono),monospace;
+  letter-spacing: .06em;
+}
+.relationDetail p,
+.relationDetail strong { margin: 0; font-size: 14px; line-height: 1.65; }
+.relationDetail strong { display: block; }
+.relationDetail .relationBoundary { grid-column: 1 / -1; border-top: 1px solid #d0d6dd; border-right: 0; background: #fff7f3; }
+.relationBoundary span { color: #9c4a31; }
+
+.relationDiagnostic {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(190px,.38fr) minmax(0,1fr);
+  gap: 24px;
+}
+.relationDiagnostic nav { display: grid; align-content: start; border-top: 1px solid #aeb8c4; }
+.relationDiagnostic nav button {
+  min-height: 66px;
+  padding: 13px 12px;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 8px;
+  border: 0;
+  border-bottom: 1px solid #cbd2da;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.relationDiagnostic nav button[aria-pressed="true"] { background: var(--relation-accent-soft); box-shadow: inset 4px 0 0 #91c218; }
+.relationDiagnostic nav button strong { font-size: 14px; line-height: 1.4; }
+.diagnosticPath {
+  display: grid;
+  grid-template-columns: 1fr 28px 1fr 28px 1fr;
+  align-items: stretch;
+}
+.diagnosticPath > div {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #aeb8c4;
+  background: #fff;
+}
+.diagnosticPath > div:nth-of-type(2) { background: #f6f8fa; }
+.diagnosticPath > div:nth-of-type(3) { background: var(--relation-accent-soft); }
+.diagnosticPath strong,
+.diagnosticPath p { margin: 0; font-size: 14px; line-height: 1.62; }
+.diagnosticPath > i { position: relative; align-self: center; height: 1px; background: #7c8999; }
+.diagnosticPath > i::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid #7c8999;
+  border-right: 1px solid #7c8999;
+  transform: rotate(45deg);
+}
+.diagnosticBoundary {
+  grid-column: 2;
+  margin: 0;
+  padding: 14px 18px;
+  border-left: 4px solid #b75c3d;
+  background: #fff7f3;
+  font-size: 13px;
+  line-height: 1.62;
+}
+.diagnosticBoundary span { margin-right: 12px; color: #9c4a31; font: 800 10px/1 var(--font-geist-mono),monospace; letter-spacing: .06em; }
+
+.relationMatrix { padding: 0 0 22px; }
+.relationMatrixScroll { overflow-x: auto; }
+.relationMatrix table { width: 100%; min-width: 880px; border-collapse: collapse; }
+.relationMatrix th,
+.relationMatrix td { padding: 14px 16px; border-right: 1px solid #d0d6dd; border-bottom: 1px solid #d0d6dd; font-size: 13px; line-height: 1.55; text-align: left; vertical-align: top; }
+.relationMatrix thead th { background: #f4f6f8; color: #4f5d6f; font: 800 10px/1.3 var(--font-geist-mono),monospace; letter-spacing: .04em; }
+.relationMatrix tbody tr.isActive { background: #f8fce9; }
+.relationMatrix th button { width: 100%; min-height: 44px; padding: 0; display: grid; grid-template-columns: 28px 1fr; align-content: center; gap: 4px 8px; border: 0; background: transparent; color: inherit; font-weight: 800; text-align: left; cursor: pointer; }
+.relationMatrix th button span { grid-row: 1 / 3; color: #5a7269; font: 800 10px/1 var(--font-geist-mono),monospace; }
+.relationMatrix th button small { color: #738092; font-size: 10px; font-weight: 500; }
+.relationMatrixFocus { margin: 20px 22px 0; padding: 15px 18px; display: grid; grid-template-columns: 110px 190px 1fr; gap: 14px; background: #f4f7f9; font-size: 13px; line-height: 1.58; }
+.relationMatrixFocus span { margin: 2px 0 0; }
+
+.relationScenario { padding: 28px 24px; }
+.scenarioQuestion { max-width: 560px; margin: 0 auto 26px; padding: 18px; border: 1px solid #91a0af; text-align: center; }
+.scenarioQuestion strong { font-size: 17px; }
+.relationScenario nav { position: relative; display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 18px; }
+.relationScenario nav::before { content: ""; position: absolute; top: -14px; left: 12%; width: 76%; height: 1px; background: #9aa6b3; }
+.relationScenario button {
+  min-height: 98px;
+  padding: 16px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid #aeb8c4;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.relationScenario button[aria-pressed="true"] { border: 2px solid #70961b; background: var(--relation-accent-soft); }
+
+.deepDiveEditorialChecklist {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #c5ccd4;
+  list-style: none;
+}
+.deepDiveEditorialChecklist li {
+  min-height: 118px;
+  padding: 22px 4px;
+  display: grid;
+  grid-template-columns: 50px minmax(0,1fr);
+  border-bottom: 1px solid #cfd6dd;
+}
+.deepDiveEditorialChecklist li > span { padding-top: 5px; color: #587168; font: 800 11px/1 var(--font-geist-mono),monospace; }
+.deepDiveEditorialChecklist h4 { margin: 0 0 8px; font-size: 20px; }
+.deepDiveEditorialChecklist h4 small { display: block; margin-top: 4px; color: #738092; font-size: 10px; font-weight: 600; }
+.deepDiveEditorialChecklist p { margin: 0 0 9px; color: #556274; font-size: 16px; line-height: 1.68; }
+.deepDiveEditorialChecklist strong { display: block; font-size: 14px; line-height: 1.62; }
+.deepDiveEditorialChecklist em { display: block; margin-top: 8px; color: #9c4a31; font-size: 13px; line-height: 1.58; font-style: normal; }
+
+@media (max-width: 900px) {
+  .curriculumChapter summary { grid-template-columns: 42px minmax(180px,.8fr) minmax(220px,1fr) 32px; gap: 14px; }
+  .curriculumChapterBody { padding: 8px 48px 28px; }
+  .relationDiagnostic { grid-template-columns: 1fr; }
+  .diagnosticBoundary { grid-column: 1; }
+  .diagnosticPath { grid-template-columns: 1fr 22px 1fr 22px 1fr; }
+}
+
+@media (max-width: 640px) {
+  .modulePilot .curriculumAtlasLead { padding-bottom: 22px; font-size: 18px; }
+  .curriculumChapter summary {
+    min-height: 94px;
+    padding: 17px 2px;
+    grid-template-columns: 34px minmax(0,1fr) 30px;
+    gap: 10px;
+  }
+  .curriculumChapter summary > strong { grid-column: 2; color: #5c6878; font-size: 13px; line-height: 1.55; }
+  .curriculumChapter summary > i { grid-column: 3; grid-row: 1 / 3; }
+  .curriculumChapter summary h3 { font-size: 20px; }
+  .curriculumChapterBody { padding: 8px 34px 24px; grid-template-columns: 1fr; gap: 15px; }
+  .curriculumChapterBody .curriculumExplanation { font-size: 16px; }
+  .curriculumChapterBody .deepDiveSources { grid-column: 1; }
+
+  .modulePilot .deepDiveList { gap: 42px; }
+  .modulePilot .deepDiveHeader { grid-template-columns: 34px minmax(0,1fr); }
+  .modulePilot .deepDiveHeader > span { padding-top: 29px; }
+  .modulePilot .deepDiveHeader > div { padding: 22px 0 18px; }
+  .modulePilot .deepDiveHeader h3 { font-size: 26px; }
+  .modulePilot .deepDiveHeader p:last-child { font-size: 16px; }
+
+  .relationSequence { padding: 20px 0; }
+  .relationSequence ol { grid-template-columns: 1fr; gap: 0; }
+  .relationSequence li { padding: 0 0 24px 34px; }
+  .relationSequence li > i { top: auto; right: auto; bottom: 0; left: 16px; width: 1px; height: 24px; }
+  .relationSequence li > i::after { top: auto; right: -3px; bottom: 0; transform: rotate(135deg); }
+  .relationSequence button { width: 100%; min-height: 78px; }
+  .relationSequence button[aria-pressed="true"] { transform: none; }
+  .relationDetail { margin-top: 8px; grid-template-columns: 1fr; }
+  .relationDetail > div { border-right: 0; border-bottom: 1px solid #d0d6dd; }
+  .relationDetail > div:last-child { border-bottom: 0; }
+  .relationDetail .relationBoundary { grid-column: 1; }
+
+  .relationDiagnostic { padding: 18px 0; gap: 18px; }
+  .relationDiagnostic nav { grid-template-columns: 1fr 1fr; }
+  .relationDiagnostic nav button { min-height: 74px; }
+  .diagnosticPath { grid-template-columns: 1fr; gap: 20px; }
+  .diagnosticPath > i { width: 1px; height: 20px; justify-self: center; }
+  .diagnosticPath > i::after { top: auto; right: -3px; bottom: 0; transform: rotate(135deg); }
+
+  .relationMatrix { padding-bottom: 18px; }
+  .relationMatrixScroll { margin-right: -18px; padding-right: 18px; }
+  .relationMatrix table { min-width: 760px; }
+  .relationMatrixFocus { margin: 16px 0 0; grid-template-columns: 1fr; gap: 5px; }
+
+  .relationScenario { padding: 20px 0; }
+  .scenarioQuestion { margin-bottom: 22px; }
+  .relationScenario nav { grid-template-columns: 1fr; }
+  .relationScenario nav::before { display: none; }
+
+  .deepDiveEditorialChecklist li { grid-template-columns: 38px minmax(0,1fr); }
+}
