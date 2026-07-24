@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import { englishModuleRegistry, englishQuestions, englishSourceCopy, englishTermCopy } from "../app/i18n/en/registry.mjs";
-import { buildEnglishSectionGroups, sharedSectionRoleOrder } from "../app/i18n/english-section-outline.mjs";
+import { buildEnglishSectionGroups, focusedEnglishModuleSlugs, focusedSectionRoleOrder, sharedSectionRoleOrder } from "../app/i18n/english-section-outline.mjs";
 import { englishModuleSlugs } from "../app/i18n/locale-config.mjs";
 import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { getPublishedModule, hasDedicatedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
@@ -159,7 +159,7 @@ test("English module pages render the canonical knowledge view before the shared
   assert.match(englishModulePage, /publication\.knowledgeView/);
   assert.match(englishModulePage, /deriveEnglishPrimer/);
   assert.match(englishModulePage, /<EnglishModulePrimer module=\{module\} primer=\{primer\} \/>/);
-  assert.ok(englishModulePage.indexOf("<EnglishModulePrimer") < englishModulePage.indexOf('id="related-modules"'), "knowledge view must render before the related-module directory");
+  assert.match(englishModulePage, /usesFocusedReadingProfile \? relatedSection : null/, "focused pages must place related modules after the main argument");
   for (const slug of englishModuleSlugs) assert.ok(getPublishedModule(slug)?.knowledgeView, `${slug} needs a canonical bilingual knowledge view`);
   for (const [slug, module] of Object.entries(englishModuleRegistry)) {
     if (!module.primer) continue;
@@ -173,14 +173,13 @@ test("English module pages render the canonical knowledge view before the shared
 test("shared English sidebars preserve the canonical reading-role order", async () => {
   for (const slug of englishModuleSlugs.filter((moduleSlug) => !hasDedicatedModule(moduleSlug))) {
     const roles = buildEnglishSectionGroups(englishModuleRegistry[slug]).map((group) => group.role);
-    assert.deepEqual(roles, sharedSectionRoleOrder, `${slug} must provide every canonical sidebar role in order`);
+    const expectedRoles = focusedEnglishModuleSlugs.includes(slug) ? focusedSectionRoleOrder : sharedSectionRoleOrder;
+    assert.deepEqual(roles, expectedRoles, `${slug} must provide the correct canonical sidebar roles in order`);
   }
 
   const mcpGroups = buildEnglishSectionGroups(englishModuleRegistry.mcp);
-  assert.deepEqual(mcpGroups.map((group) => group.role), ["learning", "curriculum", "principle", "decision", "deep", "cloud"]);
+  assert.deepEqual(mcpGroups.map((group) => group.role), ["principle", "decision", "deep", "cloud"]);
   assert.deepEqual(mcpGroups.map((group) => group.label), [
-    "Learning & practice",
-    "Curriculum map",
     "Core mechanisms",
     "Solution choices",
     "Turn capability invocation into a verifiable authorization and execution chain",

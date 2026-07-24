@@ -468,11 +468,31 @@ test("dense-reading modules derive a scannable content overview from the publica
   for (const publishedModule of denseReadingModules) {
     const html = await renderHtml(publishedModule.path);
     assert.match(html, /class="[^"]*\bmodulePilot\b[^"]*"/, `${publishedModule.slug} 未启用共享高密度阅读壳`);
-    assert.match(html, /<dl class="moduleHeroMetrics" aria-label="模块内容概览">/);
-    assert.match(html, /<dt>阅读章节<\/dt>/);
-    assert.match(html, /<dt>客户问题<\/dt>/);
-    assert.match(html, /<dt>证据卡<\/dt>/);
+    if (publishedModule.readingProfile === "focused") {
+      assert.match(html, /class="[^"]*\bmoduleFocused\b[^"]*"/, `${publishedModule.slug} 未启用聚焦阅读结构`);
+      assert.doesNotMatch(html, /<dl class="moduleHeroMetrics"/, `${publishedModule.slug} 不应在首屏展示内容计数`);
+    } else {
+      assert.match(html, /<dl class="moduleHeroMetrics" aria-label="模块内容概览">/);
+      assert.match(html, /<dt>阅读章节<\/dt>/);
+      assert.match(html, /<dt>客户问题<\/dt>/);
+      assert.match(html, /<dt>证据卡<\/dt>/);
+    }
     assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
+  }
+});
+
+test("focused pilots use relationship-driven reading paths instead of standalone chapter quotas", async () => {
+  const focusedModules = publishedModuleRegistry.filter((module) => module.readingProfile === "focused");
+  assert.deepEqual(focusedModules.map((module) => module.slug), ["solution-patterns", "mcp", "llm-inference"]);
+
+  for (const publishedModule of focusedModules) {
+    const html = await renderHtml(publishedModule.path);
+    assert.doesNotMatch(html, /id="study-guide"/);
+    assert.doesNotMatch(html, /id="curriculum"/);
+    assert.match(html, /id="principle"/);
+    assert.match(html, /data-quality-section="deep-dive"/);
+    assert.ok(html.indexOf('id="principle"') < html.indexOf('id="evidence"'), `${publishedModule.slug} 必须先给出模块独有的判断主线`);
+    assert.ok(html.indexOf('id="qa"') < html.indexOf('id="related-modules"'), `${publishedModule.slug} 应在完成主论证后再给相关模块`);
   }
 });
 
@@ -485,9 +505,15 @@ test("remaining modules complete their own knowledge views, learning expansions,
     const view = moduleExtensionViews[slug];
     const html = await renderHtml(`/modules/${slug}`);
     assert.match(html, new RegExp(`data-knowledge-view="${escapeRegExp(view.id)}"`));
-    assert.match(html, new RegExp(escapeRegExp(view.title)));
-    assert.match(html, /class="extensionPrimerMap"/);
-    assert.match(html, /class="extensionPrimerChecks"/);
+    const publication = publishedModuleRegistry.find((module) => module.slug === slug);
+    if (publication?.readingProfile === "focused") {
+      assert.match(html, /class="[^"]*\bfocusedNarrative\b[^"]*"/);
+      assert.match(html, /class="focusedDecisionLedger"/);
+    } else {
+      assert.match(html, new RegExp(escapeRegExp(view.title)));
+      assert.match(html, /class="extensionPrimerMap"/);
+      assert.match(html, /class="extensionPrimerChecks"/);
+    }
   }
 
   for (const slug of Object.keys(completionLearning)) {
@@ -584,8 +610,7 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(solution, /TCO/);
   assert.match(solution, /七类场景，七套验收重点/);
   assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
-  assert.match(solution, /智能客服应该看回答准确率，还是看问题解决率/);
-  assert.match(solution, /ChatBI 生成的 SQL 能运行，为什么还不能说明答案正确/);
+  assert.match(solution, /继续查询本模块全部客户问题/);
   assert.doesNotMatch(solution, /需求决策契约|三本账|能力组合/);
 
   assert.match(security, /data-knowledge-view="threat-path"/);
@@ -1093,13 +1118,19 @@ test("every shared module has a source-backed learning route and practical labs"
     }
 
     const html = await renderHtml(publishedModuleEntry.path);
-    assert.match(html, /id="study-guide"/);
-    assert.match(html, /id="curriculum"/);
-    assert.match(html, /学完后，你应该能独立完成/);
-    assert.match(html, /建议学习顺序/);
-    assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
-    assert.match(html, /用真实产物证明掌握/);
-    assert.match(html, /课程地图与知识展开/);
+    if (publishedModuleEntry.readingProfile === "focused") {
+      assert.doesNotMatch(html, /id="study-guide"/);
+      assert.doesNotMatch(html, /id="curriculum"/);
+      assert.match(html, /核心机制与售前判断/);
+    } else {
+      assert.match(html, /id="study-guide"/);
+      assert.match(html, /id="curriculum"/);
+      assert.match(html, /学完后，你应该能独立完成/);
+      assert.match(html, /建议学习顺序/);
+      assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
+      assert.match(html, /用真实产物证明掌握/);
+      assert.match(html, /课程地图与知识展开/);
+    }
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
   }
 });

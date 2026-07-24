@@ -478,6 +478,121 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .codingFreshnessFlow h3 { margin: 26px 0 10px; font-size: 20px; }
 .codingFreshnessFlow p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.68; }
 
+/* Focused module readers: one argument per page, not a repeated chapter stack. */
+.moduleFocused { background: #fff; }
+.moduleFocused .modulePageHero { padding-bottom: 26px; background: #fff; }
+.moduleFocused .moduleBriefHeader {
+  max-width: 1180px;
+  grid-template-columns: minmax(350px,.72fr) minmax(480px,1.28fr);
+  grid-template-areas: "title definition" "title position";
+  gap: 10px clamp(42px,6vw,88px);
+  padding-top: 24px;
+}
+.moduleFocused .moduleBriefHeader .moduleHeroTitle { grid-area: title; font-size: clamp(40px,4vw,56px); line-height: 1.02; }
+.moduleFocused .moduleBriefHeader .moduleHeroTitle > span { margin-top: 12px; font-size: 15px; line-height: 1.35; }
+.moduleFocused .moduleBriefDefinition { grid-area: definition; max-width: 820px; margin: 0; font-size: clamp(20px,1.65vw,25px); line-height: 1.48; }
+.moduleFocused .moduleBriefPosition { grid-area: position; max-width: 820px; margin: 0; font-size: 15px; line-height: 1.7; }
+.moduleFocused .moduleArticleContent { background: #fff; }
+.focusedReadingCue {
+  margin: 0;
+  padding: 15px clamp(24px,4vw,54px);
+  display: flex;
+  gap: 10px 24px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.focusedReadingCue span:first-child { color: var(--blue); }
+.focusedNarrative {
+  margin: 0;
+  padding: clamp(44px,5vw,70px) clamp(24px,4vw,54px);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+.focusedNarrative .pilotPrimerHeader { align-items: start; }
+.focusedNarrative .pilotPrimerHeader h2 { max-width: 720px; font-size: clamp(30px,3vw,44px); line-height: 1.12; }
+.focusedNarrative .pilotPrimerHeader > p { max-width: 700px; font-size: 16px; line-height: 1.75; }
+.focusedNarrative .termHintRow { margin-top: 28px; }
+.focusedTermStrip { margin: 0; padding: 18px clamp(24px,4vw,54px); border-bottom: 1px solid var(--line); background: #f8faf5; }
+.focusedTermStrip span { min-width: 0; }
+.focusedSection,
+.modulePilot .focusedSection,
+.focusedRelated,
+.modulePilot .focusedRelated { padding: clamp(48px,5vw,72px) clamp(24px,4vw,54px); background: #fff; }
+.focusedSection .subHead h2,
+.focusedRelated .subHead h2 { font-size: clamp(28px,2.6vw,38px); }
+.focusedSection .sectionLead { max-width: 880px; margin-left: 0; font-size: 16px; }
+
+.mcpResponsibilityMap {
+  margin-top: 38px;
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.mcpResponsibilityMap article { min-width: 0; padding: 22px 20px 24px; border-right: 1px solid var(--line); }
+.mcpResponsibilityMap article:last-child { border-right: 0; }
+.mcpResponsibilityMap span { color: var(--blue); font: 800 11px/1 var(--font-geist-mono),monospace; letter-spacing: .08em; }
+.mcpResponsibilityMap h3 { margin: 34px 0 10px; font-size: 20px; }
+.mcpResponsibilityMap p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.mcpResponsibilityMap strong { display: block; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.55; }
+.mcpInvocationSequence,
+.inferenceRequestRail { margin: 48px 0 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+.mcpInvocationSequence li,
+.inferenceRequestRail li { display: grid; grid-template-columns: 54px minmax(0,1fr); gap: 22px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.mcpInvocationSequence li > span,
+.inferenceRequestRail li > span { color: var(--blue); font: 800 12px/1 var(--font-geist-mono),monospace; }
+.mcpInvocationSequence h3,
+.inferenceRequestRail h3 { margin: 2px 0 8px; font-size: 22px; }
+.mcpInvocationSequence p,
+.inferenceRequestRail p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+.mcpInvocationSequence strong,
+.inferenceRequestRail strong { display: block; margin-top: 9px; font-size: 14px; line-height: 1.55; }
+
+.inferenceRequestRail { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); }
+.inferenceRequestRail li { grid-template-columns: 1fr; padding: 22px; border-right: 1px solid var(--line); }
+.inferenceRequestRail li:last-child { border-right: 0; }
+.inferenceBudgetLedger { margin-top: 50px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); }
+.inferenceBudgetLedger > section { padding: 28px 30px; }
+.inferenceBudgetLedger > section + section { border-left: 1px solid var(--line); }
+.inferenceBudgetLedger > section > h3 { margin: 8px 0 26px; font-size: 27px; }
+.inferenceBudgetLedger article { padding: 17px 0; border-top: 1px solid var(--line); }
+.inferenceBudgetLedger h4 { margin: 0; font-size: 18px; }
+.inferenceBudgetLedger h4 small { display: block; margin-top: 4px; color: var(--muted); font: 700 11px/1.4 var(--font-geist-mono),monospace; }
+.inferenceBudgetLedger article p { margin: 9px 0 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.inferenceBudgetLedger article strong { display: block; margin-top: 9px; font-size: 13px; line-height: 1.55; }
+
+.focusedDecisionLedger { margin-top: 54px; border-top: 2px solid var(--ink); }
+.focusedDecisionLedger > header { padding: 24px 0; display: grid; grid-template-columns: minmax(240px,.65fr) minmax(360px,1.35fr); gap: 18px 44px; align-items: end; }
+.focusedDecisionLedger > header .kicker { grid-column: 1 / -1; }
+.focusedDecisionLedger > header h3 { margin: 0; font-size: 27px; line-height: 1.2; }
+.focusedDecisionLedger > header > p:last-child { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.focusedDecisionRows { border-bottom: 1px solid var(--line); }
+.focusedDecisionRows article { display: grid; grid-template-columns: 44px minmax(260px,.9fr) minmax(300px,1.1fr); gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); }
+.focusedDecisionRows article > span { color: var(--blue); font: 800 11px/1 var(--font-geist-mono),monospace; }
+.focusedDecisionRows h4 { margin: 0 0 8px; font-size: 18px; }
+.focusedDecisionRows p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.focusedDecisionRows strong,
+.focusedDecisionRows small { display: block; font-size: 14px; line-height: 1.6; }
+.focusedDecisionRows small { margin-top: 8px; color: var(--muted); }
+.focusedBoundary { margin: 44px 0 0; padding: 20px 24px; display: grid; grid-template-columns: 170px minmax(0,1fr); gap: 24px; border-left: 5px solid var(--lime); background: #f3f8e8; }
+.focusedBoundary span { color: var(--blue); font: 800 11px/1.4 var(--font-geist-mono),monospace; }
+.focusedBoundary p { margin: 0; font-size: 16px; line-height: 1.65; }
+.focusedCloudRows { margin-top: 30px; border-top: 2px solid var(--ink); }
+.focusedCloudRows article { display: grid; grid-template-columns: minmax(180px,.55fr) minmax(320px,1.45fr); gap: 12px 34px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.focusedCloudRows h3 { margin: 0; font-size: 19px; }
+.focusedCloudRows p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.focusedCloudRows p strong { display: block; margin-bottom: 5px; color: var(--ink); }
+.focusedCloudRows small { grid-column: 2; color: var(--blue); font-size: 12px; line-height: 1.55; }
+.focusedDirectoryLink { margin: 24px 0 0; text-align: right; }
+.focusedDirectoryLink a { color: var(--blue); font-size: 13px; font-weight: 800; text-decoration: none; }
+.focusedRelated .relatedModuleGrid { border-top: 2px solid var(--ink); }
+
 @media (min-width: 901px) and (max-height: 900px) {
   .heroV2 { min-height: 0; padding-bottom: 34px; }
   .heroGridV2 { min-height: 520px; padding-top: 36px; }
@@ -519,6 +634,15 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .modulePilot .moduleBriefHeader,
   .modulePilot .ragHeader { grid-template-columns: 1fr; gap: 18px; }
   .modulePilot .moduleBriefHeader { grid-template-areas: "eyebrow" "title" "definition" "position" "metrics"; }
+  .moduleFocused .moduleBriefHeader { grid-template-areas: "title" "definition" "position"; }
+  .mcpResponsibilityMap,
+  .inferenceRequestRail { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .mcpResponsibilityMap article:nth-child(2) { border-right: 0; }
+  .inferenceRequestRail li:nth-child(2) { border-right: 0; }
+  .focusedDecisionLedger > header { grid-template-columns: 1fr; }
+  .focusedDecisionLedger > header .kicker { grid-column: 1; }
+  .focusedDecisionRows article { grid-template-columns: 38px minmax(0,1fr); }
+  .focusedDecisionRows article > div:last-child { grid-column: 2; }
   .modulePilot .ragHeader { grid-template-areas: none; }
   .modulePilot .moduleBriefDefinition { margin-top: 0; }
   .moduleReadingNav { border-top: 1px solid var(--line); }
@@ -564,8 +688,10 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .modulePilot .ragHero { padding: 0 20px 26px; }
   .modulePilot .moduleBriefHeader,
   .modulePilot .ragHeader { padding-top: 28px; }
+  .moduleFocused .moduleBriefHeader { padding-top: 24px; }
   .modulePilot .moduleBriefHeader .moduleHeroTitle,
   .modulePilot .ragHeader .moduleHeroTitle { font-size: clamp(43px,11vw,55px); }
+  .moduleFocused .moduleBriefHeader .moduleHeroTitle { font-size: clamp(38px,10vw,48px); }
   .moduleHeroMetrics { grid-template-columns: repeat(3,1fr); }
   .moduleHeroMetrics > div { padding: 10px; }
   .moduleHeroMetrics dd strong { font-size: 23px; }
@@ -575,6 +701,24 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .modulePilot .decisionBanner { padding: 24px 20px; border-left-width: 4px; }
   .modulePilot .subsection,
   .subsection { padding-top: 46px; padding-bottom: 46px; }
+  .focusedReadingCue { padding-inline: 20px; flex-direction: column; gap: 4px; }
+  .focusedNarrative,
+  .focusedSection,
+  .modulePilot .focusedSection,
+  .focusedRelated,
+  .modulePilot .focusedRelated { padding: 40px 20px; }
+  .focusedTermStrip { padding: 16px 20px; }
+  .mcpResponsibilityMap,
+  .inferenceRequestRail,
+  .inferenceBudgetLedger { grid-template-columns: 1fr; }
+  .mcpResponsibilityMap article,
+  .inferenceRequestRail li { border-right: 0; }
+  .inferenceBudgetLedger > section { padding: 24px 0; }
+  .inferenceBudgetLedger > section + section { border-top: 1px solid var(--line); border-left: 0; }
+  .focusedDecisionRows article { grid-template-columns: 28px minmax(0,1fr); gap: 14px; }
+  .focusedBoundary { grid-template-columns: 1fr; gap: 10px; }
+  .focusedCloudRows article { grid-template-columns: 1fr; gap: 8px; }
+  .focusedCloudRows small { grid-column: 1; }
   .modulePilot .sectionLead,
   .sectionLead { margin-left: 0; font-size: 17px; }
   .tableWrap table { font-size: 16px; }

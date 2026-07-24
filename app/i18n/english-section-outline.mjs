@@ -10,6 +10,8 @@ export const sharedSectionRoles = Object.freeze({
 });
 
 export const sharedSectionRoleOrder = Object.freeze(["learning", "curriculum", "principle", "decision", "deep", "cloud"]);
+export const focusedSectionRoleOrder = Object.freeze(["principle", "decision", "deep", "cloud"]);
+export const focusedEnglishModuleSlugs = Object.freeze(["solution-patterns", "mcp", "llm-inference"]);
 
 export function classifySharedSection(section) {
   if (/(?:study-guide|study|practice|learning-studio)/.test(section.id)) return "learning";
@@ -37,7 +39,8 @@ export function buildEnglishSectionGroups(module) {
     grouped.set(role, [...(grouped.get(role) ?? []), section]);
   }
 
-  return sharedSectionRoleOrder.flatMap((role) => {
+  const roleOrder = focusedEnglishModuleSlugs.includes(module.slug) ? focusedSectionRoleOrder : sharedSectionRoleOrder;
+  return roleOrder.flatMap((role) => {
     const sections = grouped.get(role);
     if (!sections?.length) return [];
     const sharedRole = sharedSectionRoles[role];

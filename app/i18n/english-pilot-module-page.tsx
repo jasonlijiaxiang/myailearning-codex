@@ -280,18 +280,35 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
   if (!publication.knowledgeView) throw new Error(`English module is missing its canonical knowledge view: ${module.slug}`);
   const primer = module.primer ?? deriveEnglishPrimer(module, publication.knowledgeView);
   const sectionGroups = buildEnglishSectionGroups(module) as EnglishSectionGroup[];
+  const usesFocusedReadingProfile = publication.readingProfile === "focused";
   const cloudGroups = sectionGroups.filter((group) => group.role === "cloud");
   const mainGroups = sectionGroups.filter((group) => group.role !== "cloud");
-  const readingSections: ReadingSection[] = [
-    { id: "related-modules", label: "Related modules", eyebrow: "Build connections" },
+  const contentReadingSections: ReadingSection[] = [
     ...mainGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "evidence", label: "Evidence and limits", eyebrow: "Know what sources prove" },
     ...cloudGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "qa", label: "Customer questions", eyebrow: "Use in customer conversations" },
   ];
+  const relatedReadingSection: ReadingSection = { id: "related-modules", label: "Related modules", eyebrow: "Build connections" };
+  const readingSections = usesFocusedReadingProfile
+    ? [...contentReadingSections, relatedReadingSection]
+    : [relatedReadingSection, ...contentReadingSections];
+  const relatedSection = (
+    <section className={`subsection moduleBriefRelated${usesFocusedReadingProfile ? " focusedRelated" : ""}`} id="related-modules">
+      <div className="subHead"><span>{usesFocusedReadingProfile ? "06" : "01"}</span><div><p className="kicker">RELATED MODULES</p><h2>Continue through the knowledge map</h2></div></div>
+      <div className="relatedModuleGrid" data-count={module.relatedSlugs.length} data-odd={module.relatedSlugs.length % 2 === 1 ? "true" : "false"}>
+        {module.relatedSlugs.map((slug) => {
+          const related = getModuleBySlug(slug);
+          if (!related) throw new Error(`Unknown related module: ${slug}`);
+          const availableInEnglish = englishModuleSlugs.includes(slug);
+          return <Link href={availableInEnglish ? `/en/modules/${slug}` : related.href} hrefLang={availableInEnglish ? "en" : "zh-CN"} key={slug} prefetch={false}><span>{related.layerNo}</span><strong>{related.en}</strong><small>{availableInEnglish ? "Open module" : "Available in Chinese"}</small></Link>;
+        })}
+      </div>
+    </section>
+  );
 
   return (
-    <main lang="en" className={`modulePage moduleBriefPage${publication.visualProfile === "dense-reading" ? " modulePilot" : ""}`}>
+    <main lang="en" className={`modulePage moduleBriefPage${publication.visualProfile === "dense-reading" ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="Module navigation">
@@ -305,11 +322,11 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
           </div>
         </nav>
         <div className="moduleBriefHeader">
-          <p className="eyebrow">MODULE {canonicalModule.layerNo} · {canonicalModule.layerEn}</p>
+          {!usesFocusedReadingProfile ? <p className="eyebrow">MODULE {canonicalModule.layerNo} · {canonicalModule.layerEn}</p> : null}
           <h1 className="moduleHeroTitle">{module.title}<span>{module.subtitle}</span></h1>
           <p className="moduleBriefDefinition">{module.definition}</p>
           <p className="moduleBriefPosition">{module.position}</p>
-          <ModuleHeroMetrics sectionCount={readingSections.length} questionCount={module.qa.length} evidenceCount={module.evidenceCards.length} labels={{ ariaLabel: "Module content overview", sections: "Sections", questions: "Customer questions", evidence: "Evidence cards" }} />
+          {!usesFocusedReadingProfile ? <ModuleHeroMetrics sectionCount={readingSections.length} questionCount={module.qa.length} evidenceCount={module.evidenceCards.length} labels={{ ariaLabel: "Module content overview", sections: "Sections", questions: "Customer questions", evidence: "Evidence cards" }} /> : null}
         </div>
       </header>
 
@@ -321,17 +338,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
         ]} labels={{ navigation: "section navigation", progress: "Reading", quickLinks: "Quick links" }} />
         <div className="moduleArticleContent">
           <EnglishModulePrimer module={module} primer={primer} />
-          <section className="subsection moduleBriefRelated" id="related-modules">
-            <div className="subHead"><span>01</span><div><p className="kicker">RELATED MODULES</p><h2>Continue through the knowledge map</h2></div></div>
-            <div className="relatedModuleGrid" data-count={module.relatedSlugs.length} data-odd={module.relatedSlugs.length % 2 === 1 ? "true" : "false"}>
-              {module.relatedSlugs.map((slug) => {
-                const related = getModuleBySlug(slug);
-                if (!related) throw new Error(`Unknown related module: ${slug}`);
-                const availableInEnglish = englishModuleSlugs.includes(slug);
-                return <Link href={availableInEnglish ? `/en/modules/${slug}` : related.href} hrefLang={availableInEnglish ? "en" : "zh-CN"} key={slug} prefetch={false}><span>{related.layerNo}</span><strong>{related.en}</strong><small>{availableInEnglish ? "Open module" : "Available in Chinese"}</small></Link>;
-              })}
-            </div>
-          </section>
+          {!usesFocusedReadingProfile ? relatedSection : null}
 
           {mainGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}
 
@@ -361,6 +368,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
               </details>
             ))}</div>
           </section>
+          {usesFocusedReadingProfile ? relatedSection : null}
         </div>
       </div>
 

@@ -98,6 +98,7 @@ type ModulePublication = {
   titleId: string;
   requiredTerms: readonly string[];
   visualProfile: "dense-reading" | "standard";
+  readingProfile?: "focused";
   knowledgeView: string | null;
   updatedAt: string | null;
 };
@@ -165,8 +166,9 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const terms = publication.requiredTerms.map((termId: string) => requireTerm(termId) as Term);
   const hasDeepDives = Boolean(brief.deepDives?.length);
   const usesDenseReadingProfile = publication.visualProfile === "dense-reading";
+  const usesFocusedReadingProfile = publication.readingProfile === "focused";
   const englishPath = englishModulePath(currentModule.canonicalSlug);
-  const readingSections: ReadingSection[] = [
+  const standardReadingSections: ReadingSection[] = [
     { id: "related-modules", label: "相关模块", eyebrow: "建立连接" },
     { id: "study-guide", label: "学习与实战", eyebrow: "知道如何掌握" },
     { id: "curriculum", label: "课程地图", eyebrow: "补齐知识版图" },
@@ -177,6 +179,15 @@ export default async function ModulePage({ params }: ModulePageProps) {
     { id: "cloud", label: "云服务连接", eyebrow: "对应可用服务" },
     { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
   ];
+  const focusedReadingSections: ReadingSection[] = [
+    { id: "principle", label: "核心判断", eyebrow: "先抓住主要矛盾" },
+    ...(hasDeepDives ? [{ id: "deep-dive", label: brief.deepDiveTitle ?? "生产深挖", eyebrow: "沿问题继续深入" }] : []),
+    { id: "evidence", label: "证据边界", eyebrow: "知道能证明什么" },
+    { id: "cloud", label: "落地连接", eyebrow: "对应能力与责任" },
+    { id: "qa", label: "现场问答", eyebrow: "处理常见异议" },
+    { id: "related-modules", label: "继续阅读", eyebrow: "再建立跨模块连接" },
+  ];
+  const readingSections = usesFocusedReadingProfile ? focusedReadingSections : standardReadingSections;
   const systemLensPanels: LensPanel[] = [
     {
       id: `${currentModule.slug}-mechanism`,
@@ -205,7 +216,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   ];
 
   return (
-    <main className={`modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}`}>
+    <main className={`modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">
@@ -213,11 +224,11 @@ export default async function ModulePage({ params }: ModulePageProps) {
           <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">本模块问答</a><Link href="/glossary">术语库</Link><Link href="/questions">全部问题</Link><Link href="/references">Reference</Link>{englishPath ? <Link href={englishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}</div>
         </nav>
         <div className="moduleBriefHeader">
-          <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V2.0</p>
+          {!usesFocusedReadingProfile ? <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V2.0</p> : null}
           <h1 className="moduleHeroTitle" id={publication.titleId}>{currentModule.zh}<span>{currentModule.en}</span></h1>
           <p className="moduleBriefDefinition">{brief.definition}</p>
           <p className="moduleBriefPosition">{brief.position}</p>
-          {usesDenseReadingProfile ? <ModuleHeroMetrics sectionCount={readingSections.length} questionCount={brief.qa.length} evidenceCount={brief.evidenceCards.length} /> : null}
+          {usesDenseReadingProfile && !usesFocusedReadingProfile ? <ModuleHeroMetrics sectionCount={readingSections.length} questionCount={brief.qa.length} evidenceCount={brief.evidenceCards.length} /> : null}
         </div>
       </header>
 
@@ -228,6 +239,53 @@ export default async function ModulePage({ params }: ModulePageProps) {
           { href: "#qa", label: "准备客户问答" },
         ]} />
         <div className="moduleArticleContent">
+      {usesFocusedReadingProfile ? (
+        <>
+      <p className="focusedReadingCue"><span>核心机制与售前判断</span><span>机制、失败与控制</span></p>
+      <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} />
+      <div className="termStrip focusedTermStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
+
+      {hasDeepDives ? (
+        <section className="subsection moduleBriefSection focusedSection" id="deep-dive" data-quality-section="deep-dive">
+          <div className="subHead"><span>02</span><div><p className="kicker">FOLLOW THE PROBLEM</p><h2>{brief.deepDiveTitle ?? "进一步理解与工程判断"}</h2></div></div>
+          {brief.deepDiveLead ? <p className="sectionLead">{brief.deepDiveLead}</p> : null}
+          <ModuleDeepDiveBlocks blocks={brief.deepDives ?? []} sourceLedger={sourceLedger} />
+        </section>
+      ) : null}
+
+      <section className="subsection moduleBriefSection focusedSection" id="evidence" data-quality-section="evidence">
+        <div className="subHead"><span>03</span><div><p className="kicker">WHAT THE EVIDENCE PROVES</p><h2>证据与适用边界</h2></div></div>
+        <ModuleEvidenceGrid cards={brief.evidenceCards.slice(0, 4)} sourceLedger={sourceLedger} maxColumns={2} />
+        <p className="focusedDirectoryLink"><Link href={`/references#module-${currentModule.canonicalSlug}`}>在 Reference 台账查看本模块全部来源与核验日期 →</Link></p>
+      </section>
+
+      <section className="subsection moduleBriefSection cloudSection focusedSection" id="cloud" data-quality-section="cloud">
+        <div className="subHead"><span>04</span><div><p className="kicker">CAPABILITY, OWNER, PROOF</p><h2>云服务连接</h2></div></div>
+        <p className="sectionLead">产品名称不是这一段的主角。先确认需要的能力、责任人和验收方式，再核验目标地域当前可用的产品、配额、SLA 与价格。</p>
+        <div className="focusedCloudRows">
+          {brief.cloudHooks.map((item) => <article key={item.stage}><h3>{item.stage}</h3><p><strong>{item.value}</strong>{item.services}</p><small>发现问题：{item.discover}</small></article>)}
+        </div>
+      </section>
+
+      <section className="subsection moduleBriefSection qaSection focusedSection" id="qa" data-quality-section="qa">
+        <div className="subHead"><span>05</span><div><p className="kicker">FIVE QUESTIONS FOR THE ROOM</p><h2>客户高频问题与深度回答</h2></div></div>
+        <ModuleQaList items={brief.qa.slice(0, 5)} sourceLedger={sourceLedger} />
+        <p className="focusedDirectoryLink"><Link href={`/questions?module=${currentModule.canonicalSlug}`}>继续查询本模块全部客户问题 →</Link></p>
+      </section>
+
+      <section className="subsection moduleBriefRelated focusedRelated" id="related-modules" data-quality-section="related-modules" aria-labelledby="related-modules-title">
+        <div className="subHead"><span>06</span><div><p className="kicker">CONTINUE THE ARGUMENT</p><h2 id="related-modules-title">相关模块</h2></div></div>
+        <div className="relatedModuleGrid" data-count={relatedModules.length} data-odd={relatedModules.length % 2 === 1 ? "true" : "false"}>
+          {(relatedRows as KnowledgeModule[][]).flatMap((row) => row.map((related) => (
+            <Link href={related.href} key={related.slug} style={{ "--related-span": gridSpan(row.length) } as CSSProperties}>
+              <span>{related.layerNo}</span><strong>{related.zh}</strong><small>{related.en}</small>
+            </Link>
+          )))}
+        </div>
+      </section>
+        </>
+      ) : (
+        <>
       <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} />
       <section className="subsection moduleBriefRelated" id="related-modules" data-quality-section="related-modules" aria-labelledby="related-modules-title">
         <div className="subHead"><span>01</span><div><p className="kicker">RELATED MODULES</p><h2 id="related-modules-title">相关模块</h2></div></div>
@@ -293,6 +351,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
         <div className="subHead"><span>{hasDeepDives ? "09" : "08"}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>客户高频问题与深度回答</h2></div></div>
         <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} />
       </section>
+        </>
+      )}
         </div>
       </div>
 

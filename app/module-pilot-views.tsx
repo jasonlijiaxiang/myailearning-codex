@@ -16,6 +16,14 @@ type ExtensionView = {
   links: Array<{ href: string; label: string }>;
 };
 
+type FocusedBrief = {
+  principleTitle: string;
+  criticalBoundary: string;
+  principles: Array<{ zh: string; en: string; explanation: string; decision: string }>;
+  decisions: Array<{ question: string; signal: string; recommendation: string; boundary: string }>;
+  cloudHooks: Array<{ stage: string; services: string; value: string; discover: string }>;
+};
+
 const ragKnowledgeSteps = [
   ["01", "连接与解析", "Connect & Parse", "保留标题、表格、页码与来源坐标；失败内容进入处理队列。"],
   ["02", "切块与元数据", "Chunk & Describe", "建立版本、权限、时间、产品与父子关系，不只生成一段文本。"],
@@ -164,7 +172,8 @@ const solutionDecisionStages = [
   ["01", "业务结果", "Outcome", "谁的哪项工作需要发生改变？", "写清成功、失败和责任人"],
   ["02", "任务边界", "Task Boundary", "系统提供信息、建议，还是会执行动作？", "确定人工接管与不可接受结果"],
   ["03", "能力搭配", "Capability Mix", "需要检索、生成、工具、规则或多模态吗？", "只加入能解释其作用的组件"],
-  ["04", "验证与运营", "Proof & Operations", "用什么数据验收，上线后由谁维护？", "约定通过条件、成本和故障处理"],
+  ["04", "验证证据", "Proof", "哪些样本、切片与失败条件可以推翻方案？", "先写验收和停止条件，再开始 PoC"],
+  ["05", "运营责任", "Operations", "上线后由谁维护质量、成本、权限与故障？", "把负责人、预算、回滚和复盘写入方案"],
 ];
 
 const solutionCapabilityChoices = [
@@ -184,16 +193,17 @@ const solutionScenarioAtlas = [
   ["会议助手", "记录决定并推进事项", "决定召回 · 责任人正确", "隐私与错误归责"],
 ];
 
-export function SolutionPatternPrimer() {
+export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
+  const decisionRows = brief?.decisions.slice(0, 4) ?? [];
   return (
-    <section className="pilotPrimer pilotPrimer--solution" data-knowledge-view="decision-blueprint" aria-labelledby="solution-pattern-primer-title">
+    <section className="pilotPrimer pilotPrimer--solution focusedNarrative focusedNarrative--decision" id="principle" data-knowledge-view="decision-blueprint" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="solution-pattern-primer-title">
       <header className="pilotPrimerHeader">
         <div><p className="kicker">DECISION BLUEPRINT</p><h2 id="solution-pattern-primer-title">把业务目标变成可以验收的方案</h2></div>
         <p>场景方案从业务变化出发，依次确定任务边界、需要搭配的能力、验收证据和后续负责人；产品名称在这些问题明确后再进入。</p>
       </header>
       <TermHintRow label="方案讨论常用缩写" termIds={["poc", "sla", "tco", "rag", "ai-agent"]} />
       <div className="solutionBlueprint">
-        <ol className="solutionDecisionRail" aria-label="从业务目标到可运营方案的四步决策">
+        <ol className="solutionDecisionRail" aria-label="从业务目标到可运营方案的五道决策门">
           {solutionDecisionStages.map(([no, title, en, question, output]) => (
             <li key={no}><span>{no}</span><h3>{title}<small>{en}</small></h3><p>{question}</p><strong>{output}</strong></li>
           ))}
@@ -209,6 +219,20 @@ export function SolutionPatternPrimer() {
           ))}
         </div>
       </div>
+      {decisionRows.length ? (
+        <section className="focusedDecisionLedger" aria-labelledby="solution-decision-ledger-title">
+          <header><p className="kicker">PROBLEM CONTRACT</p><h3 id="solution-decision-ledger-title">先把问题写成一页可反驳的方案契约</h3><p>下面不是通用功能表，而是把客户实际情况、建议与失败边界放在同一行。任何一行无法验证，都不应进入采购清单。</p></header>
+          <div className="focusedDecisionRows" role="table" aria-label="问题契约">
+            {decisionRows.map((item, index) => (
+              <article role="row" key={item.question}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div><p className="miniLabel">客户问题</p><h4>{item.question}</h4><p>{item.signal}</p></div>
+                <div><p className="miniLabel">建议与证伪</p><strong>{item.recommendation}</strong><small>{item.boundary}</small></div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
       <div className="primerAtlas" aria-label="七类常见场景的目标、指标和隐藏风险">
         <div className="primerAtlasHeader"><h3>七类场景，七套验收重点</h3><p>复用的是能力积木，不是同一套指标。</p></div>
         <div className="primerAtlasTable" role="table">
@@ -216,7 +240,69 @@ export function SolutionPatternPrimer() {
           {solutionScenarioAtlas.map(([scene, outcome, metric, risk]) => <div className="primerAtlasRow" role="row" key={scene}><strong>{scene}</strong><span>{outcome}</span><span>{metric}</span><span>{risk}</span></div>)}
         </div>
       </div>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用四步决策把模糊需求缩成一个可验证场景，再选择“找、写、做、审”的必要组合；每增加一项能力，都要同时增加验收方法和负责人。</p><nav aria-label="场景解决方案深入阅读"><a href="#decisions">查看方案选择</a><a href="#study-guide">完成场景练习</a><a href="#cloud">对应云服务</a></nav></footer>
+      {brief ? <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside> : null}
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用五道决策门把模糊需求缩成一个可验证场景，再选择“找、写、做、审”的必要组合；每增加一项能力，都要同时增加验收方法和负责人。</p><nav aria-label="场景解决方案深入阅读"><a href="#deep-dive">检查生产边界</a><a href="#evidence">核对证据</a><a href="#cloud">对应云服务</a></nav></footer>
+    </section>
+  );
+}
+
+function McpFocusedPrimer({ brief }: { brief: FocusedBrief }) {
+  const view = requireModuleExtensionView("mcp") as ExtensionView;
+  return (
+    <section className="pilotPrimer focusedNarrative focusedNarrative--protocol" id="principle" data-knowledge-view={view.id} data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="mcp-focused-title">
+      <header className="pilotPrimerHeader">
+        <div><p className="kicker">PROTOCOL RESPONSIBILITY MAP</p><h2 id="mcp-focused-title">先分清四方责任，再讨论工具接入</h2></div>
+        <p>协议解决能力如何被发现和调用；身份从哪里来、业务系统是否授权、调用结果是否可信，仍由协议外的应用与平台控制共同完成。</p>
+      </header>
+      <TermHintRow label="MCP 角色与能力" termIds={view.termIds} />
+      <div className="mcpResponsibilityMap" aria-label="MCP 四个责任面">
+        {[
+          ["HOST", "承载用户目标", "组织上下文、用户交互与最终体验", "不能把用户身份和审批责任下放给模型"],
+          ["CLIENT", "维护协议会话", "发现能力、协商上下文并发起调用", "会调用不代表已经获得业务授权"],
+          ["SERVER", "暴露能力契约", "提供 Tool、Resource、Prompt 与结果语义", "必须声明输入、错误、权限与版本边界"],
+          ["SYSTEM", "执行真实业务", "校验主体、策略、数据权限并改变状态", "最终授权与审计必须落在业务系统"],
+        ].map(([code, title, detail, boundary]) => <article key={code}><span>{code}</span><h3>{title}</h3><p>{detail}</p><strong>{boundary}</strong></article>)}
+      </div>
+      <ol className="mcpInvocationSequence" aria-label="从能力发现到结果回读的调用链">
+        {view.steps.map((step) => <li key={step.code}><span>{step.code}</span><div><p className="miniLabel">{step.en}</p><h3>{step.title}</h3><p>{step.detail}</p><strong>{step.signal}</strong></div></li>)}
+      </ol>
+      <section className="focusedDecisionLedger" aria-labelledby="mcp-decision-title">
+        <header><p className="kicker">ADOPTION CHECK</p><h3 id="mcp-decision-title">哪些条件不成立时，不要急着引入 MCP</h3></header>
+        <div className="focusedDecisionRows">
+          {brief.decisions.slice(0, 4).map((item, index) => <article key={item.question}><span>{String(index + 1).padStart(2, "0")}</span><div><h4>{item.question}</h4><p>{item.signal}</p></div><div><strong>{item.recommendation}</strong><small>{item.boundary}</small></div></article>)}
+        </div>
+      </section>
+      <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>沿“发现—选择—授权—执行—回读”逐段确认主体、责任人、错误语义和审计证据；只要其中一段说不清，就还不是可上线的工具接入。</p><nav aria-label="MCP 深入阅读"><a href="#deep-dive">部署与长任务</a><a href="#evidence">协议证据</a><a href="#cloud">平台连接</a></nav></footer>
+    </section>
+  );
+}
+
+function InferenceFocusedPrimer({ brief }: { brief: FocusedBrief }) {
+  const view = requireModuleExtensionView("llm-inference") as ExtensionView;
+  const diagnosticRows = brief.decisions.slice(0, 4);
+  return (
+    <section className="pilotPrimer focusedNarrative focusedNarrative--diagnostic" id="principle" data-knowledge-view={view.id} data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="inference-focused-title">
+      <header className="pilotPrimerHeader">
+        <div><p className="kicker">LATENCY × MEMORY × CAPACITY</p><h2 id="inference-focused-title">把“推理慢”拆成一条可以测量的请求链</h2></div>
+        <p>先区分排队、Prefill、Decode 与结果传输，再把时间指标和显存占用对应起来。只有定位瓶颈，批处理、量化、缓存或扩容才有明确目的。</p>
+      </header>
+      <TermHintRow label="推理性能常用缩写" termIds={view.termIds} />
+      <ol className="inferenceRequestRail" aria-label="推理请求生命周期">
+        {view.steps.map((step) => <li key={step.code}><span>{step.code}</span><div><p className="miniLabel">{step.en}</p><h3>{step.title}</h3><p>{step.detail}</p><strong>{step.signal}</strong></div></li>)}
+      </ol>
+      <div className="inferenceBudgetLedger" aria-label="时间预算与容量预算">
+        <section><p className="kicker">TIME BUDGET</p><h3>用户等在哪里</h3>{brief.principles.slice(0, 3).map((item) => <article key={item.en}><h4>{item.zh}<small>{item.en}</small></h4><p>{item.explanation}</p><strong>{item.decision}</strong></article>)}</section>
+        <section><p className="kicker">MEMORY BUDGET</p><h3>并发为什么被吃掉</h3>{brief.principles.slice(3).map((item) => <article key={item.en}><h4>{item.zh}<small>{item.en}</small></h4><p>{item.explanation}</p><strong>{item.decision}</strong></article>)}</section>
+      </div>
+      <section className="focusedDecisionLedger" aria-labelledby="inference-diagnostic-title">
+        <header><p className="kicker">DIAGNOSTIC LEDGER</p><h3 id="inference-diagnostic-title">症状不是结论：每个优化动作都要对应一个可观察信号</h3></header>
+        <div className="focusedDecisionRows">
+          {diagnosticRows.map((item, index) => <article key={item.question}><span>{String(index + 1).padStart(2, "0")}</span><div><h4>{item.question}</h4><p>{item.signal}</p></div><div><strong>{item.recommendation}</strong><small>{item.boundary}</small></div></article>)}
+        </div>
+      </section>
+      <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>带着真实输入长度、输出长度、并发、SLO 与硬件组合做负载测试；分别记录 TTFT、TPOT、吞吐、显存和失败率，再决定优化顺序。</p><nav aria-label="推理优化深入阅读"><a href="#deep-dive">诊断生产瓶颈</a><a href="#evidence">核对测量边界</a><a href="#cloud">容量与服务</a></nav></footer>
     </section>
   );
 }
@@ -373,9 +459,11 @@ export function ModuleExtensionPrimer({ slug }: { slug: string }) {
   );
 }
 
-export function SharedModulePrimer({ slug, knowledgeView }: { slug: string; knowledgeView: string | null }) {
+export function SharedModulePrimer({ slug, knowledgeView, brief }: { slug: string; knowledgeView: string | null; brief?: FocusedBrief }) {
   if (knowledgeView === "theory-atlas") return <LlmTheoryPrimer />;
-  if (knowledgeView === "decision-blueprint") return <SolutionPatternPrimer />;
+  if (knowledgeView === "decision-blueprint") return <SolutionPatternPrimer brief={brief} />;
+  if (knowledgeView === "mcp-host-server-boundary" && brief) return <McpFocusedPrimer brief={brief} />;
+  if (knowledgeView === "latency-capacity-map" && brief) return <InferenceFocusedPrimer brief={brief} />;
   if (knowledgeView === "threat-path") return <SecurityThreatPrimer />;
   if (knowledgeView === "tuning-lifecycle") return <FineTuningPrimer />;
   return <ModuleExtensionPrimer slug={slug} />;
