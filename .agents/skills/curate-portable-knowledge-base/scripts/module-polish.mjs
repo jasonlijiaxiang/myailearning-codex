@@ -49,6 +49,7 @@ const MANUAL_MODULE_TRANSITIONS = new Map([
   ["blocked", new Set(["in-progress"])],
 ]);
 const SAFE_EXECUTABLES = new Set(["node", "npm", "npx"]);
+const GIT_OBJECT_ID_PATTERN = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
 
 function fail(message) {
   throw new Error(message);
@@ -81,7 +82,55 @@ function resolveProjectPath(projectRelativePath, label) {
   return absolutePath;
 }
 
+async function assertReadableProjectFile(
+  filePath,
+  label = relativePath(filePath),
+) {
+  const absolutePath = path.resolve(filePath);
+  const rel = path.relative(PROJECT_ROOT, absolutePath);
+  assert(
+    rel !== "" && rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel),
+    `${label} must be a file inside the project root.`,
+  );
+
+  let rootInfo;
+  try {
+    rootInfo = await lstat(PROJECT_ROOT);
+  } catch (error) {
+    fail(`Cannot inspect project root for ${label}: ${error.message}`);
+  }
+  assert(
+    !rootInfo.isSymbolicLink() && rootInfo.isDirectory(),
+    `Project root must be a real directory before reading ${label}.`,
+  );
+
+  const parts = rel.split(path.sep).filter(Boolean);
+  let cursor = PROJECT_ROOT;
+  for (let index = 0; index < parts.length; index += 1) {
+    cursor = path.join(cursor, parts[index]);
+    let info;
+    try {
+      info = await lstat(cursor);
+    } catch (error) {
+      fail(`Cannot inspect ${label}: ${error.message}`);
+    }
+    assert(
+      !info.isSymbolicLink(),
+      `Refusing symlinked read path: ${relativePath(cursor)}`,
+    );
+    if (index === parts.length - 1) {
+      assert(info.isFile(), `Expected readable project file: ${label}`);
+    } else {
+      assert(
+        info.isDirectory(),
+        `Expected directory while reading ${label}: ${relativePath(cursor)}`,
+      );
+    }
+  }
+}
+
 async function readJson(filePath, label = relativePath(filePath)) {
+  await assertReadableProjectFile(filePath, label);
   let source;
   try {
     source = await readFile(filePath, "utf8");
@@ -111,6 +160,7 @@ function sha256(value) {
 }
 
 async function sha256File(filePath) {
+  await assertReadableProjectFile(filePath);
   return sha256(await readFile(filePath));
 }
 
@@ -365,6 +415,7 @@ async function loadPublishedModuleSlugs(config) {
     registryRelative,
     "curation.publicationRegistry",
   );
+  await assertReadableProjectFile(registryPath, "publication registry");
   let registry;
   try {
     registry = await import(`${pathToFileURL(registryPath).href}?module-polish=${Date.now()}`);
@@ -574,7 +625,7 @@ function assertGitRoot() {
 function gitHead() {
   assertGitRoot();
   const head = run("git", ["rev-parse", "--verify", "HEAD"], { capture: true });
-  assert(/^[0-9a-f]{40}$/.test(head), "Git HEAD is not a full commit SHA.");
+  assert(GIT_OBJECT_ID_PATTERN.test(head), "Git HEAD is not a full commit object ID.");
   return head;
 }
 
@@ -681,7 +732,10 @@ async function readRuntime(context, batchId, required = true) {
     value.planSha256 === sha256(canonicalJson(context.plan)),
     `Runtime plan digest mismatch for ${batchId}; prepare is fail-closed.`,
   );
-  assert(/^[0-9a-f]{40}$/.test(value.baselineSha), `Runtime baseline is invalid for ${batchId}.`);
+  assert(
+    GIT_OBJECT_ID_PATTERN.test(value.baselineSha),
+    `Runtime baseline is invalid for ${batchId}.`,
+  );
   assert(Array.isArray(value.criticalFiles), `Runtime critical file hashes are invalid for ${batchId}.`);
   return value;
 }

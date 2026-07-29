@@ -8,6 +8,7 @@ import {
   readFile,
   rename,
   rm,
+  symlink,
   writeFile,
 } from "node:fs/promises";
 import os from "node:os";
@@ -21,6 +22,8 @@ const cliPath = path.join(
   root,
   ".agents/skills/curate-portable-knowledge-base/scripts/module-polish.mjs",
 );
+const gitObjectIdSource = "(?:[0-9a-f]{40}|[0-9a-f]{64})";
+const gitObjectIdPattern = new RegExp(`^${gitObjectIdSource}$`);
 
 async function readJson(relativePath) {
   return JSON.parse(await readFile(path.join(root, relativePath), "utf8"));
@@ -65,6 +68,7 @@ function assertRejected(result, pattern, label) {
 async function createFixture(t, {
   targetedCommand = "scripts/pass.mjs",
   fullCommand = "node scripts/pass.mjs",
+  gitObjectFormat = null,
 } = {}) {
   const fixtureRoot = await mkdtemp(path.join(os.tmpdir(), "module-polish-test-"));
   t.after(() => rm(fixtureRoot, { recursive: true, force: true }));
@@ -171,7 +175,11 @@ async function createFixture(t, {
   ]);
 
   const gitCommands = [
-    ["init", "-q"],
+    [
+      "init",
+      "-q",
+      ...(gitObjectFormat ? [`--object-format=${gitObjectFormat}`] : []),
+    ],
     ["config", "user.name", "Module Polish Test"],
     ["config", "user.email", "module-polish-test@example.invalid"],
     ["add", "."],
@@ -214,13 +222,20 @@ function stageFixture(fixtureRoot) {
   );
 }
 
-test("module polish plan covers the 21 live modules exactly once", async () => {
+test("module polish plan covers every live module exactly once", async () => {
   const plan = await readJson("knowledge/module-polish/plan.json");
   const plannedSlugs = plan.batches.flatMap((batch) => batch.modules);
 
-  assert.equal(publishedModuleSlugs.length, 21, "the live publication registry must contain 21 modules");
-  assert.equal(plannedSlugs.length, 21, "the plan must schedule 21 module occurrences");
-  assert.equal(new Set(plannedSlugs).size, 21, "a module must not appear in more than one batch");
+  assert.equal(
+    plannedSlugs.length,
+    publishedModuleSlugs.length,
+    "the plan must schedule one occurrence for every live module",
+  );
+  assert.equal(
+    new Set(plannedSlugs).size,
+    publishedModuleSlugs.length,
+    "a module must not appear in more than one batch",
+  );
   assert.deepEqual(
     [...plannedSlugs].sort(),
     [...publishedModuleSlugs].sort(),
@@ -301,10 +316,59 @@ test("configured plan, progress, and schema paths exist", async () => {
   }
 });
 
-test("the live CLI validates the repository plan", () => {
+test("the live CLI validates the repository plan", async () => {
+  const plan = await readJson("knowledge/module-polish/plan.json");
+  const moduleCount = plan.batches.flatMap((batch) => batch.modules).length;
   const result = runProcess(process.execPath, [cliPath, "validate"], { cwd: root });
   assertSucceeded(result, "module-polish validate");
-  assert.match(result.stdout, /module-polish valid: 10 batches, 21 modules/);
+  assert.equal(
+    result.stdout.trim(),
+    `module-polish valid: ${plan.batches.length} batches, ${moduleCount} modules`,
+  );
+});
+
+test("validate refuses a plan reached through a symlink", async (t) => {
+  const fixtureRoot = await createFixture(t);
+  const planPath = path.join(fixtureRoot, "knowledge/module-polish/plan.json");
+  const targetPath = path.join(fixtureRoot, "knowledge/module-polish/plan.target.json");
+  await rename(planPath, targetPath);
+  try {
+    await symlink("plan.target.json", planPath);
+  } catch (error) {
+    if (["EACCES", "ENOSYS", "EPERM"].includes(error.code)) {
+      t.skip(`symlinks are unavailable: ${error.code}`);
+      return;
+    }
+    throw error;
+  }
+
+  assertRejected(
+    runCli(fixtureRoot, ["validate"]),
+    /Refusing symlinked read path: knowledge\/module-polish\/plan\.json/,
+    "symlinked plan validation",
+  );
+});
+
+test("validate refuses a publication registry reached through a symlink", async (t) => {
+  const fixtureRoot = await createFixture(t);
+  const registryPath = path.join(fixtureRoot, "app/module-publication.mjs");
+  const targetPath = path.join(fixtureRoot, "app/module-publication.target.mjs");
+  await rename(registryPath, targetPath);
+  try {
+    await symlink("module-publication.target.mjs", registryPath);
+  } catch (error) {
+    if (["EACCES", "ENOSYS", "EPERM"].includes(error.code)) {
+      t.skip(`symlinks are unavailable: ${error.code}`);
+      return;
+    }
+    throw error;
+  }
+
+  assertRejected(
+    runCli(fixtureRoot, ["validate"]),
+    /Refusing symlinked read path: app\/module-publication\.mjs/,
+    "symlinked publication registry validation",
+  );
 });
 
 test("brief emits only project-relative paths and rejects a module from another batch", async (t) => {
@@ -528,7 +592,10 @@ test("prepare next selects only the first incomplete approved batch", async (t) 
   const fixtureRoot = await createFixture(t);
   const result = runCli(fixtureRoot, ["prepare", "next"]);
   assertSucceeded(result, "prepare next");
-  assert.match(result.stdout, /batch-01-foundations prepared at [0-9a-f]{40}/);
+  assert.match(
+    result.stdout,
+    new RegExp(`batch-01-foundations prepared at ${gitObjectIdSource}`),
+  );
 
   const progress = JSON.parse(
     await readFile(path.join(fixtureRoot, "knowledge/module-polish/progress.json"), "utf8"),
@@ -540,6 +607,38 @@ test("prepare next selects only the first incomplete approved batch", async (t) 
       fixtureRoot,
       "knowledge/module-polish/.runtime/batch-01-foundations.json",
     ),
+  );
+});
+
+test("prepare accepts a SHA-256 Git repository when the installed Git supports it", async (t) => {
+  const probeRoot = await mkdtemp(path.join(os.tmpdir(), "module-polish-sha256-probe-"));
+  const probe = runProcess(
+    "git",
+    ["init", "-q", "--object-format=sha256"],
+    { cwd: probeRoot },
+  );
+  await rm(probeRoot, { recursive: true, force: true });
+  if (probe.status !== 0) {
+    t.skip("installed Git does not support SHA-256 repositories");
+    return;
+  }
+
+  const fixtureRoot = await createFixture(t, { gitObjectFormat: "sha256" });
+  const result = runCli(fixtureRoot, ["prepare", "next"]);
+  assertSucceeded(result, "prepare next in SHA-256 fixture");
+  const runtime = JSON.parse(
+    await readFile(
+      path.join(
+        fixtureRoot,
+        "knowledge/module-polish/.runtime/batch-01-foundations.json",
+      ),
+      "utf8",
+    ),
+  );
+  assert.match(runtime.baselineSha, /^[0-9a-f]{64}$/);
+  assert.match(
+    result.stdout,
+    new RegExp(`batch-01-foundations prepared at ${runtime.baselineSha}`),
   );
 });
 
@@ -555,7 +654,9 @@ test("frozen baseline and unexplained worktree drift block batch start", async (
   }
   assertRejected(
     runCli(movedHeadFixture, ["set-batch", "batch-01-foundations", "in-progress", "start"]),
-    /batch-01-foundations baseline moved: expected [0-9a-f]{40}, found [0-9a-f]{40}/,
+    new RegExp(
+      `batch-01-foundations baseline moved: expected ${gitObjectIdSource}, found ${gitObjectIdSource}`,
+    ),
     "moved baseline HEAD",
   );
 
@@ -690,7 +791,10 @@ test("seal requires a clean committed completion and never rewrites tracked prog
   const before = await readFile(progressPath, "utf8");
   const sealed = runCli(fixtureRoot, ["seal", "batch-01-foundations"]);
   assertSucceeded(sealed, "seal completed fixture batch");
-  assert.match(sealed.stdout, /batch-01-foundations: sealed at [0-9a-f]{40}/);
+  assert.match(
+    sealed.stdout,
+    new RegExp(`batch-01-foundations: sealed at ${gitObjectIdSource}`),
+  );
   assert.equal(
     await readFile(progressPath, "utf8"),
     before,
@@ -707,7 +811,7 @@ test("seal requires a clean committed completion and never rewrites tracked prog
     ),
   );
   assert.equal(receipt.batchId, "batch-01-foundations");
-  assert.match(receipt.headSha, /^[0-9a-f]{40}$/);
+  assert.match(receipt.headSha, gitObjectIdPattern);
   assert.equal(
     runProcess("git", ["status", "--porcelain=v1"], { cwd: fixtureRoot }).stdout,
     "",
