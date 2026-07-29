@@ -133,15 +133,15 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   llm: {
-    outcomes: ["理解 Token、Embedding、位置与 Transformer 块", "用 Q/K/V 直觉解释注意力而不神化它", "区分 Prefill、Decode 与 KV Cache", "把上下文、并发、时延和成本联系起来"],
+    outcomes: ["理解 Token、Embedding、位置与 Transformer 块", "用 Q/K/V 直觉解释注意力而不把权重当作完整解释", "区分参数化知识、当前上下文与自回归生成", "把应用症状转交给模型、RAG、Prompt、推理或外部控制责任层"],
     route: [
       { title: "从序列表示开始", learn: "理解文本如何变成 Token 与向量，以及位置信息为什么必要。", checkpoint: "能解释同一句话为何占用不同 Token 数并影响成本。" },
-      { title: "再看信息如何流动", learn: "沿注意力、前馈网络、残差和归一化理解表示变换。", checkpoint: "能区分注意力权重、模型解释和事实依据。" },
-      { title: "最后连接生成与工程", learn: "理解自回归循环、采样、上下文窗口和 KV Cache。", checkpoint: "能从首字慢、生成慢或并发下降反推可能瓶颈。" },
+      { title: "再看信息如何流动", learn: "沿注意力、前馈网络、残差和归一化理解表示变换。", checkpoint: "能区分注意力计算、解释假设和事实或审计证据。" },
+      { title: "最后用一次应用失败串起来", learn: "理解自回归循环、采样、上下文、Prefill、Decode 与 KV Cache，并把真实症状归到可验证责任层。", checkpoint: "能区分基础能力、证据供给、生成控制、推理服务和模型外编排。" },
     ],
     labs: [
       { title: "手算一个最小注意力例子", scenario: "用三个 Token 的简化向量观察查询如何选择上下文。", tasks: ["计算点积、缩放和 Softmax 权重", "对 Value 做加权求和", "改变一个 Token 并观察输出变化"], deliverable: "带中间值和解释的注意力计算表", acceptance: "能说明计算表达相关性聚合，但不能证明模型有可读的内在思维。", sourceIds: ["transformer-2017"] },
-      { title: "拆解一次生成请求", scenario: "同一模型短问答很快，长文档首字慢，长输出持续占用资源。", tasks: ["分别估算输入和输出 Token", "标出 Prefill、Decode 和 KV Cache 阶段", "提出上下文、批处理或输出长度的验证实验"], deliverable: "请求时间线与瓶颈假设", acceptance: "优化建议对应具体阶段，不用“换更大 GPU”替代诊断。", sourceIds: ["vllm-2023", "flashattention-2022"] },
+      { title: "拆解一次企业知识助手失败", scenario: "同一问题有时答错、有时格式漂移；长资料还让首字变慢，团队准备直接更换更大模型。", tasks: ["记录用户原问、实际上下文、模型与采样配置、输入输出 Token 和端到端 Trace", "分别提出基础能力、证据供给、生成控制、推理服务和外部编排假设", "每次只改变一个变量，并为下一步指定 Model Landscape、RAG、Prompt、LLM Inference、Agent 或 Security 责任层"], deliverable: "一份请求时间线、故障树和跨模块转交证据", acceptance: "结论能说明下一步由谁用什么实验证伪，不因回答流畅、一次成功或单一时延直接归因于模型。", sourceIds: ["transformer-2017", "lost-middle", "vllm-2023", "nist-genai-profile"] },
     ],
   },
   "fine-tuning": {
@@ -186,15 +186,15 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   "data-engineering": {
-    outcomes: ["把 AI 数据当作有契约和生命周期的产品", "理解解析、同步、去重、索引与权限传播", "建立可分层的数据质量指标", "设计删除、撤权和反馈回流闭环"],
+    outcomes: ["把 AI 数据当作有权威来源、用途、稳定身份和生命周期的数据产品", "理解解析、清洗、版本裁决、同步、派生与策略传播", "建立可分层的数据质量、血缘、隔离与单位成本证据", "设计新增、替换、撤权、删除、例外和反馈回流闭环"],
     route: [
-      { title: "先建立来源与权威性", learn: "记录所有者、版本、权限、时间和业务含义。", checkpoint: "能判断哪个副本是权威，哪些仅供派生。" },
-      { title: "再构建可验证管道", learn: "把解析、切分、同步、索引和质量检查拆成可观测阶段。", checkpoint: "静默损坏能在进入生成前被发现。" },
-      { title: "最后管理派生与反馈", learn: "传播权限、删除、血缘和失败样本，避免只修 Prompt。", checkpoint: "一次源数据变化能追到所有受影响资产。" },
+      { title: "先建立来源、用途与裁决权", learn: "记录所有者、权威系统、版本或有效期、策略引用、允许用途和冲突裁决人。", checkpoint: "能判断哪个副本权威、哪些是派生物，谁有权处理冲突。" },
+      { title: "再构建可验证管道", learn: "把接入、解析、清洗、版本、派生、发布和质量检查拆成可观测阶段。", checkpoint: "静默损坏、未裁决冲突和隔离项不会进入下游。" },
+      { title: "最后管理派生状态与反馈", learn: "传播替换、撤权、删除、例外、血缘和失败样本，避免只修 Prompt。", checkpoint: "一次源数据变化能追到所有受影响资产和当前状态。" },
     ],
     labs: [
       { title: "建立文档管道验收集", scenario: "客户资料跨年份、模板、语言和扫描质量，解析结果偶发错表。", tasks: ["按版式与质量分层抽样", "定义文本、结构、表格、页码和元数据指标", "为静默错误设置人工抽检与阻断"], deliverable: "管道黄金集与阶段质量门", acceptance: "不是只看 OCR 字符准确率，关键表格和证据位置可复核。", sourceIds: ["docling-report", "pp-ocr-2020"] },
-      { title: "演练撤权与删除传播", scenario: "源系统撤销一名员工的文档权限，并删除一个错误版本。", tasks: ["追踪缓存、对象、切块、Embedding、索引和评估样本", "定义传播窗口和失败重试", "生成可审计的完成证明"], deliverable: "删除传播图、SLO 与验证记录", acceptance: "搜索和生成在承诺窗口内不再返回内容，且例外由数据所有者显式批准。", sourceIds: ["nist-zero-trust", "hnsw-2016"] },
+      { title: "演练替换、撤权与删除传播", scenario: "源系统发布新版本、撤销一名员工的访问，并要求旧版本按保留规则退出生产用途。", tasks: ["为对象及派生物标记 active、superseded、revoked、quarantined、retained-by-exception 或 physically-deleted", "追踪缓存、对象、切块、Embedding、索引、评估与导出资产", "定义传播窗口、失败重试、全量对账和负向证明"], deliverable: "状态传播图、SLO、例外清单与验证记录", acceptance: "当前身份只看到当前权威版本；撤权内容在承诺窗口内不可访问，保留例外受控且每层结果可证明。", sourceIds: ["nist-zero-trust", "w3c-prov-o", "openlineage-spec"] },
     ],
   },
   "ai-infra-platform": {

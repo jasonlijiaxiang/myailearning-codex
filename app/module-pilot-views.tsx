@@ -119,13 +119,13 @@ export function LlmTheoryPrimer() {
   return (
     <section className="pilotPrimer pilotPrimer--llm" data-knowledge-view="theory-atlas" aria-labelledby="llm-theory-primer-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">THEORY ATLAS</p><h2 id="llm-theory-primer-title">把一次生成拆成六个可观察阶段</h2></div>
-        <p>面向云与 AI 技术售前：理论用于解释质量、上下文、首字延迟、输出速度与显存边界，不以背公式为目标。</p>
+        <div><p className="kicker">APPLICATION-LED THEORY ATLAS</p><h2 id="llm-theory-primer-title">从一次知识助手失败，看懂六个生成阶段</h2></div>
+        <p>客户说“模型答错、答慢或不稳定”时，先还原文本怎样进入模型、上下文怎样被利用、输出怎样形成，再把问题转交给模型选型、Prompt、RAG、推理或外部控制责任层。</p>
       </header>
       <LlmGenerationExplorer stages={llmGenerationStages} />
       <TermHintRow label="LLM 原理缩写" termIds={["llm", "qkv", "kv-cache", "ttft", "tpot", "moe"]} />
       <p className="visualEvidenceLink"><Link href="/references#source-transformer-2017">原始 Transformer 论文与证据边界 ↗</Link></p>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>用六阶段区分“模型不会”“上下文没给对”“首字慢”“输出慢”和“并发显存不足”，再选择模型、RAG 或推理平台方案。</p><nav aria-label="LLM 原理深入阅读"><a href="#curriculum">查看理论地图</a><a href="#principle">查看模型栈</a><a href="#decisions">查看方案判断</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>固定用户问题、实际上下文、模型与采样配置、运行指标和外部调用；每次只改变一个变量，区分“基础能力不足”“证据没给对”“生成控制漂移”“推理服务变慢”和“模型外动作错误”。</p><nav aria-label="LLM 原理深入阅读"><a href="#curriculum">查看理论地图</a><a href="#deep-dive">完成故障归因</a><a href="#decisions">查看责任转交</a></nav></footer>
     </section>
   );
 }

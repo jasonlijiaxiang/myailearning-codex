@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:24e19032ffc161c1684dcb011dbd97fe0681cc829513cadc3a170f088521f010",
-    "enContentHash": "sha256:179cc5c6bfe46fd4b072e203b9fa68be0c6af881b4ba45ca14ecfe144ffe7df5",
+    "zhContentHash": "sha256:8410ae0221e4c7f73378af589f01e03ee33a9484672032e4756e67f9a6265d2c",
+    "enContentHash": "sha256:ed827e65886e27b7e321f32947b0853c5415776af0185732482844d01066e805",
     "termIds": [
       "attention",
       "context-window",
@@ -23,6 +23,7 @@
     ],
     "sourceIds": [
       "anthropic-models",
+      "attention-not-explanation-2019",
       "chinchilla-2022",
       "deepseek-r1-2025",
       "dpr-2020",
@@ -30,6 +31,7 @@
       "google-models",
       "gqa-2023",
       "instructgpt-2022",
+      "lost-middle",
       "nist-genai-profile",
       "nist-zero-trust",
       "openai-model-spec-hidden-cot",

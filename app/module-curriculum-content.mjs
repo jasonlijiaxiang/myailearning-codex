@@ -129,14 +129,14 @@ const baseModuleCurriculumContent = Object.freeze({
     ],
   },
   llm: {
-    lead: "大语言模型从序列表示、注意力和 Transformer 块出发，以自回归方式逐 Token 生成；工程边界来自上下文、内存和概率输出。",
+    lead: "沿企业知识助手的一次请求理解模型：文本如何成为表示、上下文如何参与计算、下一 Token 如何生成，以及哪些失败属于模型、证据、服务或外部控制。",
     chapters: [
       { title: "Token、Embedding 与位置", en: "Input Representation", explanation: "文本先被分词成 Token，再映射为向量；位置编码或位置机制让模型区分顺序。不同语言、数字和代码的 Token 密度不同，会直接改变上下文占用、成本和截断。", decision: "用真实语料测 Token 分布，不按字符或词数粗略承诺容量。", boundary: "Embedding 表示相似性和上下文特征，不是可直接读取的事实数据库。", sourceIds: ["transformer-2017"] },
-      { title: "Q/K/V 与注意力头", en: "MHA, MQA & GQA", explanation: "Query 表示当前位置要寻找什么，Key 表示可匹配特征，Value 表示被聚合的信息。MHA 为每个 Query Head 保留独立 KV Head；MQA 共享一组，GQA 在两者之间分组共享，因而把表示能力与 KV Cache、带宽和服务成本连接起来。", decision: "解释模型架构时同时记录 Query / KV Head 组织和运行时影响。", boundary: "更少 KV Head 不保证目标任务质量不变，注意力权重也不是完整因果解释或答案来源证明。", sourceIds: ["transformer-2017", "gqa-2023"] },
+      { title: "Q/K/V 与注意力头", en: "MHA, MQA & GQA", explanation: "Query 表示当前位置要寻找什么，Key 表示可匹配特征，Value 表示被聚合的信息。MHA 为每个 Query Head 保留独立 KV Head；MQA 共享一组，GQA 在两者之间分组共享，因而把表示能力与 KV Cache、带宽和服务成本连接起来。", decision: "解释模型架构时同时记录 Query / KV Head 组织和运行时影响。", boundary: "更少 KV Head 不保证目标任务质量不变；研究也表明不能把标准注意力权重直接当作完整预测解释。", sourceIds: ["transformer-2017", "gqa-2023", "attention-not-explanation-2019"] },
       { title: "Transformer 块", en: "Block Anatomy", explanation: "注意力、前馈网络、残差连接和归一化反复堆叠。注意力混合上下文，前馈网络逐位置变换表示，残差与归一化帮助深层训练；参数和计算在各部分的分布影响模型能力与成本。", decision: "把架构名词连接到训练稳定、推理计算和内存，而不是只背组件。", boundary: "相同‘Transformer’标签下的层数、宽度、注意力和训练数据差异巨大。", sourceIds: ["transformer-2017"] },
       { title: "Decoder-only、因果掩码与 MoE", en: "Architecture Variants", explanation: "Decoder-only 用因果掩码保证每个位置只看此前 Token，适合统一生成；MoE 让每个 Token 只激活部分专家，增加参数容量但引入路由、负载均衡和分布式通信。", decision: "从任务和服务特性理解架构取舍，不用参数量独立判断质量。", boundary: "总参数、激活参数和实际推理成本不是同一指标，MoE 也不自动更快。", sourceIds: ["transformer-2017", "nist-genai-profile"] },
       { title: "自回归生成、采样与测试时计算", en: "Autoregressive & Test-time Compute", explanation: "模型逐 Token 生成，温度、top-p 和停止条件改变多样性与稳定性；推理模型还可能在最终答案前消耗额外测试时计算。模型、采样、可用的推理配置和工具集共同定义一次运行候选。", decision: "把生成参数和可用的推理配置版本化，并同时回归质量、延迟与 Token。", boundary: "更多内部推理不保证正确，可见摘要也不等于真实思维链或可审计解释。", sourceIds: ["deepseek-r1-2025", "openai-model-spec-hidden-cot", "nist-genai-profile"] },
-      { title: "上下文、Prefill 与 KV Cache", en: "Runtime Context", explanation: "输入上下文在 Prefill 阶段并行处理，历史 Key/Value 被缓存以避免每个新 Token 重算全部前缀；Decode 仍逐步生成。长上下文同时增加预填充计算、缓存内存和信息利用难度。", decision: "区分缺知识、缺上下文、上下文组织差和推理容量不足。", boundary: "上下文上限是允许值，不是模型会可靠使用全部信息的保证。", sourceIds: ["vllm-2023", "flashattention-2022"] },
+      { title: "上下文、Prefill 与 KV Cache", en: "Runtime Context", explanation: "输入上下文在 Prefill 阶段并行处理，已处理 Token 的 Key/Value 被缓存以避免每个新 Token 重算全部前缀；Decode 仍逐步生成。长上下文同时增加预填充计算、缓存内存和信息利用难度。", decision: "区分缺知识、缺上下文、上下文组织差和推理容量不足，并用位置对照与真实负载分别验证。", boundary: "上下文上限是允许值，不是模型会可靠使用全部信息的保证；论文中的位置敏感结果也不能外推到所有模型。", sourceIds: ["vllm-2023", "flashattention-2022", "lost-middle"] },
     ],
   },
   "fine-tuning": {
@@ -179,15 +179,16 @@ const baseModuleCurriculumContent = Object.freeze({
     ],
   },
   "data-engineering": {
-    lead: "AI 数据工程要把原始资料变成有结构、权限、版本、质量和可追溯性的长期数据产品。",
+    lead: "AI 数据工程从一个权威业务域出发，把来源、解析、清洗、版本、策略引用、质量、血缘和生命周期组织成可发布、可重建、可撤回的数据产品。",
     chapters: [
-      { title: "数据就绪度与契约", en: "Data Readiness", explanation: "来源所有者、业务语义、格式、更新、权限、地域、保留和质量目标构成数据契约。先确认权威版本和使用目的，才能决定解析、索引、评估或训练。", decision: "把数据问题写成可验证契约，不用‘数据很乱’作为永久状态。", boundary: "同一数据用于 RAG、评估和训练时，许可、时效和泄漏风险并不相同。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
+      { title: "数据就绪度与派生契约", en: "Data Readiness", explanation: "来源所有者、业务语义、格式、用途、策略引用、地域、保留和质量目标构成源契约；每个派生物还要绑定稳定源 ID、版本或有效期、父对象与坐标、加工版本、质量状态和生命周期。", decision: "把‘数据很乱’改写成可验收契约，并在加工前确认权威来源、用途和冲突裁决人。", boundary: "同一来源用于 RAG、评估和训练时，许可、时效、标签、泄漏与删除要求并不相同。", sourceIds: ["nist-genai-profile", "nist-zero-trust", "w3c-prov-o"] },
       { title: "文档解析与结构恢复", en: "Document Parsing", explanation: "抽取不仅是文字识别，还包括版面、阅读顺序、表格、标题、页码、图片和元数据。通用解析器、文档 AI 和视觉语言模型各有优势，应按文档分层组合。", decision: "用客户最难版式验证结构和证据定位，不只测字符准确率。", boundary: "OCR 识别出所有数字也不能证明表格行列和业务含义正确。", sourceIds: ["docling-report", "pp-ocr-2020"] },
+      { title: "清洗、规范化与版本裁决", en: "Clean & Reconcile", explanation: "去除模板噪声、统一格式和业务主键、识别近重复，并保留来源优先级、版本、有效期与冲突状态。算法发现相似后，业务 Owner 裁决权威语义，未裁决内容进入隔离。", decision: "把重复、修订、替代和冲突分开，不以简单覆盖或相似度阈值决定权威版本。", boundary: "清洗不能抹掉法律声明、版本信息或必要差异，也不能让数据平台代替业务裁决。", sourceIds: ["w3c-prov-o", "iso-iec-5259-2", "nist-genai-profile"] },
       { title: "连接器与增量同步", en: "Connect & Sync", explanation: "连接器需要认证、分页、增量游标、重试、幂等、限流、删除和权限事件。批量适合低频全量，CDC 或事件适合及时变化，但都需要对账和重建路径。", decision: "由业务新鲜度和源系统能力选择同步模式，并保留全量校验。", boundary: "API 返回成功不代表所有对象、权限和删除都已完整传播。", sourceIds: ["nist-zero-trust", "opentelemetry-semconv"] },
-      { title: "切分、Embedding 与索引", en: "Retrieval Preparation", explanation: "切分决定语义单元和证据边界，Embedding 提供向量表示，索引在召回、延迟、内存和更新之间取舍。元数据、权限和版本过滤应与向量召回共同设计。", decision: "按任务和文档结构调切分与索引，而不是先采购向量库。", boundary: "HNSW 等 ANN 算法解决相似搜索，不负责权威版本、权限或答案正确。", sourceIds: ["hnsw-2016", "nist-zero-trust"] },
-      { title: "质量、血缘与反馈", en: "Data Quality", explanation: "完整性、正确性、时效、唯一性和可追溯需要在管道各阶段测量。回答失败应区分源数据缺失、解析错误、切分、权限、索引和模型问题，把可修复样本回到责任层。", decision: "优先修复产生错误的数据机制，不用 Prompt 补丁长期掩盖。", boundary: "模型或解析器置信度不是事实正确率，阈值必须用客户材料校准。", sourceIds: ["docling-report", "nist-genai-profile"] },
+      { title: "派生单元、Embedding 与索引", en: "Retrieval Preparation", explanation: "数据工程把文本、表格或其他结构发布为带稳定身份、父子坐标、加工版本、策略引用和可重建信息的派生单元，并生成所需 Embedding 或索引制品。", decision: "保证派生物可追踪、可替换和可撤回；怎样切片能提高真实问题召回，由 RAG 在下游实验中决定。", boundary: "HNSW 等 ANN 算法解决相似搜索，不负责权威版本、授权、最终上下文或答案正确。", sourceIds: ["hnsw-2016", "nist-zero-trust", "w3c-prov-o"] },
+      { title: "质量、血缘与反馈", en: "Data Quality", explanation: "覆盖、结构、时效、唯一性、冲突、策略完整性和可追溯要在各阶段测量。运行事件关联 Job、Run 与输入输出，业务失败再按来源、解析、清洗、版本、派生、检索或模型责任回流。", decision: "优先修复产生错误的数据机制，并报告隔离、重放、人工复核与每个合格数据单元成本。", boundary: "标准、事件、模型或解析器置信度都不能自动证明业务正确；阈值必须用客户材料和用途校准。", sourceIds: ["docling-report", "iso-iec-5259-2", "w3c-prov-o", "openlineage-spec"] },
       { title: "标注、合成与双线运营", en: "Label & Synthesize", explanation: "专家标注建立权威样本，弱监督和合成扩展覆盖。坏案例可进入数据修复线或模型/应用评估线，两条线共享身份和来源，但不能让自动生成结果未经裁决成为真值。", decision: "把专家时间投入高风险、争议和校准样本。", boundary: "合成数据会继承教师和提示偏差，规模扩大前必须抽样审核。", sourceIds: ["nist-genai-profile"] },
-      { title: "权限、删除与生命周期", en: "Governance", explanation: "权限要在查询时结合当前主体执行，删除和撤权要传播到缓存、对象、切块、Embedding、索引和评估资产。血缘与完成证明帮助审计传播窗口和例外。", decision: "为所有派生层定义传播 SLO、重试和验证。", boundary: "删除源文档不表示训练权重自动遗忘，法律保留冲突需要数据所有者裁决。", sourceIds: ["nist-zero-trust", "hnsw-2016"] },
+      { title: "权限引用、状态与生命周期", en: "Governance", explanation: "数据工程携带策略引用并传播 active、superseded、revoked、quarantined、retained-by-exception 与 physically-deleted 状态；Security/IAM 和应用在查询时按当前主体执行授权。", decision: "为所有派生层定义传播 SLO、重试、对账与负向验证，保留受控例外和完成证据。", boundary: "数据工程不定义授权策略；删除源文档也不表示训练权重自动遗忘，法律保留冲突由相应 Owner 裁决。", sourceIds: ["nist-zero-trust", "w3c-prov-o", "openlineage-spec"] },
     ],
   },
   "ai-infra-platform": {

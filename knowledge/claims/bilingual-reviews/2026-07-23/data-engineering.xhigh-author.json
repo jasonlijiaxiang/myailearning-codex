@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:8c612dce5618d63d6f8e00376bab60f0b2353c2e5351a437a35047ad98ac70f6",
-    "enContentHash": "sha256:12da0dee560cb466d957d5bf6cab482dfb018074a88f8cc76a839ceb1cc17a76",
+    "zhContentHash": "sha256:488584cb1f9c596c2fc9e01eddc5a8c62f98ef4ac4736790890fd7defacacb03",
+    "enContentHash": "sha256:422c434f8d749c16fe392eeee51d6821fce693290ef80fc341ac94fc614cacb8",
     "termIds": [
       "ann",
       "bm25",
@@ -34,10 +34,13 @@
     "sourceIds": [
       "docling-report",
       "hnsw-2016",
+      "iso-iec-5259-2",
       "nist-genai-profile",
       "nist-zero-trust",
+      "openlineage-spec",
       "opentelemetry-semconv",
-      "pp-ocr-2020"
+      "pp-ocr-2020",
+      "w3c-prov-o"
     ]
   },
   "stage": "xhigh-author",

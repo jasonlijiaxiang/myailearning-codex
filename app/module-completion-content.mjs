@@ -136,7 +136,7 @@ export const completionLearning = Object.freeze({
       { title: "证明变化已传播", learn: "对新增、修改、撤权和删除执行全链对账与失败重放。", checkpoint: "源系统变化能在约定时间内到达所有派生层。" },
     ]),
     labs: freezeLabs([
-      { title: "排查一次知识更新未生效", scenario: "源文档已修订，但 RAG 仍引用旧版本。", tasks: ["沿连接、解析、切分、索引、缓存和回答版本逐层对账", "区分事件遗漏、失败隔离、别名切换和缓存问题", "设计重放、全量校验和完成证明"], deliverable: "数据变化传播诊断图", acceptance: "能定位旧版本停留层，并证明修复后撤回和新增都可验证。", sourceIds: ["nist-zero-trust", "opentelemetry-semconv", "docling-report"] },
+      { title: "排查一次知识更新未生效", scenario: "源文档已修订并标记旧版失效，但 RAG 仍引用旧版本。", tasks: ["沿连接、解析、清洗裁决、派生身份、索引、缓存和回答版本逐层对账", "区分事件遗漏、失败隔离、错误权威状态、别名切换和缓存问题", "设计重放、全量校验、负向查询和完成证明"], deliverable: "数据变化传播诊断图", acceptance: "能定位旧版本停留层，并证明当前版本发布、旧版撤回和保留例外都可验证。", sourceIds: ["nist-zero-trust", "w3c-prov-o", "openlineage-spec"] },
     ]),
   }),
   "ai-infra-platform": Object.freeze({
@@ -198,7 +198,6 @@ export const completionQa = Object.freeze({
   ]),
   "data-engineering": freezeQa([
     { q: "同一份数据能否同时用于 RAG、评估和训练？", a: "可以共享来源，但不能默认共享用途；三者的许可、更新、标签、泄漏和删除要求不同。", depth: "RAG 需要当前权威版本和查询时权限，评估需要稳定且未被调参污染的样本，训练还涉及复制、长期保留和权重记忆。应从同一来源身份派生用途明确的数据版本，分别登记使用权、截止条件和删除传播。", ask: "追问客户：数据所有者允许哪些用途？评估样本如何避免进入训练，撤回后各下游多久生效？", tag: "用途治理", basis: "数据血缘 + 使用目的", evidence: [{ sourceId: "nist-genai-profile", supports: "支持管理生成式 AI 数据来源、用途、隐私和生命周期风险。" }, { sourceId: "nist-zero-trust", supports: "支持资源访问按当前主体和具体资源授权。" }] },
-    { q: "源系统已经删除文档，为什么 AI 应用里仍可能查到？", a: "因为文档可能仍存在于缓存、切块、Embedding、索引、评估资产或异步失败队列。", depth: "为每层建立稳定文档 ID、版本、删除事件、传播状态和完成证明。删除流程要可重试、可对账，并在查询时使用当前权限；必要时重建索引。训练权重是否需要处理则是另一类技术与治理问题。", ask: "追问客户：删除和撤权必须在多久内生效？目前能否列出一份文档的全部派生位置？", tag: "删除传播", basis: "派生血缘 + 当前授权", evidence: [{ sourceId: "nist-zero-trust", supports: "支持每次资源访问根据当前主体和策略作出授权判断。" }, { sourceId: "hnsw-2016", supports: "支持 HNSW 解决近似向量搜索机制，但不提供业务删除、权限或血缘治理。" }] },
   ]),
   "ai-infra-platform": freezeQa([
     { q: "GPU 利用率很高，为什么训练和推理产出仍可能很差？", a: "利用率只说明设备忙，不说明计算对目标模型有效、作业按时完成或在线请求满足 SLO。", depth: "训练还要看 MFU、Goodput、通信、数据等待、Checkpoint、重试和合格模型产出；推理要看任务成功、尾延迟、拒绝率和单位成功成本。平台优化应从排队原因和业务结果反推资源策略。", ask: "追问客户：设备忙时完成了多少达标工作？哪些时间花在通信、等待、重试或不合格输出上？", tag: "有效产出", basis: "资源遥测 + 业务结果", evidence: [{ sourceId: "opentelemetry-semconv", supports: "支持用核心资源、运行时与跨组件语义关联系统遥测。" }, { sourceId: "opentelemetry-genai-semconv", supports: "支持关联生成式 AI 模型调用属性；业务有效产出仍需应用定义。" }, { sourceId: "nvidia-gpu-operator", supports: "支持 GPU 运行栈和监控能力，但不自动定义业务 Goodput。" }] },

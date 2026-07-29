@@ -626,7 +626,7 @@ test("customer questions follow module decision coverage instead of a shared num
   const finalQuestionCounts = auditedSlugs.map((slug) => requireModuleContent(slug).qa.length);
 
   assert.deepEqual([...new Set(addedQuestionCounts)].sort((a, b) => a - b), [3, 4, 5, 6], "模块补充问题不应来自统一的固定配额");
-  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [11, 12, 13, 14, 15, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
+  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [10, 11, 12, 13, 14, 15, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
   assert.equal(finalQuestionCounts.filter((count) => count === 8).length, 0, "已审计模块不得保留统一 8 题的机械结果");
 
   for (const slug of auditedSlugs) {

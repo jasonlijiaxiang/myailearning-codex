@@ -18,12 +18,12 @@ const moduleSpecs = [
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-07-21", "2026-07-17"],
   ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-07-24", "2026-07-17"],
   ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-07-21", "2026-07-21"],
-  ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-20", "2026-07-17"],
+  ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-29", "2026-07-17"],
   ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-23", "2026-07-17"],
   ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief", "2026-07-21", "2026-07-17"],
   ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-07-22", "2026-07-17"],
   ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-24", "2026-07-17"],
-  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-21", "2026-07-17"],
+  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-29", "2026-07-17"],
   ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-07-22", "2026-07-17"],
   ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache", "hbm", "scale-up", "scale-out"], "brief", "2026-07-22", "2026-07-17"],
 ];
@@ -44,12 +44,12 @@ const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
   "ai-gateway": "342cad66994dc68ec21c90a7b31753746f7d2935c2d0dcacf0f0c80fa5a619d1",
   "ai-ops": "c94ef422a8f447daa9336ce65ebae56958cb1550c5b3e73b5f70e12cce8ec88f",
   "predictive-ai-mlops": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  llm: "026090fc37ab854e455179f9a940f13674784b0cb67d8338f31ac1789c554cac",
+  llm: "7dc39e54761576aa4bb5343b2a736ba538834cc7bfa99b9568f43d77fc8614bd",
   "prompt-engineering": "ce3b16efe824db7e6014597082739fb3789aa304aa88bd3e7a0e02a5b2f39870",
   "fine-tuning": "32309070485d6a96e18382bfb09f74f991f842911f3609bb238e2b7f58ab02cc",
   "llm-training": "1ec338b98689954956857f62e3dc3769777c435979e372ded82dcb8250ed863b",
   "llm-inference": "1a732d72e0a2f584fe4fcd76f56b7913afe8fdc63d50080556095c9bb1adf973",
-  "data-engineering": "bd739a88b2905ba7ab67b7c900ab4f39efc924cd7133357ad11e165c49f3d234",
+  "data-engineering": "f7ad1f475effd1b928140f2e60385dbd73a6eaf6fcbd2cef9fc0b7bc2431cb25",
   "ai-infra-platform": "b1d9886106ef81384e0bb1593c441a8760ca4d1ce1aae6978d9fd002535ffa70",
   "ai-infra-compute": "5739e718d368d17dd46a01cd35bcc7eb1c7d158c3bd84b3a66153abf1343ef9e",
 });
@@ -139,7 +139,7 @@ const moduleQaCoverageTags = Object.freeze({
   ]),
   llm: Object.freeze([
     "基础原理", "概念边界", "上下文", "性能成本", "Tokenization", "表示边界",
-    "训练阶段", "规模边界", "缓存机制", "上下文边界", "生成机制",
+    "训练阶段", "规模边界", "缓存机制", "生成机制",
   ]),
   "prompt-engineering": Object.freeze([
     "能力边界", "安全边界", "结构化输出", "工具安全", "版本治理", "上下文装配", "提示注入", "评估方法", "灰度回滚", "PoC 验收",
@@ -153,8 +153,8 @@ const moduleQaCoverageTags = Object.freeze({
     "调度公平", "投机解码", "弹性冷启动", "缓存安全", "性能归因", "准入控制",
   ]),
   "data-engineering": Object.freeze([
-    "建设顺序", "文档解析", "向量库选型", "权限与删除", "生命周期", "解析质量", "用途治理", "删除传播",
-    "增量同步", "索引发布", "质量契约", "主数据治理", "敏感数据",
+    "建设顺序", "向量库选型", "权限与删除", "生命周期", "解析质量", "用途治理",
+    "增量同步", "索引发布", "质量契约", "主数据治理",
   ]),
   "ai-infra-platform": Object.freeze([
     "建设起点", "调度选型", "DRA", "平台边界", "资源效率", "升级治理", "有效产出", "混部边界",

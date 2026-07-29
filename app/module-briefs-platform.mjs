@@ -921,9 +921,9 @@ export const aiOpsBrief = {
 export const dataEngineeringBrief = {
   slug: "data-engineering",
   definition:
-    "AI 数据工程（AI Data Engineering）把分散、异构、持续变化的数据转换为可解析、可同步、可授权、可检索、可训练和可运营的数据产品。",
+    "AI 数据工程（AI Data Engineering）把分散、异构、持续变化的数据转换为带权威来源、稳定身份、结构、版本、用途、策略引用、质量证据与生命周期状态的数据产品。",
   position:
-    "位于源系统与 RAG、训练微调、评估和 Agent 应用之间；负责数据进入 AI 系统前的获取、解析、质量、索引、权限与生命周期，不负责模型最终如何生成答案。",
+    "位于源系统与 RAG、训练微调、评估和 Agent 应用之间；负责接入、变更捕获、解析集成、清洗、版本裁决、派生物、质量、血缘与生命周期，不定义授权策略，也不负责最终检索、生成或业务 ROI。",
   presentation: "pipeline",
   principleTitle: "从源数据到可用 AI 数据产品",
   principles: [
@@ -931,7 +931,7 @@ export const dataEngineeringBrief = {
       zh: "来源与契约",
       en: "Source & Data Contract",
       explanation:
-        "先登记数据所有者、权威系统、Schema、更新频率、敏感级别、许可和使用目的，再决定接入方式。",
+        "先登记数据所有者、权威系统、业务语义、Schema、更新频率、敏感级别、许可、用途、保留与冲突裁决，再决定接入方式。",
       decision:
         "没有所有权和使用边界的数据，不应因为技术上可抓取就进入生产知识库或训练集。",
     },
@@ -942,6 +942,14 @@ export const dataEngineeringBrief = {
         "文档、扫描件、表格、图片和代码需要保留标题层级、版面、页码、表格关系和来源位置，而不只是抽取纯文本。",
       decision:
         "解析质量要用下游任务验证；字符识别率高不代表表格、阅读顺序和引用定位正确。",
+    },
+    {
+      zh: "清洗、规范化与版本裁决",
+      en: "Clean, Normalize & Reconcile",
+      explanation:
+        "格式统一、模板噪声、近重复、主数据身份、生效期和冲突状态要显式处理，使同一业务对象的不同副本与版本可以被区分和裁决。",
+      decision:
+        "算法可以发现重复与冲突，只有业务或数据 Owner 能决定哪个来源、版本和生效范围权威。",
     },
     {
       zh: "连接与增量同步",
@@ -955,9 +963,9 @@ export const dataEngineeringBrief = {
       zh: "索引与检索准备",
       en: "Indexing & Retrieval Readiness",
       explanation:
-        "根据查询模式建立关键词、向量、元数据、图或混合索引，并保留稳定文档 ID、版本与权限过滤字段。",
+        "数据工程发布带稳定 ID、父子坐标、加工版本、策略引用和可重建信息的候选数据单元；关键词、向量、元数据或图索引只是具体派生物。",
       decision:
-        "向量数据库是索引组件，不等于完整知识工程；索引必须能处理更新、删除与权限一致性。",
+        "向量数据库是索引组件，不等于完整知识工程；怎样切片能提高 RAG 召回由 RAG 用真实问题验证，数据工程负责产物可追踪、可替换和可撤回。",
     },
     {
       zh: "质量与可追溯",
@@ -971,9 +979,9 @@ export const dataEngineeringBrief = {
       zh: "治理与生命周期",
       en: "Governance & Lifecycle",
       explanation:
-        "数据从采集、处理、索引、使用到删除都要继承分类、权限、地域、保留和审计要求。",
+        "数据从采集、处理、索引、使用到删除都要携带分类、策略引用、地域、保留和审计要求，并区分 active、superseded、revoked、quarantined、retained-by-exception 与 physically-deleted。",
       decision:
-        "删除请求必须传播到原文、派生文本、索引、缓存、评估集和训练候选，而不是只删前台链接。",
+        "数据工程负责传播状态与完成证据；Security/IAM 和应用执行面负责依据当前身份与策略作出最终访问决定。",
     },
   ],
   decisions: [
@@ -994,6 +1002,15 @@ export const dataEngineeringBrief = {
         "低频文档用批量与校验清单；结构化业务库用 CDC；高时效事件用消息流，并保留可重放的全量基线。",
       boundary:
         "实时链路不能牺牲幂等、顺序、删除和源系统权限的一致性。",
+    },
+    {
+      question: "重复、近似和冲突版本由谁裁决？",
+      signal:
+        "同一政策、产品或客户对象出现在多个系统、年份和格式中，内容相似但来源优先级、生效期或适用范围不同。",
+      recommendation:
+        "先建立规范业务身份、来源优先级、版本与有效期，再把重复、冲突和待裁决状态交给数据 Owner；只有权威版本默认进入下游用途。",
+      boundary:
+        "去重算法可以提示相似，不能决定法律、合同或业务意义上的权威性；历史版本也不能在没有明确时间条件时参与默认回答。",
     },
     {
       question: "复用现有数据库向量能力，还是独立向量库？",
@@ -1023,9 +1040,9 @@ export const dataEngineeringBrief = {
         "可检索不代表允许训练；训练过的数据也不能进入用于证明泛化能力的评估集。",
     },
   ],
-  deepDiveTitle: "识别不会报错的数据损坏，并证明变更已传播",
+  deepDiveTitle: "识别静默损坏、划清数据责任，并证明变化已传播",
   deepDiveLead:
-    "AI 数据管道最危险的问题常不是任务失败，而是内容看似成功入库、实际结构错位，或权限与删除只在部分副本生效。",
+    "AI 数据管道最危险的问题常不是任务失败，而是内容看似成功入库、实际结构或版本已经错位。深度验收既要发现静默损坏，也要说明每个派生物由谁负责、处于什么生命周期状态，以及一次变化是否到达全部用途。",
   deepDives: [
     {
       kind: "diagnostic",
@@ -1033,7 +1050,7 @@ export const dataEngineeringBrief = {
       title: "文档管道五类静默损坏及验证方法",
       intro:
         "解析成功率、OCR 字符率或向量写入数都可能正常，但下游看到的事实、关系和引用位置已经失真。",
-      sourceIds: ["docling-report", "hnsw-2016", "nist-genai-profile"],
+      sourceIds: ["docling-report", "iso-iec-5259-2", "nist-genai-profile"],
       items: [
         {
           name: "阅读顺序错位",
@@ -1073,25 +1090,76 @@ export const dataEngineeringBrief = {
       ],
     },
     {
+      kind: "matrix",
+      eyebrow: "DATA PRODUCT CONTRACT",
+      title: "一份派生数据契约要同时说明身份、责任、质量与成本",
+      intro:
+        "从源记录到 Chunk、Embedding、索引、评估样本或训练候选，每个派生物都应能回答“来自哪里、怎样生成、谁能用、是否合格、何时失效，以及维护它花了什么”。",
+      sourceIds: ["w3c-prov-o", "openlineage-spec", "iso-iec-5259-2", "nist-zero-trust"],
+      columnLabels: {
+        name: "契约面",
+        mechanism: "最小信息",
+        decision: "主要责任与验收",
+        boundary: "不能越界替代",
+      },
+      items: [
+        {
+          name: "权威来源与允许用途",
+          en: "Authority & Purpose",
+          mechanism: "记录规范业务身份、权威系统、源版本或有效期、Owner、许可、地域、保留和允许进入的 RAG、评估、训练或分析用途。",
+          decision: "业务与数据 Owner 裁决语义、权威版本和用途；AI Governance 审批高风险用途与保留例外。",
+          boundary: "Data Engineering 可以发现冲突并阻止发布，不能替业务负责人决定合同、政策或法律意义。",
+        },
+        {
+          name: "派生身份与加工谱系",
+          en: "Identity & Provenance",
+          mechanism: "记录稳定源 ID、父对象与坐标，以及解析器、清洗器、切片器、Embedding、索引和发布版本的生成、派生、修订与失效关系。",
+          decision: "Data Engineering 负责可重建、可对账和可回滚；用运行事件把 Job、Run、输入与输出 Dataset 关联起来。",
+          boundary: "采用 PROV-O 或 OpenLineage 语义不会自动保证所有事件已经被正确采集。",
+        },
+        {
+          name: "策略引用与访问执行",
+          en: "Policy Reference & Enforcement",
+          mechanism: "派生物携带租户、敏感级别、策略或 ACL 版本和用途属性，撤权时传播新的状态与事件。",
+          decision: "Security/IAM 定义身份与授权策略；Data Engineering 传播属性和证据；应用与检索执行面按当前主体做最终判断。",
+          boundary: "把 ACL 复制进索引不能替代查询时授权，Data Engineering 也不拥有安全策略。",
+        },
+        {
+          name: "质量、隔离与人工裁决",
+          en: "Quality & Quarantine",
+          mechanism: "按覆盖、结构、时效、唯一性、冲突、策略完整性和下游适用性记录规则、样本、阈值、失败状态与裁决人。",
+          decision: "Data Engineering 运营质量工作流，领域 Owner 裁决业务正确性；quarantined 产物不能静默进入下游。",
+          boundary: "管道成功率、解析置信度或一个平均质量分都不能证明数据适合所有 AI 用途。",
+        },
+        {
+          name: "运行证据与单位成本",
+          en: "Operations & Unit Cost",
+          mechanism: "跟踪源到可用延迟、接入覆盖、隔离率、冲突与过期率、孤儿派生物、重放完整性、人工复核量和每个合格数据单元成本。",
+          decision: "Data Engineering 交付数据侧效率和风险输入；AI Ops 关联跨组件 Trace；Solution Patterns 与 FinOps 判断端到端 ROI。",
+          boundary: "更低的每 Chunk 或每 Embedding 成本不等于更高业务价值，也不能以降低成本绕过质量和安全门。",
+        },
+      ],
+    },
+    {
       kind: "sequence",
       eyebrow: "CHANGE PROPAGATION",
-      title: "权限收回与删除必须穿过五个派生层",
+      title: "撤权、替换与删除必须穿过五个派生层",
       intro:
-        "删除前台链接远远不够；原文、解析结果、索引、缓存、评估与训练候选都可能继续保留可访问副本。",
-      sourceIds: ["nist-zero-trust", "nist-genai-profile", "hnsw-2016"],
+        "先区分 active、superseded、revoked、quarantined、retained-by-exception 与 physically-deleted，再把状态传到原文、解析结果、索引、缓存、评估和训练候选；删除前台链接或作业变绿都不是完成证据。",
+      sourceIds: ["nist-zero-trust", "nist-genai-profile", "w3c-prov-o", "openlineage-spec"],
       items: [
         {
           name: "生成权威变更事件",
           en: "Authoritative Change Event",
-          mechanism: "由源系统发出带主体、对象、版本、时间和变更类型的事件，删除与 ACL 收回使用可重放 tombstone。",
-          decision: "先确认唯一权威来源和事件顺序；无法产生事件的源需要周期性全量对账。",
+          mechanism: "由源系统发出带主体、对象、版本、时间、变更类型和目标状态的事件，删除与 ACL 收回使用可重放 tombstone。",
+          decision: "先确认唯一权威来源、事件顺序和状态含义；无法产生事件的源需要周期性全量对账。",
           boundary: "管道不能自行推断法律保留或业务例外，冲突交给数据所有者裁决。",
         },
         {
           name: "隔离原始与派生内容",
           en: "Quarantine Derived Assets",
-          mechanism: "立即阻止新请求读取相关原文、解析块、图片和特征，同时保留受控证据供传播任务定位。",
-          decision: "安全收回应优先于后台清理完成，访问检查不能只依赖最终索引状态。",
+          mechanism: "将待裁决或已撤权内容标记为 quarantined / revoked，立即阻止新请求读取，同时保留受控证据供传播与例外裁决。",
+          decision: "安全收回应优先于后台物理清理，访问检查不能只依赖最终索引状态。",
           boundary: "隔离副本仍受相同敏感等级和访问审计约束。",
         },
         {
@@ -1104,7 +1172,7 @@ export const dataEngineeringBrief = {
         {
           name: "清理用途派生集",
           en: "Reconcile Downstream Datasets",
-          mechanism: "从评估集、标注任务、微调候选、导出文件和分析仓库中按血缘定位受影响记录，并执行删除、替换或保留裁决。",
+          mechanism: "从评估集、标注任务、微调候选、导出文件和分析仓库中按血缘定位受影响记录，并执行 superseded、revoked、physically-deleted 或 retained-by-exception 裁决。",
           decision: "可检索、可评估和可训练是不同使用权；每一用途都需要独立证明处理结果。",
           boundary: "已完成训练的权重是否受影响需要单独法律和模型治理判断，不能宣称删除数据即自动遗忘。",
         },
@@ -1119,7 +1187,7 @@ export const dataEngineeringBrief = {
     },
   ],
   criticalBoundary:
-    "数据工程交付的是可追溯、可授权、可更新的数据产品，不是把文件批量转成向量。它不替代 RAG 的检索与生成设计、微调方法、业务数据所有者或安全策略；但这些上层能力的质量都受其约束。",
+    "数据工程交付的是可追溯、携带策略引用、可更新、可撤回的数据产品，不是把文件批量转成向量。业务 Owner 决定权威语义与用途，Security/IAM 定义授权策略，RAG 负责召回、上下文与生成，AI Ops 负责跨组件运行闭环，Solution Patterns 与 FinOps 负责端到端 ROI。",
   cloudHooks: [
     {
       stage: "采集与同步（Ingestion & Sync）",
@@ -1134,16 +1202,16 @@ export const dataEngineeringBrief = {
       discover: "最重要的文档类型是什么？哪些结构丢失会直接导致客户回答错误？",
     },
     {
-      stage: "存储与索引（Storage & Indexing）",
-      services: "数据湖、数据库、搜索服务、向量检索、元数据目录、缓存",
-      value: "按查询模式组合关键词、向量和元数据过滤，并支持版本、备份与生命周期。",
-      discover: "查询需要精确词、语义相似、结构化过滤还是关系遍历？规模和更新模式如何？",
+      stage: "清洗、血缘与发布（Transform & Publish）",
+      services: "数据处理、质量规则、Catalog、Lineage、对象与表格式、搜索或向量索引",
+      value: "把清洗、去重、版本裁决和派生过程绑定到稳定身份，按用途发布可重建、可切换的数据版本。",
+      discover: "同一业务对象怎样识别？谁裁决冲突版本？每个派生物能否回到来源、加工版本与用途？",
     },
     {
       stage: "质量与治理（Quality & Governance）",
-      services: "数据质量、Catalog、Lineage、IAM、DLP、KMS、审计与成本管理",
-      value: "把所有者、敏感级别、权限、质量规则和下游使用统一登记并持续验证。",
-      discover: "谁签署数据正确性？权限和删除如何从源系统传播到索引、缓存与派生数据？",
+      services: "数据质量与可观测、IAM、DLP、KMS、审计、失败队列、重放对账与成本管理",
+      value: "持续观察覆盖、结构、冲突、过期、孤儿派生物、撤权传播、人工复核和每个合格数据单元成本。",
+      discover: "谁签署业务正确性？策略由谁定义和执行？变化如何从源系统传播到全部派生用途并留下负向证明？",
     },
   ],
   relatedSlugs: ["rag", "fine-tuning", "multimodal", "security", "ai-ops", "solution-patterns"],
@@ -1152,25 +1220,13 @@ export const dataEngineeringBrief = {
       q: "我们的数据很乱，先上向量数据库能不能边做边解决？",
       a: "向量库只能索引被送入的数据，不能修复来源不明、解析错误、重复、过时、越权或删除不同步。应先建立最小数据契约和质量闭环。",
       depth:
-        "可以从一个业务域快速试点，但至少要登记权威源、稳定文档 ID、版本、权限、更新时间和删除事件；解析失败进入隔离区，不能静默索引。搜索效果再通过真实问题验证，区分数据缺失、解析损失、索引失败和排序问题。这样扩展时才知道该补数据、改解析还是调检索。",
+        "可以从一个业务域快速试点，但至少要登记权威源、稳定对象 ID、源版本或有效期、允许用途、策略引用、加工版本和生命周期状态；解析失败与未裁决冲突进入隔离区。搜索效果再通过真实问题验证，区分数据缺失、解析损失、版本冲突、索引失败和排序问题。",
       ask: "追问客户：当前最常见错误是缺文档、文档过期、解析错、权限错还是搜不到？谁能裁决？",
       tag: "建设顺序",
       basis: "数据产品边界 + 检索工程",
       evidence: [
         { sourceId: "docling-report", supports: "支持文档理解需要恢复布局、阅读顺序、表格等结构，而非仅抽取无结构文本。" },
         { sourceId: "hnsw-2016", supports: "支持 HNSW 是近似最近邻索引方法；它不承担上游数据质量和治理。" },
-      ],
-    },
-    {
-      q: "扫描 PDF 做完 OCR，为什么 RAG 还是答错？",
-      a: "OCR 只解决字符识别的一部分。阅读顺序、标题层级、表格关系、页眉页脚、图片语义和引用定位丢失，都会让后续切分与检索失真。",
-      depth:
-        "验收应抽样检查结构而非只看字符：章节是否归属正确、表格单元格是否对应、跨页内容是否连续、页码和坐标能否回到原文。对关键表格可使用结构化抽取或人工复核；对图表可补充图像理解，但要保留原图和模型版本。最终用真实问答检查证据是否完整、可定位和可引用。",
-      ask: "追问客户：答案主要来自正文、表格还是图表？错误时能否回到原页确认解析损失？",
-      tag: "文档解析",
-      basis: "文档 AI 技术报告",
-      evidence: [
-        { sourceId: "docling-report", supports: "支持文档转换需要处理布局、表格、阅读顺序和结构化表示。" },
       ],
     },
     {
@@ -1187,15 +1243,16 @@ export const dataEngineeringBrief = {
     },
     {
       q: "源系统撤销权限或删除一份文档，AI 系统怎样保证同步？",
-      a: "把权限和删除视为一等数据事件，并沿血缘传播到原文副本、解析结果、索引、缓存、评估集与其他派生资产。",
+      a: "把权限收回、替换和删除视为一等数据事件，并沿血缘传播到原文副本、解析结果、切块、Embedding、索引、缓存、评估集、导出与其他派生资产。",
       depth:
-        "每份资产需要稳定 ID、源版本和派生关系；同步链路处理 tombstone、失败重试和对账。查询时执行租户和主体级过滤，不能只依赖索引时的静态 ACL。对无法即时删除的备份或审计副本，要有隔离、保留期和法律依据。定期用源系统权限抽样反查索引，验证没有越权残留。",
-      ask: "追问客户：权限由哪个系统权威管理？删除传播的 SLO 是多少？哪些派生副本目前无法追踪？",
+        "每份资产需要稳定 ID、源版本、派生关系和 active / superseded / revoked / quarantined / retained-by-exception / physically-deleted 状态。同步链处理 tombstone、失败重试与全量对账；Security/IAM 和应用执行面在查询时依据当前主体与策略授权。源已删除但 AI 仍能查到，通常是某个缓存、索引、导出或失败队列没有完成状态切换。",
+      ask: "追问客户：哪个系统定义当前授权？一份文档有哪些派生物，各自多久必须失效，谁用什么负向查询签署完成？",
       tag: "权限与删除",
-      basis: "零信任 + 数据生命周期",
+      basis: "零信任 + Provenance + 数据生命周期",
       evidence: [
         { sourceId: "nist-zero-trust", supports: "支持每次访问根据主体和资源执行动态授权，而非依赖网络或历史信任。" },
-        { sourceId: "nist-genai-profile", supports: "支持跟踪数据来源、隐私和生成式 AI 生命周期风险。" },
+        { sourceId: "w3c-prov-o", supports: "支持用派生、修订、主来源与失效关系表达实体之间的 Provenance；不证明事件已完整传播。" },
+        { sourceId: "openlineage-spec", supports: "支持以 Job、Run、输入与输出 Dataset 事件关联处理链；不自动保证采集完整或删除完成。" },
       ],
     },
   ],
@@ -1209,11 +1266,25 @@ export const dataEngineeringBrief = {
       accent: true,
     },
     {
-      metric: "ANN",
-      title: "向量索引是检索组件",
-      finding: "HNSW 通过分层可导航小世界图进行近似最近邻搜索，体现召回、延迟、内存和构建成本之间的取舍。",
-      boundary: "算法不负责 embedding 质量、权限、数据更新或最终答案正确性。",
-      sourceId: "hnsw-2016",
+      metric: "Entity · Activity · Agent",
+      title: "血缘需要表达实体、加工与责任",
+      finding: "W3C PROV-O 用实体、活动、代理及派生、修订、主来源和失效等关系表达可交换的 Provenance。",
+      boundary: "标准提供语义，不会自动采集完整血缘、裁决业务权威或证明变化已经传播。",
+      sourceId: "w3c-prov-o",
+    },
+    {
+      metric: "Run · Job · Dataset",
+      title: "运行事件连接输入与输出",
+      finding: "OpenLineage 事件可为 Run、Job、输入与输出 Dataset 附加可扩展 Facet，形成跨处理阶段的共同运行语义。",
+      boundary: "事件存在不等于采集无缺口，也不证明内容、权限、删除或业务结果正确。",
+      sourceId: "openlineage-spec",
+    },
+    {
+      metric: "可度量",
+      title: "数据质量应按用途报告",
+      finding: "ISO/IEC 5259-2:2024 为分析与机器学习数据定义质量模型和可度量特性。",
+      boundary: "标准不提供统一 RAG 门槛；指标、样本和通过线仍要按客户用途与风险定义。",
+      sourceId: "iso-iec-5259-2",
     },
     {
       metric: "每次访问",

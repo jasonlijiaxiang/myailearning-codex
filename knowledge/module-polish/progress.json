@@ -17,18 +17,18 @@
     },
     {
       "id": "batch-01-model-data-foundations",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "llm",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "中英文内容、证据关系与独立英文审校完成"
         },
         {
           "slug": "data-engineering",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "中英文内容、证据关系与独立英文审校完成"
         }
       ]
     },
