@@ -64,6 +64,17 @@ const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
     href: `/modules/${slug}#study-guide`,
     keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
   }))),
+  ...Object.entries(moduleContentRegistry).flatMap(([slug, content]) => {
+    if (Object.hasOwn(moduleLearningContent, slug) || !("learning" in content) || !content.learning) return [];
+    return content.learning.labs.map((lab, index) => ({
+      id: `lab-${slug}-${index + 1}`,
+      type: "实战练习" as const,
+      title: lab.title,
+      subtitle: `${moduleNames.get(slug)} · 可验收练习`,
+      href: `/modules/${slug}#practice`,
+      keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
+    }));
+  }),
   ...Object.entries(sourceLedger).map(([sourceId, source]) => ({
     id: `source-${sourceId}`,
     type: "来源证据" as const,

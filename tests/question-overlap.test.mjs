@@ -5,7 +5,7 @@ import { questionDirectoryItems } from "../app/question-index.mjs";
 
 const REVIEWED_HIGH_OVERLAP_PAIRS = new Map([
   [
-    "ai-agent-14::rag-10",
+    "ai-agent-14::rag-25",
     "RAG 题聚焦检索管线的分阶段预算；Agent 题聚焦循环轮次、工具调用与停止条件，责任层不同。",
   ],
   [

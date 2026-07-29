@@ -7,10 +7,10 @@
 const moduleSpecs = [
   ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-07-24", "2026-07-17"],
   ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-07-21", "2026-07-17"],
-  ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-21", "2026-07-17"],
+  ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-29", "2026-07-17"],
   ["ai-agent", "agent-title", ["ai-agent", "harness", "harness-engineering", "agent-engineering", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-07-23", "2026-07-17"],
   ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-07-21", "2026-07-17"],
-  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-07-24", "2026-07-17"],
+  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-07-29", "2026-07-17"],
   ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-07-21", "2026-07-17"],
   ["evaluation", "evaluation-title", ["evaluation", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-07-23", "2026-07-17"],
   ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "governance-evidence", "continuous-assurance"], "brief", "2026-07-22", "2026-07-21"],
@@ -33,7 +33,7 @@ const moduleSpecs = [
 const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
   "solution-patterns": "52a7b6302cb7bafde13c1d47e1f25e06eb103debf951508a765d7ae67341f110",
   "model-landscape": "710518d2e7495dd0a4ab3b5a5f4ca5a6eb25398ffc81ebedb832aaf4b7be4f12",
-  rag: "5feec1dd0340b3d5d58d6b05c1a3dc0f094046b88c52471b2bc83b0aa524a713",
+  rag: "dc2edf09ae4b7d8dc60c0ad568d78b0fd4aed3847021103310769e23e46cd746",
   "ai-agent": "53b2a8990c5769cdddd525727b6135d534dd4bbadc5501fa4fc32555e85bf114",
   multimodal: "93ef70cba5eb1c013be9aaa5d8139ad07490c4f8f05159fd20b25718ab4f9293",
   mcp: "0e77279a34c57ab3814cf800dd0f9f9874955adbcf0e1097d88d6999c267cc61",
@@ -78,7 +78,7 @@ const moduleKnowledgeViews = Object.freeze({
   "ai-infra-compute": "compute-bottleneck-path",
 });
 
-const focusedReadingModules = new Set(["solution-patterns", "mcp", "llm-inference"]);
+const focusedReadingModules = new Set(["solution-patterns", "rag", "mcp", "llm-inference"]);
 
 const moduleQaCoverageTags = Object.freeze({
   "solution-patterns": Object.freeze([
@@ -90,12 +90,7 @@ const moduleQaCoverageTags = Object.freeze({
     "选型方法", "供应连续性", "TCO", "生命周期", "组合策略", "版本治理", "候选初筛", "退出策略",
     "任务分层", "模型身份", "部署责任", "上下文边界",
   ]),
-  rag: Object.freeze([
-    "架构判断", "风险边界", "产品选型", "故障诊断", "路线选择", "安全", "时效性", "评估",
-    "数据工程", "FinOps", "训练策略", "检索调优", "检索架构", "生产运营", "查询规划",
-    "时效与权限", "证据治理", "无停机迁移", "切块策略", "元数据治理", "GraphRAG",
-    "多模态检索", "结构化数据", "可观测性", "容量规划", "故障恢复", "云服务选型", "PoC 验收",
-  ]),
+  rag: Object.freeze(["方案判断", "离线证据", "在线检索", "有据回答", "局部验收"]),
   "ai-agent": Object.freeze([
     "概念边界", "动作循环", "可解释与审计", "规划机制", "路线选择", "方案边界", "工具治理",
     "记忆治理", "安全", "架构选择", "评估", "可观测", "云选型", "FinOps", "上线治理",
@@ -187,12 +182,12 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
   contentContract: Object.freeze(routeKind === "dedicated"
     ? {
         principle: Object.freeze(slug === "rag"
-          ? ["RAG 的工作原理与工程机制"]
+          ? ["先定义什么可以成为回答证据"]
           : slug === "ai-agent"
             ? ["Agent 的基础概念与工作循环"]
             : ["Prompt 是什么，以及 Context Engineering 的边界"]),
         mechanism: Object.freeze(slug === "rag"
-          ? ["候选召回", "上下文组装", "有据生成"]
+          ? ["离线链生产证据，在线链决定怎样使用证据", "RAG 选型不是只选一个生成模型"]
           : slug === "ai-agent"
             ? ["感知—思考—行动—观察", "规划、记忆与工具"]
             : ["稳定指令", "动态上下文", "能力接口"]),
@@ -201,7 +196,7 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
           : slug === "ai-agent"
             ? ["模型会调用 API，不等于模型拥有 API 权限"]
             : ["必须执行的规则应落在模型外"]),
-        cloud: Object.freeze([slug === "rag" ? "RAG 技术环节与云服务机会" : slug === "ai-agent" ? "Agent 技术环节与云服务机会" : "提示词工程与云服务机会"]),
+        cloud: Object.freeze([slug === "rag" ? "把安全、Trace、云服务和经济性放进同一上线决定" : slug === "ai-agent" ? "Agent 技术环节与云服务机会" : "提示词工程与云服务机会"]),
         customer: Object.freeze(["客户高频问题与深度回答"]),
       }
     : {

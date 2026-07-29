@@ -3,187 +3,175 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt } from "../../module-content-components";
-import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
+import {
+  BalancedGrid,
+  CriticalBoundary,
+  ModuleDeepDiveBlocks,
+  ModuleEvidenceGrid,
+  ModuleLearningStudio,
+  ModuleQaList,
+  ModuleUpdatedAt,
+} from "../../module-content-components";
+import { ModuleReadingNav, ReadingProgress, type ReadingSection } from "../../fieldbook-interactions";
 import { RagRetrievalLab } from "../../flagship-labs";
 import { sourceLedger } from "../../reference-content.mjs";
-import { evidenceCards, ragDeepDives, ragQa } from "../../rag-content.mjs";
+import { evidenceCards, ragDeepDives, ragLearningContent, ragQa } from "../../rag-content.mjs";
 import { RagArchitecturePrimer } from "../../module-pilot-views";
 import { getPublishedModule } from "../../module-publication.mjs";
 import { englishModulePath } from "../../i18n/locale-config.mjs";
 
 export const metadata: Metadata = {
   title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
-  description: "RAG 的基础原理、检索与生成机制、云服务连接、评估方法和售前高频问题深度回答。",
+  description: "从适用性、证据契约、离线与在线生命周期、模型选型、评估、生产控制和经济性系统理解 RAG。",
 };
 
 const ragPublication = getPublishedModule("rag");
 const ragEnglishPath = englishModulePath("rag");
 
 const conceptLinks = [
-  { concept: "LLM 与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解模型的参数化记忆、token 与注意力边界。" },
-  { concept: "Embedding", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解文本如何映射到向量空间，以及相似度为何不等于事实正确。" },
-  { concept: "解析、OCR 与 Chunk", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "知识供给", local: "决定原始资料能否变成完整、可定位、可撤回的检索单元。" },
-  { concept: "搜索与向量数据库", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "检索引擎", local: "负责稀疏、稠密、过滤、索引与增量更新，不等同于完整 RAG。" },
-  { concept: "Prompt 与 Grounding", owner: "提示词工程", href: "/modules/prompt-engineering", relation: "生成约束", local: "把检索证据、回答规则、引用格式和拒答条件组装成模型输入。" },
-  { concept: "评估、安全与网关", owner: "评估", href: "/modules/evaluation", relation: "生产控制", local: "用日志、指标和链路追踪观察检索、生成、权限、风险、成本和 SLA。" },
-  { concept: "Agent 与 GraphRAG", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "下游演进", local: "多步检索、工具调用与全局主题分析属于 RAG 的组合或扩展。" },
-  { concept: "容器、Serverless 与算力", owner: "AI 基础设施平台", href: "/modules/ai-infra-platform", relation: "运行底座", local: "运行解析任务、检索服务和模型推理，并应对流量高峰。" },
+  { concept: "参数化知识与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "模型边界", local: "解释模型权重、Token 与长上下文能做什么，不能替代外部证据治理。" },
+  { concept: "接入、解析、清洗与索引生命周期", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "知识供给", local: "负责把源资料变成带稳定 ID、版本、血缘和权限的检索产物。" },
+  { concept: "版面、图表与视觉证据", owner: "多模态", href: "/modules/multimodal", relation: "复杂文档", local: "负责 OCR、版面和页面图像表示；RAG 负责怎样检索和使用这些证据。" },
+  { concept: "指令、证据包与输出契约", owner: "提示词工程", href: "/modules/prompt-engineering", relation: "生成约束", local: "负责把检索结果、引用格式、拒答条件和结构化输出装配成模型输入。" },
+  { concept: "黄金集、Judge 与发布门槛", owner: "评估", href: "/modules/evaluation", relation: "质量治理", local: "RAG 定义每一层要测什么；评估模块负责数据集、统计、校准与持续评估方法。" },
+  { concept: "投毒、注入与数据泄漏", owner: "AI 安全", href: "/modules/security", relation: "威胁控制", local: "RAG 说明检索链上的攻击面；安全模块负责完整威胁模型、控制验证和事件响应。" },
+  { concept: "版本、Trace、灰度与事故恢复", owner: "AI 应用运营", href: "/modules/ai-ops", relation: "生产运营", local: "RAG 提供专属 Span 与降级信号；AI Ops 负责跨组件发布、回滚和事故闭环。" },
+  { concept: "业务基线、TCO 与 ROI", owner: "场景解决方案", href: "/modules/solution-patterns", relation: "投资判断", local: "RAG 解释技术成本驱动；完整价值、采用率、Build / Buy 和 ROI 由场景方案统领。" },
+  { concept: "多步、自适应检索", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "可选控制", local: "只有问题确实需要动态分解、选源、循环和工具调用时，才把 RAG 作为 Agent 的知识工具。" },
+  { concept: "把检索能力暴露给 Host", owner: "MCP", href: "/modules/mcp", relation: "可选协议", local: "MCP 可把检索服务标准化为 Resource 或 Tool，但不会自动增加检索质量、权限正确性或回答忠实度。" },
+  { concept: "把完整任务委派给另一 Agent", owner: "A2A", href: "/modules/a2a", relation: "可选协议", local: "A2A 适合跨 Agent 的任务委派、状态与产物交换；只读知识问答通常不需要这层复杂度。" },
 ];
 
 const conceptRows = balanceGridRows(conceptLinks, 4);
 
-const ragVariants = [
-  { name: "Naive RAG", cue: "单次查询、单一知识源、快速对照实现", pipeline: "切块 → 向量检索 → Top-K → 生成", boundary: "实现快，但容易受切块、召回和噪声影响。" },
-  { name: "Advanced RAG", cue: "企业知识问答与可控质量", pipeline: "查询改写 → 混合召回 → 过滤 → 重排 → 压缩 → 生成", boundary: "质量更稳，但组件、时延和评估复杂度增加。" },
-  { name: "Modular / Agentic RAG", cue: "跨系统、多步问题与动态工具", pipeline: "计划 → 选择知识源 → 多轮检索 / 工具 → 汇总", boundary: "适合复杂任务；必须加强预算、权限和轨迹评估。" },
-  { name: "GraphRAG", cue: "关系密集、主题归纳与全局问题", pipeline: "实体 / 关系抽取 → 社区 → 摘要 → 局部或全局检索", boundary: "索引成本高，不应替代所有普通事实检索。" },
+const adoptionChoices = [
+  { route: "关键词搜索", fit: "编号、错误码、精确术语和短文档查找", change: "索引可独立更新", evidence: "命中文档或段落", limit: "不负责综合回答与主张级引用" },
+  { route: "直接长上下文", fit: "语料小、稳定、可整体安全传入", change: "每次请求重新提供", evidence: "可设计引用", limit: "输入成本、位置敏感与权限装配仍需验证" },
+  { route: "RAG", fit: "知识动态、跨源、需权限、引用或撤回", change: "证据链可独立发布", evidence: "回答可回到当前证据", limit: "增加数据链、检索链和评估复杂度" },
+  { route: "SQL / API / 规则", fit: "实时交易、精确计算和确定性状态", change: "直接读取事实源", evidence: "结果来自权威系统", limit: "不适合把开放文档理解全部改写成查询" },
+  { route: "微调", fit: "稳定语气、格式、行为或窄任务模式", change: "通过训练版本更新", evidence: "难以逐条归因", limit: "不适合作为频繁知识更新和撤回机制" },
+  { route: "人工流程", fit: "证据不成熟、风险极高或必须专业签署", change: "由流程和人员维护", evidence: "人工记录", limit: "可作为基线、审批点或最终兜底" },
+];
+
+const evidenceContract = [
+  { field: "权威来源", question: "谁有资格定义这个事实？", output: "来源系统、内容负责人、允许用途", acceptance: "非权威副本不能覆盖正式版本" },
+  { field: "稳定坐标", question: "回答怎样回到原文？", output: "文档 ID、版本、页码 / 区域、Chunk ID", acceptance: "每个关键主张可定位到原始证据" },
+  { field: "生效范围", question: "它在何时、何地、对谁有效？", output: "valid_from / valid_to、产品、地区、客户范围", acceptance: "过期或范围不符的证据不能进入最终上下文" },
+  { field: "授权边界", question: "当前用户能否看到这条证据？", output: "租户、主体、组、文档 / 字段 ACL", acceptance: "候选、缓存、上下文与返回都执行同一授权语义" },
+  { field: "冲突规则", question: "两个来源不一致时怎么办？", output: "优先级、并列披露、人工裁决", acceptance: "系统不会静默拼接出一个不存在的结论" },
+  { field: "回答契约", question: "证据能支持到什么程度？", output: "允许主张、引用格式、限定说明", acceptance: "事实、推断和建议在输出中可区分" },
+  { field: "停止条件", question: "何时追问、限定回答、拒答或转人工？", output: "缺条件、低覆盖、冲突、高风险规则", acceptance: "证据不足不会被流畅表达掩盖" },
+];
+
+const offlineLifecycle = [
+  { stage: "来源盘点与许可", output: "权威源、负责人、使用范围和同步方式", failure: "把草稿、个人副本或无权使用资料当事实", acceptance: "每个知识域有唯一裁决责任" },
+  { stage: "连接与变化捕获", output: "新增、修改、删除、撤权事件", failure: "只同步新增，旧内容和旧权限长期残留", acceptance: "正向与负向变化都能证明已传播" },
+  { stage: "解析与质量隔离", output: "文本、表格、标题、页码、版面和失败队列", failure: "解析成功状态掩盖表格错位或段落缺失", acceptance: "关键字段与原页抽样对账" },
+  { stage: "清洗、去重与版本裁决", output: "规范内容、重复簇、正式版本和替代关系", failure: "多个近似版本同时进入召回", acceptance: "冲突内容有明确保留、降权或撤回规则" },
+  { stage: "切片与元数据", output: "可召回单元、父子关系、坐标、版本和 ACL", failure: "条件、标题或表格被切断", acceptance: "真实问题能召回完整而非孤立的证据" },
+  { stage: "Embedding 与索引发布", output: "可版本化的稀疏 / 稠密索引和别名", failure: "模型、Chunk 与索引版本无法配套回滚", acceptance: "新旧版本可并行比较并受控切换" },
+  { stage: "更新、删除与撤权证明", output: "传播状态、缓存失效和完成证据", failure: "源文件已删但索引、摘要或缓存仍可命中", acceptance: "在约定目标内不可再检索或返回旧权限内容" },
+];
+
+const onlineLifecycle = [
+  { stage: "查询契约", output: "原问题、身份、时间、产品、地区和风险", failure: "改写丢失否定、型号或硬约束", signal: "原问题与每次改写均进入 Trace" },
+  { stage: "澄清与路由", output: "直接回答、追问、关键词、向量、SQL、图谱或不检索", failure: "所有请求无差别走最复杂链路", signal: "每条路线有启用原因、预算和停止条件" },
+  { stage: "候选召回", output: "尽量不漏的权限内候选集合", failure: "标准证据没有进入 Top-K", signal: "按查询类型与身份切片的 Candidate Recall@K" },
+  { stage: "过滤、融合与重排", output: "版本正确、可授权且真正相关的排序", failure: "正确证据被噪声、旧版本或错误过滤挤走", signal: "过滤前后召回、nDCG / MRR、重排增益和时延" },
+  { stage: "证据编排", output: "去重、冲突处理、顺序和 Token 预算后的证据包", failure: "召回正确但最终上下文缺关键条件", signal: "最终上下文覆盖、来源 ID 和冲突状态" },
+  { stage: "回答决策", output: "回答、限定回答、追问、拒答或人工接管", failure: "证据不足仍生成确定语气", signal: "忠实度、引用正确性 / 完整性、拒答与任务成功" },
+];
+
+const modelStack = [
+  { component: "解析 / OCR / VLM", choose: "文档类型、版面、表格、语言、扫描质量、部署边界", experiment: "原页坐标、关键字段完整率与失败分层", release: "解析器 + 配置 + 文档类型路由" },
+  { component: "Embedding", choose: "语言、领域、查询长度、Chunk 长度、维度、吞吐和数据边界", experiment: "固定候选生成方式比较 Recall@K 与关键切片", release: "Embedding + 预处理 + Chunk + 索引版本" },
+  { component: "稀疏搜索", choose: "字段权重、分词、语言、同义词、过滤和精确匹配能力", experiment: "编号、专名、日期、否定和错误码基线", release: "Schema + 分词器 + 字段 / 权重配置" },
+  { component: "向量索引", choose: "过滤时机、ANN、删除一致性、多租户、容量、备份和地域", experiment: "Recall—时延—内存曲线与权限过滤后的结果", release: "引擎 + 索引参数 + 数据版本 + 切换方案" },
+  { component: "Reranker", choose: "候选排序错误是否仍是主要瓶颈，新增延迟是否可接受", experiment: "固定候选集比较排序、最终上下文与业务成功增益", release: "模型 + 候选数 + 截断 + 阈值" },
+  { component: "生成模型", choose: "证据遵循、引用、拒答、结构化输出、语言、上下文、时延和成本", experiment: "固定证据包比较主张支持、严重错误与任务成功", release: "模型 + Prompt + 输出 Schema + 安全策略" },
+  { component: "可选 Judge", choose: "开放回答是否无法由规则和人工抽样覆盖", experiment: "与双人标注对齐并测试位置、长度和模型家族偏差", release: "Judge + Rubric + 校准集 + 人工争议流程" },
+];
+
+const failureChain = [
+  { stage: "来源与解析", symptom: "文档存在，标准段落从未进入索引", inspect: "连接事件、解析保真、失败队列、版本与删除状态", owner: "Data Engineering / Multimodal" },
+  { stage: "切片与索引", symptom: "证据被拆断、重复或仍命中旧版本", inspect: "Chunk 边界、父子关系、重复簇、索引和 ACL 版本", owner: "Data Engineering；RAG 验证可召回性" },
+  { stage: "候选召回", symptom: "正确证据不在候选 Top-K", inspect: "查询契约、路线、过滤前后 Recall@K", owner: "RAG" },
+  { stage: "融合与重排", symptom: "证据已召回却排不进最终上下文", inspect: "融合名次、排序指标、阈值、候选数和新增时延", owner: "RAG" },
+  { stage: "证据编排", symptom: "上下文缺版本、条件、冲突或稳定来源 ID", inspect: "最终证据包、去重、顺序、压缩和 Token 预算", owner: "RAG / Prompt Engineering" },
+  { stage: "回答决策", symptom: "证据正确但回答误读、漏引或不该答却回答", inspect: "主张—证据对齐、引用、拒答、人工复核和业务结果", owner: "RAG / Evaluation" },
+];
+
+const productionControls = [
+  { control: "身份与权限", local: "候选生成、过滤、缓存、上下文和返回使用同一当前主体", evidence: "越权测试、ACL 版本、拒绝原因", owner: "Security / 应用身份平台" },
+  { control: "不可信内容", local: "检索证据始终按数据处理，不能覆盖系统指令或自动授权工具", evidence: "恶意文档、投毒、间接注入测试", owner: "Security / Prompt Engineering" },
+  { control: "版本组合", local: "Parser、Chunk、Embedding、索引、Reranker、模型、Prompt 可成组追踪", evidence: "Release manifest、影子对照、回滚证明", owner: "AI Ops / Data Engineering" },
+  { control: "RAG Trace", local: "记录查询、路线、候选、过滤、重排、最终证据包和回答决策", evidence: "阶段 Span、版本、时延、Token、成本和失败原因", owner: "RAG 定义字段；AI Ops 治理链路" },
+  { control: "容量与降级", local: "索引、Embedding、Reranker 或模型故障时保留权限和证据边界", evidence: "峰值、超时、区域故障、只搜不答、转人工演练", owner: "AI Infra / AI Gateway / AI Ops" },
+  { control: "质量与经济性", local: "质量、风险、时延和成本按成功业务结果共同观察", evidence: "关键切片、严重错误、采用率、人工接管和单位成功成本", owner: "Evaluation / Solution Patterns / FinOps" },
 ];
 
 const cloudHooks = [
-  { stage: "数据进入", services: "对象存储、数据库、文件服务、SaaS 连接器、CDC、消息队列", value: "统一沉淀知识源并建立增量同步", discover: "数据在哪里？新增、修改、删除多久必须生效？" },
-  { stage: "文档理解", services: "OCR、文档智能、批处理、函数计算、容器任务", value: "把 PDF、扫描件、表格和图片转成可追溯内容", discover: "扫描件、复杂表格、多栏文档各占多少？" },
-  { stage: "数据治理", services: "数据目录、元数据、质量、脱敏、主数据、血缘", value: "明确权威来源、版本、负责人和保留策略", discover: "谁批准内容？冲突版本以谁为准？" },
-  { stage: "检索与索引", services: "托管搜索、向量数据库、关系数据库、缓存、知识图谱", value: "提供关键词、语义、过滤与关系查询", discover: "精确编号、语义问题、关系问题分别占多少？" },
-  { stage: "模型能力", services: "模型即服务、Embedding、Reranker、模型微调与推理", value: "提供向量化、重排、生成和模型可替换性", discover: "数据能否出域？质量、语言、时延如何排序？" },
-  { stage: "应用运行", services: "Serverless、容器、Kubernetes、API 网关、负载均衡", value: "把知识链和问答链变成弹性在线服务", discover: "并发、峰值系数、P95 和可用性目标是什么？" },
-  { stage: "安全合规", services: "IAM、KMS、密钥管理、WAF、私网连接、审计", value: "让身份、权限和密钥贯穿检索与生成", discover: "权限来自哪里？是否要求租户、文档或字段级隔离？" },
-  { stage: "运营优化", services: "日志、Tracing、APM、评估平台、告警、FinOps", value: "定位失败、持续评测并核算每个成功回答成本", discover: "谁负责质量？发现效果变差后怎样持续改进？" },
+  { stage: "资料进入与处理", capability: "对象存储、连接器、CDC、队列、文档智能、批处理", value: "让知识变化可追踪、可重放", discover: "数据在哪里，谁负责，新增、删除和撤权多久生效？", acceptance: "关键文档解析保真；正负变化完成证明", responsibility: "云提供连接与处理能力；客户定义权威源、许可和质量" },
+  { stage: "检索与索引", capability: "托管搜索、向量数据库、关系 / 图谱查询、缓存", value: "按问题类型产生权限内候选", discover: "精确、语义、关系和结构化查询各占多少？", acceptance: "过滤后的 Recall、时延、删除一致性、备份恢复", responsibility: "平台实现索引能力；应用负责查询路由、ACL 语义和验收" },
+  { stage: "模型能力", capability: "Embedding、Reranker、生成模型、模型路由", value: "把候选变成可用证据和回答", discover: "语言、质量、数据边界、P95 与成本如何排序？", acceptance: "固定任务和证据包上的质量—时延—成本结果", responsibility: "供应方说明模型与服务边界；客户负责场景选择和发布" },
+  { stage: "安全运行", capability: "IAM、KMS、私网、WAF、API 网关、容器 / Serverless", value: "让身份、密钥和网络边界贯穿链路", discover: "谁能检索什么，谁能调用什么，日志可记录什么？", acceptance: "越权泄漏为零；凭据、缓存、日志和故障路径受控", responsibility: "共享责任；托管服务不替代业务授权和威胁建模" },
+  { stage: "评估与运营", capability: "Tracing、评估平台、日志、告警、灰度、回滚", value: "定位失败并持续改进", discover: "谁对质量、事故、版本和恢复负责？", acceptance: "能从业务结果回到证据链阶段并恢复可信版本", responsibility: "平台提供观测和发布能力；团队定义业务状态与处置流程" },
+  { stage: "成本与容量", capability: "用量计量、预算、配额、弹性、FinOps", value: "控制离线和在线完整成本", discover: "成本驱动来自解析、索引、模型、流量还是人工？", acceptance: "单位成功结果成本、峰值容量和预算异常可解释", responsibility: "云方提供计量；客户定义分摊、价值和投资门槛" },
 ];
 
-const knowledgeFlow = [
-  { zh: "源系统", en: "Source Systems" },
-  { zh: "解析 / OCR", en: "Parsing & OCR" },
-  { zh: "切块与元数据", en: "Chunking & Metadata" },
-  { zh: "权限映射", en: "Access Mapping" },
-  { zh: "稀疏 + 向量索引", en: "Sparse + Vector Indexing" },
+const economicsStages = [
+  { title: "现状基线", body: "记录当前处理时间、一次解决率、错误与返工、检索耗时、人工升级和不可接受损失。", decision: "没有现状就无法证明增量价值。" },
+  { title: "价值变化", body: "测量节省时间、覆盖提升、错误减少、交付提速、风险降低和新增业务能力。", decision: "把模型指标转换成真实工作状态。" },
+  { title: "完整成本", body: "同时计入接入、解析、Embedding、索引、重排、模型、网络、存储、评估、运营和人工复核。", decision: "区分一次建设、持续固定与按量成本。" },
+  { title: "采用与人工", body: "观察真实使用率、放弃率、转人工质量、人工接受率和流程绕行。", decision: "技术准确但无人采用仍没有 ROI。" },
+  { title: "风险调整", body: "把越权、错误承诺、过期知识和停机的预期损失及控制成本计入。", decision: "高风险场景不能只看平均节省。" },
+  { title: "上线决定", body: "比较净收益、回收期、关键切片和责任准备度，形成 Go / Repair / Stop。", decision: "结论绑定当前样本和假设，不外推为行业比例。" },
 ];
 
-const servingFlow = [
-  { zh: "查询理解", en: "Query Understanding" },
-  { zh: "混合召回", en: "Hybrid Retrieval" },
-  { zh: "过滤与重排", en: "Filtering & Reranking" },
-  { zh: "上下文组装", en: "Context Assembly" },
-  { zh: "生成 / 引用 / 拒答", en: "Generation / Citation / Abstention" },
+const extensionChoices = [
+  { pattern: "普通 / Advanced RAG", trigger: "单跳事实、制度、产品和知识问答", adds: "混合召回、过滤、重排、引用", risk: "数据链和评估复杂度", owner: "RAG 的生产基线" },
+  { pattern: "GraphRAG", trigger: "跨文档关系、主题归纳和全局问题", adds: "实体关系、社区和分层摘要", risk: "索引、更新、摘要与权限治理更重", owner: "RAG 使用图证据；Data Engineering 管图数据" },
+  { pattern: "Multimodal RAG", trigger: "答案依赖版面、图表、图纸或图像", adds: "OCR / VLM、页面或区域级表示", risk: "视觉成本和证据坐标更复杂", owner: "Multimodal 生产表示；RAG 检索和使用" },
+  { pattern: "Structured Retrieval", trigger: "指标、交易、关系数据库和精确计算", adds: "语义层、SQL / API、结果验证", risk: "口径、查询安全和实时一致性", owner: "事实源 / Data Engineering；RAG 负责路由与编排" },
+  { pattern: "Agentic RAG", trigger: "问题确需动态分解、选源、循环或工具", adds: "计划、预算、停止、轨迹和恢复", risk: "调用、时延和故障路径增加", owner: "Agent 拥有动态控制；RAG 仍拥有证据链" },
 ];
 
-const retrievalMechanics = [
-  {
-    code: "A",
-    title: "解析与切块",
-    en: "Parsing & Chunking",
-    body: "解析保留文字、表格、标题、页码和版面关系；切块把文档变成可召回单元。块太小会丢上下文，太大则稀释相关信息并增加 token。",
-    owner: "主归属：数据解析 / OCR / 质量运营",
-  },
-  {
-    code: "B",
-    title: "稀疏检索",
-    en: "Sparse Retrieval",
-    body: "BM25 根据查询词在文档中的出现、稀有程度和文档长度评分。对编号、专有名词、错误码、日期和精确短语通常很强。",
-    owner: "主归属：搜索与索引",
-  },
-  {
-    code: "C",
-    title: "稠密检索",
-    en: "Dense Retrieval",
-    body: "双编码器把查询与文档映射为向量，以距离寻找语义相近内容。能跨同义表达，但会混淆“语义相似”和“事实相关”。",
-    owner: "主归属：Embedding / 向量数据库",
-  },
-  {
-    code: "D",
-    title: "过滤与重排",
-    en: "Filtering & Reranking",
-    body: "先用高吞吐检索取候选，再用更精细模型比较问题与候选；权限、时间、产品和地区过滤必须在上下文组装前生效。",
-    owner: "主归属：检索工程 / 安全",
-  },
+const protocolBoundaries = [
+  { name: "Agent", need: "模型必须根据中间结果动态决定下一次检索或工具动作", notNeed: "单轮、预设检索链的只读知识问答", responsibility: "计划、循环、预算、停止和恢复" },
+  { name: "MCP", need: "多个 Host / Agent 需要用标准协议发现和调用检索能力", notNeed: "应用可直接调用稳定内部 API", responsibility: "连接契约；不自动提供业务授权、质量或 SLA" },
+  { name: "A2A", need: "独立 Agent 之间需要委派完整任务并交付 Artifact", notNeed: "一个 Agent 调用一次搜索或 RAG 工具", responsibility: "跨 Agent 任务状态、身份、产物和失败语义" },
 ];
-
-const retrievalMechanicRows = balanceGridRows(retrievalMechanics, 4);
-
-const ragFailureChain = [
-  { stage: "源数据与解析", symptom: "文档存在，但正确段落从未出现在索引", check: "解析保真、页码 / 表格 / 标题、版本与删除状态", action: "按文档类型路由解析，保留来源坐标与失败队列" },
-  { stage: "切块与索引", symptom: "证据被拆断、过大噪声或更新后仍命中旧块", check: "Chunk 边界、父子关系、重复率、索引版本", action: "用真实问题比较结构切分、语义切分与父子块" },
-  { stage: "候选召回", symptom: "标准证据不在候选 Top-K", check: "Candidate Recall@K、过滤前后召回、查询类型", action: "关键词 + 向量双路召回，按身份和元数据过滤" },
-  { stage: "融合与重排", symptom: "正确证据有召回，却排不进最终上下文", check: "融合排名、MRR / nDCG、Reranker 增益与延迟", action: "用 RRF 融合不同分数空间，再对有限候选精排" },
-  { stage: "上下文组装", symptom: "引用缺版本、冲突、顺序错误或证据被截断", check: "最终上下文覆盖、token 预算、版本与冲突策略", action: "去重、压缩、排序并保留稳定来源 ID" },
-  { stage: "生成与引用", symptom: "证据正确但回答误读、漏引或不应答却回答", check: "Faithfulness、引用正确性、拒答与事实正确性", action: "强化输出契约、证据不足拒答，并对高风险答案复核" },
-];
-
-const ragExtensionChoices = [
-  { pattern: "普通 / Advanced RAG", use: "单跳事实、制度、产品与知识问答", adds: "混合检索、过滤、重排、引用", cost: "生产环境的常用做法", boundary: "不要被复杂名称诱导跳过基础质量链。" },
-  { pattern: "Agentic RAG", use: "多步拆解、选源、查询改写或工具联动", adds: "路由、计划、循环、预算和轨迹评估", cost: "调用次数和故障路径增加", boundary: "只对复杂问题路由启用，不默认覆盖所有请求。" },
-  { pattern: "GraphRAG", use: "关系密集、跨文档归纳与全局主题问题", adds: "实体关系、社区与分层摘要", cost: "索引、更新和运营链更重", boundary: "精确事实与常规问答通常仍需普通检索。" },
-  { pattern: "Multimodal RAG", use: "答案依赖页面布局、图表、图纸或图像", adds: "OCR / Caption、统一嵌入或页面多向量", cost: "视觉处理、存储和评测增加", boundary: "固定字段优先专业解析；开放视觉理解才交给 VLM。" },
-  { pattern: "Structured Data RAG", use: "答案来自指标、交易与关系数据库", adds: "语义层、Text-to-SQL、权限与结果验证", cost: "口径治理和 SQL 安全成为主成本", boundary: "查文与查数必须分流，不能把表数据简单切块后向量化。" },
-];
-
-const ragOriginalSource = sourceLedger["rag-original-2020"];
 
 const ragReadingSections: ReadingSection[] = [
-  { id: "concept-map", label: "知识连接", eyebrow: "相关模块" },
-  { id: "rag-principle", label: "RAG 原理", eyebrow: "先建立心智模型" },
-  { id: "retrieval-basics", label: "检索机制", eyebrow: "证据如何形成" },
-  { id: "production-rag", label: "生产诊断", eyebrow: "失败在哪里发生" },
-  { id: "rag-variants", label: "架构模式", eyebrow: "复杂度怎样增加" },
-  { id: "when-to-use", label: "适用性判断", eyebrow: "先判断是否该做" },
-  { id: "architecture", label: "双链架构", eyebrow: "离线与在线" },
-  { id: "choice", label: "方案选择", eyebrow: "比较替代方案" },
-  { id: "rag-independent-depth", label: "生产级扩展", eyebrow: "生命周期与迁移" },
-  { id: "evidence", label: "数据与证据", eyebrow: "知道适用边界" },
-  { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
-  { id: "poc", label: "PoC 验证步骤", eyebrow: "按风险设置通过条件" },
+  { id: "fit", label: "采用判断", eyebrow: "先判断是否值得做" },
+  { id: "evidence-contract", label: "证据契约", eyebrow: "定义什么可以回答" },
+  { id: "evidence-lifecycle", label: "证据双链", eyebrow: "离线与在线如何衔接" },
+  { id: "model-selection", label: "模型与组件", eyebrow: "按任务实验选型" },
+  { id: "measurement", label: "测量与诊断", eyebrow: "沿证据链定位失败" },
+  { id: "production", label: "生产与经济性", eyebrow: "控制、云服务与 ROI" },
+  { id: "extensions", label: "扩展边界", eyebrow: "复杂度由真实失败触发" },
+  { id: "practice", label: "实战产物", eyebrow: "用交付证明掌握" },
+  { id: "evidence", label: "证据与边界", eyebrow: "知道来源能证明什么" },
   { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
+  { id: "related-modules", label: "相关模块", eyebrow: "回到责任主模块" },
 ];
 
-const ragSystemLens: LensPanel[] = [
-  {
-    id: "rag-query",
-    label: "一条查询",
-    title: "答案质量由整条证据链共同决定",
-    description: "点击不同视角，不是切换术语清单，而是观察同一套 RAG 系统在回答、故障和云服务责任上的不同切面。",
-    takeaway: "先证明标准证据能以正确身份进入最终上下文，再讨论生成模型是否足够强。",
-    nodes: [
-      { label: "理解问题", en: "Query Contract", detail: "识别意图、实体、时间、产品版本与当前身份。", signal: "输出：可执行查询与过滤条件" },
-      { label: "宽召回", en: "Candidate Retrieval", detail: "关键词和向量各自找全候选，保住编号与语义改写。", signal: "检查：标准证据是否进入 Top-K" },
-      { label: "过滤与重排", en: "Filter & Rerank", detail: "先执行权限与版本过滤，再提高真正支持问题的证据排名。", signal: "检查：过滤前后召回与排序增益" },
-      { label: "组装上下文", en: "Context Assembly", detail: "处理冲突、去重、顺序、token 预算和稳定来源 ID。", signal: "输出：可审计的最终证据包" },
-      { label: "生成或拒答", en: "Generate / Abstain", detail: "模型根据证据回答、引用；证据不足时明确拒答。", signal: "检查：主张是否逐项得到证据支持" },
-    ],
-  },
-  {
-    id: "rag-failure",
-    label: "一次失败",
-    title: "客户看到一句错答，后台可能是五种不同事故",
-    description: "排障不能从“换更大模型”开始。每一个阶段都要留下可观察的输入、输出、版本和责任人。",
-    takeaway: "把最终答案拆回解析、召回、排序、上下文和生成，才能找到可修复的根因。",
-    nodes: [
-      { label: "知识未进入", detail: "同步失败、解析丢表、删除状态错误或权威版本未标记。", signal: "证据：文档与块级处理轨迹" },
-      { label: "证据被拆断", detail: "Chunk 边界破坏标题、表格、条件或父子关系。", signal: "证据：标准段落与块覆盖率" },
-      { label: "候选未召回", detail: "查询改写、向量模型、关键词字段或过滤条件不匹配。", signal: "证据：过滤前后 Recall@K" },
-      { label: "上下文被挤掉", detail: "正确候选排名靠后、重复内容过多或 token 预算不足。", signal: "证据：最终上下文快照" },
-      { label: "模型误用证据", detail: "忽略限定条件、错误合并冲突来源或未执行拒答规则。", signal: "证据：主张—引用对齐与拒答评估" },
-    ],
-  },
-  {
-    id: "rag-cloud",
-    label: "云服务怎么配",
-    title: "云服务不只涉及向量库，还覆盖资料进入、检索、回答和后续维护",
-    description: "每个技术阶段涉及不同的购买角色、云服务和验收标准；售前需要把它们整理成可以分阶段采购的方案。",
-    takeaway: "先用厂商中立的能力描述确认责任边界，再对应到目标云的产品、地域、配额、SLA 与计费单位。",
-    nodes: [
-      { label: "知识供给", detail: "对象存储、连接器、CDC、文档智能和批处理。", signal: "验收：新增、修改、删除传播 SLA" },
-      { label: "检索底座", detail: "托管搜索、向量数据库、缓存、关系与图谱查询。", signal: "验收：权限过滤后的候选召回" },
-      { label: "模型能力", detail: "Embedding、Reranker、生成模型与模型路由。", signal: "验收：质量、时延与单次成功成本" },
-      { label: "安全运行", detail: "API 网关、容器、Serverless、IAM、KMS 与私网。", signal: "验收：越权泄漏、峰值与故障恢复" },
-      { label: "持续运营", detail: "Tracing、评估平台、告警、版本和 FinOps。", signal: "验收：发现效果变差、能够回滚、责任归属明确" },
-    ],
-  },
-];
-
+function SourceLinks({ sourceIds, label }: { sourceIds: string[]; label: string }) {
+  return (
+    <div className="deepDiveSources" aria-label={label}>
+      <span>来源</span>
+      {sourceIds.map((sourceId) => {
+        const source = sourceLedger[sourceId];
+        if (!source) throw new Error(`RAG 页面引用未知来源：${sourceId}`);
+        return <Link href={`/references#source-${sourceId}`} key={sourceId}>{source.shortTitle} ↗</Link>;
+      })}
+    </div>
+  );
+}
 
 export default function RagModulePage() {
   return (
-    <main className="modulePage modulePilot modulePilot--dedicated">
+    <main className="modulePage modulePilot modulePilot--dedicated moduleFocused">
       <ReadingProgress />
       <section className="ragHero" id="rag" aria-labelledby="rag-title">
         <nav className="topbar" aria-label="模块导航">
@@ -191,7 +179,7 @@ export default function RagModulePage() {
             <span>Cloud × AI / Presales Fieldbook</span>
           </Link>
           <div className="toplinks">
-            <Link href="#rag-principle">RAG 原理</Link>
+            <Link href="#fit">采用判断</Link>
             <Link href="#qa">本模块问答</Link>
             <Link href="/glossary">术语库</Link>
             <Link href="/questions">全部问题</Link>
@@ -201,329 +189,231 @@ export default function RagModulePage() {
         </nav>
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V2.0</p>
+            <p className="kicker light">MODULE · EVIDENCE SYSTEM</p>
             <h1 className="moduleHeroTitle" id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h1>
           </div>
           <div className="ragDefinition">
-            <p>用可更新、可追溯的外部证据增强模型回答；关键在于打通从资料进入、检索到回答输出的完整流程，并让它能够评估、控制权限和持续维护。</p>
-            <ModuleHeroMetrics sectionCount={ragReadingSections.length} questionCount={ragQa.length} evidenceCount={evidenceCards.length} />
+            <p>把外部资料转化为当前用户可使用、可核验、可撤回的证据；向量检索只是候选发现手段之一。</p>
           </div>
         </div>
       </section>
 
       <div className="moduleArticleLayout dedicatedArticleLayout">
         <ModuleReadingNav moduleName="RAG · 检索增强生成" sections={ragReadingSections} quickLinks={[
-          { href: "#rag-principle", label: "先懂原理" },
-          { href: "#cloud-opportunities", label: "找云机会" },
-          { href: "#qa", label: "准备客户问答" },
+          { href: "#fit", label: "判断是否采用" },
+          { href: "#model-selection", label: "准备选型" },
+          { href: "#practice", label: "完成实战" },
         ]} />
-      <section className="section ragBody" aria-label="RAG 核心内容">
-        <div className="sectionNumber">02</div>
-        <div className="sectionBody">
-          <div className="decisionBanner">
-            <p className="kicker">PRESALES POSITION</p>
-            <h3>一句话定位</h3>
-            <p>客户需要的系统应当能在正确权限下找到正确证据、生成可核验的回答，并持续发现问题出在哪里。</p>
-          </div>
-
-          <RagArchitecturePrimer />
-
-          <div className="subsection" id="concept-map" data-quality-section="related-modules">
-            <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>RAG 在知识地图中的位置与相关模块</h3></div></div>
-            <p className="sectionLead">RAG 模块聚焦“检索增强生成的组合逻辑”。底层概念各有唯一的主要归属；本节提供理解 RAG 所需的局部解释，并将完整知识链接至对应主模块，以减少重复和版本漂移。</p>
-            {conceptRows.length > 0 && (
-              <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
-                {conceptRows.flatMap((row) =>
-                  row.map((item) => (
-                    <article
-                      key={item.concept}
-                      style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}
-                    >
-                      <div className="conceptCard">
-                        <div className="conceptMeta"><span>{item.relation}</span><Link href={item.href}>{item.owner} ↗</Link></div>
-                        <h4>{item.concept}</h4>
-                        <p>{item.local}</p>
-                      </div>
-                    </article>
-                  )),
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="subsection foundationSection" id="rag-principle" data-quality-section="principle">
-            <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION &amp; MECHANICS</p><h3>RAG 的工作原理与工程机制</h3></div></div>
-            <div className="memoryCompare">
-              <article>
-                <p className="miniLabel">PARAMETRIC MEMORY</p>
-                <h4>参数化记忆 · Parametric Memory</h4>
-                <p>模型训练时压缩进权重的语言规律与世界知识。调用快、泛化强，但知识何时写入、能否精确更新、来源在哪里，都难以直接控制。</p>
-              </article>
-              <article className="externalMemory">
-                <p className="miniLabel">EXTERNAL KNOWLEDGE</p>
-                <h4>外部知识 · External Knowledge</h4>
-                <p>文档、数据库、搜索索引和知识图谱等模型外的数据。可以独立新增、撤回、授权和审计，RAG 在回答当前问题时把相关部分临时交给模型。</p>
-              </article>
+        <section className="section ragBody" aria-label="RAG 核心内容">
+          <div className="sectionNumber">02</div>
+          <div className="sectionBody">
+            <div className="decisionBanner">
+              <p className="kicker">THE MAIN QUESTION</p>
+              <h3>本模块唯一主问题</h3>
+              <p>如何让一条回答只使用当前用户有权访问、仍然有效、能够回到原文的证据，并在证据不足时停下来？</p>
             </div>
 
-            <div className="principleDepth">
-              <header className="principleDepthIntro">
-                <p className="miniLabel">PRESALES MECHANISM</p>
-                <h4>技术售前需要理解的 RAG 原理</h4>
-                <p>RAG 在模型回答之前，先从外部知识中找到可能相关的证据，再把问题、证据和回答要求一起交给模型。它改变的是<strong>本次回答可使用的上下文</strong>，不是重新训练模型，也不会把文档永久写入模型参数。</p>
-              </header>
+            <RagArchitecturePrimer />
+
+            <div className="subsection foundationSection" id="evidence-contract" data-quality-section="principle">
+              <div className="subHead"><span>01</span><div><p className="kicker">EVIDENCE CONTRACT</p><h3>先定义什么可以成为回答证据</h3></div></div>
+              <p className="sectionLead">RAG 改变的是本次回答可使用的外部上下文，不会把资料永久写入模型权重。真正的起点不是向量库，而是来源、版本、权限、引用和停止条件共同组成的证据契约。</p>
+
+              <section className="focusedDecisionLedger" aria-labelledby="route-baseline-title">
+                <header><p className="kicker">SIMPLEST VIABLE ROUTE</p><h3 id="route-baseline-title">RAG 必须先证明自己优于更简单的路线</h3><p>同一个需求可能需要搜索、长上下文、RAG、SQL / API、微调或人工流程，也可能组合使用。先冻结业务问题和基线，再比较必要能力。</p></header>
+                <div className="tableWrap">
+                  <table>
+                    <thead><tr><th>路线</th><th>最适合</th><th>变化怎样生效</th><th>证据形态</th><th>不能忽略</th></tr></thead>
+                    <tbody>{adoptionChoices.map((item) => <tr key={item.route}><th>{item.route}</th><td>{item.fit}</td><td>{item.change}</td><td>{item.evidence}</td><td>{item.limit}</td></tr>)}</tbody>
+                  </table>
+                </div>
+              </section>
+
+              <div className="memoryCompare">
+                <article>
+                  <p className="miniLabel">PARAMETRIC MEMORY</p>
+                  <h4>参数化知识 · Parametric Knowledge</h4>
+                  <p>模型训练时压缩进权重的语言规律与知识。调用快、泛化强，但单条知识何时写入、能否撤回、来源在哪里，通常不能由应用精确控制。</p>
+                </article>
+                <article className="externalMemory">
+                  <p className="miniLabel">EXTERNAL EVIDENCE</p>
+                  <h4>外部证据 · External Evidence</h4>
+                  <p>文档、数据库、搜索索引或知识图谱中的当前资料。它们可以独立更新、授权、撤回和审计，RAG 在请求发生时只取回与当前问题相关的部分。</p>
+                </article>
+              </div>
 
               <div className="ragMechanism" aria-label="RAG 三步工作机制">
-                <article>
-                  <span>01</span>
-                  <h5>检索 · Retrieval</h5>
-                  <p>从当前用户有权访问的知识源中找出候选证据。检索分数表示“与问题有多相关”，不证明内容真实、权威或仍然有效。</p>
-                </article>
-                <article>
-                  <span>02</span>
-                  <h5>增强 · Augmentation</h5>
-                  <p>把经过权限、版本、去重和冲突处理的证据，与问题、引用格式及拒答规则一起组装成模型上下文。</p>
-                </article>
-                <article>
-                  <span>03</span>
-                  <h5>生成 · Generation</h5>
-                  <p>模型基于问题与证据组织回答、引用或拒答，但仍可能忽略、误读或错误组合证据，因此生成环节必须单独评估。</p>
-                </article>
+                <article><span>01</span><h5>检索 · Retrieval</h5><p>从当前用户有权访问的知识源中找候选证据。相关性分数只能说明“与问题像不像”，不能证明来源真实、权威或仍然有效。</p></article>
+                <article><span>02</span><h5>增强 · Augmentation</h5><p>把通过权限、版本、去重和冲突处理的证据，与问题、引用格式和拒答规则一起组装成最终证据包。</p></article>
+                <article><span>03</span><h5>生成 · Generation</h5><p>模型基于证据回答、引用、限定或拒答；它仍可能忽略、误读或错误组合证据，因此生成环节必须单独验收。</p></article>
               </div>
-              <p className="paperBoundary"><strong>售前判断：</strong>RAG 的价值是给模型增加一条可更新、可授权、可追溯的外部证据通道；它不改变“模型仍可能犯错”这一事实。<strong>检索到不等于回答正确</strong>，还要检查证据是否进入最终上下文、模型是否忠实使用，以及来源本身是否可靠。</p>
 
-              <div className="engineeringBridge">
-                <div className="engineeringBridgeHead">
-                  <div><p className="miniLabel">MODERN ENGINEERING VIEW</p><h5>企业 RAG 为什么通常拆成四段</h5></div>
-                  <p>这不是为了多摆组件，而是为了让每类失败都有独立指标、责任边界和云服务落点。</p>
+              <CriticalBoundary>检索到不等于回答正确。标准证据还必须进入最终上下文，被模型忠实使用，并且来源本身权威、当前且适用于这位用户。</CriticalBoundary>
+
+              <div className="tableWrap">
+                <table>
+                  <thead><tr><th>证据契约字段</th><th>必须回答的问题</th><th>需要形成的产物</th><th>最低验收</th></tr></thead>
+                  <tbody>{evidenceContract.map((item) => <tr key={item.field}><th>{item.field}</th><td>{item.question}</td><td>{item.output}</td><td>{item.acceptance}</td></tr>)}</tbody>
+                </table>
+              </div>
+              <SourceLinks sourceIds={["rag-original-2020", "alce-2023", "nist-zero-trust"]} label="证据契约来源" />
+            </div>
+
+            <div className="subsection" id="evidence-lifecycle">
+              <div className="subHead"><span>02</span><div><p className="kicker">TWO EVIDENCE LIFECYCLES</p><h3>离线链生产证据，在线链决定怎样使用证据</h3></div></div>
+              <p className="sectionLead">两条链通过同一套稳定 ID、版本和权限语义衔接。Data Engineering 负责生产可靠的知识产物；RAG 负责证明这些产物能被正确召回、编排和用于回答。</p>
+
+              <section className="focusedDecisionLedger" aria-labelledby="offline-lifecycle-title">
+                <header><p className="kicker">OFFLINE EVIDENCE LIFECYCLE</p><h3 id="offline-lifecycle-title">资料进入索引之前，每一步都要有可验收输出</h3><p>切片只是其中一步。没有权威源、版本裁决和负向变化传播，再精细的向量检索也会返回错误证据。</p></header>
+                <div className="tableWrap">
+                  <table>
+                    <thead><tr><th>阶段</th><th>输出</th><th>典型失败</th><th>RAG 所需验收</th></tr></thead>
+                    <tbody>{offlineLifecycle.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.output}</td><td>{item.failure}</td><td>{item.acceptance}</td></tr>)}</tbody>
+                  </table>
                 </div>
-                <div className="engineeringPipeline">
-                  <article><span>01</span><h6>候选召回<small>Candidate Retrieval</small></h6><p>优先找全可能支持回答的证据；核心观察 Recall@K 与权限过滤后的召回。</p></article>
-                  <article><span>02</span><h6>过滤与重排<small>Filtering & Reranking</small></h6><p>把真正可用的证据排到前面；观察排序质量、过滤正确率与新增时延。</p></article>
-                  <article><span>03</span><h6>上下文组装<small>Context Assembly</small></h6><p>处理去重、版本、冲突、顺序、token 预算和来源 ID；不是简单拼接 Top-K。</p></article>
-                  <article><span>04</span><h6>有据生成<small>Grounded Generation</small></h6><p>区分事实、推断和建议；证据不足时拒答，重要结论必须能回到原文。</p></article>
+              </section>
+
+              <section className="focusedDecisionLedger" aria-labelledby="online-lifecycle-title">
+                <header><p className="kicker">ONLINE ANSWER LIFECYCLE</p><h3 id="online-lifecycle-title">一次请求不只有“检索”与“生成”两个动作</h3><p>问题含糊、条件缺失或证据冲突时，正确结果可能是追问、限定回答或转人工，而不是继续增加 Token。</p></header>
+                <div className="tableWrap">
+                  <table>
+                    <thead><tr><th>阶段</th><th>输出</th><th>典型失败</th><th>可观察信号</th></tr></thead>
+                    <tbody>{onlineLifecycle.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.output}</td><td>{item.failure}</td><td>{item.signal}</td></tr>)}</tbody>
+                  </table>
                 </div>
+              </section>
+
+              <CriticalBoundary>清洗、解析、Chunk 产物、索引发布和删除传播的完整方法归 AI 数据工程；RAG 只保留足以定义输入契约、检索实验和端到端验收的局部解释。</CriticalBoundary>
+            </div>
+
+            <div className="subsection" id="model-selection">
+              <div className="subHead"><span>03</span><div><p className="kicker">MODEL &amp; COMPONENT SELECTION</p><h3>RAG 选型不是只选一个生成模型</h3></div></div>
+              <p className="sectionLead">解析、Embedding、搜索、向量索引、Reranker、生成模型和可选 Judge 是不同采购与发布对象。每一项都应使用同一套“任务—约束—候选—实验—通过条件”方法，而不是用开源 / 商业二分法替代工程判断。</p>
+              <div className="tableWrap">
+                <table>
+                  <thead><tr><th>组件</th><th>主要选择维度</th><th>最小对比实验</th><th>必须一起版本化</th></tr></thead>
+                  <tbody>{modelStack.map((item) => <tr key={item.component}><th>{item.component}</th><td>{item.choose}</td><td>{item.experiment}</td><td>{item.release}</td></tr>)}</tbody>
+                </table>
+              </div>
+              <CriticalBoundary>先固定任务数据、候选生成方式和验收切片，再比较模型。公开榜单、厂商实验和模型卡只能帮助形成候选，不能替代客户语料上的控制实验。</CriticalBoundary>
+              <SourceLinks sourceIds={["dpr-2020", "bert-reranker", "hnsw-2016", "rrf-2009", "beir-2021", "mteb-2023", "miracl-2023", "clirmatrix-2020"]} label="模型与检索选型来源" />
+              <RagRetrievalLab />
+            </div>
+
+            <div className="subsection" id="measurement" data-quality-section="deep-dive">
+              <div className="subHead"><span>04</span><div><p className="kicker">MEASUREMENT &amp; DIAGNOSIS</p><h3>沿证据链测量，才能知道应该修哪里</h3></div></div>
+              <p className="sectionLead">最终答案只是结果。诊断需要同时保存候选集、过滤结果、排序、最终证据包和回答主张；换更大模型只可能修复最后一段中的部分问题。</p>
+              <div className="tableWrap">
+                <table>
+                  <thead><tr><th>失效层</th><th>客户看到的症状</th><th>先检查什么</th><th>主要责任</th></tr></thead>
+                  <tbody>{failureChain.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.symptom}</td><td>{item.inspect}</td><td>{item.owner}</td></tr>)}</tbody>
+                </table>
+              </div>
+              <CriticalBoundary>平均分提高不能掩盖越权、错误承诺、关键证据缺失或高风险拒答失败。候选召回、最终上下文、引用和业务结果必须分别观察，并按风险切片。</CriticalBoundary>
+              <ModuleDeepDiveBlocks blocks={ragDeepDives} sourceLedger={sourceLedger} />
+            </div>
+
+            <div className="subsection cloudSection" id="production" data-quality-section="cloud">
+              <div className="subHead"><span>05</span><div><p className="kicker">PRODUCTION CONTROL &amp; ECONOMICS</p><h3>把安全、Trace、云服务和经济性放进同一上线决定</h3></div></div>
+              <p className="sectionLead">生产控制不是问答列表的附录。每个控制都要落到证据链的输入、输出、版本、负责人和恢复动作；云服务只提供部分能力，不能转移客户的数据、授权和业务责任。</p>
+
+              <div className="tableWrap">
+                <table>
+                  <thead><tr><th>贯穿控制</th><th>RAG 本地要求</th><th>验收证据</th><th>责任主模块</th></tr></thead>
+                  <tbody>{productionControls.map((item) => <tr key={item.control}><th>{item.control}</th><td>{item.local}</td><td>{item.evidence}</td><td>{item.owner}</td></tr>)}</tbody>
+                </table>
               </div>
 
-              <div className="principleLimits">
-                <article><span>A</span><h5>召回是证据可用性的上限</h5><p>标准证据没有进入候选集，生成器就无法形成可核验引用；即使凭参数记忆猜对，也不能算证据链成功。</p></article>
-                <article><span>B</span><h5>相关性不等于真实性</h5><p>检索分数回答“像不像当前问题”，不能证明来源正确、最新或适用于当前客户范围。</p></article>
-                <article><span>C</span><h5>增强发生在上下文，不在权重</h5><p>常见企业 RAG 把证据序列化为输入 token，改变本次生成条件；它不会因此把知识永久写入模型参数。</p></article>
-              </div>
+              <section className="focusedDecisionLedger" aria-labelledby="cloud-capability-title">
+                <header><p className="kicker">CLOUD CAPABILITY CONTRACT</p><h3 id="cloud-capability-title">先写能力、验收与责任，再对应具体云产品</h3><p>具体产品还要按实施当天的地域、生命周期状态、配额、SLA、网络和计费单位复核。</p></header>
+                <div className="tableWrap cloudTable">
+                  <table>
+                    <thead><tr><th>技术环节</th><th>可连接的云能力</th><th>客户价值</th><th>发现问题</th><th>验收</th><th>责任边界</th></tr></thead>
+                    <tbody>{cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.capability}</td><td>{item.value}</td><td>{item.discover}</td><td>{item.acceptance}</td><td>{item.responsibility}</td></tr>)}</tbody>
+                  </table>
+                </div>
+              </section>
 
-              <Link className="paperAnchor" href="/references#source-rag-original-2020">原理来源：Lewis et al., {ragOriginalSource.title} ↗</Link>
-            </div>
-
-            <div className="workedExample">
-              <div className="exampleQuestion"><span>客户问题</span><strong>“企业版产品的数据保留期是多少？”</strong></div>
-              <div className="exampleSteps">
-                <article><span>01</span><h4>检索<small>Retrieval</small></h4><p>从产品文档、合同条款和最新公告中找候选证据，并按身份过滤。</p></article>
-                <article><span>02</span><h4>增强<small>Augmentation</small></h4><p>把有效日期、产品版本、原文片段和引用要求组装成上下文。</p></article>
-                <article><span>03</span><h4>生成<small>Generation</small></h4><p>模型比较证据、说明适用范围；证据不足或冲突时拒答并提示人工确认。</p></article>
-              </div>
-            </div>
-            <CriticalBoundary>RAG 的质量不是一个模型分数，而是一条证据链：找得到、排得准、装得下、用得对、引得出。任何一段失效，都可能得到流畅但不可核验的回答。</CriticalBoundary>
-            <SystemLens title="用三个视角理解同一套 RAG 系统" lead="从查询、故障和云方案三个视角切换，建立比静态架构图更完整的因果关系。" panels={ragSystemLens} />
-            <RagRetrievalLab />
-          </div>
-
-          <div className="subsection" id="retrieval-basics">
-            <div className="subHead"><span>2.3</span><div><p className="kicker">RETRIEVAL MECHANICS</p><h3>检索链的证据形成与失效机制</h3></div></div>
-            <div className="mechanicGrid" data-count={retrievalMechanics.length} data-odd={retrievalMechanics.length % 2 === 1 ? "true" : "false"}>
-              {retrievalMechanicRows.flatMap((row) => row.map((item, index) => (
-                <article
-                  className={index === row.length - 1 ? "mechanicRowEnd" : undefined}
-                  key={item.code}
-                  style={{ "--mechanic-span": gridSpan(row.length) } as CSSProperties}
-                >
-                  <span className="mechanicNo">{item.code}</span>
-                  <h4>{item.title}<small>{item.en}</small></h4>
-                  <p>{item.body}</p>
-                  <small>{item.owner}</small>
-                </article>
-              ))) }
-            </div>
-
-            <div className="retrievalCompare tableWrap">
-              <table>
-                <thead><tr><th>机制</th><th>它实际比较什么</th><th>擅长</th><th>常见盲点</th><th>设计建议</th></tr></thead>
-                <tbody>
-                  <tr><th>BM25 / Sparse</th><td>词项、词频、稀有度与长度</td><td>精确术语、编号、名称</td><td>同义改写、跨语言表达</td><td>保留原始字段与关键词索引</td></tr>
-                  <tr><th>Dense / Embedding</th><td>向量空间中的语义距离</td><td>自然语言、同义表达、模糊意图</td><td>精确值、否定、细粒度条件</td><td>用任务数据选择 embedding</td></tr>
-                  <tr className="highlight"><th>Hybrid</th><td>融合稀疏与稠密候选</td><td>企业混合语料</td><td>融合权重需要评估</td><td>通常作为企业 PoC 的主要对比方案</td></tr>
-                  <tr><th>Reranker</th><td>问题与候选的联合相关性</td><td>提高候选排序精度</td><td>增加时延与成本</td><td>只重排有限候选并监测收益</td></tr>
-                </tbody>
-              </table>
-            </div>
-
-            <BalancedGrid className="technicalNotes" maxColumns={3}>
-              <article><p className="miniLabel">VECTOR SIMILARITY</p><h4>余弦相似度 · Cosine Similarity</h4><p>直观理解是比较查询向量与文档向量的方向是否接近；分数越高通常表示语义越相近。但分数只在同一 Embedding、同一任务和同一索引配置下有意义，不能跨模型直接比较。</p></article>
-              <article><p className="miniLabel">APPROXIMATE SEARCH</p><h4>ANN / HNSW</h4><p>大规模向量库不会逐条精确比较。HNSW 通过分层近邻图快速逼近最近向量，用索引内存、构建时间和召回率换取查询速度。</p></article>
-              <article><p className="miniLabel">CHUNKING</p><h4>Chunk Size 的任务依赖性</h4><p>固定长度、按标题、语义切分、父子块各适合不同文档。参数必须用真实问题集同时测召回、上下文完整性、时延和 token。</p></article>
-            </BalancedGrid>
-          </div>
-
-          <div className="subsection" id="production-rag">
-            <div className="subHead"><span>2.4</span><div><p className="kicker">PRODUCTION DIAGNOSTICS</p><h3>从宽召回到可解释诊断</h3></div></div>
-            <p className="sectionLead">企业 RAG 常让关键词与向量检索各自“尽量不漏”，再用倒数排名融合（Reciprocal Rank Fusion, RRF）合并不同分数空间的候选，最后用 Reranker 做更精细的查询—证据判断。RRF 解决“怎样合并排名”，Reranker 解决“候选中谁更相关”；二者都不能补回未召回证据。</p>
-            <div className="engineeringPipeline">
-              <article><span>01</span><h6>双路宽召回<small>Sparse + Dense</small></h6><p>关键词保住编号与专名，向量补足同义表达；两路都按当前身份过滤。</p></article>
-              <article><span>02</span><h6>排名融合<small>Rank Fusion / RRF</small></h6><p>基于各自名次融合候选，避免直接比较不可通用的 BM25 与向量原始分数。</p></article>
-              <article><span>03</span><h6>精细重排<small>Cross-encoder Rerank</small></h6><p>只在有限候选上做更贵的联合判断，并衡量排序收益与新增延迟。</p></article>
-              <article><span>04</span><h6>证据组装<small>Context &amp; Citation</small></h6><p>只把版本正确、无冲突、可引用的证据交给生成器。</p></article>
-            </div>
-            <div className="tableWrap" style={{ marginTop: 18 }}>
-              <table>
-                <thead><tr><th>失效环节</th><th>客户看到的症状</th><th>先检查什么</th><th>典型控制</th></tr></thead>
-                <tbody>{ragFailureChain.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.symptom}</td><td>{item.check}</td><td>{item.action}</td></tr>)}</tbody>
-              </table>
-            </div>
-            <CriticalBoundary>换更大的生成模型只能改善“证据已经正确进入上下文但模型没用好”的一部分问题。证据在解析、切块、召回或权限过滤阶段丢失时，升级模型不会把它找回来。</CriticalBoundary>
-          </div>
-
-          <div className="subsection" id="rag-variants">
-            <div className="subHead"><span>2.5</span><div><p className="kicker">RAG PATTERNS</p><h3>基础架构与扩展模式</h3></div></div>
-            <div className="variantList">
-              {ragVariants.map((item) => (
-                <article key={item.name}>
-                  <div><p className="miniLabel">{item.cue}</p><h4>{item.name}</h4></div>
-                  <p className="variantPipeline">{item.pipeline}</p>
-                  <p>{item.boundary}</p>
-                </article>
-              ))}
-            </div>
-            <p className="sectionFootnote">术语归属：Naive / Advanced / Modular 属于 RAG 模块；Agent 的规划和工具调用深入应用模式层；知识图谱构建与治理深入数据工程层。</p>
-            <div className="tableWrap" style={{ marginTop: 18 }}>
-              <table>
-                <thead><tr><th>模式</th><th>适合的问题</th><th>新增能力</th><th>主要成本</th><th>选择边界</th></tr></thead>
-                <tbody>{ragExtensionChoices.map((item) => <tr key={item.pattern}><th>{item.pattern}</th><td>{item.use}</td><td>{item.adds}</td><td>{item.cost}</td><td>{item.boundary}</td></tr>)}</tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="subsection" id="when-to-use">
-            <div className="subHead"><span>2.6</span><div><p className="kicker">FIT CHECK</p><h3>RAG 适用性判断</h3></div></div>
-            <div className="fitGrid">
-              <article className="fit yes">
-                <h4><span>✓</span> 高匹配</h4>
-                <ul>
-                  <li>知识频繁变化，需要分钟 / 小时级更新</li>
-                  <li>答案必须附来源、页码或原文证据</li>
-                  <li>数据按用户、部门或租户分权限</li>
-                  <li>语料规模持续增长，无法稳定整体放入上下文</li>
-                  <li>需要知道失败发生在检索还是生成</li>
-                </ul>
-              </article>
-              <article className="fit maybe">
-                <h4><span>△</span> 需要与现有做法对比</h4>
-                <ul>
-                  <li>语料很小、稳定，可整体放入上下文</li>
-                  <li>核心需求是固定格式、语气或专门行为</li>
-                  <li>问题依赖实时交易数据与复杂计算</li>
-                  <li>没有可用的权威知识源或内容所有者</li>
-                  <li>错误代价极高，却不允许拒答或人工复核</li>
-                </ul>
-              </article>
-            </div>
-          </div>
-
-          <div className="subsection" id="architecture">
-            <div className="subHead"><span>2.7</span><div><p className="kicker">REFERENCE ARCHITECTURE</p><h3>RAG 双链参考架构</h3></div></div>
-            <div className="chainWrap">
-              <div className="chainLabel"><strong>离线知识链</strong><span>Knowledge pipeline</span></div>
-              <div className="flow">
-                {knowledgeFlow.map((step, i) => <div className="flowStep" key={step.zh}><span className="flowNo">{String(i+1).padStart(2,'0')}</span><div className="flowTerm"><strong>{step.zh}</strong><small>{step.en}</small></div></div>)}
-              </div>
-              <div className="chainLabel runtime"><strong>在线问答链</strong><span>Serving pipeline</span></div>
-              <div className="flow runtimeFlow">
-                {servingFlow.map((step, i) => <div className="flowStep" key={step.zh}><span className="flowNo">{String(i+1).padStart(2,'0')}</span><div className="flowTerm"><strong>{step.zh}</strong><small>{step.en}</small></div></div>)}
-              </div>
-            </div>
-            <div className="architectureNotes">
-              <p><strong>两条链共同使用的控制部分（Control Plane）</strong>：评测集、提示版本、来源谱系、权限策略、日志追踪、成本与 SLA。</p>
-              <p><strong>关键分界</strong>：模型负责基于证据生成；应用负责身份、权限、工具调用和最终业务动作。</p>
-            </div>
-          </div>
-
-          <div className="subsection" id="choice">
-            <div className="subHead"><span>2.8</span><div><p className="kicker">CHOICE MATRIX</p><h3>四种知识增强方案对比</h3></div></div>
-            <div className="tableWrap">
-              <table>
-                <thead><tr><th>方案</th><th>最适合</th><th>更新 / 引用</th><th>主要代价</th><th>售前判断</th></tr></thead>
-                <tbody>
-                  <tr><th>长上下文<br /><small>Long context</small></th><td>小而稳定的封闭语料</td><td>更新简单；可引用但需额外设计</td><td>输入成本、时延、位置偏差</td><td>先与最简单的做法对比</td></tr>
-                  <tr className="highlight"><th>RAG</th><td>动态、跨源、需权限与证据</td><td>强；可增量更新与撤回</td><td>数据链路与评估复杂度</td><td>企业知识问答的常用方案</td></tr>
-                  <tr><th>微调<br /><small>Fine-tuning</small></th><td>稳定行为、风格、格式与领域模式</td><td>知识更新慢；来源难追溯</td><td>数据构造、训练与回归</td><td>针对行为，不替代检索</td></tr>
-                  <tr><th>Agentic retrieval</th><td>多步查询、跨系统、需计划与工具</td><td>强，但链路更长</td><td>时延、不可预测性与权限风险</td><td>复杂任务再引入</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="subsection" id="rag-independent-depth" data-quality-section="deep-dive">
-            <div className="subHead"><span>2.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>从检索 Demo 到可持续的证据系统</h3></div></div>
-            <p className="sectionLead">本节从生产问题反向组织知识：查询怎样规划、删除与撤权怎样传播、回答怎样绑定主张级证据，以及索引如何无停机迁移。</p>
-            <ModuleDeepDiveBlocks blocks={ragDeepDives} sourceLedger={sourceLedger} />
-          </div>
-
-          <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>2.10</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用数据及适用边界</h3></div></div>
-            <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
-          </div>
-
-          <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>2.11</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>RAG 技术环节与云服务机会</h3></div></div>
-            <div className="cloudIntro">
-              <p>先用厂商中立的能力描述问题，再对应到实际销售的产品。云服务贯穿数据进入、知识处理、模型调用、在线运行、安全和后续维护。</p>
-              <span>先确认所需能力</span><span>再选具体产品</span><span>按客户限制决定搭配</span>
-            </div>
-            <div className="cloudTable tableWrap">
-              <table>
-                <thead><tr><th>RAG 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead>
-                <tbody>
-                  {cloudHooks.map((item) => (
-                    <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>
+              <section className="focusedDecisionLedger" aria-labelledby="economics-title">
+                <header><p className="kicker">RISK-ADJUSTED ROI</p><h3 id="economics-title">成本只是分母，ROI 还需要价值、采用率和风险</h3><p>PoC 从现状基线开始，并用生产数据逐步替换假设。模型分数不能直接变成采购回报。</p></header>
+                <div className="focusedDecisionRows">
+                  {economicsStages.map((item, index) => (
+                    <article key={item.title}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <div><h4>{item.title}</h4><p>{item.body}</p></div>
+                      <div><strong>{item.decision}</strong></div>
+                    </article>
                   ))}
-                </tbody>
-              </table>
-            </div>
-            <BalancedGrid className="solutionBundles" maxColumns={3}>
-              <article><p className="miniLabel">BUNDLE A</p><h4>安全企业知识助手</h4><p>对象存储 / 文档智能 + 托管搜索 / 向量库 + 模型服务 + API 网关 + IAM / KMS + 可观测。</p><small>购买角色：业务部门、数据负责人、安全与应用团队</small></article>
-              <article><p className="miniLabel">BUNDLE B</p><h4>实时知识同步</h4><p>数据库 / SaaS + CDC / 事件总线 + Serverless 处理 + 增量索引 + 缓存失效 + 审计。</p><small>购买角色：数据平台、集成团队、业务运营</small></article>
-              <article><p className="miniLabel">BUNDLE C</p><h4>私有化规模运行</h4><p>Kubernetes / GPU 推理 + 私网模型网关 + 向量检索 + 弹性缓存 + APM / FinOps。</p><small>购买角色：平台团队、基础设施、信息安全与采购</small></article>
-            </BalancedGrid>
-            <p className="sectionFootnote">后续可在不改正文的情况下，为目标云厂商增加“能力 → 产品名称 → 限制 → 计费单位”对照表；表中应明确标注产品版本、适用地域与核验日期。</p>
-          </div>
+                </div>
+              </section>
 
-          <div className="subsection" id="poc">
-            <div className="subHead"><span>2.12</span><div><p className="kicker">POC PLAYBOOK</p><h3>按风险设置 RAG PoC 的通过条件</h3></div></div>
-            <div className="pocGrid">
-              <article><span>BASELINE</span><h4>问题与现有做法</h4><p>按业务风险选代表性任务；固定真实问题、正确答案、证据位置、身份和现有流程表现。样本规模由业务分布决定。</p></article>
-              <article><span>DATA PROOF</span><h4>知识与权限证明</h4><p>接入最小权威语料；验证解析、切块、版本、权限、新增、删除与撤权传播，并记录每个处理版本。</p></article>
-              <article><span>QUALITY PROOF</span><h4>检索与回答证明</h4><p>一次改变一个主要变量，比较候选召回、重排、最终上下文、主张级引用和拒答，而不是只看最终观感。</p></article>
-              <article><span>OPERATIONS</span><h4>负载、安全与交接</h4><p>测试冲突、越权、恶意文档、过期内容、峰值和回滚；通过当前检查后再进入下一阶段，周期随范围和风险变化。</p></article>
+              <BalancedGrid className="technicalNotes" maxColumns={3}>
+                <article><p className="miniLabel">GO</p><h4>扩大范围</h4><p>关键任务优于基线，严重错误受控，单位成功成本可接受，责任团队能够运营和恢复。</p></article>
+                <article><p className="miniLabel">REPAIR</p><h4>限定范围并整改</h4><p>业务假设仍成立，但失败集中在可定位的数据、检索、权限、模型或流程环节；先修复再复测。</p></article>
+                <article><p className="miniLabel">STOP</p><h4>停止或改用更简单路线</h4><p>没有权威资料、风险无法控制、价值不高于基线，或长上下文、搜索、SQL、规则和人工流程更合适。</p></article>
+              </BalancedGrid>
+              <SourceLinks sourceIds={["nist-genai-profile", "nist-aml-100-2e2025", "opentelemetry-genai-semconv", "opentelemetry-genai-observability-2026", "finops-unit-economics", "finops-ai-tools-considerations"]} label="生产控制与经济性来源" />
             </div>
-            <div className="gates">
-              <h4>建议的通过 / 暂停条件</h4>
-              <div className="gateList">
-                <span>检索 Recall@K</span><span>引用正确率</span><span>关键任务成功率</span><span>P95 / 首 token</span><span>单次成功成本</span><span>越权泄漏 = 0</span><span>更新 / 删除 SLA</span><span>人工接受率</span>
+
+            <div className="subsection" id="extensions">
+              <div className="subHead"><span>06</span><div><p className="kicker">OPTIONAL PATTERNS &amp; PROTOCOL BOUNDARIES</p><h3>复杂度由真实失败样本触发，不是统一升级阶梯</h3></div></div>
+              <p className="sectionLead">Naive / Advanced 描述检索管线复杂度，Graph 描述知识表示，Multimodal 描述输入与证据形态，Structured 描述事实源，Agentic 描述运行时控制。它们可以组合，但不是一条从低到高的成熟度阶梯。</p>
+              <div className="tableWrap">
+                <table>
+                  <thead><tr><th>模式</th><th>采用触发</th><th>新增能力</th><th>新增风险 / 成本</th><th>主要责任</th></tr></thead>
+                  <tbody>{extensionChoices.map((item) => <tr key={item.pattern}><th>{item.pattern}</th><td>{item.trigger}</td><td>{item.adds}</td><td>{item.risk}</td><td>{item.owner}</td></tr>)}</tbody>
+                </table>
               </div>
-              <p>具体数值必须由客户风险与现有表现共同决定；不要把通用数字写成合同承诺。</p>
+
+              <section className="focusedDecisionLedger" aria-labelledby="protocol-boundary-title">
+                <header><p className="kicker">AGENT · MCP · A2A</p><h3 id="protocol-boundary-title">它们都不是普通 RAG 的默认组成</h3><p>判断标准不是技术是否流行，而是系统是否出现了动态控制、标准能力连接或跨 Agent 任务委派的真实需要。</p></header>
+                <div className="tableWrap">
+                  <table>
+                    <thead><tr><th>能力</th><th>什么时候需要</th><th>什么时候不需要</th><th>它真正负责什么</th></tr></thead>
+                    <tbody>{protocolBoundaries.map((item) => <tr key={item.name}><th>{item.name}</th><td>{item.need}</td><td>{item.notNeed}</td><td>{item.responsibility}</td></tr>)}</tbody>
+                  </table>
+                </div>
+              </section>
+              <CriticalBoundary>Agent 可以调用 RAG；MCP 可以暴露检索能力；A2A 可以委派完整任务。三者都不会自动改善资料质量、检索召回、证据忠实度、用户授权或生产可靠性。</CriticalBoundary>
+            </div>
+
+            <div className="subsection" id="practice" data-quality-section="learning">
+              <div className="subHead"><span>07</span><div><p className="kicker">LEARNING BY DELIVERABLE</p><h3>用可评审产物证明真正掌握 RAG</h3></div></div>
+              <ModuleLearningStudio content={ragLearningContent} sourceLedger={sourceLedger} />
+            </div>
+
+            <div className="subsection" id="evidence" data-quality-section="evidence">
+              <div className="subHead"><span>08</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h3>数据、论文与产品文档分别能证明什么</h3></div></div>
+              <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
+            </div>
+
+            <div className="subsection qaSection" id="qa" data-quality-section="qa">
+              <div className="subHead"><span>09</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+              <ModuleQaList items={ragQa} sourceLedger={sourceLedger} />
+            </div>
+
+            <div className="subsection focusedRelated" id="related-modules" data-quality-section="related-modules">
+              <div className="subHead"><span>10</span><div><p className="kicker">RELATED MODULES</p><h3>把局部判断交回责任主模块</h3></div></div>
+              <p className="sectionLead">RAG 保留完成当前方案判断所需的局部解释；完整机制、治理与运营方法仍由以下模块负责，避免在一个页面复制整套知识库。</p>
+              <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
+                {conceptRows.flatMap((row) => row.map((item) => (
+                  <article key={item.concept} style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}>
+                    <div className="conceptCard">
+                      <div className="conceptMeta"><span>{item.relation}</span><Link href={item.href}>{item.owner} ↗</Link></div>
+                      <h4>{item.concept}</h4>
+                      <p>{item.local}</p>
+                    </div>
+                  </article>
+                )))}
+              </div>
             </div>
           </div>
-
-          <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>2.13</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-            <ModuleQaList items={ragQa} sourceLedger={sourceLedger} />
-          </div>
-
-        </div>
-      </section>
+        </section>
       </div>
 
       <footer>
         <div><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>RAG 独立模块 V2.0<ModuleUpdatedAt value={ragPublication?.updatedAt ?? undefined} /></p>
+        <p>RAG 深度模块<ModuleUpdatedAt value={ragPublication?.updatedAt ?? undefined} /></p>
         <a href="#rag">返回顶部 ↑</a>
       </footer>
     </main>

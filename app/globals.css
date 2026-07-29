@@ -233,7 +233,7 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .technicalNotes { gap: 14px; margin-top: 16px; }
 .technicalNotes article { height: 100%; padding: 24px; border: 1px solid var(--line); background: var(--paper); }
 .technicalNotes h4 { margin: 22px 0 10px; }
-.technicalNotes p:last-child { margin: 0; color: var(--muted); font-size: 12px; }
+.technicalNotes p:last-child { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .variantList { border-top: 1px solid var(--ink); }
 .variantList article { display: grid; grid-template-columns: .65fr 1fr 1fr; gap: 30px; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
 .variantList h4 { margin: 0; font-size: 18px; }
@@ -291,12 +291,12 @@ tr.highlight { background: #efffd9; }
 .pocGrid article:last-child { border-right: 0; }
 .pocGrid span { display: inline-block; background: var(--orange); padding: 3px 8px; font-size: 10px; font-weight: 800; }
 .pocGrid h4 { margin: 30px 0 10px; font-size: 16px; }
-.pocGrid p { margin: 0; color: var(--muted); font-size: 13px; }
+.pocGrid p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .gates { margin-top: 18px; padding: 30px; background: var(--ink); color: var(--white); }
 .gates h4 { margin: 0 0 18px; }
 .gateList { display: flex; gap: 8px; flex-wrap: wrap; }
 .gateList span { border: 1px solid rgba(255,255,255,.25); padding: 7px 11px; font-size: 11px; }
-.gates > p { color: rgba(255,255,255,.58); font-size: 11px; margin: 20px 0 0; }
+.gates > p { color: rgba(255,255,255,.68); font-size: 14px; line-height: 1.65; margin: 20px 0 0; }
 
 .cloudSection { background: #e9f5fd; }
 .cloudIntro { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: -10px 0 28px 70px; }

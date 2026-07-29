@@ -802,22 +802,21 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .focusedDecisionLedger > header { padding: 24px 0; display: grid; grid-template-columns: minmax(240px,.65fr) minmax(360px,1.35fr); gap: 18px 44px; align-items: end; }
 .focusedDecisionLedger > header .kicker { grid-column: 1 / -1; }
 .focusedDecisionLedger > header h3 { margin: 0; font-size: 27px; line-height: 1.2; }
-.focusedDecisionLedger > header > p:last-child { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.focusedDecisionLedger > header > p:last-child { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .focusedDecisionRows { border-bottom: 1px solid var(--line); }
 .focusedDecisionRows article { display: grid; grid-template-columns: 44px minmax(260px,.9fr) minmax(300px,1.1fr); gap: 24px; padding: 22px 0; border-top: 1px solid var(--line); }
 .focusedDecisionRows article > span { color: var(--blue); font: 800 11px/1 var(--font-geist-mono),monospace; }
 .focusedDecisionRows h4 { margin: 0 0 8px; font-size: 18px; }
-.focusedDecisionRows p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
-.focusedDecisionRows strong,
-.focusedDecisionRows small { display: block; font-size: 14px; line-height: 1.6; }
-.focusedDecisionRows small { margin-top: 8px; color: var(--muted); }
+.focusedDecisionRows p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
+.focusedDecisionRows strong { display: block; font-size: 16px; line-height: 1.65; }
+.focusedDecisionRows small { display: block; margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.65; }
 .focusedBoundary { margin: 44px 0 0; padding: 20px 24px; display: grid; grid-template-columns: 170px minmax(0,1fr); gap: 24px; border-left: 5px solid var(--lime); background: #f3f8e8; }
 .focusedBoundary span { color: var(--blue); font: 800 11px/1.4 var(--font-geist-mono),monospace; }
 .focusedBoundary p { margin: 0; font-size: 16px; line-height: 1.65; }
 .focusedCloudRows { margin-top: 30px; border-top: 2px solid var(--ink); }
 .focusedCloudRows article { display: grid; grid-template-columns: minmax(180px,.55fr) minmax(320px,1.45fr); gap: 12px 34px; padding: 22px 0; border-bottom: 1px solid var(--line); }
 .focusedCloudRows h3 { margin: 0; font-size: 19px; }
-.focusedCloudRows p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.focusedCloudRows p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .focusedCloudRows p strong { display: block; margin-bottom: 5px; color: var(--ink); }
 .focusedCloudRows small { grid-column: 2; color: var(--blue); font-size: 12px; line-height: 1.55; }
 .focusedDirectoryLink { margin: 24px 0 0; text-align: right; }
@@ -854,6 +853,10 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .codingBenchmarkList article { grid-template-columns: 120px minmax(180px,.65fr) minmax(260px,1fr); }
   .codingBenchmarkList article > span, .codingBenchmarkList article > a { grid-column: 2 / -1; }
   .codingAgentControls { grid-template-columns: 1fr; }
+  .focusedDecisionLedger > header { grid-template-columns: 1fr; }
+  .focusedDecisionLedger > header .kicker { grid-column: 1; }
+  .focusedDecisionRows article { grid-template-columns: 38px minmax(0,1fr); }
+  .focusedDecisionRows article > div:last-child { grid-column: 2; }
 }
 
 @media (max-width: 900px) {
@@ -1500,7 +1503,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 }
 .knowledgeDecisionChecks button[aria-pressed="true"] { background: var(--visual-accent-soft); }
 .knowledgeDecisionChecks button span { color: #60756b; font: 800 10px/1 var(--font-geist-mono),monospace; }
-.knowledgeDecisionChecks > p { margin: 0; padding: 14px 18px; color: var(--visual-muted); font-size: 13px; line-height: 1.55; }
+.knowledgeDecisionChecks > p { margin: 0; padding: 14px 18px; color: var(--visual-muted); font-size: 16px; line-height: 1.65; }
 .knowledgeDecisionChecks > p strong { display: block; margin-bottom: 4px; color: var(--visual-navy); }
 
 .ragDualChainExplorer > nav {
@@ -1552,7 +1555,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .ragChainCanvas button span { color: #5d756b; font: 800 10px/1 var(--font-geist-mono),monospace; }
 .ragChainCanvas button strong { font-size: 17px; }
 .ragChainCanvas button small { color: var(--visual-muted); font-size: 10px; }
-.ragEvidenceReturn { margin: 18px 0 0; display: flex; justify-content: center; gap: 12px; color: #587128; font-size: 12px; }
+.ragEvidenceReturn { margin: 18px 0 0; display: flex; justify-content: center; gap: 12px; color: #587128; font-size: 14px; }
 .ragEvidenceReturn i { font-size: 20px; font-style: normal; }
 .ragChainDetail {
   padding: 20px 22px;
@@ -1565,12 +1568,12 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .ragChainDetail > div span { grid-row: 1 / 3; color: #5e756b; font: 800 11px/1 var(--font-geist-mono),monospace; }
 .ragChainDetail h3 { margin: 0; font-size: 19px; }
 .ragChainDetail small { color: var(--visual-muted); font-size: 10px; }
-.ragChainDetail > p { margin: 0; color: var(--visual-muted); font-size: 14px; line-height: 1.6; }
-.ragSharedControls { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid #aeb8c4; }
+.ragChainDetail > p { margin: 0; color: var(--visual-muted); font-size: 16px; line-height: 1.65; }
+.ragSharedControls { display: grid; grid-template-columns: repeat(4,1fr); border-bottom: 1px solid #aeb8c4; }
 .ragSharedControls article { padding: 16px 20px; }
 .ragSharedControls article + article { border-left: 1px solid #d0d6dd; }
-.ragSharedControls strong { font-size: 14px; }
-.ragSharedControls p { margin: 5px 0 0; color: var(--visual-muted); font-size: 12px; line-height: 1.5; }
+.ragSharedControls strong { font-size: 16px; }
+.ragSharedControls p { margin: 5px 0 0; color: var(--visual-muted); font-size: 14px; line-height: 1.6; }
 
 .agentAuthorityExplorer { border-top: 2px solid var(--visual-navy); }
 .agentProposalLoop { padding: 22px; border-bottom: 1px solid #aeb8c4; }
@@ -1743,6 +1746,9 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .knowledgeStepDetail > strong { grid-column: 1 / -1; border-left: 0; border-top: 1px solid #d0d6dd; }
   .ragChainCanvas ol { grid-template-columns: repeat(2,1fr); row-gap: 8px; }
   .ragChainCanvas li > i { display: none; }
+  .ragSharedControls { grid-template-columns: repeat(2,1fr); }
+  .ragSharedControls article:nth-child(3) { border-top: 1px solid #d0d6dd; border-left: 0; }
+  .ragSharedControls article:nth-child(4) { border-top: 1px solid #d0d6dd; }
   .llmSignalPath,
   .tuningReleasePath { grid-template-columns: repeat(3,1fr); }
   .llmSignalPath li > i,

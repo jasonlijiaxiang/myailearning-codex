@@ -1,4 +1,4 @@
-import { hasDedicatedModule } from "../module-publication.mjs";
+import { hasDedicatedModule, publishedModules } from "../module-publication.mjs";
 
 export const sharedSectionRoles = Object.freeze({
   learning: Object.freeze({ id: "study-guide", label: "Learning & practice", eyebrow: "Know how to master it" }),
@@ -11,7 +11,9 @@ export const sharedSectionRoles = Object.freeze({
 
 export const sharedSectionRoleOrder = Object.freeze(["learning", "curriculum", "principle", "decision", "deep", "cloud"]);
 export const focusedSectionRoleOrder = Object.freeze(["principle", "decision", "deep", "cloud"]);
-export const focusedEnglishModuleSlugs = Object.freeze(["solution-patterns", "mcp", "llm-inference"]);
+export const focusedEnglishModuleSlugs = Object.freeze(
+  publishedModules.filter((module) => module.readingProfile === "focused").map((module) => module.slug),
+);
 
 export function classifySharedSection(section) {
   if (/(?:study-guide|study|practice|learning-studio)/.test(section.id)) return "learning";

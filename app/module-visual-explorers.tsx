@@ -291,9 +291,10 @@ export function RagDualChainExplorer({
         <p>{selected[3]}</p>
       </section>
       <aside className="ragSharedControls" aria-label="两条链共同使用的控制部分">
-        <article><strong>身份与权限</strong><p>主体、租户、文档与字段级授权</p></article>
-        <article><strong>版本与时效</strong><p>权威来源、生效日期、撤回与重新索引</p></article>
-        <article><strong>评估与观测</strong><p>召回、忠实度、引用、拒答、时延与成功成本</p></article>
+        <article><strong>身份与权限</strong><p>主体、租户、文档、字段和缓存使用同一授权语义</p></article>
+        <article><strong>版本与时效</strong><p>权威来源、生效范围、撤回、索引和模型组合可追踪</p></article>
+        <article><strong>评估与观测</strong><p>候选、证据包、回答、拒答、时延和风险分别测量</p></article>
+        <article><strong>成本与责任</strong><p>离线处理、在线调用、人工接管和每个成功结果都有负责人</p></article>
       </aside>
     </div>
   );

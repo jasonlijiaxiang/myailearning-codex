@@ -23,7 +23,7 @@ import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } fro
 import { promptQa } from "../app/prompt-content.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
 import { questionDirectoryItems, questionDirectoryModules } from "../app/question-index.mjs";
-import { evidenceCards, ragQa } from "../app/rag-content.mjs";
+import { evidenceCards, ragLearningContent, ragQa } from "../app/rag-content.mjs";
 import { referenceModules, sourceLedger } from "../app/reference-content.mjs";
 import { sourceFreshness } from "../app/source-freshness.mjs";
 import { glossaryGroups, glossaryTermIds, homepageTermGroups, requireTerm, terminology } from "../app/terminology.mjs";
@@ -484,20 +484,27 @@ test("dense-reading modules derive a scannable content overview from the publica
 
 test("focused pilots use relationship-driven reading paths instead of standalone chapter quotas", async () => {
   const focusedModules = publishedModuleRegistry.filter((module) => module.readingProfile === "focused");
-  assert.deepEqual(focusedModules.map((module) => module.slug), ["solution-patterns", "mcp", "llm-inference"]);
+  assert.deepEqual(focusedModules.map((module) => module.slug), ["solution-patterns", "rag", "mcp", "llm-inference"]);
 
   for (const publishedModule of focusedModules) {
     const html = await renderHtml(publishedModule.path);
     assert.doesNotMatch(html, /id="study-guide"/);
     assert.doesNotMatch(html, /id="curriculum"/);
-    assert.match(html, /id="principle"/);
+    if (publishedModule.slug === "rag") {
+      assert.match(html, /id="fit"/);
+      assert.match(html, /id="evidence-contract"/);
+      assert.ok(html.indexOf('id="fit"') < html.indexOf('id="evidence"'), "rag 必须先判断采用边界并建立证据契约");
+    } else {
+      assert.match(html, /id="principle"/);
+      assert.ok(html.indexOf('id="principle"') < html.indexOf('id="evidence"'), `${publishedModule.slug} 必须先给出模块独有的判断主线`);
+    }
     assert.match(html, /data-quality-section="deep-dive"/);
-    assert.ok(html.indexOf('id="principle"') < html.indexOf('id="evidence"'), `${publishedModule.slug} 必须先给出模块独有的判断主线`);
     assert.ok(html.indexOf('id="qa"') < html.indexOf('id="related-modules"'), `${publishedModule.slug} 应在完成主论证后再给相关模块`);
   }
 
-  const [solution, mcp, inference] = await Promise.all([
+  const [solution, rag, mcp, inference] = await Promise.all([
     renderHtml("/modules/solution-patterns"),
+    renderHtml("/modules/rag"),
     renderHtml("/modules/mcp"),
     renderHtml("/modules/llm-inference"),
   ]);
@@ -505,6 +512,9 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.match(solution, /证据不足：回到任务边界或能力搭配/);
   assert.match(solution, /class="solutionCapabilityMatrix"/);
   assert.doesNotMatch(solution, /class="solutionDecisionRail"/);
+  assert.match(rag, /class="ragDualChainExplorer"/);
+  assert.match(rag, /先证明需要外部证据，再设计两条生命周期/);
+  assert.match(rag, /class="focusedDecisionLedger"/);
   assert.match(mcp, /class="mcpArchitectureExplorer"/);
   assert.match(mcp, /MCP 协议边界/);
   assert.match(mcp, /一次工具调用的典型路径/);
@@ -720,31 +730,51 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   }
 });
 
-test("RAG route contains principles, cloud-service opportunities, and evidence-backed answers", async () => {
+test("RAG route follows one evidence decision from adoption through production", async () => {
   const html = await renderHtml("/modules/rag");
   assertValidGridSpans(html, "/modules/rag");
 
   assert.match(html, /检索增强生成 · Retrieval-Augmented Generation/);
-  assert.match(html, /RAG 的工作原理与工程机制/);
+  assert.match(html, /把外部资料转化为当前用户可使用、可核验、可撤回的证据/);
+  assert.match(html, /本模块唯一主问题/);
+  assert.match(html, /只使用当前用户有权访问、仍然有效、能够回到原文的证据/);
+  assert.match(html, /先证明需要外部证据，再设计两条生命周期/);
+  assert.match(html, /RAG 必须先证明自己优于更简单的路线/);
+  assert.match(html, /先定义什么可以成为回答证据/);
   assert.match(html, /检索 · Retrieval/);
   assert.match(html, /增强 · Augmentation/);
   assert.match(html, /生成 · Generation/);
   assert.match(html, /检索到不等于回答正确/);
-  assert.match(html, /召回是证据可用性的上限/);
-  assert.match(html, /增强发生在上下文/);
-  assert.match(html, /RAG 技术环节与云服务机会/);
-  assert.match(html, /对象存储、数据库、文件服务、SaaS 连接器、CDC、消息队列/);
+  assert.match(html, /离线链生产证据，在线链决定怎样使用证据/);
+  assert.match(html, /切片只是其中一步/);
+  assert.match(html, /RAG 选型不是只选一个生成模型/);
+  assert.match(html, /Candidate Recall@K/);
+  assert.match(html, /沿证据链测量，才能知道应该修哪里/);
+  assert.match(html, /把安全、Trace、云服务和经济性放进同一上线决定/);
+  assert.match(html, /先写能力、验收与责任，再对应具体云产品/);
+  assert.match(html, /成本只是分母，ROI 还需要价值、采用率和风险/);
+  assert.match(html, /复杂度由真实失败样本触发，不是统一升级阶梯/);
+  assert.match(html, /它们都不是普通 RAG 的默认组成/);
+  assert.match(html, /Agent 可以调用 RAG；MCP 可以暴露检索能力；A2A 可以委派完整任务/);
+  assert.match(html, /用可评审产物证明真正掌握 RAG/);
+  assert.match(html, /学完后，你应该能独立完成/);
+  assert.match(html, /用真实产物证明掌握/);
   assert.match(html, /客户高频问题与深度回答/);
   assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);
   assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
+  assert.match(html, /一个企业 RAG 是否还需要 Agent、MCP 或 A2A/);
   assert.match(html, /本题依据 \/ Evidence/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
-  assert.doesNotMatch(html, /开源模型还是商业模型更适合|RAG 的评估集应该怎样建设|RAG 成本应该按什么口径核算/);
+  assert.equal(ragLearningContent.outcomes.length, 5);
+  assert.equal(ragLearningContent.route.length, 6);
+  assert.equal(ragLearningContent.labs.length, 4);
+  assert.equal((html.match(/class="learningLab"/g) ?? []).length, ragLearningContent.labs.length);
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
   assert.match(html, /搜索客户问题/);
   assert.match(html, /RAG 检索链实验/);
   assert.match(html, /关键词检索 BM25/);
   assert.match(html, /href="\/references"/);
+  assert.doesNotMatch(html, /<dl class="moduleHeroMetrics"/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("rag"))) {
     assert.match(
@@ -942,7 +972,7 @@ test("references route is the complete centralized source ledger", async () => {
       assert.ok(source, `Reference 模块引用未知来源：${sourceId}`);
       assert.match(html, new RegExp(`id="source-${escapeRegExp(sourceId)}"`));
       assert.match(html, new RegExp(`href="${escapeRegExp(source.href)}"`));
-      assert.match(html, new RegExp(escapeRegExp(source.title)));
+      assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(source.title))));
       assert.match(html, new RegExp(`核验：(?:<!-- -->)?${escapeRegExp(source.verifiedAt)}`));
     }
   }

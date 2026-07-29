@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:b57472af07b2549313298ada23273344305fc2a14c3aa6def507b9fc6e7f3356",
-    "enContentHash": "sha256:212a8265404b1ddb9a753277f58bbcac88c3857e06fd443ac0d5dd17ca4ceb22",
+    "zhContentHash": "sha256:1d67ecb55ecb7a97a718ec227d8422ff50d5144715170e6247568ff823c8a405",
+    "enContentHash": "sha256:01f0fa76153fe903054f74c25008e26d22e391ba4d525b02f401ceae74c78ade",
     "termIds": [
       "identity-authorization",
       "mcp",
@@ -23,6 +23,7 @@
       "mcp-elicitation-2025-11-25",
       "mcp-lifecycle-2025-11-25",
       "mcp-security",
+      "mcp-specification-2026-07-28",
       "mcp-tasks-2025-11-25",
       "nist-zero-trust",
       "openai-function-calling",

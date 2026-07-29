@@ -54,16 +54,16 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   mcp: {
-    outcomes: ["解释 Host、Client、Server 与三类原语", "区分当前正式版与已公告但尚未生效的 RC", "按部署形态选择传输和信任边界", "把工具发现与身份授权分开", "为远程 MCP 建立生产发布门"],
+    outcomes: ["解释 Host、Client、Server 与三类原语", "区分当前正式版与旧版兼容路径", "按部署形态选择传输和信任边界", "把工具发现与身份授权分开", "为远程 MCP 建立生产发布门"],
     route: [
-      { title: "理解协议对象与版本", learn: "掌握 Tools、Resources、Prompts，并区分 2025-11-25 正式生命周期与 2026-07-28 RC 的候选变化。", checkpoint: "能为一项能力选择正确原语，并说明结论适用的协议版本。" },
+      { title: "理解协议对象与版本", learn: "掌握 Tools、Resources、Prompts，并区分 2026-07-28 正式规范与 2025-11-25 旧版生命周期。", checkpoint: "能为一项能力选择正确原语，并说明结论适用的协议版本。" },
       { title: "画出调用与信任链", learn: "追踪用户、Host、Client、Server 和下游系统之间的身份与数据。", checkpoint: "能指出每一步由谁认证、授权、校验和审计。" },
       { title: "完成生产化", learn: "处理版本、超时、幂等、限流、撤销、隔离与供应链风险。", checkpoint: "能把远程 MCP 当作高权限集成而不是普通插件。" },
     ],
     labs: [
       { title: "把现有 API 包装成最小 MCP Server", scenario: "客户有一个只读订单查询 API，希望多个 Agent 客户端复用。", tasks: ["定义工具 Schema 和错误语义", "保留调用者身份并实施最小权限", "加入超时、审计和敏感字段过滤"], deliverable: "协议契约、调用序列与安全检查表", acceptance: "工具可被发现但不能绕过原 API 权限，错误和撤销路径可测试。", sourceIds: ["mcp-architecture", "mcp-authorization", "mcp-security"] },
       { title: "比较本地与远程部署", scenario: "同一 Server 可通过本地 stdio 或远程 Streamable HTTP 提供。", tasks: ["分别画出进程、网络和凭据边界", "比较更新、隔离、可观测和故障半径", "为开发、受控桌面和企业共享三种场景选型"], deliverable: "部署决策记录与迁移触发条件", acceptance: "选择与信任边界一致，不把本地安全假设直接搬到远程。", sourceIds: ["mcp-architecture", "mcp-security", "nist-zero-trust"] },
-      { title: "评审一次 MCP 版本迁移", scenario: "团队正在运行 2025-11-25，并希望为已公布的 2026-07-28 RC 提前做兼容准备。", tasks: ["冻结当前 Client、Server、SDK、网关与扩展清单", "对比 initialize、session、Tasks 与授权变化", "设计隔离验证、并行兼容、最终版复核和回滚门"], deliverable: "按版本拆分的迁移影响矩阵与验证计划", acceptance: "RC 不被写成已生效正式版，所有破坏性变化都有受影响组件、验证证据和切换条件。", sourceIds: ["mcp-lifecycle-2025-11-25", "mcp-tasks-2025-11-25", "mcp-2026-07-28-rc"] },
+      { title: "评审一次 MCP 版本迁移", scenario: "团队正在运行 2025-11-25，并准备迁移到当前正式版 2026-07-28。", tasks: ["冻结当前 Client、Server、SDK、网关与扩展清单", "对比 initialize、session、Tasks 与授权变化", "设计隔离验证、并行兼容、生态支持复核和回滚门"], deliverable: "按版本拆分的迁移影响矩阵与验证计划", acceptance: "规范已生效与产品已兼容被分开记录，所有破坏性变化都有受影响组件、验证证据和切换条件。", sourceIds: ["mcp-lifecycle-2025-11-25", "mcp-tasks-2025-11-25", "mcp-specification-2026-07-28"] },
     ],
   },
   a2a: {

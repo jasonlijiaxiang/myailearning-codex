@@ -38,29 +38,49 @@ type FocusedBrief = {
 };
 
 const ragKnowledgeSteps: Array<[string, string, string, string]> = [
-  ["01", "连接与解析", "Connect & Parse", "保留标题、表格、页码与来源坐标；失败内容进入处理队列。"],
-  ["02", "切块与元数据", "Chunk & Describe", "建立版本、权限、时间、产品与父子关系，不只生成一段文本。"],
-  ["03", "索引与同步", "Index & Refresh", "同时服务精确词项与语义召回，并处理新增、修改、撤回和删除。"],
-  ["04", "质量检查", "Quality Gate", "用标准问题验证证据可召回、版本正确、权限不泄漏。"],
+  ["01", "定义证据契约", "Evidence Contract", "明确权威来源、允许用途、稳定坐标、版本、权限、冲突规则和撤回条件。"],
+  ["02", "生产证据单元", "Evidence Production", "连接、解析、清洗、去重和切片，并保留原文结构、来源坐标与失败状态。"],
+  ["03", "发布检索版本", "Retrieval Release", "把 Chunk、元数据、ACL、Embedding 和索引作为可比较、可切换的版本组合。"],
+  ["04", "证明变化生效", "Change Assurance", "用真实问题验证新增、修改、删除和撤权已经传播到索引、缓存和最终回答。"],
 ];
 
 const ragServingSteps: Array<[string, string, string, string]> = [
-  ["01", "理解查询", "Query Contract", "识别意图、实体、时间、产品版本与当前用户身份。"],
-  ["02", "召回与重排", "Retrieve & Rerank", "关键词与向量互补找全候选，再过滤、融合和精排。"],
-  ["03", "组装上下文", "Context Assembly", "去重、处理冲突与 Token 预算，保留稳定来源 ID。"],
-  ["04", "回答或拒答", "Generate / Abstain", "逐项对齐主张与证据；证据不足、过期或冲突时停止。"],
+  ["01", "建立查询契约", "Query Contract", "保留原问题、身份、时间、产品与风险；条件不足时先追问，不急着检索。"],
+  ["02", "产生权限内候选", "Authorized Candidates", "按问题类型路由关键词、向量、SQL 或图谱，并在候选阶段执行授权与有效期过滤。"],
+  ["03", "编译最终证据包", "Evidence Compilation", "融合、重排、去重、处理冲突与 Token 预算，保留稳定来源 ID 和适用范围。"],
+  ["04", "回答、限定或停止", "Answer / Clarify / Abstain", "逐项对齐主张与证据；必要时限定回答、追问、拒答或转人工。"],
+];
+
+const ragAdoptionChecks = [
+  { question: "业务结果是否依赖外部、动态或受权限控制的知识？", signal: "答案必须引用、更新、撤回，或不同用户看到不同证据。", recommendation: "把 RAG 作为候选路线，与搜索、长上下文、SQL / API 和人工流程对比。", boundary: "若语料小而稳定，直接上下文或搜索可能更简单。" },
+  { question: "是否存在可以负责和裁决的权威资料？", signal: "来源、版本、使用许可、负责人和冲突规则能够明确。", recommendation: "先形成证据契约，再讨论切片、向量库和生成模型。", boundary: "没有权威来源时，RAG 只能更快地传播不确定内容。" },
+  { question: "现状基线和不可接受结果是否可测？", signal: "当前耗时、错误、人工升级、风险损失与真实问题可以冻结。", recommendation: "用基线建立 PoC 的质量、风险、时延、成本和业务通过条件。", boundary: "没有基线就不能把模型分数解释为 ROI。" },
+  { question: "谁负责上线后的资料、质量、安全和恢复？", signal: "数据、应用、安全、平台和业务团队都有明确责任与交接。", recommendation: "把版本、Trace、回滚、撤权传播和人工接管写进上线契约。", boundary: "托管 RAG 服务不会接管客户的内容权威、业务授权和结果责任。" },
 ];
 
 export function RagArchitecturePrimer() {
   return (
-    <section className="pilotPrimer pilotPrimer--rag" data-knowledge-view="application-architecture" aria-labelledby="rag-architecture-primer-title">
+    <section className="pilotPrimer pilotPrimer--rag focusedNarrative focusedNarrative--decision" id="fit" data-knowledge-view="application-architecture" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="rag-architecture-primer-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">ARCHITECTURE FIRST</p><h2 id="rag-architecture-primer-title">先看两条链，再讨论向量库与模型</h2></div>
-        <p>面向企业技术售前：用架构先定位数据责任、在线责任与验收证据，再对应到具体云产品。</p>
+        <div><p className="kicker">ADOPTION &amp; EVIDENCE ARCHITECTURE</p><h2 id="rag-architecture-primer-title">先证明需要外部证据，再设计两条生命周期</h2></div>
+        <p>RAG 的采用理由不是“有一个向量库”，而是业务回答需要当前、授权、可追溯并能撤回的外部证据；离线链负责生产证据，在线链负责决定怎样使用证据。</p>
       </header>
+      <section className="focusedDecisionLedger" aria-labelledby="rag-adoption-title">
+        <header><p className="kicker">ADOPTION CHECK</p><h3 id="rag-adoption-title">四个条件没有回答清楚时，不要急着选模型</h3><p>这些问题共同形成业务基线、证据责任和上线责任。任何一项无法验证，都应先停在调研或小范围实验。</p></header>
+        <div className="focusedDecisionRows">
+          {ragAdoptionChecks.map((item, index) => (
+            <article key={item.question}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h4>{item.question}</h4><p>{item.signal}</p></div>
+              <div><strong>{item.recommendation}</strong><small>{item.boundary}</small></div>
+            </article>
+          ))}
+        </div>
+      </section>
       <RagDualChainExplorer offline={ragKnowledgeSteps} online={ragServingSteps} />
-      <TermHintRow label="RAG 架构缩写" termIds={["rag", "bm25", "ann", "hnsw", "rrf"]} />
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先问知识怎样更新、权限怎样继承、错答怎样定位，再决定检索方案和云服务搭配。</p><nav aria-label="RAG 深入阅读"><a href="#production-rag">查看生产诊断</a><a href="#architecture">查看双链架构</a><a href="#poc">查看 PoC 通过条件</a></nav></footer>
+      <TermHintRow label="RAG 关键术语" termIds={["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"]} />
+      <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>向量检索只是候选发现手段之一。RAG 的交付对象是整条证据链：资料可用、候选可找、证据可编排、回答可核验、变化可撤回。</p></aside>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用四个采用问题建立基线与责任，再沿离线和在线生命周期逐段定义产物、失败、指标和验收；只有出现真实错误时才增加复杂度。</p><nav aria-label="RAG 深入阅读"><a href="#evidence-contract">定义证据契约</a><a href="#model-selection">准备模型选型</a><a href="#production">决定是否上线</a></nav></footer>
     </section>
   );
 }

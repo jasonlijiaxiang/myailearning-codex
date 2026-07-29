@@ -755,7 +755,7 @@ export const mcpBrief = {
       zh: "主机、客户端与服务端",
       en: "Host, Client & Server",
       explanation:
-        "Host 管理用户体验、权限和多个连接；在当前正式版 2025-11-25 中，Client 与一个 Server 建立协议会话；Server 暴露受控能力。",
+        "Host 管理用户体验、权限和多个连接；在当前正式版 2026-07-28 中，Client 以自包含请求和一个 Server 交换能力；只有兼容 2025-11-25 等旧版时才使用协议会话；Server 暴露受控能力。",
       decision:
         "设计时明确哪一层持有身份、呈现确认、执行策略并记录审计，不能把责任交给协议名称。",
     },
@@ -771,9 +771,9 @@ export const mcpBrief = {
       zh: "能力协商与生命周期",
       en: "Capability Negotiation & Lifecycle",
       explanation:
-        "当前正式版 2025-11-25 在连接初始化时交换版本与能力；已公布但尚未生效的 2026-07-28 RC 计划移除 initialize 与协议级 session，改用自包含请求和按请求元数据。",
+        "当前正式版 2026-07-28 已移除 initialize 与协议级 session，改用自包含请求、按请求版本与能力元数据，并以 server/discover 支持预先发现；2025-11-25 及更早版本仍使用初始化握手。",
       decision:
-        "客户端必须固定协议基线，并分别测试当前正式版与候选迁移路径中的能力缺失、版本差异、调用失败、取消和断线。",
+        "客户端必须固定协议基线，并分别测试当前正式版与旧版兼容路径中的能力缺失、版本差异、调用失败、取消和断线。",
     },
     {
       zh: "传输决定信任边界",
@@ -812,13 +812,13 @@ export const mcpBrief = {
         "stdio 不等于无风险，HTTP 也不自动具备认证；安全取决于完整部署边界。",
     },
     {
-      question: "如何评估已公布的 2026-07-28 RC？",
+      question: "如何从 2025-11-25 迁移到 2026-07-28 正式版？",
       signal:
-        "团队准备把当前 2025-11-25 实现直接切换到 RC，或把公告中的无状态核心、Tasks 扩展和授权强化当作已经生效。",
+        "团队准备把锁定 2025-11-25 的实现直接切换到 2026-07-28，或把正式规范发布等同于所用 SDK、Client、Server 与网关已经兼容。",
       recommendation:
-        "继续以 2025-11-25 作为当前生产基线，在隔离兼容轨中验证 RC；等最终规范发布，并确认所用 SDK、Client 与 Server 的支持后再决定切换和回滚窗口。",
+        "以 2026-07-28 作为当前协议基线，在隔离兼容轨中验证无状态请求、server/discover、Tasks 扩展、授权变化及双版本互操作；确认生态支持后再决定切换和回滚窗口。",
       boundary:
-        "RC 已公布和计划发布日期确定，不等于最终规范已经发布，也不证明生态实现已经兼容。",
+        "正式规范已经发布，但不证明具体 SDK、Client、Server、网关或私有扩展已经兼容。",
     },
     {
       question: "能力应建成 Tool、Resource 还是 Prompt？",
@@ -873,11 +873,11 @@ export const mcpBrief = {
           name: "先固定版本再协商能力",
           en: "Version Before Capability",
           mechanism:
-            "当前正式版 2025-11-25 通过 initialize/initialized 与协议会话交换版本和能力；2026-07-28 RC 则计划移除握手与协议级 session，以自包含请求和 server/discover 支持版本与能力发现。",
+            "当前正式版 2026-07-28 以按请求元数据声明版本和能力，并可用 server/discover 预先发现；2025-11-25 等旧版则通过 initialize/initialized 与协议会话协商。",
           decision:
-            "固定兼容范围，为两条协议路径建立契约测试；通过网关记录请求使用的协议、Server、扩展与 Tool Schema 版本。",
+            "固定兼容范围，为现代与旧版两条协议路径建立契约测试；通过网关记录请求使用的协议、Server、扩展与 Tool Schema 版本。",
           boundary:
-            "RC 尚未成为最终规范；客户端既不能把候选行为当作现行要求，也不能根据上一次连接无限期假设能力不变。",
+            "2026-07-28 已是正式规范，但客户端不能据此假设具体实现已支持，也不能根据上一次请求无限期假设能力不变。",
         },
         {
           name: "建立用户或工作负载授权",
@@ -910,7 +910,7 @@ export const mcpBrief = {
             "HTTP 成功和结构合法都不等于业务动作成功或返回内容可信。",
         },
       ],
-      sourceIds: ["mcp-architecture", "mcp-lifecycle-2025-11-25", "mcp-2026-07-28-rc", "mcp-authorization", "mcp-security", "nist-zero-trust"],
+      sourceIds: ["mcp-architecture", "mcp-lifecycle-2025-11-25", "mcp-specification-2026-07-28", "mcp-authorization", "mcp-security", "nist-zero-trust"],
     },
     {
       kind: "matrix",
@@ -1072,21 +1072,21 @@ export const mcpBrief = {
       ],
     },
     {
-      q: "MCP 2026-07-28 RC 已公布，生产系统应该立即切换吗？",
-      a: "不应该把 RC 当成已生效的正式规范。今天仍以 2025-11-25 为正式基线，同时可以在隔离环境准备迁移。",
+      q: "MCP 2026-07-28 已成为正式规范，生产系统应该立即切换吗？",
+      a: "不应该只因正式规范发布就立即切换。2026-07-28 已是当前协议基线，但生产迁移仍取决于所用 SDK、Client、Server、网关和扩展是否通过兼容验证。",
       depth:
-        "迁移测试要分别覆盖 initialize/initialized 与协议 session 的移除、按请求版本和能力元数据、server/discover、Tasks 从实验性核心能力迁到扩展后的生命周期，以及授权强化。最终规范发布后，还要核对 SDK、Client、Server 与网关支持，再设置并行兼容、灰度和回滚；不要把 RC 通过测试写成正式版兼容声明。",
+        "迁移测试要覆盖 initialize/initialized 与协议 session 的移除、按请求版本和能力元数据、server/discover、Tasks 从旧版实验性核心能力迁到扩展后的生命周期，以及授权强化。核对 SDK、Client、Server、网关和私有扩展支持后，再设置并行兼容、灰度和回滚；不要把规范层生效写成产品层已兼容。",
       ask: "追问客户：当前实现固定了哪个协议版本？哪些 SDK、Server、网关和自建扩展会受破坏性变化影响？",
       tag: "契约版本",
-      basis: "正式版基线 + RC 迁移边界",
+      basis: "当前正式版 + 旧版迁移边界",
       evidence: [
         {
           sourceId: "mcp-lifecycle-2025-11-25",
-          supports: "支持当前正式版 2025-11-25 的初始化、协议版本与能力协商机制。",
+          supports: "支持历史版本 2025-11-25 的初始化、协议版本与能力协商机制，用于旧实现迁移对照。",
         },
         {
-          sourceId: "mcp-2026-07-28-rc",
-          supports: "支持 2026-07-28 RC 已公布、最终版计划日期与主要破坏性迁移边界；不支持宣称最终版已经生效。",
+          sourceId: "mcp-specification-2026-07-28",
+          supports: "支持 2026-07-28 已成为当前正式规范及无状态请求、逐请求能力协商和 Tasks 扩展等规范级变化；不证明具体产品已经兼容。",
         },
       ],
       addedAt: "2026-07-21",
@@ -1123,11 +1123,11 @@ export const mcpBrief = {
       sourceId: "mcp-security",
     },
     {
-      metric: "2025-11-25 → 2026-07-28 RC",
-      title: "当前正式版与已公告替代版必须分开",
-      finding: "截至 2026-07-21，2025-11-25 仍是正式基线；官方已公布包含无状态核心、Tasks 扩展和授权强化的下一版 RC。",
-      boundary: "RC 公告不是最终规范或生态兼容证明，计划发布日期到达后必须重新核验。",
-      sourceId: "mcp-2026-07-28-rc",
+      metric: "2025-11-25 → 2026-07-28",
+      title: "当前正式版与旧版兼容路径必须分开",
+      finding: "截至 2026-07-29，2026-07-28 已成为正式规范；2025-11-25 的初始化、协议会话和核心 Tasks 只适用于锁定旧版的实现与迁移对照。",
+      boundary: "正式规范发布不等于生态兼容；SDK、Client、Server、网关和私有扩展仍需逐项验证。",
+      sourceId: "mcp-specification-2026-07-28",
     },
   ],
 };

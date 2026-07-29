@@ -1066,9 +1066,9 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .pilotPrimerHeader > p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.72; }
 .pilotPrimerActions { margin-top: 20px; padding: 19px 22px; display: grid; grid-template-columns: 120px minmax(260px,1fr) auto; gap: 18px 24px; align-items: center; border: 1px solid var(--pilot-line); background: var(--white); }
 .pilotPrimerActions > strong { font-size: 14px; }
-.pilotPrimerActions > p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.65; }
+.pilotPrimerActions > p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .pilotPrimerActions nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
-.pilotPrimerActions nav a { padding: 7px 10px; border: 1px solid var(--pilot-line); background: var(--pilot-surface); font-size: 12px; font-weight: 750; text-decoration: none; }
+.pilotPrimerActions nav a { min-height: 40px; padding: 9px 11px; border: 1px solid var(--pilot-line); background: var(--pilot-surface); font-size: 14px; font-weight: 750; text-decoration: none; }
 .pilotPrimerActions nav a:hover { border-color: var(--ink); background: var(--pilot-accent); }
 
 /* RAG: two operational lanes with one cross-cutting control plane. */
