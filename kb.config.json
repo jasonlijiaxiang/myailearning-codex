@@ -24,6 +24,53 @@
     "sourceLedger": "app/reference-content.mjs",
     "terminology": "app/terminology.mjs"
   },
+  "modulePolish": {
+    "plan": "knowledge/module-polish/plan.json",
+    "progress": "knowledge/module-polish/progress.json",
+    "planSchema": "knowledge/schemas/module-polish-plan.schema.json",
+    "progressSchema": "knowledge/schemas/module-polish-progress.schema.json",
+    "runtime": "knowledge/module-polish/.runtime",
+    "outputDirectory": "outputs/module-polish",
+    "targetedValidationCommands": [
+      {
+        "command": "npm",
+        "args": [
+          "run",
+          "kb:validate"
+        ]
+      },
+      {
+        "command": "npm",
+        "args": [
+          "run",
+          "audit:english:complete"
+        ]
+      },
+      {
+        "command": "npm",
+        "args": [
+          "run",
+          "audit:english:reviews"
+        ]
+      },
+      {
+        "command": "npm",
+        "args": [
+          "run",
+          "report:english-conflicts"
+        ]
+      },
+      {
+        "command": "node",
+        "args": [
+          "--test",
+          "tests/bilingual-pilot.test.mjs",
+          "tests/question-overlap.test.mjs"
+        ]
+      }
+    ],
+    "fullValidationProfile": "quality.commands"
+  },
   "quality": {
     "commands": [
       "npm run kb:validate",
@@ -80,6 +127,7 @@
       "examples",
       "external_reference",
       "knowledge/claims",
+      "knowledge/module-polish",
       "knowledge/attachment-distribution.json",
       "knowledge/release-manifest.json",
       "knowledge/schemas",
@@ -105,6 +153,7 @@
       "coverage",
       "tsconfig.tsbuildinfo",
       "knowledge/private-inbox",
+      "knowledge/module-polish/.runtime",
       ".openai/hosting.json"
     ]
   }

@@ -1,6 +1,6 @@
 ---
 name: curate-portable-knowledge-base
-description: "Capture project conversations, turn reusable outcomes into privacy-reviewed and evidence-backed knowledge, maintain freshness, update an existing portable web knowledge base, validate it, package it, and optionally prepare Git or Sites release checks. Use when a project chat produces reusable concepts, decisions, procedures, failure lessons, source updates, customer questions, or content changes; when processing the private knowledge inbox; or when auditing, packaging, or releasing this knowledge base."
+description: "Capture project conversations, turn reusable outcomes into privacy-reviewed and evidence-backed knowledge, orchestrate low-intervention batched module polishing with parallel read-only agents, maintain freshness, update an existing portable web knowledge base, validate it, package it, and optionally prepare Git or Sites release checks. Use when a project chat produces reusable concepts, decisions, procedures, failure lessons, source updates, customer questions, or content changes; when preparing, running, reviewing, or continuing a module-polish batch; when processing the private knowledge inbox; or when auditing, packaging, or releasing this knowledge base."
 ---
 
 # Curate Portable Knowledge Base
@@ -28,6 +28,7 @@ Use one or more modes:
 4. **Freshness audit**: identify dynamic claims or sources that require current primary-source verification.
 5. **Portable audit/package**: run offline checks and create a source archive that excludes private and machine-specific state.
 6. **Release check**: validate local, Git, or Sites prerequisites without claiming that a remote deployment succeeded unless it was observed live.
+7. **Module batch polish**: prepare and run the next approved module batch with parallel read-only analysis, a single integrating writer, deterministic progress, bilingual review, and fail-closed validation.
 
 ## Run the workflow
 
@@ -85,6 +86,8 @@ For `existing-app-registry`:
 - Derive publication and route behavior from the configured registries; do not introduce a second hardcoded module list.
 - Preserve the current shared components and visual design. Add no module-specific CSS patch, fixed-count layout branch, login dependency, or local absolute path.
 - Leave a candidate private when integrating it would require unsupported facts, unclear user intent, or a design/content change outside scope.
+
+For batched module work, read [module-batch-workflow.md](references/module-batch-workflow.md) before preparing or running a batch. Treat its plan as a scheduling view over the live publication registry, never as a second module registry. Parallel agents remain read-only; the batch main agent is the only writer for public and shared files.
 
 ### 6. Validate and close the record
 

@@ -24,6 +24,20 @@ npm run check
 
 本地使用不要求 Git 或 GitHub。没有远端仓库时，知识整理、搜索、构建和 portable 打包仍可工作；公网发布仍需要使用者自己的托管授权。
 
+## 模块批次打磨
+
+模块深度打磨使用一个用户可见的控制任务，每次只推进一个批次；批次内每个模块由只读 Sub-agent 并行研究，公共内容始终由一个主 Agent 串行整合。对 Codex 说“启动并完成下一个安全的模块打磨批次；除真实阻塞外全程自动继续”即可触发项目 Skill。
+
+这套批次流程与普通本地知识整理不同，必须位于项目自身的干净 Git checkout，才能冻结基线、拦截并发漂移并生成提交证明。`plan.json` 只负责调度，正式模块仍以发布注册表为准。
+
+```bash
+npm run module:polish:validate
+npm run module:polish -- status
+npm run module:polish -- prepare next
+```
+
+批次完成定向验证后，主 Agent 暂存本批次快照，再运行全量门禁；门禁通过后只把进度推进为 `complete`，最终提交、推送和 Sites 验证完成后生成本地 seal receipt。完整流程见 `.agents/skills/curate-portable-knowledge-base/references/module-batch-workflow.md`。
+
 ## 聊天沉淀与 Portable
 
 - `UserPromptSubmit` 与 `Stop` Hook 默认只把可见的用户问题和最终回答保存在 `knowledge/private-inbox/.runtime/`。Hook 绑定经过逐级校验的项目根；有 Git 时拒绝嵌套仓库遮蔽，无 Git 时只接受当前项目根。任何定位、导入或写入失败都不会阻断聊天。完整 transcript 默认关闭；显式启用后也只接受 Codex 会话目录内的真实文件，且仍按不稳定的私有输入处理。
@@ -87,6 +101,7 @@ npm run handoff:check
 - `.codex/hooks.json`：私有聊天采集入口
 - `knowledge/attachment-distribution.json`：原始附件的分发授权范围与人工复核台账
 - `knowledge/claims/`：动态事实生命周期台账
+- `knowledge/module-polish/`：模块批次计划与已验证进度；`.runtime/` 始终保持本地私有
 - `knowledge/private-inbox/`：仅本机可见、不会发布的聊天采集区
 
 ## 内容维护原则

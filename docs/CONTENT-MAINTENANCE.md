@@ -70,6 +70,26 @@
 
 载体变化不得改变事实含义、术语中英对照、适用边界或来源关系；如果某种载体容纳不下完整解释，应提供摘要与回链，而不是静默删掉关键前提。
 
+## F. 模块批次打磨
+
+模块深度升级采用“批次主 Agent + 每模块只读 Sub-agent”的低干预流程。批次计划位于 `knowledge/module-polish/plan.json`，只保存调度顺序、批次标题、模块组合和依赖；正式模块身份仍只由 `app/module-publication.mjs` 决定。
+
+常用命令：
+
+```bash
+npm run module:polish -- status
+npm run module:polish -- prepare next
+npm run module:polish -- brief <batch-id>
+npm run module:polish -- verify <batch-id>
+npm run module:polish:validate
+```
+
+并行阶段只研究、核验和提交结构化工作包。中文主内容、英文内容、课程、学习路线、问答、证据、术语、Reference、Claims 和发布日期由批次主 Agent 按文件单写者顺序整合。完整状态机、自动继续条件和暂停条件见项目 Skill 的 `references/module-batch-workflow.md`。
+
+`verify` 通过后只暂存本批次预期文件；`finish` 在进度仍为 `verified` 时运行全量门禁，成功后才写入 `complete`，提交前再暂存这次进度变化。前一非校准批次必须在已部署的干净提交上完成 `seal`，下一批才能准备。
+
+批次计划和已完成进度进入 Git；运行日志、Agent 工作包和临时状态位于 `knowledge/module-polish/.runtime/` 或 `outputs/module-polish/`，不得进入 Git、网页、portable 包或公开发布物。
+
 ## 内部发布记录
 
 每次发布至少记录版本号、发布日期、变更的 `claim_id`、受影响模块、复核人和回滚位置。公开页面可以显示版本与来源核验日期，但不得展示本规范、内部字段 schema、巡检流程或人员分工。

@@ -1,0 +1,182 @@
+{
+  "$schema": "../schemas/module-polish-progress.schema.json",
+  "schemaVersion": 1,
+  "planId": "deep-module-polish-v1",
+  "batches": [
+    {
+      "id": "batch-00-rag-calibration",
+      "status": "complete",
+      "note": "RAG 校准批次已完成。",
+      "modules": [
+        {
+          "slug": "rag",
+          "status": "complete",
+          "note": "作为后续批次的质量校准基线。"
+        }
+      ]
+    },
+    {
+      "id": "batch-01-model-data-foundations",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "llm",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "data-engineering",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-02-multimodal-evaluation",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "multimodal",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "evaluation",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-03-security-governance",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "security",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "ai-governance",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-04-model-choice-adaptation",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "model-landscape",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "prompt-engineering",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "fine-tuning",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-05-agent-mcp",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "ai-agent",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "mcp",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-06-runtime-interoperability",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "a2a",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "ai-gateway",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "ai-ops",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-07-training-mlops",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "llm-training",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "predictive-ai-mlops",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-08-inference-compute",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "llm-inference",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "ai-infra-compute",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    },
+    {
+      "id": "batch-09-platform-solutions",
+      "status": "planned",
+      "note": null,
+      "modules": [
+        {
+          "slug": "ai-infra-platform",
+          "status": "planned",
+          "note": null
+        },
+        {
+          "slug": "solution-patterns",
+          "status": "planned",
+          "note": null
+        }
+      ]
+    }
+  ]
+}

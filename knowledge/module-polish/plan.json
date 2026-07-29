@@ -1,0 +1,126 @@
+{
+  "$schema": "../schemas/module-polish-plan.schema.json",
+  "schemaVersion": 1,
+  "planId": "deep-module-polish-v1",
+  "batches": [
+    {
+      "id": "batch-00-rag-calibration",
+      "order": 0,
+      "title": "RAG 校准",
+      "dependsOn": [],
+      "modules": [
+        "rag"
+      ]
+    },
+    {
+      "id": "batch-01-model-data-foundations",
+      "order": 1,
+      "title": "模型与数据基础",
+      "dependsOn": [
+        "batch-00-rag-calibration"
+      ],
+      "modules": [
+        "llm",
+        "data-engineering"
+      ]
+    },
+    {
+      "id": "batch-02-multimodal-evaluation",
+      "order": 2,
+      "title": "多模态与评估",
+      "dependsOn": [
+        "batch-01-model-data-foundations"
+      ],
+      "modules": [
+        "multimodal",
+        "evaluation"
+      ]
+    },
+    {
+      "id": "batch-03-security-governance",
+      "order": 3,
+      "title": "安全与治理",
+      "dependsOn": [
+        "batch-02-multimodal-evaluation"
+      ],
+      "modules": [
+        "security",
+        "ai-governance"
+      ]
+    },
+    {
+      "id": "batch-04-model-choice-adaptation",
+      "order": 4,
+      "title": "模型选择与适配",
+      "dependsOn": [
+        "batch-03-security-governance"
+      ],
+      "modules": [
+        "model-landscape",
+        "prompt-engineering",
+        "fine-tuning"
+      ]
+    },
+    {
+      "id": "batch-05-agent-mcp",
+      "order": 5,
+      "title": "Agent 与 MCP",
+      "dependsOn": [
+        "batch-04-model-choice-adaptation"
+      ],
+      "modules": [
+        "ai-agent",
+        "mcp"
+      ]
+    },
+    {
+      "id": "batch-06-runtime-interoperability",
+      "order": 6,
+      "title": "运行时与互操作",
+      "dependsOn": [
+        "batch-05-agent-mcp"
+      ],
+      "modules": [
+        "a2a",
+        "ai-gateway",
+        "ai-ops"
+      ]
+    },
+    {
+      "id": "batch-07-training-mlops",
+      "order": 7,
+      "title": "训练与 MLOps",
+      "dependsOn": [
+        "batch-06-runtime-interoperability"
+      ],
+      "modules": [
+        "llm-training",
+        "predictive-ai-mlops"
+      ]
+    },
+    {
+      "id": "batch-08-inference-compute",
+      "order": 8,
+      "title": "推理与计算",
+      "dependsOn": [
+        "batch-07-training-mlops"
+      ],
+      "modules": [
+        "llm-inference",
+        "ai-infra-compute"
+      ]
+    },
+    {
+      "id": "batch-09-platform-solutions",
+      "order": 9,
+      "title": "平台与方案",
+      "dependsOn": [
+        "batch-08-inference-compute"
+      ],
+      "modules": [
+        "ai-infra-platform",
+        "solution-patterns"
+      ]
+    }
+  ]
+}

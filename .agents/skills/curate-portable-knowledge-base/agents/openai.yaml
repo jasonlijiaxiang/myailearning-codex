@@ -1,4 +1,4 @@
 interface:
   display_name: "Portable Knowledge Curator"
-  short_description: "Capture chats and curate a portable web knowledge base"
-  default_prompt: "Use $curate-portable-knowledge-base to turn this project conversation into verified knowledge without changing the existing visual design."
+  short_description: "Curate and batch-polish a portable AI knowledge base"
+  default_prompt: "使用 $curate-portable-knowledge-base 启动并完成下一个安全的模块打磨批次；除真实阻塞外全程自动继续。"

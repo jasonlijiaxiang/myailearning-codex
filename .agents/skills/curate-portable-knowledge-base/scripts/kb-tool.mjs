@@ -141,6 +141,7 @@ const ALLOWED_PORTABLE_INCLUDES = new Set([
   "examples",
   "external_reference",
   "knowledge",
+  "knowledge/module-polish",
   "knowledge/schemas",
   "worker",
   "drizzle.config.ts",
