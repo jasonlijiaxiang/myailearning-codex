@@ -1703,6 +1703,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .tuningRouteDecision { padding: 24px; display: grid; grid-template-columns: 1fr 40px 1fr; align-items: stretch; border-bottom: 1px solid #aeb8c4; }
 .tuningRouteDecision nav { display: grid; grid-template-columns: 1fr 1fr; }
 .tuningRouteDecision nav button { padding: 15px; border: 1px solid #b4bdc8; background: #fff; color: inherit; text-align: left; cursor: pointer; }
+.tuningRouteDecision nav button:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .tuningRouteDecision nav button[aria-pressed="true"] { border-color: var(--visual-accent); background: var(--visual-accent-soft); font-weight: 800; }
 .tuningRouteDecision > i { display: grid; place-items: center; font-style: normal; }
 .tuningRouteDecision article { padding: 20px; border: 2px solid var(--visual-accent); background: #f8fce9; }

@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:610f9f1dff6722e43978f120a8fb74808496041755093febe3bb2904e4b5636e",
-    "enContentHash": "sha256:5934482e25398b91756761b0259dfe66ade2b38d048d6442a8a48c83b0769c66",
+    "zhContentHash": "sha256:486e43dbc59b63c7753697c7c0a97d50bf7fa9ca8210c54e8c8d00a8b3c72494",
+    "enContentHash": "sha256:eac197e83af336c3a60cf0321dcca142c2f0c6eb3babf601438f992b3a92fde5",
     "termIds": [
       "context",
       "context-engineering",
@@ -18,6 +18,7 @@
       "tools-schema"
     ],
     "sourceIds": [
+      "anthropic-context-engineering",
       "anthropic-effective-agents",
       "anthropic-prompt-overview",
       "anthropic-tool-definitions",

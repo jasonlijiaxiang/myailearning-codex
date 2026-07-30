@@ -6,18 +6,21 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:93bcc231d5fa5ce5c2d2049b2a1065dbd598a074102d9c1fe68126362fc5e5ab",
-    "enContentHash": "sha256:389d64642a0d4b05e1e9f21d68d15fa11873b49f6e68defa0ead167a5e785068",
+    "zhContentHash": "sha256:15ea647455a19f1c5326b640462a1e2e12e6674fd90ffd3c3780995a9aac8a47",
+    "enContentHash": "sha256:50231a2a2afdf22a42e18414587061b8c0defcbbeb3bfd132e1d943b2f2383d8",
     "termIds": [
       "dpo",
       "evaluation",
       "fine-tuning",
       "lora",
-      "qlora"
+      "peft",
+      "qlora",
+      "sft"
     ],
     "sourceIds": [
       "deepseek-r1-2025",
       "dpo-2023",
+      "finops-unit-economics",
       "hf-trl-chat-templates",
       "hf-trl-data-formats",
       "hf-trl-dpo-trainer",
@@ -28,8 +31,7 @@
       "nist-genai-profile",
       "openai-eval-best-practices",
       "openai-structured-outputs",
-      "qlora-2023",
-      "vllm-2023"
+      "qlora-2023"
     ]
   },
   "stage": "xhigh-language",

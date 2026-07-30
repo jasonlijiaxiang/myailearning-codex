@@ -453,8 +453,9 @@ type TuningStage = [string, string, string];
 const tuningProblems = [
   { id: "format", label: "格式或步骤不稳定", method: 0 },
   { id: "knowledge", label: "缺少最新私有知识", method: 1 },
-  { id: "behavior", label: "稳定行为需要改变", method: 2 },
-  { id: "capability", label: "核心能力不足", method: 3 },
+  { id: "state-action", label: "权威状态、规则或动作", method: 2 },
+  { id: "behavior", label: "稳定行为需要改变", method: 3 },
+  { id: "capability", label: "核心能力不足", method: 4 },
 ] as const;
 
 export function TuningRouteExplorer({
@@ -466,8 +467,8 @@ export function TuningRouteExplorer({
 }) {
   const [problem, setProblem] = useState<(typeof tuningProblems)[number]["id"]>("behavior");
   const [activeStage, setActiveStage] = useState(1);
-  const route = tuningProblems.find((item) => item.id === problem) ?? tuningProblems[2];
-  const method = methods[route.method];
+  const route = tuningProblems.find((item) => item.id === problem) ?? tuningProblems[3];
+  const method = methods[route.method] ?? methods[0];
 
   return (
     <div className="tuningRouteExplorer" data-knowledge-explorer="interactive" data-route={problem}>

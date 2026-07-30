@@ -12,10 +12,6 @@ const REVIEWED_HIGH_OVERLAP_PAIRS = new Map([
     "ai-agent-16::mcp-1",
     "Agent 题比较 Function Calling、MCP 与 A2A 三层协作边界；MCP 题解释单次工具调用为何仍需要标准协议。",
   ],
-  [
-    "prompt-engineering-10::prompt-engineering-35",
-    "前者用于售前识别可销售的服务机会，后者用于平台团队定义最小可运营能力，受众与交付决定不同。",
-  ],
 ]);
 const HIGH_OVERLAP_THRESHOLD = 0.55;
 

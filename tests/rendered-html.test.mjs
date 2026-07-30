@@ -693,10 +693,12 @@ test("question directory combines keyword, module, and category filters", () => 
 });
 
 test("solution, security, and fine-tuning use distinct problem-specific knowledge views", async () => {
-  const [solution, security, tuning] = await Promise.all([
+  const [solution, security, tuning, tuningExplorerSource, tuningEnglishSource] = await Promise.all([
     renderHtml("/modules/solution-patterns"),
     renderHtml("/modules/security"),
     renderHtml("/modules/fine-tuning"),
+    readFile(new URL("../app/module-visual-explorers.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/i18n/en/modules/fine-tuning.mjs", import.meta.url), "utf8"),
   ]);
 
   assert.match(solution, /data-knowledge-view="decision-blueprint"/);
@@ -720,12 +722,20 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
 
   assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
   assert.match(tuning, /先判断该不该训练，再管理完整发布过程/);
-  assert.match(tuning, /Prompt \/ Schema.*RAG.*Fine-tuning.*换基础模型/s);
-  assert.match(tuning, /SFT.*LoRA.*QLoRA.*DPO/s);
+  assert.match(tuning, /理赔材料初审/);
+  assert.match(tuning, /Prompt \/ Schema.*RAG.*Tool \/ 规则.*Fine-tuning.*换基础模型/s);
+  assert.match(tuning, /权威状态、规则或动作/);
+  assert.match(tuning, /SFT.*PEFT.*LoRA.*QLoRA.*DPO/s);
   assert.match(tuning, /三种参数更新方式/);
   assert.match(tuning, /数据.*训练.*任务.*服务/s);
+  assert.match(tuning, /每个被接受初审成本|停止条件/);
+  assert.match(tuning, /模型不获得赔付授权|最终批准归授权人员/);
   assert.match(tuning, /聊天模板用错了，会对微调结果产生什么影响/);
   assert.match(tuning, /怎样发现微调造成了灾难性遗忘/);
+  assert.doesNotMatch(tuning, /企业行为定制通常先用 LoRA/);
+  assert.match(tuningExplorerSource, /\{ id: "format"[^}]*method: 0[^}]*\}[\s\S]*\{ id: "knowledge"[^}]*method: 1[^}]*\}[\s\S]*\{ id: "state-action"[^}]*method: 2[^}]*\}[\s\S]*\{ id: "behavior"[^}]*method: 3[^}]*\}[\s\S]*\{ id: "capability"[^}]*method: 4[^}]*\}/);
+  assert.match(tuningExplorerSource, /tuningProblems\[3\]/);
+  assert.doesNotMatch(tuningEnglishSource, /For enterprise behavior customization, start with LoRA|vllm-2023/);
   assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
 
   assert.ok(moduleCurriculumContent["solution-patterns"].chapters.length >= 10, "场景方案必须覆盖主要应用原型与生产验收");
@@ -849,7 +859,11 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
 });
 
 test("Prompt Engineering route covers context boundaries, release governance, and cloud-service opportunities", async () => {
-  const html = await renderHtml("/modules/prompt-engineering");
+  const [html, englishHtml, labSource] = await Promise.all([
+    renderHtml("/modules/prompt-engineering"),
+    renderHtml("/en/modules/prompt-engineering"),
+    readFile(new URL("../app/flagship-labs.tsx", import.meta.url), "utf8"),
+  ]);
 
   assert.match(html, /提示词工程/);
   assert.match(html, /Prompt Engineering/);
@@ -860,6 +874,17 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /结构正确不等于事实正确|保证结构不等于保证字段值真实/);
   assert.match(html, /模型差异、提示版本与发布控制/);
   assert.match(html, /提示词工程与云服务机会/);
+  assert.match(html, /理赔材料初审：先路由失败，再决定改哪一层/);
+  assert.match(html, /冻结业务基线.*建立最小调用.*装配受控 Context.*验证与授权.*冻结发布包/s);
+  assert.match(html, /观察到的失败.*优先路线.*主要责任模块/s);
+  assert.match(html, /资格、限额或状态转换.*确定性规则与授权.*应用工作流/s);
+  assert.match(html, /结构正确、事实正确、业务有效和获得授权必须分开验收/);
+  assert.match(html, /事实与证据正确.*业务有效.*授权有效.*工具契约有效.*事务可接受/s);
+  assert.match(html, /Release Bundle 是本知识库.*推荐的控制模式.*不是跨厂商标准/s);
+  assert.match(englishHtml, /Eligibility, limits, or state transition.*Deterministic rules and authorization.*Application workflow/s);
+  assert.match(englishHtml, /Factual and evidence correctness.*Business validity.*Authorization validity.*Tool-contract validity.*Transaction acceptance/s);
+  assert.match(englishHtml, /Release Bundle is this fieldbook.{0,120}recommended[\s\S]*not a cross-provider standard/i);
+  assert.match(labSource, /输出事故事实、缺件、证据坐标和初审说明草稿[\s\S]*不会作最终赔付裁决/);
   assert.match(html, /系统提示（System Prompt）的优先级更高，是否就等于安全/);
   assert.match(html, /可维护的提示模板 · Prompt Template/);
   assert.match(html, /Prompt、RAG 和 Context Engineering 是什么关系/);
@@ -869,6 +894,19 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /Prompt 装配实验/);
   assert.match(html, /坏提示 Bad Prompt/);
 
+  const caseStudy = moduleContentRegistry["prompt-engineering"].caseStudy;
+  assert.ok(caseStudy, "Prompt 应把贯穿案例登记为可审计 caseStudy");
+  assert.equal(caseStudy.stages.length, 5);
+  assert.equal(caseStudy.failureRoutes.length, 6);
+  assert.deepEqual(caseStudy.failureRoutes.map((route) => route.route), [
+    "Prompt、示例与 Schema",
+    "RAG 与证据时效",
+    "只读 Tool / 受控工作流",
+    "确定性规则与授权",
+    "更换候选模型",
+    "进入微调候选门",
+  ]);
+
   for (const sourceId of collectModuleSourceIds(getPublishedModule("prompt-engineering"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
   }
@@ -876,6 +914,41 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.doesNotMatch(html, /正文建设中|模块依赖/);
   assert.doesNotMatch(html, /中文主版 · 术语中英对照/);
   assert.doesNotMatch(html, /softmax|Σ|∏|class="(?:formula|deepFormula|smallFormula)"/);
+});
+
+test("Model landscape route uses the claim-intake case to prove selection and exit decisions", async () => {
+  const [html, englishHtml] = await Promise.all([
+    renderHtml("/modules/model-landscape"),
+    renderHtml("/en/modules/model-landscape"),
+  ]);
+
+  assert.match(html, /data-knowledge-view="selection-coordinate"/);
+  assert.match(html, /模型选型从业务损失开始，不从排行榜开始/);
+  assert.match(html, /任务与损失.*硬门与身份.*同条件试点.*组合、发布与退出/s);
+  assert.match(html, /模型始终不拥有赔付批准权/);
+  assert.match(html, /建立理赔初审候选可行域/);
+  assert.match(html, /完成一次同条件模型 PoC/);
+  assert.match(html, /演练模型升级与供应商退出/);
+  assert.match(html, /开放权重不等于开源/);
+  assert.match(html, /可下载不代表可任意商用/);
+  assert.match(html, /硬能力或交付硬门失败时回到模型选型并重新验收/);
+  assert.match(html, /采集、解析、跨模态对齐和证据坐标归 Multimodal/);
+  assert.match(html, /稳定残余行为适配归 Fine-tuning/);
+  assert.match(html, /运行时路由执行归 AI Gateway/);
+  assert.doesNotMatch(html, /正文建设中|模块依赖/);
+
+  assert.match(englishHtml, /Define the task and loss contract[\s\S]*Apply hard gates and identify each candidate[\s\S]*Run a controlled pilot and choose one model or a portfolio[\s\S]*Release, fall back, and exercise exit/);
+  assert.match(englishHtml, /First test whether one model passes every hard gate/);
+  assert.doesNotMatch(englishHtml, /Use multi-model routing/);
+  assert.match(englishHtml, /id="claim-intake-task-loss-contract"/);
+  assert.match(englishHtml, /id="claim-intake-feasibility-identity"/);
+  assert.match(englishHtml, /id="claim-intake-controlled-pilot"/);
+  assert.match(englishHtml, /id="claim-intake-release-exit"/);
+  assert.doesNotMatch(englishHtml, /id="scenario-(?:regulated-knowledge-assistant|high-volume-triage|multimodal-field-inspection|code-tool-assistant)"/);
+  assert.match(englishHtml, /Multimodal owns capture, parsing, cross-modal alignment, and evidence coordinates/);
+  assert.match(englishHtml, /Fine-tuning owns stable residual behavior adaptation/);
+  assert.match(englishHtml, /AI Gateway owns runtime route execution/);
+  assert.match(englishHtml, /Lost in the Middle/);
 });
 
 test("LLM foundations questions cover the theory readers need for architecture decisions", async () => {

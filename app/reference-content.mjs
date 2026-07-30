@@ -548,7 +548,7 @@ export const sourceLedger = {
     shortTitle: "TRL 数据格式",
     title: "Hugging Face TRL — Dataset Formats and Types",
     note: "说明文本、对话、提示—补全与偏好数据的标准和 conversational 表示；用于核对训练器输入结构，不代表特定数据集质量或适用性。",
-    verifiedAt: "2026-07-20",
+    verifiedAt: "2026-07-30",
     href: "https://huggingface.co/docs/trl/en/dataset_formats",
   },
   "hf-trl-chat-templates": {
@@ -557,7 +557,7 @@ export const sourceLedger = {
     shortTitle: "TRL Chat Templates",
     title: "Hugging Face TRL — Chat Templates",
     note: "解释聊天模板、角色格式、特殊 Token 与训练时损失掩码；不同基座模板并不通用，必须按目标模型配置复核。",
-    verifiedAt: "2026-07-20",
+    verifiedAt: "2026-07-30",
     href: "https://huggingface.co/docs/trl/chat_templates",
   },
   "hf-trl-sft-trainer": {
@@ -566,7 +566,7 @@ export const sourceLedger = {
     shortTitle: "TRL SFTTrainer",
     title: "Hugging Face TRL — SFT Trainer",
     note: "说明监督微调训练器支持的数据类型、训练与评估配置及模型模板处理；工具能力不等于训练结果有效，仍需独立任务评估。",
-    verifiedAt: "2026-07-20",
+    verifiedAt: "2026-07-30",
     href: "https://huggingface.co/docs/trl/en/sft_trainer",
   },
   "hf-trl-dpo-trainer": {
@@ -584,7 +584,7 @@ export const sourceLedger = {
     shortTitle: "TRL × PEFT",
     title: "Hugging Face TRL — PEFT Integration",
     note: "说明 LoRA、QLoRA 与 TRL 训练器的集成，以及冻结基座、训练额外参数的常见方式；实际质量、显存和服务兼容仍需按模型与硬件验证。",
-    verifiedAt: "2026-07-20",
+    verifiedAt: "2026-07-30",
     href: "https://huggingface.co/docs/trl/peft_integration",
   },
   "openai-agent-guide": {
@@ -701,7 +701,7 @@ export const sourceLedger = {
     shortTitle: "OpenAI Prompting",
     title: "Prompting | OpenAI API",
     note: "建议将生产提示作为应用代码版本化，用类型化或已校验输入构造动态部分，并在每次发布时运行代表性测试与评估；这些是厂商特定建议，不是跨模型消息协议。",
-    verifiedAt: "2026-07-17",
+    verifiedAt: "2026-07-30",
     href: "https://developers.openai.com/api/docs/guides/prompting",
   },
   "openai-structured-outputs": {
@@ -710,7 +710,7 @@ export const sourceLedger = {
     shortTitle: "Structured Outputs",
     title: "Structured model outputs | OpenAI API",
     note: "Structured Outputs 可使支持模型的输出遵守所提供 JSON Schema；仍需处理拒答、截断和不支持的 Schema 特性，结构遵循不证明字段值事实正确或业务合规。",
-    verifiedAt: "2026-07-17",
+    verifiedAt: "2026-07-30",
     href: "https://developers.openai.com/api/docs/guides/structured-outputs",
   },
   "openai-function-calling": {
@@ -719,7 +719,7 @@ export const sourceLedger = {
     shortTitle: "Function Calling",
     title: "Function calling | OpenAI API",
     note: "工具调用是应用与模型之间的五步闭环；工具定义和 strict Schema 不授予权限，执行、参数校验与审批仍属于应用责任。",
-    verifiedAt: "2026-07-17",
+    verifiedAt: "2026-07-30",
     href: "https://developers.openai.com/api/docs/guides/function-calling",
   },
   "google-prompt-introduction": {
@@ -755,8 +755,17 @@ export const sourceLedger = {
     shortTitle: "Anthropic Prompt Overview",
     title: "Prompt engineering overview | Claude Platform Docs",
     note: "提示优化前应先有清晰成功标准、可实测方法和初版提示；并指出并非所有失败指标都适合靠提示工程解决，例如时延与成本有时更适合换模型。",
-    verifiedAt: "2026-07-17",
+    verifiedAt: "2026-07-30",
     href: "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+  },
+  "anthropic-context-engineering": {
+    grade: "B",
+    kind: "厂商工程指南",
+    shortTitle: "Anthropic Context Engineering",
+    title: "Effective context engineering for AI agents",
+    note: "把 Context Engineering 描述为在推理时选择和维护模型可见的指令、工具、外部数据与历史，并强调上下文是有限资源；该文重点面向 Agent，是厂商实践而非跨厂商标准。",
+    verifiedAt: "2026-07-30",
+    href: "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
   },
   "transformer-2017": {
     grade: "A", kind: "同行评审论文", shortTitle: "Transformer",
@@ -966,25 +975,31 @@ export const sourceLedger = {
     grade: "P", kind: "模型目录", shortTitle: "OpenAI Models",
     title: "Models — OpenAI API",
     note: "OpenAI 官方模型目录；型号、能力、上下文、可用接口、退役与计价属于高时效事实，必须按使用时点复核。",
-    verifiedAt: "2026-07-17", href: "https://developers.openai.com/api/docs/models",
+    verifiedAt: "2026-07-30", href: "https://developers.openai.com/api/docs/models",
   },
   "openai-reasoning-guide": {
     grade: "P", kind: "官方技术文档", shortTitle: "OpenAI Reasoning Guide",
     title: "Reasoning models — OpenAI API",
     note: "说明部分 OpenAI 模型可用 reasoning effort 调节思考强度，并带来质量、速度与 Token 使用取舍；这是厂商特定的当前 API 能力，支持值和默认值随模型而异。",
-    verifiedAt: "2026-07-20", href: "https://developers.openai.com/api/docs/guides/reasoning",
+    verifiedAt: "2026-07-30", href: "https://developers.openai.com/api/docs/guides/reasoning",
   },
   "google-models": {
     grade: "P", kind: "模型目录", shortTitle: "Gemini Models",
     title: "Models — Gemini API",
     note: "Google 官方 Gemini 模型目录；型号、能力、限制和发布阶段会变化，不在知识正文固化当前排名。",
-    verifiedAt: "2026-07-17", href: "https://ai.google.dev/gemini-api/docs/models",
+    verifiedAt: "2026-07-30", href: "https://ai.google.dev/gemini-api/docs/models",
   },
   "anthropic-models": {
     grade: "P", kind: "模型目录", shortTitle: "Claude Models",
     title: "Models overview — Claude Platform Docs",
     note: "Anthropic 官方 Claude 模型目录；能力、生命周期、区域和定价应在选型时重新核验。",
-    verifiedAt: "2026-07-17", href: "https://platform.claude.com/docs/en/about-claude/models/overview",
+    verifiedAt: "2026-07-30", href: "https://platform.claude.com/docs/en/about-claude/models/overview",
+  },
+  "osi-open-source-ai-definition-1-0": {
+    grade: "O", kind: "开放定义", shortTitle: "Open Source AI Definition 1.0",
+    title: "The Open Source AI Definition — 1.0",
+    note: "定义开放源代码 AI 所需的使用、研究、修改和分享自由，并要求提供足够的数据说明、训练与运行代码和参数；获得权重本身不足以证明整个 AI 系统满足该定义。",
+    verifiedAt: "2026-07-30", href: "https://opensource.org/ai/open-source-ai-definition",
   },
   "openai-prompt-caching": {
     grade: "P", kind: "官方技术文档", shortTitle: "Prompt Caching",
@@ -1164,7 +1179,7 @@ export const sourceLedger = {
     grade: "P", kind: "官方工程指南", shortTitle: "OpenAI Evals 指南",
     title: "Evaluation Best Practices — OpenAI API",
     note: "支持任务特定、持续评估、生产分布样本和人工校准，并警告只靠主观观感或通用指标；示例阈值不能直接作为客户门槛。",
-    verifiedAt: "2026-07-17", href: "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+    verifiedAt: "2026-07-30", href: "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
   },
   "llm-as-judge-2023": {
     grade: "A", kind: "同行评审论文", shortTitle: "LLM-as-a-Judge",

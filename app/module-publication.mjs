@@ -6,7 +6,7 @@
  */
 const moduleSpecs = [
   ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-07-24", "2026-07-17"],
-  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-07-21", "2026-07-17"],
+  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-07-30", "2026-07-17"],
   ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-29", "2026-07-17"],
   ["ai-agent", "agent-title", ["ai-agent", "harness", "harness-engineering", "agent-engineering", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-07-23", "2026-07-17"],
   ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-07-30", "2026-07-17"],
@@ -19,8 +19,8 @@ const moduleSpecs = [
   ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-07-30", "2026-07-17"],
   ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-07-21", "2026-07-21"],
   ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-29", "2026-07-17"],
-  ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-23", "2026-07-17"],
-  ["fine-tuning", "fine-tuning-title", ["fine-tuning", "lora", "evaluation"], "brief", "2026-07-21", "2026-07-17"],
+  ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-30", "2026-07-17"],
+  ["fine-tuning", "fine-tuning-title", ["fine-tuning", "sft", "peft", "lora", "qlora", "dpo", "evaluation"], "brief", "2026-07-30", "2026-07-17"],
   ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-07-22", "2026-07-17"],
   ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-24", "2026-07-17"],
   ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-29", "2026-07-17"],
@@ -45,7 +45,7 @@ const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
   "ai-ops": "c94ef422a8f447daa9336ce65ebae56958cb1550c5b3e73b5f70e12cce8ec88f",
   "predictive-ai-mlops": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   llm: "7dc39e54761576aa4bb5343b2a736ba538834cc7bfa99b9568f43d77fc8614bd",
-  "prompt-engineering": "ce3b16efe824db7e6014597082739fb3789aa304aa88bd3e7a0e02a5b2f39870",
+  "prompt-engineering": "35e50b6873227dc90cb62668e2b8edcb00349dfa8994853eebb437fd08bf634d",
   "fine-tuning": "32309070485d6a96e18382bfb09f74f991f842911f3609bb238e2b7f58ab02cc",
   "llm-training": "1ec338b98689954956857f62e3dc3769777c435979e372ded82dcb8250ed863b",
   "llm-inference": "1a732d72e0a2f584fe4fcd76f56b7913afe8fdc63d50080556095c9bb1adf973",

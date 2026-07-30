@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:47bf64136fd06a9085e75f3f2d5706221207497a3a77ea05c00a396b5ec776cb",
-    "enContentHash": "sha256:3cc0676a89e31dd83e4addcc05fdbcb65916de318e5e82b15503b962ec4c08ec",
+    "zhContentHash": "sha256:8d3890cd48a15ebcc346e599a58c91488ae059fbf02bfcd3be8cda3c81b2002d",
+    "enContentHash": "sha256:a3284c1637a926b3e3866313a4dc9d543cb040e54850f545fa7df9d3ff48c353",
     "termIds": [
       "access-spectrum",
       "capability-matrix",
@@ -22,11 +22,15 @@
     "sourceIds": [
       "anthropic-models",
       "deepseek-r1-2025",
+      "finops-unit-economics",
       "google-models",
+      "lost-middle",
+      "nist-ai-800-3",
       "nist-genai-profile",
       "openai-models",
       "openai-reasoning-guide",
-      "opentelemetry-genai-semconv"
+      "opentelemetry-genai-semconv",
+      "osi-open-source-ai-definition-1-0"
     ]
   },
   "stage": "ultra-exception",

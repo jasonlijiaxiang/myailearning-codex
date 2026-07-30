@@ -7,7 +7,7 @@ import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGri
 import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../fieldbook-interactions";
 import { PromptAssemblyLab } from "../../flagship-labs";
 import { ModuleExtensionPrimer } from "../../module-pilot-views";
-import { promptDeepDives, promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
+import { promptDecisionCase, promptDeepDives, promptEvidenceCards, promptQa } from "../../prompt-content.mjs";
 import { sourceLedger } from "../../reference-content.mjs";
 import { getPublishedModule } from "../../module-publication.mjs";
 import { englishModulePath } from "../../i18n/locale-config.mjs";
@@ -22,6 +22,8 @@ const promptEnglishPath = englishModulePath("prompt-engineering");
 
 const conceptLinks = [
   { concept: "模型原理与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解 token、上下文容量、指令遵循与生成不确定性。" },
+  { concept: "模型候选与能力边界", owner: "模型格局与选型", href: "/modules/model-landscape", relation: "候选切换", local: "当能力、模态、时延或成本不达标时，先重新验证模型候选。" },
+  { concept: "微调进入门", owner: "微调工程", href: "/modules/fine-tuning", relation: "行为适配", local: "只有轻量路线后仍存在稳定、可标注的行为缺口才进入训练。" },
   { concept: "RAG 与 Grounding", owner: "RAG · 检索增强生成", href: "/modules/rag", relation: "知识供给", local: "提示负责使用证据，不负责把正确证据检索出来。" },
   { concept: "Agent 与工具调用", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "行动扩展", local: "工具定义进入上下文；授权、执行和状态由应用控制。" },
   { concept: "工作流与结构化生成", owner: "场景解决方案", href: "/modules/solution-patterns", relation: "输出消费", local: "把自然语言结果约束为可被下游系统可靠处理的结构。" },
@@ -247,6 +249,34 @@ export default function PromptEngineeringModulePage() {
               <CriticalBoundary>消息角色与指令层级能帮助模型区分来源，却不是通用安全协议。不同模型 API 的角色、优先级与能力并不完全一致；<strong>必须执行的规则应落在模型外</strong>。</CriticalBoundary>
               <SystemLens title="Prompt 的调用、退化与发布" lead="把提示词从一句文本还原为完整系统输入，才能判断问题该通过文字、上下文、工具、评估还是应用控制解决。" panels={promptSystemLens} />
               <PromptAssemblyLab />
+              <section aria-labelledby="prompt-case-title">
+                <header className="principleDepthIntro">
+                  <p className="miniLabel">CONTROLLED APPLICATION CASE</p>
+                  <h4 id="prompt-case-title">{promptDecisionCase.title}</h4>
+                  <p>{promptDecisionCase.intro}</p>
+                </header>
+                <BalancedGrid className="technicalNotes" maxColumns={3}>
+                  {promptDecisionCase.stages.map((stage) => (
+                    <article key={stage.code}>
+                      <p className="miniLabel">{stage.code}</p>
+                      <h4>{stage.title}</h4>
+                      <p>{stage.detail}</p>
+                      <small>{stage.gate}</small>
+                    </article>
+                  ))}
+                </BalancedGrid>
+                <div className="tableWrap" style={{ marginTop: 18 }}>
+                  <table>
+                    <thead><tr><th>观察到的失败</th><th>优先路线</th><th>主要责任模块</th></tr></thead>
+                    <tbody>
+                      {promptDecisionCase.failureRoutes.map((route) => (
+                        <tr key={route.symptom}><th>{route.symptom}</th><td>{route.route}</td><td>{route.owner}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <CriticalBoundary>该案例只自动化材料初审与说明草稿。结构化输出正确不等于事实正确、业务有效或已获授权；赔付资格、金额、状态变化和最终批准始终留在模型外。</CriticalBoundary>
+              </section>
             </div>
           </div>
 

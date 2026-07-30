@@ -8,7 +8,7 @@ const freezeQa = (items) => freezeItems(items.map((item) => ({ ...item, evidence
  */
 export const completionCurriculum = Object.freeze({
   "model-landscape": freezeItems([
-    { title: "评估矩阵与模型发布", en: "Evaluation & Release", explanation: "模型候选要在相同任务、输入分布和通过条件下比较，并把模型标识、Prompt、工具 Schema、数据版本和结果绑定。模型升级后先离线回归，再按任务切片灰度。", decision: "把选型结果转成可复现发布证据，不停留在一次榜单或 Demo。", boundary: "同名模型、默认别名或厂商自动升级可能改变行为；历史结果不能自动代表当前版本。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
+    { title: "退出演练与供应连续性", en: "Exit Exercise", explanation: "备用候选只有在相同地域、数据、模态、接口和关键切片硬门下通过验证，才构成真实回退。定期演练区域不可用、版本退役和供应商退出，并记录阻断、人工接管、切换与恢复证据。", decision: "把退出能力变成可执行演练，不把配置里的第二个模型名称当作连续性证明。", boundary: "回退可以牺牲的时延或功能必须预先批准；不能静默放宽数据边界、授权边界或不可接受错误。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
   ]),
   multimodal: freezeItems([
     { title: "长视频的候选检索与时序证据", en: "Long-video Temporal Evidence", explanation: "长视频不是多张无序图片。根据问题类型，系统可能需要镜头或短暂事件的候选时间窗、跨时间关系和原始时间坐标；只有当音轨或字幕存在且决定结论时才需要对齐。LongVideoBench 也专门检验细粒度、交错的视频—语言证据。", decision: "按任务所需事件设计抽帧和时间窗，在客户长视频切片上比较遗漏、跨段推理、P95 与回看成本。", boundary: "Benchmark 不规定客户分段架构，也不支持帧越多效果必然越好。", sourceIds: ["longvideobench-2024", "nist-genai-profile"] },
@@ -51,11 +51,10 @@ export const completionCurriculum = Object.freeze({
 export const completionLearning = Object.freeze({
   "model-landscape": Object.freeze({
     route: freezeItems([
-      { title: "补上风险与交付边界", learn: "为候选模型标注不可接受错误、数据地域、版本固定和替换条件。", checkpoint: "模型可行域包含能力以外的硬约束。" },
-      { title: "把选择变成发布证据", learn: "绑定任务集、模型、Prompt、工具和结果，设计灰度与回滚。", checkpoint: "任何上线结论都能还原比较条件和版本。" },
+      { title: "把选择变成可回退、可退出的发布证据", learn: "绑定任务集、完整候选身份、Prompt、上下文、工具、Schema、策略和结果，再用影子、灰度、回滚及供应商或地域故障演练验证替代路径。", checkpoint: "任何上线结论都能还原比较条件和版本；备用候选通过相同硬门，禁止降级任务会阻断或转人工。" },
     ]),
     labs: freezeLabs([
-      { title: "评审一次模型自动升级", scenario: "供应商准备更新默认模型别名，客户担心行为漂移。", tasks: ["冻结当前模型、Prompt、工具和知识版本", "选择关键任务与高风险切片做新旧对照", "设计灰度、告警、回滚和无法固定版本时的补偿控制"], deliverable: "模型升级评审单", acceptance: "明确允许变化、禁止退化、负责人和回滚证据。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
+      { title: "验证一次受控模型路由", scenario: "同条件试点显示扫描件候选和纯文本候选各有优势，团队准备增加自动路由。", tasks: ["定义可观测且稳定的任务切片与保护组", "测量路由误判、回退、人工升级和跨候选版本漂移", "比较组合收益与新增评估、网关、运营及失败成本"], deliverable: "路由契约、误判报告与保留单模型或启用组合的决策", acceptance: "只有组合在完整成本下稳定改善合格结果时启用；高风险或未知切片会阻断或转人工。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
     ]),
   }),
   multimodal: Object.freeze({

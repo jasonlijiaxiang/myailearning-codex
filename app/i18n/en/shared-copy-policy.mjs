@@ -58,11 +58,13 @@ export const englishCopyOwners = Object.freeze({
     "hf-trl-sft-trainer": "fine-tuning",
     "hnsw-2016": "data-engineering",
     "instructgpt-2022": "llm-training",
+    "finops-unit-economics": "model-landscape",
     "lost-middle": "prompt-engineering",
     "mcp-architecture": "ai-agent",
     "mcp-authorization": "security",
     "mcp-security": "security",
     "nist-genai-profile": "ai-ops",
+    "nist-ai-800-3": "evaluation",
     "nist-zero-trust": "security",
     "openai-eval-best-practices": "prompt-engineering",
     "openai-function-calling": "prompt-engineering",
@@ -77,7 +79,6 @@ export const englishCopyOwners = Object.freeze({
     "pp-ocr-2020": "multimodal",
     ragas: "rag",
     "react-2023": "ai-agent",
-    "vllm-2023": "llm-inference",
   }),
 });
 

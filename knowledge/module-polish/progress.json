@@ -68,23 +68,23 @@
     },
     {
       "id": "batch-04-model-choice-adaptation",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "model-landscape",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "独立复核通过：业务损失驱动选型、单模型优先、候选身份、受控试点、退出与责任边界已闭环。"
         },
         {
           "slug": "prompt-engineering",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "独立复核通过：理赔初审案例、失败路由、七层校验、Release Bundle 边界与 Prompt Lab 已闭环。"
         },
         {
           "slug": "fine-tuning",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "独立复核通过：不微调门、五类失败路由、PEFT 方法边界、四层验收与停止规则已闭环。"
         }
       ]
     },

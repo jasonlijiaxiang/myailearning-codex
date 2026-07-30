@@ -303,17 +303,18 @@ export function SecurityThreatPrimer() {
 const tuningMethodChoices = [
   { method: "Prompt / Schema", signal: "模型知道答案，但格式、步骤或约束不稳定", strength: "改动快、易回滚", limit: "复杂稳定行为可能仍漂移" },
   { method: "RAG", signal: "缺少最新、私有、需引用或按权限变化的知识", strength: "知识可更新、撤回和追踪", limit: "不会自动改变模型的默认行为" },
-  { method: "Fine-tuning", signal: "需要长期稳定的语气、格式或窄任务行为", strength: "把行为模式写入模型或 Adapter", limit: "更新和归因比 Prompt、RAG 更重" },
+  { method: "Tool / 规则", signal: "需要权威状态、业务计算、权限或外部动作", strength: "结果和授权可由确定性系统控制", limit: "模型只能提出调用，不能自行获得权限" },
+  { method: "Fine-tuning", signal: "轻量路线后仍有稳定、可重复、可标注的行为缺口", strength: "把行为模式写入模型或 Adapter", limit: "更新、撤回和归因比轻量路线更重" },
   { method: "换基础模型", signal: "当前模型缺少核心能力、模态或上下文能力", strength: "直接提升能力上限", limit: "成本、兼容和回归范围可能扩大" },
 ];
 
 const tuningLifecycle: Array<[string, string, string]> = [
-  ["01", "定义目标", "区分知识、行为与能力问题"],
-  ["02", "固定考卷", "保留未见样本与高风险切片"],
-  ["03", "准备数据", "清洗、去重、授权并统一样本格式"],
-  ["04", "训练 Adapter", "从 SFT、LoRA 或 QLoRA 小步试验"],
-  ["05", "比较与回归", "同时检查目标提升、通用能力和安全"],
-  ["06", "灰度与回滚", "绑定基座、Adapter、模板和运行版本"],
+  ["01", "隔离剩余缺口", "对照 Prompt、RAG、Tool、规则和换模型"],
+  ["02", "执行不微调门", "核对数据权利、评测、规模、版本与回滚"],
+  ["03", "建立数据合同", "清洗、去重、裁决并统一模板与拆分"],
+  ["04", "最小方法试验", "按条件选择 SFT、PEFT / LoRA、QLoRA 或 DPO"],
+  ["05", "四层验收", "检查目标、保留能力、安全、服务与完整成本"],
+  ["06", "灰度、回滚与停止", "绑定完整运行元组；轻量路线反超时退出"],
 ];
 
 const tuningMethodMatrix = [
@@ -327,10 +328,10 @@ export function FineTuningPrimer() {
     <section className="pilotPrimer pilotPrimer--tuning" data-knowledge-view="tuning-lifecycle" aria-labelledby="fine-tuning-primer-title">
       <header className="pilotPrimerHeader">
         <div><p className="kicker">METHOD TRIAGE &amp; RELEASE</p><h2 id="fine-tuning-primer-title">先判断该不该训练，再管理完整发布过程</h2></div>
-        <p>微调适合修正稳定行为，不适合替代实时知识、业务数据库或权限规则。方法选择和发布回滚应该在训练开始前就被一起设计。</p>
+        <p>以理赔材料初审为例：条款证据归 RAG、案件状态与动作归 Tool/规则、最终批准归授权人员；只有轻量路线后仍稳定存在的行为缺口才进入训练。</p>
       </header>
       <TuningRouteExplorer methods={tuningMethodChoices} lifecycle={tuningLifecycle} />
-      <TermHintRow label="微调方法常用缩写" termIds={["sft", "lora", "qlora", "dpo", "llm"]} />
+      <TermHintRow label="微调方法常用缩写" termIds={["sft", "peft", "lora", "qlora", "dpo", "llm"]} />
       <div className="tuningEvidenceBoard">
         <div><p className="miniLabel">PARAMETER UPDATE</p><h3>三种参数更新方式</h3></div>
         <div className="tuningMethodMatrix" role="table">
@@ -344,7 +345,7 @@ export function FineTuningPrimer() {
           <article><span>04</span><h3>服务</h3><p>显存、时延、吞吐、成本、灰度与回滚</p></article>
         </div>
       </div>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先比较四种方法，确认微调确有必要，再把训练数据、冻结评估集、Adapter、基础模型、服务模板和回滚方案当作一个发布单元共同验收。</p><nav aria-label="微调深入阅读"><a href="#decisions">查看方法选择</a><a href="#curriculum">查看训练方法</a><a href="#cloud">查看训练与部署</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先按失败类型比较五条路线，再把训练数据、冻结评估集、基座、Adapter、Tokenizer、Chat Template、Runtime、Policy、单位经济和停止条件作为一个发布单元共同验收。</p><nav aria-label="微调深入阅读"><a href="#decisions">查看方法选择</a><a href="#curriculum">查看训练方法</a><a href="#cloud">查看训练与部署</a></nav></footer>
     </section>
   );
 }

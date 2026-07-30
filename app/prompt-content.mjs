@@ -1,9 +1,29 @@
 /**
- * 提示词工程模块的问答与证据卡。
+ * 提示词工程模块的应用决策链、问答与证据卡。
  *
  * 来源标题、链接、证据类别和核验日期统一维护在
  * app/reference-content.mjs；此文件仅保存稳定 sourceId。
  */
+export const promptDecisionCase = Object.freeze({
+  title: "理赔材料初审：先路由失败，再决定改哪一层",
+  intro: "跨地区理赔助手读取申请表、扫描件与事故照片，结合当前保单条款和案件状态，输出结构化事实、缺件清单、证据坐标与初审说明草稿。它不判断最终赔付资格或金额，也不能自行写入赔付状态。",
+  stages: Object.freeze([
+    Object.freeze({ code: "01", title: "冻结业务基线", detail: "记录人工初审耗时、补件率、升级率、严重漏检和每个被接受初审的完整成本。", gate: "没有权威样本、裁决人和不可接受错误时，不进入 Prompt 优化。" }),
+    Object.freeze({ code: "02", title: "建立最小调用", detail: "先用候选模型、清晰任务、输入字段和输出 Schema 建立可测基线，不预先加入 Agent 或写工具。", gate: "结构正确、事实正确、业务有效和获得授权必须分开验收。" }),
+    Object.freeze({ code: "03", title: "装配受控 Context", detail: "把稳定指令、可信案件状态、带 ACL 与时效的保单证据、用户材料、工具和预算记录成 Context Manifest。", gate: "Context Manifest 是本知识库推荐的控制模式，不是跨厂商标准。" }),
+    Object.freeze({ code: "04", title: "验证与授权", detail: "依次执行语法、Schema、证据、业务规则与权限校验；模型只提出候选结果或工具意图。", gate: "赔付资格、金额、状态变更和最终批准始终由确定性系统与授权人员负责。" }),
+    Object.freeze({ code: "05", title: "冻结发布包", detail: "绑定模型快照、Prompt、上下文装配器、Retriever、工具与输出 Schema、安全策略和评估集。", gate: "Release Bundle 是本知识库为可归因、可复现与可回滚而推荐的控制模式，不是跨厂商标准或固定字段规范。" }),
+  ]),
+  failureRoutes: Object.freeze([
+    Object.freeze({ symptom: "任务、语气或格式漂移", route: "Prompt、示例与 Schema", owner: "Prompt Engineering" }),
+    Object.freeze({ symptom: "条款缺失、过期或需要引用", route: "RAG 与证据时效", owner: "RAG" }),
+    Object.freeze({ symptom: "案件状态缺失或需要写操作", route: "只读 Tool / 受控工作流", owner: "应用、Agent 与 Security" }),
+    Object.freeze({ symptom: "资格、限额或状态转换", route: "确定性规则与授权", owner: "应用工作流" }),
+    Object.freeze({ symptom: "能力、模态、时延或成本不达标", route: "更换候选模型", owner: "Model Landscape" }),
+    Object.freeze({ symptom: "轻量路线后仍有稳定行为缺口", route: "进入微调候选门", owner: "Fine-tuning" }),
+  ]),
+});
+
 export const promptDeepDives = [
   {
     kind: "matrix",
@@ -31,7 +51,7 @@ export const promptDeepDives = [
       { name: "淘汰与压缩", en: "Evict / Compress", mechanism: "按显式规则去重、摘要或删除低优先级块，并保护否定词、范围、版本和原文坐标。", decision: "压缩后能否证明关键主张仍有直接证据？", boundary: "摘要器会产生新文本，不能无条件当作原始证据。" },
       { name: "保存 Context Manifest", en: "Persist Manifest", mechanism: "记录块顺序、淘汰原因、token、模型、Prompt 与工具版本，供评估和事故复盘。", decision: "线上失败能否还原模型当时实际看到了什么？", boundary: "Manifest 可能含敏感元数据，日志同样需要最小化和保留策略。" },
     ],
-    sourceIds: ["lost-middle", "openai-prompt-caching", "nist-genai-profile"],
+    sourceIds: ["anthropic-context-engineering", "lost-middle", "openai-prompt-caching", "nist-genai-profile"],
   },
   {
     kind: "matrix",
@@ -42,7 +62,9 @@ export const promptDeepDives = [
     items: [
       { name: "语法有效", en: "Syntactic Validity", mechanism: "输出可以被目标解析器读取，JSON、XML 或文本格式完整。", decision: "解析失败时重试、修复还是返回明确错误？", boundary: "能解析不代表字段齐全或枚举合法。" },
       { name: "Schema 有效", en: "Schema Validity", mechanism: "字段、类型、必填项和枚举符合受支持的结构化输出约束。", decision: "拒答、截断和不支持的 Schema 特性如何单独处理？", boundary: "Schema 正确不代表日期、金额或引用真实。" },
-      { name: "业务有效", en: "Business Validity", mechanism: "应用检查金额、库存、权限、状态转换、数据新鲜度和跨字段规则。", decision: "哪些不变量必须由代码或规则引擎执行？", boundary: "把业务规则全部写进 Prompt 无法提供确定性保证。" },
+      { name: "事实与证据正确", en: "Factual & Evidence Correctness", mechanism: "字段值由当前、获授权且可定位的来源或权威系统支持，来源版本、时效与冲突状态明确。", decision: "哪些字段必须引用证据，哪些必须回读权威系统？", boundary: "Schema 正确不能证明金额、日期、案件状态或引用真实。" },
+      { name: "业务有效", en: "Business Validity", mechanism: "确定性代码或规则引擎检查资格、限额、金额计算、跨字段约束和允许的状态转换。", decision: "哪些业务不变量必须独立于模型始终成立？", boundary: "把业务规则全部写进 Prompt 无法提供确定性保证。" },
+      { name: "授权有效", en: "Authorization Validity", mechanism: "应用重新验证主体、租户、资源、动作、范围和所需确认，不复用模型对权限的自然语言判断。", decision: "当前身份是否被允许对这个案件执行这个动作？", boundary: "模型提出工具名与参数不等于获得执行权限。" },
       { name: "工具契约有效", en: "Tool Contract", mechanism: "工具描述、输入 Schema、风险、幂等、错误类别和后置验证共同决定是否执行。", decision: "模型选中工具后，应用是否重新鉴权并验证参数？", boundary: "更多工具会增加上下文和选择歧义；动态发现也要限制范围。" },
       { name: "事务可接受", en: "Transaction Accepted", mechanism: "真实系统返回 operation ID，并回读权威状态确认动作完成或进入可恢复状态。", decision: "结果未知或部分成功时是否停止、查询、补偿或交人工？", boundary: "模型生成“成功”不能代替外部系统事实。" },
     ],
@@ -52,10 +74,10 @@ export const promptDeepDives = [
     kind: "checklist",
     eyebrow: "RELEASE & SECURITY",
     title: "把提示发布包和 Source–Sink 风险一起验收",
-    intro: "提示上线不是替换一段文字。模型、上下文组装、工具、Schema、安全策略和评估集共同决定行为，也共同构成回滚单位。",
+    intro: "提示上线不是替换一段文字。模型、上下文组装、工具、Schema、安全策略和评估集共同决定行为，也共同构成回滚单位。Release Bundle 是本知识库推荐的控制模式，不是跨厂商标准或固定字段规范。",
     maxColumns: 3,
     items: [
-      { name: "冻结发布 Bundle", en: "Release Bundle", mechanism: "记录 prompt_version、model_snapshot、context_assembler、retriever、tool_schema、output_schema 与 safety_policy。", decision: "一次线上回答能否关联到完整配置，而不是只有 Prompt ID？", boundary: "只回滚模板可能无法消除由模型或工具版本引入的回归。" },
+      { name: "冻结发布 Bundle", en: "Release Bundle", mechanism: "记录 prompt_version、model_snapshot、context_assembler、retriever、tool_schema、output_schema 与 safety_policy。", decision: "一次线上回答能否关联到完整配置，而不是只有 Prompt ID？", boundary: "这是本知识库为归因、复现与回滚推荐的组合方式；具体字段和制品边界必须适配目标平台。" },
       { name: "做因果对比", en: "Causal Comparison", mechanism: "一次主要改变一个变量；在冻结任务集上做切片、成对比较、人工校准和失败归因。", decision: "改善来自 Prompt、模型、上下文还是工具变化？", boundary: "LLM Judge 有位置和冗长偏差，不能成为高风险唯一门禁。" },
       { name: "持续评估与灰度", en: "Continuous Evaluation", mechanism: "离线回归后走影子、Canary、在线监测和快速回滚，线上失败经确认后进入评估集。", decision: "门槛是否覆盖真实分布、边界、对抗和不可接受错误？", boundary: "文档中的示例阈值不是客户通用上线标准。" },
       { name: "标记不可信 Source", en: "Untrusted Sources", mechanism: "识别用户、网页、邮件、PDF、RAG、图像和工具结果等可被攻击者影响的入口。", decision: "每种 Source 能到达哪些模型、工作流和工具？", boundary: "仅检测恶意文本无法可靠覆盖复杂社会工程攻击。" },
@@ -231,18 +253,6 @@ export const promptQa = [
     evidence: [
       { sourceId: "anthropic-prompt-overview", supports: "直接支持先定义成功标准并建立可实测方法。" },
       { sourceId: "nist-genai-profile", supports: "支持以 Govern / Map / Measure / Manage 形成持续风险管理。" },
-    ],
-  },
-  {
-    q: "Prompt Engineering 能带来哪些云服务销售机会？",
-    a: "它不是单独售卖的一段文字，而会连接模型服务、Prompt 管理、AI 网关、评估、安全、日志追踪、密钥与弹性运行等云能力。",
-    depth: "售前应把需求拆成可采购能力：模型目录与版本固定、提示模板与密钥分离、流量路由和限流、结构化输出与工具编排、离线评估和在线观测、敏感信息防护、审计与成本归集。具体产品名称、地域、保留策略和计价必须用目标云当期官方资料核验，不能把提示技巧包装成平台级能力承诺。",
-    ask: "追问客户：谁维护模板？需要多模型路由吗？是否要求私网、审计、数据驻留和按部门分账？",
-    tag: "云服务",
-    basis: "工程能力映射；产品细节需当期核验",
-    evidence: [
-      { sourceId: "openai-prompting-guide", supports: "支持提示版本化、测试和部署流程的工程化管理。" },
-      { sourceId: "nist-genai-profile", supports: "支持持续治理、测量与风险管理要求。" },
     ],
   },
   {
@@ -510,7 +520,7 @@ export const promptQa = [
   },
   {
     q: "Prompt 版本号只需要对应模板文字吗？",
-    a: "不够。生产行为由 Prompt、模型快照、上下文组装、检索策略、工具和输出 Schema、安全策略共同决定，版本单位应是完整发布包（Release Bundle）。",
+    a: "不够。本知识库建议把 Prompt、模型快照、上下文组装、检索策略、工具和输出 Schema、安全策略作为完整发布包（Release Bundle）共同版本化；这是用于归因、复现和回滚的控制模式，不是跨厂商标准。",
     depth: "一次调用至少应记录 prompt_version、model_snapshot、context_assembler、retriever、tool_schema、output_schema、safety_policy 和评估集版本。模板文字没有变化，模型别名、工具描述或上下文排序变化仍可能造成回归。发布记录还应包含变更原因、负责人、审批、评估结果和可回滚目标，使线上答案能够复现和归因。",
     ask: "追问客户：目前只保存 Prompt ID，还是能够还原一次调用的模型、上下文、工具和策略版本？",
     tag: "版本治理",
@@ -534,9 +544,9 @@ export const promptQa = [
   },
   {
     q: "要把 Prompt Engineering 变成可运营的云服务，最少需要哪些平台能力？",
-    a: "至少需要模型接入与版本固定、Prompt/配置管理、上下文与密钥隔离、AI 网关、评估、安全策略、Trace/日志和成本归集；有工具调用时还要加入身份传递、审批和事务审计。",
-    depth: "售前架构可分为控制面与数据面：控制面管理模板、模型、评估集、发布和权限；数据面完成请求路由、上下文装配、模型调用、输出校验和工具执行。产品名称不是重点，必须进一步核验目标云的地域、配额、私网接入、数据保留、缓存、密钥管理、日志字段和计价单位，并明确客户、云平台与模型提供方的共享责任。",
-    ask: "追问客户：要求单云还是多云？是否需要私网、数据驻留、客户管理密钥、跨区域容灾和部门级成本分摊？",
+    a: "它不是单独售卖的一段文字。最低可运营单元包括模型接入与版本固定、Prompt/配置管理、受控上下文装配、AI 网关、输出校验、评估、安全策略、Trace/日志、回滚和成本归集；有工具调用时还要加入身份传递、审批、幂等和事务审计。",
+    depth: "售前架构可分为控制面与数据面：控制面管理模板、模型、Context Manifest、评估集、发布和权限；数据面完成请求路由、上下文装配、模型调用、结构与业务校验以及受控工具执行。由此可映射模型服务、搜索与数据、网关、工作流、IAM/KMS、可观测、CI/CD 和 FinOps 等云机会，但必须按目标云核验地域、配额、私网、保留、缓存、密钥、日志和计价，并明确客户、云平台与模型提供方的共享责任。",
+    ask: "追问客户：谁维护模板和上下文策略？要求单云还是多云？是否需要私网、数据驻留、客户管理密钥、跨区域容灾和部门级成本分摊？",
     tag: "云服务承载",
     basis: "工程能力分层 + 持续治理",
     evidence: [

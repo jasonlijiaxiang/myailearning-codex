@@ -1,7 +1,7 @@
 export const modelLandscape = {
   slug: "model-landscape",
-  definition: "模型格局与选型（Model Landscape）把厂商目录、开放权重、能力边界、合规条件与成本结构放进同一套客户决策框架，目标不是追逐单一榜首，而是选出可验证、可运营、可替换的模型组合。",
-  position: "解决方案层：连接客户场景、模型能力、采购约束与后续 AI 网关、评估和运行治理。",
+  definition: "模型格局与选型（Model Landscape）把业务任务、错误损失、交付硬约束和生命周期条件转成模型可行域、完整候选身份与替换策略；目标不是追逐单一榜首，而是选出经过同条件试点、可运营且可退出的最简模型组合。",
+  position: "解决方案层：负责模型候选与路线资格；Evaluation 负责量尺和测量，AI Gateway 负责运行时路由，AI FinOps 负责完整投资判断。",
   presentation: "spectrum",
   principleTitle: "从模型名录走向约束驱动的选型",
   principles: [
@@ -14,13 +14,13 @@ export const modelLandscape = {
     {
       zh: "产品形态是能力的一部分",
       en: "Delivery Model Is Part of Capability",
-      explanation: "同一模型家族可能通过公共 API、云模型市场、专属端点或开放权重交付。可用地域、数据处理方式、配额、工具接口和退出路径会改变最终方案。",
-      decision: "不要只对比模型名称；把交付渠道、合同和运行控制面一并列入选型。",
+      explanation: "一个可比较候选至少要绑定提供方、端点、地域、精确版本、交付形态和运行配置。同一模型家族通过公共 API、专属端点或开放权重交付时，责任与能力边界都可能不同。",
+      decision: "不要只登记模型名称；先冻结完整候选元组，再用同一 Prompt、上下文、工具、Schema 和预算比较。",
     },
     {
       zh: "开放权重不等于开源",
       en: "Open Weights Is Not Necessarily Open Source",
-      explanation: "能够下载权重，不代表训练信息、许可证权利、再分发条件和衍生模型责任都满足开源定义。",
+      explanation: "能够下载权重，不代表已经获得使用、研究、修改和分享整个 AI 系统所需的自由，也不代表训练数据说明、代码与许可证条件满足开放源代码 AI 定义。",
       decision: "任何开放权重方案都应读取许可证原文，并让法务确认商用、改造、分发与下游使用边界。",
     },
     {
@@ -52,8 +52,8 @@ export const modelLandscape = {
     {
       question: "请求量是否高度分层？",
       signal: "多数任务简单且高频，少数任务复杂或高风险。",
-      recommendation: "采用多模型路由：低成本模型承接常规量，困难或高风险请求升级到更强模型。",
-      boundary: "路由器本身必须评估；误分流、重试和网关费用要计入总成本。",
+      recommendation: "先验证一个模型能否满足全部硬门；只有任务切片存在稳定、可观察差异时，才增加模型路由、保护组与人工升级。",
+      boundary: "模型自报置信度不能直接作为路由真值；每条路径、误分流和故障回退都要独立验收。",
     },
     {
       question: "客户是否需要快速更换供应商或模型版本？",
@@ -68,9 +68,9 @@ export const modelLandscape = {
       boundary: "模型只是完整方案的一层；数据、工作流、权限与运营可能才是主要瓶颈。",
     },
   ],
-  deepDiveTitle: "把模型选型从排行榜问题变成组合工程",
+  deepDiveTitle: "用一条理赔初审链把排行榜问题变成组合工程",
   deepDiveLead:
-    "模型组合的价值不在于保留更多名字，而在于先划出满足客户硬约束的可行域，再用质量、运行包络和业务经济性形成可解释的权衡。下面的方法不依赖某一家厂商的榜单。",
+    "本批用跨地区理赔材料初审助手贯穿选型：系统读取多语言表单、扫描件与照片，抽取事实并生成带证据坐标的初审建议；最终赔付资格、金额与批准仍由确定性规则和授权人员决定。模型组合只有在同条件试点证明任务分层有价值时才成立。",
   deepDives: [
     {
       kind: "matrix",
@@ -78,7 +78,7 @@ export const modelLandscape = {
       title: "先划可行域，再比较帕累托前沿",
       intro:
         "一个候选若违反数据驻留、许可证或接口硬约束，就不应靠更高的平均分“补回来”；只有进入可行域的模型，才值得比较彼此不能同时最优的质量、时延、成本和退出代价。",
-      sourceIds: ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"],
+      sourceIds: ["nist-genai-profile", "finops-unit-economics", "osi-open-source-ai-definition-1-0", "openai-models", "google-models", "anthropic-models"],
       columnLabels: {
         name: "决策面",
         mechanism: "如何形成证据",
@@ -118,45 +118,45 @@ export const modelLandscape = {
     },
     {
       kind: "scenario",
-      eyebrow: "PORTFOLIO SCENARIOS",
-      title: "客户约束如何改变模型组合",
+      eyebrow: "CLAIM-INTAKE PILOT",
+      title: "一份理赔材料如何走完模型选型",
       intro:
-        "同一份模型清单进入不同业务后，会因为数据边界、流量结构、模态和动作风险形成不同组合。场景设计的目标是让每条路径都有明确的升级、降级和验收条件。",
-      sourceIds: ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"],
+        "案例不预设哪家模型或多模型一定更好，而是让业务基线、硬门、逐切片证据和退出条件依次淘汰不成立的方案。它是本知识库的教学案例，不是保险业务的通用合规或模型推荐。",
+      sourceIds: ["nist-genai-profile", "nist-ai-800-3", "openai-models", "google-models", "anthropic-models"],
       maxColumns: 2,
       items: [
         {
-          name: "受监管知识助手",
-          en: "Regulated Knowledge Assistant",
-          mechanism: "含敏感数据的请求进入满足地域与合同要求的专属或私有端点；只有脱敏且获准的复杂问题才可升级到外部强模型。",
-          decision: "云侧重点是私网、密钥、审计、内容分级与模型路由，PoC 应验证数据分类是否真正驱动了路由。",
-          boundary: "模型部署在私有网络不代表输入、日志、检索库和人工复核链已经合规。",
+          name: "冻结任务与损失",
+          en: "Task and Loss Contract",
+          mechanism: "把材料分类、字段抽取、证据定位与说明草稿拆成任务切片；分别记录人工耗时、严重漏检、误升级和必须转人工的情形。",
+          decision: "先取得权威样本、裁决人和不可接受错误，再定义候选门槛。",
+          boundary: "没有人工基线和争议裁决规则时，Demo 不能支持模型采购结论。",
         },
         {
-          name: "高吞吐工单分流",
-          en: "High-volume Triage",
-          mechanism: "成本较低的模型处理可判定的常规分类，低置信、高损失或新类型工单升级到更强模型或人工队列。",
-          decision: "用托管批处理、弹性端点、网关置信规则和人工工作台共同核算每个正确分流的成本。",
-          boundary: "模型自报置信度不一定可校准；升级门槛必须用真实错误代价验证。",
+          name: "建立硬门与候选身份",
+          en: "Feasibility and Identity",
+          mechanism: "按数据地域、敏感信息处理、多语言、扫描件与图像输入、版本固定、许可和时延排除候选，并记录精确端点与运行配置。",
+          decision: "每项硬门只允许 pass、fail 或待验证；fail 不能靠更高平均分补偿。",
+          boundary: "厂商目录只证明当期产品声明，不证明客户样本质量、合同责任或 SLA。",
         },
         {
-          name: "多模态现场巡检",
-          en: "Multimodal Field Inspection",
-          mechanism: "设备侧或近端模型先做压缩与初筛，云端多模态模型处理复杂图像、文档和跨记录推理，并保留原始证据定位。",
-          decision: "选型同时验证图像输入限制、网络带宽、离线容忍、对象存储和人工复核，不只比较视觉问答效果。",
-          boundary: "压缩和裁剪会丢失证据；高风险判定不能因云端不可达而静默降级。",
+          name: "同条件试点与组合判断",
+          en: "Controlled Pilot",
+          mechanism: "冻结 Prompt、上下文、工具、Schema、预算和考卷，按语言、版式、风险与长尾切片比较严重错误、P95、人工复核率和每个被接受初审成本。",
+          decision: "单模型全部达标就保持简单；只有稳定分层证据才引入路由，并为每条路径设置保护组和停止条件。",
+          boundary: "总体均分不能掩盖高风险漏检，模型自报置信度也不能直接决定降级。",
         },
         {
-          name: "可执行的代码与工具助手",
-          en: "Code and Tool-use Assistant",
-          mechanism: "主模型负责规划与生成结构化调用，备用模型只有在 Schema、工具语义和安全策略等价的路径上才接管；动作仍由受控执行层完成。",
-          decision: "在模型网关之外配置沙箱、最小权限、审批和追踪，并把工具调用成功率纳入候选评估。",
-          boundary: "返回相同 HTTP 状态不等于语义等价；故障转移不能绕过业务授权。",
+          name: "发布、回退与退出",
+          en: "Release and Exit",
+          mechanism: "绑定模型身份、调用配置、评估集和策略，经过影子、灰度与回滚后晋升；备用模型还要演练区域不可用、版本退役与供应商退出。",
+          decision: "只有通过相同硬门和关键切片的候选才可作为回退路径；否则阻断或转人工。",
+          boundary: "模型只给初审建议；赔付资格、金额、签署和风险接受不因切换模型而改变授权边界。",
         },
       ],
     },
   ],
-  criticalBoundary: "模型目录、价格、排名与平台能力都是高时效事实。任何对客比较都必须标明核验日期、地域、计费口径与官方来源；模型榜单不等于客户场景结论。",
+  criticalBoundary: "模型目录、价格、版本和平台能力都是高时效事实。任何对客比较都必须绑定核验日期、地域、精确候选身份与同条件试点；模型榜单、一次 Demo 和消费端产品体验都不能替代客户场景结论。",
   cloudHooks: [
     {
       stage: "模型接入与目录",
@@ -183,7 +183,7 @@ export const modelLandscape = {
       discover: "平均输入输出、峰值、缓存复用率、失败返工和数据边界是什么？",
     },
   ],
-  relatedSlugs: ["solution-patterns", "evaluation", "ai-gateway", "llm", "fine-tuning"],
+  relatedSlugs: ["solution-patterns", "evaluation", "ai-gateway", "prompt-engineering", "multimodal", "fine-tuning", "ai-ops"],
   qa: [
     {
       q: "现在到底哪家模型最强？",
@@ -214,14 +214,14 @@ export const modelLandscape = {
     },
     {
       q: "开放权重模型一定比商业 API 更便宜吗？",
-      a: "不一定。开放权重省去按次 API 单价，但会增加 GPU、容量规划、推理优化、安全更新和运维人力；低利用率场景常由托管 API 更划算。",
-      depth: "应在同一质量门槛下比较：模型与许可证、硬件摊销、峰值冗余、引擎与人员、升级回归、可用性和安全运营。高稳定利用率、数据不出域或深度定制可能让自托管占优；流量不确定、团队较小或需要快速上线时，托管服务通常更简洁。",
+      a: "不一定。开放权重会改变采购和控制方式，但同时带来 GPU、容量规划、推理优化、安全更新、可用性和运维人力；哪条路线更便宜只能在同一质量门下用客户负载核算。",
+      depth: "应比较许可证与模型、硬件摊销、峰值冗余、平台与人员、升级回归、失败返工和退出成本，并以每个被接受业务结果为单位做敏感性分析。托管或自建都不能脱离流量、服务目标、数据边界和团队能力预先宣布胜出。",
       ask: "追问客户：稳定利用率、峰值并发、现有 GPU 与平台团队能力分别是多少？",
       tag: "TCO",
       basis: "交付形态比较 + 风险治理",
       evidence: [
         { sourceId: "nist-genai-profile", supports: "支持把技术、运营、安全和供应链风险纳入部署决策，而非只看单一费用。" },
-        { sourceId: "anthropic-models", supports: "支持托管模型按不同产品定位提供；成本结论仍需客户负载验证。" },
+        { sourceId: "finops-unit-economics", supports: "支持把技术支出连接到业务结果单位；不证明客户应选择托管或自建。" },
       ],
     },
     {
@@ -241,7 +241,7 @@ export const modelLandscape = {
     {
       metric: "任务 × 约束",
       title: "模型选择必须带上下文",
-      finding: "三家官方目录都按模型家族、能力与使用定位组织产品，说明“模型名称”本身不足以完成企业选型。",
+      finding: "OpenAI 官方目录按模型家族、能力与使用定位组织产品，说明仅凭一个通用“模型名称”不足以完成企业选型。",
       boundary: "官方目录是厂商自述，不是公平横评；最终结论必须由客户评估集产生。",
       sourceId: "openai-models",
       accent: true,
@@ -254,11 +254,11 @@ export const modelLandscape = {
       sourceId: "nist-genai-profile",
     },
     {
-      metric: "产品家族",
-      title: "同一厂商也需要按任务选档",
-      finding: "厂商官方目录通常提供多个能力与成本定位不同的模型，而不是一个型号覆盖所有工作负载。",
-      boundary: "具体可用模型、地域和计价会变化，使用前必须查当期官方资料。",
-      sourceId: "google-models",
+      metric: "Cost / accepted outcome",
+      title: "单位经济必须绑定合格结果",
+      finding: "FinOps Unit Economics 区分资源效率单位与业务结果单位，模型成本应与被接受的初审结果、人工复核和失败返工一起观察。",
+      boundary: "单位经济只建立比较口径；没有客户基线、真实结果和完整成本时，不能宣称 ROI。",
+      sourceId: "finops-unit-economics",
     },
   ],
 };
@@ -815,22 +815,22 @@ export const llmTraining = {
 
 export const fineTuning = {
   slug: "fine-tuning",
-  definition: "微调工程（Fine-tuning）用客户数据在既有模型上继续训练，把稳定的任务行为、格式、语气或领域表达内化到权重或适配器中，并通过评估、发布、反馈和回滚持续改进。",
-  position: "模型基础层的企业定制模块：承接 Prompt 与 RAG 仍无法满足的稳定行为需求，并连接训练平台、推理服务与评估治理。",
+  definition: "微调工程（Fine-tuning）只在 Prompt/Schema、RAG、Tool/规则和更换模型等对照之后，对仍然稳定、可重复、可标注的行为缺口继续训练，并把数据、模型或 Adapter、评估、发布和停止条件组织成可回滚实验。",
+  position: "模型定制层：负责训练是否值得、数据与方法合同、微调专属验收和制品兼容清单；不负责实时知识、执行授权、完整 ROI 或最终风险批准。",
   presentation: "loop",
   principleTitle: "从方法选择到发布回滚的完整流程",
   principles: [
     {
       zh: "先区分知识、行为与能力",
       en: "Separate Knowledge, Behavior and Capability",
-      explanation: "过期或私有事实优先由 RAG 提供；稳定格式、语气和任务习惯才适合微调；底座不会的复杂能力通常要换模型。",
-      decision: "沿 Prompt → RAG → Fine-tuning 逐级验证，尚未与更轻的方法完成对比时不急于训练。",
+      explanation: "格式与指令问题走 Prompt/Schema，当前且需引用的事实走 RAG，权威状态与动作走 Tool/API，确定性规则写成代码，基础能力不足则换模型；只有剩余稳定行为缺口才进入微调。",
+      decision: "按失败类型分流，不把 Prompt → RAG → Fine-tuning 误解成线性升级阶梯。",
     },
     {
       zh: "全参与参数高效微调是不同投资级别",
       en: "Full and Parameter-Efficient Tuning Differ in Scope",
-      explanation: "全参微调更新全部权重，资源与回归范围更大；LoRA 只训练低秩适配器，QLoRA 再量化冻结底座以降低显存需求。",
-      decision: "企业行为定制默认从 LoRA/QLoRA 起步，验收不达标再证明升级全参的必要性。",
+      explanation: "参数高效微调（PEFT）是一类只训练少量附加参数的方法；LoRA 是其中一种，QLoRA 在量化且冻结的底座上训练 LoRA。全参微调更新范围、资源与回归面更大。",
+      decision: "开放权重且运行时兼容时，可把 LoRA/QLoRA 作为参数高效候选；托管能力或全参路线仍按数据边界、目标和支持矩阵决定。",
     },
     {
       zh: "数据质量先于训练代码",
@@ -861,8 +861,8 @@ export const fineTuning = {
     {
       question: "LoRA、QLoRA 还是全参？",
       signal: "资源有限、多任务共存、需要快速回滚，或深度能力迁移需求不同。",
-      recommendation: "LoRA 作为稳妥起点；显存受限时 QLoRA；只有明确证明参数高效路线达不到目标时再评估全参。",
-      boundary: "方法名称不保证效果，目标模块、数据、序列长度和评估决定实际资源与质量。",
+      recommendation: "开放权重、运行时兼容且需要参数高效适配时评估 LoRA；训练显存受限时再比较 QLoRA；只有证据证明更轻路线达不到目标时才评估全参。",
+      boundary: "PEFT 与 LoRA 不是同义词；方法名称也不保证质量、推理成本或跨底座兼容。",
     },
     {
       question: "客户数据够不够？",
@@ -883,9 +883,9 @@ export const fineTuning = {
       boundary: "托管产品支持的模型、方法、地域和产物所有权会变化，必须查当期官方条款。",
     },
   ],
-  deepDiveTitle: "从训练成功走向可隔离、可回滚的微调服务",
+  deepDiveTitle: "从理赔初审的稳定行为缺口走向可回滚微调",
   deepDiveLead:
-    "微调项目的后半程不是导出一个 Adapter 就结束，而是决定它如何与基础模型配对、如何服务多个租户，以及离线提升进入目标运行时后是否仍然成立。",
+    "在理赔初审案例中，保单事实与证据继续由 RAG 提供，案件状态和批准由应用控制。只有字段分类、缺件表达或说明结构在轻量路线后仍稳定漂移，才建立训练数据合同；离线提升还必须在完整运行元组、真实端点与人工初审基线下成立。",
   deepDives: [
     {
       kind: "matrix",
@@ -893,7 +893,7 @@ export const fineTuning = {
       title: "微调制品进入生产时的部署权衡",
       intro:
         "LoRA 等参数高效方法把任务增量与底座分开保存，但生产系统仍要在隔离、利用率、切换速度和平台约束之间选择服务形态。",
-      sourceIds: ["lora-2021", "qlora-2023", "vllm-2023", "nist-genai-profile"],
+      sourceIds: ["lora-2021", "qlora-2023", "hf-trl-peft", "nist-genai-profile"],
       columnLabels: {
         name: "服务形态",
         mechanism: "运行方式",
@@ -970,7 +970,7 @@ export const fineTuning = {
       ],
     },
   ],
-  criticalBoundary: "微调把模式写入模型或 Adapter，因此更新、撤回和归因都比 Prompt/RAG 更重。不要用微调替代实时知识库、业务数据库、权限系统或确定性规则。",
+  criticalBoundary: "微调把模式写入模型或 Adapter，因此更新、撤回和归因都比 Prompt/RAG 更重。它不能替代实时知识、业务数据库、确定性规则或工具执行权限；数据删除与模型影响处置也必须按客户政策另行验证。",
   cloudHooks: [
     {
       stage: "数据治理",
@@ -992,12 +992,12 @@ export const fineTuning = {
     },
     {
       stage: "部署与迭代",
-      services: "托管端点、vLLM 多 LoRA、灰度、Tracing、在线评估与坏案例回流",
-      value: "以较低复制成本服务多个定制任务，并持续验证质量和安全。",
+      services: "托管端点、兼容的多 Adapter 推理运行时、灰度、Tracing、在线评估与已裁决坏案例回流",
+      value: "按目标运行时选择独立、共享或合并部署，并持续验证隔离、质量、安全和单位合格结果成本。",
       discover: "流量隔离、SLA、回滚、通用回归与反馈处理由谁负责？",
     },
   ],
-  relatedSlugs: ["prompt-engineering", "rag", "llm-training", "evaluation", "llm-inference", "ai-infra-platform"],
+  relatedSlugs: ["prompt-engineering", "rag", "model-landscape", "data-engineering", "llm-training", "evaluation", "security", "ai-ops", "llm-inference", "ai-infra-platform", "solution-patterns"],
   qa: [
     {
       q: "什么时候应先修知识供给，而不是启动微调？",
@@ -1013,7 +1013,7 @@ export const fineTuning = {
     },
     {
       q: "LoRA、QLoRA 和全参数微调应该怎样选择？",
-      a: "企业行为定制通常先用 LoRA；显存受限时评估 QLoRA；只有参数高效路线达不到明确目标，且资源和回归能力足够时，才考虑全参数微调。",
+      a: "不存在通用默认方法。开放权重、运行时兼容且目标适合参数高效适配时评估 LoRA；训练显存受限时比较 QLoRA；只有更轻路线达不到明确目标，且资源和回归能力足够时，才评估全参数微调。",
       depth: "LoRA 冻结基础权重并训练低秩 Adapter，便于多任务存储、切换和回滚；QLoRA 再量化冻结底座以降低训练显存；全参数路线可调整全部权重，但训练、制品、灾难性遗忘和运维成本更高。三种方法必须在相同基座、数据和评估集上比较目标质量、通用回归、训练资源、推理开销和回滚难度，不能根据方法名称预设结果。",
       ask: "追问客户：目标是格式、风格、窄任务还是更深的能力迁移？需要维护多少任务版本，现有 GPU 和服务运行时支持什么？",
       tag: "方法选型",
