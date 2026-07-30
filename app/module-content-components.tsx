@@ -129,9 +129,10 @@ export type DeepDiveBlock = {
   };
 };
 
-export function ModuleUpdatedAt({ value }: { value?: string }) {
-  const label = formatModuleUpdatedAt(value);
-  if (!label || !value) return null;
+export function ModuleUpdatedAt({ value, locale = "zh-CN" }: { value?: string; locale?: "zh-CN" | "en" }) {
+  const canonicalLabel = formatModuleUpdatedAt(value);
+  if (!canonicalLabel || !value) return null;
+  const label = locale === "en" ? `Last updated ${value}` : canonicalLabel;
 
   return <span className="moduleUpdatedAt"> · <time dateTime={value}>{label}</time></span>;
 }

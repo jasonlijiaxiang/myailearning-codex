@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:a4a3ba7010c0ec5a5ebc940f2bc0d9d2be04a00861604b6869cb2bf6c6e368d0",
-    "enContentHash": "sha256:c434b296672d93c1ff8cce020b37ec00a2da5da4f178dfbb286773f76a225992",
+    "zhContentHash": "sha256:36466afea1a682094fabae4745cbdc7695de49ee274afed13703f9c3bafc711d",
+    "enContentHash": "sha256:e8b7bcf725262a54ddf52daa9cb8f56f1ad2d35820d87842a29941c1df966614",
     "termIds": [
       "ai-application-engineering",
       "ai-ops",

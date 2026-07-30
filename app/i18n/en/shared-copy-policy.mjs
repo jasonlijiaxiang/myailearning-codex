@@ -18,7 +18,7 @@ export const englishCopyOwners = Object.freeze({
     "fine-tuning": "fine-tuning",
     finops: "ai-infra-platform",
     generation: "llm",
-    "golden-set": "ai-ops",
+    "golden-set": "evaluation",
     "governance-evidence": "ai-governance",
     grounding: "rag",
     hitl: "evaluation",
@@ -44,6 +44,7 @@ export const englishCopyOwners = Object.freeze({
   }),
   sources: Object.freeze({
     "a2a-concepts": "ai-agent",
+    "anthropic-agent-evals": "ai-agent",
     "anthropic-effective-agents": "prompt-engineering",
     "anthropic-models": "model-landscape",
     "anthropic-tool-search": "prompt-engineering",

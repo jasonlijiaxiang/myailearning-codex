@@ -111,6 +111,18 @@
       "status": "watch"
     },
     {
+      "id": "multimodal.c2pa-specification-2-4",
+      "claim": "截至 2026-07-30，C2PA 官方规范目录列出 2.4 技术规范，并保留此前版本入口。",
+      "scope": "仅记录规范版本状态；C2PA 验证声明、签名与资产绑定，不证明内容真实、版权成立、身份正确或已经合规。实现仍需固定规范与验证器版本。",
+      "sourceIds": ["c2pa-2-4"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-07-30",
+      "reviewBy": "2026-10-28",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
       "id": "rag.azure-query-rewrite-preview",
       "claim": "截至 2026-07-29，Azure AI Search 的生成式 Query Rewrite 仍为 Preview：它保留原查询并可生成替代查询，但官方不提供 Preview SLA 且不建议用于生产工作负载。",
       "scope": "只描述 Azure AI Search、Semantic Ranker、支持区域与 Preview API 的当前能力；改写可能遗漏唯一标识或产品代码，不证明召回或最终回答必然提升。",

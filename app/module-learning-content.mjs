@@ -42,14 +42,15 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   multimodal: {
-    outcomes: ["理解视觉、语音与文本如何被编码和对齐", "在原生多模态与专用处理管线之间选型", "建立可回跳的多模态证据链", "用分层指标定位感知、融合与生成故障"],
+    outcomes: ["从业务证据缺口判断是否需要多模态", "用客户困难切片比较专用、原生与混合路线", "让观察与结论回跳到页面、区域、时间段或说话人", "在证据不足时安全降级，并把 RAG、Agent、安全、评估与运行责任交给正确模块"],
     route: [
-      { title: "先分理解与生成", learn: "区分识别、解析、问答、合成和实时对话的输入输出契约。", checkpoint: "能说明任务需要哪一种模态能力，而不是泛称多模态。" },
-      { title: "再理解信息如何丢失", learn: "沿采集、编码、对齐、上下文组装和生成追踪错误。", checkpoint: "能把错误定位到具体层，而不是只更换模型。" },
-      { title: "最后设计证据与运营", learn: "保留页码、区域、时间戳、说话人和原始资产版本。", checkpoint: "回答、审核和修正都能回到原始证据。" },
+      { title: "先定义任务与证据", learn: "写清业务终态、不可接受漏检和纯文本基线会丢失的布局、图像、声音或时序信息。", checkpoint: "能说明为什么需要某种模态，而不是泛称多模态。" },
+      { title: "再建立采集与失真地图", learn: "沿采集、解析、表示、对齐、时序和推断定位信息损失。", checkpoint: "能把错误定位到具体层，并为不可读输入设置质量门。" },
+      { title: "比较路线而非套公式", learn: "在同一客户任务和门槛下比较专用、原生与混合路线。", checkpoint: "路线选择同时展示任务成功、严重失败、证据坐标、P95、成本和人工复核。" },
+      { title: "最后设计证据与交接", learn: "保留原始坐标，证据不足时降级；只在需要知识或动作时接入 RAG 或 Agent。", checkpoint: "回答、审核和修正能回到原始证据，模型不能自行扩大权限。" },
     ],
     labs: [
-      { title: "比较原生模型与解析管线", scenario: "一批 PDF 同时包含正文、表格、扫描页和签章，客户希望可追溯问答。", tasks: ["建立版式、语言和扫描质量分层样本", "比较原生视觉问答与 OCR/版面解析后的结构完整性", "记录页码、区域和表格单元格级证据"], deliverable: "两条路线的质量—成本—可追溯性对比", acceptance: "结论覆盖最难文档类型，且每个答案可回到原始页和区域。", sourceIds: ["docling-report", "pp-ocr-2020", "colpali-2025"] },
+      { title: "设计一条可核验的现场巡检链", scenario: "设备巡检同时包含照片、铭牌、短视频、语音说明和表单，系统要给出异常结论并引用原始证据。", tasks: ["定义质量门、证据坐标和不可接受漏检", "比较 OCR/文档解析、原生 VLM 与混合路线", "把带坐标观察交给可选 RAG，并为创建工单设置独立 Agent 授权"], deliverable: "巡检证据链、路线矩阵与降级图", acceptance: "每个结论可回跳；路线来自客户困难切片，RAG、Agent 和人工责任没有混入模型能力。", sourceIds: ["docling-report", "pp-ocrv5-2026", "longvideobench-2024", "nist-genai-profile"] },
       { title: "拆解实时语音体验", scenario: "客服语音助手平均延迟可接受，但用户仍频繁打断或重复问题。", tasks: ["分解端点检测、识别、推理、合成和网络延迟", "加入打断、噪声、口音和沉默场景", "分别记录任务完成率和轮次修复成本"], deliverable: "端到端时延瀑布图与体验故障清单", acceptance: "能区分模型慢、管线慢和交互策略错误，并给出对应修复责任。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"] },
     ],
   },
@@ -79,15 +80,16 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   evaluation: {
-    outcomes: ["区分模型、组件与业务结果三层评估", "组合规则、模型裁判与人工复核", "建设可分层的黄金集和失败分类", "把离线门禁与在线巡检连接成闭环"],
+    outcomes: ["用对象 × 生命周期二维地图定位每项证据", "把决定、目标量、完整候选版本和行动规则写成评估契约", "组合代码、校准后的 Judge 与人工裁决", "报告关键切片、不确定性与硬门，并把风险批准和发布执行交给正确 Owner"],
     route: [
       { title: "先定义决策而不是分数", learn: "明确评估要支持选型、发布、诊断还是运营。", checkpoint: "每个指标都能对应一个可执行决策。" },
-      { title: "再设计样本与量尺", learn: "按场景、风险、难度和失败模式分层，校准规则、Judge 与人工。", checkpoint: "能报告分层结果、不确定性和裁判偏差。" },
-      { title: "最后接入发布与反馈", learn: "把回归、灰度、线上失败和修复样本写回评估资产。", checkpoint: "评估集随真实失败演进但不会被噪声污染。" },
+      { title: "冻结对象、样本与量尺", learn: "记录完整版本元组，按场景、风险、难度和失败模式分层，校准代码、Judge 与人工。", checkpoint: "能重放被测候选，并说明结果描述固定题集还是外推相似任务。" },
+      { title: "重复运行并形成决定", learn: "报告逐样本、关键切片、严重失败、样本量与不确定性，先执行不可补偿硬门。", checkpoint: "Go、Hold、No-Go 或补做建议不依赖最好一次或单一平均分。" },
+      { title: "最后治理反馈与责任交接", learn: "AI Ops 采集生产证据；确认失败经脱敏、去重和裁决后进入下一版回归集。", checkpoint: "能区分评估建议、发布执行、风险例外和机制修复。" },
     ],
     labs: [
-      { title: "从二十条真实问题建立黄金集", scenario: "团队只有零散用户反馈，没有系统评估数据。", tasks: ["按意图、风险和难度分层", "为每条样本写可接受答案与不可接受行为", "选择规则、Judge 或人工并做小样本校准"], deliverable: "带版本、标签和评分说明的最小黄金集", acceptance: "不同评审者对关键失败有一致判断，且每类业务风险都有代表样本。", sourceIds: ["nist-genai-profile", "ragas"] },
-      { title: "定位一次总分下降", scenario: "新版本总体得分下降，但部分用户反馈体验变好。", tasks: ["分解样本、模型、Prompt、检索、工具和评分器版本", "检查分层结果与量尺漂移", "确定回滚、修复或接受变化的证据"], deliverable: "归因树与发布决策记录", acceptance: "结论能区分系统变化和评估变化，不以单一平均分替代分析。", sourceIds: ["opentelemetry-genai-semconv", "nist-genai-profile"] },
+      { title: "为退款 Agent 写一份评估契约", scenario: "候选 Agent 会解释政策、调用订单工具并提交退款；团队需要决定是否交给 AI Ops 做有限放量。", tasks: ["冻结 Agent、模型、Prompt、工具、策略、环境和预算版本", "按正常、边界、越权、工具故障和高价值退款分层任务", "用代码验证权限与业务终态，用 Judge 评开放说明并以人工样本校准", "重复运行并预先定义硬门与 Go/Hold/No-Go 规则"], deliverable: "版本化评估契约、逐切片结果、不确定性与发布建议", acceptance: "错误退款和越权不能被平均分抵消；Evaluation 不执行灰度、回滚或风险例外。", sourceIds: ["anthropic-agent-evals", "llm-as-judge-2023", "nist-ai-800-3"] },
+      { title: "定位一次总分下降", scenario: "候选版本总体得分下降，但部分高价值任务和用户反馈变好。", tasks: ["区分模型、Prompt、检索、工具、样本与评分器版本变化", "检查对象 × 生命周期位置、关键切片与量尺漂移", "判断差异是否超过自然波动，并列出未决外推边界"], deliverable: "归因树、切片报告与补做/接受/拒绝建议", acceptance: "结论能区分系统变化和评估变化，不用 OpenTelemetry 或单一平均分冒充发布门。", sourceIds: ["nist-ai-800-3", "nist-ai-800-4", "opentelemetry-genai-semconv"] },
     ],
   },
   security: {

@@ -34,18 +34,18 @@
     },
     {
       "id": "batch-02-multimodal-evaluation",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "multimodal",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "现场巡检主线、中英文独立内容、证据关系与责任边界终审通过"
         },
         {
           "slug": "evaluation",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "退款 Agent 评估契约、中英文独立内容、二维地图与证据生命周期终审通过"
         }
       ]
     },

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ModuleReadingNav, ReadingProgress, type ReadingSection } from "../fieldbook-interactions";
 import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
 import { getModuleBySlug } from "../knowledge-map.mjs";
-import { ModuleHeroMetrics } from "../module-content-components";
+import { ModuleHeroMetrics, ModuleUpdatedAt } from "../module-content-components";
 import { DeepDiveRelationView } from "../deep-dive-relation-view";
 import { requireModuleExtensionView } from "../module-extension-views.mjs";
 import { ModuleKnowledgeExplorer, type ExtensionView } from "../module-visual-explorers";
@@ -418,7 +418,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
         </div>
       </div>
 
-      <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{module.title}</p><a href="#top">Back to top ↑</a></footer>
+      <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{module.title}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} locale="en" /></p><a href="#top">Back to top ↑</a></footer>
     </main>
   );
 }

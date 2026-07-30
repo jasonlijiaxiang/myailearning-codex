@@ -82,7 +82,8 @@ const explicitTermRelationInputs = [
 
   // 评估、训练、平台与交付
   Object.freeze({ from: "golden-set", to: "evaluation", type: "component", explanation: "黄金评估集提供经确认的代表性样本，用于稳定回归比较。" }),
-  Object.freeze({ from: "evaluation-layers", to: "evaluation", type: "component", explanation: "模型、组件和业务结果三层评估共同解释局部质量与端到端成效。" }),
+  Object.freeze({ from: "evaluation-layers", to: "evaluation", type: "component", explanation: "被测对象层级与生命周期证据共同解释局部能力、端到端行为和生产成效。" }),
+  Object.freeze({ from: "evaluation-contract", to: "evaluation", type: "component", explanation: "评估契约固定被测版本、样本、评分器、阈值与后续动作，使结果可以重放并进入决策。" }),
   Object.freeze({ from: "llm-as-judge", to: "evaluation", type: "component", explanation: "模型裁判扩展语义评分规模，但需要人工校准、偏差测试和明确量表。" }),
   Object.freeze({ from: "configuration-bundle", to: "ai-application-engineering", type: "component", explanation: "成套配置保存模型、Prompt、数据、工具、编排和策略之间的兼容关系。" }),
   Object.freeze({ from: "ai-release-manifest", to: "ai-application-engineering", type: "component", explanation: "AI 发布清单把一次应用版本及其评估、审批和运行配置连接成可重放记录。" }),

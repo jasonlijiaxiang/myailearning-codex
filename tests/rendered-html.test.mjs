@@ -170,6 +170,13 @@ test("module updates and newly added questions use distinct, non-repeating date 
     if (publication.updatedAt) {
       assert.match(html, /<footer\b[^>]*>[\s\S]*?class="moduleUpdatedAt"[\s\S]*?<\/footer>/, `${publication.slug} 的模块最近更新时间必须位于页尾`);
     }
+
+    const englishHtml = await renderHtml(`/en${publication.path}`);
+    const englishModuleDateCount = (englishHtml.match(/class="moduleUpdatedAt"/g) ?? []).length;
+    assert.equal(englishModuleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} 的英文模块最近更新时间必须只显示一次`);
+    if (publication.updatedAt) {
+      assert.match(englishHtml, new RegExp(`<footer\\b[^>]*>[\\s\\S]*?Last updated ${publication.updatedAt}[\\s\\S]*?<\\/footer>`), `${publication.slug} 的英文模块最近更新时间必须位于页尾`);
+    }
   }
 
   assert.ok(postPolicyModuleCount > 0, "日期策略生效后引入的新模块必须进入初始问答日期检查");
@@ -626,7 +633,7 @@ test("customer questions follow module decision coverage instead of a shared num
   const finalQuestionCounts = auditedSlugs.map((slug) => requireModuleContent(slug).qa.length);
 
   assert.deepEqual([...new Set(addedQuestionCounts)].sort((a, b) => a - b), [3, 4, 5, 6], "模块补充问题不应来自统一的固定配额");
-  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [10, 11, 12, 13, 14, 15, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
+  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [10, 11, 12, 14, 15, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
   assert.equal(finalQuestionCounts.filter((count) => count === 8).length, 0, "已审计模块不得保留统一 8 题的机械结果");
 
   for (const slug of auditedSlugs) {

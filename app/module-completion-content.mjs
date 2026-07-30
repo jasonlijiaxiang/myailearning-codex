@@ -11,7 +11,7 @@ export const completionCurriculum = Object.freeze({
     { title: "评估矩阵与模型发布", en: "Evaluation & Release", explanation: "模型候选要在相同任务、输入分布和通过条件下比较，并把模型标识、Prompt、工具 Schema、数据版本和结果绑定。模型升级后先离线回归，再按任务切片灰度。", decision: "把选型结果转成可复现发布证据，不停留在一次榜单或 Demo。", boundary: "同名模型、默认别名或厂商自动升级可能改变行为；历史结果不能自动代表当前版本。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
   ]),
   multimodal: freezeItems([
-    { title: "证据坐标与分层评估", en: "Evidence Coordinates", explanation: "文档、图像、音频和视频的错误来源不同，应分别检查采集、解析、定位、跨模态理解和最终主张。输出需要保留页码、区域、时间段或说话人等原始坐标。", decision: "用最难模态切片和证据回看能力决定是否可进入生产。", boundary: "统一多模态模型能简化接口，但不会自动恢复丢失的版面、时间和权限信息。", sourceIds: ["docling-report", "nist-genai-profile"] },
+    { title: "长视频的候选检索与时序证据", en: "Long-video Temporal Evidence", explanation: "长视频不是多张无序图片。根据问题类型，系统可能需要镜头或短暂事件的候选时间窗、跨时间关系和原始时间坐标；只有当音轨或字幕存在且决定结论时才需要对齐。LongVideoBench 也专门检验细粒度、交错的视频—语言证据。", decision: "按任务所需事件设计抽帧和时间窗，在客户长视频切片上比较遗漏、跨段推理、P95 与回看成本。", boundary: "Benchmark 不规定客户分段架构，也不支持帧越多效果必然越好。", sourceIds: ["longvideobench-2024", "nist-genai-profile"] },
   ]),
   mcp: freezeItems([
     { title: "错误、进度与可观测", en: "Failure Semantics", explanation: "生产 MCP Server 不只返回成功结果，还要让 Host 区分参数错误、权限拒绝、暂时故障、超时和部分结果，并关联请求、工具、主体与下游业务状态。", decision: "在复用前验证错误是否可处理、重试是否安全、日志是否足以追责。", boundary: "协议层错误不能替代业务事务状态；网络超时也不能证明动作未发生。", sourceIds: ["mcp-architecture", "opentelemetry-genai-semconv"] },
@@ -21,8 +21,8 @@ export const completionCurriculum = Object.freeze({
     { title: "采用边界与迁移", en: "Adoption Boundary", explanation: "A2A 适合独立 Agent 之间需要能力发现和持久任务协作的场景。固定集成、单一组织内编排或简单事件通知，通常用 API、队列和工作流更直接。", decision: "只有跨边界协作收益能够覆盖协议、身份和运营成本时采用。", boundary: "多 Agent 数量增加不会自动提高任务质量，反而会放大协调、成本与故障面。", sourceIds: ["a2a-concepts", "anthropic-effective-agents"] },
   ]),
   evaluation: freezeItems([
-    { title: "评估集版本、污染与裁决", en: "Dataset Governance", explanation: "黄金集要记录题目来源、适用任务、裁决人、版本和难度切片，并与训练、调参和演示样本隔离。争议样本需要保留裁决理由和更新历史。", decision: "把评估集当作受治理资产，避免调参过程把考卷变成训练材料。", boundary: "样本量增加不能修复错误标签、分布偏差或评审口径不一致。", sourceIds: ["nist-genai-profile", "ragas"] },
-    { title: "线上任务结果与回流", en: "Online Evaluation", explanation: "离线评估提供可重复比较，线上灰度负责暴露真实分布、工具故障和用户行为。只有经过脱敏、复核和责任确认的新失败，才进入下一轮回归集。", decision: "把业务终态、质量、风险、时延和成本一起用于发布后判断。", boundary: "点赞、停留时间或模型自评不能单独证明任务成功，也不能未经裁决直接成为标签。", sourceIds: ["opentelemetry-genai-semconv", "nist-genai-profile"] },
+    { title: "评估契约与可重放结果", en: "Evaluation Contract", explanation: "契约绑定决策、完整候选版本、任务人群、样本与切片、评分器、环境、预算、重复试验、基线和行动规则，使未参与开发的人也能理解和重放结果。", decision: "在运行前冻结契约，在结果中保存逐样本失败、关键切片、评分器版本和未决边界。", boundary: "模型名、代码提交或单一总分任何一项都不是完整评估证据。", sourceIds: ["nist-ai-800-3", "llm-as-judge-2023"] },
+    { title: "重复试验、不确定性与硬门", en: "Uncertainty & Hard Gates", explanation: "模型和 Judge 都可能波动，总体均值还会掩盖少数语言、长输入、高风险任务和严重单次失败。候选比较要固定可控变量、重复运行并报告分布、样本量和适合目标量的不确定性。", decision: "先让不可补偿错误独立阻断，再比较通过候选的质量、时延、成本和单位成功效率。", boundary: "最好一次、未经解释的平均值或统计区间都不能替客户设定风险容忍度。", sourceIds: ["nist-ai-800-3", "nist-genai-profile"] },
   ]),
   "ai-gateway": freezeItems([
     { title: "策略变更与证据化发布", en: "Policy Release", explanation: "路由、限流、护栏、缓存和日志策略会改变生产行为，应绑定同一策略版本，经过离线回放、影子判定、分段灰度和可验证回滚。", decision: "让一次请求可以还原当时命中的完整策略，而不是只看到当前配置。", boundary: "回滚网关配置不会撤销已经发生的外部动作，业务补偿仍由应用负责。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
@@ -60,11 +60,11 @@ export const completionLearning = Object.freeze({
   }),
   multimodal: Object.freeze({
     route: freezeItems([
-      { title: "按模态建立困难切片", learn: "分开检查扫描、表格、低清图、口音、噪声、长视频和跨模态引用。", checkpoint: "能说明每类错误发生在采集、解析、对齐还是推断。" },
-      { title: "验证证据回看", learn: "要求输出回到页面、区域、时间段或说话人，并设计人工复核。", checkpoint: "高影响结论不依赖模型的一句自我解释。" },
+      { title: "按信息损失建立困难切片", learn: "分开检查模糊、扫描、表格、低清图、口音、噪声、短暂视频事件和跨模态关系。", checkpoint: "能说明错误发生在采集、解析、对齐、时序还是推断。" },
+      { title: "验证证据回看与安全降级", learn: "要求结论回到页面、区域、时间段或说话人；证据不足时重传、专用解析或人工复核。", checkpoint: "高影响结论不依赖模型自述，也不会在看不清时继续猜。" },
     ]),
     labs: freezeLabs([
-      { title: "建立多模态错误分层报告", scenario: "同一批合同含文字 PDF、扫描页、表格和图片附件。", tasks: ["为四类输入定义原始证据坐标", "分别记录解析、定位、理解和回答错误", "比较统一模型与专用解析管线的失败分布"], deliverable: "多模态错误分层与路线建议", acceptance: "每个结论都能回看原始证据，并说明不可外推范围。", sourceIds: ["docling-report", "pp-ocr-2020", "nist-genai-profile"] },
+      { title: "建立现场巡检错误分层报告", scenario: "工程师上传设备照片、铭牌、短视频、语音说明和巡检表，系统要生成异常结论与维修建议。", tasks: ["为每种媒体定义质量门和原始证据坐标", "比较专用、原生与混合路线的解析、对齐、时序和结论失败", "为证据不足、成本超限和高风险结论设计降级"], deliverable: "巡检证据链、错误分层与路线建议", acceptance: "每条结论可回看原始证据；路线建议来自困难切片，并明确 RAG、Agent 与人工的责任交接。", sourceIds: ["docling-report", "pp-ocrv5-2026", "longvideobench-2024", "nist-genai-profile"] },
     ]),
   }),
   mcp: Object.freeze({
@@ -87,11 +87,11 @@ export const completionLearning = Object.freeze({
   }),
   evaluation: Object.freeze({
     route: freezeItems([
-      { title: "治理考卷与裁决", learn: "记录样本来源、切片、评分规则、争议和版本，隔离训练与评估。", checkpoint: "评估结果不依赖不可追溯的题目和标签。" },
-      { title: "连接线上业务结果", learn: "用灰度、业务终态和已复核失败补充离线评估。", checkpoint: "能区分离线通过与生产真实有效。" },
+      { title: "冻结完整评估契约", learn: "记录决定、候选版本、目标人群、样本切片、评分器、重复条件、基线和行动规则。", checkpoint: "未参与开发的人能理解结果测了什么、适用于谁和怎样重放。" },
+      { title: "报告不确定性并移交责任", learn: "展示逐样本、关键切片、严重失败和未决边界，再把建议交给 AI Ops、Governance 与模块 Owner。", checkpoint: "能区分评估建议、风险批准和发布执行三类责任。" },
     ]),
     labs: freezeLabs([
-      { title: "校准一次 LLM Judge", scenario: "开放问答没有唯一标准答案，团队准备使用模型评审。", tasks: ["把质量拆成可观察维度并写评分量表", "对人工双评样本交换答案顺序并做长度扰动", "跨模型家族抽检一致性，定义适用范围与争议升级"], deliverable: "评审量表、偏差切片与校准报告", acceptance: "确定性检查、模型评审和人工裁决各有边界，位置与冗长偏差有实测记录。", sourceIds: ["llm-as-judge-2023", "ragas", "nist-genai-profile"] },
+      { title: "校准一次退款 Agent 的评估契约", scenario: "候选 Agent 会解释退款政策、调用订单工具并提交退款，开放说明没有唯一措辞，但业务终态和权限可验证。", tasks: ["冻结 Agent、模型、Prompt、工具、策略、环境和预算版本", "用代码验证权限与退款终态，用 Judge 评开放解释，并以人工样本校准", "重复运行高价值、越权、边界和工具故障切片，写出硬门与不确定性"], deliverable: "评估契约、量表、逐切片结果与 Go/Hold/No-Go 建议", acceptance: "代码、Judge 与人工边界清楚；结果不以平均分覆盖越权或错误退款，且不替代 AI Ops 的灰度与回滚。", sourceIds: ["anthropic-agent-evals", "llm-as-judge-2023", "nist-ai-800-3"] },
     ]),
   }),
   "ai-gateway": Object.freeze({
@@ -166,7 +166,6 @@ export const completionQa = Object.freeze({
   ]),
   multimodal: freezeQa([
     { q: "文档 OCR 字符准确率很高，为什么表格问答仍可能错误？", a: "因为字符识别正确不等于版面、行列、表头、单位和阅读顺序恢复正确。", depth: "表格问题要分开验收文字识别、结构恢复、单元格关系、跨页延续、证据定位和最终计算。客户样本中常见的合并单元格、扫描歪斜、脚注和多级表头应单独切片；高风险数字还要回到原区域复核。", ask: "追问客户：最复杂的表格有哪些结构？错误的行列关系会造成什么业务后果？", tag: "结构恢复", basis: "文档解析 + 分层评估", evidence: [{ sourceId: "docling-report", supports: "支持文档处理需要恢复版面、阅读顺序和表格结构，而不只是纯文本。" }, { sourceId: "pp-ocr-2020", supports: "支持 OCR 系统包含检测、方向与识别等独立阶段；其结果不自动代表表格语义正确。" }] },
-    { q: "什么时候应该用原生多模态模型，什么时候保留专用解析管线？", a: "开放理解和复杂图文关系可优先验证原生模型；稳定抽取、坐标、批量处理和强审计通常仍需要专用管线或组合方案。", depth: "对同一任务比较端到端模型和解析后模型的质量、失败可定位性、延迟、成本、版本稳定和人工复核。原生模型减少组件但可能隐藏中间错误，专用管线更可控却会丢失视觉关系；实际方案常按文档类型路由。", ask: "追问客户：结果必须回到原始坐标吗？输入类型是否稳定，谁负责修复解析失败？", tag: "路线组合", basis: "多模态表示 + 生产可审计性", evidence: [{ sourceId: "colpali-2025", supports: "支持直接使用视觉语言模型表示视觉丰富文档的检索路线。" }, { sourceId: "docling-report", supports: "支持显式恢复文档结构的解析路线。" }] },
   ]),
   mcp: freezeQa([
     { q: "MCP 工具返回成功，为什么业务动作仍可能失败？", a: "协议调用成功只说明交换完成；业务系统还可能拒绝授权、校验失败、部分提交或在超时后处于未知状态。", depth: "Server 应把协议错误与业务结果分开，返回可处理的错误语义和稳定关联 ID。写入工具还要使用幂等键、权威状态查询和必要的补偿流程；Host 不应把一段成功文本当作订单、付款或资源变更已经完成。", ask: "追问客户：最终由哪个系统确认动作完成？网络超时后怎样查询、重试或补偿？", tag: "错误语义", basis: "协议边界 + 业务状态", evidence: [{ sourceId: "mcp-architecture", supports: "支持 MCP Host、Client 与 Server 的协议职责分离；最终业务语义由具体能力实现。" }, { sourceId: "opentelemetry-genai-semconv", supports: "支持关联 Agent、工具和模型调用，为跨层归因提供基础。" }] },
@@ -177,8 +176,7 @@ export const completionQa = Object.freeze({
     { q: "多 Agent 架构应该由一个编排者控制，还是允许点对点协作？", a: "固定业务责任和高风险流程优先显式编排；只有协作关系确需动态发现时才增加点对点自治。", depth: "中心编排便于统一预算、身份、状态和审计，但可能成为扩展瓶颈；点对点更灵活，却增加环路、重复委托、权限传播和成本失控。可以用业务任务所有者保持最终控制，同时让局部 Agent 通过 A2A 协作。", ask: "追问客户：谁对最终结果负责？协作拓扑变化时，预算、身份和停止条件由谁执行？", tag: "协作拓扑", basis: "复杂度递增 + 风险管理", evidence: [{ sourceId: "anthropic-effective-agents", supports: "支持从简单可组合模式开始，仅在任务需要时增加多 Agent 复杂度。" }, { sourceId: "a2a-concepts", supports: "支持独立 Agent 通过任务与产物语义进行协作。" }] },
   ]),
   evaluation: freezeQa([
-    { q: "评估集可以持续增加线上失败样本吗？", a: "可以，但必须先脱敏、去重、裁决和版本化；未经审核的线上输出不能直接成为标准答案。", depth: "为每个候选样本记录来源、任务切片、失败类型、期望行为、裁决人和适用时间。高频相似问题合并，安全或少数群体风险单独保留。评估版本变化后，新旧模型需要在相同版本上比较。", ask: "追问客户：谁有权把线上样本加入考卷？争议答案怎样裁决和更新？", tag: "黄金集治理", basis: "评估数据治理 + 持续学习", evidence: [{ sourceId: "nist-genai-profile", supports: "支持记录测量方法、数据限制和持续出现的新风险。" }, { sourceId: "ragas", supports: "支持将 RAG 质量拆成不同评估维度，但不提供业务真值。" }] },
-    { q: "评估分数提升多少才值得发布？", a: "没有通用百分比；要看提升发生在哪些任务、是否越过业务门槛，以及是否带来关键退化、风险、时延或成本。", depth: "发布判断应按切片展示变化，优先检查零容忍错误和核心业务任务，再看总体收益。小幅平均提升可能来自关键高价值切片，也可能掩盖少数严重退化；同时报告置信区间、样本量和评审一致性。", ask: "追问客户：哪个任务门槛决定上线？哪些退化即使总体分数上升也不能接受？", tag: "发布门槛", basis: "风险分层 + 版本比较", evidence: [{ sourceId: "nist-genai-profile", supports: "支持依据组织风险容忍度和使用情境设定测量与管理标准。" }, { sourceId: "opentelemetry-genai-semconv", supports: "支持将线上版本和调用属性纳入可比较遥测。" }] },
+    { q: "评估集版本升级时，怎样接纳线上失败又保护盲留出集？", a: "让 AI Ops 只负责采集候选失败；Evaluation 再做脱敏、去重、裁决、切片和版本化，把确认案例加入下一版回归集而不是当前盲留出集。", depth: "每个候选样本记录来源、版本、任务切片、失败类型、期望行为、裁决人和适用时间。高频相似案例合并，高风险或少数群体案例独立保留；开发集、冻结回归集和盲留出集用途分开。升级后，新旧候选要在相同评估版本上比较，并说明新考卷改变了什么目标人群或失败覆盖。", ask: "追问客户：谁有权裁决线上样本？哪些案例进入开发、回归或留出，考卷换版后历史结果怎样比较？", tag: "黄金集治理", basis: "评估数据治理 + 污染控制", evidence: [{ sourceId: "nist-genai-profile", supports: "支持记录测量方法、数据限制和持续出现的新风险。" }, { sourceId: "nist-ai-800-4", supports: "支持部署后监测会产生需要治理的新证据，但不把生产信号自动定义为真值。" }] },
   ]),
   "ai-gateway": freezeQa([
     { q: "AI 网关的策略应该怎样安全上线？", a: "把路由、限流、重试、护栏、缓存和日志绑定为版本化策略包，先回放和影子判定，再按业务风险分段灰度。", depth: "离线回放比较新旧决策，不实际执行高风险动作；影子模式只记录拟议变化；灰度按租户、任务和风险分组，而不是只按流量百分比。超过质量、时延、风险或成本门槛时原子回滚，并保留受影响请求。", ask: "追问客户：哪些策略变化会改变业务结果？谁批准，怎样还原一次请求使用的策略版本？", tag: "策略发布", basis: "发布治理 + 可观测", evidence: [{ sourceId: "nist-genai-profile", supports: "支持在系统变更前后进行风险测量、监控和管理。" }, { sourceId: "opentelemetry-genai-semconv", supports: "支持用共同遥测字段关联生成式 AI 请求与版本属性。" }] },

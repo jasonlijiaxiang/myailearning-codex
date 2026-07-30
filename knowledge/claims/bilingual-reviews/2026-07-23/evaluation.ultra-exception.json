@@ -6,12 +6,13 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:e876e585d2bb6fb81a7083bcabd23cffebe89587c6bd1061bea7a4eaba560859",
-    "enContentHash": "sha256:3ee04f51d9fb5f69ce3fc79726edbbcdf992f2d73e312cac6a53d18876726bcd",
+    "zhContentHash": "sha256:70b0271cf44496ed2d3774899693fee09f70845f713061e976ddec13f18e56f1",
+    "enContentHash": "sha256:abf8b0bc30be5b84530d024890894a186f412e64e22ed945bc46ffde55971fa9",
     "termIds": [
       "ai-ops",
       "capability-matrix",
       "evaluation",
+      "evaluation-contract",
       "evaluation-layers",
       "golden-set",
       "governance-evidence",
@@ -26,14 +27,12 @@
     ],
     "sourceIds": [
       "anthropic-agent-evals",
-      "anthropic-effective-agents",
-      "harness-bench-2026",
       "llm-as-judge-2023",
-      "nist-agent-standards",
+      "nist-ai-800-3",
+      "nist-ai-800-4",
       "nist-genai-profile",
       "opentelemetry-genai-semconv",
-      "ragas",
-      "react-2023"
+      "ragas"
     ]
   },
   "stage": "ultra-exception",

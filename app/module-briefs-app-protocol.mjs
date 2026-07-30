@@ -365,11 +365,11 @@ export const solutionPatternsBrief = {
 export const multimodalBrief = {
   slug: "multimodal",
   definition:
-    "多模态 AI（Multimodal AI）让系统理解或生成文本之外的图像、文档、语音与视频，并把不同模态的信息用于同一业务任务。",
+    "多模态 AI（Multimodal AI）让图像、文档、语音与视频中的非文本证据，从采集、解析、对齐、推理到业务交付都保持可定位、可验证并可安全降级。",
   position:
-    "位于应用模式层，负责非文本信息的感知与内容生成；可为 RAG 提供可检索内容，也可为 Agent 提供环境感知和交互通道。",
+    "位于应用模式层，主责模态特有的采集质量、表示、对齐、证据坐标与降级；检索和引用归 RAG，行动授权与业务终态归 Agent 和业务系统，通用数据生命周期、评估方法、安全控制与运行发布分别由相邻模块负责。",
   presentation: "pipeline",
-  principleTitle: "先判断任务，再决定原生多模态还是专业管线",
+  principleTitle: "先保护业务证据，再决定模型与管线",
   principles: [
     {
       zh: "理解与生成分离",
@@ -399,9 +399,9 @@ export const multimodalBrief = {
       zh: "原生与管线互补",
       en: "Native vs Pipeline",
       explanation:
-        "原生多模态适合开放理解和跨模态推理；OCR/ASR→文本模型管线更容易审计、替换和优化固定任务。",
+        "原生模型、专用 OCR/ASR/文档解析与混合路线保留的信息和失败方式不同；路线优劣只能在客户任务、困难切片与端到端成本下比较。",
       decision:
-        "固定字段、强审计和成本敏感场景优先专业管线，复杂开放问题再使用原生模型或混合回退。",
+        "先比较专用、原生和混合路线的任务成功、证据坐标、时延、成本与人工复核，再按输入或风险路由。",
     },
     {
       zh: "输入契约与来源定位",
@@ -422,31 +422,31 @@ export const multimodalBrief = {
   ],
   decisions: [
     {
-      question: "这个任务真的需要多模态模型吗？",
+      question: "现场巡检为什么不能只把媒体转成一段文字？",
       signal:
-        "关键信息只存在于布局、图表、图像、声学特征或视频时序中，纯文本转写会丢失任务所需信息。",
+        "异常可能只存在于设备外观、铭牌版式、短暂动作、异响或画面与手册的对应关系中，纯文本转写会删除定位和时序。",
       recommendation:
-        "先定义文本方案无法解决的具体信息缺口，再引入对应模态能力。",
+        "先写明必须保留的业务证据与不可接受漏检，再为照片、视频、语音和表单分别定义采集与定位契约。",
       boundary:
-        "只是上传图片或附件，不代表需要原生多模态；固定 OCR 可能更便宜、更稳定。",
+        "上传了媒体不等于必须使用一个统一大模型；若文本基线已保留全部必要证据，多模态复杂度可能没有收益。",
     },
     {
       question: "选择原生多模态还是 OCR/ASR 管线？",
       signal:
-        "任务是固定抽取与审计，还是开放问答、跨区域关联和语义推理。",
+        "客户困难样本更依赖字符与结构、开放图文关系，还是两者同时存在；结果是否必须回到页码、区域或时间段。",
       recommendation:
-        "固定任务用专业解析管线，开放任务用原生模型；生产中常采用管线主干加原生模型处理例外。",
+        "在同一任务、输入和门槛下比较专用、原生与混合路线，再依据失败类型和风险路由，而不是按任务名称套公式。",
       boundary:
-        "原生模型能读取文档，不代表能稳定替代所有版面解析、表格抽取和字段校验。",
+        "论文 Benchmark 只形成候选假设；不能外推为某一路线在所有文档、语言、表格语义和生产成本上更优。",
     },
     {
-      question: "托管 API 还是自托管视觉语言模型？",
+      question: "什么时候才需要把 RAG 或 Agent 接进来？",
       signal:
-        "比较数据敏感度、规模、时延、定制需求、硬件利用率和团队推理运维能力。",
+        "巡检结论是否需要查手册、历史记录或库存，是否还要创建工单、订零件或改变设备状态。",
       recommendation:
-        "验证阶段优先托管 API；稳定高负载、数据边界或定制充分时再评估 GPU 自托管。",
+        "只读理解先停在可核验结论；需要外部知识时交给 RAG，需要产生副作用时才接入带独立授权和终态验证的 Agent。",
       boundary:
-        "自托管模型权重不等于获得完整文档解析、弹性、监控和安全能力。",
+        "多模态输入本身不要求 Agent、MCP 或 A2A；模型看到故障也不因此获得执行工具的权限。",
     },
     {
       question: "实时语音选择级联还是端到端语音模型？",
@@ -469,67 +469,67 @@ export const multimodalBrief = {
   ],
   deepDiveTitle: "从媒体输入到可核验业务事实",
   deepDiveLead:
-    "多模态系统真正困难的不是模型能否看见或听见，而是媒体信息在转码、解析、检索和生成过程中是否被完整保留，并能否回到原始区域或时间段复核。",
+    "以一次设备现场巡检为主线：工程师上传设备照片、铭牌、短视频、语音说明和巡检表，系统要生成可回跳原始证据的异常结论，而不是只证明模型能看图。",
   deepDives: [
     {
       kind: "sequence",
       eyebrow: "EVIDENCE-PRESERVING PIPELINE",
       title: "让非文本内容形成可回跳的证据链",
       intro:
-        "面向文档、图像、音频和视频建立统一资产身份，再为不同媒体选择不同处理路径，避免在第一步就丢失关键事实。",
+        "先冻结业务完成条件和不可接受漏检，再沿采集、路由、对齐、交付与降级保留每一步证据。",
       items: [
         {
-          name: "登记原始资产",
-          en: "Asset Registration",
+          name: "定义任务与证据契约",
+          en: "Task & Evidence Contract",
           mechanism:
-            "为对象建立稳定 ID、哈希、版本、来源、权限、保留期和媒体技术信息，派生内容始终指回原资产。",
+            "把“完成巡检”拆成要识别的状态、允许的推断、必须引用的原始证据和一次失败的业务后果。",
           decision:
-            "使用对象存储、元数据目录、KMS 和访问控制承载事实源；上传成功后先完成准入和安全扫描。",
+            "先用纯文本与人工现状作基线；只有布局、图像、声音或时序信息确实决定任务时才引入对应模态。",
           boundary:
-            "文件名和公开 URL 不是稳定来源标识。",
+            "模型支持某种输入格式不能证明它保留了任务所需证据。",
         },
         {
-          name: "按信息形态路由",
-          en: "Modality-aware Routing",
+          name: "采集与质量门",
+          en: "Capture & Quality Gate",
           mechanism:
-            "连续文本、扫描文字、表格、图表、自然图像、语音和视频时序需要不同解析与抽样策略。",
+            "为原始照片、音频、视频和文档登记稳定资产身份、来源、权限、质量与版本，检测模糊、截断、噪声、缺页和格式异常。",
           decision:
-            "用文档智能、OCR、ASR、关键帧和视觉模型组合处理，并保存页码、坐标、时间戳和处理版本。",
+            "不满足可处理门槛时要求重拍、重传或人工补录，不让不可读输入静默进入推理。",
           boundary:
-            "将所有文件统一转成纯文本会丢失布局、视觉关系和声音线索。",
+            "后续更大的模型不能恢复采集阶段没有记录的像素、声音或页面。",
         },
         {
-          name: "建立多路表示",
-          en: "Multiple Representations",
+          name: "按证据路由并对齐",
+          en: "Route & Align",
           mechanism:
-            "同一资产可同时保留结构化字段、文字转写、图像区域、Caption 和跨模态向量，以支持不同问题形态。",
+            "按字符与结构、视觉关系、语音内容和视频时序选择 OCR、ASR、文档解析、关键片段、原生 VLM 或混合路线。",
           decision:
-            "搜索和向量服务按任务选择表示并融合结果，先测每一路增量召回再决定是否保留。",
+            "在客户困难切片上比较任务成功和信息损失；把对象、区域、文字、说话人与时间窗口显式绑定。",
           boundary:
-            "增加表示会增加索引、同步和一致性成本，不应为技术完整性全部开启。",
+            "PP-OCRv5 等专用模型的论文结果与原生 VLM 的开放能力都不能替代客户场景验证。",
         },
         {
-          name: "证据定位与生成",
-          en: "Grounding & Generation",
+          name: "形成可核验结论",
+          en: "Grounded Conclusion",
           mechanism:
-            "模型回答时绑定具体页面区域、表格单元或音视频时间段，并保留转换前后的内容关系。",
+            "每条观察和结论绑定资产、页码、区域、时间段或说话人，并保留原始媒体、转换结果和模型版本之间的关系。",
           decision:
-            "生成端使用支持相应模态的模型；高风险事实同时呈现原始证据、转换结果和不确定性。",
+            "需要手册或历史记录时把带坐标的观察交给 RAG；只读结论与创建工单等动作使用不同控制门。",
           boundary:
-            "模型对页面的整体理解不能代替字段级、数值级和时间定位验证。",
+            "答案有引用不等于关系判断正确，RAG 也不能替代多模态证据定位。",
         },
         {
-          name: "反馈回流与重处理",
-          en: "Feedback & Reprocessing",
+          name: "降级与责任交接",
+          en: "Degrade & Handoff",
           mechanism:
-            "失败样本应能定位到资产、转换器、区域和模型版本，修复后只重跑受影响派生物并完成回归。",
+            "不可读、证据冲突、低置信或超预算时返回明确失败原因，转专用解析、重传、人工复核或受控 Agent。",
           decision:
-            "通过事件总线、批处理、版本化索引和 Tracing 形成可重放管线。",
+            "Multimodal 交付证据与失真信息；Data Engineering 管资产生命周期，Evaluation 管量尺，Security 管威胁，AI Ops 管运行。",
           boundary:
-            "重新调用最终模型不会修复建库阶段已经丢失的信息。",
+            "降级不是换一个模型继续猜，也不能扩大原媒体的权限范围。",
         },
       ],
-      sourceIds: ["docling-report", "pp-ocr-2020", "colpali-2025", "nist-genai-profile"],
+      sourceIds: ["docling-report", "pp-ocrv5-2026", "colpali-2025", "nist-genai-profile"],
     },
     {
       kind: "diagnostic",
@@ -557,6 +557,15 @@ export const multimodalBrief = {
             "跨模态相似度不是事实正确率。",
         },
         {
+          name: "长视频摘要完整，却漏掉短暂异常",
+          mechanism:
+            "均匀抽帧、整段压缩或只依赖字幕丢失了关键事件前后的时序与跨模态证据。",
+          decision:
+            "按镜头和候选事件分段，保留时间窗口、音轨与字幕关联，并在长视频困难集和客户切片上验证遗漏。",
+          boundary:
+            "帧数更多不保证理解更好，LongVideoBench 也不规定客户生产分段架构。",
+        },
+        {
           name: "语音首响快，但对话仍然卡顿",
           mechanism:
             "端点检测、网络抖动、工具等待、TTS 排队或打断取消未完成造成端到端体验问题。",
@@ -575,7 +584,7 @@ export const multimodalBrief = {
             "无法回到原始媒体的正确答案仍不适合作为高风险证据。",
         },
       ],
-      sourceIds: ["vit-2021", "clip-2021", "docling-report", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
+      sourceIds: ["vit-2021", "clip-2021", "longvideobench-2024", "docling-report", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
       columnLabels: {
         name: "客户症状",
         mechanism: "可能丢失层",
@@ -630,20 +639,24 @@ export const multimodalBrief = {
   qa: [
     {
       q: "多模态模型能否直接替代 OCR 和文档解析？",
-      a: "不能一概而论。开放问答和复杂版面理解适合多模态模型，固定字段抽取、强审计和大规模低成本处理通常仍需要专业解析管线。",
+      a: "不能一概而论。专用、原生和混合路线保留的信息、可审计性与成本不同，必须在客户困难切片上比较。",
       depth:
-        "可以先用解析服务获得文字、结构、页码和区域，再由模型做语义理解；对解析失败或开放问题使用原生多模态回退。两条路径都要保留到原始页面和区域的定位，才能复核。",
-      ask: "追问客户：需要开放理解还是固定字段？错误能否人工复核，必须保留哪些位置信息？",
+        "同一批输入分别验证专用解析、原生视觉理解与组合路线的任务成功、结构恢复、证据坐标、严重失败、P95、单位成功成本和人工复核。PP-OCRv5 表明小型专用 OCR 在其测试基准上仍可与多种大参数 VLM 竞争，但不能外推到所有文档、表格语义或生产 TCO；ColPali 等视觉文档路线也只是另一种候选。实际系统可按输入类型和风险路由。",
+      ask: "追问客户：最难输入是哪几类？结果必须回到哪些原始坐标，哪种错误最难发现和修复？",
       tag: "方案选择",
-      basis: "视觉模型原理 + 生产可审计性",
+      basis: "客户切片 + 路线比较 + 生产可审计性",
       evidence: [
         {
-          sourceId: "vit-2021",
-          supports: "支持视觉 Transformer 通过图像 Patch 构造视觉 Token 的基本机制。",
+          sourceId: "pp-ocrv5-2026",
+          supports: "支持在论文所测 OCR Benchmark 内，小型专用 OCR 仍可与多种大参数 VLM 竞争；不支持普遍替代结论。",
         },
         {
-          sourceId: "nist-genai-profile",
-          supports: "支持保留来源、测量限制并按风险设置人工监督。",
+          sourceId: "docling-report",
+          supports: "支持文档处理需要显式恢复版面、阅读顺序和表格结构，并保留可检查中间结果。",
+        },
+        {
+          sourceId: "colpali-2025",
+          supports: "支持视觉丰富文档可以直接形成视觉检索表示，作为专用解析之外的候选路线。",
         },
       ],
     },
@@ -726,11 +739,18 @@ export const multimodalBrief = {
       sourceId: "clip-2021",
     },
     {
-      metric: "管线 + 原生",
-      title: "混合架构通常更可运营",
-      finding: "专业解析承担稳定主干，原生多模态处理开放问题和例外，可兼顾控制与能力。",
-      boundary: "具体组合必须通过客户数据验证，不能把混合架构当固定模板。",
-      sourceId: "nist-genai-profile",
+      metric: "5M 专用模型 ↔ 大参数 VLM",
+      title: "专用模型仍可能是有效候选",
+      finding: "PP-OCRv5 在论文所测 OCR Benchmark 上以约 5M 参数与多种大参数 VLM 竞争，说明路线不能只按模型规模判断。",
+      boundary: "结论只适用于论文任务和快照，不证明其在所有语言、版式、表格语义、时延和生产成本上更优。",
+      sourceId: "pp-ocrv5-2026",
+    },
+    {
+      metric: "长视频 ≠ 多张图片",
+      title: "时序证据需要独立验证",
+      finding: "LongVideoBench 用细粒度、交错的视频—语言证据检验长视频理解，暴露了检索与跨时间推理问题。",
+      boundary: "Benchmark 不规定客户应怎样分段，也不支持“输入帧数越多越好”。",
+      sourceId: "longvideobench-2024",
     },
     {
       metric: "媒体即输入",
@@ -1492,62 +1512,79 @@ export const a2aBrief = {
 export const evaluationBrief = {
   slug: "evaluation",
   definition:
-    "评估（Evaluation）把“效果好”转成可重复的数据集、评分方法、发布门槛和线上监控，用于比较方案、诊断问题并控制变更风险。",
+    "评估（Evaluation）把一个版本化被测系统、代表性任务与切片、有效评分器、重复试验、基线和决策规则绑定起来，为选型、发布、诊断与持续运营提供可解释证据。",
   position:
-    "位于工程保障层，横跨模型选择、Prompt、RAG、Agent、微调和生产运营；它负责测量系统是否达到客户约定，而不是为方案补一张排行榜。",
+    "位于质量与风险决策层，横跨模型、Prompt、RAG、Agent、微调和应用；它负责定义量尺、测量与发布建议，AI Ops 负责执行流水线、灰度、监控、停止和回滚，Governance 负责风险接受与例外批准。",
   presentation: "loop",
-  principleTitle: "从客户任务定义质量，再让每次变更接受复测",
+  principleTitle: "先冻结评估契约，再运行分数",
   principles: [
     {
-      zh: "三层评估",
-      en: "Benchmark, Application Eval & Production Monitoring",
+      zh: "决策与目标量先行",
+      en: "Decision & Estimand First",
       explanation:
-        "公开 Benchmark 用于通用初筛，客户应用评估验证真实场景，生产监控发现数据与行为漂移。",
+        "同一组结果可以回答“这份固定考卷表现如何”，也可能被误读为“相似任务总体表现如何”；初筛、验收、发布和诊断需要不同证据。",
       decision:
-        "模型采购不能只看排行榜；最终选择必须通过客户 Golden Set 和上线门。",
+        "先写清要支持的决定、被测对象、目标人群、基线、目标量和结果的后续动作。",
     },
     {
-      zh: "评分方法分工",
+      zh: "对象与生命周期二维分层",
+      en: "Object × Lifecycle",
+      explanation:
+        "对象轴区分模型、检索、工具、应用和业务终态；证据生命周期轴区分 Benchmark 初筛、离线验收和部署后监测。受保护放量是 AI Ops 消费评估契约的发布执行，不另造一类评估证据。",
+      decision:
+        "局部指标用于归因，端到端终态用于验收；不同阶段证据不能互相替代。",
+    },
+    {
+      zh: "评分器按可验证性分工",
       en: "Code, Judge & Human",
       explanation:
-        "确定性约束优先代码校验，主观质量可用 LLM-as-a-Judge，人工负责标准制定、校准、争议和高风险审核。",
+        "确定性字段、权限和业务后置条件优先代码验证；开放语义使用校准后的 Judge；人工负责量表、争议、高影响样本和最终裁决。",
       decision:
-        "先用最便宜、最可复现的方法；Judge 不应替代可由业务规则直接验证的事实。",
+        "评分器本身也要固定版本、验证偏差并声明适用范围，不能让模型自证成为业务真值。",
     },
     {
-      zh: "评估集是长期资产",
-      en: "Evaluation Set as an Asset",
+      zh: "考卷分工与污染控制",
+      en: "Development, Regression & Holdout",
       explanation:
-        "Golden Set 应覆盖常见、高价值、边界、安全和历史失败样本，并随着生产问题持续增长。",
+        "开发集帮助迭代，冻结回归集保护既有能力，盲留出集检查泛化；每条样本要保留来源、裁决、切片和适用期。",
       decision:
-        "评估集进入版本控制，保留独立留出集，防止团队只对公开样例或已知测试调优。",
+        "线上失败经脱敏、去重和业务裁决后进入下一版回归集，不能直接污染盲留出集。",
     },
     {
-      zh: "按系统机制拆指标",
-      en: "Mechanism-specific Metrics",
+      zh: "重复试验与硬门",
+      en: "Uncertainty & Hard Gates",
       explanation:
-        "RAG 要区分检索与生成，Agent 要区分结果、轨迹、工具、安全与效率，微调还要检查通用能力回退。",
+        "模型和 Judge 都可能波动；总体均值还会掩盖少数语言、长输入、高风险任务和严重单次失败。",
       decision:
-        "先定位失败发生在哪个机制，再决定改 Prompt、数据、模型、检索还是工具。",
+        "固定可控变量，重复运行并报告分布、不确定性和关键切片；不可补偿错误独立阻断。",
     },
     {
-      zh: "质量飞轮",
-      en: "Quality Flywheel",
+      zh: "证据闭环而非自动真值",
+      en: "Adjudicated Feedback Loop",
       explanation:
-        "坏案例进入错误分析与数据集，修复后经过回归门，再部署并持续监控，形成可追踪闭环。",
+        "离线评估提供可重复比较，生产信号暴露新分布和交互失败；投诉、点赞、模型自评和 Trace 本身都不是权威标签。",
       decision:
-        "任何模型、Prompt、检索、工具和策略变化都触发相应回归，而不是依靠人工抽看。",
+        "Evaluation 定义可接受终态与抽样裁决，AI Ops 采集和执行，确认后的失败再升级评估资产。",
     },
   ],
   decisions: [
     {
+      question: "这次到底在评估什么？",
+      signal:
+        "候选版本是否同时改变模型、Prompt、检索、工具、策略、运行环境或评分器，最终由哪个系统状态证明任务完成。",
+      recommendation:
+        "把完整候选元组、基线、任务环境、预算、终态和不可接受行为写入评估契约。",
+      boundary:
+        "只记录模型名称无法解释应用结果；一次演示也不能代表稳定版本。",
+    },
+    {
       question: "公开 Benchmark 能否决定模型选型？",
       signal:
-        "Benchmark 任务、语言、工具环境和客户真实工作是否相似，是否存在饱和、污染或选择偏差。",
+        "Benchmark 的任务、语言、提示、工具环境和客户真实工作是否相似，结果要描述固定题集还是外推相似任务。",
       recommendation:
-        "用相关 Benchmark 缩小候选，再在客户 Golden Set 上比较质量、时延、成本和风险。",
+        "用相关 Benchmark 缩小候选并记录其版本与假设，再在同一客户任务、环境和门槛下比较候选。",
       boundary:
-        "排行榜名次不构成客户场景的准确率或 ROI 承诺。",
+        "榜单名次和固定 Benchmark Accuracy 不构成客户场景表现、业务价值或 Generalized Accuracy 承诺。",
     },
     {
       question: "没有历史标注数据怎样开始？",
@@ -1570,25 +1607,25 @@ export const evaluationBrief = {
     {
       question: "什么样的结果可以发布？",
       signal:
-        "合同接口、任务质量、零容忍风险和生产指标分别有明确通过线。",
+        "候选与当前版本在同等条件下完成了重复试验，关键切片、硬风险、时延、成本和不确定性都有解释。",
       recommendation:
-        "设置 Contract、Quality、Risk、Production 四类门，任一硬门失败则停止发布。",
+        "先执行不可补偿硬门，再形成 Go、Hold、No-Go 或有限放量的测量建议，并把未决失败交给责任 Owner。",
       boundary:
-        "总体平均分不能掩盖越权、敏感信息泄露或关键任务失败。",
+        "Evaluation 提供发布建议，不自行批准风险例外，也不执行灰度和回滚。",
     },
     {
       question: "上线后还需要离线评估吗？",
       signal:
         "数据、用户、模型、知识库或工具会持续变化，线上反馈又受选择偏差和延迟影响。",
       recommendation:
-        "保留冻结回归集，同时采样线上 Trace、人工反馈和坏案例，定期扩充评估集。",
+        "保留开发集、冻结回归集和盲留出集；由 AI Ops 采集线上证据，经过脱敏、去重和裁决后版本化升级回归集。",
       boundary:
-        "线上点赞率不能单独解释任务质量；静态离线集也无法覆盖生产漂移。",
+        "部署后监测仍是方法不完全成熟的独立领域；低投诉、点赞率或自动评分不能证明系统持续有效。",
     },
   ],
-  deepDiveTitle: "把分数变成可诊断、可阻断、可回滚的证据",
+  deepDiveTitle: "把分数变成可诊断、可比较、可决策的证据",
   deepDiveLead:
-    "评估系统不仅计算结果，还要识别分数为什么变化、变化影响哪些用户和风险切片，并形成足以支持发布决策的证据包。",
+    "评估系统不仅计算结果，还要说明被测对象、量尺、样本和环境是否一致，变化影响哪些任务与风险切片，以及证据足以支持发布、补做还是停止。",
   deepDives: [
     {
       kind: "diagnostic",
@@ -1643,7 +1680,7 @@ export const evaluationBrief = {
             "评估集是控制资产，不应同时充当无限公开的开发提示。",
         },
       ],
-      sourceIds: ["nist-genai-profile", "ragas", "opentelemetry-genai-semconv"],
+      sourceIds: ["nist-ai-800-3", "nist-genai-profile", "nist-ai-800-4"],
       columnLabels: {
         name: "异常现象",
         mechanism: "可能原因",
@@ -1653,92 +1690,92 @@ export const evaluationBrief = {
     },
     {
       kind: "checklist",
-      eyebrow: "RELEASE EVIDENCE PACK",
-      title: "一次 AI 变更进入生产前应留下什么证据",
+      eyebrow: "EVALUATION CONTRACT",
+      title: "一份评估契约怎样把结果变成决定",
       intro:
-        "证据包应让未参与开发的人也能判断改了什么、影响谁、硬门是否通过，以及出现问题怎样恢复。",
+        "契约应让未参与开发的人也能重放被测版本、理解量尺与外推边界，并知道每种结果触发什么动作。",
       items: [
         {
-          name: "变更与版本元组",
-          en: "Change Manifest",
+          name: "决策、对象与基线",
+          en: "Decision, Unit & Baseline",
           mechanism:
-            "记录模型、Prompt、数据、检索、工具、策略、运行时和依赖的前后版本及变更原因。",
+            "声明评估用于初筛、验收、发布还是诊断，并冻结候选与当前版本的模型、Prompt、数据、检索、工具、策略、环境和预算。",
           decision:
-            "关联模型注册表、代码提交、对象版本和部署记录，保证评估结果可重放。",
+            "把完整版本元组交给 AI Ops 的发布清单，但 Evaluation 只比较契约内声明的对象。",
           boundary:
-            "只记录模型名称无法还原完整应用行为。",
+            "模型名、端点别名或代码提交任何单项都不是完整被测系统。",
         },
         {
-          name: "切片化质量报告",
-          en: "Slice Report",
+          name: "目标人群、任务与目标量",
+          en: "Population, Tasks & Estimand",
           mechanism:
-            "同时展示总体、关键任务、边界、安全和历史失败样本，并提供基线差异和置信信息。",
+            "说明样本代表哪类用户、任务和时间范围，以及结果仅描述固定题集还是要外推到相似任务总体。",
           decision:
-            "在评估平台保存逐样本结果和错误分类，硬风险单独列出，不隐藏在汇总图中。",
+            "按真实分布、高价值、边界、历史失败和高风险场景建立切片，并公开抽样与外推假设。",
           boundary:
-            "单一总分和几个精选案例不构成发布证据。",
+            "更多样本不能自动修复选择偏差；Benchmark Accuracy 与 Generalized Accuracy 不是同一目标量。",
         },
         {
-          name: "工程与经济性结果",
-          en: "Non-functional Evidence",
+          name: "评分器、量表与真值",
+          en: "Graders & Ground Truth",
           mechanism:
-            "在代表性负载下测量 P95、错误率、工具次数、Token、峰值行为和每个成功任务成本。",
+            "为每个维度指定代码、Judge 或人工，保存 Rubric、正反例、评分器版本、人工校准和争议裁决。",
           decision:
-            "将 Tracing、负载测试、FinOps 与质量运行关联，确认优化没有把问题转移到其他阶段。",
+            "权威系统后置条件优先确定性验证，开放语义才使用模型评审；高影响与争议由责任人裁决。",
           boundary:
-            "开发环境平均值不能代替生产容量结论。",
+            "Judge 的理由和分数不是业务真值，人工一致性也需要测量和改进。",
         },
         {
-          name: "风险例外与批准",
-          en: "Risk Exceptions",
+          name: "重复、切片与不确定性",
+          en: "Trials, Slices & Uncertainty",
           mechanism:
-            "列出未通过项、剩余风险、补偿控制、有效期和批准责任人，避免口头豁免。",
+            "在同等条件下重复运行，报告逐样本结果、关键切片、严重失败频率、分布和适合目标量的不确定性。",
           decision:
-            "使用策略引擎和审批工作流保存决定；零容忍安全门不得由平均收益覆盖。",
+            "先处理不可补偿硬门，再比较通过候选的质量、时延、成本和每个可接受结果效率。",
           boundary:
-            "批准例外不等于风险消失，应有到期与复核。",
+            "最好一次、单一平均值和未经说明的置信区间都不能独立支持发布。",
         },
         {
-          name: "灰度、监控与回滚",
-          en: "Canary & Recovery",
+          name: "决定规则与责任转交",
+          en: "Decision Rule & Handoff",
           mechanism:
-            "定义放量范围、线上观察指标、自动停止条件、旧版本资产和事件责任人。",
+            "预先写明 Pass、Fail 和 Uncertain 分别触发 Go、Hold、No-Go、补充样本或人工复核，并保存失败归因与未决风险。",
           decision:
-            "通过 CI/CD、Feature Flag、告警和回滚运行手册连接评估与生产控制面。",
+            "Evaluation 输出测量建议；AI Ops 执行放量、停止和回滚，Governance 决定例外，模块 Owner 修复机制。",
           boundary:
-            "离线通过不能证明真实流量下无需监控或回滚。",
+            "评估团队不能批准自己的风险例外，也不能把遥测存在等同于业务成功。",
         },
       ],
-      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"],
+      sourceIds: ["nist-ai-800-3", "nist-genai-profile", "llm-as-judge-2023", "anthropic-agent-evals"],
       maxColumns: 3,
     },
   ],
   criticalBoundary:
-    "公开 Benchmark 是初筛工具，不是生产验收；平均分是摘要，不是安全豁免。客户任务、可验证终态和硬风险门才决定能否上线。",
+    "分数只有连同被测版本、目标量、样本、评分器、重复试验和决策规则才有意义；平均分不能覆盖硬风险，Evaluation 也不能替代 AI Ops 的发布执行或 Governance 的风险接受。",
   cloudHooks: [
     {
       stage: "数据集与实验（Datasets & Experiments）",
       services: "对象存储、数据仓库、评估集管理、实验追踪、版本控制",
-      value: "保存样本、标准、运行配置和结果，使比较可重复。",
-      discover: "谁提供样本和标签，哪些数据可离开生产环境，如何版本化？",
+      value: "分开开发、冻结回归与盲留出集，保存来源、裁决、切片、版本和适用期。",
+      discover: "样本代表谁和什么任务，谁提供真值，哪些数据可用于评估而不能进入训练？",
     },
     {
       stage: "离线评估（Offline Evaluation）",
       services: "托管模型评估、批处理、Judge 服务、RAG/Agent 评测框架",
-      value: "在发布前批量比较模型、Prompt、检索、工具和安全策略。",
-      discover: "哪些指标可代码校验，哪些需要 Judge 或人工，运行成本上限是什么？",
+      value: "在同等契约下重复比较完整候选版本，输出切片、失败、不确定性和外推边界。",
+      discover: "被测对象和目标量是什么，哪些终态可代码校验，Judge 怎样校准，重复几次才足够？",
     },
     {
-      stage: "发布门禁（Release Gates）",
-      services: "CI/CD、策略引擎、模型注册表、审批工作流",
-      value: "把评估结果转成自动阻断、审批、灰度和回滚条件。",
-      discover: "哪些硬门失败必须阻断，谁可以批准例外，如何保留证据？",
+      stage: "决策接口（Decision Interface）",
+      services: "评估报告、策略规则、模型注册表、审批记录",
+      value: "把测量结果转成 Go、Hold、No-Go 或补做建议，并保留责任转交和未决失败。",
+      discover: "哪些硬门不可补偿，谁执行发布，谁批准例外，谁修复具体机制？",
     },
     {
       stage: "线上监控（Production Monitoring）",
       services: "Tracing、日志、指标、在线采样评估、A/B、告警、FinOps",
-      value: "发现漂移、异常轨迹、质量下降和每个成功任务成本变化。",
-      discover: "线上 ground truth 从哪里来，样本如何脱敏，告警后谁负责处置？",
+      value: "由 AI Ops 采集功能、运行、人因、安全与业务结果信号，供 Evaluation 发现离线未覆盖的新分布。",
+      discover: "线上权威终态从哪里来，样本如何脱敏和裁决，哪些信号只用于调查而不能直接当标签？",
     },
   ],
   relatedSlugs: [
@@ -1754,11 +1791,15 @@ export const evaluationBrief = {
       q: "模型在公开 Benchmark 上排名很高，为什么还要做客户评估？",
       a: "因为 Benchmark 测的是特定数据和任务，客户关心的是自己的语言、知识、流程、工具、风险和成本。",
       depth:
-        "公开基准适合初筛通用能力，但无法覆盖企业权限、数据质量、工具错误、品牌规则和真实用户分布。应在同一 Golden Set、同一工具环境和同一成本约束下比较候选方案。",
+        "公开基准适合初筛通用能力，但无法覆盖企业权限、数据质量、工具错误、品牌规则和真实用户分布。还要说明分数描述固定题集表现，还是打算外推到相似任务总体；最终应在同一客户任务、环境、预算和硬门下比较完整候选版本。",
       ask: "追问客户：哪些真实任务代表价值，哪些错误即使少量发生也不可接受？",
       tag: "模型选型",
-      basis: "场景化评估 + 风险治理",
+      basis: "目标量 + 场景化评估",
       evidence: [
+        {
+          sourceId: "nist-ai-800-3",
+          supports: "支持区分固定 Benchmark 表现与对相似任务总体的外推，并显式报告假设和不确定性。",
+        },
         {
           sourceId: "nist-genai-profile",
           supports: "支持按具体使用情境、受影响主体和风险容忍度评估生成式 AI。",
@@ -1803,51 +1844,47 @@ export const evaluationBrief = {
       q: "Agent 为什么不能只评最终回答？",
       a: "因为 Agent 可能碰巧得到正确文字，却经历越权、无效调用、隐藏失败或未真正改变业务状态。",
       depth:
-        "评估应同时检查 Outcome、Trajectory、Tools、Safety 和 Efficiency。终态由业务系统验证，轨迹检查工具选择、参数、重试和停止，安全检查策略违规，效率检查时延和每个成功任务成本。",
-      ask: "追问客户：哪个系统状态证明完成，哪些步骤和权限必须正确，允许多少重试与人工接管？",
+        "先用权威系统后置条件验证 Outcome，再检查权限、安全约束、工具副作用、时延与每个成功任务成本。Trajectory 适合归因；只有路径本身属于安全或业务契约时才设硬路径要求，否则固定步骤可能误杀另一条有效路线。",
+      ask: "追问客户：哪个系统状态证明完成，哪些动作或权限绝不能出现，哪些轨迹只用于诊断？",
       tag: "Agent 评估",
-      basis: "任务轨迹 + 端到端结果",
+      basis: "业务终态 + 约束 + 诊断轨迹",
       evidence: [
         {
-          sourceId: "react-2023",
-          supports: "支持通过交替推理、行动和观察形成可分析的任务轨迹。",
-        },
-        {
-          sourceId: "anthropic-effective-agents",
-          supports: "支持按任务复杂度控制 Agent 循环、工具使用和停止条件。",
+          sourceId: "anthropic-agent-evals",
+          supports: "支持把任务、试验、评分器、轨迹和环境终态分开，并优先使用可验证后置条件。",
         },
       ],
     },
   ],
   evidenceCards: [
     {
-      metric: "基准 → 场景 → 生产",
-      title: "三层证据回答不同问题",
-      finding: "公开基准用于初筛，客户评估用于验收，生产监控用于发现真实漂移和异常。",
-      boundary: "三者不能相互替代，也不能使用不同任务的数据直接横向比较。",
+      metric: "对象 × 阶段",
+      title: "先声明测谁，以及证据来自哪个阶段",
+      finding: "模型、组件、应用和业务终态是不同对象；Benchmark、离线验收与部署后监测回答不同问题。",
+      boundary: "局部分数不能替代端到端终态，部署前结果也不能证明真实运行不会出现新失败。",
       sourceId: "nist-genai-profile",
       accent: true,
     },
     {
       metric: "代码 → Judge → 人工",
       title: "按可验证程度选择评分方法",
-      finding: "确定规则优先代码，主观质量使用校准 Judge，高风险和争议保留人工裁决。",
-      boundary: "Judge 是可扩展评估器，不是业务事实源或责任主体。",
-      sourceId: "nist-genai-profile",
+      finding: "确定性后置条件优先代码，开放语义使用校准 Judge，高风险、争议和量表制定保留人工。",
+      boundary: "评分器本身也要评估；Judge 与人工都不会自动成为业务事实源。",
+      sourceId: "anthropic-agent-evals",
     },
     {
-      metric: "检索 + 生成",
-      title: "RAG 必须分层诊断",
-      finding: "Context Recall、Context Precision 与 Faithfulness 帮助区分没有找到、噪声过多和没有忠实使用证据。",
-      boundary: "指标仍依赖数据集和 Judge 质量，应结合人工错误分析。",
-      sourceId: "ragas",
+      metric: "固定题集 ≠ 相似任务总体",
+      title: "先定义目标量，才能解释不确定性",
+      finding: "固定 Benchmark 上的表现与对相似任务总体的外推是不同目标，需要不同假设和不确定性解释。",
+      boundary: "统计方法不能修复错误样本、选择偏差，也不能替客户设定通过线。",
+      sourceId: "nist-ai-800-3",
     },
     {
-      metric: "Trace → Gate",
-      title: "评估结果要进入发布决策",
-      finding: "模型、检索、工具和策略变更都应触发回归，并以硬门控制发布。",
-      boundary: "可观测数据提供证据，但业务成功和风险门槛仍需客户定义。",
-      sourceId: "opentelemetry-genai-semconv",
+      metric: "离线 → 生产",
+      title: "部署后监测是另一类证据系统",
+      finding: "受控评估无法覆盖真实流量、动态输入、人机交互和所有后果，生产还需功能、运行、人因、安全与业务结果监测。",
+      boundary: "NIST AI 800-4 汇总类别与挑战，不是成熟监控标准，也不保证发现全部风险。",
+      sourceId: "nist-ai-800-4",
     },
   ],
 };
