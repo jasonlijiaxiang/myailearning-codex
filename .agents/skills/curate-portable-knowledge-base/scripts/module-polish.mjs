@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash, randomUUID } from "node:crypto";
-import { existsSync, realpathSync } from "node:fs";
+import { realpathSync } from "node:fs";
 import {
   lstat,
   mkdir,
@@ -740,7 +740,72 @@ async function readRuntime(context, batchId, required = true) {
   return value;
 }
 
-function moduleReadPaths(context, slug) {
+const SHARED_CONTENT_OWNER_AGGREGATORS = Object.freeze([
+  "app/module-brief-content.mjs",
+  "app/module-curriculum-content.mjs",
+  "app/module-learning-content.mjs",
+]);
+
+function staticModuleSpecifiers(source) {
+  const specifiers = [];
+  const patterns = [
+    /(?:^|\n)\s*import\s+(?:[\s\S]*?\s+from\s+)?["']([^"']+)["']\s*;?/g,
+    /(?:^|\n)\s*export\s+(?:\*(?:\s+as\s+[A-Za-z_$][\w$]*)?|\{[\s\S]*?\})\s+from\s+["']([^"']+)["']\s*;?/g,
+  ];
+  for (const pattern of patterns) {
+    for (const match of source.matchAll(pattern)) specifiers.push(match[1]);
+  }
+  return specifiers;
+}
+
+async function resolveDirectLocalImport(importerRelativePath, specifier) {
+  if (!specifier.startsWith(".")) return null;
+  assert(
+    !/[?#]/.test(specifier),
+    `Local content owner import must not contain a query or fragment: ${importerRelativePath} -> ${specifier}`,
+  );
+  const importerPath = resolveProjectPath(importerRelativePath, "content owner importer");
+  const unresolvedPath = path.resolve(path.dirname(importerPath), specifier);
+  const rel = path.relative(PROJECT_ROOT, unresolvedPath);
+  assert(
+    rel !== "" && rel !== ".." && !rel.startsWith(`..${path.sep}`) && !path.isAbsolute(rel),
+    `Local content owner import escapes the project root: ${importerRelativePath} -> ${specifier}`,
+  );
+  assert(
+    path.extname(unresolvedPath),
+    `Local content owner import must use an explicit file specifier: ${importerRelativePath} -> ${specifier}`,
+  );
+  if (await pathExists(unresolvedPath)) {
+    await assertReadableProjectFile(
+      unresolvedPath,
+      `content owner imported by ${importerRelativePath}`,
+    );
+    return relativePath(unresolvedPath);
+  }
+  fail(`Missing local content owner import: ${importerRelativePath} -> ${specifier}`);
+}
+
+async function discoverDirectContentOwners(context, readPaths) {
+  const owners = [];
+  const aggregators = [
+    context.config.curation.contentRegistry,
+    ...SHARED_CONTENT_OWNER_AGGREGATORS,
+  ];
+  for (const importerRelativePath of new Set(aggregators)) {
+    if (typeof importerRelativePath !== "string") continue;
+    if (!readPaths.includes(importerRelativePath)) continue;
+    const importerPath = resolveProjectPath(importerRelativePath, "content owner aggregator");
+    await assertReadableProjectFile(importerPath, "content owner aggregator");
+    const source = await readFile(importerPath, "utf8");
+    for (const specifier of staticModuleSpecifiers(source)) {
+      const owner = await resolveDirectLocalImport(importerRelativePath, specifier);
+      if (owner) owners.push(owner);
+    }
+  }
+  return owners;
+}
+
+async function moduleReadPaths(context, slug) {
   const common = [
     context.modulePolish.plan,
     context.modulePolish.progress,
@@ -772,18 +837,27 @@ function moduleReadPaths(context, slug) {
   ]) {
     common.push(candidate);
   }
-  return [...new Set(common.filter((item) => typeof item === "string"))]
-    .filter((item) => {
-      try {
-        return existsSync(resolveProjectPath(item, "brief read path"));
-      } catch {
-        return false;
-      }
-    })
-    .sort();
+  const readPaths = [];
+  for (const item of new Set(common.filter((candidate) => typeof candidate === "string"))) {
+    let absolutePath;
+    try {
+      absolutePath = resolveProjectPath(item, "brief read path");
+    } catch {
+      continue;
+    }
+    if (!(await pathExists(absolutePath))) continue;
+    await assertReadableProjectFile(absolutePath, "brief read path");
+    readPaths.push(item);
+  }
+  readPaths.push(...await discoverDirectContentOwners(context, readPaths));
+  return [...new Set(readPaths)].sort();
 }
 
 async function criticalFiles(context, batch) {
+  const modulePaths = [];
+  for (const slug of batch.modules) {
+    modulePaths.push(...await moduleReadPaths(context, slug));
+  }
   const candidates = [
     "kb.config.json",
     "package.json",
@@ -796,7 +870,7 @@ async function criticalFiles(context, batch) {
     context.config.curation?.sourceLedger,
     context.config.curation?.terminology,
     context.config.curation?.claims,
-    ...batch.modules.flatMap((slug) => moduleReadPaths(context, slug)),
+    ...modulePaths,
   ].filter((item) => typeof item === "string");
   const unique = [...new Set(candidates)]
     .filter((projectRelative) => projectRelative !== context.modulePolish.progress)
@@ -978,11 +1052,11 @@ async function commandBrief(args) {
       "create worktrees",
       "change tracked progress",
     ],
-    modules: requested.map((slug) => ({
+    modules: await Promise.all(requested.map(async (slug) => ({
       slug,
       status: findModule(context, slug, batchId).progressModule.status,
-      readPaths: moduleReadPaths(context, slug),
-    })),
+      readPaths: await moduleReadPaths(context, slug),
+    }))),
   };
   if (json) {
     console.log(JSON.stringify(brief, null, 2));

@@ -6,6 +6,7 @@ import { englishModuleRegistry, englishQuestions, englishSourceCopy, englishTerm
 import { englishRepresentationAssessment } from "../app/i18n/english-representation-assessment.mjs";
 import { buildEnglishSectionGroups, focusedEnglishModuleSlugs, focusedSectionRoleOrder, sharedSectionRoleOrder } from "../app/i18n/english-section-outline.mjs";
 import { englishModuleSlugs } from "../app/i18n/locale-config.mjs";
+import { moduleBriefs } from "../app/module-brief-content.mjs";
 import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { getPublishedModule, hasDedicatedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
@@ -34,6 +35,16 @@ test("English edition registers every published module", () => {
   assert.deepEqual([...englishModuleSlugs], [...publishedModuleSlugs]);
   assert.deepEqual(Object.keys(englishModuleRegistry).sort(), [...publishedModuleSlugs].sort());
   assert.equal(englishQuestions.length, publishedModuleSlugs.reduce((total, slug) => total + requireModuleContent(slug).qa.length, 0));
+});
+
+test("shared English modules preserve canonical related-module routes and order", () => {
+  for (const [slug, canonical] of Object.entries(moduleBriefs)) {
+    assert.deepEqual(
+      englishModuleRegistry[slug].relatedSlugs,
+      canonical.relatedSlugs,
+      `${slug} relatedSlugs must remain bilingual and order-stable`,
+    );
+  }
 });
 
 test("English edition preserves canonical question order, evidence relationships, and dates", () => {

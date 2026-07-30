@@ -93,20 +93,17 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   security: {
-    outcomes: ["建立模型、应用、工具、数据和供应链的分层威胁模型", "理解直接与间接提示注入", "用外部控制限制 Agent 自主性", "把红队、事件响应与治理纳入持续运营"],
+    outcomes: ["从招聘业务损失建立 Source—Sink 威胁模型", "识别恶意简历、向量数据与跨候选人边界", "用真实身份和确定性策略限制 ATS 动作", "验证控制失效后的遏制、取证、补偿与恢复"],
     route: [
-      { title: "先用风险目录检查漏项", learn: "从提示注入、数据泄露、投毒、供应链、输出处理、过度授权和向量检索弱点建立初始清单。", checkpoint: "能把通用风险映射到本系统的资产和损失。" },
-      { title: "沿数据流画信任边界", learn: "识别不可信输入、高价值数据、可执行工具、派生资产和外部依赖。", checkpoint: "能说明攻击者跨越哪条边界获得什么能力。" },
-      { title: "拆开身份、授权与凭据", learn: "追踪用户、应用、Agent、工具和下游系统分别代表谁。", checkpoint: "每个高影响动作都有外部授权依据，模型不能自我授权。" },
-      { title: "组合纵深防御并做红队", learn: "组合隔离、参数校验、审批、沙箱、监控和停止机制，以真实威胁测试绕过与残余影响。", checkpoint: "任一护栏失效时仍有下一层限制影响。" },
-      { title: "把治理和法规变成发布证据", learn: "把地区、行业和用途要求连接到清单、控制、负责人和复核日期。", checkpoint: "能说明适用性由谁确认，以及哪些结论必须在上线前刷新。" },
-      { title: "最后演练事件与恢复", learn: "保留证据、停止扩散、撤销凭据、判断影响、补偿并持续回归。", checkpoint: "能证明控制有效，而不是只证明安全产品已启用。" },
+      { title: "先定义损失和攻击路径", learn: "识别候选人隐私、职位边界、ATS 完整性、招聘决定和可追责性，画出简历到高影响 Sink 的路径。", checkpoint: "能说明攻击者控制什么、跨越哪条边界、获得什么能力和造成什么业务后果。" },
+      { title: "再截断内容到权限的传播", learn: "对解析、检索、模型提案和 ATS 执行分别设置来源、ACL、Schema、真实身份和业务授权。", checkpoint: "恶意简历即使影响模型，也不能扩大权限或直接改变候选人状态。" },
+      { title: "验证每层控制和交接", learn: "为注入、越权、泄露、供应链变化和结果未知注入故障，区分 Security、Governance、Evaluation、AI Ops 与招聘业务 owner。", checkpoint: "每项控制有测试、owner、失败动作和下一层限制。" },
+      { title: "最后演练遏制与恢复", learn: "暂停高影响写入、撤销凭据、处理队列、保留证据、核对 ATS 权威状态、补偿并回归。", checkpoint: "能证明业务状态恢复，不只证明接口重新可用。" },
     ],
     labs: [
-      { title: "为带工具的 RAG Agent 建威胁模型", scenario: "Agent 会读取外部文档、查询内部知识并创建工单。", tasks: ["标出指令、数据与工具调用的 Source—Sink 路径", "枚举直接注入、间接注入、越权和数据外泄", "为高影响动作设置外部授权与人工门"], deliverable: "威胁模型、控制映射和残余风险清单", acceptance: "不可信文档不能仅靠文本指令获得工具权限或改变业务规则。", sourceIds: ["owasp-prompt-injection", "nist-zero-trust", "mcp-security"] },
-      { title: "演练一次供应链事件", scenario: "第三方模型、插件或开源依赖出现高危公告。", tasks: ["建立版本、来源、部署和调用方清单", "确定隔离、回滚和替代路径", "设计证据保留与受影响客户判断"], deliverable: "事件响应时间线与恢复门槛", acceptance: "团队能在不依赖原供应商可用的情况下定位影响、停止扩散并恢复服务。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
-      { title: "验证向量库撤权与删除", scenario: "员工权限被撤销，但旧文档片段仍可能存在于索引、缓存与日志中。", tasks: ["追踪原文、切块、Embedding、索引、缓存和评估样本", "定义撤权传播时限和失败重试", "用不同身份验证搜索、生成和审计结果"], deliverable: "派生数据清单、撤权流程与完成证明", acceptance: "承诺时限内所有读取路径均停止返回内容，例外有明确负责人和补救。", sourceIds: ["owasp-vector-weaknesses", "nist-zero-trust"] },
-      { title: "判断地区与用途适用哪些规定", scenario: "一个面向中国和欧盟用户的内容生成服务准备上线。", tasks: ["确认用户地区、内容用途、数据类型和传播渠道", "核对生成内容标识及适用的风险分类要求", "把法律判断、技术控制和复核日期分别记录"], deliverable: "适用性问题表、控制对应表和待法务确认项", acceptance: "页面或产品声明不把动态法规简化成一个“已合规”标签，未确认事项不会被写成事实。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "eu-ai-act"] },
+      { title: "为恶意简历到 ATS 建威胁模型", scenario: "招聘 Agent 会解析候选人 PDF、检索招聘政策、生成筛选建议，并可向 ATS 写入部分字段。", tasks: ["标出简历、解析、RAG、模型提案、策略和 ATS 的 Source—Sink 路径", "枚举隐藏注入、跨候选人检索、参数篡改和审批绕过", "为每个高影响 Sink 指定真实身份、允许字段、业务授权和停止动作"], deliverable: "招聘威胁模型、控制映射和残余技术风险", acceptance: "恶意简历即使影响模型，也不能获得其他候选人数据或直接改变高影响 ATS 状态。", sourceIds: ["owasp-prompt-injection", "owasp-vector-weaknesses", "nist-zero-trust"] },
+      { title: "验证候选人向量数据隔离与删除", scenario: "招聘人员调岗或候选人撤回资料，但切块、Embedding、缓存和评估样本可能继续被检索。", tasks: ["由 Data Engineering 追踪原文到所有派生层", "按招聘人员、职位与候选人测试正向和负向访问", "由客户定义撤权删除时限、失败处理和完成证据"], deliverable: "派生数据清单、权限矩阵与负向探针结果", acceptance: "客户承诺时限内所有读取路径停止返回内容，例外有 owner、范围和补救；该时限是系统 SLO，不是 OWASP 给出的通用值。", sourceIds: ["owasp-vector-weaknesses", "nist-zero-trust"] },
+      { title: "演练 ATS 越权与结果未知事件", scenario: "Agent 似乎绕过审批修改了候选人状态，部分请求超时且是否已写入未知。", tasks: ["暂停高影响写入、撤销凭据并停止队列", "还原简历、上下文、版本、身份、策略、参数和 ATS 审计", "查询权威状态、执行补偿、验证恢复并形成回归样本"], deliverable: "事件时间线、影响清单、补偿记录与恢复签署", acceptance: "团队不盲目重试，能证明受影响候选人和业务状态已经恢复或进入人工修复。", sourceIds: ["nist-sp-800-61r3", "nist-genai-profile", "nist-zero-trust"] },
     ],
   },
   "ai-gateway": {

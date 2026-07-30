@@ -51,18 +51,18 @@
     },
     {
       "id": "batch-03-security-governance",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "security",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "恶意简历到 ATS 安全链、中英文独立内容、证据边界与英文终审通过"
         },
         {
           "slug": "ai-governance",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "招聘 AI 决策链、中英文独立内容、法规边界与英文终审通过"
         }
       ]
     },

@@ -6,21 +6,23 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:b112eba29fce7b8e92ab840a98a8c04b5eef7a64b99c461d99b5dad5a9a0acd4",
-    "enContentHash": "sha256:ebffc2f54602542d8f4fce05ba3816f1c8a02695a6bcc6ba1a3a0af4707a83f5",
+    "zhContentHash": "sha256:ba4451feca6f3838cc627b29f2c6ef6bbf66653bbf6d1a5915f4641a022bac09",
+    "enContentHash": "sha256:ba8beb7b6a0dc8d3db8e8ca6b63d8eac6afa7071d2d118a3841dd001960a4208",
     "termIds": [
       "ai-governance",
       "ai-inventory",
       "ai-risk-tiering",
       "continuous-assurance",
       "governance-evidence",
+      "human-oversight",
       "impact-assessment"
     ],
     "sourceIds": [
       "eu-ai-act",
+      "eu-ai-act-2026-1744",
       "iso-iec-42001",
-      "nist-ai-rmf",
-      "nist-genai-profile"
+      "iso-iec-42005",
+      "nist-ai-rmf"
     ]
   },
   "stage": "xhigh-author",

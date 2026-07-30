@@ -93,6 +93,7 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "ai-inventory", to: "ai-governance", type: "prerequisite", explanation: "AI 系统清单先明确用途、所有者与资产边界，治理才能覆盖真实生产范围。" }),
   Object.freeze({ from: "ai-risk-tiering", to: "ai-governance", type: "component", explanation: "AI 风险分级按具体用途和影响决定需要哪些增强控制与批准。" }),
   Object.freeze({ from: "impact-assessment", to: "ai-risk-tiering", type: "prerequisite", explanation: "影响评估提供受影响对象、伤害、自动化和可逆性证据，支持风险分级。" }),
+  Object.freeze({ from: "human-oversight", to: "ai-governance", type: "control", explanation: "人工监督为高影响用途保留理解、干预、申诉与停止能力，并由治理明确责任与失效条件。" }),
   Object.freeze({ from: "governance-evidence", to: "ai-governance", type: "component", explanation: "治理证据包把用途、版本、评估、审批和运行控制连接成可审计记录。" }),
   Object.freeze({ from: "continuous-assurance", to: "ai-governance", type: "control", explanation: "持续保证用版本化证据、监控和复核避免治理结论随系统变化失效。" }),
   Object.freeze({ from: "ai-governance", to: "security", type: "control", explanation: "组织治理定义风险所有权和控制要求，安全负责其中的技术威胁与防护域。" }),

@@ -713,9 +713,9 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(security, /不可信内容进入.*进入模型上下文.*应用决定是否执行.*外部系统状态变化/s);
   assert.match(security, /IAM.*ACL.*DLP/s);
   assert.match(security, /指令.*数据.*模型与组件.*工具与 Agent.*输出与运营/s);
-  assert.match(security, /按部署地判断适用法规/);
+  assert.match(security, /一份恶意简历.*ATS.*权限/s);
   assert.match(security, /OWASP LLM Top 10 能不能直接当作安全验收清单/);
-  assert.match(security, /发生数据泄露或 Agent 越权后，第一步应该做什么/);
+  assert.match(security, /发生候选人数据泄露或招聘 Agent 越权后，第一步应该做什么/);
   assert.doesNotMatch(security, /四道外部控制门/);
 
   assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
@@ -729,9 +729,14 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
 
   assert.ok(moduleCurriculumContent["solution-patterns"].chapters.length >= 10, "场景方案必须覆盖主要应用原型与生产验收");
-  assert.ok(moduleCurriculumContent.security.chapters.length >= 9, "安全模块必须覆盖攻击、控制、治理、法规与响应");
   assert.ok(moduleCurriculumContent["fine-tuning"].chapters.length >= 8, "微调模块必须覆盖数据、训练、对齐、评估与发布");
-  for (const slug of ["solution-patterns", "security", "fine-tuning"]) {
+  const securityCurriculum = moduleCurriculumContent.security.chapters.map((chapter) => chapter.title).join("；");
+  assert.match(securityCurriculum, /不可接受损失.*恶意简历.*候选人数据.*ATS 业务授权.*供应链.*控制验证.*事件证据/s, "安全课程必须覆盖招聘场景的攻击路径、授权、验证与恢复");
+  const securityRoute = moduleLearningContent.security.route.map((step) => step.title).join("；");
+  assert.match(securityRoute, /损失和攻击路径.*内容到权限.*控制和交接.*遏制与恢复/s, "安全学习路线必须形成从损失到恢复的闭环");
+  const securityLabs = moduleLearningContent.security.labs.map((lab) => lab.title).join("；");
+  assert.match(securityLabs, /恶意简历.*向量数据隔离与删除.*ATS 越权与结果未知/s, "安全实战必须分别验证威胁、数据边界和事件恢复");
+  for (const slug of ["solution-patterns", "fine-tuning"]) {
     assert.ok(moduleLearningContent[slug].route.length >= 5, `${slug} 学习路线不能压缩为通用三步模板`);
     assert.ok(moduleLearningContent[slug].labs.length >= 4, `${slug} 至少覆盖四个不同决策或工程练习`);
   }

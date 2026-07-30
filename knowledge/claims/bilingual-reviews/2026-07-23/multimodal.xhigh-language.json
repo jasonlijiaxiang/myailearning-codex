@@ -7,7 +7,7 @@
     "objectType": "module",
     "objectId": null,
     "zhContentHash": "sha256:2f3d326991e155b291c70d23a770fabb242610a01deb37af1d58c20d7ee392fd",
-    "enContentHash": "sha256:653d41e4caa38457c7e6d6015e48c42e91995f4f7d0b3fb83bd25728d90ac983",
+    "enContentHash": "sha256:9efc4cfad2c9bbd919cc26fa47bd4caf6fdf09cb5766f81a78a89fa378108601",
     "termIds": [
       "asr",
       "document-intelligence",
@@ -21,6 +21,7 @@
       "clip-2021",
       "colpali-2025",
       "docling-report",
+      "gb-45438-2025",
       "longvideobench-2024",
       "nist-genai-profile",
       "nist-zero-trust",

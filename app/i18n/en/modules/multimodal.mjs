@@ -293,5 +293,6 @@ export const englishModule = freeze({
     "nist-zero-trust": freeze({ kind: "Official architecture guidance", shortTitle: "NIST SP 800-207", note: "Defines explicit, resource-focused access decisions without implicit trust. It is not an AI quality or multimodal evaluation standard." }),
     "c2pa-2-4": freeze({ kind: "Open technical standard", shortTitle: "C2PA 2.4", note: "Defines signed provenance manifests and asset binding. Verification covers recorded assertions and integrity, not truth, ownership, identity, or legal permission." }),
     "china-ai-content-labeling": freeze({ kind: "Official regulatory instrument", shortTitle: "China AI Content Labeling Measures", note: "Provides jurisdiction-specific labeling requirements for AI-generated or synthetic content. Applicability requires qualified legal review." }),
+    "gb-45438-2025": freeze({ kind: "Mandatory Chinese national standard", shortTitle: "GB 45438-2025", note: "Specifies methods for labeling AI-generated or synthetic content in China. Engineering applicability still depends on the formal text, product role, content, and distribution path." }),
   }),
 });

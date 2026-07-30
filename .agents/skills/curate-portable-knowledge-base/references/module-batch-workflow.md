@@ -6,7 +6,7 @@ Use this after the user approves deep polishing across published modules. It coo
 
 - Read sequencing from tracked `knowledge/module-polish/plan.json` and verified batch history from tracked `knowledge/module-polish/progress.json`.
 - Treat both as orchestration views, never module registries or content owners.
-- Resolve requested slugs from the live publication registry configured by `kb.config.json` and follow its imports to real content owners.
+- Use the publication registry configured by `kb.config.json` to validate requested slugs. Resolve actual content owners by following direct local static imports and exports from the configured content registry and shared content aggregators.
 - Store generated briefs/work packets only under configured module-polish `.runtime`; never commit or publish them.
 - Never copy the public module list, count, project path, hosting ID, or URL here.
 - Treat the plan as sequencing intent and live registries as implementation truth; pause if a mismatch changes scope.

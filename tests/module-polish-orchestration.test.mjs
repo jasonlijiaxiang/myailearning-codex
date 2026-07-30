@@ -168,6 +168,36 @@ async function createFixture(t, {
       path.join(fixtureRoot, "app/module-publication.mjs"),
       'export const publishedModuleSlugs = Object.freeze(["rag", "llm", "data-engineering"]);\n',
     )),
+    mkdir(path.join(fixtureRoot, "app"), { recursive: true }).then(() => Promise.all([
+      writeFile(
+        path.join(fixtureRoot, "app/module-brief-content.mjs"),
+        'import { fixtureBrief } from "./module-briefs-fixture.mjs";\nexport const moduleBriefs = Object.freeze({ llm: fixtureBrief });\n',
+      ),
+      writeFile(
+        path.join(fixtureRoot, "app/module-briefs-fixture.mjs"),
+        'export const fixtureBrief = Object.freeze({ slug: "llm" });\n',
+      ),
+      writeFile(
+        path.join(fixtureRoot, "app/module-learning-content.mjs"),
+        'export * from "./module-learning-fixture.mjs";\n',
+      ),
+      writeFile(
+        path.join(fixtureRoot, "app/module-learning-fixture.mjs"),
+        'export const fixtureLearning = Object.freeze({ llm: Object.freeze({}) });\n',
+      ),
+      writeFile(
+        path.join(fixtureRoot, "app/module-curriculum-content.mjs"),
+        'export { fixtureCurriculum } from "./module-curriculum-fixture.mjs";\nexport * as fixtureNamespace from "./module-curriculum-namespace-fixture.mjs";\n',
+      ),
+      writeFile(
+        path.join(fixtureRoot, "app/module-curriculum-fixture.mjs"),
+        'export const fixtureCurriculum = Object.freeze({ llm: Object.freeze([]) });\n',
+      ),
+      writeFile(
+        path.join(fixtureRoot, "app/module-curriculum-namespace-fixture.mjs"),
+        'export const fixtureNamespaceValue = Object.freeze({ llm: Object.freeze([]) });\n',
+      ),
+    ])),
     mkdir(path.join(fixtureRoot, "scripts"), { recursive: true }).then(() => Promise.all([
       writeFile(path.join(fixtureRoot, "scripts/pass.mjs"), ""),
       writeFile(path.join(fixtureRoot, "scripts/fail.mjs"), "process.exitCode = 9;\n"),
@@ -398,6 +428,102 @@ test("brief emits only project-relative paths and rejects a module from another 
     runCli(fixtureRoot, ["brief", "batch-01-foundations", "rag", "--json"]),
     /rag is not in batch-01-foundations/,
     "brief for a non-batch module",
+  );
+});
+
+test("brief and frozen baseline include content owners imported by an adapter", async (t) => {
+  const fixtureRoot = await createFixture(t);
+  await prepareFixture(fixtureRoot);
+  const ownerPath = "app/module-briefs-fixture.mjs";
+
+  const result = runCli(fixtureRoot, ["brief", "batch-01-foundations", "llm", "--json"]);
+  assertSucceeded(result, "brief with imported content owner");
+  const brief = JSON.parse(result.stdout);
+  assert.ok(
+    brief.modules[0].readPaths.includes(ownerPath),
+    "the read-only work package must expose the real imported content owner",
+  );
+  assert.ok(
+    brief.modules[0].readPaths.includes("app/module-learning-fixture.mjs"),
+    "the read-only work package must discover a content owner re-exported with export *",
+  );
+  assert.ok(
+    brief.modules[0].readPaths.includes("app/module-curriculum-fixture.mjs"),
+    "the read-only work package must discover a named re-exported content owner",
+  );
+  assert.ok(
+    brief.modules[0].readPaths.includes("app/module-curriculum-namespace-fixture.mjs"),
+    "the read-only work package must discover a namespace re-exported content owner",
+  );
+
+  const runtime = JSON.parse(
+    await readFile(
+      path.join(
+        fixtureRoot,
+        "knowledge/module-polish/.runtime/batch-01-foundations.json",
+      ),
+      "utf8",
+    ),
+  );
+  assert.ok(
+    runtime.criticalFiles.some((entry) => entry.path === ownerPath),
+    "the prepared baseline must freeze the real imported content owner",
+  );
+
+  await writeFile(
+    path.join(fixtureRoot, ownerPath),
+    'export const fixtureBrief = Object.freeze({ slug: "llm", changed: true });\n',
+  );
+  assertRejected(
+    runCli(fixtureRoot, ["set-batch", "batch-01-foundations", "in-progress", "start"]),
+    /Frozen critical file drifted before work began: app\/module-briefs-fixture\.mjs/,
+    "imported content owner drift",
+  );
+});
+
+test("content-owner discovery refuses an import that escapes the project", async (t) => {
+  const fixtureRoot = await createFixture(t);
+  const adapterPath = path.join(fixtureRoot, "app/module-learning-content.mjs");
+  await writeFile(adapterPath, 'export * from "../../outside-owner.mjs";\n');
+  for (const args of [
+    ["add", "app/module-learning-content.mjs"],
+    ["commit", "-qm", "unsafe owner import"],
+  ]) {
+    assertSucceeded(runProcess("git", args, { cwd: fixtureRoot }), `git ${args.join(" ")}`);
+  }
+
+  assertRejected(
+    runCli(fixtureRoot, ["prepare", "batch-01-foundations"]),
+    /Local content owner import escapes the project root/,
+    "escaping content owner import",
+  );
+});
+
+test("content-owner discovery refuses a symlinked owner", async (t) => {
+  const fixtureRoot = await createFixture(t);
+  const ownerPath = path.join(fixtureRoot, "app/module-briefs-fixture.mjs");
+  const targetPath = path.join(fixtureRoot, "app/module-briefs-fixture.target.mjs");
+  await rename(ownerPath, targetPath);
+  try {
+    await symlink("module-briefs-fixture.target.mjs", ownerPath);
+  } catch (error) {
+    if (["EACCES", "ENOSYS", "EPERM"].includes(error.code)) {
+      t.skip(`symlinks are unavailable: ${error.code}`);
+      return;
+    }
+    throw error;
+  }
+  for (const args of [
+    ["add", "-A"],
+    ["commit", "-qm", "symlinked owner"],
+  ]) {
+    assertSucceeded(runProcess("git", args, { cwd: fixtureRoot }), `git ${args.join(" ")}`);
+  }
+
+  assertRejected(
+    runCli(fixtureRoot, ["prepare", "batch-01-foundations"]),
+    /Refusing symlinked read path: app\/module-briefs-fixture\.mjs/,
+    "symlinked content owner",
   );
 });
 
