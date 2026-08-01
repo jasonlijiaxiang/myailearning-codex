@@ -39,6 +39,8 @@ test("English edition registers every published module", () => {
 
 test("shared English modules preserve canonical related-module routes and order", () => {
   for (const [slug, canonical] of Object.entries(moduleBriefs)) {
+    assert.equal(canonical.relatedSlugs.includes(slug), false, `${slug} relatedSlugs must not link to itself`);
+    assert.equal(new Set(canonical.relatedSlugs).size, canonical.relatedSlugs.length, `${slug} relatedSlugs must be unique`);
     assert.deepEqual(
       englishModuleRegistry[slug].relatedSlugs,
       canonical.relatedSlugs,
@@ -88,6 +90,44 @@ test("Batch 05 English content preserves the Agent adoption gate and MCP control
     assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
     assert.ok(englishModuleRegistry.mcp.sources[sourceId], `${sourceId} must have independent English source copy`);
   });
+});
+
+test("Batch 06 English content preserves runtime interoperability and operations boundaries", () => {
+  const a2a = JSON.stringify(englishModuleRegistry.a2a);
+  assert.match(a2a, /Message \| Task/);
+  assert.match(a2a, /v1\.0\.1/);
+  assert.match(a2a, /A2A-Version 1\.0/);
+  assert.match(a2a, /TASK_STATE_SUBMITTED, TASK_STATE_WORKING, TASK_STATE_INPUT_REQUIRED, TASK_STATE_AUTH_REQUIRED, TASK_STATE_COMPLETED, TASK_STATE_FAILED, TASK_STATE_CANCELED, and TASK_STATE_REJECTED/);
+  assert.match(a2a, /eight non-UNSPECIFIED operational/);
+  assert.doesNotMatch(a2a, /all eight specified Task states|Patch numbers do not appear/);
+  assert.match(a2a, /patch numbers should not be used[^.]*and must not participate in version negotiation/i);
+  assert.match(a2a, /COMPLETED[^.]*not[^.]*business acceptance|COMPLETED is not treated as business acceptance/);
+  ["a2a-release-1-0-1", "a2a-mcp-boundary"].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(englishModuleRegistry.a2a.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+
+  const gateway = englishModuleRegistry["ai-gateway"];
+  assert.equal(gateway.qa.length, 14);
+  assert.equal(gateway.qa.at(-2).id, "gateway-credential-not-user-authority");
+  assert.equal(gateway.qa.at(-1).id, "request-rate-limit-not-enough");
+  assert.equal(gateway.qa.at(-2).addedAt, "2026-08-01");
+  assert.equal(gateway.qa.at(-1).addedAt, "2026-08-01");
+  assert.match(JSON.stringify(gateway), /Exact and semantic caching/);
+  assert.match(JSON.stringify(gateway), /RPM limit cannot prevent token, concurrency, or budget exhaustion/);
+  ["cloudflare-ai-gateway-authentication", "cloudflare-ai-gateway-caching", "cloudflare-ai-gateway-spend-limits", "cloudflare-ai-gateway-dynamic-routing", "azure-apim-ai-gateway", "aws-builders-library-retries"].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(gateway.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+
+  const aiOps = englishModuleRegistry["ai-ops"];
+  assert.equal(aiOps.relatedSlugs.includes("ai-ops"), false);
+  assert.ok(aiOps.relatedSlugs.includes("predictive-ai-mlops"));
+  assert.match(JSON.stringify(aiOps), /head sampling.*tail sampling/is);
+  assert.match(JSON.stringify(aiOps), /tail sampler cannot recover traces dropped upstream/i);
+  assert.match(JSON.stringify(aiOps), /not traditional AIOps alert reduction or GPU-only monitoring/);
+  assert.ok(sourceLedger["opentelemetry-tail-sampling"]);
+  assert.ok(aiOps.sources["opentelemetry-tail-sampling"]);
 });
 
 test("English sections and rendered object anchors use stable, unique IDs", () => {

@@ -67,7 +67,7 @@ const mergedSolutionPatternsBrief = Object.freeze({
 
 const mergedAiOpsBrief = Object.freeze({
   ...aiOpsBrief,
-  definition: "AI 应用工程与运营（AI Application Engineering & GenAIOps）把模型、Prompt、检索、工具、工作流、策略、评估与运行配置作为一个可测试、可发布、可观测、可回滚的系统，并用生产证据持续改进。",
+  definition: "AI 应用工程与运营（AI Application Engineering & GenAIOps）把模型、Prompt、检索、工具、工作流、策略、评估与运行配置作为一个可测试、可发布、可观测、可停止并可恢复的系统，并用生产证据持续改进。",
   position: "横跨 RAG、Agent、多模态、AI 网关和模型服务的交付与运行生命周期；它管理跨组件发布单元、真实流量、质量、成本与事故闭环，不负责替代 Agent 编排、业务授权或各组件自己的事实源。",
   principles: Object.freeze([
     ...aiApplicationEngineeringContribution.principles,
@@ -84,15 +84,15 @@ const mergedAiOpsBrief = Object.freeze({
     ...aiApplicationEngineeringContribution.deepDives,
     ...aiOpsBrief.deepDives,
   ]),
-  criticalBoundary: aiApplicationEngineeringContribution.criticalBoundary,
+  criticalBoundary: `${aiApplicationEngineeringContribution.criticalBoundary} ${aiOpsBrief.criticalBoundary}`,
   cloudHooks: Object.freeze([
     ...aiApplicationEngineeringContribution.cloudHooks,
     ...aiOpsBrief.cloudHooks,
   ]),
   relatedSlugs: Object.freeze([
     ...new Set([
-      ...aiApplicationEngineeringContribution.relatedSlugs.filter((slug) => !["ai-application-engineering", "ai-finops"].includes(slug)),
-      ...aiOpsBrief.relatedSlugs.filter((slug) => !["ai-application-engineering", "ai-finops"].includes(slug)),
+      ...aiApplicationEngineeringContribution.relatedSlugs.filter((slug) => !["ai-application-engineering", "ai-finops", "ai-ops"].includes(slug)),
+      ...aiOpsBrief.relatedSlugs.filter((slug) => !["ai-application-engineering", "ai-finops", "ai-ops"].includes(slug)),
       "solution-patterns",
     ]),
   ]),

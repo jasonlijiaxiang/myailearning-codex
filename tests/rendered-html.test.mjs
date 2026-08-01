@@ -961,6 +961,45 @@ test("Model landscape route uses the claim-intake case to prove selection and ex
   assert.match(englishHtml, /Lost in the Middle/);
 });
 
+test("Batch 06 routes render the Message-or-Task, gateway-control, and AI Ops recovery contracts", async () => {
+  const [a2a, a2aEn, gateway, gatewayEn, aiOps, aiOpsEn] = await Promise.all([
+    renderHtml("/modules/a2a"),
+    renderHtml("/en/modules/a2a"),
+    renderHtml("/modules/ai-gateway"),
+    renderHtml("/en/modules/ai-gateway"),
+    renderHtml("/modules/ai-ops"),
+    renderHtml("/en/modules/ai-ops"),
+  ]);
+
+  assert.match(a2a, /Message \| Task/);
+  assert.match(a2a, /v1\.0\.1/);
+  assert.match(a2a, /A2A-Version[^<]*1\.0/);
+  assert.match(a2a, /TASK_STATE_SUBMITTED、TASK_STATE_WORKING、TASK_STATE_INPUT_REQUIRED、TASK_STATE_AUTH_REQUIRED/);
+  assert.match(a2a, /TASK_STATE_COMPLETED、TASK_STATE_FAILED、TASK_STATE_CANCELED/);
+  assert.match(a2a, /TASK_STATE_REJECTED/);
+  assert.match(a2aEn, /Message \| Task/);
+  assert.match(a2aEn, /v1\.0\.1/);
+  assert.match(a2aEn, /TASK_STATE_SUBMITTED, TASK_STATE_WORKING, TASK_STATE_INPUT_REQUIRED, TASK_STATE_AUTH_REQUIRED, TASK_STATE_COMPLETED, TASK_STATE_FAILED, TASK_STATE_CANCELED, and TASK_STATE_REJECTED/);
+
+  assert.match(gateway, /网关代管模型凭据后，是否就能代表用户访问所有模型和工具/);
+  assert.match(gateway, /按请求数限流，为什么仍可能被 Token、并发或预算打穿/);
+  assert.match(gateway, /精确缓存复用相同请求，语义缓存复用相似结果/);
+  assert.match(gateway, /新增于 2026-08-01/);
+  assert.match(gatewayEn, /Once the gateway manages provider credentials, can it act for the user across every model and tool/);
+  assert.match(gatewayEn, /Why can request-rate limiting still allow token, concurrency, or budget exhaustion/);
+  assert.match(gatewayEn, /Exact and semantic caching/);
+
+  assert.match(aiOps, /Head Sampling/);
+  assert.match(aiOps, /Tail Sampling/);
+  assert.match(aiOps, /不是传统 AIOps 的告警降噪/);
+  assert.match(aiOps, /跨区域多租户理赔助手/);
+  assert.match(aiOpsEn, /head sampling/i);
+  assert.match(aiOpsEn, /tail sampling/i);
+  assert.match(aiOpsEn, /tail sampler cannot recover traces dropped upstream/i);
+  assert.match(aiOpsEn, /not traditional AIOps alert reduction or GPU-only monitoring/);
+  assert.match(aiOpsEn, /cross-region, multi-tenant claim assistant/);
+});
+
 test("LLM foundations questions cover the theory readers need for architecture decisions", async () => {
   const html = await renderHtml("/modules/llm");
   const llmQa = moduleContentRegistry.llm.qa;

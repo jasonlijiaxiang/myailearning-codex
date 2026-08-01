@@ -746,6 +746,11 @@ const SHARED_CONTENT_OWNER_AGGREGATORS = Object.freeze([
   "app/module-learning-content.mjs",
 ]);
 
+const SHARED_PUBLIC_KNOWLEDGE_FILES = Object.freeze([
+  "app/knowledge-relations.mjs",
+  "app/module-extension-views.mjs",
+]);
+
 function staticModuleSpecifiers(source) {
   const specifiers = [];
   const patterns = [
@@ -815,6 +820,7 @@ async function moduleReadPaths(context, slug) {
     context.config.curation.terminology,
     "docs/MODULE-BUILD-STANDARD.md",
     "docs/MODULE-QUALITY-GATES.md",
+    ...SHARED_PUBLIC_KNOWLEDGE_FILES,
     `app/i18n/en/modules/${slug}.mjs`,
   ];
   const dedicated = new Set(["rag", "ai-agent", "prompt-engineering"]);

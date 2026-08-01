@@ -305,7 +305,7 @@ export const moduleQaExpansion = Object.freeze({
     qa(
       "多 Agent 为什么不能只靠普通消息队列互相发消息？",
       "消息队列能传递事件，但不会自动定义 Agent 能力发现、任务状态、产物、取消和协作语义。",
-      "若双方只是固定系统集成，事件或 API 往往更简单。跨团队 Agent 需要声明能力和身份，并围绕持久任务处理接受、进行中、需补充、完成、失败与取消；队列仍可作为传输或内部实现，但任务契约必须独立设计。",
+      "若双方只是固定系统集成，事件或 API 往往更简单。跨团队 Agent 需要处理直接 Message 与服务端 Task 两类响应，并围绕 SUBMITTED、WORKING、INPUT_REQUIRED、AUTH_REQUIRED、COMPLETED、FAILED、CANCELED、REJECTED 建立契约；队列仍可作为传输或内部实现。",
       "追问客户：协作对象是否需要独立决定如何完成任务？任务会持续多久，谁拥有最终状态和产物？",
       "采用判断",
       "A2A 任务模型 + 分布式系统边界",
@@ -316,7 +316,7 @@ export const moduleQaExpansion = Object.freeze({
     qa(
       "A2A 任务失败或超时后，谁负责恢复？",
       "委托方负责业务超时和最终决策，执行方负责报告可解释状态；双方必须约定幂等、取消、重试和人工接管。",
-      "网络超时不等于任务未执行，盲目重试可能重复下单或审批。应使用稳定任务 ID 和幂等键查询权威状态，把技术状态与业务终态分开，并约定取消是否可达、产物是否部分有效、何时升级人工。",
+      "网络超时不等于任务未执行，盲目重试可能重复下单或审批。收到 Task ID 后先查询协议状态，再用业务幂等键与权威系统核对副作用；CancelTask 可能不可执行，也不撤销已发生动作。协议状态、Artifact 验收和业务终态必须分开。",
       "追问客户：重复执行最坏会改变什么？超时后能否查询权威状态，取消请求是保证还是尽力而为？",
       "故障恢复",
       "A2A 任务生命周期 + 业务幂等",
@@ -399,20 +399,20 @@ export const moduleQaExpansion = Object.freeze({
       "路由策略",
       "策略控制 + 场景评估",
       [
-        { sourceId: "cloudflare-ai-gateway", supports: "支持 AI 网关集中代理、分析和管理多个模型提供方调用。" },
+        { sourceId: "cloudflare-ai-gateway-dynamic-routing", supports: "支持 AI 网关按请求属性和端点配置执行动态路由；候选等价性仍需应用验证。" },
         { sourceId: "nist-genai-profile", supports: "支持将风险容忍度和使用情境纳入生成式 AI 控制选择。" },
       ],
     ),
     qa(
       "网关层重试和回退为什么可能让故障更严重？",
       "因为应用、SDK、网关和供应商若同时重试，会放大流量、成本和重复动作，并掩盖真实失败语义。",
-      "应统一每层超时预算和重试所有权，只对明确可重试且幂等的操作尝试有限次数。流式响应已经部分返回、工具调用可能改变状态或供应商限流时，通常不能无条件重放；模型回退还需检查上下文窗口、Schema 和安全能力是否兼容。",
+      "应指定一个重试所有者、总 Deadline 和有限 attempt 预算，只对明确瞬态且幂等的操作重试。流式响应已经部分返回、工具调用可能改变状态或供应商限流时，通常不能无条件重放；模型回退还需检查上下文窗口、Schema 和安全能力是否兼容。",
       "追问客户：当前哪些层会重试？一次用户请求最坏可放大成多少模型调用，是否可能重复执行工具？",
       "可靠性",
       "重试预算 + 可观测性",
       [
-        { sourceId: "opentelemetry-genai-semconv", supports: "支持用统一生成式 AI 遥测关联请求、调用和 Agent 轨迹。" },
-        { sourceId: "cloudflare-ai-gateway", supports: "支持 AI 网关处于模型流量集中控制路径，因而需要明确其缓存、限流和故障策略。" },
+        { sourceId: "aws-builders-library-retries", supports: "支持多层重试会放大负载，并应使用总超时、有限重试、幂等、退避和抖动。" },
+        { sourceId: "opentelemetry-genai-semconv", supports: "支持用统一生成式 AI 遥测关联逻辑请求与实际调用。" },
       ],
     ),
   ]),

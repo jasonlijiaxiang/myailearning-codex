@@ -69,14 +69,14 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   a2a: {
-    outcomes: ["区分 A2A 与 MCP 的职责边界", "理解 Agent Card、Task、Message、Artifact 与状态变化", "为长任务设计断线续传和异步交付", "建立跨组织 Agent 的信任与审计"],
+    outcomes: ["区分 A2A 与 MCP Tasks 的职责边界", "处理 Agent Card 后的 Message | Task 双路径", "按精确状态为长任务设计恢复与取消", "建立跨组织 Agent 的信任、验收与互操作测试"],
     route: [
       { title: "先判断是否需要协议边界", learn: "区分单进程编排、内部多 Agent 和跨系统协作。", checkpoint: "能说明为什么不是增加一个本地子 Agent 就够了。" },
-      { title: "再掌握任务状态机", learn: "理解输入消息、处理中间状态、等待输入、产物和终态。", checkpoint: "能设计重复投递、断线恢复和取消语义。" },
+      { title: "再选择 Message 或 Task", learn: "理解即时 Message、服务端 Task、精确中断态与终态，以及可选 Artifact。", checkpoint: "客户端能处理两类响应，并设计重复投递、断线恢复和取消语义。" },
       { title: "最后处理信任与运营", learn: "验证能力声明、调用身份、产物权限和跨域审计。", checkpoint: "能在不暴露内部 Prompt 的情况下证明任务执行边界。" },
     ],
     labs: [
-      { title: "设计一个可恢复的长任务", scenario: "研究 Agent 需要数分钟生成报告，中途可能等待用户补充文件。", tasks: ["定义任务状态、事件和终态", "设计断线重连、重复消息和取消处理", "规定 Artifact 的版本、访问与保留"], deliverable: "任务状态机与异常路径测试表", acceptance: "刷新、断线和重复投递不会创建不可解释的重复任务或丢失产物。", sourceIds: ["a2a-concepts", "a2a-specification", "opentelemetry-semconv"] },
+      { title: "设计一个可恢复的长任务", scenario: "理赔受理 Agent 既可能即时回答材料问题，也可能委托跨区域专业 Agent 完成数分钟核验并等待补件。", tasks: ["为同一 SendMessage 覆盖直接 Message 与 Task 两类响应", "验证八个非 UNSPECIFIED 操作状态（正式枚举均以 TASK_STATE_ 开头）、断线重连、重复消息和取消", "规定可选 Artifact 的访问、验收与业务终态核对"], deliverable: "双路径契约、任务状态机与异常测试表", acceptance: "客户端不假设每次都有 Task；刷新、断线和重复投递不会创建不可解释的动作，COMPLETED 也不会被误当业务验收。", sourceIds: ["a2a-concepts", "a2a-specification", "a2a-release-1-0-1"] },
       { title: "划分 A2A 与内部编排", scenario: "企业内已有多 Agent 框架，同时要连接合作伙伴的独立 Agent。", tasks: ["标出内部可共享状态与外部最小契约", "确定能力发现、身份和审计责任", "设计外部 Agent 不可用时的降级"], deliverable: "协议边界图与责任矩阵", acceptance: "内部实现可独立演进，外部协作只依赖稳定契约且故障不会扩散。", sourceIds: ["a2a-concepts", "anthropic-effective-agents", "nist-zero-trust"] },
     ],
   },
@@ -115,8 +115,8 @@ const baseModuleLearningContent = Object.freeze({
       { title: "最后验证端到端结果", learn: "关联应用任务、网关决策、模型调用、工具动作和业务终态。", checkpoint: "能证明降本没有以质量、隐私或可靠性为代价。" },
     ],
     labs: [
-      { title: "设计一次受控路由发布", scenario: "团队要把 30% 简单请求切到更便宜的模型。", tasks: ["定义可路由流量与保护组", "离线回放并以影子模式验证", "设置分组指标、放量门槛和自动回退"], deliverable: "策略版本、验证证据与回滚手册", acceptance: "高风险请求不进入实验，质量和尾延迟退化能在用户投诉前被发现。", sourceIds: ["cloudflare-ai-gateway", "opentelemetry-genai-semconv", "nist-genai-profile"] },
-      { title: "评估语义缓存是否值得", scenario: "FAQ 流量高，但问题包含个人信息、时效信息和相似但不同的业务条件。", tasks: ["划分可缓存与禁止缓存请求", "定义相似阈值、租户隔离和失效条件", "比较命中率、错误复用风险和真实成本"], deliverable: "缓存策略与误命中测试集", acceptance: "缓存键包含必要权限与版本边界，收益基于业务成功而非仅命中率。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
+      { title: "设计一次受控路由发布", scenario: "团队要把 30% 简单请求切到更便宜的模型。", tasks: ["定义可路由流量与保护组", "离线回放并以影子模式验证", "设置分组指标、放量门槛和自动回退"], deliverable: "策略版本、验证证据与回滚手册", acceptance: "高风险请求不进入实验，质量和尾延迟退化能在用户投诉前被发现。", sourceIds: ["cloudflare-ai-gateway-dynamic-routing", "opentelemetry-genai-semconv", "nist-genai-profile"] },
+      { title: "评估语义缓存是否值得", scenario: "FAQ 流量高，但问题包含个人信息、时效信息和相似但不同的业务条件。", tasks: ["先区分相同请求的精确缓存与相似请求的语义缓存", "定义相似阈值、租户隔离和失效条件", "比较命中率、错误复用风险和真实成本"], deliverable: "两类缓存策略与误命中测试集", acceptance: "缓存资格包含必要权限与版本边界，收益基于业务成功而非仅命中率。", sourceIds: ["cloudflare-ai-gateway-caching", "azure-apim-ai-gateway", "nist-zero-trust"] },
     ],
   },
   "ai-ops": {
@@ -129,7 +129,7 @@ const baseModuleLearningContent = Object.freeze({
     labs: [
       ...applicationFinopsLearning["ai-application-engineering"].labs,
       { title: "定义最小 GenAI Trace", scenario: "一个 Agent 请求穿过网关、RAG、模型和两个工具，但当前只能看到 API 延迟。", tasks: ["定义跨组件共同 Trace 与版本字段", "区分可保留元数据和受限原文", "把最终业务成功与成本归到同一任务"], deliverable: "遥测字段表、采样和保留策略", acceptance: "一次失败可跨组件关联，且敏感数据收集遵守最小化原则。", sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-zero-trust"] },
-      { title: "演练静默质量退化", scenario: "错误率和 P95 正常，但用户完成任务的比例持续下降。", tasks: ["建立模型、数据、Prompt、工具和外部依赖的变更时间线", "用分层样本和线上证据复现", "决定回滚、降级与修复样本回流"], deliverable: "事故归因图、处置记录和新增回归集", acceptance: "根因不被平均指标掩盖，修复后同类失败能被自动或抽样发现。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
+      { title: "演练跨区域理赔助手的静默质量退化", scenario: "跨区域多租户理赔助手的错误率和 P95 正常，但某地区材料核验完成率持续下降。", tasks: ["建立模型、区域数据、Prompt、工具、网关策略和外部依赖的变更时间线", "按地区、租户和任务风险用线上 Trace 与分层样本复现", "执行预验证回滚或降级，核对权威理赔状态并让已裁决样本回流"], deliverable: "事故归因图、业务恢复记录和新增回归集", acceptance: "平均指标不能掩盖地区退化；技术恢复与业务恢复各有证据，修复后同类失败能被自动或抽样发现。", sourceIds: ["nist-genai-profile", "opentelemetry-tail-sampling", "opentelemetry-genai-semconv"] },
     ],
   },
   llm: {

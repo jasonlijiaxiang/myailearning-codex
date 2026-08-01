@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:36466afea1a682094fabae4745cbdc7695de49ee274afed13703f9c3bafc711d",
-    "enContentHash": "sha256:e8b7bcf725262a54ddf52daa9cb8f56f1ad2d35820d87842a29941c1df966614",
+    "zhContentHash": "sha256:957dfd7296682521eb916e39aae16f8ddb384b305dd5c29ed3b290dca2b7b9ef",
+    "enContentHash": "sha256:afb5f216d30ac51c24788f5ccb4bee7c5c823bedbf4eb2cb33d86babc6e02e38",
     "termIds": [
       "ai-application-engineering",
       "ai-ops",
@@ -33,7 +33,8 @@
       "nist-zero-trust",
       "openai-eval-best-practices",
       "opentelemetry-genai-semconv",
-      "opentelemetry-semconv"
+      "opentelemetry-semconv",
+      "opentelemetry-tail-sampling"
     ]
   },
   "stage": "ultra-exception",

@@ -107,23 +107,23 @@
     },
     {
       "id": "batch-06-runtime-interoperability",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "a2a",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "Canonical integration, evidence gate, and independent English review passed."
         },
         {
           "slug": "ai-gateway",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "Canonical integration, evidence gate, and independent English review passed."
         },
         {
           "slug": "ai-ops",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "Canonical integration, evidence gate, and independent English review passed."
         }
       ]
     },

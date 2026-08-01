@@ -1213,9 +1213,9 @@ export const mcpBrief = {
 export const a2aBrief = {
   slug: "a2a",
   definition:
-    "智能体间协议（Agent2Agent Protocol, A2A）让独立 Agent 跨框架、系统或组织发现能力、委派任务、交换状态并交付结果。",
+    "智能体间协议（Agent2Agent Protocol, A2A）让应用、服务或 Agent 与独立远端 Agent 发现能力并交互；远端既可直接返回 Message，也可创建有状态 Task，并通过状态与可选 Artifact 交付结果。",
   position:
-    "位于协议与互操作层，解决 Agent 与 Agent 的水平协作；单个 Agent 内部编排由本地框架负责，工具和数据接入通常由 MCP 或 API 负责。",
+    "位于协议与互操作层，解决独立 Agent 的水平协作；它不替代本地编排、消息队列、业务工作流，工具和数据接入通常仍由 MCP 或 API 负责。",
   presentation: "loop",
   principleTitle: "以可追踪任务协作，而不是共享内部推理",
   principles: [
@@ -1231,25 +1231,25 @@ export const a2aBrief = {
       zh: "有状态任务",
       en: "Stateful Task",
       explanation:
-        "Task 是跨轮次、跨时间的工作单元，拥有明确状态；服务端任务存储是异步协作的事实源。",
+        "需要跟踪、等待或恢复时，服务端创建 Task 并维护明确状态；即时、自包含交互可以直接返回 Message，不必强制建 Task。",
       decision:
-        "为状态转换、终态、取消、重试和超时建立规则；失败后是否创建新 Task 应可审计。",
+        "客户端必须同时处理 Message 与 Task；Task 实现还要为状态恢复、取消、重试和超时建立可审计规则。",
     },
     {
       zh: "消息与产物分离",
       en: "Messages, Parts & Artifacts",
       explanation:
-        "Message 表达交互，Part 承载文本、文件或结构化数据，Artifact 表达可交付结果。",
+        "Message 表达即时响应或任务交互，Part 承载内容，Artifact 是 Task 的可选输出；关键状态和任务结果不能只依赖可能未持久保存的 Message。",
       decision:
-        "对大型文件传递受控对象地址和元数据，避免把敏感二进制内容无边界嵌入消息。",
+        "对大型文件使用受控对象引用，并由接收方验证媒体类型、完整性、安全与业务接受条件。",
     },
     {
       zh: "多种结果交付",
       en: "Blocking, Polling, Streaming & Push",
       explanation:
-        "短任务可以同步等待，长任务可轮询、流式接收或由服务端回调；交付方式决定恢复和安全设计。",
+        "直接 Message、Task 轮询、订阅、流式和 Push 对应不同响应节奏与客户端在线条件；交付通道不等于权威任务状态。",
       decision:
-        "按任务时长、网络边界和客户端在线能力选择，并为回调设置签名、地址验证和幂等。",
+        "按是否需要状态跟踪、任务时长、网络边界和客户端在线能力选择，并为回调设置验证、认证和幂等。",
     },
     {
       zh: "不透明协作边界",
@@ -1282,11 +1282,11 @@ export const a2aBrief = {
     {
       question: "任务应同步返回还是异步交付？",
       signal:
-        "任务是否可能长时间运行、等待人或外部系统，以及客户端能否维持连接。",
+        "交互能否一次自包含完成，还是需要跟踪进度、等待人或外部系统，以及客户端能否维持连接。",
       recommendation:
-        "短任务用 Blocking；可查询长任务用 Polling；渐进结果用 Streaming；离线通知用受控 Push。",
+        "即时结果可直接返回 Message；需要跟踪才创建 Task，再按连接条件选择阻塞、轮询、订阅、流式或受控 Push。",
       boundary:
-        "Push 需要回调地址验证、签名、幂等和限流，不能接受任意模型生成 URL。",
+        "Task 与 Artifact 都不是每次交互的必经对象；Push 还需要地址验证、认证、幂等和限流。",
     },
     {
       question: "跨组织 Agent 如何建立信任？",
@@ -1309,24 +1309,24 @@ export const a2aBrief = {
   ],
   deepDiveTitle: "把跨 Agent 协作设计成可恢复的分布式任务",
   deepDiveLead:
-    "A2A 的售前价值不在于让更多 Agent 对话，而在于跨团队、跨系统和跨信任域的委派能够持久化、恢复、验收并明确责任。",
+    "A2A 的售前价值不在于让更多 Agent 对话，而在于即时交互与状态化委派都能跨团队、跨系统和跨信任域形成明确契约、恢复与验收责任。",
   deepDives: [
     {
       kind: "sequence",
       eyebrow: "TASK LIFECYCLE",
-      title: "长任务如何跨断线、等待与失败继续推进",
+      title: "先选择 Message 或 Task，再让状态化工作跨断线恢复",
       intro:
-        "Task 应成为服务端事实源，网络连接只是结果交付通道；每次状态变化都要有明确触发者、授权和恢复语义。",
+        "远端可以直接返回 Message，也可以创建 Task；一旦选择 Task，连接只是更新通道，状态、授权和恢复语义必须由实现明确保存。",
       items: [
         {
-          name: "委派并接纳任务",
-          en: "Submit & Accept",
+          name: "发送 Message 并选择响应对象",
+          en: "Send Message & Choose Response",
           mechanism:
-            "调用方依据已验证的 Agent Card 提交目标、输入、约束和关联 ID，提供方创建稳定 Task ID。",
+            "调用方依据已验证的 Agent Card 发送 Message；远端对即时交互直接返回 Message，对需跟踪工作创建服务端 Task ID。",
           decision:
-            "在 API Gateway 验证主体、Skill Scope 与租户，并将任务契约写入数据库或持久任务存储。",
+            "契约测试必须覆盖 Message 与 Task 两条路径；需要恢复的实现要持久化 Task 契约与状态。",
           boundary:
-            "接收请求不等于接受无限范围目标，服务端必须校验契约。",
+            "接收请求不等于接受无限范围目标；Task 的持久化方案是实现责任，不是协议指定数据库。",
         },
         {
           name: "执行并发布进度",
@@ -1352,9 +1352,9 @@ export const a2aBrief = {
           name: "进入可判定终态",
           en: "Terminal State",
           mechanism:
-            "完成、失败、取消和拒绝应具有不同语义，并记录最终错误、补偿状态和是否可重试。",
+            "规范共有九个 TaskState 枚举；TASK_STATE_UNSPECIFIED 只表示未知，另外八个操作状态为 TASK_STATE_SUBMITTED、TASK_STATE_WORKING、TASK_STATE_INPUT_REQUIRED、TASK_STATE_AUTH_REQUIRED、TASK_STATE_COMPLETED、TASK_STATE_FAILED、TASK_STATE_CANCELED 与 TASK_STATE_REJECTED。",
           decision:
-            "业务系统根据终态驱动后续流程；重复交付使用幂等键，失败重试遵守预算和策略。",
+            "中断态恢复原 Task；终态不可继续写入，修订工作创建新 Task 并由客户端维护关联。重复交付仍使用业务幂等键。",
           boundary:
             "网络超时不能直接被解释为任务失败，也不能盲目重复执行高影响动作。",
         },
@@ -1362,9 +1362,9 @@ export const a2aBrief = {
           name: "交付并验收 Artifact",
           en: "Deliver & Verify Artifact",
           mechanism:
-            "产物与 Task、版本、媒体类型、校验值和访问策略关联，由调用方按业务契约验证。",
+            "Task 可以没有 Artifact；有产物时，客户端按媒体类型、来源、安全、访问和业务条件独立验收。",
           decision:
-            "大文件使用对象存储短期地址、KMS 和完整性校验；验收结果回写任务与审计链。",
+            "大文件使用受控对象引用；跨 Task 版本谱系和接受或拒绝记录由客户端与业务应用管理。",
           boundary:
             "Task completed 只表示提供方结束执行，不自动证明产物满足调用方业务标准。",
         },
@@ -1424,7 +1424,7 @@ export const a2aBrief = {
     },
   ],
   criticalBoundary:
-    "A2A 解决 Agent 与 Agent 的任务协作，MCP 解决 Agent 与工具或数据的调用；发现、互操作和能力自声明都不等于身份可信或授权成立。",
+    "A2A 解决独立 Agent 的 Message 或 Task 协作，MCP 解决应用与工具或数据的调用；发现、互操作、技术 COMPLETED 和能力自声明都不等于身份可信、业务授权或结果验收成立。",
   cloudHooks: [
     {
       stage: "Agent 运行与目录（Runtime & Directory）",
@@ -1455,20 +1455,20 @@ export const a2aBrief = {
   qa: [
     {
       q: "A2A 和 MCP 到底有什么区别？",
-      a: "A2A 面向独立 Agent 之间的任务委派与状态协作；MCP 面向 AI 应用与工具、资源和提示模板的连接。",
+      a: "A2A 面向客户端与独立远端 Agent 的 Message 或 Task 协作；MCP 面向 AI 应用与工具、资源和提示模板的连接。",
       depth:
-        "一个采购 Agent 可以通过 A2A 把合同审查委派给法务 Agent，法务 Agent 再通过 MCP 调用合同库和审批工具。两者可以组合，但任务状态、工具权限和审计责任要分别设计。",
+        "一个理赔受理 Agent 可通过 A2A 向跨区域专业 Agent 获取即时 Message，或委派一个有状态 Task；专业 Agent 再通过 MCP 调用知识与工具。A2A Task 是核心跨 Agent 对象，MCP Tasks 是可选长请求扩展，两类 ID、状态、取消和业务终态只能显式映射。",
       ask: "追问客户：对方是能独立接任务并交付产物的 Agent，还是一个数据库/API 工具？",
       tag: "协议边界",
       basis: "A2A 概念模型 + MCP 架构",
       evidence: [
         {
-          sourceId: "a2a-concepts",
-          supports: "支持 A2A 围绕 Agent Card、Task、Message、Part 与 Artifact 进行协作。",
+          sourceId: "a2a-mcp-boundary",
+          supports: "支持 A2A 面向独立 Agent 协作、MCP 面向工具与资源连接的互补边界。",
         },
         {
-          sourceId: "mcp-architecture",
-          supports: "支持 MCP 以 Host、Client、Server 连接工具与上下文能力。",
+          sourceId: "mcp-tasks-extension",
+          supports: "支持 MCP Tasks 是需显式采用的长请求扩展，与 A2A 的跨 Agent Task 语义不同。",
         },
       ],
     },
@@ -1493,9 +1493,9 @@ export const a2aBrief = {
     },
     {
       q: "长任务如何避免断线后丢失？",
-      a: "服务端应持久化 Task 状态，客户端通过 Task ID 恢复查询或订阅，而不是把网络连接当作唯一状态。",
+      a: "需要跟踪的工作应由远端返回 Task；实现必须让客户端可通过 Task ID 恢复查询或订阅，而不是把网络连接或 Message 当作唯一状态。",
       depth:
-        "状态转换、终态、取消、输入等待和授权等待都要被记录。流式连接中断后可重新查询任务；Push 失败要重试且保持幂等；Artifact 应与 Task 和版本关联。",
+        "实现应保存八个非 UNSPECIFIED 操作状态（正式枚举均以 TASK_STATE_ 开头），并在流式中断后支持查询或订阅。Push 失败要重试且保持幂等；关键事实不应只存在于可能未持久的 Message。协议定义对象与操作，不指定数据库或 Exactly-once。",
       ask: "追问客户：任务状态存在哪里，断线、重复回调和服务重启后如何恢复？",
       tag: "可靠性",
       basis: "A2A Task 模型",
@@ -1536,10 +1536,10 @@ export const a2aBrief = {
   ],
   evidenceCards: [
     {
-      metric: "Card → Task → Artifact",
-      title: "从能力发现走到可交付任务",
-      finding: "Agent Card 描述可做什么，Task 保存协作状态，Artifact 承载可验收产物。",
-      boundary: "能力自声明不等于通过身份验证或质量认证。",
+      metric: "Card → Message | Task → Artifact?",
+      title: "发现之后有两条响应路径",
+      finding: "Agent Card 描述候选能力；远端可直接返回 Message，或创建 Task 并按需形成 Artifact。",
+      boundary: "Artifact 不是必选项，能力自声明、协议终态和产物交付也都不构成业务验收。",
       sourceId: "a2a-concepts",
       accent: true,
     },
@@ -1555,7 +1555,7 @@ export const a2aBrief = {
       title: "A2A 与 MCP 的方向不同",
       finding: "A2A 负责独立 Agent 间协作，MCP 负责应用与工具、资源之间的互操作。",
       boundary: "一个系统可能同时使用两者，但不能共用一套授权假设。",
-      sourceId: "mcp-architecture",
+      sourceId: "a2a-mcp-boundary",
     },
     {
       metric: "契约而非思维链",

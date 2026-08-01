@@ -197,6 +197,14 @@ async function createFixture(t, {
         path.join(fixtureRoot, "app/module-curriculum-namespace-fixture.mjs"),
         'export const fixtureNamespaceValue = Object.freeze({ llm: Object.freeze([]) });\n',
       ),
+      writeFile(
+        path.join(fixtureRoot, "app/module-extension-views.mjs"),
+        'export const moduleExtensionViews = Object.freeze({ llm: Object.freeze({}) });\n',
+      ),
+      writeFile(
+        path.join(fixtureRoot, "app/knowledge-relations.mjs"),
+        'export const explicitTermRelations = Object.freeze([]);\n',
+      ),
     ])),
     mkdir(path.join(fixtureRoot, "scripts"), { recursive: true }).then(() => Promise.all([
       writeFile(path.join(fixtureRoot, "scripts/pass.mjs"), ""),
@@ -455,6 +463,14 @@ test("brief and frozen baseline include content owners imported by an adapter", 
     brief.modules[0].readPaths.includes("app/module-curriculum-namespace-fixture.mjs"),
     "the read-only work package must discover a namespace re-exported content owner",
   );
+  assert.ok(
+    brief.modules[0].readPaths.includes("app/module-extension-views.mjs"),
+    "the read-only work package must include shared public module views",
+  );
+  assert.ok(
+    brief.modules[0].readPaths.includes("app/knowledge-relations.mjs"),
+    "the read-only work package must include shared public knowledge relations",
+  );
 
   const runtime = JSON.parse(
     await readFile(
@@ -468,6 +484,14 @@ test("brief and frozen baseline include content owners imported by an adapter", 
   assert.ok(
     runtime.criticalFiles.some((entry) => entry.path === ownerPath),
     "the prepared baseline must freeze the real imported content owner",
+  );
+  assert.ok(
+    runtime.criticalFiles.some((entry) => entry.path === "app/module-extension-views.mjs"),
+    "the prepared baseline must freeze shared public module views",
+  );
+  assert.ok(
+    runtime.criticalFiles.some((entry) => entry.path === "app/knowledge-relations.mjs"),
+    "the prepared baseline must freeze shared public knowledge relations",
   );
 
   await writeFile(

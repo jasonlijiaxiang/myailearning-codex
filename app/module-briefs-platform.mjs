@@ -3,7 +3,7 @@ export const aiGatewayBrief = {
   definition:
     "AI 网关（AI Gateway）是位于 AI 应用、Agent 与模型或工具服务之间的统一流量与治理入口：它把接入、身份、路由、限流、安全、成本和可观测控制集中到可审计的执行面。",
   position:
-    "上接聊天应用、RAG、Agent 与业务 API，下接公有云模型 API、第三方模型、自托管推理端点及 MCP Server；它解决的是跨提供方治理，不负责模型内部推理或业务流程编排。",
+    "上接聊天应用、RAG、Agent 与业务 API，下接公有云模型 API、第三方模型、自托管推理端点及 MCP Server；它是跨提供方策略执行路径，不负责模型内部推理、应用工作流、离线评估，也不负责持续监控和改进线上业务结果。",
   presentation: "pipeline",
   principleTitle: "一条 AI 请求如何通过治理链",
   principles: [
@@ -113,7 +113,7 @@ export const aiGatewayBrief = {
       title: "网关策略变更的五步安全发布链",
       intro:
         "路由、限流、内容检查或日志策略都可能改变生产结果；把策略当配置直接全量生效，会让网关自身成为不可追踪的变更源。",
-      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv", "cloudflare-ai-gateway"],
+      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv", "cloudflare-ai-gateway-dynamic-routing"],
       items: [
         {
           name: "冻结策略包",
@@ -158,7 +158,7 @@ export const aiGatewayBrief = {
       title: "网关上线后最容易被误判的五类故障",
       intro:
         "许多问题表面上像模型慢、提供方不稳或用户超额，根因却是网关与上游、下游控制重复或语义丢失。",
-      sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "cloudflare-ai-gateway", "nist-zero-trust"],
+      sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "aws-builders-library-retries", "azure-apim-ai-gateway", "nist-zero-trust"],
       items: [
         {
           name: "尾延迟突然放大",
@@ -199,7 +199,7 @@ export const aiGatewayBrief = {
     },
   ],
   criticalBoundary:
-    "AI 网关不会自动提高模型事实正确性，也不替代推理引擎、MCP / A2A 协议、Agent 工作流或业务系统授权。它提供统一的控制与证据面；最终质量仍取决于模型、数据、Prompt、工具结果、应用约束和评估。",
+    "AI 网关不会自动提高模型事实正确性，也不替代推理引擎、MCP / A2A 协议、Agent 工作流、Evaluation、AI Ops 或业务系统授权。它提供统一的策略执行与证据面；最终质量、发布判断、运营恢复和业务权限仍由各责任层完成。",
   cloudHooks: [
     {
       stage: "入口与身份（Ingress & Identity）",
@@ -641,7 +641,7 @@ export const aiOpsBrief = {
       explanation:
         "模型、Prompt、检索策略、工具 Schema、护栏和评估集共同构成一个可发布版本。",
       decision:
-        "发布采用回放、影子、金丝雀或分阶段放量，并保留一键回滚与变更关联。",
+        "发布采用回放、影子、金丝雀或分阶段放量，并保留预验证回滚动作与变更关联。",
     },
     {
       zh: "漂移与反馈",
@@ -770,7 +770,7 @@ export const aiOpsBrief = {
       title: "五个看似正确、实际可能误导的运营指标",
       intro:
         "单一指标通常只描述系统的一面；每个信号都要配对业务终态、分组和独立校验后才能用于发布或成本判断。",
-      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"],
+      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv", "openai-eval-best-practices"],
       items: [
         {
           name: "平均质量分上升",
@@ -796,7 +796,7 @@ export const aiOpsBrief = {
         {
           name: "LLM Judge 一致通过",
           en: "Judge Pass Rate",
-          mechanism: "裁判可能偏好更长回答、继承同类模型偏差，或在 Prompt 和版本变化后发生漂移。",
+          mechanism: "裁判可能与人工判断系统性不一致，并在 Prompt、Rubric、模型或服务版本变化后发生量尺漂移。",
           decision: "定期用人工金标校准，检查误报漏报，并将裁判模型、Prompt 和阈值纳入发布版本。",
           boundary: "裁判适合扩展抽样，不适合作为高风险动作的唯一授权依据。",
         },
@@ -838,7 +838,7 @@ export const aiOpsBrief = {
       discover: "日志可保存哪些内容、多久、在哪个地域？成本需要按部门、应用还是业务任务归集？",
     },
   ],
-  relatedSlugs: ["evaluation", "ai-gateway", "ai-infra-platform", "ai-agent", "security", "data-engineering"],
+  relatedSlugs: ["evaluation", "ai-gateway", "ai-infra-platform", "ai-agent", "security", "data-engineering", "predictive-ai-mlops"],
   qa: [
     {
       q: "我们已经有 Datadog、Prometheus 或云监控，还需要 AI 可观测吗？",

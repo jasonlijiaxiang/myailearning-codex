@@ -77,6 +77,7 @@ const explicitTermRelationInputs = [
   Object.freeze({ from: "ocr", to: "document-intelligence", type: "component", explanation: "OCR 恢复图片或扫描件中的文字与位置，是文档智能结构恢复的一部分。" }),
   Object.freeze({ from: "asr", to: "multimodal", type: "component", explanation: "ASR 把音频转换为带时间关系的文本，为多模态理解提供语音输入。" }),
   Object.freeze({ from: "agent-card", to: "a2a", type: "component", explanation: "Agent Card 为 A2A 协作提供身份、端点、技能和交互能力声明。" }),
+  Object.freeze({ from: "a2a-message", to: "a2a", type: "component", explanation: "A2A Message 承载即时响应或任务交互，但不应作为关键任务状态或产物的唯一持久载体。" }),
   Object.freeze({ from: "a2a-task", to: "agent-collaboration", type: "component", explanation: "A2A Task 用状态化任务对象承载跨智能体委托、进度与完成语义。" }),
   Object.freeze({ from: "artifact", to: "a2a-task", type: "component", explanation: "Artifact 是 A2A Task 交付的任务结果，需要保留版本、权限与验收关系。" }),
 

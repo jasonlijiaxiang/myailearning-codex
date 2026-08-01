@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:430bc684dffa5ec63241942d0dec6acd7aa12333ef31783dc50979e80fd7ecbc",
-    "enContentHash": "sha256:10edd01eac7672a10d4f1237a75701c4b53b17f2c5f59833ff878933a3f840f8",
+    "zhContentHash": "sha256:981883d6f5632aa01409d9f60a7aeb0d34936a41e7736ad38897165eb2d598dc",
+    "enContentHash": "sha256:d2e0ad09f0192a8ea318e2c158a57813de7e16c22a826f2c71660cf97ebbbe89",
     "termIds": [
       "ai-gateway",
       "api",
@@ -22,7 +22,13 @@
       "slo"
     ],
     "sourceIds": [
+      "aws-builders-library-retries",
+      "azure-apim-ai-gateway",
       "cloudflare-ai-gateway",
+      "cloudflare-ai-gateway-authentication",
+      "cloudflare-ai-gateway-caching",
+      "cloudflare-ai-gateway-dynamic-routing",
+      "cloudflare-ai-gateway-spend-limits",
       "mcp-authorization",
       "nist-genai-profile",
       "nist-zero-trust",

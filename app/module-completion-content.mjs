@@ -81,7 +81,7 @@ export const completionLearning = Object.freeze({
       { title: "验证采用收益", learn: "把 A2A 与 API、事件、工作流和内部多 Agent 编排放在同一问题下比较。", checkpoint: "只有独立 Agent 协作确有价值时才增加协议。" },
     ]),
     labs: freezeLabs([
-      { title: "设计跨团队 Agent 委托契约", scenario: "销售 Agent 委托交付 Agent 创建一份需要多小时完成的方案资产。", tasks: ["定义 Agent Card、输入、身份、预算和预期 Artifact", "设计进行中、补充信息、完成、失败与取消状态", "演练超时、重复委托、部分产物和人工接管"], deliverable: "A2A 长任务契约与恢复图", acceptance: "任务状态、业务结果、责任人和副作用恢复分别明确。", sourceIds: ["a2a-concepts", "a2a-specification", "nist-genai-profile"] },
+      { title: "设计跨团队 Agent 委托契约", scenario: "理赔受理 Agent 向跨区域专业 Agent 询问即时问题或委托一项需要数小时完成的材料核验。", tasks: ["定义 Agent Card、Message | Task 响应、身份、预算和可选 Artifact", "验证 SUBMITTED、WORKING、INPUT_REQUIRED、AUTH_REQUIRED 与四个终态", "演练超时、重复委托、取消、部分产物和人工接管"], deliverable: "A2A 双路径契约、长任务状态机与恢复图", acceptance: "直接 Message 与 Task 均可处理；协议状态、业务结果、责任人和副作用恢复分别明确。", sourceIds: ["a2a-concepts", "a2a-specification", "a2a-release-1-0-1", "nist-genai-profile"] },
     ]),
   }),
   evaluation: Object.freeze({
@@ -99,7 +99,7 @@ export const completionLearning = Object.freeze({
       { title: "演练网关自身故障", learn: "验证控制面不可用、数据面退化、绕行和下游故障时的行为。", checkpoint: "关键策略不会因故障被静默跳过。" },
     ]),
     labs: freezeLabs([
-      { title: "排查一次网关放大故障", scenario: "模型提供方间歇报错后，网关延迟和调用量同时上升。", tasks: ["沿 Trace 统计应用、网关、SDK 和下游的每层 attempt", "明确重试、超时、限流与幂等所有者", "设计受控降级、容量保护和恢复验证"], deliverable: "故障放大归因与策略修订", acceptance: "能解释每次额外调用来自哪一层，并证明修订后不再乘法放大。", sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-genai-profile"] },
+      { title: "排查一次网关放大故障", scenario: "模型提供方间歇报错后，网关延迟和调用量同时上升。", tasks: ["沿 Trace 统计应用、网关、SDK 和下游的每层 attempt", "明确一个重试所有者、总 Deadline、幂等条件与 attempt 预算", "设计受控降级、容量保护和恢复验证"], deliverable: "故障放大归因与策略修订", acceptance: "能解释每次额外调用来自哪一层，并证明修订后不再乘法放大。", sourceIds: ["aws-builders-library-retries", "opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-genai-profile"] },
     ]),
   }),
   "ai-ops": Object.freeze({
@@ -171,7 +171,7 @@ export const completionQa = Object.freeze({
     { q: "企业应该允许客户端自动安装任意 MCP Server 吗？", a: "不应该默认允许。Server 是可执行能力和数据入口，应经过来源、代码、权限、版本和运营责任评审。", depth: "建立受管目录，登记发布者、签名或制品来源、暴露能力、所需 scope、网络出口、敏感日志、更新和下线机制。高风险 Server 在隔离环境验证，只读与写入分开批准；客户端自动发现不能绕过企业安装与授权策略。", ask: "追问客户：谁批准 Server 进入目录？更新后如何重新评审，发现恶意版本怎样撤回？", tag: "Server 供应链", basis: "MCP 安全 + 零信任", evidence: [{ sourceId: "mcp-security", supports: "支持评估 MCP 生态中的授权、令牌与安全威胁。" }, { sourceId: "nist-zero-trust", supports: "支持对资源和主体持续验证并实施最小权限。" }] },
   ]),
   a2a: freezeQa([
-    { q: "A2A 的取消请求，是否保证远端任务已经停止？", a: "不能默认保证。取消语义要由双方契约说明，并区分停止继续工作、撤销已发生副作用和拒绝最终产物。", depth: "委托方发送取消后仍应查询权威任务状态；执行方要报告正在进行、已完成、不可取消或需要补偿。付款、资源创建等副作用必须由业务系统提供幂等与补偿，不能只靠 Agent 消息。", ask: "追问客户：取消后最迟多久停止？已发生动作由谁发现和补偿？", tag: "取消语义", basis: "任务生命周期 + 业务补偿", evidence: [{ sourceId: "a2a-concepts", supports: "支持 A2A 以持久 Task 状态表达协作，而非仅传递一次消息。" }, { sourceId: "nist-genai-profile", supports: "支持为高影响 AI 行为配置人工监督、响应和恢复。" }] },
+    { q: "A2A 的取消请求，是否保证远端任务已经停止？", a: "不能默认保证。CancelTask 可能返回不可取消，取消成功也只改变协议状态，不承诺撤销已发生的业务副作用。", depth: "委托方发送取消后仍应查询 Task 终态；执行方报告 CANCELED、已完成、不可取消或需要补偿。付款、资源创建等副作用必须由业务系统提供幂等、撤销与补偿，不能只靠 Agent Message。", ask: "追问客户：取消后最迟多久停止？已发生动作由谁发现和补偿？", tag: "取消语义", basis: "任务生命周期 + 业务补偿", evidence: [{ sourceId: "a2a-specification", supports: "支持 CancelTask、TaskNotCancelableError 和 CANCELED 状态，但不承诺业务副作用回滚。" }, { sourceId: "nist-genai-profile", supports: "支持为高影响 AI 行为配置人工监督、响应和恢复。" }] },
     { q: "多 Agent 架构应该由一个编排者控制，还是允许点对点协作？", a: "固定业务责任和高风险流程优先显式编排；只有协作关系确需动态发现时才增加点对点自治。", depth: "中心编排便于统一预算、身份、状态和审计，但可能成为扩展瓶颈；点对点更灵活，却增加环路、重复委托、权限传播和成本失控。可以用业务任务所有者保持最终控制，同时让局部 Agent 通过 A2A 协作。", ask: "追问客户：谁对最终结果负责？协作拓扑变化时，预算、身份和停止条件由谁执行？", tag: "协作拓扑", basis: "复杂度递增 + 风险管理", evidence: [{ sourceId: "anthropic-effective-agents", supports: "支持从简单可组合模式开始，仅在任务需要时增加多 Agent 复杂度。" }, { sourceId: "a2a-concepts", supports: "支持独立 Agent 通过任务与产物语义进行协作。" }] },
   ]),
   evaluation: freezeQa([
@@ -179,7 +179,7 @@ export const completionQa = Object.freeze({
   ]),
   "ai-gateway": freezeQa([
     { q: "AI 网关的策略应该怎样安全上线？", a: "把路由、限流、重试、护栏、缓存和日志绑定为版本化策略包，先回放和影子判定，再按业务风险分段灰度。", depth: "离线回放比较新旧决策，不实际执行高风险动作；影子模式只记录拟议变化；灰度按租户、任务和风险分组，而不是只按流量百分比。超过质量、时延、风险或成本门槛时原子回滚，并保留受影响请求。", ask: "追问客户：哪些策略变化会改变业务结果？谁批准，怎样还原一次请求使用的策略版本？", tag: "策略发布", basis: "发布治理 + 可观测", evidence: [{ sourceId: "nist-genai-profile", supports: "支持在系统变更前后进行风险测量、监控和管理。" }, { sourceId: "opentelemetry-genai-semconv", supports: "支持用共同遥测字段关联生成式 AI 请求与版本属性。" }] },
-    { q: "模型提供方故障时，AI 网关应该自动切到任意可用模型吗？", a: "不应该。只能切到预先验证过能力、数据边界和安全策略的候选；不满足硬门槛的任务应阻断或转人工。", depth: "备用模型即使返回成功，也可能缺少工具、Schema、上下文、语言或地域能力。为每条回退路径维护评估结果、允许降级项和禁止任务，并在故障演练中验证路由原因、质量、尾延迟和恢复。", ask: "追问客户：故障时允许牺牲质量、功能、地域还是时延？哪些任务不能自动降级？", tag: "故障降级", basis: "模型等价性 + 风险门槛", evidence: [{ sourceId: "nist-genai-profile", supports: "支持识别依赖失效并准备与风险相称的响应和恢复。" }, { sourceId: "cloudflare-ai-gateway", supports: "支持 AI 网关可提供多模型代理与故障转移等集中治理能力；具体等价性仍需应用验证。" }] },
+    { q: "模型提供方故障时，AI 网关应该自动切到任意可用模型吗？", a: "不应该。只能切到预先验证过能力、数据边界和安全策略的候选；不满足硬门槛的任务应阻断或转人工。", depth: "备用模型即使返回成功，也可能缺少工具、Schema、上下文、语言或地域能力。为每条回退路径维护评估结果、允许降级项和禁止任务，并在故障演练中验证路由原因、质量、尾延迟和恢复。", ask: "追问客户：故障时允许牺牲质量、功能、地域还是时延？哪些任务不能自动降级？", tag: "故障降级", basis: "模型等价性 + 风险门槛", evidence: [{ sourceId: "nist-genai-profile", supports: "支持识别依赖失效并准备与风险相称的响应和恢复。" }, { sourceId: "cloudflare-ai-gateway-dynamic-routing", supports: "支持配置多端点动态路由；具体功能、地域与质量等价性仍需应用验证。" }] },
   ]),
   "ai-ops": freezeQa([
     { q: "AI 事故恢复后，为什么还要核对业务系统状态？", a: "因为模型或服务恢复只证明技术链可用，事故期间已经发生的订单、通知、权限或数据写入不会自动撤销。", depth: "事件处理要从受影响任务和 Trace 找到外部动作，查询权威系统的最终状态，按幂等或补偿规则修复，再确认客户影响和通知。只有技术指标、业务状态和风险复测共同通过，才能逐级恢复流量。", ask: "追问客户：AI 系统可以改变哪些外部状态？事故后由谁逐项核对和补偿？", tag: "业务恢复", basis: "事件响应 + 权威状态", evidence: [{ sourceId: "nist-genai-profile", supports: "支持为生成式 AI 风险建立响应、恢复和受影响主体管理。" }, { sourceId: "nist-zero-trust", supports: "支持对资源访问持续执行身份与策略控制，恢复时不能沿用隐式信任。" }] },

@@ -100,15 +100,28 @@
     },
     {
       "id": "protocol.a2a-version-1-0-0",
-      "claim": "截至 2026-07-21，A2A 官方站点提供固定的 v1.0.0 规范入口。",
-      "scope": "规范版本稳定不等于所有 SDK、云产品、网络绑定或 Agent 实现均已支持同一能力集合。",
-      "sourceIds": ["a2a-spec-1-0-0"],
+      "claim": "截至 2026-08-01，A2A v1.0.0 已由官方 v1.0.1 补丁发布替代为最新标记版本；固定 v1.0.0 页面仅用于历史实现与迁移对照。",
+      "scope": "这是一条历史版本状态；A2A 在线兼容仍按 Major.Minor 的 1.0 协商，具体 SDK、云产品、绑定或 Agent 实现是否采用补丁修复必须分别核验。",
+      "sourceIds": ["a2a-spec-1-0-0", "a2a-release-1-0-1", "a2a-specification"],
       "evidenceGrade": "A",
-      "verifiedAt": "2026-07-21",
-      "reviewBy": "2026-10-19",
+      "verifiedAt": "2026-08-01",
+      "reviewBy": "2027-01-28",
+      "reviewCadenceDays": 180,
+      "owner": "knowledge-curation",
+      "status": "replaced"
+    },
+    {
+      "id": "protocol.a2a-release-1-0-1",
+      "claim": "截至 2026-08-01，A2A 官方最新标记发布为 v1.0.1；协议兼容仍使用 Major.Minor 的 A2A-Version 1.0，补丁号不参与请求、响应或 Agent Card 的版本协商。",
+      "scope": "只描述官方协议发布与规范级兼容语义；不能据此推断具体 SDK、云服务、绑定或 Agent 产品已经采用全部 v1.0.1 修复。",
+      "sourceIds": ["a2a-release-1-0-1", "a2a-specification"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-08-01",
+      "reviewBy": "2026-10-30",
       "reviewCadenceDays": 90,
       "owner": "knowledge-curation",
-      "status": "active"
+      "status": "active",
+      "supersedes": "protocol.a2a-version-1-0-0"
     },
     {
       "id": "observability.otel-genai-semconv-development",
