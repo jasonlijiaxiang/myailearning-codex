@@ -194,7 +194,7 @@ const solutionCapabilityChoices = [
   { verb: "编", title: "编排与状态", en: "Orchestration", when: "任务跨步骤、等待或系统", choice: "工作流、队列、Agent Runtime", boundary: "final output 不等于权威状态" },
   { verb: "控", title: "规则与动作", en: "Control", when: "需要读取或改变外部状态", choice: "代码、IAM、策略、幂等与补偿", boundary: "模型不能扩大动作和权限范围" },
   { verb: "人", title: "人工责任", en: "Human", when: "结果高影响、不可逆或存在争议", choice: "审批、复核、接管和例外处理", boundary: "人工环节也需要证据、时限和审计" },
-  { verb: "验", title: "评估与运营", en: "Assurance", when: "系统会变化并进入生产", choice: "评估、Trace、发布、事件与反馈", boundary: "遥测不能单独证明业务成功" },
+  { verb: "验", title: "持续评估与日常运营", en: "Assurance", when: "系统会变化并进入生产", choice: "评估、Trace、发布、事件与反馈", boundary: "遥测不能单独证明业务成功" },
   { verb: "营", title: "经济与退出", en: "Economics", when: "需要投资、扩展或采购决定", choice: "完整成本、单位经济、迁移与停服", boundary: "单位经济不自动证明因果 ROI" },
 ];
 
@@ -241,7 +241,7 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
       <TermHintRow label="方案讨论常用缩写" termIds={["poc", "sla", "tco", "rag", "ai-agent"]} />
       {decisionRows.length ? (
         <section className="focusedDecisionLedger" aria-labelledby="solution-decision-ledger-title">
-          <header><p className="kicker">PROBLEM CONTRACT</p><h3 id="solution-decision-ledger-title">先把问题写成一页可反驳的方案契约</h3><p>下面不是通用功能表，而是把客户实际情况、建议与失败边界放在同一行。任何一行无法验证，都不应进入采购清单。</p></header>
+          <header><p className="kicker">PROBLEM CONTRACT</p><h3 id="solution-decision-ledger-title">先把问题写成可验证的方案说明</h3><p>下面不是通用功能表，而是把客户实际情况、建议与失败边界放在同一行。任何一行无法验证，都不应进入采购清单。</p></header>
           <div className="focusedDecisionRows" role="table" aria-label="问题契约">
             {decisionRows.map((item, index) => (
               <article role="row" key={item.question}>
@@ -329,7 +329,7 @@ function InferenceFocusedPrimer({ brief }: { brief: FocusedBrief }) {
       ]} />
       <TermHintRow label="推理性能常用缩写" termIds={view.termIds} />
       <section className="focusedDecisionLedger" aria-labelledby="inference-diagnostic-title">
-        <header><p className="kicker">DIAGNOSTIC LEDGER</p><h3 id="inference-diagnostic-title">症状不是结论：每个优化动作都要对应一个可观察信号</h3></header>
+        <header><p className="kicker">DIAGNOSTIC GUIDE</p><h3 id="inference-diagnostic-title">症状不是结论：每个优化动作都要对应一个可观察信号</h3></header>
         <div className="focusedDecisionRows">
           {diagnosticRows.map((item, index) => <article key={item.question}><span>{String(index + 1).padStart(2, "0")}</span><div><h4>{item.question}</h4><p>{item.signal}</p></div><div><strong>{item.recommendation}</strong><small>{item.boundary}</small></div></article>)}
         </div>
@@ -350,7 +350,7 @@ const securityThreatSteps: Array<[string, string, string]> = [
 
 const securityDefenseLayers = [
   { no: "A", title: "数据入口", en: "INPUT & DATA", detail: "来源标记、恶意内容检测、DLP、知识准入和检索 ACL。", proves: "不可信内容被识别，敏感数据按身份过滤" },
-  { no: "B", title: "上下文与模型", en: "CONTEXT & MODEL", detail: "指令与数据分隔、最小上下文、输出约束和模型安全测试。", proves: "攻击即使进入上下文，也只能影响受限建议" },
+  { no: "B", title: "上下文、模型与安全检查", en: "CONTEXT & MODEL", detail: "指令与数据分隔、最小上下文、输出约束和模型安全测试。", proves: "攻击即使进入上下文，也只能影响受限建议" },
   { no: "C", title: "身份与行动", en: "IDENTITY & ACTION", detail: "短期身份、最小权限、Schema 校验、策略引擎、审批和沙箱。", proves: "模型不能自行扩大权限或绕过业务规则" },
   { no: "D", title: "监控与恢复", en: "MONITOR & RECOVER", detail: "完整 Trace、异常检测、凭据撤销、补偿、隔离和事件响应。", proves: "风险发生后能确认影响、停止扩散并恢复" },
 ];

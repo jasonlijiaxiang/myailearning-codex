@@ -62,7 +62,7 @@ const techniqueLadder = [
 ];
 
 const contextBudgetZones = [
-  { zone: "稳定指令", en: "Stable Instructions", content: "角色、任务边界、输出契约和长期规则", control: "版本、审批、回归；稳定前缀有利于缓存" },
+  { zone: "明确且稳定的指令", en: "Stable Instructions", content: "角色、任务边界、输出契约和长期规则", control: "版本、审批、回归；稳定前缀有利于缓存" },
   { zone: "可信状态", en: "Trusted State", content: "身份、权限、业务配置和权威系统结果", control: "由应用注入；模型不能自行改写" },
   { zone: "动态证据", en: "Dynamic Evidence", content: "RAG 文档、网页、历史、工具返回和用户内容", control: "来源、ACL、时效、长度与不可信标记" },
   { zone: "能力接口", en: "Tools & Schema", content: "工具说明、参数 Schema、可用动作与返回契约", control: "最小集合、清晰职责、应用侧授权与执行" },
@@ -109,7 +109,7 @@ const promptSystemLens: LensPanel[] = [
     description: "模型看到的不只是几句提示词，而是一组具有不同权威、来源、时效和执行后果的输入。",
     takeaway: "Prompt 的工作是表达任务；身份、权限、事实来源、工具执行和业务校验仍属于应用系统。",
     nodes: [
-      { label: "稳定指令", en: "Stable Instructions", detail: "定义角色、任务、边界、成功标准与输出契约。", signal: "治理：版本、审批与回归" },
+      { label: "明确且稳定的指令", en: "Stable Instructions", detail: "定义角色、任务、边界、成功标准与输出契约。", signal: "治理：版本、审批与回归" },
       { label: "可信状态", en: "Trusted State", detail: "由应用注入身份、权限、配置和权威业务状态。", signal: "治理：来源与不可篡改字段" },
       { label: "动态上下文", en: "Dynamic Context", detail: "用户内容、RAG 证据、历史和工具返回按预算进入。", signal: "治理：ACL、时效与不可信标记" },
       { label: "能力接口", en: "Tools & Schema", detail: "声明可用工具、参数、错误与结构化输出形状。", signal: "治理：最小集合与应用授权" },
@@ -121,7 +121,7 @@ const promptSystemLens: LensPanel[] = [
     label: "一次退化",
     title: "看起来像 Prompt 失效，根因可能来自整个调用剖面",
     description: "只改措辞会掩盖模型、上下文、工具和业务校验的真实变化，导致反复试错却无法复现。",
-    takeaway: "每次只改变一个主要变量，并记录模型快照、提示版本、上下文清单、工具 Schema 和评估集。",
+    takeaway: "每次只改变一个主要变量，并记录模型快照、提示版本、上下文装配记录、工具 Schema 和评估集。",
     nodes: [
       { label: "指令冲突", detail: "平台、应用、用户和外部内容对同一行为给出相互矛盾的要求。", signal: "检查：权威顺序与冲突测试" },
       { label: "上下文污染", detail: "过期证据、错误历史或间接提示注入进入模型输入。", signal: "检查：来源、ACL、时效与数据标记" },
@@ -242,7 +242,7 @@ export default function PromptEngineeringModulePage() {
                 <p>生产请求不是单一文字，而是由不同责任方提供的多段输入。技术售前应先解释每段信息的来源、信任级别和生命周期，再讨论措辞优化。</p>
               </header>
               <div className="ragMechanism" aria-label="提示调用的三类输入">
-                <article><span>01</span><h5>稳定指令 · Instructions</h5><p>应用目标、行为边界、语气和输出契约；由产品与工程维护，并进入版本、审批和回归流程。</p></article>
+                <article><span>01</span><h5>明确且稳定的指令 · Instructions</h5><p>应用目标、行为边界、语气和输出契约；由产品与工程维护，并进入版本、审批和回归流程。</p></article>
                 <article><span>02</span><h5>动态上下文 · Context</h5><p>用户问题、身份、会话、检索证据和业务状态；每次调用都可能不同，必须做权限、长度和来源控制。</p></article>
                 <article><span>03</span><h5>能力接口 · Tools &amp; Schema</h5><p>工具定义告诉模型可提出哪些调用；Schema 约束结果形状。真正授权、执行与业务校验仍在应用侧。</p></article>
               </div>
@@ -344,7 +344,7 @@ export default function PromptEngineeringModulePage() {
             <BalancedGrid className="technicalNotes" maxColumns={3}>
               <article><p className="miniLabel">SEPARATION</p><h4>指令与数据分离</h4><p>使用清晰字段、标签或消息边界标记指令、示例和外部数据；分隔有助理解，但本身不能阻止提示注入。</p></article>
               <article><p className="miniLabel">TYPED INPUT</p><h4>变量先校验再注入</h4><p>动态值应经过类型、长度、权限和敏感级别校验；不要让模板字符串拼接成为隐蔽的数据入口。</p></article>
-              <article><p className="miniLabel">REUSABLE PREFIX</p><h4>稳定前缀便于缓存</h4><p>把稳定指令和常用示例放在前部、动态数据放在后部，既便于维护，也可能利用模型服务的提示缓存（Prompt Caching）。</p></article>
+              <article><p className="miniLabel">REUSABLE PREFIX</p><h4>稳定前缀便于缓存</h4><p>把明确且稳定的指令和常用示例放在前部、动态数据放在后部，既便于维护，也可能利用模型服务的提示缓存（Prompt Caching）。</p></article>
             </BalancedGrid>
           </div>
 
@@ -380,7 +380,7 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection" id="prompt-independent-depth" data-quality-section="deep-dive">
-            <div className="subHead"><span>5.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>从提示技巧到输入、契约、发布与安全工程</h3></div></div>
+            <div className="subHead"><span>5.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>提示词如何融入输入、发布与安全工程</h3></div></div>
             <p className="sectionLead">本节不按技巧名单展开，而是回答生产系统更难的问题：冲突指令如何处理、Context 如何装配、输出何时可执行，以及提示注入成功时如何仍然限制真实影响。</p>
             <ModuleDeepDiveBlocks blocks={promptDeepDives} sourceLedger={sourceLedger} />
           </div>

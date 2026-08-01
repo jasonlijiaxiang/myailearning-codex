@@ -185,7 +185,7 @@ const interactionBoundaries = [
 const cloudHooks = [
   { stage: "模型与路由", services: "模型即服务、模型目录、推理端点、AI 网关、内容安全", value: "按任务复杂度选择模型并统一限流、版本和策略", discover: "哪些决策需要强模型？是否允许跨地域或多模型？" },
   { stage: "Agent Runtime", services: "托管 Agent 运行时、Serverless、容器、Kubernetes、任务队列", value: "运行循环和长任务，管理状态、超时、重试与弹性", discover: "任务持续多久？同步还是异步？失败如何恢复？" },
-  { stage: "工具接入", services: "API 网关、MCP Gateway、函数计算、工作流、事件总线、SaaS 连接器", value: "把业务 API 变成可发现、可校验、可治理的工具", discover: "有哪些现成 API？读写动作如何分级和审批？" },
+  { stage: "工具接入", services: "API 网关、MCP Gateway、函数计算、工作流、事件总线、SaaS 连接器", value: "把业务 API 整理成可发现、可校验、可管理的工具", discover: "有哪些现成 API？读写动作如何分级和审批？" },
   { stage: "知识与状态", services: "托管搜索、向量库、数据库、对象存储、缓存、会话与 Memory", value: "保存证据、任务状态和经过治理的长期记忆", discover: "哪些状态是权威事实？谁能修改、撤回和删除？" },
   { stage: "身份与安全", services: "IAM、工作负载身份、密钥管理、策略引擎、WAF、私网与沙箱", value: "让每次工具调用绑定真实主体并执行最小权限", discover: "用用户身份还是服务身份？哪些动作不可逆？" },
   { stage: "可观测与评估", services: "Tracing、日志、指标、APM、评估平台、告警、SIEM", value: "还原任务轨迹，定位失败并持续检查质量和风险", discover: "怎样确认任务最终完成？日志能否关联模型与工具步骤？" },
@@ -504,7 +504,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="patterns">
-            <div className="subHead"><span>2.7</span><div><p className="kicker">ARCHITECTURE PATTERNS</p><h3>从确定性到动态编排的四种模式</h3></div></div>
+            <div className="subHead"><span>2.7</span><div><p className="kicker">ARCHITECTURE PATTERNS</p><h3>从固定流程到动态决策的四种模式</h3></div></div>
             <div className="variantList">
               {architecturePatterns.map((item) => (
                 <article key={item.name}><div><p className="miniLabel">{item.cue}</p><h4>{item.name}</h4></div><p className="variantPipeline">{item.pipeline}</p><p>{item.boundary}</p></article>
@@ -550,7 +550,7 @@ export default function AgentModulePage() {
             </div>
             <BalancedGrid className="solutionBundles" maxColumns={3}>
               <article><p className="miniLabel">BUNDLE A</p><h4>企业服务 Agent</h4><p>模型服务 + RAG / 搜索 + CRM / 工单工具 + API 网关 + 用户身份 + 审批流 + Trace。</p><small>价值：从回答问题延伸到受控地完成服务流程</small></article>
-              <article><p className="miniLabel">BUNDLE B</p><h4>Agent 工具与身份平台</h4><p>托管 Runtime + MCP / API Gateway + 工作负载身份 + 密钥 + 策略引擎 + 沙箱。</p><small>价值：把零散 API 变成可发现、可授权、可审计的工具面</small></article>
+              <article><p className="miniLabel">BUNDLE B</p><h4>Agent 工具与身份平台</h4><p>托管 Runtime + MCP / API Gateway + 工作负载身份 + 密钥 + 策略引擎 + 沙箱。</p><small>价值：把零散 API 整理成可发现、可授权、可审计的工具入口</small></article>
               <article><p className="miniLabel">BUNDLE C</p><h4>AgentOps 管理与监控</h4><p>Tracing / APM + 评估平台 + 日志 / SIEM + 发布回滚 + 配额预算 + FinOps。</p><small>价值：把长轨迹失败、风险和成本变成持续运营指标</small></article>
             </BalancedGrid>
           </div>

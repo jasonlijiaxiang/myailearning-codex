@@ -475,7 +475,7 @@ export const sourceLedger = {
     kind: "开放标准",
     shortTitle: "C2PA 2.4",
     title: "C2PA Technical Specification 2.4",
-    note: "定义签名 Manifest、内容绑定、编辑与来源声明及验证状态；它能验证声明与资产的关联和防篡改，不证明内容真实、版权成立、身份正确或已经合规，凭证也可能被移除。",
+    note: "定义签名清单（Manifest）、内容绑定、编辑与来源声明及验证状态；它能验证声明与资产的关联和防篡改，不证明内容真实、版权成立、身份正确或已经合规，凭证也可能被移除。",
     verifiedAt: "2026-07-30",
     href: "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
   },
@@ -1211,7 +1211,7 @@ export const sourceLedger = {
   "oci-image-spec-v1-1-1": {
     grade: "O", kind: "开放标准", shortTitle: "OCI Image Spec 1.1.1",
     title: "Open Container Initiative Image Format Specification v1.1.1",
-    note: "定义镜像 Manifest、Index、文件系统层和运行配置，以支持镜像构建、传输与运行准备工具互操作；它不标准化 GPU 驱动、内核、数据、IAM、网络、存储、观测或完整工作负载行为。",
+    note: "定义镜像清单（Image Manifest）、Index、文件系统层和运行配置，以支持镜像构建、传输与运行准备工具互操作；它不标准化 GPU 驱动、内核、数据、IAM、网络、存储、观测或完整工作负载行为。",
     verifiedAt: "2026-08-01", href: "https://specs.opencontainers.org/image-spec/?v=v1.1.1",
   },
   "kubernetes-dra": {

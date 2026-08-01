@@ -4,7 +4,7 @@
 export const moduleDiscovery = Object.freeze({
   "solution-patterns": Object.freeze({ summary: "把业务目标拆成可验证的 AI 能力、流程、责任与单位经济。", cue: "客户只有宏大愿景，还没有清晰场景、验收口径或完整成本边界" }),
   "model-landscape": Object.freeze({ summary: "从质量、时延、成本、部署与治理约束选择模型组合。", cue: "客户问哪一个模型最好，或希望同时使用多个模型" }),
-  rag: Object.freeze({ summary: "用可更新、可授权、可引用的外部证据增强模型回答。", cue: "答案必须基于企业知识，并说明出处和适用范围" }),
+  rag: Object.freeze({ summary: "用可更新、经授权的外部资料为模型回答提供依据。", cue: "答案必须基于企业知识，并说明出处和适用范围" }),
   "ai-agent": Object.freeze({ summary: "让模型在受控循环中规划、调用工具并推进业务任务。", cue: "客户希望 AI 不只回答，还要跨系统完成动作" }),
   multimodal: Object.freeze({ summary: "让文本、图像、语音、视频与版面信息共同参与理解。", cue: "关键信息藏在表格、图纸、扫描件、录音或视频中" }),
   mcp: Object.freeze({ summary: "标准化模型与工具、数据资源及提示能力之间的连接。", cue: "团队要复用工具接入，并控制远程调用与授权边界" }),
@@ -20,7 +20,7 @@ export const moduleDiscovery = Object.freeze({
   "fine-tuning": Object.freeze({ summary: "用高质量样本改变稳定行为、风格或任务模式。", cue: "仅靠 Prompt 难以稳定达成专门行为或格式" }),
   "llm-training": Object.freeze({ summary: "理解数据、并行、优化、通信和恢复构成的训练系统。", cue: "客户计划自训或续训模型，需要评估数据与集群可行性" }),
   "llm-inference": Object.freeze({ summary: "在延迟、吞吐、显存、质量与成本之间设计服务策略。", cue: "模型能跑但并发、首 token、长上下文或成本不达标" }),
-  "data-engineering": Object.freeze({ summary: "把原始内容变成可信、可追溯、可删除的 AI 数据产品。", cue: "数据分散、解析失真、版本冲突或权限无法同步" }),
+  "data-engineering": Object.freeze({ summary: "把原始内容整理为能追溯来源、可删除的 AI 数据。", cue: "数据分散、解析失真、版本冲突或权限无法同步" }),
   "ai-infra-platform": Object.freeze({ summary: "用集群、调度、运行时与运维体系稳定承载 AI 工作负载。", cue: "GPU 有空闲却排队，环境升级频繁破坏任务" }),
   "ai-infra-compute": Object.freeze({ summary: "从计算、显存、网络、存储和功耗判断算力方案。", cue: "客户准备采购 GPU，但缺少基于负载的容量与瓶颈证据" }),
 });

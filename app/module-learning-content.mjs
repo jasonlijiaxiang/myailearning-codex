@@ -86,7 +86,7 @@ const baseModuleLearningContent = Object.freeze({
       { title: "先定义决策而不是分数", learn: "明确评估要支持选型、发布、诊断还是运营。", checkpoint: "每个指标都能对应一个可执行决策。" },
       { title: "冻结对象、样本与量尺", learn: "记录完整版本元组，按场景、风险、难度和失败模式分层，校准代码、Judge 与人工。", checkpoint: "能重放被测候选，并说明结果描述固定题集还是外推相似任务。" },
       { title: "重复运行并形成决定", learn: "报告逐样本、关键切片、严重失败、样本量与不确定性，先执行不可补偿硬门。", checkpoint: "Go、Hold、No-Go 或补做建议不依赖最好一次或单一平均分。" },
-      { title: "最后治理反馈与责任交接", learn: "AI Ops 采集生产证据；确认失败经脱敏、去重和裁决后进入下一版回归集。", checkpoint: "能区分评估建议、发布执行、风险例外和机制修复。" },
+      { title: "治理反馈与责任交接", learn: "AI Ops 采集生产证据；确认失败经脱敏、去重和裁决后进入下一版回归集。", checkpoint: "能区分评估建议、发布执行、风险例外和机制修复。" },
     ],
     labs: [
       { title: "为退款 Agent 写一份评估契约", scenario: "候选 Agent 会解释政策、调用订单工具并提交退款；团队需要决定是否交给 AI Ops 做有限放量。", tasks: ["冻结 Agent、模型、Prompt、工具、策略、环境和预算版本", "按正常、边界、越权、工具故障和高价值退款分层任务", "用代码验证权限与业务终态，用 Judge 评开放说明并以人工样本校准", "重复运行并预先定义硬门与 Go/Hold/No-Go 规则"], deliverable: "版本化评估契约、逐切片结果、不确定性与发布建议", acceptance: "错误退款和越权不能被平均分抵消；Evaluation 不执行灰度、回滚或风险例外。", sourceIds: ["anthropic-agent-evals", "llm-as-judge-2023", "nist-ai-800-3"] },
@@ -104,7 +104,7 @@ const baseModuleLearningContent = Object.freeze({
     labs: [
       { title: "为恶意简历到 ATS 建威胁模型", scenario: "招聘 Agent 会解析候选人 PDF、检索招聘政策、生成筛选建议，并可向 ATS 写入部分字段。", tasks: ["标出简历、解析、RAG、模型提案、策略和 ATS 的 Source—Sink 路径", "枚举隐藏注入、跨候选人检索、参数篡改和审批绕过", "为每个高影响 Sink 指定真实身份、允许字段、业务授权和停止动作"], deliverable: "招聘威胁模型、控制映射和残余技术风险", acceptance: "恶意简历即使影响模型，也不能获得其他候选人数据或直接改变高影响 ATS 状态。", sourceIds: ["owasp-prompt-injection", "owasp-vector-weaknesses", "nist-zero-trust"] },
       { title: "验证候选人向量数据隔离与删除", scenario: "招聘人员调岗或候选人撤回资料，但切块、Embedding、缓存和评估样本可能继续被检索。", tasks: ["由 Data Engineering 追踪原文到所有派生层", "按招聘人员、职位与候选人测试正向和负向访问", "由客户定义撤权删除时限、失败处理和完成证据"], deliverable: "派生数据清单、权限矩阵与负向探针结果", acceptance: "客户承诺时限内所有读取路径停止返回内容，例外有 owner、范围和补救；该时限是系统 SLO，不是 OWASP 给出的通用值。", sourceIds: ["owasp-vector-weaknesses", "nist-zero-trust"] },
-      { title: "演练 ATS 越权与结果未知事件", scenario: "Agent 似乎绕过审批修改了候选人状态，部分请求超时且是否已写入未知。", tasks: ["暂停高影响写入、撤销凭据并停止队列", "还原简历、上下文、版本、身份、策略、参数和 ATS 审计", "查询权威状态、执行补偿、验证恢复并形成回归样本"], deliverable: "事件时间线、影响清单、补偿记录与恢复签署", acceptance: "团队不盲目重试，能证明受影响候选人和业务状态已经恢复或进入人工修复。", sourceIds: ["nist-sp-800-61r3", "nist-genai-profile", "nist-zero-trust"] },
+      { title: "演练 ATS 越权和结果未知事件", scenario: "Agent 似乎绕过审批修改了候选人状态，部分请求超时且是否已写入未知。", tasks: ["暂停高影响写入、撤销凭据并停止队列", "还原简历、上下文、版本、身份、策略、参数和 ATS 审计", "查询权威状态、执行补偿、验证恢复并形成回归样本"], deliverable: "事件时间线、影响清单、补偿记录与恢复签署", acceptance: "团队不盲目重试，能证明受影响候选人和业务状态已经恢复或进入人工修复。", sourceIds: ["nist-sp-800-61r3", "nist-genai-profile", "nist-zero-trust"] },
     ],
   },
   "ai-gateway": {
@@ -115,7 +115,7 @@ const baseModuleLearningContent = Object.freeze({
       { title: "最后验证端到端结果", learn: "关联应用任务、网关决策、模型调用、工具动作和业务终态。", checkpoint: "能证明降本没有以质量、隐私或可靠性为代价。" },
     ],
     labs: [
-      { title: "设计一次受控路由发布", scenario: "团队要把 30% 简单请求切到更便宜的模型。", tasks: ["定义可路由流量与保护组", "离线回放并以影子模式验证", "设置分组指标、放量门槛和自动回退"], deliverable: "策略版本、验证证据与回滚手册", acceptance: "高风险请求不进入实验，质量和尾延迟退化能在用户投诉前被发现。", sourceIds: ["cloudflare-ai-gateway-dynamic-routing", "opentelemetry-genai-semconv", "nist-genai-profile"] },
+      { title: "设计一次受控的路由发布", scenario: "团队要把 30% 简单请求切到更便宜的模型。", tasks: ["定义可路由流量与保护组", "离线回放并以影子模式验证", "设置分组指标、放量门槛和自动回退"], deliverable: "策略版本、验证证据与回滚手册", acceptance: "高风险请求不进入实验，质量和尾延迟退化能在用户投诉前被发现。", sourceIds: ["cloudflare-ai-gateway-dynamic-routing", "opentelemetry-genai-semconv", "nist-genai-profile"] },
       { title: "评估语义缓存是否值得", scenario: "FAQ 流量高，但问题包含个人信息、时效信息和相似但不同的业务条件。", tasks: ["先区分相同请求的精确缓存与相似请求的语义缓存", "定义相似阈值、租户隔离和失效条件", "比较命中率、错误复用风险和真实成本"], deliverable: "两类缓存策略与误命中测试集", acceptance: "缓存资格包含必要权限与版本边界，收益基于业务成功而非仅命中率。", sourceIds: ["cloudflare-ai-gateway-caching", "azure-apim-ai-gateway", "nist-zero-trust"] },
     ],
   },
@@ -155,9 +155,9 @@ const baseModuleLearningContent = Object.freeze({
       { title: "最后完成灰度、回滚与停止", learn: "绑定基座、Adapter、Tokenizer、Chat Template、Runtime、Policy 和评估集，以 shadow/canary 有限放量。", checkpoint: "收益不稳定、轻量基线反超或完整成本越界时会停止。" },
     ],
     labs: [
-      { title: "判断理赔初审是否应该微调", scenario: "条款与案件状态频繁变化，JSON 偶尔漂移，说明语气与缺件分类在 Prompt/RAG 后仍有一部分长期不稳定。", tasks: ["把知识、结构、实时状态、确定规则和稳定行为失败分开", "分别设计 RAG、Prompt/Schema、Tool/API、换模型与微调对照", "定义每条路线的业务指标、完整成本和停止条件"], deliverable: "失败路由、不微调门与实验计划", acceptance: "只有稳定、可重复、可标注的剩余行为进入训练，模型不获得赔付授权。", sourceIds: ["nist-genai-profile", "openai-structured-outputs", "lora-2021"] },
-      { title: "设计 PEFT / LoRA 发布门", scenario: "理赔初审 Adapter 离线评分提高，但团队不清楚是否可进入生产。", tasks: ["建立未见任务、保留能力与高风险切片", "比较质量、安全、延迟、显存和每个被接受初审成本", "绑定基座、Adapter、Tokenizer、模板、Runtime、Policy 和回滚"], deliverable: "四层验收报告、运行元组与部署清单", acceptance: "所有硬门通过，增益相对轻量基线稳定，且完整版本可以影子验证和回滚。", sourceIds: ["hf-trl-peft", "lora-2021", "qlora-2023", "nist-genai-profile", "finops-unit-economics"] },
-      { title: "检查一批理赔对话训练数据", scenario: "团队收集了初审记录准备做 SFT，但角色、保单版本、PII、答案质量和争议裁决不一致。", tasks: ["统一角色、Chat Template、保单版本与目标字段", "检查权利、重复、泄漏、敏感信息、拒答案例与来源", "划分训练、验证、冻结测试、保留能力和高风险切片"], deliverable: "数据合同、清洗报告和可直接加载的样本集", acceptance: "样本格式与目标基座一致，测试问题没有进入训练，冲突样本已隔离并有业务裁决人。", sourceIds: ["hf-trl-data-formats", "hf-trl-chat-templates", "nist-genai-profile"] },
+      { title: "判断理赔初审是否适合微调", scenario: "条款与案件状态频繁变化，JSON 偶尔漂移，说明语气与缺件分类在 Prompt/RAG 后仍有一部分长期不稳定。", tasks: ["把知识、结构、实时状态、确定规则和稳定行为失败分开", "分别设计 RAG、Prompt/Schema、Tool/API、换模型与微调对照", "定义每条路线的业务指标、完整成本和停止条件"], deliverable: "失败路由、不微调门与实验计划", acceptance: "只有稳定、可重复、可标注的剩余行为进入训练，模型不获得赔付授权。", sourceIds: ["nist-genai-profile", "openai-structured-outputs", "lora-2021"] },
+      { title: "设计 PEFT / LoRA 的发布门槛", scenario: "理赔初审 Adapter 离线评分提高，但团队不清楚是否可进入生产。", tasks: ["建立未见任务、保留能力与高风险切片", "比较质量、安全、延迟、显存和每个被接受初审成本", "绑定基座、Adapter、Tokenizer、模板、Runtime、Policy 和回滚"], deliverable: "四层验收报告、运行元组与部署清单", acceptance: "所有硬门通过，增益相对轻量基线稳定，且完整版本可以影子验证和回滚。", sourceIds: ["hf-trl-peft", "lora-2021", "qlora-2023", "nist-genai-profile", "finops-unit-economics"] },
+      { title: "检查理赔对话训练数据", scenario: "团队收集了初审记录准备做 SFT，但角色、保单版本、PII、答案质量和争议裁决不一致。", tasks: ["统一角色、Chat Template、保单版本与目标字段", "检查权利、重复、泄漏、敏感信息、拒答案例与来源", "划分训练、验证、冻结测试、保留能力和高风险切片"], deliverable: "数据合同、清洗报告和可直接加载的样本集", acceptance: "样本格式与目标基座一致，测试问题没有进入训练，冲突样本已隔离并有业务裁决人。", sourceIds: ["hf-trl-data-formats", "hf-trl-chat-templates", "nist-genai-profile"] },
       { title: "诊断一次漂亮但无效的训练曲线", scenario: "训练和验证 Loss 持续下降，但业务评审没有明显提升。", tasks: ["检查模板记忆、样本重复和评估泄漏", "按任务、难度、格式与拒答切片比较基座", "调整数据、学习率或停止点并重跑单变量实验"], deliverable: "训练诊断记录与下一轮可证伪假设", acceptance: "结论能解释曲线与业务结果为何不一致，并有证据决定继续、改数据或停止。", sourceIds: ["hf-trl-sft-trainer", "openai-eval-best-practices"] },
     ],
   },
@@ -165,7 +165,7 @@ const baseModuleLearningContent = Object.freeze({
     outcomes: ["理解数据、预训练、SFT、偏好优化与评估的关系", "写出可恢复的版本化训练 Run 合同", "把并行、通信、Checkpoint 与有效训练时间连接起来", "判断从头训练、继续预训练或微调的投资边界"],
     route: [
       { title: "先理解学习阶段", learn: "区分通用模式学习、指令示范和偏好目标。", checkpoint: "能说明每阶段需要什么数据、优化目标和评估。" },
-      { title: "再冻结训练 Run 合同", learn: "绑定基础权重、Tokenizer、数据快照与配比、目标、优化器、精度、并行拓扑、环境、停止规则和评估版本。", checkpoint: "任何候选与恢复点都能回到同一份 manifest。" },
+      { title: "再冻结训练 Run 合同", learn: "绑定基础权重、Tokenizer、数据快照与配比、目标、优化器、精度、并行拓扑、环境、停止规则和评估版本。", checkpoint: "任何候选与恢复点都能回到同一份 运行配置记录。" },
       { title: "再选择分布式执行方案", learn: "分析显存构成、数据质量、并行、通信、I/O 和故障损失。", checkpoint: "不会把参数量、GPU 数或短时利用率当成有效进度保证。" },
       { title: "最后管理恢复与候选门", learn: "验证 Checkpoint 完成、状态连续性、容差内复现和阶段评估。", checkpoint: "能报告有效训练时间、状态缺口、恢复证据和候选结论。" },
     ],
@@ -190,7 +190,7 @@ const baseModuleLearningContent = Object.freeze({
     outcomes: ["把 AI 数据当作有权威来源、用途、稳定身份和生命周期的数据产品", "理解解析、清洗、版本裁决、同步、派生与策略传播", "建立可分层的数据质量、血缘、隔离与单位成本证据", "设计新增、替换、撤权、删除、例外和反馈回流闭环"],
     route: [
       { title: "先建立来源、用途与裁决权", learn: "记录所有者、权威系统、版本或有效期、策略引用、允许用途和冲突裁决人。", checkpoint: "能判断哪个副本权威、哪些是派生物，谁有权处理冲突。" },
-      { title: "再构建可验证管道", learn: "把接入、解析、清洗、版本、派生、发布和质量检查拆成可观测阶段。", checkpoint: "静默损坏、未裁决冲突和隔离项不会进入下游。" },
+      { title: "重新建立可验证的数据管道", learn: "把接入、解析、清洗、版本、派生、发布和质量检查拆成可观测阶段。", checkpoint: "静默损坏、未裁决冲突和隔离项不会进入下游。" },
       { title: "最后管理派生状态与反馈", learn: "传播替换、撤权、删除、例外、血缘和失败样本，避免只修 Prompt。", checkpoint: "一次源数据变化能追到所有受影响资产和当前状态。" },
     ],
     labs: [

@@ -54,7 +54,7 @@ export default function CodingAgentsPage() {
 
       <section className="section codingAgentProducts" id="products" aria-labelledby="products-title">
         <div className="sectionNumber">03</div><div className="sectionBody">
-          <div className="sectionIntro splitIntro"><div><p className="kicker">PRODUCT LANDSCAPE</p><h2 id="products-title">中国与国际 Coding Agent 产品雷达</h2></div><p>只收录能找到当前官方资料的产品；不追求中美数量相等，也不根据一次媒体测评给出绝对优劣。筛选结果用于形成候选短名单，最后仍要进入同任务 PoC。</p></div>
+          <div className="sectionIntro splitIntro"><div><p className="kicker">PRODUCT LANDSCAPE</p><h2 id="products-title">Coding Agent 产品对比与筛选</h2></div><p>只收录能找到当前官方资料的产品；不追求中美数量相等，也不根据一次媒体测评给出绝对优劣。筛选结果用于形成候选短名单，最后仍要进入同任务 PoC。</p></div>
           <CodingAgentExplorer products={codingAgentProducts} />
         </div>
       </section>

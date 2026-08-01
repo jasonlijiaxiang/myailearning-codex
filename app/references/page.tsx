@@ -83,7 +83,7 @@ export default function ReferencesPage() {
 
         <div className="heroGrid referenceHeroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">REFERENCE LEDGER · 来源与证据</p>
+            <p className="eyebrow">REFERENCE LIBRARY · 来源与证据</p>
             <h1>来源与证据资料库<br />Reference Library</h1>
             <p className="heroLead">
               所有模块用到的论文、标准、教材、官方产品文档、厂商实验与行业指南都集中在这里。

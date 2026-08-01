@@ -14,13 +14,13 @@ export const moduleExtensionViews = Object.freeze({
     intro: "以跨地区理赔材料初审为例：先固定任务、不可接受错误和交付边界，再形成候选、同条件试点并决定是否真的需要模型组合。",
     termIds: Object.freeze(["llm", "poc", "sla", "tco"]),
     steps: Object.freeze([
-      Object.freeze({ code: "01", title: "任务与损失", en: "Task & Loss", detail: "材料分类、事实抽取、证据定位和说明草稿分别容许什么错误。", signal: "没有人工基线与裁决人，不进入模型比较。" }),
+      Object.freeze({ code: "01", title: "明确任务与可接受损失", en: "Task & Loss", detail: "材料分类、事实抽取、证据定位和说明草稿分别容许什么错误。", signal: "没有人工基线与裁决人，不进入模型比较。" }),
       Object.freeze({ code: "02", title: "硬门与身份", en: "Feasibility & Identity", detail: "地域、敏感数据、模态、许可、版本、端点和运行配置共同定义候选。", signal: "硬门失败不能靠平均分补偿。" }),
       Object.freeze({ code: "03", title: "同条件试点", en: "Controlled Pilot", detail: "冻结 Prompt、上下文、工具、Schema、预算和考卷，逐切片比较结果。", signal: "报告严重错误、P95、人工复核与单位合格成本。" }),
       Object.freeze({ code: "04", title: "组合、发布与退出", en: "Portfolio & Exit", detail: "单模型达标就保持简单；否则验证路由、保护组、影子、灰度、回滚和替代路径。", signal: "备用模型也必须通过相同硬门。" }),
     ]),
     checks: Object.freeze([
-      Object.freeze({ title: "单模型", detail: "任务相近、治理能力有限时，统一版本能降低评估与运营复杂度。" }),
+      Object.freeze({ title: "单模型", detail: "任务相近、治理能力有限时，统一版本能降低持续评估与日常运营复杂度。" }),
       Object.freeze({ title: "模型组合", detail: "只有任务切片长期存在可解释差异时，才增加路由和回退路径。" }),
       Object.freeze({ title: "失败归属", detail: "硬能力或交付硬门失败时回到模型选型并重新验收；基座达标后，采集、解析、跨模态对齐和证据坐标归 Multimodal，稳定残余行为适配归 Fine-tuning，运行时路由执行归 AI Gateway。" }),
     ]),
@@ -39,7 +39,7 @@ export const moduleExtensionViews = Object.freeze({
       Object.freeze({ code: "02", title: "采集与质量门", en: "Capture", detail: "登记原始资产、权限、版本、设备与输入质量，再决定分辨率、抽帧和音轨。", signal: "模型不能恢复没有采到的信息。" }),
       Object.freeze({ code: "03", title: "解析与时空对齐", en: "Parse & Align", detail: "恢复版面、表格、阅读顺序、时间轴和跨模态对应，并保留转换版本。", signal: "区分识别错、关系错和定位错。" }),
       Object.freeze({ code: "04", title: "融合与任务判断", en: "Reason", detail: "按任务组合专用解析、跨模态检索和原生理解，不为统一接口丢掉可检查中间结果。", signal: "相似度不是事实证明。" }),
-      Object.freeze({ code: "05", title: "回跳、降级与复核", en: "Ground & Review", detail: "输出绑定原始坐标、不确定性和降级路径；高影响结论进入人工或权威系统确认。", signal: "看不清时应暴露缺口，而不是猜测。" }),
+      Object.freeze({ code: "05", title: "回到原文、降级处理与复核", en: "Ground & Review", detail: "输出绑定原始坐标、不确定性和降级路径；高影响结论进入人工或权威系统确认。", signal: "看不清时应暴露缺口，而不是猜测。" }),
     ]),
     checks: Object.freeze([
       Object.freeze({ title: "固定解析任务", detail: "先比较专用 OCR、版面或 ASR 管线的结构、坐标、成本与稳定性。" }),
@@ -104,7 +104,7 @@ export const moduleExtensionViews = Object.freeze({
       Object.freeze({ code: "03", title: "治理样本与切片", en: "Curate", detail: "覆盖正常、边界、历史失败与高风险任务，保留来源、裁决和适用期。", signal: "考卷不能未经治理变成训练材料。" }),
       Object.freeze({ code: "04", title: "校准评分器", en: "Grade", detail: "确定性终态用代码，开放语义用校准 Judge，高风险与争议由人负责。", signal: "评分器本身也要版本化和评估。" }),
       Object.freeze({ code: "05", title: "重复、切片与归因", en: "Analyze", detail: "报告分布、不确定性、关键切片和失败机制，再判断改的是系统还是量尺。", signal: "一次最好结果和平均值都不够。" }),
-      Object.freeze({ code: "06", title: "形成决定并回收证据", en: "Act & Learn", detail: "输出通过、阻断、补做或有限放量的理由；生产信号经脱敏与裁决后再进入回归集。", signal: "Evaluation 给证据，AI Ops 执行发布与恢复。" }),
+      Object.freeze({ code: "06", title: "作出决定并收集反馈", en: "Act & Learn", detail: "输出通过、阻断、补做或有限放量的理由；生产信号经脱敏与裁决后再进入回归集。", signal: "Evaluation 给证据，AI Ops 执行发布与恢复。" }),
     ]),
     checks: Object.freeze([
       Object.freeze({ title: "对象轴", detail: "分开模型、检索、工具、应用与业务终态，局部指标只用于归因。" }),
@@ -129,7 +129,7 @@ export const moduleExtensionViews = Object.freeze({
     ]),
     checks: Object.freeze([
       Object.freeze({ title: "责任", detail: "谁批准用途、接受残余风险并有权停止系统。" }),
-      Object.freeze({ title: "证据", detail: "能否从政策追到生产版本、控制结果与事件。" }),
+      Object.freeze({ title: "核对依据", detail: "能否从政策追到生产版本、控制结果与事件。" }),
       Object.freeze({ title: "时效", detail: "动态声明是否有 owner、核验日期、复核期限和替换记录。" }),
     ]),
     application: "从十个真实 AI 用途建立最小清单与分级，选一个高影响系统把每项声明追到运行证据，再决定平台化范围。",
@@ -160,9 +160,9 @@ export const moduleExtensionViews = Object.freeze({
     id: "operations-feedback-loop",
     layout: "loop",
     eyebrow: "GENAI DELIVERY & OPERATIONS",
-    title: "AI 应用交付的是可重放、可归因、可恢复的发布单元",
+    title: "AI 应用交付的版本应能回放过程、定位问题并恢复",
     intro: "模型、Prompt、检索、工具、编排、策略和运行环境共同决定行为；同一条工程闭环必须覆盖组装、验证、发布、观测与恢复。",
-    termIds: Object.freeze(["ai-application-engineering", "genaiops", "ai-release-manifest", "observability"]),
+    termIds: Object.freeze(["ai-application-engineering", "genaiops", "ai-release-运行配置记录", "observability"]),
     steps: Object.freeze([
       Object.freeze({ code: "01", title: "组装发布单元", en: "Compose", detail: "绑定模型、Prompt、数据、工具、工作流、策略和运行配置。", signal: "记录组件兼容关系和负责人。" }),
       Object.freeze({ code: "02", title: "分层验证", en: "Validate", detail: "分别验证代码契约、语义质量、风险、性能和业务终态。", signal: "总体分数不能掩盖关键失败。" }),
@@ -186,7 +186,7 @@ export const moduleExtensionViews = Object.freeze({
     intro: "模型看到的是不同权威、来源、时效和执行后果的输入组合；提示词只负责表达任务，不能替代身份、授权和业务校验。",
     termIds: Object.freeze(["llm", "rag", "api", "iam"]),
     steps: Object.freeze([
-      Object.freeze({ code: "01", title: "稳定指令", en: "Stable Instructions", detail: "角色、目标、行为边界、成功标准与输出契约。", signal: "进入版本、审批和回归。" }),
+      Object.freeze({ code: "01", title: "明确且稳定的指令", en: "Stable Instructions", detail: "角色、目标、行为边界、成功标准与输出契约。", signal: "进入版本、审批和回归。" }),
       Object.freeze({ code: "02", title: "可信状态", en: "Trusted State", detail: "由应用注入身份、权限、配置和权威业务事实。", signal: "模型不得自行改写。" }),
       Object.freeze({ code: "03", title: "动态证据", en: "Dynamic Evidence", detail: "用户输入、RAG 文档、历史与工具结果按预算装配。", signal: "标记来源、时效、ACL 与不可信内容。" }),
       Object.freeze({ code: "04", title: "能力接口", en: "Tools & Schema", detail: "声明可提出的动作和可消费的输出形状。", signal: "应用执行最终授权与业务规则。" }),
@@ -297,7 +297,7 @@ export const moduleExtensionViews = Object.freeze({
     termIds: Object.freeze(["ai-infra-platform", "resource-scheduling", "gang-scheduling", "observability", "goodput"]),
     steps: Object.freeze([
       Object.freeze({ code: "CONTRACT", title: "平台与工作负载契约", en: "Contract", detail: "用户、身份、设备、拓扑、数据、运行时、时限、恢复和服务等级形成自助输入。", signal: "先稳定一条 Golden Path，不从组件清单开始。" }),
-      Object.freeze({ code: "ADMIT", title: "准入、队列与公平", en: "Admission", detail: "策略、配额、优先级、Gang、借用和抢占决定何时进入。", signal: "明确拒绝原因，排队不等于缺卡。" }),
+      Object.freeze({ code: "ADMIT", title: "准入规则、排队与公平", en: "Admission", detail: "策略、配额、优先级、Gang、借用和抢占决定何时进入。", signal: "明确拒绝原因，排队不等于缺卡。" }),
       Object.freeze({ code: "PLACE", title: "设备、拓扑与隔离", en: "Placement", detail: "属性、健康、共享、互联、故障域和租户边界决定在哪里运行。", signal: "配额与 Namespace 不是完整隔离。" }),
       Object.freeze({ code: "PREPARE", title: "环境准备与交接", en: "Prepare", detail: "驱动、镜像、数据、制品和配置就绪后，开发、作业与服务版本化交接。", signal: "资源已分配不等于工作负载已就绪。" }),
       Object.freeze({ code: "RUN", title: "执行、健康与恢复", en: "Run", detail: "Notebook、作业和副本执行，控制层协调排空、重调度、升级与回滚。", signal: "Pod 重启不等于训练或服务状态正确。" }),

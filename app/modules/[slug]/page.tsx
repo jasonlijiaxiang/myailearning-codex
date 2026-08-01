@@ -256,7 +256,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       <section className="subsection moduleBriefSection focusedSection" id="evidence" data-quality-section="evidence">
         <div className="subHead"><span>03</span><div><p className="kicker">WHAT THE EVIDENCE PROVES</p><h2>证据与适用边界</h2></div></div>
         <ModuleEvidenceGrid cards={brief.evidenceCards.slice(0, 4)} sourceLedger={sourceLedger} maxColumns={2} />
-        <p className="focusedDirectoryLink"><Link href={`/references#module-${currentModule.canonicalSlug}`}>在 Reference 台账查看本模块全部来源与核验日期 →</Link></p>
+        <p className="focusedDirectoryLink"><Link href={`/references#module-${currentModule.canonicalSlug}`}>在 来源与证据资料库查看本模块全部来源与核验日期 →</Link></p>
       </section>
 
       <section className="subsection moduleBriefSection cloudSection focusedSection" id="cloud" data-quality-section="cloud">

@@ -55,7 +55,7 @@ export default function GlossaryPage() {
         <div className="glossaryHeroGrid">
           <div className="heroCopy">
             <p className="eyebrow">FIELD GLOSSARY · 专业术语库</p>
-            <h1>先把术语讲清楚，<br />再进入架构与选型</h1>
+            <h1>把术语讲清楚，<br />再做架构与选型</h1>
             <p className="heroLead">这里不是缩写清单，而是云与 AI 售前知识的概念入口：中文名、英文名、通行缩写、一句话定义和相关模块保持一致，读者可以从一个词继续进入机制、边界、客户问答与证据。</p>
             <div className="heroActions">
               <a className="primaryButton" href="#glossary-directory">搜索全部术语</a>

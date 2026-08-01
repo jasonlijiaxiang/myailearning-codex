@@ -71,7 +71,7 @@ export default function QuestionsPage() {
 
       <section className="questionDirectorySection" id="question-directory" aria-labelledby="question-directory-title">
         <div className="questionDirectoryIntro">
-          <div><p className="kicker">SEARCH, ANSWER, THEN ASK</p><h2 id="question-directory-title">从客户的一句话，进入完整判断链</h2></div>
+          <div><p className="kicker">SEARCH, ANSWER, THEN ASK</p><h2 id="question-directory-title">从客户问题找到结论和依据</h2></div>
           <p>默认展示全部问题。可以组合关键词、模块和类别筛选；每条结果都保留短答、深答、下一问、证据，以及返回原模块上下文的入口。</p>
         </div>
 

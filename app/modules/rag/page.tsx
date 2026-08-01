@@ -104,7 +104,7 @@ const failureChain = [
 const productionControls = [
   { control: "身份与权限", local: "候选生成、过滤、缓存、上下文和返回使用同一当前主体", evidence: "越权测试、ACL 版本、拒绝原因", owner: "Security / 应用身份平台" },
   { control: "不可信内容", local: "检索证据始终按数据处理，不能覆盖系统指令或自动授权工具", evidence: "恶意文档、投毒、间接注入测试", owner: "Security / Prompt Engineering" },
-  { control: "版本组合", local: "Parser、Chunk、Embedding、索引、Reranker、模型、Prompt 可成组追踪", evidence: "Release manifest、影子对照、回滚证明", owner: "AI Ops / Data Engineering" },
+  { control: "版本组合", local: "Parser、Chunk、Embedding、索引、Reranker、模型、Prompt 可成组追踪", evidence: "发布清单、影子对照、回滚证明", owner: "AI Ops / Data Engineering" },
   { control: "RAG Trace", local: "记录查询、路线、候选、过滤、重排、最终证据包和回答决策", evidence: "阶段 Span、版本、时延、Token、成本和失败原因", owner: "RAG 定义字段；AI Ops 治理链路" },
   { control: "容量与降级", local: "索引、Embedding、Reranker 或模型故障时保留权限和证据边界", evidence: "峰值、超时、区域故障、只搜不答、转人工演练", owner: "AI Infra / AI Gateway / AI Ops" },
   { control: "质量与经济性", local: "质量、风险、时延和成本按成功业务结果共同观察", evidence: "关键切片、严重错误、采用率、人工接管和单位成功成本", owner: "Evaluation / Solution Patterns / FinOps" },
@@ -115,7 +115,7 @@ const cloudHooks = [
   { stage: "检索与索引", capability: "托管搜索、向量数据库、关系 / 图谱查询、缓存", value: "按问题类型产生权限内候选", discover: "精确、语义、关系和结构化查询各占多少？", acceptance: "过滤后的 Recall、时延、删除一致性、备份恢复", responsibility: "平台实现索引能力；应用负责查询路由、ACL 语义和验收" },
   { stage: "模型能力", capability: "Embedding、Reranker、生成模型、模型路由", value: "把候选变成可用证据和回答", discover: "语言、质量、数据边界、P95 与成本如何排序？", acceptance: "固定任务和证据包上的质量—时延—成本结果", responsibility: "供应方说明模型与服务边界；客户负责场景选择和发布" },
   { stage: "安全运行", capability: "IAM、KMS、私网、WAF、API 网关、容器 / Serverless", value: "让身份、密钥和网络边界贯穿链路", discover: "谁能检索什么，谁能调用什么，日志可记录什么？", acceptance: "越权泄漏为零；凭据、缓存、日志和故障路径受控", responsibility: "共享责任；托管服务不替代业务授权和威胁建模" },
-  { stage: "评估与运营", capability: "Tracing、评估平台、日志、告警、灰度、回滚", value: "定位失败并持续改进", discover: "谁对质量、事故、版本和恢复负责？", acceptance: "能从业务结果回到证据链阶段并恢复可信版本", responsibility: "平台提供观测和发布能力；团队定义业务状态与处置流程" },
+  { stage: "持续评估与日常运营", capability: "Tracing、评估平台、日志、告警、灰度、回滚", value: "定位失败并持续改进", discover: "谁对质量、事故、版本和恢复负责？", acceptance: "能从业务结果回到证据链阶段并恢复可信版本", responsibility: "平台提供观测和发布能力；团队定义业务状态与处置流程" },
   { stage: "成本与容量", capability: "用量计量、预算、配额、弹性、FinOps", value: "控制离线和在线完整成本", discover: "成本驱动来自解析、索引、模型、流量还是人工？", acceptance: "单位成功结果成本、峰值容量和预算异常可解释", responsibility: "云方提供计量；客户定义分摊、价值和投资门槛" },
 ];
 
@@ -193,7 +193,7 @@ export default function RagModulePage() {
             <h1 className="moduleHeroTitle" id="rag-title">RAG<br /><span>检索增强生成 · Retrieval-Augmented Generation</span></h1>
           </div>
           <div className="ragDefinition">
-            <p>把外部资料转化为当前用户可使用、可核验、可撤回的证据；向量检索只是候选发现手段之一。</p>
+            <p>把外部资料整理成当前用户可使用、能核对且可撤回的依据；向量检索只是候选发现手段之一。</p>
           </div>
         </div>
       </section>
@@ -264,7 +264,7 @@ export default function RagModulePage() {
               <p className="sectionLead">两条链通过同一套稳定 ID、版本和权限语义衔接。Data Engineering 负责生产可靠的知识产物；RAG 负责证明这些产物能被正确召回、编排和用于回答。</p>
 
               <section className="focusedDecisionLedger" aria-labelledby="offline-lifecycle-title">
-                <header><p className="kicker">OFFLINE EVIDENCE LIFECYCLE</p><h3 id="offline-lifecycle-title">资料进入索引之前，每一步都要有可验收输出</h3><p>切片只是其中一步。没有权威源、版本裁决和负向变化传播，再精细的向量检索也会返回错误证据。</p></header>
+                <header><p className="kicker">OFFLINE EVIDENCE LIFECYCLE</p><h3 id="offline-lifecycle-title">资料进入索引前，每一步都要有明确的验收结果</h3><p>切片只是其中一步。没有权威源、版本裁决和负向变化传播，再精细的向量检索也会返回错误证据。</p></header>
                 <div className="tableWrap">
                   <table>
                     <thead><tr><th>阶段</th><th>输出</th><th>典型失败</th><th>RAG 所需验收</th></tr></thead>

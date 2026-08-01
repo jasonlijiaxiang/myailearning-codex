@@ -3,14 +3,14 @@
  *
  * 初始主题与 external_reference/CC-20260717 建立归档映射，新增模块来自全局知识复核。
  * PPT 不定义模块的知识边界、章节顺序或内容上限；正文按售前判断链独立研究，
- * 公开事实由 Reference 台账中的一手来源核验。
+ * 公开事实由 来源与证据资料库中的一手来源核验。
  */
 export const layers = [
   {
     no: "01",
     name: "方案与选型层",
     en: "Solution & Selection",
-    purpose: "把客户目标转成可比较、可采购、可验收的方案。",
+    purpose: "帮助客户比较方案、制定采购条件和验收标准。",
     modules: [
       { zh: "场景解决方案", en: "Solution Patterns", slug: "solution-patterns", href: "/modules/solution-patterns" },
       { zh: "模型格局与选型", en: "Model Landscape", slug: "model-landscape", href: "/modules/model-landscape" },
@@ -84,7 +84,7 @@ export const layers = [
     no: "08",
     name: "数据工程层",
     en: "Data Engineering",
-    purpose: "把原始数据变成可信、可追溯、可检索的 AI 输入。",
+    purpose: "把原始数据整理为可被 AI 使用、能追溯来源的输入。",
     modules: [
       { zh: "AI 数据工程", en: "Data Engineering for AI", slug: "data-engineering", href: "/modules/data-engineering" },
     ],

@@ -6,7 +6,7 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:ef4b00a998f3089749c35b7895909cdf05a42ca3e5441d976eef3685963dba7a",
+    "zhContentHash": "sha256:834653b000eba7c58208611db4c3fe31e7ceffe61c76e0d8c7ff725fdcce13a3",
     "enContentHash": "sha256:5424ec0985993515671b9bb813ffa7b35f0649ea736dfca33e4b18931d8f24cb",
     "termIds": [
       "distributed-training",

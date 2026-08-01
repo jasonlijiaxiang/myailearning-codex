@@ -67,7 +67,7 @@ const mergedSolutionPatternsBrief = Object.freeze({
 
 const mergedAiOpsBrief = Object.freeze({
   ...aiOpsBrief,
-  definition: "AI 应用工程与运营（AI Application Engineering & GenAIOps）把模型、Prompt、检索、工具、工作流、策略、评估与运行配置作为一个可测试、可发布、可观测、可停止并可恢复的系统，并用生产证据持续改进。",
+    definition: "AI 应用工程与运营（AI Application Engineering & GenAIOps）把模型、Prompt、检索、工具、工作流、策略、评估与运行配置作为一个软件系统来管理：能测试、发布、观测、停止和恢复，并根据生产中的证据持续改进。",
   position: "横跨 RAG、Agent、多模态、AI 网关和模型服务的交付与运行生命周期；它管理跨组件发布单元、真实流量、质量、成本与事故闭环，不负责替代 Agent 编排、业务授权或各组件自己的事实源。",
   principles: Object.freeze([
     ...aiApplicationEngineeringContribution.principles,
@@ -78,7 +78,7 @@ const mergedAiOpsBrief = Object.freeze({
     ...aiApplicationEngineeringContribution.decisions,
     ...aiOpsBrief.decisions,
   ]),
-  deepDiveTitle: "从可重放发布单元走向可归因的生产闭环",
+    deepDiveTitle: "发布后如何回放过程并定位问题",
   deepDiveLead: "工程与运营共享同一组任务、制品、版本和业务终态：发布前证明候选可接受，发布后证明真实分布仍然可控，并在事故中安全恢复。",
   deepDives: Object.freeze([
     ...aiApplicationEngineeringContribution.deepDives,
