@@ -7,7 +7,7 @@
     "objectType": "module",
     "objectId": null,
     "zhContentHash": "sha256:ef4b00a998f3089749c35b7895909cdf05a42ca3e5441d976eef3685963dba7a",
-    "enContentHash": "sha256:5bca5f15b5f87a090405e2b986985a20a94a8926d48294209e246a319bca141b",
+    "enContentHash": "sha256:5424ec0985993515671b9bb813ffa7b35f0649ea736dfca33e4b18931d8f24cb",
     "termIds": [
       "distributed-training",
       "evaluation",

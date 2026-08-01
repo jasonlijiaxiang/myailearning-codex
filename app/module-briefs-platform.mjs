@@ -310,9 +310,9 @@ export const aiGatewayBrief = {
 export const llmInferenceBrief = {
   slug: "llm-inference",
   definition:
-    "大模型推理（LLM Inference）是把已训练模型转化为在线或批量输出的执行过程；推理引擎负责模型加载、请求调度、注意力计算、KV Cache、批处理、并行与流式返回。",
+    "大模型推理（LLM Inference）是把已训练模型与 Tokenizer、模板、引擎和运行配置组合成可服务输出的执行过程；它管理模型加载、请求调度、注意力计算、KV Cache、连续批处理、并行与流式返回。",
   position:
-    "位于模型权重与 AI 应用之间：上接 AI 网关、RAG、Agent 或批处理任务，下接 GPU、加速器、网络和存储；重点是单位资源上的可用吞吐、延迟、稳定性与质量保持。",
+    "位于模型制品与 AI 应用之间：上接 AI 网关、RAG、Agent 或批处理任务，下接 GPU、加速器、网络和存储；重点是在真实负载、质量和 SLO 约束下交付 Goodput 与单位达标结果成本。",
   presentation: "pipeline",
   principleTitle: "一次生成请求在推理引擎中的生命周期",
   principles: [
@@ -322,7 +322,7 @@ export const llmInferenceBrief = {
       explanation:
         "模型根据已有上下文逐 token 生成输出，首 token 延迟与后续 token 速度分别影响交互体验。",
       decision:
-        "服务指标至少分开观察首 token 时间（TTFT）、token 间延迟（ITL）、端到端延迟和成功吞吐。",
+        "服务指标至少分开观察排队、首 token 时间（TTFT）、token 间延迟（ITL）、端到端延迟、拒绝率和 Goodput，并声明测量边界。",
     },
     {
       zh: "预填充与解码",
@@ -344,9 +344,9 @@ export const llmInferenceBrief = {
       zh: "连续批处理与分页注意力",
       en: "Continuous Batching & PagedAttention",
       explanation:
-        "请求在不同时间加入和退出批次；分页式缓存管理减少内存碎片，让更多并发请求共享设备。",
+        "请求按生成轮次加入和退出批次；分页式缓存管理减少内存碎片，让更多并发请求共享设备。总吞吐改善时，租户公平和尾延迟仍可能恶化。",
       decision:
-        "吞吐提升可能增加排队或尾延迟，调度参数应围绕业务 SLO 和请求分布调优。",
+        "按长度、优先级和租户观察得到的服务量，围绕业务 SLO 设置准入、批次上限、公平策略和必要的隔离池。",
     },
     {
       zh: "推理优化",
@@ -354,7 +354,7 @@ export const llmInferenceBrief = {
       explanation:
         "量化、编译、FlashAttention、前缀缓存和投机解码分别从精度、算子、内存访问或生成步骤降低开销。",
       decision:
-        "每项优化都必须用目标模型、硬件和业务评估集验证质量、兼容性、冷启动与尾延迟。",
+        "每项优化都必须作为新发布候选，用目标模型、硬件和业务评估集验证质量、兼容性、冷启动、尾延迟、排空与回滚。",
     },
     {
       zh: "分布式推理",
@@ -371,16 +371,16 @@ export const llmInferenceBrief = {
       signal:
         "需在上线速度、模型控制、数据边界、持续利用率、定制优化与运维能力之间取舍。",
       recommendation:
-        "先按业务 SLO、合规和总成本做分层：波动或探索流量优先托管，稳定高利用率且确有控制需求的负载再验证自托管。",
+        "先按业务 SLO、合规、负载波动和退出成本分层：探索或波动流量优先托管，稳定高利用率且确有控制需求的负载再验证自托管。",
       boundary:
-        "不能只比较单 token 标价；还要计入空闲容量、工程人力、升级、容灾、网络和失败重试。",
+        "不能只比较单 token 标价；还要计入暖容量、空闲、工程人力、升级、容灾、网络、失败重试和每个达标业务结果的完整成本。",
     },
     {
       question: "选择哪一种推理引擎？",
       signal:
         "候选引擎在模型支持、硬件后端、调度、量化、结构化输出、LoRA、可观测与社区成熟度上不同。",
       recommendation:
-        "用同一模型、精度、硬件和真实请求回放比较质量、TTFT、ITL、P95、吞吐、稳定性与运维接口。",
+        "冻结模型与 Tokenizer、模板、精度、硬件和真实请求分布，比较质量、排队、TTFT、ITL、P95、Goodput、长稳与运维接口。",
       boundary:
         "公开 benchmark 常使用不同批量、序列长度和硬件，不能直接拼表得出采购结论。",
     },
@@ -422,13 +422,13 @@ export const llmInferenceBrief = {
       title: "五种线上症状如何定位到真正瓶颈",
       intro:
         "先用分阶段指标缩小范围，再用 profile 和受控实验确认；直接加卡可能掩盖调度、缓存或软件回退。",
-      sourceIds: ["vllm-2023", "flashattention-2022", "opentelemetry-genai-semconv"],
+      sourceIds: ["vllm-metrics-v0-12", "vllm-2023", "flashattention-2022", "serverlessllm-2024"],
       items: [
         {
           name: "TTFT 上升但生成速度正常",
           en: "Slow Time to First Token",
-          mechanism: "常见原因是排队、冷加载、长输入预填充或请求被合并到过大的批次，而非解码算力不足。",
-          decision: "分解 queue、model load 与 prefill 时间，并按输入长度分组；只有 prefill 受限时才评估更快注意力或独立资源池。",
+          mechanism: "常见原因是排队、模型加载、长输入 Prefill 或请求被合并到过大的批次，而非 Decode 算力不足。",
+          decision: "分解 queue、model load 与 prefill 时间，并按输入长度、缓存命中和就绪容量分组；先修准入或加载路径，只有 Prefill 受限时才评估更快注意力或独立资源池。",
           boundary: "客户端首字节还会受网关缓冲与网络影响，不能只看引擎内部计时。",
         },
         {
@@ -442,7 +442,7 @@ export const llmInferenceBrief = {
           name: "并发增加后吞吐反而下降",
           en: "Throughput Collapse",
           mechanism: "长度差异、KV Cache 碎片、请求换入换出或尾部超长输出使批次效率下降，并触发更多拒绝和重试。",
-          decision: "按长度分池并检查缓存利用、抢占和重算；容量结论使用稳定成功吞吐而非短时峰值。",
+          decision: "按长度分池并检查缓存利用、抢占和重算；设置等待上限、背压和拒绝语义，容量结论使用满足 SLO 的稳定 Goodput 而非短时峰值。",
           boundary: "分池会减少资源共享，流量不足时可能增加空闲。",
         },
         {
@@ -467,7 +467,7 @@ export const llmInferenceBrief = {
       title: "四类负载必须分开建容量基线",
       intro:
         "平均输入长度和平均并发无法代表真实服务；同一套引擎参数在不同负载形状上可能给出相反结论。",
-      sourceIds: ["vllm-2023", "opentelemetry-genai-semconv", "nist-genai-profile"],
+      sourceIds: ["vllm-metrics-v0-12", "distserve-2024", "jitserve-2026", "finops-unit-economics"],
       maxColumns: 2,
       items: [
         {
@@ -488,7 +488,7 @@ export const llmInferenceBrief = {
           name: "Agent 突发调用",
           en: "Agentic Bursts",
           mechanism: "一个用户任务会产生多轮模型与工具调用，到达呈簇状并受外部工具延迟影响，重试还会放大峰值。",
-          decision: "按完整任务模拟循环、停止和失败路径，验收每个成功任务的调用数、P95 与成本。",
+          decision: "按完整任务模拟循环、停止和失败路径，验收每个达标任务的调用数、P95、拒绝与完整成本。",
           boundary: "单次模型请求压测不能推导 Agent 容量。",
         },
         {
@@ -502,7 +502,7 @@ export const llmInferenceBrief = {
     },
   ],
   criticalBoundary:
-    "推理引擎优化的是模型执行，不负责跨模型业务路由、用户授权、知识检索、Agent 工具编排或 GPU 集群治理。更高 token 吞吐也不等于更高业务成功率；质量、SLO 和每个成功任务成本必须一起验收。",
+    "推理引擎优化的是单模型执行和本地请求调度，不负责跨模型业务路由、用户授权、知识检索、Agent 工具编排或 GPU 集群治理。扩容不能替代过载准入，更高 token 吞吐也不等于更高业务成功率；质量、SLO、Goodput 和每个达标任务成本必须一起验收。",
   cloudHooks: [
     {
       stage: "托管模型服务（Managed Model Serving）",
@@ -529,13 +529,13 @@ export const llmInferenceBrief = {
       discover: "当前瓶颈在加载、计算、显存、网络、排队还是下游应用？是否有端到端 trace？",
     },
   ],
-  relatedSlugs: ["llm", "ai-gateway", "ai-infra-compute", "ai-infra-platform", "evaluation", "prompt-engineering"],
+  relatedSlugs: ["llm", "ai-gateway", "ai-infra-compute", "ai-infra-platform", "evaluation", "ai-ops", "prompt-engineering", "solution-patterns"],
   qa: [
     {
       q: "为什么同一个模型在不同平台上的速度差很多？",
       a: "模型名称相同不代表执行栈相同。硬件、精度、内核、KV Cache、批处理、并行、请求长度和调度策略都会改变首 token、生成速度与吞吐。",
       depth:
-        "比较时必须锁定模型权重或快照、量化方式、硬件、并发和输入输出分布；同时报告 TTFT、ITL、端到端 P95、成功吞吐和质量。vLLM 的 PagedAttention 说明缓存管理本身就能显著改变服务效率，FlashAttention 则说明注意力的内存访问模式也会影响性能。",
+        "比较时必须锁定模型权重、Tokenizer、模板、量化制品、引擎配置、硬件、到达过程和输入输出分布；同时报告排队、TTFT、ITL、端到端 P95、Goodput 和质量。vLLM 的 PagedAttention 说明缓存管理会改变服务效率，FlashAttention 则说明注意力的内存访问模式也会影响性能。",
       ask: "追问客户：当前慢的是首 token、持续生成还是排队？测试是否使用了真实上下文和并发？",
       tag: "性能原理",
       basis: "推理系统论文 + 负载建模",
@@ -554,7 +554,7 @@ export const llmInferenceBrief = {
       basis: "KV Cache 原理 + PoC 压测",
       evidence: [
         { sourceId: "vllm-2023", supports: "支持 KV Cache 容量、碎片和共享方式直接影响可并发请求数量。" },
-        { sourceId: "opentelemetry-genai-semconv", supports: "支持记录模型请求、token、时延和错误等运行信息，以便关联容量测试。" },
+        { sourceId: "vllm-metrics-v0-12", supports: "支持在版本化的引擎指标中分别观察排队、Prefill、Decode、TTFT、Token 间时延、请求状态和 KV Cache 使用。" },
       ],
     },
     {
@@ -603,9 +603,9 @@ export const llmInferenceBrief = {
     {
       metric: "四类时延",
       title: "平均响应时间不足以验收推理",
-      finding: "推理服务应至少区分首 token、token 间、排队与端到端时延，并关联模型、token 和错误信息。",
-      boundary: "具体 SLO 必须由交互、批处理和 Agent 等业务场景分别确定。",
-      sourceId: "opentelemetry-genai-semconv",
+      finding: "vLLM v0.12.0 的服务端指标把排队、Prefill、Decode、首 Token、Token 间和端到端时延分开，便于定位慢在哪一阶段。",
+      boundary: "版本化引擎指标不等于客户端体验或业务终态；具体 SLO 仍须由交互、批处理和 Agent 等场景分别确定。",
+      sourceId: "vllm-metrics-v0-12",
     },
   ],
 };
@@ -1299,9 +1299,9 @@ export const dataEngineeringBrief = {
 export const aiInfraComputeBrief = {
   slug: "ai-infra-compute",
   definition:
-    "AI 算力底座（AI Infrastructure Compute）是承载模型训练与推理的物理资源体系，包括加速器、显存与主机内存、节点内互联、节点间网络、存储、机房电力和散热。",
+    "AI 算力基础设施（AI Compute Infrastructure）是承载模型训练与推理的物理资源体系，包括加速器、显存与主机内存、紧耦合互联域、跨域网络、存储、机房电力和散热。",
   position:
-    "处于 AI 技术栈最底层，为推理引擎和 AI 平台提供可交付容量；它回答硬件与数据通路能否支撑目标工作负载，不负责上层作业调度、模型路由或应用质量。",
+    "处于 AI 技术栈最底层，为推理引擎和 AI 平台提供可交付容量；它从工作负载包络出发回答整条数据通路能否持续达标，不负责上层作业调度、模型路由、完整方案 ROI 或应用质量。",
   presentation: "stack",
   principleTitle: "算力不是一张卡，而是一条完整数据通路",
   principles: [
@@ -1330,15 +1330,15 @@ export const aiInfraComputeBrief = {
         "估算要区分训练和推理，并预留通信缓冲、碎片、并发与运行时开销。",
     },
     {
-      zh: "节点内扩展",
+      zh: "紧耦合扩展",
       en: "Scale-up Fabric",
       explanation:
-        "节点或机柜内的高速互联决定多卡之间交换参数、激活和缓存的效率。",
+        "同一高带宽、低时延加速器互联域决定细粒度参数、激活和缓存交换效率；该域可以跨托盘或系统节点。",
       decision:
-        "大模型跨卡前先验证拓扑、带宽与集合通信；卡数增加不保证线性加速。",
+        "大模型跨设备前先验证互联域、拓扑、带宽与集合通信；不要把 Scale-up 机械等同于单台主机。",
     },
     {
-      zh: "节点间扩展",
+      zh: "跨域扩展",
       en: "Scale-out Network",
       explanation:
         "训练同步、专家并行、分布式推理和存储访问依赖低延迟、高吞吐且稳定的网络。",
@@ -1374,13 +1374,13 @@ export const aiInfraComputeBrief = {
         "TCO 要包括闲置、软件、网络、存储、电力、人员、容灾和升级，不只比较小时价。",
     },
     {
-      question: "单机多卡还是多节点集群？",
+      question: "一个紧耦合互联域，还是跨域扩展？",
       signal:
-        "模型或吞吐超过单卡，但尚不清楚节点内与节点间通信代价。",
+        "模型或吞吐超过单卡，但尚不清楚同一紧耦合域内与跨域通信的代价。",
       recommendation:
-        "优先在高带宽节点内扩展；确需多节点时，再根据并行策略设计网络和故障恢复。",
+        "优先使用满足并行策略的最小紧耦合域；测量证明必须跨域后，再设计网络、拥塞控制和故障恢复。",
       boundary:
-        "更多节点会增加通信、调试与失败概率，扩展效率必须实测。",
+        "跨越更多互联域会增加通信、调试、拥塞与失败暴露，扩展效率必须实测。",
     },
     {
       question: "是否采用非主流或异构加速器？",
@@ -1411,7 +1411,7 @@ export const aiInfraComputeBrief = {
       title: "四类资源瓶颈的证据、误判与投资方向",
       intro:
         "同样表现为 GPU 未满或作业变慢，根因可能在计算、内存、网络或数据通路；只有 profile 与对照实验能决定采购重点。",
-      sourceIds: ["flashattention-2022", "vllm-2023"],
+      sourceIds: ["roofline-2009", "flashattention-2022", "megatron-3d-parallelism-2021", "nccl-collectives", "mlperf-storage-v2"],
       columnLabels: {
         name: "瓶颈类型",
         mechanism: "可观察证据",
@@ -1437,8 +1437,8 @@ export const aiInfraComputeBrief = {
           name: "通信受限",
           en: "Communication-bound",
           mechanism: "增加卡数后集合通信和同步等待占比上升，扩展效率下降并对拓扑、拥塞和慢节点敏感。",
-          decision: "用 1、2、4、8 节点缩放曲线和通信 profile 验证，再决定高速互联、拓扑放置或改变并行策略。",
-          boundary: "单节点 benchmark 无法推导多节点训练或分布式推理效率。",
+          decision: "用单设备、单紧耦合域与跨域缩放曲线和通信 profile 验证，再决定互联、拓扑放置或改变并行策略。",
+          boundary: "单个紧耦合域内的 benchmark 无法推导跨域训练或分布式推理效率。",
         },
         {
           name: "存储与数据通路受限",
@@ -1455,7 +1455,7 @@ export const aiInfraComputeBrief = {
       title: "进入容量采购前必须交付的五项证据",
       intro:
         "没有这些证据，卡数、小时数和三年 TCO 都只是对未知负载的精确猜测。",
-      sourceIds: ["nist-genai-profile", "nvidia-gpu-operator", "flashattention-2022", "vllm-2023"],
+      sourceIds: ["mlperf-training", "mlperf-inference-datacenter", "mlperf-storage-v2", "finops-unit-economics"],
       maxColumns: 3,
       items: [
         {
@@ -1497,7 +1497,7 @@ export const aiInfraComputeBrief = {
     },
   ],
   criticalBoundary:
-    "算力底座解决物理容量和数据通路，不决定作业优先级、GPU 共享、模型服务发布或业务效果。峰值 FLOPS、卡数和显存都不是单独的采购结论；必须用目标模型与软件栈验证有效性能、可用性和 TCO。",
+    "算力基础设施解决物理容量、故障域和数据通路，不决定作业优先级、GPU 共享、模型服务发布或业务效果。峰值 FLOPS、卡数、显存和单次基准都不是采购结论；必须在同一工作负载、质量与 SLO 下验证长期有效产能、恢复和资源级 TCO，项目 ROI 由完整方案继续评估。",
   cloudHooks: [
     {
       stage: "弹性加速计算（Elastic Accelerated Compute）",
@@ -1524,19 +1524,19 @@ export const aiInfraComputeBrief = {
       discover: "当前 GPU 利用率、排队、失败重跑和空闲成本分别是多少？未来容量由谁预测？",
     },
   ],
-  relatedSlugs: ["ai-infra-platform", "llm-training", "llm-inference", "model-landscape", "ai-ops"],
+  relatedSlugs: ["ai-infra-platform", "llm-training", "llm-inference", "model-landscape", "ai-ops", "security", "solution-patterns"],
   qa: [
     {
       q: "GPU 的理论算力更高，为什么训练或推理不一定更快？",
       a: "模型执行还受数据类型、内存带宽、算子、通信、批量、软件内核和 I/O 约束；峰值算力只有在工作负载能持续喂满计算单元时才有意义。",
       depth:
-        "注意力等算子可能受内存访问影响，分布式模型可能受集合通信影响，在线推理还受 KV Cache 和调度影响。售前应在同一模型、精度、框架和输入分布下测有效 token / 秒、作业时间、SLO 与能耗，并用 profile 说明瓶颈，而不是把不同精度的峰值数字直接对比。",
+        "Roofline 用运算强度、峰值计算和内存带宽解释内核上界；完整模型还可能受集合通信、存储、KV Cache 和调度限制。售前应冻结模型、精度、框架和输入分布，测达标作业时间、Goodput、SLO 与整机能耗，并用 profile 说明瓶颈，而不是把不同精度的峰值数字直接对比。",
       ask: "追问客户：当前 workload 的瓶颈证据是什么？使用哪种精度、并行策略和软件版本？",
       tag: "性能判断",
       basis: "IO-aware 算法 + 推理系统",
       evidence: [
+        { sourceId: "roofline-2009", supports: "支持用运算强度、峰值计算与内存带宽上界区分计算受限和数据移动受限。" },
         { sourceId: "flashattention-2022", supports: "支持注意力性能受高带宽内存与片上存储之间的数据移动影响。" },
-        { sourceId: "vllm-2023", supports: "支持在线推理还受 KV Cache 内存管理和批处理调度影响。" },
       ],
     },
     {
@@ -1560,8 +1560,8 @@ export const aiInfraComputeBrief = {
       tag: "混合云",
       basis: "工作负载分层 + TCO",
       evidence: [
+        { sourceId: "finops-ai-category", supports: "支持把 AI 支出放在模型服务、云、数据中心、SaaS 与多供应商的统一技术组合中比较。" },
         { sourceId: "nist-zero-trust", supports: "支持混合环境中的资源访问继续按身份和策略验证，而不以位置作为信任依据。" },
-        { sourceId: "nist-genai-profile", supports: "支持按使用情境、供应链与组织风险评估生成式 AI 部署选择。" },
       ],
     },
     {
@@ -1573,17 +1573,17 @@ export const aiInfraComputeBrief = {
       tag: "TCO",
       basis: "端到端成本模型",
       evidence: [
-        { sourceId: "nist-genai-profile", supports: "支持在风险和业务情境中同时考虑系统性能、资源与影响，而非单一技术指标。" },
+        { sourceId: "finops-unit-economics", supports: "支持把资源效率单位与每个合格业务结果的单位经济分开，并用客户基线持续比较。" },
       ],
     },
   ],
   evidenceCards: [
     {
-      metric: "IO-aware",
+      metric: "Roofline",
       title: "高峰值算力不等于高有效性能",
-      finding: "FlashAttention 从内存读写而非仅从计算量解释注意力性能，展示了数据移动对加速器利用的重要性。",
-      boundary: "它是算子级证据，不能单独代表完整模型、网络或集群性能。",
-      sourceId: "flashattention-2022",
+      finding: "Roofline 用运算强度、峰值计算和内存带宽共同描述内核性能上界，说明数据移动可能先于计算成为限制。",
+      boundary: "它是瓶颈推理模型，不能单独代表完整模型、网络、存储、长期稳定性或业务 SLO。",
+      sourceId: "roofline-2009",
       accent: true,
     },
     {
@@ -1594,11 +1594,11 @@ export const aiInfraComputeBrief = {
       sourceId: "vllm-2023",
     },
     {
-      metric: "软件 + 硬件",
-      title: "设备交付需要完整运行栈",
-      finding: "NVIDIA GPU Operator 将驱动、设备插件、容器工具链、节点标记与监控等组件作为 Kubernetes GPU 运行的配套能力。",
-      boundary: "这是特定厂商在 Kubernetes 上的运维方案，不代表所有加速器或平台采用同一实现。",
-      sourceId: "nvidia-gpu-operator",
+      metric: "同质量 + 同场景",
+      title: "可比基准必须冻结质量与负载规则",
+      finding: "MLPerf Training 以达到指定质量目标的墙钟训练时间比较完整系统。",
+      boundary: "公开提交仍只代表对应版本与完整配置，不能直接替代客户模型、长稳、故障恢复或业务结果。",
+      sourceId: "mlperf-training",
     },
   ],
 };

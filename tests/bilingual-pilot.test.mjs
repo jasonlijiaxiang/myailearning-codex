@@ -180,6 +180,52 @@ test("Batch 07 English content preserves the training contract and predictive ro
   assert.equal(claimsById["training.pytorch-dcp-compatibility-2026-08-01"].status, "watch");
 });
 
+test("Batch 08 English content preserves inference overload and compute procurement contracts", () => {
+  const inference = englishModuleRegistry["llm-inference"];
+  assert.equal(inference.qa.length, 14);
+  assert.equal(inference.qa[0].id, "same-model-different-speed");
+  assert.equal(inference.qa.at(-1).id, "maximum-context-admission");
+  assert.match(JSON.stringify(inference), /Allocated devices are not ready model capacity/);
+  assert.match(JSON.stringify(inference), /cache_salt/);
+  assert.match(JSON.stringify(inference), /Goodput/);
+  assert.match(JSON.stringify(inference), /Continuous Batching/);
+  [
+    "vllm-metrics-v0-12",
+    "llm-serving-fairness-2024",
+    "serverlessllm-2024",
+    "jitserve-2026",
+  ].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(inference.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+
+  const compute = englishModuleRegistry["ai-infra-compute"];
+  assert.equal(compute.qa.length, 12);
+  assert.equal(compute.qa[0].id, "peak-compute-not-speed");
+  assert.equal(compute.qa.at(-1).id, "heterogeneous-supply-risk");
+  assert.match(JSON.stringify(compute), /arithmetic intensity/);
+  assert.match(JSON.stringify(compute), /tightly coupled/);
+  assert.match(JSON.stringify(compute), /Multiple nodes do not necessarily mean multiple domains/);
+  assert.doesNotMatch(compute.terms["scale-out"].definition, /across nodes/);
+  assert.match(JSON.stringify(compute), /MLPerf Storage/);
+  assert.match(JSON.stringify(compute), /resource TCO.*(?:does not|not).*application ROI/is);
+  const canonicalCompute = requireModuleContent("ai-infra-compute");
+  const trainingEvidenceCard = canonicalCompute.evidenceCards.find((card) => card.sourceId === "mlperf-training");
+  assert.ok(trainingEvidenceCard);
+  assert.doesNotMatch(trainingEvidenceCard.finding, /MLPerf Inference/);
+  [
+    "roofline-2009",
+    "mlperf-training",
+    "mlperf-inference-datacenter",
+    "mlperf-storage-v2",
+    "finops-ai-category",
+    "finops-unit-economics",
+  ].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(compute.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+});
+
 test("English sections and rendered object anchors use stable, unique IDs", () => {
   const generatedPageSectionIds = new Set(["evidence", "qa"]);
   for (const slug of englishModuleSlugs) {

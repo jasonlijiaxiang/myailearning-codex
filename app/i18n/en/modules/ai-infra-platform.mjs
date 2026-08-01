@@ -104,7 +104,7 @@ export const englishModule = Object.freeze({
   terms: Object.freeze({
     observability: Object.freeze({ name: "Observability", definition: "The use of metrics, logs, traces, events, and version context to explain system behavior and outcomes." }),
     "distributed-training": Object.freeze({ name: "Distributed Training", definition: "Training that partitions data, model state, or work across devices while managing communication, topology, and recovery." }),
-    batching: Object.freeze({ name: "Dynamic Batching", definition: "Combining waiting or active inference requests into shared execution batches to improve throughput while controlling latency and fairness." }),
+    batching: Object.freeze({ name: "Continuous Batching", definition: "Admitting ready requests and retiring completed requests at generation-step boundaries to improve throughput while controlling queueing, fairness, and tail latency." }),
     "ai-infra-platform": Object.freeze({ name: "AI Infrastructure Platform", definition: "The control plane that turns heterogeneous compute into requestable, schedulable, isolated, recoverable, observable AI services." }),
     "resource-scheduling": Object.freeze({ name: "Resource Scheduling", definition: "Allocating scarce devices according to request shape, attributes, topology, quota, priority, and policy." }),
     "gang-scheduling": Object.freeze({ name: "Gang Scheduling", definition: "Starting a distributed workload only when its complete required resource group can be allocated together." }),

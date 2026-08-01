@@ -944,6 +944,12 @@ export const sourceLedger = {
     note: "提出 PagedAttention 与面向 LLM Serving 的 KV Cache 内存管理；论文吞吐结果受模型、硬件和负载限制。",
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2309.06180",
   },
+  "vllm-metrics-v0-12": {
+    grade: "O", kind: "版本化官方技术文档", shortTitle: "vLLM v0.12 Metrics",
+    title: "Metrics — vLLM v0.12.0",
+    note: "记录 vLLM v0.12.0 的服务端请求指标，包括排队、Prefill、Decode、首 Token、Token 间时延、端到端时延、请求状态和 KV Cache 使用；这些引擎侧指标不自动包含网关、网络、客户端渲染或业务终态，其他版本的字段也可能不同。",
+    verifiedAt: "2026-08-01", href: "https://docs.vllm.ai/en/v0.12.0/design/metrics/",
+  },
   "gptq-2023": {
     grade: "A", kind: "一手研究论文", shortTitle: "GPTQ",
     title: "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers",
@@ -959,8 +965,26 @@ export const sourceLedger = {
   "vllm-prefix-caching": {
     grade: "P", kind: "官方技术文档", shortTitle: "vLLM Prefix Caching",
     title: "Automatic Prefix Caching — vLLM",
-    note: "说明自动前缀缓存复用共享前缀的 KV Cache，并明确它主要减少 Prefill 计算而不减少新 Token 的 Decode 时间；具体收益依赖前缀命中、负载与隔离策略。",
-    verifiedAt: "2026-07-20", href: "https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/",
+    note: "vLLM v0.15.1 设计文档说明自动前缀缓存复用共享前缀的 KV Cache，主要减少 Prefill 而不减少新 Token 的 Decode；cache_salt 可限制前缀复用的信任组并缓解时间侧信道，但不是完整的租户授权、内存清除或侧信道安全证明。",
+    verifiedAt: "2026-08-01", href: "https://docs.vllm.ai/en/v0.15.1/design/prefix_caching/",
+  },
+  "llm-serving-fairness-2024": {
+    grade: "A", kind: "同行评审系统论文", shortTitle: "LLM Serving Fairness",
+    title: "Fairness in Serving Large Language Models",
+    note: "研究请求长度不可预测与连续批处理条件下的 LLM Serving 公平问题，并提出按输入、输出 Token 成本计量的调度方法；论文算法和实验不替组织定义租户权利、业务优先级或通用公平阈值。",
+    verifiedAt: "2026-08-01", href: "https://www.usenix.org/conference/osdi24/presentation/sheng",
+  },
+  "serverlessllm-2024": {
+    grade: "A", kind: "同行评审系统论文", shortTitle: "ServerlessLLM",
+    title: "ServerlessLLM: Low-Latency Serverless Inference for Large Language Models",
+    note: "研究模型制品加载、分层存储、启动时间感知调度与推理迁移，证明模型加载和就绪时间是弹性推理的重要路径；论文结果受其系统、硬件、存储和负载限制，不代表任意平台都能达到相同冷启动性能。",
+    verifiedAt: "2026-08-01", href: "https://www.usenix.org/conference/osdi24/presentation/fu",
+  },
+  "jitserve-2026": {
+    grade: "A", kind: "同行评审系统论文", shortTitle: "JITServe",
+    title: "JITServe: SLO-aware LLM Serving with Imprecise Request Information",
+    note: "研究交互、截止时间和复合调用等不同 SLO 下的 LLM 请求调度，并用满足 SLO 的 Goodput 评估服务；论文算法、收益和请求信息假设仅适用于其设计与实验，不提供客户场景的通用准入或丢弃阈值。",
+    verifiedAt: "2026-08-01", href: "https://www.usenix.org/conference/nsdi26/presentation/zhang-wei",
   },
   "distserve-2024": {
     grade: "A", kind: "同行评审论文", shortTitle: "DistServe",
@@ -1201,6 +1225,30 @@ export const sourceLedger = {
     title: "NVIDIA Collective Communication Library Documentation",
     note: "记录 GPU 间 AllReduce、AllGather、ReduceScatter、All-to-All 等集合通信、通信器、网络与拓扑诊断能力；它定义通信原语与实现边界，不证明某个训练作业会达到线性扩展或某种网络一定更快。",
     verifiedAt: "2026-08-01", href: "https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html",
+  },
+  "roofline-2009": {
+    grade: "A", kind: "同行评审系统论文", shortTitle: "Roofline Model",
+    title: "Roofline: An Insightful Visual Performance Model for Multicore Architectures",
+    note: "用运算强度、峰值计算吞吐和内存带宽上界解释内核可能受计算或数据移动限制；它是瓶颈推理模型，不是目标 AI 框架、完整模型、网络、存储或业务 SLO 的性能承诺。",
+    verifiedAt: "2026-08-01", href: "https://dl.acm.org/doi/10.1145/1498765.1498785",
+  },
+  "mlperf-training": {
+    grade: "O", kind: "行业基准官方说明", shortTitle: "MLPerf Training",
+    title: "MLPerf Training Benchmark",
+    note: "以达到指定质量目标的墙钟训练时间比较完整系统，并区分 Closed 与 Open Division；结果必须绑定基准版本、模型、数据、质量门、软件和硬件配置，不能直接代表客户训练任务或长期稳定性。",
+    verifiedAt: "2026-08-01", href: "https://mlcommons.org/benchmarks/training/",
+  },
+  "mlperf-inference-datacenter": {
+    grade: "O", kind: "行业基准官方说明", shortTitle: "MLPerf Inference: Datacenter",
+    title: "MLPerf Inference: Datacenter Benchmark",
+    note: "按标准负载生成、场景、质量与合规规则衡量数据中心推理，并可在对应结果中测量整机墙上功耗；结果仅对相应版本、提交配置、场景和质量目标有效，不代表客户请求分布或业务成功。",
+    verifiedAt: "2026-08-01", href: "https://mlcommons.org/benchmarks/inference-datacenter/",
+  },
+  "mlperf-storage-v2": {
+    grade: "O", kind: "行业基准官方说明", shortTitle: "MLPerf Storage v2.0",
+    title: "MLPerf Storage v2.0 Checkpointing Workload",
+    note: "定义面向大规模训练的 Checkpoint 保存与加载工作负载，以吞吐或时长衡量最慢进程完成后的整体结果；它可验证存储路径而不能替代客户状态完整性、容量规划、故障率或恢复正确性测试。",
+    verifiedAt: "2026-08-01", href: "https://mlcommons.org/2025/08/storage-2-checkpointing/",
   },
   "nvidia-dgx-h100-data-center": {
     grade: "P", kind: "官方架构指南", shortTitle: "DGX H100 Data Center Design",

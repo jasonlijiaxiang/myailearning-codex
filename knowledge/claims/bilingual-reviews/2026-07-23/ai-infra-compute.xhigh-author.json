@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:d436c1e60523ef8a9d28a4f517bde7d804a93af48a3e8281df59136d54820d6c",
-    "enContentHash": "sha256:6bdd2f1d69523ac43ae197f13f57ccdc77254108511a0dfa23db0913c9415c4c",
+    "zhContentHash": "sha256:cf670b5fc1ff600823d947f1023b18bad749d8a631234e57845189e2db2d3619",
+    "enContentHash": "sha256:ea2bc71c0072929048e7fda6c19620283941d1c691a24a08afb467478774632f",
     "termIds": [
       "access-spectrum",
       "ai-infra-compute",
@@ -21,14 +21,20 @@
     ],
     "sourceIds": [
       "chinchilla-2022",
+      "finops-ai-category",
+      "finops-unit-economics",
       "flashattention-2022",
       "megatron-3d-parallelism-2021",
+      "mlperf-inference-datacenter",
+      "mlperf-storage-v2",
+      "mlperf-training",
       "nccl-collectives",
       "nist-genai-profile",
       "nist-zero-trust",
       "nvidia-dgx-h100-data-center",
       "nvidia-gpu-operator",
       "opentelemetry-semconv",
+      "roofline-2009",
       "torchsnapshot-checkpoint",
       "vllm-2023"
     ]

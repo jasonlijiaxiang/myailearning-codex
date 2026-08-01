@@ -109,8 +109,8 @@ export const englishModule = Object.freeze({
     rlhf: Object.freeze({ name: "Reinforcement Learning from Human Feedback", abbr: "RLHF", definition: "A post-training approach that learns preference signals from human feedback and uses reinforcement learning to optimize behavior." }),
     evaluation: Object.freeze({ name: "Evaluation", definition: "A controlled comparison using fixed tasks, samples, metrics, failure analysis, and acceptance thresholds to determine whether a model or system is releasable." }),
     "gang-scheduling": Object.freeze({ name: "Gang Scheduling", definition: "Starting a distributed workload only when its complete required resource group can be allocated together." }),
-    "scale-up": Object.freeze({ name: "Scale-up", definition: "Expanding tightly coupled accelerator capacity within a node or local high-bandwidth fabric." }),
-    "scale-out": Object.freeze({ name: "Scale-out", definition: "Expanding a workload across nodes through network, collective communication, congestion control, and distributed recovery." }),
+    "scale-up": Object.freeze({ name: "Scale-up", definition: "Expanding capacity within one tightly coupled, high-bandwidth, low-latency accelerator domain; the domain is not necessarily identical to one host." }),
+    "scale-out": Object.freeze({ name: "Scale-out", definition: "Expanding a workload across tightly coupled accelerator domains through network, collective communication, congestion control, and distributed recovery." }),
   }),
   sources: Object.freeze({
     "transformer-2017": Object.freeze({ kind: "Peer-reviewed paper", shortTitle: "Transformer", note: "Introduces the attention-centered Transformer and its parallel training structure. The original experiments concern machine translation and do not describe every later LLM architecture, training pipeline, or production serving implementation." }),

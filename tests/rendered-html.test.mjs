@@ -1000,6 +1000,35 @@ test("Batch 06 routes render the Message-or-Task, gateway-control, and AI Ops re
   assert.match(aiOpsEn, /cross-region, multi-tenant claim assistant/);
 });
 
+test("Batch 08 routes render inference overload and compute procurement evidence in both languages", async () => {
+  const [inference, inferenceEn, compute, computeEn] = await Promise.all([
+    renderHtml("/modules/llm-inference"),
+    renderHtml("/en/modules/llm-inference"),
+    renderHtml("/modules/ai-infra-compute"),
+    renderHtml("/en/modules/ai-infra-compute"),
+  ]);
+
+  assert.match(inference, /真实负载、质量和 SLO/);
+  assert.match(inference, /Goodput/);
+  assert.match(inference, /等待上限、背压和拒绝语义/);
+  assert.match(inference, /扩容不能替代过载准入/);
+  assert.match(inferenceEn, /real workload, quality, and SLO constraints/);
+  assert.match(inferenceEn, /Goodput/);
+  assert.match(inferenceEn, /unavailable or loading capacity/);
+  assert.match(inferenceEn, /cache_salt/);
+
+  assert.match(compute, /工作负载包络/);
+  assert.match(compute, /Roofline/);
+  assert.match(compute, /紧耦合/);
+  assert.match(compute, /多节点不一定意味着跨域/);
+  assert.match(compute, /资源级 TCO 不等于项目 ROI/);
+  assert.match(computeEn, /Workload envelope and acceptance contract/);
+  assert.match(computeEn, /Roofline/);
+  assert.match(computeEn, /tightly coupled accelerator domain/);
+  assert.match(computeEn, /Multiple nodes do not necessarily mean multiple domains/);
+  assert.match(computeEn, /Resource-level TCO is not project ROI/);
+});
+
 test("LLM foundations questions cover the theory readers need for architecture decisions", async () => {
   const html = await renderHtml("/modules/llm");
   const llmQa = moduleContentRegistry.llm.qa;

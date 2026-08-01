@@ -22,10 +22,10 @@ const moduleSpecs = [
   ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-30", "2026-07-17"],
   ["fine-tuning", "fine-tuning-title", ["fine-tuning", "sft", "peft", "lora", "qlora", "dpo", "evaluation"], "brief", "2026-07-30", "2026-07-17"],
   ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-08-01", "2026-07-17"],
-  ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-24", "2026-07-17"],
+  ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching", "quantization", "ttft", "tpot", "goodput"], "brief", "2026-08-01", "2026-07-17"],
   ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-29", "2026-07-17"],
-  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-07-22", "2026-07-17"],
-  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "kv-cache", "hbm", "scale-up", "scale-out"], "brief", "2026-07-22", "2026-07-17"],
+  ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-08-01", "2026-07-17"],
+  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out", "tco"], "brief", "2026-08-01", "2026-07-17"],
 ];
 
 // 2026-07-20 日期策略生效前无 addedAt 问题的稳定身份集合摘要。

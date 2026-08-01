@@ -146,18 +146,18 @@
     },
     {
       "id": "batch-08-inference-compute",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "llm-inference",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "主任务已整合；独立英文与证据审查 PASS；定向双语、历史身份和渲染回归通过"
         },
         {
           "slug": "ai-infra-compute",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "主任务已整合；Scale-up/Scale-out 边界与 MLPerf 证据修正后独立审查 PASS；定向回归通过"
         }
       ]
     },

@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:8652dd397b18cdd5ea8fe522bea7bfb182ad5e148f7f942dcc0ba5e5f4d675be",
-    "enContentHash": "sha256:0ecc3fea80ed0a1bd9994cf9c7abaded760ad125901bd638252e6c6042b50c4b",
+    "zhContentHash": "sha256:63ff84c9d63b701b9b86f258182facf0d40ef4aad74496057bef05470c03809e",
+    "enContentHash": "sha256:ebd9cbab49c8c52b87f0105f89616454504b1807abb46a79d0a59539fe813865",
     "termIds": [
       "ai-infra-platform",
       "batching",

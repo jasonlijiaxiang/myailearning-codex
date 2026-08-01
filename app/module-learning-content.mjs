@@ -175,15 +175,15 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   "llm-inference": {
-    outcomes: ["区分 Prefill、Decode、TTFT、TPOT 与吞吐", "理解 KV Cache、连续批处理和分页注意力", "评估量化、投机解码与分布式策略", "按工作负载建立容量和 SLO"],
+    outcomes: ["从真实负载合同区分 queue、Prefill、Decode、TTFT、TPOT 与端到端时延", "理解 KV Cache、连续批处理、公平与缓存隔离", "评估量化、投机解码、过载准入与分布式策略", "用 Goodput 和单位达标任务成本验收发布"],
     route: [
       { title: "先读懂单请求", learn: "沿 Tokenization、Prefill、Decode、采样和流式返回拆解时间线。", checkpoint: "能区分首字慢与字间慢。" },
       { title: "再理解多请求竞争", learn: "分析批处理、KV Cache、调度、公平性和尾延迟。", checkpoint: "能解释一张卡的并发为何不是固定数字。" },
-      { title: "最后做优化与容量验证", learn: "针对交互、长上下文、Agent 和批处理分别基准。", checkpoint: "优化结论包含质量、成本、稳定性和故障恢复。" },
+      { title: "最后做运行包络与发布验证", learn: "针对交互、长上下文、Agent 和批处理分别测试稳态、突发、过载、长跑、故障与恢复。", checkpoint: "优化结论包含质量、Goodput、成本、准入、排空和回滚。" },
     ],
     labs: [
-      { title: "建立四类负载基准", scenario: "平台宣称高 Tokens/s，但真实聊天和 Agent 体验不稳定。", tasks: ["定义短交互、长上下文、工具循环和离线批处理", "记录 TTFT、TPOT、吞吐、P95、显存和质量", "改变并发、输入输出长度和批策略"], deliverable: "容量曲线与负载专属 SLO", acceptance: "不再用单一平均吞吐代表所有场景，容量点包含稳定运行证据。", sourceIds: ["vllm-2023", "opentelemetry-genai-semconv"] },
-      { title: "验证一次量化决策", scenario: "团队希望用 4-bit 量化把模型放进更小 GPU。", tasks: ["比较权重、KV Cache 和运行时显存", "用客户任务集评估质量和长尾失败", "测量目标硬件上的时延、吞吐和稳定性"], deliverable: "质量—性能—成本三维对比", acceptance: "结论限定到具体模型、量化方法、硬件和负载，不把更小等同于必然更快。", sourceIds: ["vllm-2023", "nist-genai-profile"] },
+      { title: "建立四类负载与过载基准", scenario: "平台宣称高 Tokens/s，但真实聊天和 Agent 体验不稳定。", tasks: ["冻结短交互、长上下文、工具循环和离线批处理的到达与长度分布", "记录 queue、TTFT、TPOT、P95、拒绝、Goodput、显存和质量", "测试稳态、突发、等待上限、暖容量、故障和恢复"], deliverable: "容量曲线、负载专属 SLO 与过载处置", acceptance: "不再用单一平均吞吐代表所有场景，每个容量点都有稳定达标和安全拒绝证据。", sourceIds: ["vllm-metrics-v0-12", "jitserve-2026", "serverlessllm-2024"] },
+      { title: "验证一次量化发布", scenario: "团队希望用 4-bit 量化把模型放进更小 GPU。", tasks: ["比较权重、KV Cache 和运行时显存", "用客户任务集评估质量和长尾失败", "测量目标硬件上的时延、Goodput、稳定性和单位达标任务成本", "验证灰度、排空与回滚"], deliverable: "质量—性能—成本—回滚决策记录", acceptance: "结论限定到具体模型、量化方法、制品、硬件和负载，不把更小或更高吞吐等同于值得上线。", sourceIds: ["gptq-2023", "nist-genai-profile", "finops-unit-economics"] },
     ],
   },
   "data-engineering": {
@@ -211,15 +211,15 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   "ai-infra-compute": {
-    outcomes: ["从工作负载而不是芯片峰值开始选型", "理解计算、显存、互联、存储和电力的共同约束", "区分 Scale-up 与 Scale-out", "用可持续性能、可靠性和 TCO 做采购判断"],
+    outcomes: ["从工作负载包络而不是芯片峰值开始选型", "用 Roofline 与端到端 Profile 区分计算、内存、通信和 I/O", "区分紧耦合 Scale-up 域与跨域 Scale-out", "用同质量长跑、恢复和单位达标结果成本做采购判断"],
     route: [
       { title: "先刻画工作负载", learn: "记录模型、精度、上下文、批量、并行、数据和 SLO。", checkpoint: "能说明训练与推理为何需要不同资源曲线。" },
-      { title: "再定位约束层", learn: "用计算、HBM、节点内互联、节点间网络、存储和供电逐层排查。", checkpoint: "不会用峰值 FLOPS 替代端到端证据。" },
+      { title: "再定位约束层", learn: "用计算、HBM、紧耦合互联域、跨域网络、存储、设施和故障域逐层排查。", checkpoint: "不会用峰值 FLOPS、卡数或单次基准替代端到端证据。" },
       { title: "最后验证供给与经济性", learn: "比较采购、租用、API、异构与可交付周期。", checkpoint: "TCO 包含软件适配、空闲、故障和容量风险。" },
     ],
     labs: [
-      { title: "完成一份算力需求画像", scenario: "客户只提供模型参数量和预计 GPU 卡数，希望直接报价。", tasks: ["补齐训练/推理、精度、上下文、并发和 SLO", "估算权重、激活、优化器和 KV Cache 的不同内存账", "列出网络、存储和供电验证项"], deliverable: "工作负载画像与待测假设清单", acceptance: "任何容量数字都能追溯到负载假设，训练和服务不会混用同一估算。", sourceIds: ["flashattention-2022", "vllm-2023"] },
-      { title: "比较两种集群投资方案", scenario: "方案 A 峰值算力更高，方案 B 软件成熟且云上交付更快。", tasks: ["在目标框架上测持续性能与稳定性", "加入软件迁移、供应、能耗和故障恢复成本", "对流量增长和交付延迟做敏感性分析"], deliverable: "性能—风险—TCO 决策记录", acceptance: "推荐不依赖单一规格表，并清楚说明需要采购时重新核验的动态事实。", sourceIds: ["nvidia-gpu-operator", "nist-genai-profile"] },
+      { title: "完成一份算力工作负载包络", scenario: "客户只提供模型参数量和预计 GPU 卡数，希望直接报价。", tasks: ["补齐模型版本、训练/推理、精度、数据或上下文、并发、质量、SLO、增长和恢复", "分开估算权重、激活、梯度、优化器、KV Cache、工作区和余量", "列出紧耦合互联、跨域网络、存储、故障域、供电和散热验证项"], deliverable: "工作负载包络与待测假设清单", acceptance: "任何容量数字都能追溯到同口径负载和质量门，训练与服务不会混用同一估算。", sourceIds: ["roofline-2009", "mlperf-training", "mlperf-inference-datacenter", "vllm-2023"] },
+      { title: "比较两种集群投资方案", scenario: "方案 A 峰值算力更高，方案 B 软件成熟且云上交付更快。", tasks: ["在同一质量目标和负载上测冷启动、稳态、峰值、长跑、缩放和恢复", "加入软件迁移、供应、能耗、闲置、设施和故障恢复成本", "对流量增长、交付延迟和利用率做敏感性分析"], deliverable: "有效产能—风险—资源级 TCO 决策记录", acceptance: "推荐不依赖单一规格或公开提交，并明确项目 ROI 仍需上层业务证据。", sourceIds: ["mlperf-training", "mlperf-inference-datacenter", "mlperf-storage-v2", "finops-unit-economics"] },
     ],
   },
 });
