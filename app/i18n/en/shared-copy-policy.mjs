@@ -79,6 +79,8 @@ export const englishCopyOwners = Object.freeze({
     "pp-ocr-2020": "multimodal",
     ragas: "rag",
     "react-2023": "ai-agent",
+    "sentencepiece-2018": "llm",
+    "switch-transformer-2022": "llm",
   }),
 });
 

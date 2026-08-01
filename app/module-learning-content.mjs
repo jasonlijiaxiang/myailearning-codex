@@ -162,15 +162,16 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   "llm-training": {
-    outcomes: ["理解数据、预训练、SFT、偏好优化与评估的关系", "解释 Scaling Law 的适用边界", "把并行、通信、Checkpoint 与有效训练时间连接起来", "判断从头训练、继续预训练或微调的投资边界"],
+    outcomes: ["理解数据、预训练、SFT、偏好优化与评估的关系", "写出可恢复的版本化训练 Run 合同", "把并行、通信、Checkpoint 与有效训练时间连接起来", "判断从头训练、继续预训练或微调的投资边界"],
     route: [
       { title: "先理解学习阶段", learn: "区分通用模式学习、指令示范和偏好目标。", checkpoint: "能说明每阶段需要什么数据、优化目标和评估。" },
-      { title: "再理解数据与算力共同约束", learn: "分析数据质量、去重、Token 预算、并行和通信。", checkpoint: "不会把参数量或 GPU 数当成效果保证。" },
-      { title: "最后管理长周期实验", learn: "用 Checkpoint、可复现环境、故障恢复和分阶段门禁控制风险。", checkpoint: "能报告有效训练时间、数据版本和恢复证据。" },
+      { title: "再冻结训练 Run 合同", learn: "绑定基础权重、Tokenizer、数据快照与配比、目标、优化器、精度、并行拓扑、环境、停止规则和评估版本。", checkpoint: "任何候选与恢复点都能回到同一份 manifest。" },
+      { title: "再选择分布式执行方案", learn: "分析显存构成、数据质量、并行、通信、I/O 和故障损失。", checkpoint: "不会把参数量、GPU 数或短时利用率当成有效进度保证。" },
+      { title: "最后管理恢复与候选门", learn: "验证 Checkpoint 完成、状态连续性、容差内复现和阶段评估。", checkpoint: "能报告有效训练时间、状态缺口、恢复证据和候选结论。" },
     ],
     labs: [
       { title: "选择正确训练路径", scenario: "客户拥有领域语料和少量专家示范，计划从头训练一个模型。", tasks: ["比较从头预训练、继续预训练、SFT 与 RAG", "估算数据、算力、评估和运营要求", "设计最小可证伪实验"], deliverable: "训练路线决策记录与阶段门", acceptance: "高成本路线必须由无法用更轻方案解决的证据支持。", sourceIds: ["chinchilla-2022", "instructgpt-2022", "nist-genai-profile"] },
-      { title: "诊断一次训练停滞", scenario: "Loss 波动、吞吐下降且 GPU 利用率不稳定。", tasks: ["检查数据批次、数值稳定、学习率和恢复点", "关联计算、网络、存储与作业事件", "区分模型问题和基础设施问题"], deliverable: "分层诊断树与复现实验", acceptance: "追加算力前已有证据定位瓶颈，恢复后结果可与故障前连续比较。", sourceIds: ["opentelemetry-semconv", "nist-genai-profile"] },
+      { title: "诊断一次训练停滞", scenario: "Loss 波动、吞吐下降且 GPU 利用率不稳定。", tasks: ["检查异常批次、数值稳定、学习率与 OOM 内存构成", "关联并行通信、网络、存储、Checkpoint 与作业事件", "按 Run 合同验证故障前后状态与数据连续性"], deliverable: "分层诊断树、状态清单与复现实验", acceptance: "追加算力前已有证据定位瓶颈；恢复差异可解释并落在声明容差内。", sourceIds: ["megatron-3d-parallelism-2021", "nccl-collectives", "pytorch-distributed-checkpoint", "pytorch-reproducibility"] },
     ],
   },
   "llm-inference": {

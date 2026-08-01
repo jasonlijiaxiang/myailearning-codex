@@ -17,11 +17,11 @@ const moduleSpecs = [
   ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-30", "2026-07-17"],
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-08-01", "2026-07-17"],
   ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-08-01", "2026-07-17"],
-  ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-07-21", "2026-07-21"],
+  ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-08-01", "2026-07-21"],
   ["llm", "llm-title", ["llm", "transformer", "attention", "kv-cache"], "brief", "2026-07-29", "2026-07-17"],
   ["prompt-engineering", "prompt-title", ["prompt-engineering", "context-engineering", "instructions", "context", "tools-schema", "structured-outputs", "prompt-injection"], "dedicated", "2026-07-30", "2026-07-17"],
   ["fine-tuning", "fine-tuning-title", ["fine-tuning", "sft", "peft", "lora", "qlora", "dpo", "evaluation"], "brief", "2026-07-30", "2026-07-17"],
-  ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-07-22", "2026-07-17"],
+  ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-08-01", "2026-07-17"],
   ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching"], "brief", "2026-07-24", "2026-07-17"],
   ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-29", "2026-07-17"],
   ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-07-22", "2026-07-17"],
@@ -47,7 +47,7 @@ const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
   llm: "7dc39e54761576aa4bb5343b2a736ba538834cc7bfa99b9568f43d77fc8614bd",
   "prompt-engineering": "35e50b6873227dc90cb62668e2b8edcb00349dfa8994853eebb437fd08bf634d",
   "fine-tuning": "32309070485d6a96e18382bfb09f74f991f842911f3609bb238e2b7f58ab02cc",
-  "llm-training": "1ec338b98689954956857f62e3dc3769777c435979e372ded82dcb8250ed863b",
+  "llm-training": "2cfb43d7d978544264c754bb600ceb3200dd7657598589fcea90a3c261233419",
   "llm-inference": "1a732d72e0a2f584fe4fcd76f56b7913afe8fdc63d50080556095c9bb1adf973",
   "data-engineering": "f7ad1f475effd1b928140f2e60385dbd73a6eaf6fcbd2cef9fc0b7bc2431cb25",
   "ai-infra-platform": "b1d9886106ef81384e0bb1593c441a8760ca4d1ce1aae6978d9fd002535ffa70",
@@ -132,7 +132,7 @@ const moduleQaCoverageTags = Object.freeze({
     "异常管理", "优化边界",
   ]),
   "predictive-ai-mlops": Object.freeze([
-    "路线选择", "特征治理", "模型注册", "漂移再训练", "效果验收", "服务形态", "发布治理", "平台边界", "更新策略",
+    "路线选择", "特征治理", "模型注册", "漂移再训练", "效果验收", "服务形态", "发布治理", "平台边界", "更新策略", "回滚恢复",
   ]),
   "fine-tuning": Object.freeze([
     "路线选择", "方法选型", "数据准备", "验收", "对齐路线", "数据格式", "合成数据",
@@ -146,7 +146,7 @@ const moduleQaCoverageTags = Object.freeze({
     "能力边界", "安全边界", "结构化输出", "工具安全", "版本治理", "上下文装配", "提示注入", "评估方法", "灰度回滚", "PoC 验收",
   ]),
   "llm-training": Object.freeze([
-    "训练全景", "规模边界", "后训练", "评估发布", "扩展效率", "可靠性", "训练恢复", "Scaling 边界",
+    "训练全景", "规模边界", "后训练", "评估发布", "可靠性", "训练恢复",
     "数据去重", "Tokenizer 变更", "并行策略", "检查点策略",
   ]),
   "llm-inference": Object.freeze([

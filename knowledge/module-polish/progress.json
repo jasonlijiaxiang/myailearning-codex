@@ -129,18 +129,18 @@
     },
     {
       "id": "batch-07-training-mlops",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "llm-training",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "Integrated training Run contract, recovery boundary, evidence, bilingual copy, and regression coverage."
         },
         {
           "slug": "predictive-ai-mlops",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "Integrated predictive lifecycle, drift taxonomy, rollback bundle, ROI boundary, evidence, bilingual copy, and regression coverage."
         }
       ]
     },

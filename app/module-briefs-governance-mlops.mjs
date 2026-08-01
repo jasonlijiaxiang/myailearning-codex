@@ -11,7 +11,7 @@ export const predictiveAiMlopsBrief = {
     { zh: "特征一致性", en: "Feature Consistency", explanation: "训练与服务必须使用一致的特征定义、时间语义和转换逻辑；离线历史与在线最新值承担不同访问模式。", decision: "只有跨团队复用、低延迟或一致性问题成立时才引入 Feature Store。" },
     { zh: "可复现实验", en: "Reproducible Experiment", explanation: "代码、数据快照、特征、参数、环境和随机种子共同决定模型结果，单独保存权重不足以复现。", decision: "每个候选模型都应能回到一次完整运行及其数据血缘。" },
     { zh: "注册与发布门", en: "Registry & Release Gate", explanation: "模型注册表保存版本、指标、血缘、审批和阶段，发布流水线再执行验证、灰度、回滚与端点配置。", decision: "注册表示形成候选资产，不表示自动适合生产。" },
-    { zh: "漂移与再训练", en: "Drift & Retraining", explanation: "数据分布、特征质量、概念关系和业务策略都会变化；监控要关联输入、预测、真实结果和业务影响。", decision: "再训练由证据和门槛触发，不能把固定周期或自动训练等同于自动发布。" },
+    { zh: "信号、真值与更新", en: "Signals, Truth & Update", explanation: "数据质量、训练—服务偏差、输入与预测漂移、成熟真值上的性能下降、概念漂移和反馈偏差是不同信号；监控必须把它们与策略版本和业务影响关联。", decision: "漂移先触发调查，证据再决定修数据、改策略、生成候选、回滚或接受合理变化；自动训练不等于自动发布。" },
   ],
   decisions: [
     { question: "这个场景该用预测模型还是生成式模型？", signal: "输出是结构化分数、类别、排序或未来数值，并存在可验证历史标签。", recommendation: "优先建立规则或预测模型基线；只有任务确实需要开放式语言、内容或推理时再加入生成式能力。", boundary: "两类模型可以组合，但必须分别验收预测正确性、生成可靠性和最终业务结果。" },
@@ -23,42 +23,45 @@ export const predictiveAiMlopsBrief = {
   deepDiveTitle: "从可训练模型走向可恢复的生产系统",
   deepDiveLead: "MLOps 的难点不是多一个流水线工具，而是让数据、代码、模型和业务结果在变化时仍可追溯、可比较、可回滚。",
   deepDives: [
-    { kind: "sequence", eyebrow: "MODEL SUPPLY CHAIN", title: "预测模型的八段生产链", intro: "任何一段失去版本或时间语义，离线分数与线上行为就可能无法解释。", sourceIds: ["google-mlops-predictive-ai", "aws-sagemaker-model-registry", "azure-ml-registries"], items: [
+    { kind: "sequence", eyebrow: "MODEL SUPPLY CHAIN", title: "预测模型生产链的四个控制点", intro: "任何一个控制点失去版本或时间语义，离线分数与线上行为就可能无法解释。", sourceIds: ["google-mlops-predictive-ai", "ml-test-score-2017", "aws-sagemaker-model-registry"], items: [
       { name: "定义问题与标签", en: "Frame", mechanism: "固定预测时点、标签窗口、业务动作和误判成本。", decision: "先建立不使用模型的基线。", boundary: "训练标签不能包含预测时点之后的信息。" },
       { name: "生成与验证特征", en: "Feature", mechanism: "记录来源、实体、事件时间、转换和缺失策略。", decision: "用 point-in-time 回放检查泄漏。", boundary: "离线相关性不等于可在线获得。" },
       { name: "训练与比较", en: "Train", mechanism: "绑定代码、数据快照、环境、参数和评估切片。", decision: "比较业务代价而不只比较总体分数。", boundary: "交叉验证不能替代未来时间窗口验证。" },
-      { name: "注册、发布与运营", en: "Release", mechanism: "登记血缘和审批，灰度部署后关联输入、输出、标签、业务结果与回滚。", decision: "自动训练与自动上线使用不同授权。", boundary: "旧版本回滚还要恢复特征和端点配置。" },
+      { name: "注册、发布与运营", en: "Release", mechanism: "把模型、特征定义与 Schema、预处理、镜像、端点或批量配置、阈值、策略、审批和观测绑定为发布包，再关联预测、成熟真值和业务结果。", decision: "自动训练与自动上线使用不同授权，发布前演练完整回滚包。", boundary: "技术回滚不能撤销已发生的业务动作，仍需补救、对账和责任流程。" },
     ] },
-    { kind: "diagnostic", eyebrow: "PRODUCTION FAILURE", title: "离线优秀、线上失效的四类根因", intro: "先沿时间和版本定位，不要把所有下降都归结为模型漂移。", sourceIds: ["google-mlops-predictive-ai", "aws-sagemaker-feature-store"], items: [
-      { name: "训练—服务偏差", en: "Training-serving Skew", mechanism: "两侧特征代码、时间窗口、默认值或数据源不一致。", decision: "对同一实体逐字段回放并比较。", boundary: "共享代码仍可能读取不同时间的数据。" },
-      { name: "标签或概念变化", en: "Concept Shift", mechanism: "业务策略、用户行为或市场关系改变，使旧标签关系失效。", decision: "同时检查真实结果和策略变更时间线。", boundary: "输入分布稳定也可能发生概念漂移。" },
-      { name: "反馈回路", en: "Feedback Loop", mechanism: "模型推荐改变后续数据，使训练样本只看到自身策略产生的结果。", decision: "保留探索组或可识别的策略版本。", boundary: "直接用线上结果再训练可能放大偏差。" },
-      { name: "延迟真值", en: "Delayed Ground Truth", mechanism: "欺诈、流失等结果晚于预测很久，短期代理指标掩盖真实效果。", decision: "分别运营快速代理与成熟标签。", boundary: "代理指标改善不能提前宣布业务成功。" },
+    { kind: "diagnostic", eyebrow: "PRODUCTION SIGNALS", title: "上线后变化的七类信号", intro: "先按时间、版本和成熟真值分类，再决定修复对象；不要把所有告警统称为模型漂移。", sourceIds: ["azure-ml-model-monitoring", "google-rules-of-ml", "aws-sagemaker-feature-store"], items: [
+      { name: "数据质量故障", en: "Data Quality", mechanism: "Schema、类型、缺失、范围、新鲜度或上游可用性偏离合同。", decision: "先阻断或降级受影响数据，定位上游变更。", boundary: "重训会把坏数据固化，不能替代数据修复。" },
+      { name: "训练—服务偏差", en: "Training-serving Skew", mechanism: "训练与服务使用不同特征代码、时间窗口、默认值或数据源。", decision: "对同一实体与预测时点逐字段回放比较。", boundary: "共享代码仍可能读取不同时间的数据。" },
+      { name: "输入或数据漂移", en: "Input Drift", mechanism: "当前输入或特征分布偏离参考窗口。", decision: "检查季节、客群、采集和策略变化，再评估影响。", boundary: "输入变化既不证明模型失效，也不必然要求重训。" },
+      { name: "预测漂移", en: "Prediction Drift", mechanism: "输出分数、类别或置信分布发生变化。", decision: "结合输入、阈值、校准和服务版本定位。", boundary: "预测稳定也可能掩盖概念变化或选择偏差。" },
+      { name: "真实性能下降", en: "Performance Degradation", mechanism: "成熟标签到达后，准确性、校准、排序或业务损失越过门槛。", decision: "按时间、人群和动作成本比较当前基线与候选。", boundary: "标签未成熟前只能用代理信号，不能提前宣布结果。" },
+      { name: "概念漂移", en: "Concept Drift", mechanism: "输入与目标的真实关系因用户、市场或业务规则变化而改变。", decision: "结合成熟真值与策略时间线重审任务合同。", boundary: "输入分布稳定也可能发生概念漂移。" },
+      { name: "反馈与选择偏差", en: "Feedback & Selection Bias", mechanism: "模型动作改变谁被观察、处理或标注，使后续样本越来越反映旧策略。", decision: "保留策略版本、可解释对照或合规的探索机制。", boundary: "直接用已选择样本重训可能放大盲区与不公平。" },
     ] },
   ],
-  criticalBoundary: "MLOps 不是某个产品，也不是把 Notebook 自动运行。它必须同时治理数据和特征时间语义、可复现实验、模型版本、发布控制、线上证据与再训练；生成式 AI 的 Prompt、RAG、Agent 和人工复核仍需各自的应用工程控制。",
+  criticalBoundary: "MLOps 不是某个产品，也不是把 Notebook 自动运行。它必须同时治理数据和特征时间语义、可复现实验、完整发布包、预测到成熟真值的证据链与更新决定。漂移只触发调查，不能直接授权训练或发布；技术回滚也不能撤销已发生的业务动作。生成式 AI 的 Prompt、RAG、Agent 和人工复核仍需各自的应用工程控制。",
   cloudHooks: [
     { stage: "数据与特征（Data & Feature）", services: "对象存储、数据仓库、流处理、Feature Store、数据质量与血缘", value: "统一训练、批量和在线特征的定义与时间语义。", discover: "哪些特征必须实时？训练与服务现在是否使用同一转换和时间点？" },
     { stage: "训练与流水线（Train & Pipeline）", services: "托管训练、流水线、实验跟踪、镜像与密钥管理", value: "把代码、数据、参数、环境和运行记录绑定为可复现实验。", discover: "一次模型结果能否准确复现？数据和代码由谁批准进入训练？" },
-    { stage: "注册与部署（Registry & Deploy）", services: "模型注册表、端点、批量推理、CI/CD、灰度与回滚", value: "让候选、审批、版本和生产端点形成可审计发布链。", discover: "谁能批准上线？回滚是否包含特征、镜像和配置？" },
-    { stage: "监控与闭环（Monitor & Retrain）", services: "模型监控、数据质量、事件总线、可观测与告警", value: "关联漂移、真实性能、业务结果和再训练证据。", discover: "真实标签多久到达？哪些变化触发调查、训练或回滚？" },
+    { stage: "注册与部署（Registry & Deploy）", services: "模型注册表、端点、批量推理、CI/CD、灰度与回滚", value: "让模型、特征、预处理、镜像、配置、阈值、策略和审批形成可审计发布包。", discover: "谁能批准上线？回滚是否恢复完整技术包，已发生的业务动作如何补救？" },
+    { stage: "监控与闭环（Monitor & Retrain）", services: "模型监控、数据质量、事件总线、可观测与告警", value: "把不同漂移信号连接到成熟真值、业务结果、调查和更新决定。", discover: "真实标签多久到达？哪些变化只触发调查，哪些门槛生成候选、回滚或接受变化？" },
   ],
-  relatedSlugs: ["data-engineering", "evaluation", "ai-ops", "ai-infra-platform", "ai-governance"],
+  relatedSlugs: ["data-engineering", "evaluation", "ai-ops", "ai-infra-platform", "ai-governance", "solution-patterns"],
   qa: [
     { q: "传统机器学习是不是已经被大模型替代？", a: "没有。结构化分类、预测、排序和异常检测仍常由规则、统计学习或专用模型更直接地完成。", depth: "应比较任务成功、延迟、成本、可解释与维护，不按技术新旧选型。生成式模型可帮助处理非结构化输入或解释结果，但不应无证据替换稳定基线。", ask: "追问客户：最终输出是一个可校准分数，还是开放式内容与行动？", tag: "路线选择", basis: "任务契约 + MLOps 架构", evidence: [evidence("google-mlops-predictive-ai", "该官方架构明确以 predictive AI 为主要适用范围，并描述其持续交付生命周期。")] },
     { q: "Feature Store 是否是 MLOps 的必选组件？", a: "不是。它在特征复用、低延迟访问或训练—服务一致性形成真实问题时才有价值。", depth: "先治理实体、事件时间、负责人和转换定义；否则只是集中保存不可靠特征。PoC 要同时验证离线历史回放、在线新鲜度、访问控制和删除。", ask: "追问客户：目前最严重的是重复开发、在线延迟，还是训练—服务偏差？", tag: "特征治理", basis: "官方架构 + 产品文档", evidence: [evidence("google-mlops-predictive-ai", "把 Feature Store 描述为流水线自动化的可选组件。"), evidence("aws-sagemaker-feature-store", "说明在线与离线存储及训练—服务偏差边界。")] },
     { q: "模型注册表与代码仓库有什么区别？", a: "代码仓库管理源代码；模型注册表管理可部署模型版本及其指标、血缘、审批和生命周期阶段。", depth: "生产发布需要把代码提交、数据快照、环境、模型制品、评估和端点配置关联起来。注册完成只是候选资产形成，不是上线批准。", ask: "追问客户：当前能否从生产预测追到模型、数据、代码和审批？", tag: "模型注册", basis: "官方产品文档", evidence: [evidence("aws-sagemaker-model-registry", "列出模型版本、指标、血缘、审批、阶段和部署职责。"), evidence("azure-ml-registries", "说明跨工作区共享模型、环境、组件和数据资产。")] },
-    { q: "监测到数据漂移就应该自动再训练吗？", a: "不应该。漂移只是调查信号，必须结合数据质量、真实效果、业务变化和风险门槛判断。", depth: "自动训练可以生成候选，自动发布应使用独立门禁。某些漂移不影响目标关系，某些概念变化在输入分布上也不明显。", ask: "追问客户：真实标签何时到达？谁有权批准新模型替换生产版本？", tag: "漂移再训练", basis: "持续训练边界", evidence: [evidence("google-mlops-predictive-ai", "支持以新数据、触发器、数据验证和模型验证组成持续训练流水线。")] },
-    { q: "离线 AUC 很高，为什么线上业务没有改善？", a: "离线指标可能与业务动作、阈值、时间切分或真实成本不一致，也可能存在泄漏和训练—服务偏差。", depth: "应从业务漏斗反推：分数如何转成动作、谁被影响、真值何时出现、误判代价是什么，再按时间和人群切片检查。", ask: "追问客户：模型输出后具体改变了哪一步决策，现有基线是什么？", tag: "效果验收", basis: "业务结果 + 时间验证", evidence: [evidence("google-mlops-predictive-ai", "要求生产流水线包含数据与模型验证，并记录运行元数据。")] },
+    { q: "监测到数据漂移就应该自动再训练吗？", a: "不应该。先确认这是数据质量、训练—服务偏差、输入漂移、预测漂移、成熟真值上的性能下降、概念漂移，还是反馈与选择偏差。", depth: "自动化可以生成候选，但不能让一个分布告警直接替换生产。数据故障应先修管道，季节变化可能无需动作，真实性能下降才需要结合损失门槛决定回滚或训练；概念变化还可能在输入分布稳定时发生。所有候选都要重新通过时间、人群、稳定性、成本和授权门。", ask: "追问客户：真实标签何时到达？每类信号对应调查、降级、回滚、训练还是接受变化中的哪一个动作？", tag: "漂移再训练", basis: "信号分类 + 独立发布门", evidence: [evidence("azure-ml-model-monitoring", "支持分别监测数据质量、输入与预测漂移，以及在真值可用时监测模型表现；部分能力仍有 Preview 边界。"), evidence("google-mlops-predictive-ai", "支持以新数据、触发器、数据验证和模型验证组成持续训练流水线。")] },
+    { q: "离线 AUC 很高，为什么线上业务没有改善？", a: "离线指标可能与业务动作、阈值、时间切分、校准或真实误判成本不一致，也可能存在泄漏、偏差和无效反馈闭环。", depth: "先从业务决定反推预测时点、动作、受影响人群、标签成熟时间与错判成本，再与规则或人工基线比较。按时间、人群、校准、稳定性和业务漏斗逐层定位，并检查线上特征、阈值与干预是否真的按实验合同执行；单一 AUC 不能覆盖生产就绪度。", ask: "追问客户：模型输出后具体改变了哪一步决策，现有基线是什么，哪个成熟业务结果会证明投入有效？", tag: "效果验收", basis: "生产就绪度 + 时间验证", evidence: [evidence("ml-test-score-2017", "支持用数据、模型、基础设施和监控测试共同评估生产就绪度，而不是依赖单一离线指标。"), evidence("google-rules-of-ml", "支持先建立可测量基线、验证完整流水线并让指标连接真实系统目标。")] },
     { q: "在线和批量预测应该怎样选择？", a: "由决策时限、特征新鲜度和调用规模决定；能提前计算的任务不必承担在线端点复杂度。", depth: "批量适合周期评分和大规模排序，在线适合会话或事件驱动决策。两者都要管理模型、特征和结果版本，并准备缺失数据与端点故障的降级。", ask: "追问客户：最晚在何时得到分数仍能改变业务动作？", tag: "服务形态", basis: "特征访问与推理时限", evidence: [evidence("aws-sagemaker-feature-store", "区分低延迟在线特征与训练、批量使用的离线历史存储。")] },
-    { q: "MLOps 平台建成后，数据科学家就能直接自动上线吗？", a: "不应默认如此。平台可以自动执行验证和交付，但生产替换权限应与风险、职责和回滚能力匹配。", depth: "低风险模型可在严格门槛下提高自动化，高影响模型需要模型所有者、业务和风险角色共同批准。所有路径都要记录审批依据与生产版本。", ask: "追问客户：哪些模型会影响资格、价格、资源分配或安全？", tag: "发布治理", basis: "模型生命周期 + 组织责任", evidence: [evidence("aws-sagemaker-model-registry", "模型注册表支持审批状态和生命周期阶段，但具体组织授权仍需自行定义。")] },
+    { q: "MLOps 平台建成后，数据科学家就能直接自动上线吗？", a: "不应默认如此。平台可以自动生成、验证和交付候选，但生产替换权限必须匹配用途风险、职责和完整回滚能力。", depth: "低影响模型可在预先授权的硬门下提高自动化，高影响模型需要模型、业务和风险责任共同决定。发布记录要绑定模型、特征、预处理、镜像、端点或批量配置、阈值、策略和观察窗；金丝雀自动回滚只能覆盖其明确支持的部署形态，不能代替组织批准或业务补救。", ask: "追问客户：哪些模型影响资格、价格、资源或安全？谁批准完整发布包，哪些失败会自动止损？", tag: "发布治理", basis: "模型生命周期 + 部署保护 + 组织责任", evidence: [evidence("aws-sagemaker-model-registry", "支持审批状态和生命周期阶段，但具体组织授权仍需自行定义。"), evidence("aws-sagemaker-deployment-guardrails", "支持部分 SageMaker 实时与异步端点的金丝雀、线性流量迁移和自动回滚；适用范围不能外推到所有发布形态。")] },
     { q: "生成式 AI 与预测式 AI 能否共用一套 MLOps？", a: "可以共用资产版本、评估、发布、权限和观测底座，但不能共用全部质量指标和运行对象。", depth: "预测模型围绕特征、标签、分数和漂移；生成式系统还涉及 Prompt、检索、工具、非确定输出和人工复核。平台应共享控制面，保留不同工作负载的专用证据。", ask: "追问客户：准备共享的是平台能力，还是把两类系统强行放进同一流水线？", tag: "平台边界", basis: "生命周期分工", evidence: [evidence("google-mlops-predictive-ai", "明确文档主要适用于预测式 AI，因此其做法不能无差别覆盖生成式系统。")] },
   ].map((item) => ({ ...item, addedAt: "2026-07-21" })),
   evidenceCards: [
     { metric: "适用边界", title: "经典 MLOps 主要描述预测式 AI", finding: "Google Cloud 的官方 MLOps 架构明确说明主要适用于预测式 AI，并以 CI、CD 与 CT 组织自动化。", boundary: "该架构不是生成式 AI 应用工程的完整规范。", sourceId: "google-mlops-predictive-ai", accent: true },
     { metric: "特征一致", title: "在线与离线特征承担不同读取模式", finding: "Feature Store 可同时提供低延迟在线最新值与供训练、批量使用的离线历史。", boundary: "使用同一产品不自动保证 point-in-time 正确、许可或数据质量。", sourceId: "aws-sagemaker-feature-store" },
     { metric: "发布证据", title: "注册表管理的不只是模型文件", finding: "模型注册表可关联版本、指标、血缘、审批、阶段和生产部署。", boundary: "产品能力不能替代组织的风险分级与批准职责。", sourceId: "aws-sagemaker-model-registry" },
-    { metric: "跨环境", title: "资产可在工作区之外统一晋升", finding: "机器学习 Registry 可集中共享模型、环境、组件和数据资产，并支持从开发向测试与生产晋升。", boundary: "跨工作区共享仍需逐项执行身份、网络、数据和区域控制。", sourceId: "azure-ml-registries" },
+    { metric: "生产就绪度", title: "单一模型分数不足以证明生产可用", finding: "ML Test Score 用数据、模型、基础设施和监控测试暴露机器学习系统的生产风险与技术债。", boundary: "论文量表是系统化检查方法，不是所有组织统一的合格分数或监管认证。", sourceId: "ml-test-score-2017" },
   ],
 };
 
@@ -137,7 +140,7 @@ export const governanceMlopsCurriculum = {
       { title: "实验与流水线", en: "Experiment & Pipeline", explanation: "数据验证、特征生成、训练、评估和制品生成应模块化，并记录每次运行元数据，使失败和差异能够逐步重放。", decision: "先让一条代表性流水线可重复，再扩大自动化。", boundary: "Notebook 可用于探索，不应成为唯一生产记录。", sourceIds: ["google-mlops-predictive-ai"] },
       { title: "注册、审批与晋升", en: "Registry & Promotion", explanation: "模型、环境、组件和数据资产需要稳定版本、血缘、指标和批准状态，并在跨环境晋升时保留同一资产身份。", decision: "把注册候选与生产批准分开。", boundary: "模型文件相同不表示端点、特征和配置相同。", sourceIds: ["aws-sagemaker-model-registry", "azure-ml-registries"] },
       { title: "批量与在线服务", en: "Serving Modes", explanation: "批量预测提前计算大规模结果，在线预测在请求时组合最新特征，两者对时限、容量、降级和结果版本的要求不同。", decision: "由业务时限和特征可用性选择服务方式。", boundary: "实时端点不会自动提供实时正确的特征。", sourceIds: ["aws-sagemaker-feature-store"] },
-      { title: "监控、漂移与真值", en: "Monitoring", explanation: "监控覆盖数据质量、输入与预测分布、真实效果、延迟、成本和业务结果，并区分快速代理指标与延迟到达的成熟真值。", decision: "把调查、再训练、回滚和接受变化设为不同动作。", boundary: "漂移检测不是模型失效证明。", sourceIds: ["google-mlops-predictive-ai"] },
+      { title: "监控、漂移与真值", en: "Monitoring", explanation: "分别监测数据质量、训练—服务偏差、输入与预测漂移、成熟真值上的模型表现、概念变化和反馈偏差，再连接延迟、成本、策略版本和业务结果。", decision: "把调查、修数据、生成候选、回滚和接受变化设为不同动作。", boundary: "漂移检测不是模型失效证明，也不是发布授权。", sourceIds: ["azure-ml-model-monitoring", "google-mlops-predictive-ai"] },
       { title: "预测式与生成式 AI 的平台边界", en: "Predictive vs Generative", explanation: "两类系统可共享资产、权限、评估、发布和观测底座，但运行对象与质量证据不同，因此需要分别保存专用版本关系。", decision: "共享控制面，保留专用流水线与指标。", boundary: "经典 MLOps 做法不能原样覆盖 Prompt、RAG 和 Agent。", sourceIds: ["google-mlops-predictive-ai", "nist-genai-profile"] },
     ],
   },
@@ -158,15 +161,15 @@ export const governanceMlopsCurriculum = {
 
 export const governanceMlopsLearning = {
   "predictive-ai-mlops": {
-    outcomes: ["把业务决策写成可验证预测任务", "识别标签泄漏和训练—服务偏差", "设计模型注册、灰度与回滚链", "用真值和业务结果管理漂移与再训练"],
+    outcomes: ["把业务决策写成可验证预测任务", "识别标签泄漏和训练—服务偏差", "设计完整发布包、灰度、技术回滚与业务补救链", "用成熟真值区分漂移信号并决定更新"],
     route: [
       { title: "先定义预测时点", learn: "固定谁、在何时、预测什么、用于哪项动作。", checkpoint: "能指出标签泄漏和不可行动指标。" },
       { title: "再建立可复现流水线", learn: "绑定数据、特征、代码、环境、模型与评估。", checkpoint: "任一生产结果能回到完整运行。" },
-      { title: "最后运营真实效果", learn: "关联线上输入、预测、真值、业务结果与变化。", checkpoint: "能区分漂移、数据故障、策略变化和模型退化。" },
+      { title: "最后运营真实效果", learn: "关联线上输入、预测、成熟真值、策略版本、业务动作和结果。", checkpoint: "能区分数据质量、训练—服务偏差、输入与预测漂移、性能下降、概念漂移和反馈偏差。" },
     ],
     labs: [
       { title: "审计一次流失预测", scenario: "团队报告随机切分 AUC 很高，但上线后转化没有改善。", tasks: ["重建预测时点与标签窗口", "检查未来信息和人群切分", "把分数阈值连接到触达动作和成本"], deliverable: "时间正确的评估设计与业务动作表", acceptance: "所有特征在预测时可获得，指标能支持是否采取行动。", sourceIds: ["google-mlops-predictive-ai"] },
-      { title: "设计最小模型发布链", scenario: "模型文件通过聊天工具发送，生产端点无法证明使用哪个版本。", tasks: ["定义模型、数据、代码和环境身份", "设置候选、批准、灰度与回滚", "记录端点、特征和预测证据"], deliverable: "模型注册与发布状态机", acceptance: "任一生产预测可追溯且可恢复到已验证版本。", sourceIds: ["aws-sagemaker-model-registry", "azure-ml-registries"] },
+      { title: "设计最小模型发布链", scenario: "模型文件通过聊天工具发送，生产端点无法证明使用哪个版本。", tasks: ["定义模型、特征、预处理、镜像、配置、阈值和策略身份", "设置候选、批准、灰度、技术回滚与业务补救", "记录预测、成熟真值和动作证据"], deliverable: "完整发布包与发布状态机", acceptance: "任一生产预测可追溯；技术包可恢复到已验证组合，既有业务动作有对账与补救。", sourceIds: ["aws-sagemaker-model-registry", "aws-sagemaker-deployment-guardrails", "ml-test-score-2017"] },
       { title: "诊断一次训练—服务偏差", scenario: "离线重算正确，在线分数在部分用户上持续异常。", tasks: ["逐字段比较离线与在线特征", "检查事件时间、默认值和新鲜度", "设计回放、告警和降级"], deliverable: "偏差归因和防回归测试", acceptance: "能证明问题来自数据时间、转换或模型，并有对应控制。", sourceIds: ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"] },
     ],
   },

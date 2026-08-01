@@ -540,8 +540,8 @@ export const llm = {
 
 export const llmTraining = {
   slug: "llm-training",
-  definition: "大模型训练全景（LLM Training）解释模型如何从数据准备、预训练、监督微调和偏好对齐，逐步成为可发布、可评估的助手，并把每个阶段连接到算力、数据与治理交付。",
-  position: "模型基础层与算力底座层的连接模块：讲清能力从何而来，以及训练项目需要哪些云平台能力。",
+  definition: "大模型训练（LLM Training）把基础权重、Tokenizer、数据与目标合同、优化、分布式执行、Checkpoint、评估和停止规则连接成可追溯的长期实验，交付的是通过阶段门的候选模型制品，而不是一次 Loss 下降。",
+  position: "模型基础层与算力底座层的连接模块：负责训练路线、完整 Run 合同、分布式执行与恢复证据；Fine-tuning 负责适配方法，Evaluation 负责独立量尺，AI Ops 负责候选模型之后的跨组件发布与线上运营。",
   presentation: "pipeline",
   principleTitle: "从数据到可发布模型的训练流水线",
   principles: [
@@ -590,10 +590,10 @@ export const llmTraining = {
       boundary: "数据格式匹配不代表质量足够；来源、许可、覆盖与泄漏仍需审核。",
     },
     {
-      question: "SFT 后是否还需要偏好优化？",
-      signal: "模型已能完成任务，但存在啰嗦、拒答边界、语气或相对质量问题。",
-      recommendation: "先用冻结评估确认 SFT 的剩余误差，再以偏好数据补充 DPO 或其他对齐方法。",
-      boundary: "偏好优化可能带来误拒、模式化或能力退化，必须配通用与安全回归。",
+      question: "一次训练 Run 的合同是否完整？",
+      signal: "团队能提交训练任务，却无法还原基础权重、Tokenizer、数据快照与配比、目标、优化器、精度、并行拓扑、环境、停止规则和评估版本。",
+      recommendation: "先把这些对象绑定为版本化 Run manifest，再允许长作业消耗正式容量；任何恢复点都必须指向同一合同。",
+      boundary: "记录字段齐全不证明运行可复现，仍需小规模对照、恢复演练和目标环境验证。",
     },
     {
       question: "训练应自建还是租用云集群？",
@@ -608,9 +608,9 @@ export const llmTraining = {
       boundary: "公开 Benchmark 与训练集结果都不能替代客户的 Go / No-Go 门槛。",
     },
   ],
-  deepDiveTitle: "把训练看成数据、算力与恢复共同构成的系统",
+  deepDiveTitle: "把训练看成可恢复、可验收的长期实验",
   deepDiveLead:
-    "训练预算不能只用 GPU 数量解释。真正决定交付周期的是有效训练步能否稳定推进，以及数据、通信、检查点和故障恢复是否把昂贵算力转化为可复现的模型增量。",
+    "训练预算不能只用 GPU 数量解释。完整 Run 合同先冻结输入与停止规则，分布式执行再把计算、通信、数据供给和恢复转化为可比较的有效进度。",
   deepDives: [
     {
       kind: "matrix",
@@ -618,7 +618,7 @@ export const llmTraining = {
       title: "GPU 清单之外，哪些路径决定有效训练时间",
       intro:
         "账面卡时只有在模型计算、集群通信、数据供给和恢复链同时顺畅时才转化为有效训练 Token。售前容量设计应围绕最慢路径和故障损失，而不是孤立比较单卡峰值。",
-      sourceIds: ["transformer-2017", "chinchilla-2022", "nist-genai-profile"],
+      sourceIds: ["chinchilla-2022", "megatron-3d-parallelism-2021", "nccl-collectives", "pytorch-distributed-checkpoint", "pytorch-reproducibility"],
       columnLabels: {
         name: "系统路径",
         mechanism: "主要机制",
@@ -629,9 +629,9 @@ export const llmTraining = {
         {
           name: "模型计算",
           en: "Model Compute",
-          mechanism: "矩阵计算、精度、序列长度、批量和并行切分决定每步计算量；模型与训练 Token 的投入需要在预算下协调。",
-          decision: "先用小规模运行测每步时间、显存余量和收敛趋势，再选择 GPU 型号、混合精度与并行策略。",
-          boundary: "理论 FLOPS 和厂商峰值不能直接换算为训练完成时间。",
+          mechanism: "权重、梯度、优化器状态、激活与通信缓冲共同占用内存；精度、序列长度、批量和并行切分决定每步成本与 OOM 风险。",
+          decision: "先用小规模运行测步时、显存构成、数值稳定和收敛趋势，再选择精度、激活重计算与并行策略。",
+          boundary: "理论 FLOPS、权重能装入显存或短时利用率都不能直接换算训练完成时间。",
         },
         {
           name: "集群通信",
@@ -650,9 +650,9 @@ export const llmTraining = {
         {
           name: "故障与恢复",
           en: "Failure and Recovery",
-          mechanism: "大规模长作业必然暴露节点、网络和存储故障；检查点间隔与恢复速度决定失败时要重算多少工作。",
-          decision: "在正式训练前演练故障注入、检查点写入与跨节点恢复，并把有效训练时间、RPO 和 RTO 写入云平台验收。",
-          boundary: "检查点文件存在不等于能够完整恢复优化器、调度器和数据游标。",
+          mechanism: "长作业会暴露节点、网络和存储故障；Checkpoint 必须覆盖模型、优化器、调度器、RNG、step 与应用状态，并验证异步写入已经完成。",
+          decision: "在正式训练前演练故障注入、完整性校验、跨节点恢复和数据连续性，把有效训练时间、RPO 与 RTO 写入验收。",
+          boundary: "检查点文件存在不等于状态完整或可加载；数据游标、拓扑与跨版本兼容仍由训练应用负责。",
         },
       ],
     },
@@ -662,7 +662,7 @@ export const llmTraining = {
       title: "训练曲线异常时，不要先追加算力",
       intro:
         "质量异常和系统异常常会互相伪装。先把样本、优化、基础设施和恢复状态关联起来，才能判断问题需要修数据、调训练还是修集群。",
-      sourceIds: ["chinchilla-2022", "instructgpt-2022", "nist-genai-profile"],
+      sourceIds: ["chinchilla-2022", "deduplicating-training-data-2022", "megatron-3d-parallelism-2021", "nccl-collectives", "pytorch-distributed-checkpoint", "pytorch-reproducibility"],
       items: [
         {
           name: "Loss 突然尖峰或出现 NaN",
@@ -688,14 +688,14 @@ export const llmTraining = {
         {
           name: "从检查点恢复后结果漂移",
           en: "Resume Drift",
-          mechanism: "优化器、学习率调度、随机状态、数据游标或精度配置未完整恢复，会使“继续训练”实际变成另一条实验。",
-          decision: "在小规模作业中比较不中断与中断恢复曲线，并在模型注册表记录完整运行清单和检查点兼容性。",
-          boundary: "分布式训练存在一定非确定性；目标是可解释且在验收容差内，而非承诺逐位一致。",
+          mechanism: "优化器、学习率调度、RNG、数据游标、step、拓扑、精度或软件版本未完整恢复，会使“继续训练”实际变成另一条实验。",
+          decision: "在受控环境中比较不中断与中断恢复的下一批样本、状态摘要、曲线和未见任务，并登记完整 Run manifest 与兼容性。",
+          boundary: "跨版本、平台和分布式执行不保证完全复现；目标是差异可解释且落在预先声明的验收容差内。",
         },
       ],
     },
   ],
-  criticalBoundary: "训练可以改变模型权重与行为，但不会自动赋予正确、合规或可运营的产品能力。数据权利、评估、推理服务、安全和发布控制都必须独立验收。",
+  criticalBoundary: "训练可以改变模型权重与行为，但一次 Run 完成只产生候选制品，不会自动赋予正确、合规或可运营的产品能力。数据权利、独立评估、推理服务、安全和发布控制都必须分别验收。",
   cloudHooks: [
     {
       stage: "数据准备",
@@ -804,10 +804,10 @@ export const llmTraining = {
       sourceId: "hf-trl-data-formats",
     },
     {
-      metric: "数据 / 训练 / 任务 / 服务",
-      title: "微调发布需要四层证据",
-      finding: "训练曲线要与未见任务、能力保留、安全、显存、时延和成本共同判断。",
-      boundary: "Loss 下降不能单独支持上线，也不能证明相对 Prompt、RAG 或更换模型更划算。",
+      metric: "训练 / 评估",
+      title: "训练器的评估循环不等于发布验收",
+      finding: "SFTTrainer 把训练数据、评估数据、评估时机和指标回调作为独立配置，说明优化 Loss 与评估结果是不同证据。",
+      boundary: "框架评估循环不能替代客户未见任务、安全、能力保留、目标端点性能、成本和发布授权。",
       sourceId: "hf-trl-sft-trainer",
     },
   ],

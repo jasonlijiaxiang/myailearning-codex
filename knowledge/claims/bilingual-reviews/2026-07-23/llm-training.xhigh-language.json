@@ -6,8 +6,8 @@
     "locale": "en",
     "objectType": "module",
     "objectId": null,
-    "zhContentHash": "sha256:a31233b6f8ecc6bb395015f134b2c7dc763fc367fc51a16210359661cdcb8d9f",
-    "enContentHash": "sha256:af31d08cc7e14b486b38ff4ea7f7d63d70a2c864c9d576f428fc0ac68ad4202a",
+    "zhContentHash": "sha256:ef4b00a998f3089749c35b7895909cdf05a42ca3e5441d976eef3685963dba7a",
+    "enContentHash": "sha256:5bca5f15b5f87a090405e2b986985a20a94a8926d48294209e246a319bca141b",
     "termIds": [
       "distributed-training",
       "evaluation",
@@ -24,9 +24,11 @@
     "sourceIds": [
       "checkfreq-2021",
       "chinchilla-2022",
+      "deduplicating-training-data-2022",
       "deepseek-r1-2025",
       "dpo-2023",
       "flashattention-2022",
+      "hf-transformers-tokenizer-contract",
       "hf-trl-data-formats",
       "hf-trl-sft-trainer",
       "instructgpt-2022",
@@ -35,6 +37,10 @@
       "nist-genai-profile",
       "openai-model-spec-hidden-cot",
       "opentelemetry-semconv",
+      "pytorch-distributed-checkpoint",
+      "pytorch-reproducibility",
+      "sentencepiece-2018",
+      "switch-transformer-2022",
       "torchsnapshot-checkpoint",
       "transformer-2017"
     ]

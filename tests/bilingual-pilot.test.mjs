@@ -130,6 +130,56 @@ test("Batch 06 English content preserves runtime interoperability and operations
   assert.ok(aiOps.sources["opentelemetry-tail-sampling"]);
 });
 
+test("Batch 07 English content preserves the training contract and predictive rollback boundaries", async () => {
+  const training = englishModuleRegistry["llm-training"];
+  const trainingIds = training.qa.map((item) => item.id);
+  assert.equal(training.qa.length, 10);
+  assert.equal(trainingIds.includes("gpu-scaling-efficiency"), false);
+  assert.equal(trainingIds.includes("scaling-law-task-boundary"), false);
+  assert.match(JSON.stringify(training), /Run manifest/);
+  assert.match(JSON.stringify(training), /asynchronous completion/i);
+  assert.match(JSON.stringify(training), /not guarantee bitwise|do not promise cross-platform bitwise|not promising bitwise identity/i);
+  const modelCompute = training.sections
+    .find((section) => section.id === "deep-dive")
+    .blocks.flatMap((block) => block.items)
+    .find((item) => item.id === "deep-model-compute");
+  assert.deepEqual(modelCompute.sourceIds, ["megatron-3d-parallelism-2021"]);
+  [
+    "deduplicating-training-data-2022",
+    "sentencepiece-2018",
+    "switch-transformer-2022",
+    "pytorch-distributed-checkpoint",
+    "pytorch-reproducibility",
+    "hf-transformers-tokenizer-contract",
+  ].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(training.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+
+  const predictive = englishModuleRegistry["predictive-ai-mlops"];
+  assert.equal(predictive.qa.length, 10);
+  assert.equal(predictive.qa.at(-1).id, "predictive-rollback-bundle");
+  assert.equal(predictive.qa.at(-1).addedAt, "2026-08-01");
+  assert.match(JSON.stringify(predictive), /seven production signals/i);
+  assert.match(JSON.stringify(predictive), /Technical rollback.*does not/i);
+  assert.match(JSON.stringify(predictive), /Managed MLOps platform or self-built stack/);
+  [
+    "google-rules-of-ml",
+    "ml-test-score-2017",
+    "azure-ml-model-monitoring",
+    "aws-sagemaker-deployment-guardrails",
+  ].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(predictive.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+
+  const claimItems = JSON.parse(await readFile(new URL("../knowledge/claims/index.json", import.meta.url), "utf8")).items;
+  const claimsById = Object.fromEntries(claimItems.map((claim) => [claim.id, claim]));
+  assert.equal(claimsById["mlops.azure-monitoring-signals-2026-08-01"].status, "watch");
+  assert.equal(claimsById["mlops.aws-deployment-guardrails-scope-2026-08-01"].status, "watch");
+  assert.equal(claimsById["training.pytorch-dcp-compatibility-2026-08-01"].status, "watch");
+});
+
 test("English sections and rendered object anchors use stable, unique IDs", () => {
   const generatedPageSectionIds = new Set(["evidence", "qa"]);
   for (const slug of englishModuleSlugs) {
