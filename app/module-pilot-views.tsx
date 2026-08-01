@@ -179,18 +179,23 @@ export function LlmTheoryPrimer() {
 }
 
 const solutionDecisionStages = [
-  ["01", "业务结果", "Outcome", "谁的哪项工作需要发生改变？", "写清成功、失败和责任人"],
-  ["02", "任务边界", "Task Boundary", "系统提供信息、建议，还是会执行动作？", "确定人工接管与不可接受结果"],
-  ["03", "能力搭配", "Capability Mix", "需要检索、生成、工具、规则或多模态吗？", "只加入能解释其作用的组件"],
-  ["04", "验证证据", "Proof", "哪些样本、切片与失败条件可以推翻方案？", "先写验收和停止条件，再开始 PoC"],
-  ["05", "运营责任", "Operations", "上线后由谁维护质量、成本、权限与故障？", "把负责人、预算、回滚和复盘写入方案"],
+  ["01", "结果与基线", "Outcome", "当前怎样完成，什么状态证明真正成功？", "冻结现状、目标、损失和责任人"],
+  ["02", "约束包络", "Constraints", "质量、风险、时延、恢复、成本和迁移哪些不能妥协？", "把约束写成可测场景和优先级"],
+  ["03", "最小闭环", "Minimum Loop", "无 AI、规则或单次模型还缺哪项必要责任？", "只增加能解释必要性的能力"],
+  ["04", "责任架构", "Responsibility", "数据、模型、状态、动作与人工分别由谁负责？", "为接口、失败、替换和接管定责"],
+  ["05", "证据阶段门", "Evidence", "什么结果会支持 Go、Hold、No-Go 或 Exit？", "先写样本、阈值和停止条件"],
+  ["06", "运营与退出", "Operate & Exit", "上线后谁维护，何时扩大、限制、迁移或停止？", "绑定版本、回滚、单位经济和退出资产"],
 ];
 
 const solutionCapabilityChoices = [
-  { verb: "找", title: "检索证据", en: "Retrieve", when: "答案依赖企业知识、版本和权限", choice: "RAG、搜索、数据库", boundary: "找到了资料也要验证回答是否正确" },
-  { verb: "写", title: "生成内容", en: "Generate", when: "需要总结、改写、分类或结构化输出", choice: "LLM、Prompt、结构约束", boundary: "生成文字不能替代业务事实和审批" },
-  { verb: "做", title: "执行任务", en: "Act", when: "需要跨系统创建、修改或推进状态", choice: "工作流、Agent、工具接口", boundary: "动作必须经过身份、授权和结果回读" },
-  { verb: "审", title: "人工负责", en: "Review", when: "错误高风险、规则模糊或结果不可逆", choice: "审批、复核、人工接管", boundary: "人工环节也要定义时限、证据和责任" },
+  { verb: "果", title: "业务结果", en: "Outcome", when: "每一个方案", choice: "当前基线、权威终态、Owner", boundary: "模型输出通常不是业务完成" },
+  { verb: "证", title: "数据与证据", en: "Evidence", when: "结果依赖当前、私有或可撤回事实", choice: "RAG、搜索、数据库、数据产品", boundary: "检索命中不代表正确或有权" },
+  { verb: "智", title: "模型判断", en: "Model", when: "需要开放理解、生成或分类", choice: "LLM、Prompt、多模态、结构约束", boundary: "模型不能成为事实或授权主体" },
+  { verb: "编", title: "编排与状态", en: "Orchestration", when: "任务跨步骤、等待或系统", choice: "工作流、队列、Agent Runtime", boundary: "final output 不等于权威状态" },
+  { verb: "控", title: "规则与动作", en: "Control", when: "需要读取或改变外部状态", choice: "代码、IAM、策略、幂等与补偿", boundary: "模型不能扩大动作和权限范围" },
+  { verb: "人", title: "人工责任", en: "Human", when: "结果高影响、不可逆或存在争议", choice: "审批、复核、接管和例外处理", boundary: "人工环节也需要证据、时限和审计" },
+  { verb: "验", title: "评估与运营", en: "Assurance", when: "系统会变化并进入生产", choice: "评估、Trace、发布、事件与反馈", boundary: "遥测不能单独证明业务成功" },
+  { verb: "营", title: "经济与退出", en: "Economics", when: "需要投资、扩展或采购决定", choice: "完整成本、单位经济、迁移与停服", boundary: "单位经济不自动证明因果 ROI" },
 ];
 
 const solutionScenarioAtlas = [
@@ -209,12 +214,20 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
     <section className="pilotPrimer pilotPrimer--solution focusedNarrative focusedNarrative--decision" id="principle" data-knowledge-view="decision-blueprint" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="solution-pattern-primer-title">
       <header className="pilotPrimerHeader">
         <div><p className="kicker">DECISION BLUEPRINT</p><h2 id="solution-pattern-primer-title">把业务目标变成可以验收的方案</h2></div>
-        <p>场景方案从业务变化出发，依次确定任务边界、需要搭配的能力、验收证据和后续负责人；产品名称在这些问题明确后再进入。</p>
+        <p>场景方案从业务变化出发，依次冻结结果与基线、约束包络、最小闭环、责任架构、证据阶段门，以及运营经济与退出；产品名称在这些问题明确后再进入。</p>
       </header>
       <div className="solutionBlueprint">
         <SolutionDecisionLoop stages={solutionDecisionStages.map(([no, title, , question, output]) => ({ no, title, question, output }))} />
-        <div className="solutionCapabilityMatrix" role="table" aria-label="检索、生成、行动和人工控制的选择">
-          <div className="solutionCapabilityMatrixHead" role="row"><span>动作</span><span>什么时候需要</span><span>常见选择</span><span>不可忽略的边界</span></div>
+        <div className="workedExample">
+          <div className="exampleQuestion"><span>贯穿案例</span><strong>企业客户服务：从“回答问题”走向“可核验解决”</strong></div>
+          <div className="exampleSteps">
+            <article><span>01</span><h4>建立现状基线<small>Current baseline</small></h4><p>区分已解决、转人工、放弃、错误承诺和返工，并由 CRM 或工单系统确认终态。</p></article>
+            <article><span>02</span><h4>形成最小闭环<small>Minimum loop</small></h4><p>只为授权知识引入 RAG，为业务查询和受限动作接入确定性工作流，复杂例外再交给有界 Agent 与人工。</p></article>
+            <article><span>03</span><h4>用结果决定投资<small>Evidence and economics</small></h4><p>同时验收解决率、关键错误、P95、接管、恢复与每解决一单的完整成本，并预设限制、回滚和退出。</p></article>
+          </div>
+        </div>
+        <div className="solutionCapabilityMatrix" role="table" aria-label="八层解决方案责任架构">
+          <div className="solutionCapabilityMatrixHead" role="row"><span>责任层</span><span>什么时候需要</span><span>常见选择</span><span>不可忽略的边界</span></div>
           {solutionCapabilityChoices.map((item) => (
             <div className="solutionCapabilityMatrixRow" role="row" key={item.en}>
               <strong><span>{item.verb}</span>{item.title}</strong>
@@ -248,7 +261,7 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
         </div>
       </div>
       {brief ? <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside> : null}
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用五道决策门把模糊需求缩成一个可验证场景，再选择“找、写、做、审”的必要组合；每增加一项能力，都要同时增加验收方法和负责人。</p><nav aria-label="场景解决方案深入阅读"><a href="#deep-dive">检查生产边界</a><a href="#evidence">核对证据</a><a href="#cloud">对应云服务</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用六道决策门把模糊需求缩成一个可验证闭环，再沿八层责任架构逐项检查必要性、Owner、证据、失败响应和退出条件；技术越复杂，证明责任越重。</p><nav aria-label="场景解决方案深入阅读"><a href="#deep-dive">检查生产边界</a><a href="#evidence">核对证据</a><a href="#cloud">对应云服务</a></nav></footer>
     </section>
   );
 }

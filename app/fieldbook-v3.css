@@ -570,8 +570,9 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 /* Web-native explainers: each topic uses the visual grammar of its knowledge relationship. */
 .solutionBlueprint { border: 0; background: #fff; }
 .solutionDecisionLoop { margin-top: 38px; padding: 28px 0 0; border-top: 2px solid var(--ink); }
-.solutionDecisionLoop ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); list-style: none; }
-.solutionDecisionLoop li { position: relative; min-width: 0; }
+.anchorAlias { position: relative; top: -96px; display: block; height: 0; visibility: hidden; }
+.solutionDecisionLoop ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); list-style: none; }
+.solutionDecisionLoop li { position: relative; min-width: 0; grid-column: span var(--solution-stage-span,4); }
 .solutionDecisionLoop li > i { position: absolute; top: 50px; right: -9px; z-index: 2; color: var(--ink); font-size: 20px; font-style: normal; }
 .solutionDecisionLoop button {
   width: 100%;
@@ -873,7 +874,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .inferenceRequestRail { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .mcpResponsibilityMap article:nth-child(2) { border-right: 0; }
   .inferenceRequestRail li:nth-child(2) { border-right: 0; }
-  .solutionDecisionLoop ol { grid-template-columns: repeat(3,minmax(0,1fr)); row-gap: 16px; }
+  .solutionDecisionLoop ol { grid-template-columns: repeat(12,minmax(0,1fr)); row-gap: 16px; }
   .solutionDecisionLoop li > i,
   .solutionFeedbackPaths { display: none; }
   .solutionStageDetail { margin-top: 24px; grid-template-columns: minmax(220px,.8fr) minmax(300px,1.2fr); }
@@ -989,7 +990,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .inferenceRequestRail li { border-right: 0; }
   .solutionDecisionLoop { padding-top: 18px; }
   .solutionDecisionLoop ol { grid-template-columns: 1fr; gap: 0; }
-  .solutionDecisionLoop li { padding-left: 32px; border-left: 1px solid #9baa91; }
+  .solutionDecisionLoop li { grid-column: 1 / -1; padding-left: 32px; border-left: 1px solid #9baa91; }
   .solutionDecisionLoop li::before { content: ""; position: absolute; top: 31px; left: -5px; width: 9px; height: 9px; border-radius: 50%; background: #779064; }
   .solutionDecisionLoop li.isActive::before { background: var(--lime); box-shadow: 0 0 0 4px rgba(145,194,24,.18); }
   .solutionDecisionLoop button { min-height: 0; padding: 18px 16px; grid-template-columns: 38px minmax(0,1fr); grid-template-rows: auto auto; gap: 4px 10px; }
@@ -1329,7 +1330,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .controlPolicyPlane {
   padding: 18px;
   display: grid;
-  grid-template-columns: minmax(220px,1fr) repeat(2,minmax(160px,.7fr));
+  grid-template-columns: minmax(220px,1fr) repeat(var(--control-policy-count,2),minmax(145px,.7fr));
   gap: 12px;
   border: 1px solid #9eabb9;
   background: #fff;
@@ -1368,7 +1369,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .controlPlaneLink i { font-size: 20px; font-style: normal; }
 .controlDataPlane {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-template-columns: repeat(var(--control-step-count,3),minmax(0,1fr));
   border-top: 1px solid #7b899a;
   border-bottom: 1px solid #7b899a;
   background: #fff;

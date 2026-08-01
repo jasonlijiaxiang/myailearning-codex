@@ -41,7 +41,7 @@ export const completionCurriculum = Object.freeze({
     { title: "按用途分流数据制品", en: "Purpose-specific Products", explanation: "同一原始数据用于 RAG、评估和训练时，更新速度、许可、去重、标签和泄漏风险不同。共享来源身份与血缘，但分别发布用途明确的数据版本。", decision: "在加工前先写用途和验收，不把一个数据集无条件复制到所有下游。", boundary: "能用于检索不表示可以用于训练；能用于内部评估也不表示可以进入生产日志。", sourceIds: ["nist-genai-profile", "nist-zero-trust"] },
   ]),
   "ai-infra-platform": freezeItems([
-    { title: "容量、成本与供给", en: "Capacity Economics", explanation: "平台容量既受设备数量影响，也受队列、拓扑碎片、故障、升级、保留余量和供给周期影响。成本要关联完成的训练或达标推理结果。", decision: "用业务优先级、排队原因和有效产出共同制定扩容或共享策略。", boundary: "设备利用率高不代表 Goodput 高，低利用率也可能是为在线 SLO 保留的必要容量。", sourceIds: ["opentelemetry-semconv", "nvidia-gpu-operator"] },
+    { title: "Goodput、资源成本与业务 ROI", en: "Useful Output & Economics", explanation: "平台关联 allocated、used、idle、shared、reserve、排队和失败重跑成本，并把利用率、MFU、Goodput 与服务 SLO 送入共同观察面。", decision: "用资源事实做容量、showback 或 chargeback；把质量门、单位成功结果和 ROI 上送给应用与 Solution Patterns。", boundary: "高利用率不等于高 Goodput，高 Goodput 也不自动证明业务价值；不同指标分母必须先统一。", sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "finops-unit-economics"] },
   ]),
   "ai-infra-compute": freezeItems([
     { title: "端到端基准与交付验收", en: "Benchmark & Acceptance", explanation: "先冻结模型、精度、质量门、序列或数据、并发、框架、网络与数据通路，再覆盖冷启动、稳态、峰值、长跑、扩展曲线、故障恢复和整机能耗。", decision: "以每个达标结果的持续性能、资源级 TCO 和可恢复性验收供给。", boundary: "MLPerf 等公开基准提供可比规则，但任何提交、峰值 FLOPS 或缓存后稳态都不能替代客户生产负载。", sourceIds: ["mlperf-training", "mlperf-inference-datacenter", "mlperf-storage-v2", "finops-unit-economics"] },
@@ -140,7 +140,6 @@ export const completionLearning = Object.freeze({
   }),
   "ai-infra-platform": Object.freeze({
     route: freezeItems([
-      { title: "区分资源忙与有效产出", learn: "把利用率、MFU、Goodput、排队和业务 SLO 放在同一观察面。", checkpoint: "平台优化指向作业完成与达标服务。" },
       { title: "设计训练和推理的共享边界", learn: "比较资源池、优先级、抢占、切分和故障域。", checkpoint: "共享收益不会破坏在线尾延迟和训练恢复。" },
     ]),
     labs: freezeLabs([

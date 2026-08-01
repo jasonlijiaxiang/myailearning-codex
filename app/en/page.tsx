@@ -2,7 +2,9 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 
 import { KnowledgeSearchLaunch, ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "../fieldbook-interactions";
+import { searchableEnglishSectionGroups, searchableQuestions } from "../home-search-visibility.mjs";
 import { englishModuleRegistry, englishSourceCopy, englishTermCopy } from "../i18n/en/registry.mjs";
+import { buildEnglishSectionGroups } from "../i18n/english-section-outline.mjs";
 import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
 import { layers, moduleList } from "../knowledge-map.mjs";
 import { publishedModuleSlugs } from "../module-publication.mjs";
@@ -39,7 +41,7 @@ const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
     href: `/en/glossary#term-${termId}`,
     keywords: `${term.name} ${term.abbr ?? ""} ${term.definition}`,
   })),
-  ...Object.values(englishModuleRegistry).flatMap((module) => module.qa.map((item) => ({
+  ...Object.values(englishModuleRegistry).flatMap((module) => searchableQuestions(module.slug, module.qa, "en").map((item) => ({
     id: `qa-${module.slug}-${item.id}`,
     type: "Customer question",
     title: item.q,
@@ -47,14 +49,14 @@ const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
     href: `/en/modules/${module.slug}#qa-${item.id}`,
     keywords: `${module.title} ${item.q} ${item.a} ${item.depth} ${item.ask} ${item.tag}`,
   }))),
-  ...Object.values(englishModuleRegistry).flatMap((module) => module.sections.flatMap((section) => section.blocks.flatMap((contentBlock) => contentBlock.items.map((item) => ({
+  ...Object.values(englishModuleRegistry).flatMap((module) => searchableEnglishSectionGroups(module.slug, buildEnglishSectionGroups(module)).flatMap((group) => group.sections.flatMap((section) => section.blocks.flatMap((contentBlock) => contentBlock.items.map((item) => ({
     id: `section-${module.slug}-${item.id}`,
     type: "Module section",
     title: item.title,
     subtitle: `${module.title} · ${section.title}`,
     href: `/en/modules/${module.slug}#${item.id}`,
     keywords: `${module.title} ${section.title} ${section.lead ?? ""} ${item.title} ${item.body ?? ""} ${item.decision ?? ""} ${item.boundary ?? ""} ${(item.cells ?? []).join(" ")}`,
-  }))))),
+  })))))),
   ...Object.entries(englishSourceCopy).map(([sourceId, source]) => ({
     id: `source-${sourceId}`,
     type: "Source evidence",

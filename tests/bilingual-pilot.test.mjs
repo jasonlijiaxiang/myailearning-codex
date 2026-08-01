@@ -226,6 +226,50 @@ test("Batch 08 English content preserves inference overload and compute procurem
   });
 });
 
+test("Batch 09 English content preserves the platform-product and minimum-sufficient-loop contracts", async () => {
+  const platform = englishModuleRegistry["ai-infra-platform"];
+  assert.equal(platform.qa.length, 12);
+  assert.equal(platform.qa.at(-1).id, "containerized-not-fully-portable");
+  assert.equal(platform.qa.at(-1).addedAt, "2026-08-01");
+  assert.match(JSON.stringify(platform), /platform control layer.*workload execution layer/is);
+  assert.match(JSON.stringify(platform), /management and control.*identity\/data\/network.*performance\/resources.*cost allocation\/accountability/is);
+  assert.match(JSON.stringify(platform), /OCI image or Kubernetes YAML is not evidence of cross-cloud or cross-accelerator migration/i);
+  assert.match(JSON.stringify(platform), /platform economics and application business ROI have different owners/i);
+  [
+    "cncf-platforms-whitepaper",
+    "kubernetes-multi-tenancy",
+    "kubernetes-dra-1-36",
+    "oci-image-spec-v1-1-1",
+  ].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(platform.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+
+  const solution = englishModuleRegistry["solution-patterns"];
+  assert.equal(solution.qa.length, 19);
+  assert.equal(solution.qa[0].id, "solution-versus-model-api");
+  assert.equal(solution.qa.at(-1).id, "production-change-ownership");
+  assert.match(JSON.stringify(solution), /Outcome and current baseline/);
+  assert.match(JSON.stringify(solution), /Measurable constraint envelope/);
+  assert.match(JSON.stringify(solution), /Minimum sufficient loop/);
+  assert.match(JSON.stringify(solution), /RAG.*Agent.*MCP.*A2A.*Gateway.*platform/is);
+  ["rag-original-2020", "mcp-architecture", "a2a-concepts", "cloudflare-ai-gateway", "cncf-platforms-whitepaper"].forEach((sourceId) => {
+    assert.ok(englishSourceCopy[sourceId], `${sourceId} must have shared English source copy`);
+    assert.match(JSON.stringify(solution), new RegExp(sourceId));
+  });
+  assert.match(JSON.stringify(solution), /Go, Hold, No-Go.*Exit/is);
+  assert.match(JSON.stringify(solution), /token price.*not ROI/is);
+  assert.ok(sourceLedger["finops-unit-economics"]);
+  assert.ok(solution.sources["finops-unit-economics"]);
+  assert.ok(sourceLedger["finops-ai-tools-considerations"]);
+  assert.ok(solution.sources["finops-ai-tools-considerations"]);
+
+  const claimItems = JSON.parse(await readFile(new URL("../knowledge/claims/index.json", import.meta.url), "utf8")).items;
+  const draClaim = claimItems.find((claim) => claim.id === "platform.kubernetes-dra-1-36-feature-maturity-2026-08-01");
+  assert.equal(draClaim?.status, "watch");
+  assert.equal(draClaim?.reviewBy, "2026-10-30");
+});
+
 test("English sections and rendered object anchors use stable, unique IDs", () => {
   const generatedPageSectionIds = new Set(["evidence", "qa"]);
   for (const slug of englishModuleSlugs) {
@@ -233,7 +277,8 @@ test("English sections and rendered object anchors use stable, unique IDs", () =
     assertUniqueIds(english.sections, `${slug} section`);
     english.sections.forEach((section) => assert.ok(!generatedPageSectionIds.has(section.id), `${slug} section ID ${section.id} conflicts with a generated page section`));
     const sectionItemIds = english.sections.flatMap((section) => section.blocks.flatMap((block) => block.items.map((item) => item.id)));
-    assert.equal(new Set(sectionItemIds).size, sectionItemIds.length, `${slug} section-item IDs must be unique`);
+    const sectionLegacyIds = english.sections.flatMap((section) => section.blocks.flatMap((block) => block.items.flatMap((item) => item.legacyIds ?? [])));
+    assert.equal(new Set([...sectionItemIds, ...sectionLegacyIds]).size, sectionItemIds.length + sectionLegacyIds.length, `${slug} current and legacy anchors must be unique`);
     sectionItemIds.forEach((id) => assert.match(id, slugIdPattern, `${slug} section-item ID must be a stable slug: ${id}`));
   }
 });

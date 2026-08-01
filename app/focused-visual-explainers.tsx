@@ -1,6 +1,9 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useState } from "react";
+
+import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 
 type DecisionStage = {
   no: string;
@@ -42,20 +45,24 @@ const levelLabels = {
 export function SolutionDecisionLoop({ stages }: { stages: DecisionStage[] }) {
   const [active, setActive] = useState(3);
   const selected = stages[active];
+  const stageRows = balanceGridRows(stages, 3);
 
   return (
     <div className="solutionDecisionLoop" data-active-stage={active + 1}>
       <ol aria-label="从业务结果到运营责任的方案决策闭环">
-        {stages.map((stage, index) => (
-          <li key={stage.no} className={index === active ? "isActive" : undefined}>
+        {stageRows.flatMap((row) => row.map((stage, columnIndex) => {
+          const index = stages.indexOf(stage);
+          return (
+          <li key={stage.no} className={index === active ? "isActive" : undefined} data-row-end={columnIndex === row.length - 1 ? "true" : "false"} style={{ "--solution-stage-span": gridSpan(row.length) } as CSSProperties}>
             <button type="button" aria-pressed={index === active} onClick={() => setActive(index)}>
               <span>{stage.no}</span>
               <strong>{stage.title}</strong>
               <small>{stage.question}</small>
             </button>
-            {index < stages.length - 1 ? <i aria-hidden="true">→</i> : null}
+            {index < stages.length - 1 && columnIndex < row.length - 1 ? <i aria-hidden="true">→</i> : null}
           </li>
-        ))}
+          );
+        }))}
       </ol>
       <svg className="solutionFeedbackPaths" viewBox="0 0 1000 150" role="img" aria-label="证据不足返回边界与能力设计，运营结果返回业务目标">
         <defs>

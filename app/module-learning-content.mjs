@@ -12,19 +12,19 @@ import { governanceMlopsLearning } from "./module-briefs-governance-mlops.mjs";
 const baseModuleLearningContent = Object.freeze({
   ...governanceMlopsLearning,
   "solution-patterns": {
-    outcomes: ["把业务目标改写成可验收的一页约定", "能拆解客服、企业搜索、内容生成、AI Coding、数字人、ChatBI 与会议助手", "设计能证伪方案假设的 PoC", "用完整成本、单位经济、质量与风险共同决定是否上线", ...applicationFinopsLearning["ai-finops"].outcomes],
+    outcomes: ["把业务目标、当前基线、权威终态和约束写成可验收契约", "用需求门选择最小充分闭环并分配八层责任", "设计能输出 Go、Hold、No-Go 或 Exit 的阶段证据", "用完整成本、单位达标结果、运营责任和退出条件共同决定投资", ...applicationFinopsLearning["ai-finops"].outcomes],
     route: [
-      { title: "从业务结果开始", learn: "识别用户、触发、输入、期望结果和不可接受结果。", checkpoint: "能写出不依赖模型名称的成功定义。" },
-      { title: "把场景拆成能力链", learn: "判断哪些步骤需要检索、生成、工具执行、规则或人工审批。", checkpoint: "能解释每个组件为什么存在，以及失败后由谁接管。" },
-      { title: "选择最接近的场景原型", learn: "比较客服、搜索、内容、Coding、数字人、ChatBI 和会议助手的数据链、动作深度与风险。", checkpoint: "能复用架构骨架，同时说清该场景特有的指标和控制。" },
-      { title: "把架构连线写成运行约定", learn: "为身份、数据、模型、工具、人工和观测补上接口、超时、重试与责任。", checkpoint: "架构图可以支持故障演练和责任讨论，不只是产品摆放。" },
-      { title: "PoC 优先验证最大不确定性", learn: "先验证质量、集成、风险和成本中最可能推翻方案的假设。", checkpoint: "能给出包含现有表现、样本、阈值和退出条件的验收表。" },
-      { title: "用生产门与单位经济完成交接", learn: "核对容量、数据更新、质量巡检、事件处理、回滚、成本归因、成功单位和负责人。", checkpoint: "试点结论能转换成上线、补做、优化或停止的明确决定。" },
+      { title: "冻结结果、基线与约束包络", learn: "识别用户、当前流程、权威终态、不可接受损失以及质量、风险、SLO、恢复、成本和迁移约束。", checkpoint: "能写出不依赖模型名称且可对照现状的成功定义。" },
+      { title: "选择最小充分闭环", learn: "从无 AI、规则和单次模型开始，只为证据、动作、动态路径、互操作或共享治理缺口增加能力。", checkpoint: "能解释每个组件的必要条件与移除后果。" },
+      { title: "建立八层责任架构", learn: "为结果、数据、模型、编排、控制、人工、评估运营和经济退出补上接口、Owner 与失败响应。", checkpoint: "架构图支持故障、替换、接管和退出讨论。" },
+      { title: "用完整客服案例验证主链", learn: "沿授权知识、业务查询、受限动作、复杂例外和人工升级观察真正解决、放弃和错误承诺。", checkpoint: "模型回答能连接到权威业务终态。" },
+      { title: "按阶段证伪最大不确定性", learn: "让 Discovery、PoC、Pilot 与 Production 分别回答价值、技术、约束和持续责任问题。", checkpoint: "每阶段都有样本、阈值与 Go、Hold、No-Go、Exit 条件。" },
+      { title: "用单位经济完成运营与退出", learn: "核对版本、数据更新、质量巡检、事件、恢复、成本归因、迁移资产和停止责任。", checkpoint: "结论能转换成扩大、限制、修复、迁移或停止决定。" },
     ],
     labs: [
-      { title: "把模糊需求改写成一页约定", scenario: "客户说“想做一个企业 AI 助手”，但没有定义用户、动作和失败责任。", tasks: ["列出三类目标用户和各自高频任务", "为每个任务写出输入、输出、失败与人工接管", "选出一个最适合先验证的窄场景"], deliverable: "一页场景约定与暂停条件清单", acceptance: "任何评审者都能据此判断 PoC 是否成功，不依赖主观演示效果。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents"] },
+      { title: "把模糊需求改写成最小闭环契约", scenario: "客户说“想做一个企业 AI 助手”，但没有现状基线、权威终态、约束或失败责任。", tasks: ["冻结三类目标用户的当前流程、成本、成功与不可接受损失", "把质量、时延、权限、恢复、成本和迁移写成场景化约束", "从无 AI、规则和单次模型开始，为每个拟增组件做必要性与移除测试"], deliverable: "一页结果—约束—最小闭环契约与暂停条件", acceptance: "任何评审者都能据此判断为什么需要每个组件以及什么证据会停止 PoC。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents", "finops-unit-economics"] },
       { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
-      { title: "设计一条客服解决漏斗", scenario: "客户希望机器人减少人工量，但当前只统计回复次数。", tasks: ["区分自助、坐席辅助和必须转人工的问题", "画出知识查询、业务查询、工单和转接路径", "定义解决率、放弃率、误答补偿和人工接管指标"], deliverable: "客服任务漏斗、参考架构和验收表", acceptance: "指标能区分真正解决、用户放弃和错误拦截，且高风险问题不会被自动处理。", sourceIds: ["ragas", "nist-genai-profile"] },
+      { title: "设计一条客服问题解决闭环", scenario: "客户希望机器人减少人工量，但当前只统计回复次数，并准备默认加入 RAG 与 Agent。", tasks: ["由 CRM 或工单状态区分真正解决、转人工、放弃、错误承诺和返工", "只为授权知识引入 RAG，为业务查询与受限动作使用确定性工作流，把动态例外交给有界 Agent 与人工", "定义解决率、关键错误、P95、接管、恢复和每解决一单的完整成本"], deliverable: "客服最小闭环、八层责任图与阶段验收表", acceptance: "每项能力都有必要性、Owner 和退出条件，高风险问题不会被自动处理，结果由权威系统确认。", sourceIds: ["ragas", "nist-genai-profile", "anthropic-effective-agents", "finops-unit-economics"] },
       { title: "为 ChatBI 加上语义与执行护栏", scenario: "管理层希望用自然语言查询经营指标，但多个部门的口径不一致。", tasks: ["选定五个有权威定义的指标", "限制只读数据域、查询成本和允许操作", "设计结果校验、引用、人工确认和错误回退"], deliverable: "语义层边界、查询流程与反例测试集", acceptance: "相同问题不会因自由生成 SQL 得到不同业务口径，模型不能写入或越权读取数据。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
       ...applicationFinopsLearning["ai-finops"].labs,
     ],
@@ -199,15 +199,18 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   "ai-infra-platform": {
-    outcomes: ["理解设备发现、调度、隔离、环境与恢复的完整平台责任", "比较 Kubernetes、Slurm 与分层共存", "评估整卡、MIG、时间共享和 DRA", "用 Goodput 而不是表面利用率衡量平台"],
+    outcomes: ["把 AI 平台定义成面向内部用户的自助产品与工作负载契约", "区分控制层、执行层、准入、放置与领域工作负载责任", "验证四类多租户验收边界与真实可移植性", "用 Goodput、浪费和资源成本支持容量决定而不冒充业务 ROI"],
     route: [
-      { title: "先建立资源契约", learn: "描述设备拓扑、驱动、网络、存储、镜像和作业约束。", checkpoint: "调度器看到的不只是 GPU 数量。" },
-      { title: "再处理排队与共享", learn: "理解配额、优先级、Gang Scheduling、碎片和隔离。", checkpoint: "能解释有空闲 GPU 但作业仍排队的合理原因。" },
-      { title: "最后保证可恢复运营", learn: "管理环境版本、Checkpoint、节点故障、推理发布和成本归属。", checkpoint: "平台升级和故障恢复都有可验证证据。" },
+      { title: "从平台用户和 Golden Path 开始", learn: "选择代表性开发者、训练或服务路径，定义能力目录、自助接口、支持边界和服务等级。", checkpoint: "平台需求来自用户任务，不来自组件清单。" },
+      { title: "写清工作负载与控制契约", learn: "描述身份、设备、拓扑、网络、存储、运行时、时限、恢复和拒绝语义。", checkpoint: "控制层与执行层对象、状态和责任可追踪。" },
+      { title: "完成准入、放置与多租户边界设计", learn: "组合配额、优先级、Gang、设备声明、拓扑和四类多租户验收边界。", checkpoint: "能分别解释排队、碎片、Noisy Neighbor、安全隔离与成本归属。" },
+      { title: "连接开发、运行、恢复与退出", learn: "版本化环境、作业、制品和服务，演练升级、回滚与目标环境迁移。", checkpoint: "容器化不会被误写成完整可移植性。" },
+      { title: "用有效产出完成经营判断", learn: "关联排队、利用率、Goodput、闲置、预留、失败重跑和成本责任。", checkpoint: "平台资源经济与应用业务 ROI 明确分工。" },
     ],
     labs: [
       { title: "诊断 GPU 空闲但作业排队", scenario: "集群显示 20% GPU 空闲，训练团队仍等待数小时。", tasks: ["检查请求形状、拓扑、配额、优先级和 Gang 条件", "识别整卡碎片与不可调度约束", "比较等待、缩容请求和抢占的业务代价"], deliverable: "调度诊断树与容量改进计划", acceptance: "结论能复现排队原因，不以提高总利用率牺牲关键作业完成时间。", sourceIds: ["kubernetes-dra", "opentelemetry-semconv"] },
       { title: "设计 GPU 运行栈升级", scenario: "驱动、固件、Operator 和推理运行时需要协同升级。", tasks: ["建立兼容矩阵与回滚点", "选择金丝雀节点和代表工作负载", "验证训练恢复、推理质量和遥测连续性"], deliverable: "五阶段升级计划与恢复手册", acceptance: "任一阶段失败可回到已知可用组合，业务制品和作业状态不被误判为已恢复。", sourceIds: ["nvidia-gpu-operator", "kubernetes-dra"] },
+      { title: "演练一次平台退出与迁移", scenario: "团队认为同一 OCI 镜像和 Kubernetes YAML 可以直接迁往另一朵云与不同加速器。", tasks: ["登记镜像、驱动、内核、资源声明、数据、IAM、网络、存储、观测和托管依赖", "在目标环境重放构建、数据访问、训练或推理、恢复与 SLO", "验证回滚、数据导出、成本差异和停止条件"], deliverable: "可移植性分层清单、迁移证据与退出手册", acceptance: "只对通过目标环境测试的范围声明可迁移，失败依赖有替代、保留或停止决定。", sourceIds: ["oci-image-spec-v1-1-1", "kubernetes-dra", "nist-zero-trust"] },
     ],
   },
   "ai-infra-compute": {

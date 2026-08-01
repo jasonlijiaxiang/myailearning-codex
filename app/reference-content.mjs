@@ -1190,6 +1190,30 @@ export const sourceLedger = {
     note: "说明多层重试会放大负载，并建议以总超时、有限重试、幂等性、退避和抖动控制恢复；它不是 AI 网关产品 SLA，也不能证明有副作用的调用可安全重放。",
     verifiedAt: "2026-08-01", href: "https://d1.awsstatic.com/builderslibrary/pdfs/timeouts-retries-and-backoff-with-jitter.pdf",
   },
+  "cncf-platforms-whitepaper": {
+    grade: "O", kind: "行业基金会指南", shortTitle: "CNCF Platforms White Paper",
+    title: "CNCF Platforms White Paper",
+    note: "把平台描述为面向内部用户、以产品方式经营的能力集合，并强调一致体验、自助 API、模板、文档与 Golden Path；它提供平台工程方法，不规定 AI 平台必须包含哪些产品或组件。",
+    verifiedAt: "2026-08-01", href: "https://tag-app-delivery.cncf.io/whitepapers/platforms/",
+  },
+  "kubernetes-multi-tenancy": {
+    grade: "O", kind: "官方技术文档", shortTitle: "Kubernetes Multi-tenancy",
+    title: "Multi-tenancy — Kubernetes",
+    note: "说明共享集群需要同时处理安全、公平与 Noisy Neighbor，并讨论 Namespace、RBAC、ResourceQuota、NetworkPolicy 与虚拟控制层等边界；这些原语不自动保证特定 CNI、运行时或 GPU 共享方式实现硬隔离。",
+    verifiedAt: "2026-08-01", href: "https://kubernetes.io/docs/concepts/security/multi-tenancy/",
+  },
+  "kubernetes-dra-1-36": {
+    grade: "O", kind: "官方技术文章", shortTitle: "Kubernetes 1.36 DRA",
+    title: "Kubernetes v1.36: More Drivers, New Features, and the Next Era of DRA",
+    note: "逐项记录 Kubernetes 1.36 中 DRA 的稳定、Beta 与 Alpha 能力，包括优先列表、分区设备、设备污点、绑定条件、健康状态与面向工作负载的 ResourceClaim；版本文章不能证明具体驱动、厂商集成或客户工作负载已经生产就绪。",
+    verifiedAt: "2026-08-01", href: "https://kubernetes.io/blog/2026/05/07/kubernetes-v1-36-dra-136-updates/",
+  },
+  "oci-image-spec-v1-1-1": {
+    grade: "O", kind: "开放标准", shortTitle: "OCI Image Spec 1.1.1",
+    title: "Open Container Initiative Image Format Specification v1.1.1",
+    note: "定义镜像 Manifest、Index、文件系统层和运行配置，以支持镜像构建、传输与运行准备工具互操作；它不标准化 GPU 驱动、内核、数据、IAM、网络、存储、观测或完整工作负载行为。",
+    verifiedAt: "2026-08-01", href: "https://specs.opencontainers.org/image-spec/?v=v1.1.1",
+  },
   "kubernetes-dra": {
     grade: "O", kind: "官方技术文档", shortTitle: "Kubernetes DRA",
     title: "Dynamic Resource Allocation — Kubernetes",

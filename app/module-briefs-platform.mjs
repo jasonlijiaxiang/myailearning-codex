@@ -1606,59 +1606,59 @@ export const aiInfraComputeBrief = {
 export const aiInfraPlatformBrief = {
   slug: "ai-infra-platform",
   definition:
-    "AI 基础设施平台（AI Infrastructure Platform）把 GPU、加速器、网络和存储组织成可申请、可调度、可隔离、可恢复、可观测的训练与推理服务。",
+    "AI 基础设施平台（AI Infrastructure Platform）是面向开发者与运维者的自助平台产品，把异构算力、网络、存储、运行时和策略组织成可申请、可准入、可调度、可隔离、可恢复、可观测且成本可解释的训练与推理服务。",
   position:
-    "位于物理算力与模型工程之间：下接设备、驱动和集群，上接训练作业、Notebook、批量推理与在线模型服务；重点是资源治理和服务生命周期，而非模型算子本身。",
+    "位于物理算力与训练、推理工作负载之间：平台控制层提供能力目录、API、模板、策略、配额、版本和审计，工作负载执行层承载 Notebook、训练作业、批处理和模型服务副本。它拥有资源、作业与服务运行生命周期，不拥有硬件采购、训练状态正确性、推理引擎内部机制、请求路由、模型质量或项目 ROI。",
   presentation: "stack",
-  principleTitle: "从设备发现到可运营 AI 服务",
+  principleTitle: "从自助契约到可恢复的开发—运行路径",
   principles: [
     {
-      zh: "设备声明与发现",
-      en: "Device Claim & Discovery",
+      zh: "平台产品与工作负载契约",
+      en: "Platform Product & Workload Contract",
       explanation:
-        "平台需要识别加速器型号、拓扑、健康、驱动与可共享能力，并通过结构化声明把设备分配给工作负载。",
+        "平台面向数据科学家、训练工程师和服务团队提供能力目录、自助 API、模板与支持路径；工作负载声明设备、拓扑、网络、存储、运行时、时限和恢复要求。",
       decision:
-        "资源抽象要保留关键硬件差异；统一 API 不能把显存、拓扑和软件兼容性抹平。",
+        "先定义用户、常见工作负载和服务等级，再决定平台能力；统一接口不能抹平显存、拓扑和软件兼容性。",
     },
     {
-      zh: "队列与联合调度",
-      en: "Queueing & Gang Scheduling",
+      zh: "准入、队列与公平",
+      en: "Admission, Queueing & Fairness",
       explanation:
-        "分布式作业需要成组获得资源；队列、优先级、配额和抢占决定团队之间如何共享稀缺算力。",
+        "准入先确认身份、策略、配额和可满足的请求形状，再由队列、优先级、Gang、借用与抢占决定稀缺容量何时交付。",
       decision:
-        "先定义组织公平、业务优先和可中断性，再选择调度器；不能只追求总体利用率。",
+        "先定义组织公平、业务优先、可中断性和拒绝原因，再选择调度器；不能把排队全部解释为 GPU 数量不足。",
     },
     {
-      zh: "共享与隔离",
-      en: "Sharing & Isolation",
+      zh: "放置、共享与四类验收边界",
+      en: "Placement, Sharing & Isolation",
       explanation:
-        "整卡、硬件分区、时间切片和多进程共享适用于不同负载，并在利用率、性能可预测性和安全之间取舍。",
+        "设备属性、拓扑、健康和故障域决定放置；多租户还要分别验证控制层、身份数据网络、性能资源，以及成本归属与问责。前三类讨论隔离与干扰，第四类不冒充安全隔离。",
       decision:
-        "训练、在线推理和交互开发应分池或设不同策略，不能默认所有工作负载安全混部。",
+        "整卡、硬件分区、时间共享和分池只解决部分问题；Namespace 或配额不能代表完整隔离。",
     },
     {
-      zh: "环境与可复现",
-      en: "Environment & Reproducibility",
+      zh: "版本化 Golden Path",
+      en: "Versioned Golden Path",
       explanation:
-        "驱动、固件、容器、框架、模型与数据版本共同构成运行环境；平台负责镜像、制品和兼容矩阵。",
+        "平台把开发环境、可复现作业、流水线、版本化制品与环境、训练或批处理以及模型服务部署连成一条受支持路径。",
       decision:
-        "升级先经过兼容验证与灰度，保留旧环境和作业元数据以便复现与回滚。",
+        "每次交接都保留身份、版本、输入输出与责任人，让上层训练、推理、数据和评估模块继续拥有领域语义。",
     },
     {
-      zh: "故障与恢复",
-      en: "Failure & Recovery",
+      zh: "恢复、升级与退出",
+      en: "Recovery, Upgrade & Exit",
       explanation:
-        "平台需要处理设备降级、节点故障、作业重排、Checkpoint、推理副本健康和容量不足。",
+        "平台处理设备降级、节点故障、作业重排、推理副本、排空、灰度和回滚，并验证镜像、运行时、数据、身份和观测在目标环境中的真实可移植性。",
       decision:
-        "训练和在线推理的恢复目标不同，应分别定义检查点、重试、冗余和故障域。",
+        "训练与在线推理使用不同恢复门；容器化或 Kubernetes 兼容不能替代迁移 PoC 和退出演练。",
     },
     {
-      zh: "服务化与可观测",
-      en: "Serving & Observability",
+      zh: "有效产出与资源经济",
+      en: "Useful Output & Resource Economics",
       explanation:
-        "把训练、批处理与在线推理封装为有身份、版本、SLO、弹性、成本和运行证据的服务。",
+        "平台记录 allocated、used、idle、shared、reserve 与失败重跑等资源事实，并把队列、利用率、Goodput、SLO 和成本归属关联起来。",
       decision:
-        "GPU 利用率只是平台信号之一；还要关联队列等待、作业效率、服务 SLO 和业务需求。",
+        "平台可做 showback 或 chargeback，但业务质量、单位成功结果和 ROI 仍由应用与 Solution Patterns 证明。",
     },
   ],
   decisions: [
@@ -1676,16 +1676,16 @@ export const aiInfraPlatformBrief = {
       signal:
         "静态设备插件难以表达设备属性、结构化参数、共享或跨厂商资源声明。",
       recommendation:
-        "先确认 Kubernetes 版本、驱动与厂商支持，在非关键池验证 ResourceClaim、调度、升级和故障恢复后再迁移。",
+        "把 1.34 已稳定的核心 API 与 1.36 中分别处于 Stable、Beta、Alpha 的可选能力拆开；确认集群版本、驱动和厂商支持后，在非关键池验证 ResourceClaim、准备、健康、升级和恢复。",
       boundary:
-        "DRA 改善资源声明和分配，不自动解决队列公平、作业编排或模型服务。",
+        "DRA 改善资源声明和分配，不自动证明驱动生产就绪，也不解决队列公平、作业编排或模型服务。",
     },
     {
       question: "GPU 应整卡、分区还是时间共享？",
       signal:
         "小模型、开发环境和轻量推理导致整卡闲置，但生产负载需要可预测性能或隔离。",
       recommendation:
-        "按负载池选择：高性能训练和严格 SLO 优先整卡，稳定小负载可用硬件分区，交互开发可考虑受控时间共享。",
+        "按负载池选择：高性能训练和严格 SLO 优先整卡，稳定小负载可验证硬件分区，交互开发可考虑受控时间共享；同时分别检查控制层、身份数据网络、性能资源与成本归属，不能把成本分摊当作安全隔离。",
       boundary:
         "共享比例不是越高越好；显存、带宽、故障隔离和侧信道风险都要验证。",
     },
@@ -1694,9 +1694,9 @@ export const aiInfraPlatformBrief = {
       signal:
         "团队需要在定制调度、混合硬件、合规控制与交付速度、托管升级之间取舍。",
       recommendation:
-        "比较托管 Kubernetes、托管训练 / 推理和自建控制面的责任矩阵，保留容器、制品与遥测等可迁移接口。",
+        "比较托管 Kubernetes、托管训练 / 推理和自建控制面的用户体验、责任矩阵与退出成本，保留容器、制品、资源契约和遥测，并在目标环境实际演练迁移。",
       boundary:
-        "托管不等于零运维；模型、数据、配额、SLO 和成本责任仍属于客户。",
+        "托管不等于零运维，开放接口也不等于工作负载可移植；模型、数据、配额、SLO 和业务结果仍属于客户。",
     },
     {
       question: "优先提高利用率还是缩短排队？",
@@ -1804,7 +1804,7 @@ export const aiInfraPlatformBrief = {
     },
   ],
   criticalBoundary:
-    "AI 基础设施平台负责设备、作业和服务的生命周期，不替代底层硬件选型、推理引擎优化、AI 网关治理或应用评估。Kubernetes、GPU Operator 或调度器都是平台组件，不应单独包装成完整 AI 平台。",
+    "AI 基础设施平台负责自助能力、资源、作业和服务的运行生命周期。它不替代底层硬件选型、训练状态正确性、推理引擎优化、AI 网关请求治理、跨组件 AI Ops、应用评估或项目 ROI。Kubernetes、GPU Operator、调度器或推理引擎都只是组件，不能单独包装成完整平台。",
   cloudHooks: [
     {
       stage: "托管集群（Managed Cluster）",
@@ -1831,17 +1831,18 @@ export const aiInfraPlatformBrief = {
       discover: "当前能否按团队、项目和模型解释 GPU 占用、等待、失败和成本？",
     },
   ],
-  relatedSlugs: ["ai-infra-compute", "llm-training", "llm-inference", "ai-ops", "security"],
+  relatedSlugs: ["ai-infra-compute", "llm-training", "llm-inference", "ai-ops", "security", "solution-patterns"],
   qa: [
     {
       q: "只有少量 GPU，也需要建设 AI 基础设施平台吗？",
-      a: "不一定需要复杂平台，但仍需要最小治理：设备与驱动清单、访问权限、队列、环境版本、利用率、故障和成本。规模扩大后再引入更多调度与服务能力。",
+      a: "不一定需要复杂平台，但需要一条最小、可重复的自助路径：设备与驱动清单、身份、队列、标准环境、运行记录、故障和成本。规模与共享责任增长后再产品化。",
       depth:
-        "少量设备常见问题不是调度算法不足，而是共享账号、手工装环境、作业互相覆盖和无法知道谁在占用。可以从托管 Notebook、简单队列、标准镜像和监控开始。只有出现多团队、公平配额、分布式作业、GPU 分区或在线服务 SLO 时，才需要更完整的平台组件。",
-      ask: "追问客户：当前最痛的是申请、环境、排队、利用率、故障还是生产发布？",
+        "少量设备常见问题不是调度算法不足，而是共享账号、手工装环境、作业互相覆盖和无法知道谁在占用。可以从受支持模板、简单队列、标准镜像、运行清单和监控开始；只有出现多团队、公平配额、分布式作业、GPU 分区或在线服务 SLO 时，才扩展完整控制层。",
+      ask: "追问客户：谁在使用平台、当前最痛的是申请、环境、排队、恢复还是生产发布？哪条自助路径值得先稳定？",
       tag: "建设起点",
       basis: "渐进式平台建设",
       evidence: [
+        { sourceId: "cncf-platforms-whitepaper", supports: "支持把平台作为面向内部用户的产品，以自助接口、模板、文档与受支持路径逐步交付。" },
         { sourceId: "nvidia-gpu-operator", supports: "支持 Kubernetes GPU 运行需要驱动、设备插件、容器工具链与监控等配套组件。" },
         { sourceId: "kubernetes-dra", supports: "支持以结构化方式声明与分配设备资源；是否采用取决于集群与驱动支持。" },
       ],
@@ -1863,26 +1864,28 @@ export const aiInfraPlatformBrief = {
     },
     {
       q: "DRA 会取代 Device Plugin 吗？现在是否应该立即迁移？",
-      a: "DRA 核心 API 已在 Kubernetes 1.34 进入稳定 v1，但不代表应立即替换所有 Device Plugin；迁移仍取决于驱动、目标能力和现有工作负载。",
+      a: "DRA 核心 API 已在 Kubernetes 1.34 进入稳定 v1，但 1.36 的可选能力仍分布在 Stable、Beta 和 Alpha；这不代表应立即替换所有 Device Plugin。",
       depth:
-        "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化、跨节点设备选择或节点侧准备，再验证目标集群版本与 DRA 驱动。迁移测试覆盖 ResourceClaim 生命周期、调度失败、节点升级、配额、监控与回滚；把核心 API 稳定、可选新特性成熟度和厂商支持矩阵分开判断。DRA 也不替代队列和模型服务。",
+        "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化、健康或节点侧准备，再验证目标集群版本与 DRA 驱动。迁移测试覆盖 ResourceClaim 生命周期、调度失败、设备准备、节点升级、配额、监控与回滚；把核心 API、可选特性成熟度和厂商支持矩阵分开判断。DRA 也不替代队列和模型服务。",
       ask: "追问客户：现有设备分配具体卡在哪？目标 Kubernetes 版本和硬件驱动是否已支持所需功能？",
       tag: "DRA",
       basis: "Kubernetes 官方设备资源模型",
       evidence: [
         { sourceId: "kubernetes-dra-1-34-ga", supports: "支持 DRA 核心 API 在 Kubernetes 1.34 进入稳定 v1 并默认启用。" },
+        { sourceId: "kubernetes-dra-1-36", supports: "支持 Kubernetes 1.36 的 DRA 可选能力仍分别处于 Stable、Beta 和 Alpha，并持续扩展驱动与设备生命周期；不证明具体驱动生产就绪。" },
         { sourceId: "kubernetes-dra", supports: "支持 DRA 使用 ResourceClaim 和驱动表达、准备与分配设备资源的官方机制。" },
       ],
     },
     {
       q: "部署了 vLLM 和 GPU Operator，是否已经具备生产 AI 平台？",
-      a: "还没有。前者解决推理执行，后者管理 Kubernetes GPU 软件栈；生产平台还需队列配额、身份网络、发布、弹性、故障恢复、制品、观测和成本治理。",
+      a: "还没有。前者解决推理执行，后者管理 Kubernetes GPU 软件栈；生产平台还要向用户提供稳定自助契约、准入、隔离、开发到运行路径、恢复、观测和成本治理。",
       depth:
-        "可以用责任清单验收：设备能否可靠发现和隔离；作业是否公平调度；模型能否版本化、灰度和回滚；流量是否有 SLO 与容量策略；事故能否定位到应用、引擎、平台或硬件；成本能否归集。组件可以精简，但责任不能缺失。",
+        "可以用责任清单验收：能力能否自助申请且明确拒绝原因；设备能否可靠发现和隔离；作业是否公平准入；开发环境、制品、作业和服务能否版本化交接；事故能否定位并恢复；资源成本能否归集。组件可以精简，但责任不能缺失。",
       ask: "追问客户：现在最缺的是高效生成、GPU 运维，还是多团队生产服务的完整生命周期？",
       tag: "平台边界",
       basis: "组件职责分层",
       evidence: [
+        { sourceId: "cncf-platforms-whitepaper", supports: "支持把平台作为面向内部用户的产品，以自助接口、模板、文档和受支持路径提供能力；不规定 AI 平台组件清单。" },
         { sourceId: "vllm-2023", supports: "支持 vLLM 聚焦 LLM serving 与 KV Cache 管理。" },
         { sourceId: "nvidia-gpu-operator", supports: "支持 GPU Operator 聚焦 Kubernetes GPU 软件组件的部署与生命周期。" },
         { sourceId: "opentelemetry-genai-semconv", supports: "支持生成式 AI 服务还需要跨组件的标准化遥测。" },
@@ -1911,6 +1914,27 @@ export const aiInfraPlatformBrief = {
       finding: "OpenTelemetry 生成式 AI 语义约定为模型和 Agent 调用提供共同遥测结构，可与基础设施 trace 和指标关联。",
       boundary: "GPU 利用率与模型调用字段仍不能自动证明业务成功，需要应用终态补充。",
       sourceId: "opentelemetry-genai-semconv",
+    },
+    {
+      metric: "平台即产品",
+      title: "自助接口和受支持路径比组件数量更重要",
+      finding: "CNCF 平台白皮书把平台描述为面向内部用户、以产品方式经营的一致能力体验，并强调自助 API、模板、文档和 Golden Path。",
+      boundary: "方法论不规定 AI 平台必须采购哪些产品，也不能证明平台已经改善业务结果。",
+      sourceId: "cncf-platforms-whitepaper",
+    },
+    {
+      metric: "多租户原语",
+      title: "配额只是多租户的一部分",
+      finding: "Kubernetes 多租户文档同时讨论安全、公平与 Noisy Neighbor，并组合 Namespace、RBAC、配额、网络与不同控制层边界。",
+      boundary: "这些原语不自动保证特定 CNI、GPU 共享机制、缓存或存储实现硬隔离。",
+      sourceId: "kubernetes-multi-tenancy",
+    },
+    {
+      metric: "镜像 ≠ 迁移",
+      title: "OCI 规范只覆盖镜像互操作边界",
+      finding: "OCI Image Specification 标准化镜像清单、索引、文件系统层与运行配置，帮助镜像被构建、传输和准备运行。",
+      boundary: "它不标准化加速器驱动、内核、数据、IAM、网络、存储、观测或完整工作负载行为。",
+      sourceId: "oci-image-spec-v1-1-1",
     },
   ],
 };

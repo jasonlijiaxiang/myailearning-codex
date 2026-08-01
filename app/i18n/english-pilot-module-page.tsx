@@ -18,6 +18,7 @@ import { englishModuleSlugs } from "./locale-config.mjs";
 type SourceRef = { sourceId: string; supports?: string };
 type BlockItem = {
   id: string;
+  legacyIds?: string[];
   title: string;
   subtitle?: string;
   body?: string;
@@ -124,21 +125,26 @@ const specialPrimerLayouts: Record<string, EnglishPrimer["layout"]> = {
   "fine-tuning": "lifecycle",
 };
 const specialPrimerStepCounts: Record<string, number> = {
-  "solution-patterns": 4,
+  "solution-patterns": 6,
   rag: 4,
   "ai-agent": 4,
   security: 5,
   llm: 6,
   "fine-tuning": 6,
 };
+const specialPrimerTermIds: Record<string, string[]> = {
+  "solution-patterns": ["poc", "sla", "tco", "rag", "ai-agent"],
+};
 
 function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): EnglishPrimer {
   let layout = specialPrimerLayouts[module.slug];
   let stepCount = specialPrimerStepCounts[module.slug];
+  let canonicalTermIds: string[] | undefined;
   if (!layout) {
-    const canonicalView = requireModuleExtensionView(module.slug) as { layout: EnglishPrimer["layout"]; steps: unknown[] };
+    const canonicalView = requireModuleExtensionView(module.slug) as { layout: EnglishPrimer["layout"]; steps: unknown[]; termIds?: string[] };
     layout = canonicalView.layout;
     stepCount = canonicalView.steps.length;
+    canonicalTermIds = canonicalView.termIds;
   }
 
   const primarySection = module.sections.find((section) => /(?:principle|architecture|operating-model|flywheel|lifecycle|threat|blueprint|coordinate|context|protocol-model|policy-data-plane)/.test(section.id)) ?? module.sections[0];
@@ -146,7 +152,8 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
   const primaryItems = orderedSections.flatMap((section) => section.blocks.flatMap((block) => block.items));
   const decisionSection = module.sections.find((section) => /(?:decision|choice|when-to-use|release-evidence)/.test(section.id));
   const decisionItems = decisionSection?.blocks.flatMap((block) => block.items) ?? [];
-  const termIds = Object.entries(module.terms)
+  const explicitTermIds = specialPrimerTermIds[module.slug] ?? canonicalTermIds;
+  const termIds = explicitTermIds?.filter((termId) => module.terms[termId]) ?? Object.entries(module.terms)
     .sort(([, left], [, right]) => Number(Boolean(right.abbr)) - Number(Boolean(left.abbr)))
     .slice(0, 5)
     .map(([termId]) => termId);
@@ -168,7 +175,9 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
     })),
     checks: (decisionItems.length ? decisionItems.slice(0, 3).map((item) => ({ title: item.title, detail: item.body ?? item.decision ?? item.boundary ?? "Validate this choice against the customer context." })) : fallbackChecks),
     application: module.position,
-    links: module.sections.slice(0, 3).map((section) => ({ href: `#${section.id}`, label: `Review ${section.title}` })),
+    links: getPublishedModule(module.slug)?.readingProfile === "focused"
+      ? [{ href: "#deep-dive", label: "Follow the production argument" }, { href: "#evidence", label: "Review evidence limits" }, { href: "#qa", label: "Prepare customer questions" }]
+      : module.sections.slice(0, 3).map((section) => ({ href: `#${section.id}`, label: `Review ${section.title}` })),
   };
 }
 
@@ -220,9 +229,11 @@ function EditorialStepList({ block }: { block: ContentBlock }) {
 }
 
 function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId: string }) {
+  const legacyAnchors = block.items.flatMap((item) => item.legacyIds ?? []).map((legacyId) => <span className="anchorAlias" id={legacyId} aria-hidden="true" key={legacyId} />);
   if (block.type === "boundary") {
     return (
       <aside className="callout" data-importance="critical">
+        {legacyAnchors}
         <div className="calloutTitle"><span>High-impact limitation</span><strong>{block.title ?? "Critical boundary"}</strong><small>Verify before you commit</small></div>
         {block.intro ? <p>{block.intro}</p> : null}
         {block.items.map((item) => <CardItem item={item} key={item.id} />)}
@@ -236,6 +247,7 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
     const renderedColumns = explicitCellCount > 0 && columns.length === explicitCellCount ? ["Topic", ...columns] : columns;
     return (
       <div className="tableWrap">
+        {legacyAnchors}
         {block.title ? <h3>{block.title}</h3> : null}
         {block.intro ? <p>{block.intro}</p> : null}
         <table><thead><tr>{renderedColumns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>
@@ -253,6 +265,7 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
     if (!shouldVisualizeEnglishSteps(sectionId, block)) {
       return (
         <div>
+          {legacyAnchors}
           {block.title ? <h3>{block.title}</h3> : null}
           {block.intro ? <p>{block.intro}</p> : null}
           <EditorialStepList block={block} />
@@ -261,6 +274,7 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
     }
     return (
       <div>
+        {legacyAnchors}
         {block.title ? <h3>{block.title}</h3> : null}
         {block.intro ? <p>{block.intro}</p> : null}
         <DeepDiveRelationView
@@ -286,6 +300,7 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
   const rows = balanceGridRows(block.items, 3);
   return (
     <div>
+      {legacyAnchors}
       {block.title ? <h3>{block.title}</h3> : null}
       {block.intro ? <p>{block.intro}</p> : null}
       <div className="balancedGrid deepDiveCards deepDiveCards--scenario" data-count={block.items.length} data-odd={block.items.length % 2 === 1 ? "true" : "false"}>
@@ -329,8 +344,11 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
   const cloudGroups = sectionGroups.filter((group) => group.role === "cloud");
   const mainGroups = sectionGroups.filter((group) => group.role !== "cloud");
+  const visibleMainGroups = usesFocusedReadingProfile ? mainGroups.filter((group) => ["decision", "deep"].includes(group.role)) : mainGroups;
+  const visibleEvidenceCards = usesFocusedReadingProfile ? module.evidenceCards.slice(0, 4) : module.evidenceCards;
+  const visibleQuestions = usesFocusedReadingProfile ? module.qa.slice(0, 5) : module.qa;
   const contentReadingSections: ReadingSection[] = [
-    ...mainGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
+    ...visibleMainGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "evidence", label: "Evidence and limits", eyebrow: "Know what sources prove" },
     ...cloudGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "qa", label: "Customer questions", eyebrow: "Use in customer conversations" },
@@ -341,7 +359,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
     : [relatedReadingSection, ...contentReadingSections];
   const relatedSection = (
     <section className={`subsection moduleBriefRelated${usesFocusedReadingProfile ? " focusedRelated" : ""}`} id="related-modules">
-      <div className="subHead"><span>{usesFocusedReadingProfile ? "06" : "01"}</span><div><p className="kicker">RELATED MODULES</p><h2>Continue through the knowledge map</h2></div></div>
+      <div className="subHead"><span>{usesFocusedReadingProfile ? String(visibleMainGroups.length + cloudGroups.length + 4).padStart(2, "0") : "01"}</span><div><p className="kicker">RELATED MODULES</p><h2>Continue through the knowledge map</h2></div></div>
       <div className="relatedModuleGrid" data-count={module.relatedSlugs.length} data-odd={module.relatedSlugs.length % 2 === 1 ? "true" : "false"}>
         {module.relatedSlugs.map((slug) => {
           const related = getModuleBySlug(slug);
@@ -386,23 +404,24 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
           {primer ? <EnglishModulePrimer module={module} primer={primer} /> : null}
           {!usesFocusedReadingProfile ? relatedSection : null}
 
-          {mainGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}
+          {visibleMainGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}
 
-          <section className="subsection moduleBriefSection" id="evidence">
-            <div className="subHead"><span>{String(mainGroups.length + 2).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2>Evidence cards</h2></div></div>
-            <div className="evidenceGrid" data-count={module.evidenceCards.length} data-odd={module.evidenceCards.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(module.evidenceCards, 3).flatMap((row) => row.map((card) => {
+          <section className={`subsection moduleBriefSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="evidence">
+            <div className="subHead"><span>{String(visibleMainGroups.length + 2).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2>Evidence cards</h2></div></div>
+            <div className="evidenceGrid" data-count={visibleEvidenceCards.length} data-odd={visibleEvidenceCards.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(visibleEvidenceCards, 3).flatMap((row) => row.map((card) => {
               const source = sourceLedger[card.sourceId];
               const localizedSource = englishSourceCopy[card.sourceId];
               if (!source || !localizedSource) throw new Error(`Unknown evidence sourceId: ${card.sourceId}`);
               return <article className={`metricCard${card.accent ? " accent" : ""}`} id={`evidence-${card.id}`} key={card.id} style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}><p className="metric">{card.metric}</p><h4>{card.title}</h4><p className="metricFinding">{card.finding}</p><p className="metricBoundary"><strong>Evidence limit</strong>{card.boundary}</p><Link href={`/en/references#source-${card.sourceId}`} prefetch={false}>{localizedSource.shortTitle} ↘</Link></article>;
             }))}</div>
+            {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/references#module-${module.slug}`} prefetch={false}>Review every source and verification date in the reference ledger →</Link></p> : null}
           </section>
 
-          {cloudGroups.map((group, index) => <EnglishSectionGroupView group={group} number={mainGroups.length + index + 3} key={group.id} />)}
+          {cloudGroups.map((group, index) => <EnglishSectionGroupView group={group} number={visibleMainGroups.length + index + 3} key={group.id} />)}
 
-          <section className="subsection moduleBriefSection qaSection" id="qa">
-            <div className="subHead"><span>{String(mainGroups.length + cloudGroups.length + 3).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>Common questions and evidence-backed answers</h2></div></div>
-            <div className="qaList">{module.qa.map((item, index) => (
+          <section className={`subsection moduleBriefSection qaSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="qa">
+            <div className="subHead"><span>{String(visibleMainGroups.length + cloudGroups.length + 3).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>Common questions and evidence-backed answers</h2></div></div>
+            <div className="qaList">{visibleQuestions.map((item, index) => (
               <details className="qaItem" id={`qa-${item.id}`} key={item.id}>
                 <summary><span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span><span className="qaQuestion"><strong>{item.q}</strong>{item.addedAt ? <small>Added on {item.addedAt}</small> : null}</span><span className="qaTag">{item.tag}</span><span className="plus">＋</span></summary>
                 <div className="qaAnswer">
@@ -413,6 +432,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
                 </div>
               </details>
             ))}</div>
+            {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/questions?module=${module.slug}`} prefetch={false}>Browse every customer question for this module →</Link></p> : null}
           </section>
           {usesFocusedReadingProfile ? relatedSection : null}
         </div>

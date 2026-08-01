@@ -140,24 +140,23 @@ function LoopCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
 }
 
 function ControlCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
-  const [first, second, third, fourth] = view.steps;
+  const policySteps = view.steps.length > 2 ? view.steps.slice(1, -1) : view.steps;
   return (
     <div className="visualControlCanvas" aria-label={locale === "en" ? `${view.title} control and execution planes` : `${view.title}的控制面与执行面`}>
-      <section className="controlPolicyPlane">
+      <section className="controlPolicyPlane" style={{ "--control-policy-count": Math.max(policySteps.length, 1) } as CSSProperties}>
         <header><strong>{locale === "en" ? "Policy & control plane" : "策略与控制面"}</strong><span>{locale === "en" ? "Version, quota, identity, priority, and rollback" : "版本、配额、身份、优先级与回滚"}</span></header>
-        {[second, third].filter(Boolean).map((step) => {
+        {policySteps.map((step) => {
           const index = view.steps.indexOf(step);
           return <StepButton key={step.code} step={step} selected={active === index} onClick={() => onSelect(index)} />;
         })}
       </section>
       <div className="controlPlaneLink" aria-hidden="true"><span>{locale === "en" ? "Policy down" : "策略下发"}</span><i>↓</i><span>{locale === "en" ? "Evidence up" : "证据回传"}</span></div>
-      <section className="controlDataPlane">
-        {[first, third, fourth].filter(Boolean).map((step) => {
-          const index = view.steps.indexOf(step);
+      <section className="controlDataPlane" data-step-count={view.steps.length} style={{ "--control-step-count": view.steps.length } as CSSProperties}>
+        {view.steps.map((step, index) => {
           return (
             <div className={active === index ? "isActive" : undefined} key={`${step.code}-${index}`}>
               <StepButton step={step} selected={active === index} onClick={() => onSelect(index)} />
-              {step !== fourth ? <i aria-hidden="true">→</i> : null}
+              {index < view.steps.length - 1 ? <i aria-hidden="true">→</i> : null}
             </div>
           );
         })}

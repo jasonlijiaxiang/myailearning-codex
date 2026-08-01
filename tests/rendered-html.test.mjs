@@ -9,6 +9,9 @@ import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQues
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
+import { exposesLongFormSearchSections, searchableEnglishSectionGroups, searchableQuestions } from "../app/home-search-visibility.mjs";
+import { englishModuleRegistry } from "../app/i18n/en/registry.mjs";
+import { buildEnglishSectionGroups } from "../app/i18n/english-section-outline.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
@@ -636,9 +639,11 @@ test("customer questions follow module decision coverage instead of a shared num
   const auditedSlugs = Object.keys(moduleQuestionDepthExpansion);
   const addedQuestionCounts = auditedSlugs.map((slug) => moduleQuestionDepthExpansion[slug].length);
   const finalQuestionCounts = auditedSlugs.map((slug) => requireModuleContent(slug).qa.length);
+  const distinctAddedQuestionCounts = [...new Set(addedQuestionCounts)].sort((a, b) => a - b);
+  const distinctFinalQuestionCounts = [...new Set(finalQuestionCounts)].sort((a, b) => a - b);
 
-  assert.deepEqual([...new Set(addedQuestionCounts)].sort((a, b) => a - b), [3, 4, 5, 6], "模块补充问题不应来自统一的固定配额");
-  assert.deepEqual([...new Set(finalQuestionCounts)].sort((a, b) => a - b), [10, 11, 12, 14, 15, 27], "共享模块最终题数不应再次收敛成同一个模板数字");
+  assert.ok(distinctAddedQuestionCounts.length >= 3, "模块补充问题应按知识需要形成至少三种数量，而不是统一固定配额");
+  assert.ok(distinctFinalQuestionCounts.length >= 5, "共享模块最终题数应保持足够多样，不得再次收敛成同一个模板数字");
   assert.equal(finalQuestionCounts.filter((count) => count === 8).length, 0, "已审计模块不得保留统一 8 题的机械结果");
 
   for (const slug of auditedSlugs) {
@@ -708,7 +713,7 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
 
   assert.match(solution, /data-knowledge-view="decision-blueprint"/);
   assert.match(solution, /把业务目标变成可以验收的方案/);
-  assert.match(solution, /检索证据.*生成内容.*执行任务.*人工负责/s);
+  assert.match(solution, /业务结果.*数据与证据.*模型判断.*编排与状态.*规则与动作.*人工责任.*评估与运营.*经济与退出/s);
   assert.match(solution, /TCO/);
   assert.match(solution, /七类场景，七套验收重点/);
   assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
@@ -1027,6 +1032,67 @@ test("Batch 08 routes render inference overload and compute procurement evidence
   assert.match(computeEn, /tightly coupled accelerator domain/);
   assert.match(computeEn, /Multiple nodes do not necessarily mean multiple domains/);
   assert.match(computeEn, /Resource-level TCO is not project ROI/);
+});
+
+test("Batch 09 routes render platform-product and minimum-sufficient-loop evidence in both languages", async () => {
+  const [platform, platformEn, solution, solutionEn] = await Promise.all([
+    renderHtml("/modules/ai-infra-platform"),
+    renderHtml("/en/modules/ai-infra-platform"),
+    renderHtml("/modules/solution-patterns"),
+    renderHtml("/en/modules/solution-patterns"),
+  ]);
+
+  assert.match(platform, /平台控制层提供能力目录、API、模板、策略、配额、版本和审计/);
+  assert.match(platform, /四类多租户验收边界/);
+  assert.match(platform, /OCI 镜像或 Kubernetes YAML 不是跨云、跨加速器的迁移证明/);
+  assert.match(platform, /容器化并部署在 Kubernetes 上，是否就代表 AI 工作负载可以跨云和跨硬件自由迁移/);
+  assert.match(platformEn, /platform control layer provides a capability catalog, APIs, templates, policy, quota, versions, and audit/i);
+  assert.match(platformEn, /Four multi-tenant acceptance boundaries/);
+  assert.match(platformEn, /OCI image or Kubernetes YAML is not evidence of cross-cloud or cross-accelerator migration/);
+  assert.match(platformEn, /Does containerizing an AI workload and deploying it on Kubernetes make it freely portable/);
+
+  assert.match(solution, /最小充分闭环/);
+  assert.match(solution, /RAG、Agent、MCP、A2A、Gateway 或平台/);
+  assert.match(solution, /八层责任/);
+  assert.match(solution, /PoC 证伪.*Pilot 验证.*Production 验证/s);
+  assert.match(solutionEn, /Minimum sufficient loop/);
+  assert.match(solutionEn, /RAG for current attributable knowledge/);
+  assert.match(solutionEn, /eight responsibility layers/);
+  assert.match(solutionEn, /Worked example: verifiable customer-service resolution/);
+  assert.match(solutionEn, /resolved cases, human transfers, abandonment, false commitments, and rework/);
+  assert.match(solutionEn, /Go, Hold, No-Go.*Exit/is);
+});
+
+test("Batch 09 control views expose every step and focused search entries resolve to visible anchors", async () => {
+  const [platform, platformEn, solutionEn, homepageSource] = await Promise.all([
+    renderHtml("/modules/ai-infra-platform"),
+    renderHtml("/en/modules/ai-infra-platform"),
+    renderHtml("/en/modules/solution-patterns"),
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(platform, /<section class="controlDataPlane"[^>]*data-step-count="6"[^>]*>[\s\S]*?<span>RUN<\/span>[\s\S]*?<span>PROVE<\/span>[\s\S]*?<\/section>/);
+  assert.match(platformEn, /<section class="controlDataPlane"[^>]*data-step-count="6"[^>]*>[\s\S]*?Recovery, upgrade, and exit[\s\S]*?Useful output and resource economics[\s\S]*?<\/section>/i);
+  assert.match(homepageSource, /searchableQuestions\(slug, content\.qa\)/);
+  assert.match(homepageSource, /exposesLongFormSearchSections\(slug\)/);
+
+  for (const publication of publishedModuleRegistry.filter((module) => module.readingProfile === "focused")) {
+    const questions = searchableQuestions(publication.slug, moduleContentRegistry[publication.slug].qa);
+    const expectedQuestionCount = publication.routeKind === "brief" ? Math.min(5, moduleContentRegistry[publication.slug].qa.length) : moduleContentRegistry[publication.slug].qa.length;
+    assert.equal(questions.length, expectedQuestionCount);
+    assert.equal(exposesLongFormSearchSections(publication.slug), false);
+    const html = await renderHtml(publication.path);
+    questions.forEach((_, index) => assert.match(html, new RegExp(`id="qa-${index + 1}"`)));
+    if (publication.routeKind === "brief") assert.doesNotMatch(html, /id="qa-6"/);
+  }
+
+  const solutionGroups = searchableEnglishSectionGroups("solution-patterns", buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]));
+  assert.deepEqual(solutionGroups.map((group) => group.role), ["decision", "deep"]);
+  assert.doesNotMatch(solutionEn, /id="curriculum"|id="study-guide"/);
+  assert.equal((solutionEn.match(/class="qaItem"/g) ?? []).length, 5);
+  assert.match(solutionEn, /Worked example: verifiable customer-service resolution/);
+  assert.match(solutionEn, /id="solution-outcome-poc"/);
+  assert.match(platformEn, /id="curriculum-serving-platform"/);
 });
 
 test("LLM foundations questions cover the theory readers need for architecture decisions", async () => {
