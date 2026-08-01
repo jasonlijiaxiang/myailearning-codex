@@ -115,8 +115,8 @@ export default function Home() {
 
         <div className="heroGrid heroGridV2">
           <div className="heroCopy">
-            <h1>把复杂 AI 技术，<br />变成客户能做的决定</h1>
-            <p className="heroLead">这里把原理、架构、失败原因、云服务、验收证据和客户回答整理成一本技术手册：既能搜索和深入阅读，也能在客户现场随手查阅。</p>
+            <h1>讲清 AI 技术，<br />心中有数，丝毫不慌</h1>
+            <p className="heroLead">理解方案背后的原理与限制，才能真正赢得客户，从容应对每一次追问。</p>
             <KnowledgeSearchLaunch />
             <div className="heroActions">
               <a className="textButton" href="#learning-paths">按任务学习 <span>→</span></a>
