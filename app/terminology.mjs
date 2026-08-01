@@ -65,7 +65,7 @@ export const terminology = Object.freeze({
   "data-lineage": term("数据血缘", "Data Lineage", "追踪来源实体经过哪些活动形成解析结果、切块、向量、索引、评估与训练资产，并记录版本、责任和失效关系。", ["data-engineering", "security"]),
   "deletion-propagation": term("删除传播", "Deletion Propagation", "把删除或撤权同步到缓存、对象、切块、向量、索引和评估资产，并保留完成证据。", ["data-engineering", "security", "rag"]),
 
-  "ai-agent": term("智能体", "AI Agent", "能围绕目标规划步骤、调用工具并根据结果继续行动的 AI 应用。", ["ai-agent"], "Agent"),
+  "ai-agent": term("智能体", "AI Agent", "受应用控制的任务 Run：模型可根据当前状态选择下一步、请求工具并吸收环境结果，身份、授权、执行、业务成功与停止权仍属于确定性控制层。", ["ai-agent"], "Agent"),
   harness: term("Harness", "Agent Harness", "围绕模型运行任务的执行与控制环境，负责上下文装配、工具调用、状态、验证、权限、恢复和观测。", ["ai-agent", "evaluation"]),
   "harness-engineering": term("Harness Engineering", "Harness Engineering", "设计和改进 Agent 的运行、行动、验证、恢复与受控机制，使模型能力能够稳定转化为任务结果。", ["ai-agent", "evaluation"]),
   "agent-engineering": term("Agent 工程", "Agent Engineering", "把模型、Harness、业务系统、用户体验、治理和运营机制组合成可交付、可维护的完整 Agent 产品。", ["ai-agent", "ai-ops"]),
@@ -80,7 +80,7 @@ export const terminology = Object.freeze({
   api: term("应用程序编程接口", "Application Programming Interface", "软件系统之间以约定格式发起请求、返回结果的接口契约。", ["ai-agent", "ai-gateway", "mcp"], "API"),
   mcp: term("模型上下文协议", "Model Context Protocol", "让 AI 应用以统一方式发现并调用外部工具、资源和提示的开放协议。", ["mcp", "ai-agent", "a2a"], "MCP"),
   "mcp-protocol-roles": term("MCP 协议角色", "MCP Protocol Roles", "区分 Host、Client 与 Server 的连接、能力聚合和服务暴露责任。", ["mcp"]),
-  "mcp-primitives": term("MCP 服务原语", "MCP Server Primitives", "用 Tools、Resources 与 Prompts 表达动作、上下文和提示，并标明副作用边界。", ["mcp", "ai-agent"]),
+  "mcp-primitives": term("MCP 服务原语", "MCP Server Primitives", "以 Tools、Resources 与 Prompts 分别表达模型控制的调用、应用控制的上下文和用户控制的模板；读写、副作用与授权另行分级。", ["mcp", "ai-agent"]),
   a2a: term("智能体间协议", "Agent2Agent Protocol", "用于不同智能体之间发现能力、委托任务和交换任务状态的协议。", ["a2a", "ai-agent"], "A2A"),
   "agent-card": term("Agent Card 能力名片", "Agent Card", "声明智能体身份、服务端点、技能和交互能力，供协作方进行发现与采用判断。", ["a2a"]),
   "a2a-task": term("A2A 任务", "A2A Task", "承载一次跨智能体委托的状态化工作对象，包含生命周期、消息与结果。", ["a2a"]),

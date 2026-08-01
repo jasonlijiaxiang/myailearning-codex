@@ -71,6 +71,25 @@ test("English evidence cards keep canonical source relationships", () => {
   }
 });
 
+test("Batch 05 English content preserves the Agent adoption gate and MCP control model", () => {
+  const agent = JSON.stringify(englishModuleRegistry["ai-agent"]);
+  assert.match(agent, /Four implementation levels/);
+  assert.match(agent, /final eligibility, settlement amount/);
+  assert.match(agent, /There is no universal ROI threshold/);
+
+  const mcp = JSON.stringify(englishModuleRegistry.mcp);
+  assert.match(mcp, /Start with repeated integration, not protocol enthusiasm/);
+  assert.match(mcp, /Tools are model-controlled/);
+  assert.match(mcp, /A Tool may be read-only/);
+  assert.match(mcp, /Cancellation is cooperative/);
+  assert.match(mcp, /cancelled, ttlMs, pollIntervalMs/);
+  assert.doesNotMatch(mcp, /Use Tools for actions, Resources for read-only context|stateless Host|failed, canceled, TTL/);
+  ["mcp-changelog-2026-07-28", "mcp-server-overview-2026-07-28", "mcp-tools-2026-07-28", "mcp-resources-2026-07-28", "mcp-prompts-2026-07-28", "mcp-tasks-extension"].forEach((sourceId) => {
+    assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
+    assert.ok(englishModuleRegistry.mcp.sources[sourceId], `${sourceId} must have independent English source copy`);
+  });
+});
+
 test("English sections and rendered object anchors use stable, unique IDs", () => {
   const generatedPageSectionIds = new Set(["evidence", "qa"]);
   for (const slug of englishModuleSlugs) {

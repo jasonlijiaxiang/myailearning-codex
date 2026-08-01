@@ -637,8 +637,8 @@ export const sourceLedger = {
     kind: "官方产品文档",
     shortTitle: "Google Agent Platform",
     title: "Scale your agents — Gemini Enterprise Agent Platform",
-    note: "说明托管 Agent Runtime、Sessions、Memory、沙箱、身份、Tracing、Logging、Monitoring 与评估等平台能力；产品名称、地域、发布阶段、配额和价格须按采购时点复核。",
-    verifiedAt: "2026-07-17",
+    note: "说明 Gemini Enterprise Agent Platform 的 Runtime、Sessions、Memory Bank、沙箱、Gateway、身份、Observability 与 Evaluation 等能力；产品名称、地域、发布阶段、配额和价格须按采购时点复核。",
+    verifiedAt: "2026-08-01",
     href: "https://docs.cloud.google.com/gemini-enterprise-agent-platform/scale",
   },
   "aws-agentcore": {
@@ -646,9 +646,9 @@ export const sourceLedger = {
     kind: "官方产品文档",
     shortTitle: "Amazon Bedrock AgentCore",
     title: "Overview — Amazon Bedrock AgentCore",
-    note: "说明 Runtime、Memory、Gateway、Identity、沙箱、Observability、Evaluations 与 Policy 等模块化能力；官方能力说明不等于特定客户任务成功率，发布状态与地域须当期复核。",
-    verifiedAt: "2026-07-17",
-    href: "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html",
+    note: "说明 Runtime、Harness、Memory、Gateway、Identity、沙箱、Observability、Evaluations、Policy、Registry、Payments 与 Optimization 等当前能力；Harness 负责托管编排循环，直接使用 Runtime 时循环仍由客户维护。官方目录不等于特定客户任务成功率，发布状态、地域、配额与价格须当期复核。",
+    verifiedAt: "2026-08-01",
+    href: "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/",
   },
   "aws-agentcore-memory": {
     grade: "P",
@@ -664,8 +664,8 @@ export const sourceLedger = {
     kind: "官方产品文档",
     shortTitle: "Microsoft Foundry Agent Service",
     title: "What is Microsoft Foundry Agent Service?",
-    note: "说明配置型与代码型 Agent、模型和工具、托管身份 / RBAC / OBO、网络隔离及端到端观测；产品能力、区域、预览状态与计价须按采购时点复核。",
-    verifiedAt: "2026-07-17",
+    note: "说明 Prompt agents 与 Hosted agents、模型和工具、托管身份 / RBAC / OBO、网络隔离及端到端观测；产品能力、区域、预览状态与计价须按采购时点复核。",
+    verifiedAt: "2026-08-01",
     href: "https://learn.microsoft.com/en-us/azure/foundry/agents/overview",
   },
   "opentelemetry-semconv": {
@@ -674,7 +674,7 @@ export const sourceLedger = {
     shortTitle: "OpenTelemetry SemConv",
     title: "OpenTelemetry Semantic Conventions",
     note: "为 traces、metrics、logs、events 和资源定义核心与跨组件语义命名；GenAI 专用约定已迁往独立仓库，业务成功、审批与风险字段仍需项目自行扩展。",
-    verifiedAt: "2026-07-29",
+    verifiedAt: "2026-08-01",
     href: "https://opentelemetry.io/docs/specs/semconv/",
   },
   "opentelemetry-genai-semconv": {
@@ -906,10 +906,10 @@ export const sourceLedger = {
     verifiedAt: "2026-07-17", href: "https://arxiv.org/abs/2205.14135",
   },
   "mcp-architecture": {
-    grade: "O", kind: "官方技术文档", shortTitle: "MCP Architecture",
-    title: "Architecture overview — Model Context Protocol",
-    note: "定义 Host、Client、Server、数据层、传输层及 Tools / Resources / Prompts 等核心原语；协议不规定 AI 应用怎样管理模型或上下文。",
-    verifiedAt: "2026-07-17", href: "https://modelcontextprotocol.io/docs/learn/architecture",
+    grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28 Architecture",
+    title: "Architecture — Model Context Protocol 2026-07-28",
+    note: "定义 MCP 是无状态协议、Host 的职责，以及每个 Client 与一个 Server 的逻辑 1:1 关系；协议不规定业务授权、Server 信任或最终结果。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/specification/2026-07-28/architecture",
   },
   "mcp-lifecycle-2025-11-25": {
     grade: "O", kind: "官方协议文档", shortTitle: "MCP 2025-11-25 Lifecycle（历史版）",
@@ -927,7 +927,43 @@ export const sourceLedger = {
     grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28",
     title: "Model Context Protocol Specification 2026-07-28",
     note: "官方 latest 入口已指向该正式版本；规范定义无状态、自包含请求、逐请求能力协商与可选扩展，并将 Tasks 作为扩展。正式规范发布不等于具体 SDK、客户端、Server 或产品已经兼容。",
-    verifiedAt: "2026-07-29", href: "https://modelcontextprotocol.io/specification/2026-07-28",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/specification/2026-07-28",
+  },
+  "mcp-changelog-2026-07-28": {
+    grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28 Key Changes",
+    title: "Key Changes — Model Context Protocol 2026-07-28",
+    note: "记录 initialize 与协议级 Session 的移除、逐请求版本和能力元数据、Server 必须支持 server/discover、Tasks 移至扩展及其他破坏性变化；不能据此推断具体实现已经兼容。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/specification/2026-07-28/changelog",
+  },
+  "mcp-server-overview-2026-07-28": {
+    grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28 Server Features",
+    title: "Server Features Overview — Model Context Protocol 2026-07-28",
+    note: "直接定义 Server 原语的控制层级：Prompt 由用户控制选择、Resource 由应用控制、Tool 由模型控制；该层级不等于读写风险分类，也不授予业务权限。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/specification/2026-07-28/server",
+  },
+  "mcp-tools-2026-07-28": {
+    grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28 Tools",
+    title: "Tools — Model Context Protocol 2026-07-28",
+    note: "定义由模型控制的可调用操作，既可查询数据库，也可调用 API 或执行计算；Host 应保留人工拒绝能力，未受信 Server 的 Tool annotations 必须视为不可信。Tool Schema 与发现不构成业务授权。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/specification/2026-07-28/server/tools",
+  },
+  "mcp-resources-2026-07-28": {
+    grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28 Resources",
+    title: "Resources — Model Context Protocol 2026-07-28",
+    note: "定义由应用控制、以 URI 寻址的上下文，以及发现、读取与可选订阅机制；Resource 仍需数据权限、版本、缓存和不可信内容治理。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/specification/2026-07-28/server/resources",
+  },
+  "mcp-prompts-2026-07-28": {
+    grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28 Prompts",
+    title: "Prompts — Model Context Protocol 2026-07-28",
+    note: "定义由用户控制选择、由 Server 编写内容的可复用模板；用户选择不证明模板可信，也不替代后续 Tool 的授权和结果验证。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/specification/2026-07-28/server/prompts",
+  },
+  "mcp-tasks-extension": {
+    grade: "O", kind: "官方协议规范", shortTitle: "MCP Tasks Extension",
+    title: "Tasks Extension — Model Context Protocol",
+    note: "定义长请求的耐久句柄、ttlMs、pollIntervalMs、working / input_required / completed / failed / cancelled 状态、轮询、tasks/update、恢复与合作式取消；MCP Task 是 Client–Server 请求包装，不等同于 A2A Task，也不证明业务终态或副作用已经停止。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/extensions/tasks/overview",
   },
   "mcp-authorization": {
     grade: "O", kind: "官方协议规范", shortTitle: "MCP Authorization",
@@ -938,8 +974,8 @@ export const sourceLedger = {
   "mcp-security": {
     grade: "O", kind: "官方安全指南", shortTitle: "MCP Security",
     title: "Security Best Practices — Model Context Protocol",
-    note: "2026-07-28 安全指南整理 MCP 实现中的令牌、混淆代理、会话、本地 Server 与权限风险；属于协议专用安全指南，不支持一般 AI 软件供应链的全部准入结论，也不替代组织自身威胁建模和控制验证。",
-    verifiedAt: "2026-07-30", href: "https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices",
+    note: "2026-07-28 安全指南整理 MCP 实现中的 State Handle、令牌、混淆代理、本地 Server 与权限风险；协议级 Session 只属于旧版兼容边界。该指南不支持一般 AI 软件供应链的全部准入结论，也不替代组织自身威胁建模和控制验证。",
+    verifiedAt: "2026-08-01", href: "https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices",
   },
   "mcp-tasks-2025-11-25": {
     grade: "O", kind: "官方协议文档", shortTitle: "MCP Tasks 2025-11-25（历史版）",
@@ -1370,7 +1406,7 @@ const referenceShortTitles = Object.freeze({
 });
 
 const additionalSourceIds = Object.freeze({
-  mcp: ["mcp-2026-07-28-rc", "mcp-specification-2026-07-28"],
+  mcp: ["mcp-2026-07-28-rc", "mcp-specification-2026-07-28", "mcp-changelog-2026-07-28", "mcp-server-overview-2026-07-28", "mcp-tools-2026-07-28", "mcp-resources-2026-07-28", "mcp-prompts-2026-07-28", "mcp-tasks-extension"],
   multimodal: ["gb-45438-2025"],
   rag: [
     "bm25-book", "dpr-2020", "rrf-2009", "beir-2021", "mteb-2023", "miracl-2023",

@@ -90,18 +90,18 @@
     },
     {
       "id": "batch-05-agent-mcp",
-      "status": "planned",
-      "note": null,
+      "status": "complete",
+      "note": "Full quality profile passed.",
       "modules": [
         {
           "slug": "ai-agent",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "采用门、受控 Run、理赔案例、ROI 与双语证据已完成并通过独立审校。"
         },
         {
           "slug": "mcp",
-          "status": "planned",
-          "note": null
+          "status": "complete",
+          "note": "复用决策、当前协议原语、版本迁移、Tasks 与双语证据已完成并通过独立审校。"
         }
       ]
     },

@@ -783,9 +783,9 @@ export const mcpBrief = {
       zh: "三类服务端原语",
       en: "Tools, Resources & Prompts",
       explanation:
-        "Tools 表达可调用动作，Resources 提供可读取上下文，Prompts 提供可选择模板；三者的控制主体与风险不同。",
+        "Tools 是模型控制的可调用操作，Resources 是应用控制的可寻址上下文，Prompts 是用户控制的可选择模板；Tool 可以只读，三类原语都可能承载敏感或不可信内容。",
       decision:
-        "会改变状态的能力使用 Tool；只读内容优先 Resource；面向用户选择的交互模板使用 Prompt。",
+        "先按谁决定使用来选择原语，再独立标注数据范围、敏感性、副作用、授权、幂等与审计。",
     },
     {
       zh: "能力协商与生命周期",
@@ -823,6 +823,33 @@ export const mcpBrief = {
         "单一应用连接少量固定 API 时，直接函数调用可能更简单。",
     },
     {
+      question: "应该重写服务还是包装现有 API？",
+      signal:
+        "现有 API 已具备稳定业务语义、授权、幂等和审计，只缺少 MCP 发现与调用接口。",
+      recommendation:
+        "优先薄适配，保留原 API 作为业务事实源；只有底层接口本身不稳定时才同步重构。",
+      boundary:
+        "MCP Server 不应复制业务规则或绕过原系统授权。",
+    },
+    {
+      question: "能力应建成 Tool、Resource 还是 Prompt？",
+      signal:
+        "能力由模型调用、由应用选择并装配为上下文，还是由用户主动选择模板；读写与副作用另行分类。",
+      recommendation:
+        "模型控制的可调用操作用 Tool，应用控制的 URI 上下文用 Resource，用户控制的模板用 Prompt；Tool 既可以只读也可以写入。",
+      boundary:
+        "原语名称不能替代敏感性、副作用、授权、幂等和业务风险分级。",
+    },
+    {
+      question: "远程 MCP 如何进入生产？",
+      signal:
+        "已有明确的服务身份、用户授权、租户隔离、工具风险分级、配额、版本和审计要求。",
+      recommendation:
+        "通过网关集中执行认证、授权、Allowlist、限流、版本控制、日志和异常隔离。",
+      boundary:
+        "能在 Registry 中发现，或能被客户端成功连接，都不代表 Server 已通过企业安全审查。",
+    },
+    {
       question: "使用 stdio 还是 Streamable HTTP？",
       signal:
         "Server 是本地开发工具或受控桌面进程，还是跨主机、多人、多租户的共享服务。",
@@ -840,37 +867,10 @@ export const mcpBrief = {
       boundary:
         "正式规范已经发布，但不证明具体 SDK、Client、Server、网关或私有扩展已经兼容。",
     },
-    {
-      question: "能力应建成 Tool、Resource 还是 Prompt？",
-      signal:
-        "能力是否改变外部状态、是否只是读取内容、由模型还是用户决定使用。",
-      recommendation:
-        "状态变更用 Tool 并设置授权；只读上下文用 Resource；可复用交互模板用 Prompt。",
-      boundary:
-        "把写操作伪装成只读 Resource，或把任意数据读取包装成高权限 Tool，都会破坏治理边界。",
-    },
-    {
-      question: "应该重写服务还是包装现有 API？",
-      signal:
-        "现有 API 已具备稳定业务语义、授权、幂等和审计，只缺少 MCP 发现与调用接口。",
-      recommendation:
-        "优先薄适配，保留原 API 作为业务事实源；只有底层接口本身不稳定时才同步重构。",
-      boundary:
-        "MCP Server 不应复制业务规则或绕过原系统授权。",
-    },
-    {
-      question: "远程 MCP 如何进入生产？",
-      signal:
-        "已有明确的服务身份、用户授权、租户隔离、工具风险分级、配额、版本和审计要求。",
-      recommendation:
-        "通过网关集中执行认证、授权、Allowlist、限流、版本控制、日志和异常隔离。",
-      boundary:
-        "能在 Registry 中发现，或能被客户端成功连接，都不代表 Server 已通过企业安全审查。",
-    },
   ],
-  deepDiveTitle: "把协议调用变成可验证的信任链",
+  deepDiveTitle: "从复用判断走到可验证信任链",
   deepDiveLead:
-    "企业采用 MCP 的核心工程问题不是能否列出并调用 Tool，而是一次发现、授权和执行是否始终绑定正确主体、正确能力、正确资源与可追溯版本。",
+    "企业采用 MCP 的核心工程问题不是能否列出并调用 Tool，而是复用收益能否覆盖协议成本，以及一次发现、授权和执行是否始终绑定正确主体、正确能力、正确资源与可追溯版本。",
   deepDives: [
     {
       kind: "sequence",
@@ -930,7 +930,53 @@ export const mcpBrief = {
             "HTTP 成功和结构合法都不等于业务动作成功或返回内容可信。",
         },
       ],
-      sourceIds: ["mcp-architecture", "mcp-lifecycle-2025-11-25", "mcp-specification-2026-07-28", "mcp-authorization", "mcp-security", "nist-zero-trust"],
+      sourceIds: ["mcp-architecture", "mcp-lifecycle-2025-11-25", "mcp-specification-2026-07-28", "mcp-changelog-2026-07-28", "mcp-authorization", "mcp-security", "nist-zero-trust"],
+    },
+    {
+      kind: "matrix",
+      eyebrow: "PRIMITIVE CONTROL MODEL",
+      title: "三类原语按控制主体区分，读写风险另行分级",
+      intro:
+        "原语回答“谁决定何时使用”，风险控制回答“它能看到什么、改变什么以及谁有权批准”。两条轴必须同时存在。",
+      items: [
+        {
+          name: "Tool · 模型控制",
+          en: "Model-controlled",
+          mechanism:
+            "模型可以请求执行已声明的操作，包括查询数据库、调用 API 或计算；Tool 不等于写操作。",
+          decision:
+            "为每个 Tool 声明输入输出、数据范围、只读或写入、副作用、身份、审批、幂等和后置条件。",
+          boundary:
+            "模型选择 Tool、参数通过 Schema 或 Tool 标注为只读，都不构成业务授权。",
+        },
+        {
+          name: "Resource · 应用控制",
+          en: "Application-driven",
+          mechanism:
+            "Server 以 URI 暴露文件、Schema、记录或其他上下文，由 Host 应用决定发现、选择和放入模型上下文。",
+          decision:
+            "定义可见性、订阅、缓存、版本、ACL 与上下文装配责任。",
+          boundary:
+            "Resource 通常用于上下文，但仍可能包含敏感、过期或带恶意指令的数据。",
+        },
+        {
+          name: "Prompt · 用户控制",
+          en: "User-controlled",
+          mechanism:
+            "Server 编写可复用模板，用户决定何时选择，并可提供参数形成消息。",
+          decision:
+            "明确发布者、适用任务、参数、版本、展示方式和用户同意。",
+          boundary:
+            "用户主动选择不代表模板内容可信，也不替代后续 Tool 的授权和结果验证。",
+        },
+      ],
+      sourceIds: ["mcp-tools-2026-07-28", "mcp-resources-2026-07-28", "mcp-prompts-2026-07-28"],
+      columnLabels: {
+        name: "原语与控制主体",
+        mechanism: "规范机制",
+        decision: "生产设计",
+        boundary: "不能推导",
+      },
     },
     {
       kind: "matrix",
@@ -1067,8 +1113,12 @@ export const mcpBrief = {
       basis: "MCP 威胁模型",
       evidence: [
         {
+          sourceId: "mcp-tools-2026-07-28",
+          supports: "支持 Tool annotations 在 Server 未受信时必须视为不可信，并要求 Host 保留人类拒绝调用的能力。",
+        },
+        {
           sourceId: "mcp-security",
-          supports: "支持工具描述投毒、混淆代理和令牌相关风险需要额外控制。",
+          supports: "支持 MCP 部署中的令牌、混淆代理、本地 Server 与权限风险需要额外控制。",
         },
         {
           sourceId: "owasp-prompt-injection",
@@ -1106,7 +1156,15 @@ export const mcpBrief = {
         },
         {
           sourceId: "mcp-specification-2026-07-28",
-          supports: "支持 2026-07-28 已成为当前正式规范及无状态请求、逐请求能力协商和 Tasks 扩展等规范级变化；不证明具体产品已经兼容。",
+          supports: "支持 2026-07-28 已成为当前正式规范及无状态、自包含请求和可选扩展的规范基线；不证明具体产品已经兼容。",
+        },
+        {
+          sourceId: "mcp-changelog-2026-07-28",
+          supports: "支持 initialize 与协议级 Session 的移除、逐请求元数据、server/discover 及 Tasks 移至扩展等破坏性变化。",
+        },
+        {
+          sourceId: "mcp-tasks-extension",
+          supports: "支持当前 Tasks 扩展的耐久句柄、状态获取、更新、取消与恢复语义。",
         },
       ],
       addedAt: "2026-07-21",
@@ -1116,7 +1174,7 @@ export const mcpBrief = {
     {
       metric: "Host–Client–Server",
       title: "三层角色拆分连接责任",
-      finding: "MCP 用 Host 管理体验和权限、Client 维护协议连接、Server 提供能力。",
+      finding: "MCP 用 Host 管理体验和策略、Client 与一个 Server 交换协议消息、Server 提供能力。",
       boundary: "具体产品可以合并进程，但逻辑责任仍需清楚。",
       sourceId: "mcp-architecture",
       accent: true,
@@ -1124,16 +1182,16 @@ export const mcpBrief = {
     {
       metric: "Tool / Resource / Prompt",
       title: "原语对应不同控制主体",
-      finding: "动作、只读上下文和交互模板应使用不同原语表达，便于授权和用户控制。",
-      boundary: "原语名称不能代替业务风险分类，Tool 仍需逐项授权。",
-      sourceId: "mcp-architecture",
+      finding: "Tool 由模型控制调用，Resource 由应用选择装配，Prompt 由用户主动选择；Tool 也可以是只读查询。",
+      boundary: "控制主体不等于风险等级；三类原语都要独立处理敏感性、权限与不可信内容。",
+      sourceId: "mcp-server-overview-2026-07-28",
     },
     {
-      metric: "stdio ↔ HTTP",
-      title: "传输变化会改变威胁模型",
-      finding: "本地进程和远程共享服务面对不同的身份、网络、租户和运营风险。",
-      boundary: "任何传输都需要与部署环境匹配的安全控制。",
-      sourceId: "mcp-authorization",
+      metric: "2025-11-25 → 2026-07-28",
+      title: "当前正式版与旧版兼容路径必须分开",
+      finding: "截至 2026-08-01，2026-07-28 是当前正式规范；initialize、协议级 Session 与旧版核心 Tasks 只用于锁定旧版的实现与迁移对照。",
+      boundary: "正式规范发布不等于生态兼容；SDK、Client、Server、网关和私有扩展仍需逐项验证。",
+      sourceId: "mcp-changelog-2026-07-28",
     },
     {
       metric: "互操作 ≠ 可信",
@@ -1143,11 +1201,11 @@ export const mcpBrief = {
       sourceId: "mcp-security",
     },
     {
-      metric: "2025-11-25 → 2026-07-28",
-      title: "当前正式版与旧版兼容路径必须分开",
-      finding: "截至 2026-07-29，2026-07-28 已成为正式规范；2025-11-25 的初始化、协议会话和核心 Tasks 只适用于锁定旧版的实现与迁移对照。",
-      boundary: "正式规范发布不等于生态兼容；SDK、Client、Server、网关和私有扩展仍需逐项验证。",
-      sourceId: "mcp-specification-2026-07-28",
+      metric: "stdio ↔ HTTP",
+      title: "传输变化会改变威胁模型",
+      finding: "本地进程和远程共享服务面对不同的身份、网络、租户和运营风险。",
+      boundary: "任何传输都需要与部署环境匹配的安全控制。",
+      sourceId: "mcp-authorization",
     },
   ],
 };

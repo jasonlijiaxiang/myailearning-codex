@@ -111,7 +111,7 @@ export function McpResponsibilityExplorer({
           </button>
         </section>
         <section className="mcpArchitectureBand mcpArchitectureBand--protocol" aria-label="MCP 协议边界">
-          <header><strong>MCP 协议边界</strong><span>会话、能力协商与结构化消息</span></header>
+          <header><strong>MCP 协议边界</strong><span>版本、能力元数据与结构化消息</span></header>
           <button type="button" className="mcpRoleNode mcpRoleNode--client" aria-pressed={activeRole === "client"} onClick={() => setActiveRole("client")}>
             <span>CLIENT</span><strong>一条到特定 Server 的隔离连接</strong>
           </button>

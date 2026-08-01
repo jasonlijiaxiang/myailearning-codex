@@ -125,9 +125,9 @@ const harnessEvaluationDimensions = [
 
 const architecturePatterns = [
   { name: "确定性工作流 · Deterministic Workflow", cue: "步骤清楚、规则稳定、错误代价高", pipeline: "固定步骤 → 条件分支 → 人工审批", boundary: "最易测试和审计；不要为追求 Agent 标签而增加自治。" },
-  { name: "单智能体 · Single Agent", cue: "步骤动态但职责集中", pipeline: "模型 ↔ 工具 ↔ 环境反馈，循环至退出", boundary: "默认起点；工具和上下文膨胀时质量会退化。" },
-  { name: "编排者—执行者 · Orchestrator–Workers", cue: "子任务无法预先确定、可分工", pipeline: "管理者分解 → 执行者完成 → 汇总验证", boundary: "增加交接、重复调用、权限传播和轨迹评估成本。" },
-  { name: "评估者—优化者 · Evaluator–Optimizer", cue: "有明确质量标准、迭代能提升", pipeline: "生成 → 评价 → 反馈 → 修正，直到门槛", boundary: "必须限制轮次和预算；评价器也会判断错误。" },
+  { name: "工作流中的 LLM 步骤 · LLM Step", cue: "需要语义提取、分类或草稿，但后续路径固定", pipeline: "Workflow 决定何时调用 → 模型返回结构化结果 → 规则继续", boundary: "模型参与一个节点，不等于需要可循环的 Agent Run。" },
+  { name: "单智能体 · Single Agent", cue: "新证据会改变下一步，但职责仍集中", pipeline: "模型 ↔ 获准工具 ↔ 环境反馈，循环至退出", boundary: "默认的 Agent 起点；必须先定义 Run、预算、终态和接管。" },
+  { name: "多智能体 · Multi-Agent", cue: "子任务独立并行，或上下文、权限必须隔离", pipeline: "父任务委托 → 子任务执行 → 父任务验证与收口", boundary: "只有实测收益覆盖交接、P95、权限传播和评估成本时才拆分。" },
 ];
 
 const coreCapabilities = [
@@ -282,7 +282,7 @@ export default function AgentModulePage() {
             >Agent<br /><span>智能体 · AI Agent</span></h1>
           </div>
           <div className="ragDefinition">
-            <p>让模型在受控边界内，根据环境反馈选择下一步并调用工具完成任务；系统需要明确区分模型的动态判断、应用的确定性控制和业务授权。</p>
+            <p>一个受应用控制的 Run：模型可根据当前状态选择下一步、请求工具并吸收环境结果；身份、授权、真实动作、业务成功与停止权仍属于确定性控制层。</p>
             <ModuleHeroMetrics sectionCount={agentReadingSections.length} questionCount={agentQa.length} evidenceCount={agentEvidenceCards.length} />
           </div>
         </div>
@@ -300,7 +300,7 @@ export default function AgentModulePage() {
           <div className="decisionBanner">
             <p className="kicker">PRESALES POSITION</p>
             <h3>一句话定位</h3>
-            <p>客户真正需要的是能够识别目标、调用获准工具、验证结果，并在失败或高风险时停下来交还人工的任务执行系统。</p>
+            <p>客户不是为了“拥有 Agent”而采购：先用确定性流程建立业务基线，只把必须依据新证据动态选择下一步的局部交给受控 Agent。</p>
           </div>
 
           <AgentControlPrimer />
@@ -374,14 +374,14 @@ export default function AgentModulePage() {
             </div>
 
             <div className="workedExample">
-              <div className="exampleQuestion"><span>客户任务</span><strong>“分析这张异常账单，并在符合政策时创建退款工单。”</strong></div>
+              <div className="exampleQuestion"><span>客户任务</span><strong>“核对这宗跨区域理赔的材料，列出缺件并生成可审计的初审草稿。”</strong></div>
               <div className="exampleSteps">
-                <article><span>01</span><h4>感知<small>Perceive</small></h4><p>把身份、账单、客户意图、退款政策与待确认信息整理为当前任务状态。</p></article>
-                <article><span>02</span><h4>思考与行动<small>Reason &amp; Act</small></h4><p>判断应先查合同还是订单；模型提出调用，应用校验金额、权限和审批后执行。</p></article>
-                <article><span>03</span><h4>观察并决定是否继续<small>Observe &amp; Close</small></h4><p>回读工单和退款状态；有操作编号才确认完成，冲突、超限或失败则进入下一轮或交还人工。</p></article>
+                <article><span>01</span><h4>感知<small>Perceive</small></h4><p>把申请人身份、案件快照、扫描件、事故照片、当前条款版本和缺失字段整理为任务状态。</p></article>
+                <article><span>02</span><h4>思考与行动<small>Reason &amp; Act</small></h4><p>按新证据选择读取条款、核对案件或生成补件草稿；应用逐次校验来源、权限和工具参数。</p></article>
+                <article><span>03</span><h4>观察并决定是否继续<small>Observe &amp; Close</small></h4><p>回读案件与通知状态；材料完整或草稿获确认才结束，否则等待补件、转人工或安全停止。</p></article>
               </div>
             </div>
-            <CriticalBoundary>Agent 的“思考”不能替代业务控制。身份、权限、金额、审批、幂等、补偿和审计必须由确定性系统执行；Prompt 不是授权策略，模型输出也不是系统事实。</CriticalBoundary>
+            <CriticalBoundary>Agent 的“思考”不能替代业务控制。身份、权限、审批、幂等、补偿和审计必须由确定性系统执行；最终赔付资格、金额与案件状态永不由 Agent 自行决定。</CriticalBoundary>
             <SystemLens title="从运行、控制与恢复理解 Agent" lead="三个视角共同回答：Agent 如何推进任务、企业怎样限制它，以及失败后如何知道真实世界发生了什么。" panels={agentSystemLens} />
             <AgentRunLab />
           </div>
@@ -557,6 +557,7 @@ export default function AgentModulePage() {
 
           <div className="subsection" id="poc">
             <div className="subHead"><span>2.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>按自治风险逐级验证 Agent</h3></div></div>
+            <p className="sectionLead">在同一理赔任务集、相同工具、相同身份与相同终态下，依次比较确定性 Workflow、Workflow 中的 LLM 步骤与单 Agent；多 Agent 只有在独立并行或隔离收益被数据证明后才进入候选。</p>
             <div className="pocGrid">
               <article><span>SHADOW</span><h4>任务与最终状态</h4><p>先以观察或建议模式运行，固定真实任务、可验证的最终状态、风险等级和现有人工 / 工作流表现。</p></article>
               <article><span>READ ONLY</span><h4>最小可用工具流程</h4><p>接入完成任务必需的最少只读工具；验证身份、结构化参数、超时、停止、Trace 和后置条件。</p></article>
@@ -564,6 +565,10 @@ export default function AgentModulePage() {
               <article><span>OPERATIONS</span><h4>灰度与运营交接</h4><p>按风险分别验收成功率、接管率、P95 和成功任务成本；通过当前检查后再扩大自治，不预设固定天数。</p></article>
             </div>
             <div className="gates"><h4>建议的通过 / 暂停条件</h4><div className="gateList"><span>端到端任务成功率</span><span>关键步骤完成率</span><span>策略违规 = 0</span><span>高风险误执行 = 0</span><span>人工接管率</span><span>P95 / 完成时长</span><span>每个成功任务成本</span><span>可恢复 / 可回滚</span></div><p>具体数值按业务风险、现有人工表现与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
+            <div className="architectureNotes">
+              <p><strong>价值侧</strong>：只计算经权威终态验证的周期缩短、返工减少、首次材料完整率提升和可释放人工。</p>
+              <p><strong>完整 TCO</strong>：模型、检索、工具、平台、评估、人工接管、运营、安全与残余风险共同计入；不使用通用 ROI 数字替代客户基线。</p>
+            </div>
           </div>
 
           <div className="subsection" id="evidence" data-quality-section="evidence">

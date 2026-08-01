@@ -33,11 +33,11 @@ export const agentDeepDives = [
     kind: "scenario",
     eyebrow: "FAILURE RECOVERY",
     title: "用故障时间线验证 Agent，而不是只跑成功路径",
-    intro: "同一个退款动作在调用前、调用中和调用后崩溃，恢复策略完全不同。PoC 应主动制造这些不确定状态。",
+    intro: "同一次理赔补件通知在调用前、调用中和调用后崩溃，恢复策略完全不同。PoC 应主动制造这些不确定状态。",
     maxColumns: 2,
     items: [
       { name: "调用前崩溃", en: "Before Call", mechanism: "Checkpoint 中没有动作账本，也没有外部 operation ID；恢复后可重新规划并执行。", decision: "恢复是否仍使用同一业务幂等键和最新权限？", boundary: "不能因为模型曾经提出调用就假设外部动作发生过。" },
-      { name: "API 成功、回写前崩溃", en: "After Side Effect", mechanism: "先用幂等键、operation ID 或权威业务状态查询是否已完成，再补写结果或决定重试。", decision: "能否证明不会重复退款、重复发信或重复创建资源？", boundary: "盲目重试是生产 Agent 最危险的恢复方式之一。" },
+      { name: "API 成功、回写前崩溃", en: "After Side Effect", mechanism: "先用幂等键、operation ID 或权威案件事件查询补件通知是否已发送，再补写结果或决定重试。", decision: "能否证明不会重复通知客户或重复推进案件状态？", boundary: "盲目重试是生产 Agent 最危险的恢复方式之一。" },
       { name: "等待审批时策略变化", en: "Policy Changed", mechanism: "恢复前重新检查参数、资源版本、令牌、审批有效期和当前业务策略。", decision: "审批是否绑定具体工具、参数、资源版本和失效时间？", boundary: "批准旧参数不等于批准修改后的动作。" },
       { name: "部分成功且无法自动补偿", en: "Partial Success", mechanism: "冻结后续自动动作，保存证据和影响范围，进入人工恢复队列。", decision: "客户是否接受可检测、可补偿，而不是不现实的零故障承诺？", boundary: "模型不应自行编造补偿步骤或宣告最终成功。" },
     ],
@@ -62,40 +62,12 @@ export const agentDeepDives = [
 
 export const agentEvidenceCards = [
   {
-    metric: "3",
-    title: "最小 Agent 的构建块",
-    finding: "OpenAI 的官方实践指南把最小 Agent 概括为模型、工具和指令三部分，并进一步讨论运行循环、停止条件与护栏。",
-    boundary: "这是官方实践指南中的最小设计框架，不是唯一术语体系，也不代表只接上三个构建块就具备生产可靠性。",
-    sourceId: "openai-agent-guide",
-    accent: true,
-  },
-  {
     metric: "固定 ↔ 动态",
     title: "工作流与 Agent 的关键分界",
     finding: "Anthropic 将预定义代码路径的工作流（Workflow）与由模型动态决定过程和工具使用的 Agent 分开讨论。",
     boundary: "实际系统常把两者组合；自治程度是连续谱，不必为了称作 Agent 而放弃确定性控制。",
     sourceId: "anthropic-effective-agents",
-  },
-  {
-    metric: "短期 ↔ 长期",
-    title: "Memory 需要按生命周期分层",
-    finding: "Amazon Bedrock AgentCore Memory 的官方文档区分会话内短期原始事件与跨会话长期提取记忆，并使用 actor 与 session 组织隔离范围。",
-    boundary: "这是具体云服务的 Memory 模型，不是所有框架的统一实现；长期提取结果仍需来源、权限、时效、纠正和删除治理。",
-    sourceId: "aws-agentcore-memory",
-  },
-  {
-    metric: "+34 / +10 pp",
-    title: "ReAct 论文中的任务收益",
-    finding: "ReAct 在论文的 ALFWorld 与 WebShop 实验中，相对所比较的模仿学习和强化学习方法分别提高 34 与 10 个百分点。",
-    boundary: "只适用于论文任务、模型和提示设置；不能外推为企业 Agent 的通用提升或采购承诺。",
-    sourceId: "react-2023",
-  },
-  {
-    metric: "14.41% vs 78.24%",
-    title: "长链任务仍有明显差距",
-    finding: "WebArena 原始论文中，最佳 GPT-4 Agent 的端到端成功率为 14.41%，人类为 78.24%。",
-    boundary: "这是 2023 年发布的特定网页环境基线，不代表当前模型水平；它证明评估必须看完整任务，而非单步回答。",
-    sourceId: "webarena-2024",
+    accent: true,
   },
   {
     metric: "final_output ≠ 完成",
@@ -105,19 +77,33 @@ export const agentEvidenceCards = [
     sourceId: "openai-agents-run-loop",
   },
   {
-    metric: "Checkpoint",
-    title: "长期任务需要可恢复执行历史",
-    finding: "Durable Orchestration 通过事件历史和自动检查点恢复长期流程，并在重放时复用已经完成的活动结果。",
-    boundary: "持久化运行时不自动让外部副作用幂等；工具仍需调用账本、去重与补偿。",
-    sourceId: "azure-durable-orchestration",
-  },
-  {
     metric: "Model × Harness",
     title: "同一模型不等于固定的 Agent 能力",
     finding: "Harness-Bench 把模型与 Harness 作为组合进行比较，显示工具、上下文、执行循环和验证机制会改变端到端任务表现。",
     boundary: "该研究仍是预印本，且结论依赖任务、模型快照、Harness 版本、预算和运行环境；不能据此生成永久产品总榜。",
     sourceId: "harness-bench-2026",
     accent: true,
+  },
+  {
+    metric: "3",
+    title: "最小 Agent 的构建块",
+    finding: "OpenAI 的官方实践指南把最小 Agent 概括为模型、工具和指令三部分，并进一步讨论运行循环、停止条件与护栏。",
+    boundary: "这是官方实践指南中的最小设计框架，不是唯一术语体系，也不代表只接上三个构建块就具备生产可靠性。",
+    sourceId: "openai-agent-guide",
+  },
+  {
+    metric: "短期 ↔ 长期",
+    title: "Memory 需要按生命周期分层",
+    finding: "Amazon Bedrock AgentCore Memory 的官方文档区分会话内短期原始事件与跨会话长期提取记忆，并使用 actor 与 session 组织隔离范围。",
+    boundary: "这是具体云服务的 Memory 模型，不是所有框架的统一实现；长期提取结果仍需来源、权限、时效、纠正和删除治理。",
+    sourceId: "aws-agentcore-memory",
+  },
+  {
+    metric: "Checkpoint",
+    title: "长期任务需要可恢复执行历史",
+    finding: "Durable Orchestration 通过事件历史和自动检查点恢复长期流程，并在重放时复用已经完成的活动结果。",
+    boundary: "持久化运行时不自动让外部副作用幂等；工具仍需调用账本、去重与补偿。",
+    sourceId: "azure-durable-orchestration",
   },
 ];
 
@@ -173,7 +159,7 @@ const agentQaCandidates = [
   {
     q: "什么时候应该用 Agent，什么时候用固定工作流（Workflow）？",
     a: "步骤清楚、规则稳定、错误代价高时优先工作流；步骤无法预知、需要根据环境反馈调整、存在大量例外时再引入 Agent。",
-    depth: "不要把选择做成二元对立。常见生产路线是用确定性流程包住少量 Agent 决策点：例如模型判断工单类型，但退款额度、审批和记账仍由规则与工作流控制。随着自治范围扩大，测试空间、时延、成本和复合错误都会增加。",
+    depth: "不要把选择做成二元对立。跨区域理赔初审可以先由 Workflow 完成字段与必填校验；若只是抽取或分类，可加入一个 LLM 步骤；只有缺件、条款冲突和工具结果会动态改变下一步时，才把该局部交给 bounded Agent。最终赔付资格、金额、审批与案件状态仍由规则、人员和权威系统控制。随着自治范围扩大，测试空间、时延、成本和复合错误都会增加。",
     ask: "追问客户：哪几个决策无法用规则表达？允许模型试错几次？哪些动作必须确定性执行？",
     tag: "路线选择",
     basis: "官方模式指南",
@@ -279,7 +265,7 @@ const agentQaCandidates = [
     evidence: [
       { sourceId: "google-agent-platform", supports: "支持托管运行、框架适配、IAM、评估与可观测等能力说明。" },
       { sourceId: "aws-agentcore", supports: "支持 Runtime、Memory、Gateway、Identity、沙箱、评估与观测等组合能力。" },
-      { sourceId: "azure-foundry-agent-service", supports: "支持配置型与代码型 Agent、托管运行、身份、工具和端到端观测。" },
+      { sourceId: "azure-foundry-agent-service", supports: "支持 Prompt agents 与 Hosted agents、托管运行、身份、工具和端到端观测。" },
     ],
   },
   {
@@ -579,7 +565,7 @@ const agentQaCandidates = [
     evidence: [
       { sourceId: "google-agent-platform", supports: "支持托管 Runtime、Sessions、Memory、身份、沙箱、Tracing、Monitoring 与评估等能力说明。" },
       { sourceId: "aws-agentcore", supports: "支持 Runtime、Memory、Gateway、Identity、沙箱、Observability、Evaluations 与 Policy 等模块化能力。" },
-      { sourceId: "azure-foundry-agent-service", supports: "支持配置型与代码型 Agent、托管身份 / RBAC / OBO、网络隔离及端到端观测。" },
+      { sourceId: "azure-foundry-agent-service", supports: "支持 Prompt agents 与 Hosted agents、托管身份 / RBAC / OBO、网络隔离及端到端观测。" },
     ],
   },
   {

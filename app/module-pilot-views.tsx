@@ -92,16 +92,64 @@ const agentLoopSteps: Array<[string, string, string]> = [
   ["04", "观察", "回读权威系统的真实状态"],
 ];
 
+const agentAdoptionChecks = [
+  {
+    question: "业务结果能否先用确定性流程建立基线？",
+    signal: "理赔材料完整率、初审周期、返工、人工升级和关键错误都有当前数据。",
+    recommendation: "先固定字段校验、必填规则、权威状态读取和人工队列，再确认剩余缺口。",
+    boundary: "没有确定性基线，就无法证明 Agent 带来的增益与 ROI。",
+  },
+  {
+    question: "剩余路径是否会因新证据或工具结果而改变？",
+    signal: "缺件、条款冲突、跨区域规则或异常状态无法提前枚举，下一步必须动态选择。",
+    recommendation: "只把这段自适应调查交给 bounded Agent；固定提取或分类仍留在 Workflow 的单个 LLM 步骤。",
+    boundary: "路径稳定、例外可枚举时，Workflow 通常更容易测试、审计和运营。",
+  },
+  {
+    question: "Run 的身份、动作和业务终态是否可验证？",
+    signal: "每次调用都有主体、参数、审批、幂等键和 operation ID，完成由理赔系统后置条件证明。",
+    recommendation: "先定义 Run 契约、动作契约、结果未知恢复和人工接管，再扩大自治。",
+    boundary: "final_output、Tool 成功或模型声称完成，都不等于理赔业务已经完成。",
+  },
+  {
+    question: "业务收益是否覆盖完整 TCO 与残余风险？",
+    signal: "同一任务集可比较周期、返工、人工、关键错误、P95、接管、恢复和每个成功任务成本。",
+    recommendation: "从 Shadow / Draft 开始，只有客户门槛通过才开放确认后的低风险写入。",
+    boundary: "不预设通用 ROI 数值，也不默认多 Agent、MCP 或托管平台一定更优。",
+  },
+];
+
 export function AgentControlPrimer() {
   return (
-    <section className="pilotPrimer pilotPrimer--agent" data-knowledge-view="control-architecture" aria-labelledby="agent-control-primer-title">
+    <section className="pilotPrimer pilotPrimer--agent focusedNarrative focusedNarrative--decision" data-knowledge-view="control-architecture" data-quality-section="principle" aria-labelledby="agent-control-primer-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">CONTROL ARCHITECTURE</p><h2 id="agent-control-primer-title">先分清谁提议、谁授权、谁执行</h2></div>
-        <p>面向企业技术售前：Agent 的价值来自动态决策，可信度来自模型外的确定性控制和可恢复业务状态。</p>
+        <div><p className="kicker">ADOPTION &amp; CONTROL ARCHITECTURE</p><h2 id="agent-control-primer-title">先证明必须动态决策，再设计 Agent Run</h2></div>
+        <p>以跨区域理赔材料补件与初审为主案例：确定性流程是骨架，Agent 只处理会随新证据改变路径的局部；身份、授权、真实动作与最终赔付责任始终留在模型外。</p>
       </header>
+      <section className="focusedDecisionLedger" aria-labelledby="agent-adoption-title">
+        <header><p className="kicker">ADOPTION CHECK</p><h3 id="agent-adoption-title">四道门决定是 Workflow、LLM 步骤还是 Agent</h3><p>先回答业务基线、动态性、可验证控制和完整经济性。任何一项说不清，都应停在确定性方案或受限实验。</p></header>
+        <div className="focusedDecisionRows">
+          {agentAdoptionChecks.map((item, index) => (
+            <article key={item.question}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h4>{item.question}</h4><p>{item.signal}</p></div>
+              <div><strong>{item.recommendation}</strong><small>{item.boundary}</small></div>
+            </article>
+          ))}
+        </div>
+      </section>
+      <div className="workedExample">
+        <div className="exampleQuestion"><span>贯穿案例</span><strong>跨区域保险理赔材料补件与初审</strong></div>
+        <div className="exampleSteps">
+          <article><span>01</span><h4>确定性骨架<small>Workflow baseline</small></h4><p>字段、必填规则、案件状态、条款版本和人工队列由代码与权威系统控制。</p></article>
+          <article><span>02</span><h4>受限动态调查<small>Bounded agent</small></h4><p>只在缺件、证据冲突和异常状态改变下一步时，让模型选择获准的读取与草稿工具。</p></article>
+          <article><span>03</span><h4>外部授权与验收<small>External authority</small></h4><p>补件通知经确认后发送；最终赔付资格、金额和案件状态永不由 Agent 自行决定。</p></article>
+        </div>
+      </div>
       <AgentAuthorityExplorer steps={agentLoopSteps} />
       <TermHintRow label="Agent 控制缩写" termIds={["ai-agent", "api", "iam", "hitl", "mcp"]} />
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>客户问“能不能自动执行”时，先画出动作风险、权威状态、授权点和人工接管，再讨论模型与编排框架。</p><nav aria-label="Agent 深入阅读"><a href="#agent-principle">查看工作循环</a><a href="#memory-interaction">查看状态与互操作</a><a href="#architecture">查看参考架构</a></nav></footer>
+      <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>本手册把 Agent 定义为受应用控制的 Run：模型可以根据当前状态选择下一步，但应用始终拥有身份、授权、执行、业务成功与停止权。</p></aside>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>用同一任务、工具、权限和终态比较 Workflow 与单 Agent；只有独立并行、上下文隔离或权限隔离被数据证明时，才讨论多 Agent。</p><nav aria-label="Agent 深入阅读"><a href="#agent-principle">查看工作循环</a><a href="#memory-interaction">查看状态与互操作</a><a href="#poc">验证 PoC 与 ROI</a></nav></footer>
     </section>
   );
 }
@@ -210,26 +258,34 @@ function McpFocusedPrimer({ brief }: { brief: FocusedBrief }) {
   return (
     <section className="pilotPrimer focusedNarrative focusedNarrative--protocol" id="principle" data-knowledge-view={view.id} data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="mcp-focused-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">PROTOCOL RESPONSIBILITY MAP</p><h2 id="mcp-focused-title">先分清四方责任，再讨论工具接入</h2></div>
-        <p>协议解决能力如何被发现和调用；身份从哪里来、业务系统是否授权、调用结果是否可信，仍由协议外的应用与平台控制共同完成。</p>
+        <div><p className="kicker">REUSE DECISION &amp; RESPONSIBILITY MAP</p><h2 id="mcp-focused-title">先证明复用价值，再画清四方责任</h2></div>
+        <p>以企业工单能力服务客服 Agent、员工助手和运维助手为案例：MCP 只在重复适配已经形成成本时提供标准化价值；身份、业务授权、执行结果与长期维护仍由协议外系统负责。</p>
       </header>
       <McpResponsibilityExplorer
         roles={[
           { id: "user", code: "USER", title: "用户", owner: "提出业务目标、确认高风险动作并判断最终结果。", boundary: "不负责协议实现，也不应被迫理解工具内部细节。" },
           { id: "host", code: "HOST", title: "承载用户目标", owner: "组织上下文、用户交互、Client 生命周期与最终体验。", boundary: "不能把用户身份、同意和审批责任下放给模型。" },
-          { id: "client", code: "CLIENT", title: "维护协议会话", owner: "与一个 Server 建立隔离连接，完成能力协商与消息路由。", boundary: "会调用不代表已经获得业务系统授权。" },
+          { id: "client", code: "CLIENT", title: "维护隔离协议边界", owner: "逻辑上连接一个 Server；自包含请求必须携带版本与能力元数据，并应携带 Client identity 元数据。", boundary: "无协议级 Session 不等于无应用状态，会调用也不代表已经获得业务授权。" },
           { id: "server", code: "SERVER", title: "暴露能力契约", owner: "提供 Tool、Resource、Prompt 以及结果和错误语义。", boundary: "不能绕过下游系统的身份、权限与审计控制。" },
           { id: "system", code: "SYSTEM", title: "执行真实业务", owner: "校验主体、策略、数据权限并形成权威业务状态。", boundary: "不通过 MCP 暴露内部实现细节，也不把协议连接当作最终授权。" },
         ]}
         sequence={[
-          { code: "01", title: "发现", detail: "Client 读取 Server 声明的能力与 Schema" },
-          { code: "02", title: "选择", detail: "Host 根据用户目标选择必要能力" },
+          { code: "01", title: "发现", detail: "Client 可先调用 server/discover，并核验 Server 与版本" },
+          { code: "02", title: "选择", detail: "Host 按用户目标和控制主体选择必要原语" },
           { code: "03", title: "授权", detail: "应用与业务系统确认主体和权限" },
           { code: "04", title: "执行", detail: "Server 调用下游系统完成受控动作" },
-          { code: "05", title: "回读", detail: "结果逐层返回并由 Host 呈现给用户" },
+          { code: "05", title: "回读", detail: "Host 用权威业务状态验证结果并呈现给用户" },
         ]}
       />
       <TermHintRow label="MCP 角色与能力" termIds={view.termIds} />
+      <div className="workedExample">
+        <div className="exampleQuestion"><span>贯穿案例</span><strong>同一企业工单能力需要被三个独立 AI 应用复用</strong></div>
+        <div className="exampleSteps">
+          <article><span>01</span><h4>先算重复适配<small>Reuse signal</small></h4><p>冻结三个客户端当前的发现、Schema、错误、鉴权和审计适配成本，确认不是单应用的偶发需求。</p></article>
+          <article><span>02</span><h4>保留业务 API<small>Thin adapter</small></h4><p>在已有工单 API 上增加薄 MCP Server；授权、幂等、工单状态和审计仍由原系统负责。</p></article>
+          <article><span>03</span><h4>证明单位经济<small>Go / Hold / No-Go</small></h4><p>复用收益必须覆盖协议、契约测试、安全准入、观测、升级与退休成本，否则继续直接 API / Function Calling。</p></article>
+        </div>
+      </div>
       <section className="focusedDecisionLedger" aria-labelledby="mcp-decision-title">
         <header><p className="kicker">ADOPTION CHECK</p><h3 id="mcp-decision-title">哪些条件不成立时，不要急着引入 MCP</h3></header>
         <div className="focusedDecisionRows">
@@ -237,7 +293,7 @@ function McpFocusedPrimer({ brief }: { brief: FocusedBrief }) {
         </div>
       </section>
       <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>沿“发现—选择—授权—执行—回读”逐段确认主体、责任人、错误语义和审计证据；只要其中一段说不清，就还不是可上线的工具接入。</p><nav aria-label="MCP 深入阅读"><a href="#deep-dive">部署与长任务</a><a href="#evidence">协议证据</a><a href="#cloud">平台连接</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先比较直接 API / Function Calling 与薄 MCP 适配，再沿“发现—选择—授权—执行—回读”确认主体、错误语义和证据；复用价值或责任归属任一项说不清，就不进入生产。</p><nav aria-label="MCP 深入阅读"><a href="#deep-dive">原语、部署与长任务</a><a href="#evidence">协议证据</a><a href="#cloud">平台连接</a></nav></footer>
     </section>
   );
 }

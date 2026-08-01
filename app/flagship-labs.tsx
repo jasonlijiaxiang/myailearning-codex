@@ -373,12 +373,12 @@ const agentSteps: AgentStep[] = [
     purpose: "读取客户请求、身份、会话状态与可用工具；先形成可执行输入，而不是立刻调用模型。",
     normal: {
       status: "输入已标准化",
-      before: "新请求：为客户创建 PoC 环境",
-      transition: "提取客户 ID、区域、规格和审批要求",
-      after: "形成结构化任务；缺少预算中心字段",
+      before: "新请求：完成跨区域理赔材料补件与初审",
+      transition: "提取案件 ID、申请人、产品、事故区域、材料与条款版本",
+      after: "形成结构化任务；发现事故证明与一个必填字段缺失",
       checkpoint: "尚未落盘；下一步前保存输入快照。",
       idempotency: "尚未生成；工具调用前由任务 ID 派生。",
-      handoff: "缺关键字段时询问客户，不把猜测当作事实。",
+      handoff: "缺关键材料时进入补件路径，不把模型推断当作案件事实。",
     },
   },
   {
@@ -389,11 +389,11 @@ const agentSteps: AgentStep[] = [
     normal: {
       status: "计划已生成",
       before: "结构化任务 + 工具目录 + 企业策略",
-      transition: "补齐预算中心 → 校验配额 → 调用云资源 API → 验证结果",
-      after: "选择 provision_sandbox 工具；写明成功与转人工条件",
+      transition: "读取当前条款 → 核对案件状态 → 生成缺件清单 → 等待发送确认",
+      after: "选择 send_evidence_request 工具；写明完成、等待与转人工条件",
       checkpoint: "保存 cp-02：输入、计划、策略版本和下一动作。",
-      idempotency: "生成 key=task-482/provision，绑定一次业务意图。",
-      handoff: "策略冲突或超预算时停止，不通过重复推理绕过审批。",
+      idempotency: "生成 key=claim-482/evidence-request，绑定一次补件意图。",
+      handoff: "条款冲突或涉及赔付裁决时停止，不通过重复推理绕过人工责任。",
     },
   },
   {
@@ -404,19 +404,19 @@ const agentSteps: AgentStep[] = [
     normal: {
       status: "工具调用成功",
       before: "cp-02 + 已校验参数 + 幂等键",
-      transition: "调用 provision_sandbox，服务端返回 operation_id=op-731",
-      after: "资源创建进入运行中；记录工具响应和耗时",
+      transition: "授权人员确认后调用 send_evidence_request，返回 operation_id=op-731",
+      after: "补件通知进入发送中；记录收件人、材料清单、工具响应和耗时",
       checkpoint: "保存 cp-03：operation_id 与已提交参数。",
-      idempotency: "同一 key 重试只查询/复用 op-731，不再创建第二套资源。",
+      idempotency: "同一 key 重试只查询/复用 op-731，不再发送第二封补件通知。",
       handoff: "无需接管；异常码才进入恢复分支。",
     },
     timeout: {
       status: "工具超时，远端结果未知",
       before: "cp-02 + 已校验参数 + 幂等键",
       transition: "请求已发出，但 30 秒内没有收到响应",
-      after: "标记 UNKNOWN；禁止直接重新创建",
+      after: "标记 UNKNOWN；禁止直接再次发送",
       checkpoint: "从 cp-02 恢复，不重新规划已确认的业务参数。",
-      idempotency: "用原 key 查询远端结果；避免超时后重复创建资源。",
+      idempotency: "用原 key 查询远端结果；避免超时后重复通知客户。",
       handoff: "若查询接口也不可用，暂停任务并向值班人员提供完整上下文。",
     },
   },
@@ -428,20 +428,20 @@ const agentSteps: AgentStep[] = [
     normal: {
       status: "外部状态已确认",
       before: "operation_id=op-731，状态 RUNNING",
-      transition: "查询资源状态与审计日志；核对区域、规格和标签",
-      after: "状态 SUCCEEDED，结果满足计划约束",
-      checkpoint: "保存 cp-04：实际资源 ID 与验证证据。",
-      idempotency: "后续查询不产生新副作用；创建键进入已消费状态。",
+      transition: "查询案件事件与消息审计；核对收件人、材料清单和条款版本",
+      after: "状态 SUCCEEDED，通知已发送且案件进入等待补件",
+      checkpoint: "保存 cp-04：消息 ID、案件状态与验证证据。",
+      idempotency: "后续查询不产生新副作用；补件请求键进入已消费状态。",
       handoff: "验证不一致时转人工，不把“API 成功”误判为“业务完成”。",
     },
     timeout: {
       status: "恢复查询仍无法确认结果",
       before: "UNKNOWN + 原幂等键 + cp-02",
       transition: "先按幂等键查询，再查审计日志；两路均暂不可用",
-      after: "保持 SUSPENDED，不自动执行第二次创建",
+      after: "保持 SUSPENDED，不自动执行第二次发送",
       checkpoint: "保留 cp-02 和所有调用时间线，可由人工安全续跑。",
-      idempotency: "把“不确定”限制在一次业务意图内，避免重复资源与重复计费。",
-      handoff: "生成接管包：客户、参数、策略、调用 ID、时间线和建议动作。",
+      idempotency: "把“不确定”限制在一次业务意图内，避免重复通知与客户困扰。",
+      handoff: "生成接管包：案件、收件人、缺件、策略、调用 ID、时间线和建议动作。",
     },
   },
   {
@@ -451,12 +451,12 @@ const agentSteps: AgentStep[] = [
     purpose: "以成功、拒绝或转人工之一结束本轮；停止条件是 Agent 控制面的必要组成。",
     normal: {
       status: "任务成功结束",
-      before: "资源已创建且验证通过",
-      transition: "写入最终状态，生成客户可读摘要和内部审计记录",
-      after: "COMPLETED；返回资源 ID、边界与下一步",
+      before: "初审草稿已保存，补件通知已验证送达",
+      transition: "写入本轮终态，生成客户可读说明和内部审计记录",
+      after: "COMPLETED；返回缺件清单、证据坐标、消息 ID 与下一步",
       checkpoint: "最终快照不可变，支持后续审计与复盘。",
       idempotency: "重复提交同一任务返回既有结果，不重复执行。",
-      handoff: "无需接管；后续变更形成新的业务意图和新任务。",
+      handoff: "本轮无需接管；最终赔付资格与金额仍由获授权人员和业务系统决定。",
     },
     timeout: {
       status: "任务暂停，等待人工接管",
@@ -464,8 +464,8 @@ const agentSteps: AgentStep[] = [
       transition: "冻结副作用动作，通知值班人员并设置接管超时",
       after: "SUSPENDED；客户看到“处理中”，而不是虚假成功",
       checkpoint: "人工从最后可信 checkpoint 续跑，不重做已确认步骤。",
-      idempotency: "原业务键持续有效，人工操作前先核对是否已有远端资源。",
-      handoff: "人工决定确认既有结果、补偿回滚或在确认无资源后安全重试。",
+      idempotency: "原业务键持续有效，人工操作前先核对通知和案件事件是否已经存在。",
+      handoff: "人工决定确认既有结果、纠正案件记录，或在确认未发送后安全重试。",
     },
   },
 ];
@@ -488,9 +488,9 @@ export function AgentRunLab() {
       <header className="flagshipLab__header">
         <div>
           <p className="flagshipLab__eyebrow">INTERACTIVE LAB · AGENT RUNTIME</p>
-          <h3 id={`${uid}-agent-title`}>Agent 运行与恢复实验</h3>
+          <h3 id={`${uid}-agent-title`}>理赔 Agent 运行与恢复实验</h3>
         </div>
-        <p>逐步查看感知、思考、行动、观察和停止如何改变状态；再注入一次工具超时，比较“可恢复”与“盲目重试”。</p>
+        <p>逐步查看理赔补件任务怎样感知、思考、行动、观察和停止；再注入一次通知工具超时，比较“可恢复”与“盲目重试”。</p>
       </header>
 
       <div className="flagshipLab__toolbar">

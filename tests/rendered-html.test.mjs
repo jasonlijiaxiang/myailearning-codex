@@ -525,6 +525,11 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.match(mcp, /class="mcpArchitectureExplorer"/);
   assert.match(mcp, /MCP 协议边界/);
   assert.match(mcp, /一次工具调用的典型路径/);
+  assert.match(mcp, /先证明复用价值，再画清四方责任/);
+  assert.match(mcp, /Tool 由模型控制调用，Resource 由应用选择装配，Prompt 由用户主动选择/);
+  assert.match(mcp, /Tool 也可以是只读查询/);
+  assert.match(mcp, /版本、能力元数据与结构化消息/);
+  assert.doesNotMatch(mcp, /维护协议会话|会话、能力协商与结构化消息|状态变更用 Tool|只读内容优先 Resource|无状态 Host/);
   assert.doesNotMatch(mcp, /class="mcpResponsibilityMap"/);
   assert.match(inference, /class="inferenceExplorer"/);
   assert.match(inference, /TTFT · 首 token 时间/);
@@ -817,6 +822,11 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   const html = await renderHtml("/modules/ai-agent");
 
   assert.match(html, /智能体 · AI Agent/);
+  assert.match(html, /先证明必须动态决策，再设计 Agent Run/);
+  assert.match(html, /四道门决定是 Workflow、LLM 步骤还是 Agent/);
+  assert.match(html, /跨区域保险理赔材料补件与初审/);
+  assert.match(html, /最终赔付资格、金额与案件状态永不由 Agent 自行决定/);
+  assert.match(html, /没有确定性基线，就无法证明 Agent 带来的增益与 ROI/);
   assert.match(html, /Agent 的基础概念与工作循环/);
   assert.match(html, /Agent 的四个关键动作：感知—思考—行动—观察/);
   assert.match(html, /感知 · Perceive/);
@@ -841,7 +851,7 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   assert.match(html, /模型即服务、模型目录、推理端点、AI 网关、内容安全/);
   assert.match(html, /什么时候应该用 Agent，什么时候用固定工作流（Workflow）/);
   assert.match(html, /单智能体 · Single Agent/);
-  assert.match(html, /编排者—执行者 · Orchestrator–Workers/);
+  assert.match(html, /多智能体 · Multi-Agent/);
   assert.match(html, /选择云上托管 Agent 平台，还是自己用框架搭/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, agentQa.length);
   assert.doesNotMatch(html, /ReAct 是否意味着 Agent 必须严格按|工具参数已经通过 Strict Schema|生产上线前，Agent 最低需要通过哪些/);
