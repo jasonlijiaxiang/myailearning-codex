@@ -93,7 +93,7 @@ const learningPaths = [
 
 export default function Home() {
   return (
-    <main className="fieldbookHome">
+    <main className="fieldbookHome fieldbookHomeZh">
       <ReadingProgress />
       <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="主导航">
@@ -108,32 +108,40 @@ export default function Home() {
             <Link href="/references">来源与证据 / Reference</Link>
             <Link href="/en" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
+          <details className="homeMobileNav">
+            <summary>更多</summary>
+            <nav aria-label="更多导航">
+              <Link href="/coding-agents">Coding Agent 选型</Link>
+              <Link href="/knowledge-graph">模块关系</Link>
+              <Link href="/references">来源与证据</Link>
+              <Link href="/en" hrefLang="en" lang="en" prefetch={false}>English</Link>
+            </nav>
+          </details>
         </nav>
 
         <div className="heroGrid heroGridV2">
           <div className="heroCopy">
-            <h1>讲清 AI 技术，<br />心中有数，丝毫不慌</h1>
+            <h1><span>讲清 AI 技术，</span><span>心中有数，丝毫不慌</span></h1>
             <p className="heroLead">理解方案背后的原理与限制，才能真正赢得客户，从容应对每一次追问。</p>
             <div className="heroActions">
-              <a className="textButton" href="#learning-paths">按任务开始 <span>→</span></a>
-              <a className="textButton" href="#available-modules">直接找问题 <span>→</span></a>
+              <a className="homePrimaryAction" href="#learning-paths">按任务开始 <span>→</span></a>
+              <a className="homeSecondaryAction" href="#available-modules">直接找问题 <span>→</span></a>
             </div>
           </div>
 
           <aside className="heroDecisionPanel" aria-label="知识库可以帮助完成的任务">
-            <h2>三种阅读深度</h2>
+            <h2 className="srOnly">三种阅读深度</h2>
             <ol>
-              <li><span>30 秒</span><div><strong>先拿到判断</strong><p>定义、场景、边界和下一问。</p></div></li>
-              <li><span>10 分钟</span><div><strong>理解系统机制</strong><p>沿处理流程理解机制和责任边界。</p></div></li>
-              <li><span>客户现场</span><div><strong>搜索问题并查证</strong><p>从问题查短答、追问与来源。</p></div></li>
+              <li><span>快速了解</span><div><strong>先看结论与边界</strong><p>快速确认这是什么、何时适用，以及下一步该问什么。</p></div></li>
+              <li><span>深入理解</span><div><strong>理清系统机制</strong><p>沿处理流程理解机制和责任边界。</p></div></li>
+              <li><span>现场查证</span><div><strong>搜索问题与来源</strong><p>从客户问题进入短答、追问和一手来源。</p></div></li>
             </ol>
-            <div className="heroDecisionFoot"><strong>{moduleCount}</strong><span>个独立模块</span><strong>{layerCount}</strong><span>层知识地图</span></div>
           </aside>
         </div>
       </header>
 
       <section className="learningPathsV2" id="learning-paths" aria-labelledby="learning-paths-title">
-        <header><p className="kicker">MISSION-BASED PATHS</p><h2 id="learning-paths-title">从场景开始</h2><p>从客户正在面对的场景进入，沿着路径形成下一步判断。</p></header>
+        <header><h2 id="learning-paths-title">从场景开始</h2><p>从客户正在面对的场景进入，沿着路径形成下一步判断。</p></header>
         <div className="learningPathList">
           {learningPaths.map((path) => (
             <article key={path.no}><span>{path.no}</span><div><p>{path.time}</p><h3>{path.title}</h3></div><strong>{path.route}</strong><p>{path.outcome}</p></article>
@@ -148,16 +156,16 @@ export default function Home() {
           structureGuide={{
             badge: `${layerCount} 层 · ${moduleCount} 个模块`,
             title: "先从问题搜，需要时按层缩小范围",
-            body: "筛选项已按九层结构排列；客户问题还不清晰时，先选一层缩小范围。需要看模块关系，再进入动态探索。",
+            body: "筛选项已按知识层排列；客户问题还不清晰时，先选一层缩小范围。需要看模块关系，再进入动态探索。",
             href: "/knowledge-graph",
             link: "查看模块关系",
           }}
+          resultLimit={{ initial: 8, showAll: `查看全部 ${moduleCount} 个模块`, showLess: "收起模块目录" }}
         />
       </div>
 
       <section className="homeTermGuide" aria-labelledby="home-term-guide-title">
         <div>
-          <p className="kicker">FIELD GLOSSARY</p>
           <h2 id="home-term-guide-title">核心术语速查</h2>
           <p>按模型、应用、协议与治理快速建立知识版图；这里保留跨模块高频概念，完整定义和全部术语进入独立术语库。</p>
         </div>

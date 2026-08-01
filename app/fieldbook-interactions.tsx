@@ -36,6 +36,12 @@ export type ExplorerStructureGuide = {
   link: string;
 };
 
+export type ExplorerResultLimit = {
+  initial: number;
+  showAll: string;
+  showLess: string;
+};
+
 type SearchLaunchLabels = {
   ariaLabel: string;
   label: string;
@@ -156,6 +162,7 @@ export function ModuleExplorer({
   locale = "zh-CN",
   questionsHref = "/questions",
   structureGuide,
+  resultLimit,
 }: {
   modules: ExplorerModule[];
   knowledgeEntries?: KnowledgeSearchEntry[];
@@ -163,9 +170,12 @@ export function ModuleExplorer({
   locale?: string;
   questionsHref?: string;
   structureGuide?: ExplorerStructureGuide;
+  resultLimit?: ExplorerResultLimit;
 }) {
   const [query, setQuery] = useState("");
   const [layer, setLayer] = useState("all");
+  const [showAll, setShowAll] = useState(false);
+  const resultGridId = useId();
   const searchRef = useRef<HTMLInputElement>(null);
   const layers = useMemo(() => {
     const seen = new Map<string, string>();
@@ -189,7 +199,9 @@ export function ModuleExplorer({
       .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase(locale).includes(normalized))
       .slice(0, 12);
   }, [knowledgeEntries, locale, query]);
-  const visibleRows = useMemo(() => balanceGridRows(visible, 3), [visible]);
+  const visibleRows = useMemo(() => balanceGridRows(visible, resultLimit ? 2 : 3), [resultLimit, visible]);
+  const visibleIndexBySlug = useMemo(() => new Map(visible.map((item, index) => [item.slug, index])), [visible]);
+  const isVisuallyLimited = Boolean(resultLimit && !showAll && !query.trim() && layer === "all" && visible.length > resultLimit.initial);
   const knowledgeMatchRows = useMemo(() => balanceGridRows(knowledgeMatches, 2), [knowledgeMatches]);
 
   useEffect(() => {
@@ -278,17 +290,33 @@ export function ModuleExplorer({
         </div>
       ) : null}
 
-      <div className="moduleResultGrid" data-count={visible.length} data-odd={visible.length % 2 === 1 ? "true" : "false"}>
-        {visibleRows.flatMap((row) => row.map((item) => (
-          <Link className="moduleResult" href={item.href} key={item.slug} style={{ "--result-span": gridSpan(row.length) } as CSSProperties}>
-            <div className="moduleResultMeta"><span>{item.layerNo}</span><small>{item.layerName}</small><i aria-hidden="true">↗</i></div>
-            <h3>{item.title ?? item.zh}</h3>
-            <p className="moduleResultEn">{item.subtitle ?? item.en}</p>
-            <p className="moduleResultSummary">{item.summary}</p>
-            <p className="moduleResultCue">{item.cue}</p>
-          </Link>
-        )))}
+      <div id={resultGridId} className="moduleResultGrid" data-count={visible.length} data-odd={visible.length % 2 === 1 ? "true" : "false"} data-collapsed={isVisuallyLimited ? "true" : "false"}>
+        {visibleRows.flatMap((row) => row.map((item) => {
+          const resultIndex = visibleIndexBySlug.get(item.slug) ?? 0;
+          return (
+            <Link
+              className="moduleResult"
+              hidden={Boolean(resultLimit && isVisuallyLimited && resultIndex >= resultLimit.initial)}
+              href={item.href}
+              key={item.slug}
+              style={{ "--result-span": gridSpan(row.length) } as CSSProperties}
+            >
+              <div className="moduleResultMeta"><span>{item.layerNo}</span><small>{item.layerName}</small><i aria-hidden="true">↗</i></div>
+              <h3>{item.title ?? item.zh}</h3>
+              <p className="moduleResultEn">{item.subtitle ?? item.en}</p>
+              <p className="moduleResultSummary">{item.summary}</p>
+              <p className="moduleResultCue">{item.cue}</p>
+            </Link>
+          );
+        }))}
       </div>
+      {resultLimit && !query.trim() && layer === "all" && visible.length > resultLimit.initial ? (
+        <div className="moduleExplorerMore">
+          <button type="button" aria-controls={resultGridId} aria-expanded={showAll} onClick={() => setShowAll((current) => !current)}>
+            {showAll ? resultLimit.showLess : resultLimit.showAll} <span aria-hidden="true">{showAll ? "↑" : "→"}</span>
+          </button>
+        </div>
+      ) : null}
       {visible.length === 0 ? <div className="emptySearch"><strong>{labels.emptyTitle}</strong><p>{labels.emptyBody}</p></div> : null}
     </section>
   );
