@@ -91,7 +91,7 @@ export default function ReferencesPage() {
             </p>
             <div className="heroActions">
               <a className="primaryButton" href="#reference-modules">按模块查看来源</a>
-              <Link className="textButton" href="/#map">返回知识地图 <span>↗</span></Link>
+              <Link className="textButton" href="/#available-modules">从问题开始 <span>↗</span></Link>
             </div>
           </div>
         </div>

@@ -51,7 +51,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .heroV2::before,
 .heroV2::after { display: none; }
 .heroGridV2 {
-  min-height: 590px;
+  min-height: 0;
   padding-top: clamp(52px,7vh,78px);
   grid-template-columns: minmax(0,1.48fr) minmax(340px,.62fr);
   gap: clamp(56px,7vw,112px);
@@ -95,10 +95,10 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 }
 .heroDecisionPanel h2 { margin: 0 0 16px; color: var(--ink); font-size: clamp(25px,2.1vw,32px); line-height: 1.35; }
 .heroDecisionPanel ol { border-top-color: var(--line); }
-.heroDecisionPanel li { grid-template-columns: 72px 1fr; gap: 12px; padding: 18px 0; border-bottom-color: var(--line); }
+.heroDecisionPanel li { grid-template-columns: 72px 1fr; gap: 12px; padding: 12px 0; border-bottom-color: var(--line); }
 .heroDecisionPanel li > span { color: var(--blue); font-family: var(--font-serif),serif; font-size: 17px; font-weight: 650; }
 .heroDecisionPanel li strong { font-size: 18px; }
-.heroDecisionPanel li p { color: var(--muted); font-size: 14px; line-height: 1.62; }
+.heroDecisionPanel li p { margin-top: 2px; color: var(--muted); font-size: 14px; line-height: 1.55; }
 .heroDecisionFoot { margin-top: 16px; padding-top: 0; }
 .heroDecisionFoot strong { color: var(--ink); font-size: 32px; }
 .heroDecisionFoot span { color: var(--muted); font-size: 13px; }
@@ -106,7 +106,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 /* Discovery: an editorial index, not a wall of equal cards. */
 .explorerAnchor { background: var(--paper); border-top: 1px solid var(--line); }
 .moduleExplorer { padding-top: 72px; padding-bottom: 82px; background: var(--white); }
-.moduleExplorerIntro { margin-bottom: 32px; grid-template-columns: minmax(0,1.2fr) minmax(320px,.52fr); }
+.moduleExplorerIntro { align-items: start; margin-bottom: 32px; grid-template-columns: minmax(0,1.2fr) minmax(320px,.52fr); }
 .moduleExplorerIntro h2,
 .fieldbookPromise h2,
 .learningPathsV2 h2 { font-size: clamp(38px,4vw,58px); }
@@ -195,6 +195,12 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .layerStackV2 .layer:last-child { border-bottom: 1px solid var(--line); }
 .layerStackV2 .layer:hover { transform: none; box-shadow: inset 5px 0 0 var(--lime); }
 .layerStackV2 .chips > a { min-height: 82px; background: var(--white); }
+.moduleExplorerStructureGuide { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; row-gap: 5px; padding: 15px 0; border-block: 1px solid var(--line); }
+.moduleExplorerStructureGuide > span { grid-row: span 2; align-self: start; padding-top: 2px; color: var(--blue); font-family: var(--font-geist-mono), monospace; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+.moduleExplorerStructureGuide > strong { font-size: 14px; line-height: 1.5; }
+.moduleExplorerStructureGuide > p { grid-column: 2; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.moduleExplorerStructureGuide > a { grid-column: 2; margin-top: 6px; color: var(--ink); font-size: 13px; font-weight: 750; text-underline-offset: 4px; }
+.moduleExplorerStructureGuide > a i { color: var(--blue); font-size: 17px; font-style: normal; }
 .learningPathsV2 { padding-top: 84px; padding-bottom: 84px; }
 .learningPathList article { grid-template-columns: 54px minmax(220px,.8fr) minmax(300px,1.2fr) minmax(280px,1fr); }
 .learningPathList article > strong { font-size: 15px; }
@@ -826,7 +832,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 
 @media (min-width: 901px) and (max-height: 900px) {
   .heroV2 { min-height: 0; padding-bottom: 34px; }
-  .heroGridV2 { min-height: 520px; padding-top: 36px; }
+  .heroGridV2 { min-height: 0; padding-top: 36px; }
   .heroV2 h1 { font-size: clamp(54px,5vw,72px); }
   .heroV2 .heroLead { margin-top: 18px; }
   .heroDecisionPanel li { padding: 13px 0; }

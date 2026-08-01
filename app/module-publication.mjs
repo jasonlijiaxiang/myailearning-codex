@@ -191,7 +191,7 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
           ? ["离线链生产证据，在线链决定怎样使用证据", "RAG 选型不是只选一个生成模型"]
           : slug === "ai-agent"
             ? ["感知—思考—行动—观察", "规划、记忆与工具"]
-            : ["稳定指令", "动态上下文", "能力接口"]),
+            : ["明确且稳定的指令", "动态上下文", "能力接口"]),
         boundary: Object.freeze(slug === "rag"
           ? ["检索到不等于回答正确"]
           : slug === "ai-agent"

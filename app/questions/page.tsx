@@ -57,7 +57,7 @@ export default function QuestionsPage() {
             <p className="heroLead">{moduleCountLead}</p>
             <div className="heroActions">
               <a className="primaryButton" href="#question-directory">开始查询</a>
-              <Link className="textButton" href="/#map">查看知识地图 <span>↗</span></Link>
+              <Link className="textButton" href="/#available-modules">从问题开始 <span>↗</span></Link>
             </div>
           </div>
           <aside className="questionHeroStats" aria-label="问题查询页内容概览">

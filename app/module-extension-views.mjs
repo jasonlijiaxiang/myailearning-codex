@@ -162,7 +162,7 @@ export const moduleExtensionViews = Object.freeze({
     eyebrow: "GENAI DELIVERY & OPERATIONS",
     title: "AI 应用交付的版本应能回放过程、定位问题并恢复",
     intro: "模型、Prompt、检索、工具、编排、策略和运行环境共同决定行为；同一条工程闭环必须覆盖组装、验证、发布、观测与恢复。",
-    termIds: Object.freeze(["ai-application-engineering", "genaiops", "ai-release-运行配置记录", "observability"]),
+    termIds: Object.freeze(["ai-application-engineering", "genaiops", "ai-release-manifest", "observability"]),
     steps: Object.freeze([
       Object.freeze({ code: "01", title: "组装发布单元", en: "Compose", detail: "绑定模型、Prompt、数据、工具、工作流、策略和运行配置。", signal: "记录组件兼容关系和负责人。" }),
       Object.freeze({ code: "02", title: "分层验证", en: "Validate", detail: "分别验证代码契约、语义质量、风险、性能和业务终态。", signal: "总体分数不能掩盖关键失败。" }),

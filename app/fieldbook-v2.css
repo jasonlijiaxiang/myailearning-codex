@@ -66,7 +66,8 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .moduleExplorer { max-width: var(--wide); margin: 0 auto; padding: clamp(80px,8vw,120px) clamp(24px,5vw,70px); border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
 .moduleExplorerIntro { display: grid; grid-template-columns: minmax(0,1fr) minmax(320px,.58fr); gap: 70px; align-items: end; margin-bottom: 48px; }
 .moduleExplorerIntro h2, .fieldbookPromise h2, .learningPathsV2 h2 { margin: 0; max-width: 850px; font-family: var(--font-serif), "Songti SC", serif; font-size: clamp(39px,4.5vw,66px); font-weight: 500; letter-spacing: -.045em; line-height: 1.08; }
-.moduleExplorerIntro > p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
+.moduleExplorerIntroCopy { display: grid; gap: 20px; }
+.moduleExplorerIntroCopy > p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.75; }
 .moduleExplorerControls { position: sticky; top: 12px; z-index: 10; padding: 18px; border: 1px solid var(--line); background: rgba(255,253,247,.93); box-shadow: 0 10px 30px rgba(20,33,43,.07); backdrop-filter: blur(14px); }
 .moduleSearch { display: grid; grid-template-columns: 140px 1fr auto; align-items: center; gap: 18px; padding: 3px 8px 17px; border-bottom: 1px solid var(--line); }
 .moduleSearch > span { font-weight: 800; font-size: 14px; }

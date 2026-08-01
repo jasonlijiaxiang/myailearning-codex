@@ -59,7 +59,7 @@ export default function GlossaryPage() {
             <p className="heroLead">这里不是缩写清单，而是云与 AI 售前知识的概念入口：中文名、英文名、通行缩写、一句话定义和相关模块保持一致，读者可以从一个词继续进入机制、边界、客户问答与证据。</p>
             <div className="heroActions">
               <a className="primaryButton" href="#glossary-directory">搜索全部术语</a>
-              <Link className="textButton" href="/#map">查看知识地图 <span>↗</span></Link>
+              <Link className="textButton" href="/#available-modules">从问题开始 <span>↗</span></Link>
             </div>
           </div>
           <aside className="glossaryHeroStats" aria-label="术语库内容概览">

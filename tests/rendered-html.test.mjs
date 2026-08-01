@@ -214,7 +214,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
   assert.match(questionDirectoryHtml, /新增于 2026-07-20/);
 });
 
-test("homepage is a focused knowledge map with links to every independent module", async () => {
+test("homepage leads from scenario to questions with links to every independent module", async () => {
   const html = await renderHtml("/");
   assertValidGridSpans(html, "/");
   const homepageSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
@@ -224,18 +224,18 @@ test("homepage is a focused knowledge map with links to every independent module
   assert.match(html, /<title>云计算 × AI 平台售前知识库<\/title>/i);
   assert.match(html, /<meta property="og:image" content="https:\/\/cloud-ai-presales-fieldbook\.lijx\.chatgpt\.site\/social-card\.png"\/>/i);
   assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/i);
-  assert.match(html, /<h2 id="map-title">知识地图<\/h2>/);
-  assert.match(html, new RegExp(`aria-label="${layers.length} 层架构，${moduleList.length} 个细分模块"`));
   assert.match(html, /href="\/references"/);
   assert.match(html, /href="\/coding-agents"/);
   assert.match(html, /Reference/);
-  assert.match(html, /从当前客户问题开始/);
-  assert.match(html, /搜索模块与知识内容/);
-  assert.match(html, /同一份知识，支持三种阅读深度/);
-  assert.match(html, /不要按章节学，按任务走/);
-  assert.match(html, /href="\/knowledge-graph"[^>]*>动态探索<\/a>/);
-  assert.match(html, /查看模块之间的关系/);
-  assert.match(html, /进入动态知识探索/);
+  assert.match(html, /讲清 AI 技术，[\s\S]*?心中有数，丝毫不慌/);
+  assert.match(html, /三种阅读深度/);
+  assert.match(html, /从场景开始/);
+  assert.match(html, /从问题开始/);
+  assert.match(html, /输入客户问题、技术或风险/);
+  assert.match(html, new RegExp(`${layers.length} 层[\\s\\S]{0,80}${moduleList.length} 个模块`));
+  assert.match(html, /href="\/knowledge-graph"[^>]*>查看模块关系/);
+  assert.doesNotMatch(html, /同一份知识，支持三种阅读深度/);
+  assert.doesNotMatch(html, /<h2 id="map-title">知识地图<\/h2>/);
   assert.doesNotMatch(html, /什么时候看这个模块：/);
   assert.doesNotMatch(html, /阅读 RAG 模块/);
   assert.equal((html.match(/class="moduleResult"/g) ?? []).length, publishedModules.length);
@@ -289,7 +289,8 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
   assert.match(html, /产品与 Harness 选型雷达/);
   assert.match(html, /Model × Harness × Task × Environment/);
   assert.match(html, /排行榜是证据入口，不是采购结论/);
-  assert.match(html, /中国与国际 Coding Agent 产品雷达/);
+  assert.match(html, /Coding Agent 产品对比与筛选/);
+  assert.match(html, /不追求中美数量相等/);
   assert.match(html, /搜索产品、厂商或 Harness 能力/);
   assert.match(html, /下次复核不晚于[\s\S]*2026-08-22/);
   assert.match(html, /Codex/);
@@ -308,15 +309,15 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   ]);
 
   assert.match(layoutSource, /import "\.\/fieldbook-v3\.css"/);
-  assert.match(html, /<form class="heroSearch" role="search" aria-label="搜索知识库">/);
-  assert.match(html, /搜索模块、术语、课程、客户问题和来源/);
-  assert.match(interactionSource, /dispatchEvent\(new CustomEvent<string>\("fieldbook:search"/);
-  assert.match(interactionSource, /addEventListener\("fieldbook:search"/);
+  assert.doesNotMatch(html, /class="heroSearch"/, "首页只保留一个从问题开始的入口");
+  assert.match(html, /class="moduleSearch"/);
+  assert.match(html, /输入客户问题、技术或风险/);
+  assert.match(interactionSource, /export function KnowledgeSearchLaunch/);
   assert.match(moduleHtml, /<div class="readingNavHead"><span>正在阅读 ·/);
   assert.match(interactionSource, /String\(activeIndex \+ 1\)\.padStart\(2, "0"\)/);
   assert.match(styles, /--readable:\s*820px/);
   assert.match(styles, /\.moduleResult\s*\{[^}]*display:\s*grid[^}]*grid-template-areas:/s);
-  assert.match(styles, /\.heroSearch\s*>\s*div\s*\{[^}]*grid-template-columns:/s);
+  assert.match(styles, /\.moduleSearch\s*\{[^}]*grid-template-columns:/s);
   assert.match(styles, /@media \(max-width:\s*720px\)[\s\S]*\.topbar\s*\{[^}]*flex-wrap:\s*wrap/s);
   assert.doesNotMatch(styles, /url\s*\(/i, "V3 视觉系统不得依赖远程或运行时图片资源");
   assert.doesNotMatch(styles, /\/(?:Users|home)\//, "V3 样式不得包含本机绝对路径");
@@ -439,7 +440,7 @@ test("public dynamic knowledge graph and backend coverage gates derive from stab
   assert.match(html, /动态图谱|动态知识星图|聚焦显示/);
   assert.match(html, /图中只展示已经整理的明确关系，不表示所有可能联系/);
   assert.match(html, /aria-label="动态探索导航"/);
-  assert.match(html, /href="\/#available-modules"[^>]*>查找模块<\/a>/);
+  assert.match(html, /href="\/#available-modules"[^>]*>从问题开始<\/a>/);
   assert.match(html, /href="\/modules\/rag"[^>]*>进入模块/);
   assert.match(html, /moduleTitleLead[^>]*>RAG<\/span><span[^>]*moduleTitleDetail[^>]*>检索增强生成/);
   assert.doesNotMatch(html, /全局总览|覆盖门禁|关系总览|切换到关系总览/);
@@ -713,7 +714,7 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
 
   assert.match(solution, /data-knowledge-view="decision-blueprint"/);
   assert.match(solution, /把业务目标变成可以验收的方案/);
-  assert.match(solution, /业务结果.*数据与证据.*模型判断.*编排与状态.*规则与动作.*人工责任.*评估与运营.*经济与退出/s);
+  assert.match(solution, /业务结果.*数据与证据.*模型判断.*编排与状态.*规则与动作.*人工责任.*持续评估与日常运营.*经济与退出/s);
   assert.match(solution, /TCO/);
   assert.match(solution, /七类场景，七套验收重点/);
   assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
@@ -751,11 +752,11 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.ok(moduleCurriculumContent["solution-patterns"].chapters.length >= 10, "场景方案必须覆盖主要应用原型与生产验收");
   assert.ok(moduleCurriculumContent["fine-tuning"].chapters.length >= 8, "微调模块必须覆盖数据、训练、对齐、评估与发布");
   const securityCurriculum = moduleCurriculumContent.security.chapters.map((chapter) => chapter.title).join("；");
-  assert.match(securityCurriculum, /不可接受损失.*恶意简历.*候选人数据.*ATS 业务授权.*供应链.*控制验证.*事件证据/s, "安全课程必须覆盖招聘场景的攻击路径、授权、验证与恢复");
+  assert.match(securityCurriculum, /不可接受损失.*恶意简历.*候选人数据.*ATS 业务授权.*供应链.*验证控制措施.*事件证据/s, "安全课程必须覆盖招聘场景的攻击路径、授权、验证与恢复");
   const securityRoute = moduleLearningContent.security.route.map((step) => step.title).join("；");
   assert.match(securityRoute, /损失和攻击路径.*内容到权限.*控制和交接.*遏制与恢复/s, "安全学习路线必须形成从损失到恢复的闭环");
   const securityLabs = moduleLearningContent.security.labs.map((lab) => lab.title).join("；");
-  assert.match(securityLabs, /恶意简历.*向量数据隔离与删除.*ATS 越权与结果未知/s, "安全实战必须分别验证威胁、数据边界和事件恢复");
+  assert.match(securityLabs, /恶意简历.*向量数据隔离与删除.*ATS 越权和结果未知/s, "安全实战必须分别验证威胁、数据边界和事件恢复");
   for (const slug of ["solution-patterns", "fine-tuning"]) {
     assert.ok(moduleLearningContent[slug].route.length >= 5, `${slug} 学习路线不能压缩为通用三步模板`);
     assert.ok(moduleLearningContent[slug].labs.length >= 4, `${slug} 至少覆盖四个不同决策或工程练习`);
@@ -767,7 +768,7 @@ test("RAG route follows one evidence decision from adoption through production",
   assertValidGridSpans(html, "/modules/rag");
 
   assert.match(html, /检索增强生成 · Retrieval-Augmented Generation/);
-  assert.match(html, /把外部资料转化为当前用户可使用、可核验、可撤回的证据/);
+  assert.match(html, /把外部资料整理成当前用户可使用、能核对且可撤回的依据/);
   assert.match(html, /本模块唯一主问题/);
   assert.match(html, /只使用当前用户有权访问、仍然有效、能够回到原文的证据/);
   assert.match(html, /先证明需要外部证据，再设计两条生命周期/);
@@ -883,14 +884,14 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /提示词工程/);
   assert.match(html, /Prompt Engineering/);
   assert.match(html, /Prompt 是什么，以及 Context Engineering 的边界/);
-  assert.match(html, /稳定指令 · Instructions/);
+  assert.match(html, /明确且稳定的指令 · Instructions/);
   assert.match(html, /动态上下文 · Context/);
   assert.match(html, /必须执行的规则应落在模型外/);
   assert.match(html, /结构正确不等于事实正确|保证结构不等于保证字段值真实/);
   assert.match(html, /模型差异、提示版本与发布控制/);
   assert.match(html, /提示词工程与云服务机会/);
   assert.match(html, /理赔材料初审：先路由失败，再决定改哪一层/);
-  assert.match(html, /冻结业务基线.*建立最小调用.*装配受控 Context.*验证与授权.*冻结发布包/s);
+  assert.match(html, /冻结基线.*控制变更.*离线回归.*灰度观察.*回滚与运营/s);
   assert.match(html, /观察到的失败.*优先路线.*主要责任模块/s);
   assert.match(html, /资格、限额或状态转换.*确定性规则与授权.*应用工作流/s);
   assert.match(html, /结构正确、事实正确、业务有效和获得授权必须分开验收/);
@@ -1560,7 +1561,7 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(homepage, /Object\.entries\(moduleLearningContent\)/);
   assert.match(homepage, /type: "课程章节" as const/);
   assert.match(homepage, /type: "实战练习" as const/);
-  assert.match(homepage, /<ModuleExplorer modules=\{explorerModules\} knowledgeEntries=\{knowledgeSearchEntries\}/);
+  assert.match(homepage, /<ModuleExplorer[\s\S]*?modules=\{explorerModules\}[\s\S]*?knowledgeEntries=\{knowledgeSearchEntries\}/);
   assert.match(publicationRegistry, /export const publishedModules/);
   assert.match(publicationRegistry, /contentContract/);
   assert.match(interactions, /export function ModuleExplorer/);

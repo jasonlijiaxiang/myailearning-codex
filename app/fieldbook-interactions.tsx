@@ -28,6 +28,14 @@ export type KnowledgeSearchEntry = {
   keywords: string;
 };
 
+export type ExplorerStructureGuide = {
+  badge: string;
+  title: string;
+  body: string;
+  href: string;
+  link: string;
+};
+
 type SearchLaunchLabels = {
   ariaLabel: string;
   label: string;
@@ -65,10 +73,10 @@ const defaultSearchLaunchLabels: SearchLaunchLabels = {
 };
 
 const defaultModuleExplorerLabels: ModuleExplorerLabels = {
-  kicker: "FIND THE RIGHT MODULE",
-  title: "从当前客户问题开始",
+  kicker: "START WITH THE QUESTION",
+  title: "从问题开始",
   intro: "不必按目录顺序学习。输入客户正在讨论的技术、场景或风险，直接进入相关模块。",
-  searchLabel: "搜索模块与知识内容",
+  searchLabel: "输入客户问题、技术或风险",
   placeholder: "例如：知识更新、量化、工具调用、GPU 利用率……",
   filterAria: "按知识层筛选",
   allLayers: "全部",
@@ -147,12 +155,14 @@ export function ModuleExplorer({
   labels = defaultModuleExplorerLabels,
   locale = "zh-CN",
   questionsHref = "/questions",
+  structureGuide,
 }: {
   modules: ExplorerModule[];
   knowledgeEntries?: KnowledgeSearchEntry[];
   labels?: ModuleExplorerLabels;
   locale?: string;
   questionsHref?: string;
+  structureGuide?: ExplorerStructureGuide;
 }) {
   const [query, setQuery] = useState("");
   const [layer, setLayer] = useState("all");
@@ -212,7 +222,17 @@ export function ModuleExplorer({
           <p className="kicker">{labels.kicker}</p>
           <h2 id="module-explorer-title">{labels.title}</h2>
         </div>
-        <p>{labels.intro}</p>
+        <div className="moduleExplorerIntroCopy">
+          <p>{labels.intro}</p>
+          {structureGuide ? (
+            <aside className="moduleExplorerStructureGuide" aria-label={structureGuide.title}>
+              <span>{structureGuide.badge}</span>
+              <strong>{structureGuide.title}</strong>
+              <p>{structureGuide.body}</p>
+              <a href={structureGuide.href}>{structureGuide.link} <i aria-hidden="true">→</i></a>
+            </aside>
+          ) : null}
+        </div>
       </div>
 
       <div className="moduleExplorerControls">

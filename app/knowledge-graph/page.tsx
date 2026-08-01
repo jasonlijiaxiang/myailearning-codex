@@ -31,7 +31,7 @@ export default function KnowledgeGraphPage() {
             <Link href="/">知识库首页</Link>
             <Link href="/questions">问题查询</Link>
             <Link href="/glossary">术语库</Link>
-            <Link href="/#available-modules">查找模块</Link>
+            <Link href="/#available-modules">从问题开始</Link>
             <Link href="/references">来源与证据 / Reference</Link>
           </div>
         </nav>
@@ -60,7 +60,7 @@ export default function KnowledgeGraphPage() {
 
       <footer className={styles.footer}>
         <p>图中只展示已经整理的明确关系，不表示所有可能联系。</p>
-        <Link href="/#map">查看首页知识地图</Link>
+        <Link href="/#available-modules">从问题开始</Link>
       </footer>
     </main>
   );
