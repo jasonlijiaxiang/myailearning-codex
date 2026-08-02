@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "./fieldbook-interactions";
@@ -121,7 +122,7 @@ export default function Home() {
           </details>
         </nav>
 
-        <div className="heroGrid heroGridV2">
+        <div className="heroGrid heroGridV2 heroGridWithArtwork">
           <div className="heroCopy">
             <h1><span>讲清 AI 技术，</span><span>心中有数，丝毫不慌</span></h1>
             <p className="heroLead">理解方案背后的原理与限制，才能真正赢得客户，从容应对每一次追问。</p>
@@ -130,6 +131,20 @@ export default function Home() {
               <a className="homeSecondaryAction" href="#available-modules">直接找问题 <span>→</span></a>
             </div>
           </div>
+
+          <figure className="heroFlightIllustration" aria-hidden="true">
+            <span className="heroFlightSignal" />
+            <Image
+              className="heroFlightArtwork"
+              src="/hero-ai-fieldbook-flight.png"
+              alt=""
+              width={1080}
+              height={810}
+              priority
+              unoptimized
+              sizes="(min-width: 981px) 42vw, (min-width: 721px) 72vw, 100vw"
+            />
+          </figure>
 
           <aside className="heroDecisionPanel" aria-label="知识库可以帮助完成的任务">
             <h2 className="srOnly">三种阅读深度</h2>

@@ -84,6 +84,51 @@
 }
 .fieldbookHome .heroV2 h1 > span { display: block; }
 
+.fieldbookHome .heroFlightIllustration {
+  min-width: 0;
+  margin: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+.fieldbookHome .heroFlightArtwork {
+  position: relative;
+  z-index: 1;
+  width: 116%;
+  max-width: none;
+  height: auto;
+  display: block;
+  transform-origin: 54% 54%;
+  animation: homeHeroFlightDrift 8s cubic-bezier(.45, .05, .55, .95) infinite;
+}
+
+.fieldbookHome .heroFlightSignal {
+  position: absolute;
+  z-index: 2;
+  top: 17%;
+  right: 12%;
+  width: clamp(10px, 1.1vw, 15px);
+  height: clamp(10px, 1.1vw, 15px);
+  border-radius: 50%;
+  background: var(--home-accent);
+  box-shadow: 0 0 0 0 rgba(166, 216, 63, .48);
+  animation: homeHeroSignalPulse 4s ease-out infinite;
+}
+
+@keyframes homeHeroFlightDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-.7deg); }
+  50% { transform: translate3d(0, -10px, 0) rotate(.7deg); }
+}
+
+@keyframes homeHeroSignalPulse {
+  0%, 28%, 100% { box-shadow: 0 0 0 0 rgba(166, 216, 63, 0); transform: scale(.9); }
+  42% { box-shadow: 0 0 0 16px rgba(166, 216, 63, 0); transform: scale(1); }
+}
+
 .fieldbookHome .heroV2 .heroLead {
   max-width: 760px;
   margin: 22px 0 0;
@@ -492,6 +537,25 @@
 /* English needs a two-column first viewport because its title, search and
    reading-depth copy are materially longer than the Chinese homepage. */
 @media (min-width: 981px) {
+  .fieldbookHome .heroGridWithArtwork {
+    max-width: 1360px;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+    gap: clamp(28px, 4vw, 68px);
+    align-items: center;
+  }
+
+  .fieldbookHome .heroGridWithArtwork .heroCopy { max-width: 700px; }
+  .fieldbookHome .heroGridWithArtwork h1 {
+    max-width: 700px;
+    font-size: clamp(52px, 4.45vw, 70px);
+  }
+
+  .fieldbookHome .heroGridWithArtwork .heroDecisionPanel {
+    grid-column: 1 / -1;
+    max-width: none;
+    margin-top: 4px;
+  }
+
   .fieldbookHomeEn .heroGridV2 {
     max-width: 1360px;
     grid-template-columns: minmax(0, 1.45fr) minmax(340px, .62fr);
@@ -525,6 +589,12 @@
   .fieldbookHome .heroDecisionPanel ol { grid-template-columns: 1fr; }
   .fieldbookHome .heroDecisionPanel li { border-right: 0; border-bottom: 1px solid var(--home-line); }
   .fieldbookHome .heroDecisionPanel li:last-child { border-bottom: 0; }
+  .fieldbookHome .heroFlightIllustration {
+    width: min(640px, 100%);
+    justify-self: center;
+    margin: -8px 0 -18px;
+  }
+  .fieldbookHome .heroFlightArtwork { width: 108%; }
   .fieldbookHome .learningPathsV2 > header,
   .fieldbookHome .moduleExplorerIntro,
   .fieldbookHome .homeTermGuide { grid-template-columns: minmax(0, 1fr); gap: 20px; }
@@ -578,6 +648,14 @@
   .fieldbookHome .heroGridV2 { padding-top: 42px; gap: 26px; }
   .fieldbookHome .heroV2 h1 { font-size: clamp(38px, 10.5vw, 44px); line-height: 1.12; letter-spacing: -.032em; }
   .fieldbookHome .heroV2 .heroLead { margin-top: 18px; font-size: 16px; line-height: 1.65; }
+  .fieldbookHome .heroFlightIllustration {
+    width: 100%;
+    margin: -10px 0 -18px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+  .fieldbookHome .heroFlightArtwork { width: 112%; }
+  .fieldbookHome .heroFlightSignal { right: 10%; }
   .fieldbookHome .heroActions { align-items: stretch; flex-direction: column; gap: 10px; }
   .fieldbookHome .homePrimaryAction,
   .fieldbookHome .homeSecondaryAction { justify-content: space-between; }
@@ -628,4 +706,7 @@
   .fieldbookHome .homePrimaryAction,
   .fieldbookHome .homeSecondaryAction,
   .fieldbookHome .moduleResult { transition: none; }
+
+  .fieldbookHome .heroFlightArtwork,
+  .fieldbookHome .heroFlightSignal { animation: none; }
 }
