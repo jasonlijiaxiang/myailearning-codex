@@ -85,11 +85,66 @@ const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
   })),
 ];
 
-const learningPaths = [
-  { no: "01", title: "第一次与客户聊 AI 平台", time: "建立全局判断", route: "场景解决方案 → 模型格局 → LLM → 评估", outcome: "先判断客户真正要解决的问题，再讨论模型和产品。" },
-  { no: "02", title: "正在设计企业知识助手", time: "规划 PoC 验证", route: "数据工程 → RAG → 安全 → AI 网关 → AI Ops", outcome: "把知识、权限、回答质量和上线运营连成完整方案。" },
-  { no: "03", title: "客户希望 AI 执行业务任务", time: "控制行动风险", route: "Agent → MCP / A2A → 安全 → 评估 → AI Ops", outcome: "区分模型决策、工具权限、持久任务与业务完成状态。" },
-  { no: "04", title: "准备规划私有化 AI 基础设施", time: "评估算力需求", route: "模型格局 → 推理 → 平台 → 算力 → 数据工程", outcome: "用实际业务负载估算模型服务、GPU、网络和存储需求，再决定部署和采购。" },
+type LearningPathModule = { slug: string; label: string };
+
+const learningPaths: Array<{
+  no: string;
+  title: string;
+  time: string;
+  steps: LearningPathModule[][];
+  outcome: string;
+}> = [
+  {
+    no: "01",
+    title: "第一次与客户聊 AI 平台",
+    time: "建立全局判断",
+    steps: [
+      [{ slug: "solution-patterns", label: "场景解决方案" }],
+      [{ slug: "model-landscape", label: "模型格局" }],
+      [{ slug: "llm", label: "LLM" }],
+      [{ slug: "evaluation", label: "评估" }],
+    ],
+    outcome: "先判断客户真正要解决的问题，再讨论模型和产品。",
+  },
+  {
+    no: "02",
+    title: "正在设计企业知识助手",
+    time: "规划 PoC 验证",
+    steps: [
+      [{ slug: "data-engineering", label: "数据工程" }],
+      [{ slug: "rag", label: "RAG" }],
+      [{ slug: "security", label: "安全" }],
+      [{ slug: "ai-gateway", label: "AI 网关" }],
+      [{ slug: "ai-ops", label: "AI Ops" }],
+    ],
+    outcome: "把知识、权限、回答质量和上线运营连成完整方案。",
+  },
+  {
+    no: "03",
+    title: "客户希望 AI 执行业务任务",
+    time: "控制行动风险",
+    steps: [
+      [{ slug: "ai-agent", label: "Agent" }],
+      [{ slug: "mcp", label: "MCP" }, { slug: "a2a", label: "A2A" }],
+      [{ slug: "security", label: "安全" }],
+      [{ slug: "evaluation", label: "评估" }],
+      [{ slug: "ai-ops", label: "AI Ops" }],
+    ],
+    outcome: "区分模型决策、工具权限、持久任务与业务完成状态。",
+  },
+  {
+    no: "04",
+    title: "准备规划私有化 AI 基础设施",
+    time: "评估算力需求",
+    steps: [
+      [{ slug: "model-landscape", label: "模型格局" }],
+      [{ slug: "llm-inference", label: "推理" }],
+      [{ slug: "ai-infra-platform", label: "平台" }],
+      [{ slug: "ai-infra-compute", label: "算力" }],
+      [{ slug: "data-engineering", label: "数据工程" }],
+    ],
+    outcome: "用实际业务负载估算模型服务、GPU、网络和存储需求，再决定部署和采购。",
+  },
 ];
 
 export default function Home() {
@@ -161,7 +216,27 @@ export default function Home() {
         <header><h2 id="learning-paths-title">从场景开始</h2><p>从客户正在面对的场景进入，沿着路径形成下一步判断。</p></header>
         <div className="learningPathList">
           {learningPaths.map((path) => (
-            <article key={path.no}><span>{path.no}</span><div><p>{path.time}</p><h3>{path.title}</h3></div><strong>{path.route}</strong><p>{path.outcome}</p></article>
+            <article key={path.no}>
+              <span>{path.no}</span>
+              <div><p>{path.time}</p><h3>{path.title}</h3></div>
+              <p className="learningPathRoute">
+                {path.steps.map((step, stepIndex) => (
+                  <span className="learningPathRouteStep" key={step.map((module) => module.slug).join("-")}>
+                    {stepIndex > 0 ? <i className="learningPathRouteSeparator" aria-hidden="true">→</i> : null}
+                    {step.map((module, moduleIndex) => {
+                      if (!moduleNames.has(module.slug)) throw new Error(`学习路径引用了未知模块：${module.slug}`);
+                      return (
+                        <span className="learningPathRouteModule" key={module.slug}>
+                          {moduleIndex > 0 ? <i className="learningPathRouteSeparator" aria-hidden="true">/</i> : null}
+                          <Link className="learningPathModuleLink" href={`/modules/${module.slug}`} aria-label={`进入 ${module.label} 模块`}>{module.label}</Link>
+                        </span>
+                      );
+                    })}
+                  </span>
+                ))}
+              </p>
+              <p className="learningPathOutcome">{path.outcome}</p>
+            </article>
           ))}
         </div>
       </section>

@@ -278,13 +278,36 @@
 }
 .fieldbookHome .learningPathList article div p { color: var(--home-meta); font-size: 11px; letter-spacing: .04em; }
 .fieldbookHome .learningPathList h3 { margin: 3px 0 0; font-size: 19px; line-height: 1.35; }
-.fieldbookHome .learningPathList article > strong {
+.fieldbookHome .learningPathRoute {
   grid-column: 2;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
   color: var(--home-ink);
   font-size: 13px;
+  font-weight: 680;
   line-height: 1.6;
 }
-.fieldbookHome .learningPathList article > p {
+.fieldbookHome .learningPathRouteStep,
+.fieldbookHome .learningPathRouteModule {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.fieldbookHome .learningPathRouteModule { gap: 4px; }
+.fieldbookHome .learningPathRouteSeparator { color: var(--home-meta); font-style: normal; }
+.fieldbookHome .learningPathModuleLink {
+  color: var(--home-ink);
+  text-decoration-line: underline;
+  text-decoration-color: var(--home-guide);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+.fieldbookHome .learningPathModuleLink:hover { color: var(--home-link); text-decoration-color: var(--home-accent); }
+.fieldbookHome .learningPathOutcome {
   grid-column: 2;
   margin: 0;
   color: var(--home-muted);

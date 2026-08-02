@@ -215,7 +215,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
 });
 
 test("homepage leads from scenario to questions with links to every independent module", async () => {
-  const html = await renderHtml("/");
+  const [html, englishHtml] = await Promise.all([renderHtml("/"), renderHtml("/en")]);
   assertValidGridSpans(html, "/");
   const homepageSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
 
@@ -250,6 +250,14 @@ test("homepage leads from scenario to questions with links to every independent 
     assert.match(html, new RegExp(`href="${escapeRegExp(knowledgeModule.href)}"`), `首页缺少模块入口：${knowledgeModule.zh}`);
     assert.match(html, new RegExp(escapeRegExp(knowledgeModule.zh)), `首页缺少模块名称：${knowledgeModule.zh}`);
     assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(knowledgeModule.en))), `首页缺少英文术语：${knowledgeModule.en}`);
+  }
+
+  const scenarioPathSlugs = [
+    "solution-patterns", "model-landscape", "llm", "evaluation", "data-engineering", "rag", "security", "ai-gateway", "ai-ops", "ai-agent", "mcp", "a2a", "llm-inference", "ai-infra-platform", "ai-infra-compute",
+  ];
+  for (const slug of scenarioPathSlugs) {
+    assert.match(html, new RegExp('<a(?=[^>]*class="learningPathModuleLink")(?=[^>]*href="' + escapeRegExp("/modules/" + slug) + '")[^>]*>'), "中文场景路径缺少可点击模块：" + slug);
+    assert.match(englishHtml, new RegExp('<a(?=[^>]*class="learningPathModuleLink")(?=[^>]*href="' + escapeRegExp("/en/modules/" + slug) + '")[^>]*>'), "English learning path lacks a clickable module: " + slug);
   }
 
   assert.doesNotMatch(homepageSource, /layer\.purpose/, "首页不应渲染泛化层说明");

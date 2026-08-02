@@ -101,11 +101,66 @@ const englishHomepageTermGroups = homepageTermGroups.map((group, index) => ({
   termIds: group.termIds,
 }));
 
-const learningPaths = [
-  { no: "01", title: "First AI platform conversation", time: "Build a complete point of view", route: "Solution patterns → Model landscape → LLM → Evaluation", outcome: "Clarify the customer outcome before discussing models and products." },
-  { no: "02", title: "Designing an enterprise knowledge assistant", time: "Plan a defensible PoC", route: "Data engineering → RAG → Security → AI gateway → AI Ops", outcome: "Connect knowledge, permissions, answer quality, and production operations." },
-  { no: "03", title: "Letting AI execute business work", time: "Control action risk", route: "Agent → MCP / A2A → Security → Evaluation → AI Ops", outcome: "Separate model decisions, tool permissions, durable tasks, and authoritative business outcomes." },
-  { no: "04", title: "Planning private AI infrastructure", time: "Build capacity evidence", route: "Model landscape → Inference → Platform → Compute → Data engineering", outcome: "Work backward from real workloads to serving, scheduling, networks, storage, and procurement." },
+type LearningPathModule = { slug: string; label: string };
+
+const learningPaths: Array<{
+  no: string;
+  title: string;
+  time: string;
+  steps: LearningPathModule[][];
+  outcome: string;
+}> = [
+  {
+    no: "01",
+    title: "First AI platform conversation",
+    time: "Build a complete point of view",
+    steps: [
+      [{ slug: "solution-patterns", label: "Solution patterns" }],
+      [{ slug: "model-landscape", label: "Model landscape" }],
+      [{ slug: "llm", label: "LLM" }],
+      [{ slug: "evaluation", label: "Evaluation" }],
+    ],
+    outcome: "Clarify the customer outcome before discussing models and products.",
+  },
+  {
+    no: "02",
+    title: "Designing an enterprise knowledge assistant",
+    time: "Plan a defensible PoC",
+    steps: [
+      [{ slug: "data-engineering", label: "Data engineering" }],
+      [{ slug: "rag", label: "RAG" }],
+      [{ slug: "security", label: "Security" }],
+      [{ slug: "ai-gateway", label: "AI gateway" }],
+      [{ slug: "ai-ops", label: "AI Ops" }],
+    ],
+    outcome: "Connect knowledge, permissions, answer quality, and production operations.",
+  },
+  {
+    no: "03",
+    title: "Letting AI execute business work",
+    time: "Control action risk",
+    steps: [
+      [{ slug: "ai-agent", label: "Agent" }],
+      [{ slug: "mcp", label: "MCP" }, { slug: "a2a", label: "A2A" }],
+      [{ slug: "security", label: "Security" }],
+      [{ slug: "evaluation", label: "Evaluation" }],
+      [{ slug: "ai-ops", label: "AI Ops" }],
+    ],
+    outcome: "Separate model decisions, tool permissions, durable tasks, and authoritative business outcomes.",
+  },
+  {
+    no: "04",
+    title: "Planning private AI infrastructure",
+    time: "Build capacity evidence",
+    steps: [
+      [{ slug: "model-landscape", label: "Model landscape" }],
+      [{ slug: "llm-inference", label: "Inference" }],
+      [{ slug: "ai-infra-platform", label: "Platform" }],
+      [{ slug: "ai-infra-compute", label: "Compute" }],
+      [{ slug: "data-engineering", label: "Data engineering" }],
+    ],
+    outcome: "Work backward from real workloads to serving, scheduling, networks, storage, and procurement.",
+  },
 ];
 
 function EnglishHomeTermGroups() {
@@ -205,7 +260,31 @@ export default function EnglishHome() {
 
       <section className="learningPathsV2" id="learning-paths" aria-labelledby="english-learning-paths-title">
         <header><p className="kicker">MISSION-BASED PATHS</p><h2 id="english-learning-paths-title">Follow the customer task, not the table of contents</h2><p>Each path ends in a customer decision and an evidence-bearing deliverable—not merely a list of modules read.</p></header>
-        <div className="learningPathList">{learningPaths.map((path) => <article key={path.no}><span>{path.no}</span><div><p>{path.time}</p><h3>{path.title}</h3></div><strong>{path.route}</strong><p>{path.outcome}</p></article>)}</div>
+        <div className="learningPathList">
+          {learningPaths.map((path) => (
+            <article key={path.no}>
+              <span>{path.no}</span>
+              <div><p>{path.time}</p><h3>{path.title}</h3></div>
+              <p className="learningPathRoute">
+                {path.steps.map((step, stepIndex) => (
+                  <span className="learningPathRouteStep" key={step.map((module) => module.slug).join("-")}>
+                    {stepIndex > 0 ? <i className="learningPathRouteSeparator" aria-hidden="true">→</i> : null}
+                    {step.map((module, moduleIndex) => {
+                      if (!englishModuleRegistry[module.slug]) throw new Error(`Unknown learning path module: ${module.slug}`);
+                      return (
+                        <span className="learningPathRouteModule" key={module.slug}>
+                          {moduleIndex > 0 ? <i className="learningPathRouteSeparator" aria-hidden="true">/</i> : null}
+                          <Link className="learningPathModuleLink" href={`/en/modules/${module.slug}`} aria-label={`Open ${module.label} module`}>{module.label}</Link>
+                        </span>
+                      );
+                    })}
+                  </span>
+                ))}
+              </p>
+              <p className="learningPathOutcome">{path.outcome}</p>
+            </article>
+          ))}
+        </div>
       </section>
       <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{englishModuleCount} modules · {layerCount} knowledge layers</p><a href="#top">Back to top ↑</a></footer>
     </main>
