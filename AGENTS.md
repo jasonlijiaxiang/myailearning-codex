@@ -9,21 +9,20 @@
 - 来源标题、链接、证据类别、边界与核验日期只在 `app/reference-content.mjs` 维护；模块内容只引用稳定的 `sourceId`。
 - 页面用“相关模块”，不用“模块依赖”。
 
-## Portable 与聊天沉淀
+## 日常 GitHub + Sites 与按需 Portable
 
-- `kb.config.json` 是 portable、采集、整理、校验和可选发布模式的项目契约；不得在 Skill 或脚本中写入本机绝对路径。
-- `.agents/skills/curate-portable-knowledge-base` 是聊天成果整理、事实核验、知识晋升、时效巡检和 portable 打包的项目级工作流。
-- `.codex/hooks.json` 只把可用的项目聊天内容写入 `knowledge/private-inbox/.runtime/`；该目录始终保持私有，不进入 Git、网页、构建产物或 portable 包。
-- 每次任务结束前，若对话产生可复用的概念、判断、流程、失败经验、客户问题或来源变化，使用项目级 Skill 完成去重、脱敏、核验和知识路由；没有知识增量时记录 no-op，不为每次聊天强行生成公开文章。
+- GitHub 是日常维护的唯一源码、历史与协作入口；GPT Sites 是公开呈现与部署目标。`kb.config.json` 仍保存 portable、私有采集和按需交接契约，Skill 或脚本中不得写入本机绝对路径。
+- 日常维护、模块打磨与公开发布只运行 `npm run check` 和 Sites 发布门禁；不得因为常规发布自动运行 `kb:doctor`、`kb:validate`、handoff 审计、portable 打包或 `portable-*` 测试。
+- `.agents/skills/curate-portable-knowledge-base` 仅在用户明确要求离线 ZIP、跨机器交接、portable 审计，或明确要求整理私有聊天时使用。需要时先运行完整的 `npm run portable:check`，再按实际对象执行打包与分发审计。
+- `.codex/hooks.json` 的私有 inbox 仍可作为本机可选采集入口；其内容不构成日常发布输入，始终不进入 Git、网页、构建产物或 portable 包。
 - 原始聊天、仅助手内容、部分捕获、敏感内容和未核验断言不得自动晋升。正式内容仍通过现有模块注册表、问答、证据和 Reference 契约进入网站。
-- Git 与 GitHub 只增强历史、协作和同步；没有仓库或远端时，本地整理、验证、运行和打包必须仍然可用。任何推送和公开发布仍遵守下方严格规则。
 - Portable、采集或维护基础设施变更不得顺带重写现有知识正文、页面组件或视觉样式；只有用户明确要求内容或设计变化时才修改对应公开页面。
 
 ## 推送与公开发布
 
 - 经用户确认的正式知识库内容、配置或维护规则变更，必须在同一次任务中完成 Git 提交与推送；计划、调研、无改动检查和未确认草稿不触发提交发布。
 - Codex 对本项目执行任何 Git 推送后，必须在同一次任务中更新公开站点，不得只停留在 GitHub。
-- 推送前运行构建、自动检查与代码检查；推送后确认远端分支与本地提交一致。
+- 推送前运行 `npm run check`（构建、网站与内容检查、代码检查）；`npm run portable:check` 只在需要 portable 时运行。推送后确认远端分支与本地提交一致，并运行 `npm run sites:release-check` 生成同一提交的发布候选。
 - 公开站点必须使用刚刚推送的精确提交生成 Sites 版本，部署为公开版本，并轮询到发布成功。
 - 发布成功后打开并交付公开地址：`https://cloud-ai-presales-fieldbook.lijx.chatgpt.site`。
 - 如果 Git 推送成功但公开发布失败，任务不得标记完成；必须说明失败环节和当前可恢复状态。

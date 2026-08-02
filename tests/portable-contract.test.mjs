@@ -14,7 +14,7 @@ const KB_TOOL = path.join(
   PROJECT_ROOT,
   ".agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs",
 );
-const QUALITY_COMMANDS = ["npm run kb:validate", "npm run lint", "npm test"];
+const QUALITY_COMMANDS = ["npm run lint", "npm test"];
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
@@ -440,7 +440,7 @@ test("portable config and ZIP enforce nested exclusions, required roots, and pai
     assert.match(conflict.stderr, /include app is fully covered by exclude app/);
 
     config.packaging.exclude.pop();
-    config.quality.commands = ["npm run kb:validate", "node unsafe.mjs", "npm test"];
+    config.quality.commands = ["npm run lint", "node unsafe.mjs"];
     config.packaging.includeSiteBindingByDefault = true;
     await writeJson(path.join(root, "kb.config.json"), config);
     const unsafeConfig = runTool(root, ["validate"]);

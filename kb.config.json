@@ -36,13 +36,6 @@
         "command": "npm",
         "args": [
           "run",
-          "kb:validate"
-        ]
-      },
-      {
-        "command": "npm",
-        "args": [
-          "run",
           "audit:english:complete"
         ]
       },
@@ -73,21 +66,20 @@
   },
   "quality": {
     "commands": [
-      "npm run kb:validate",
       "npm run lint",
       "npm test"
     ]
   },
   "publishing": {
-    "defaultMode": "local",
+    "defaultMode": "sites",
     "sourceRepository": {
       "visibility": "public"
     },
     "github": {
-      "optional": true
+      "optional": false
     },
     "sites": {
-      "optional": true,
+      "optional": false,
       "binding": ".openai/hosting.json",
       "visibility": "public",
       "requiresExplicitRequest": true

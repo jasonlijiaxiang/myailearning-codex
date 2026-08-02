@@ -531,7 +531,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
         terminology: "app/terminology.mjs",
       },
       quality: {
-        commands: ["npm run kb:validate", "npm run lint", "npm test"],
+        commands: ["npm run lint", "npm test"],
       },
       publishing: {
         defaultMode: "local",

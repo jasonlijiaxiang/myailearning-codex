@@ -4,25 +4,19 @@
 
 当前知识地图包含 21 个正式模块；初始主题曾参照维护者本机 `external_reference/CC-20260717` 中的资料建立归档映射，全局复核后补入预测式 AI 与 MLOps、AI 应用工程、AI 治理以及 AI FinOps 等关键生命周期知识，并按独立决策价值把应用工程并入 GenAIOps、把 AI FinOps 主要并入场景解决方案。PPT 只用于发现线索和查漏，不定义网站章节、知识边界或内容上限。V2 阅读版提供全库搜索、章节导航、阅读进度、交互式机制视图和可筛选客户实战包；RAG、Agent、Prompt Engineering 使用主题定制的深度页面，其余模块继承同一阅读系统。全站来源集中在可搜索的统一 Reference 页面。
 
-## 本地运行
+## 日常维护与本地运行
 
-准备条件：Node.js 22.13 或更高版本；只有需要聊天沉淀或 Codex 协作时才需要 Codex。解压项目后，从项目根目录加入或打开 Codex；项目级 Skill 会从 `.agents/skills` 自动发现。首次启用聊天采集时，通过 Codex 的 `/hooks` 检查并信任项目 Hook。
-
-优先双击打开 [`HANDOFF-READ-FIRST.html`](HANDOFF-READ-FIRST.html) 阅读完整使用与迁移指南；它是由 [`HANDOFF.md`](HANDOFF.md) 自动生成的离线 HTML，包含 macOS、Linux、Windows 原生、Windows + WSL2 的安装、启动、验证、聊天沉淀、打包、迁移和故障排查命令。如果你拿到的是同事分享的 portable ZIP，应先按该指南验证 SHA-256，再选择“只阅读、聊天沉淀、参与维护”对应流程。
+日常维护以 GitHub 为唯一源码、历史和协作入口，并由 GPT Sites 呈现公开站点。准备条件为 Node.js 22.13 或更高版本；只有需要 Codex 协作或按需 portable 交接时才需要 Codex。
 
 ```bash
 npm ci
-npm run kb:doctor
+npm run check
 npm run dev
 ```
 
-完整检查：
+`npm run check` 是日常门禁，覆盖代码检查、内容和网站构建；确认变更后提交并推送 GitHub，再用同一提交保存和部署 GPT Sites 版本。离线 ZIP、跨机器迁移和私有聊天整理不属于日常发布步骤。
 
-```bash
-npm run check
-```
-
-本地使用不要求 Git 或 GitHub。没有远端仓库时，知识整理、搜索、构建和 portable 打包仍可工作；公网发布仍需要使用者自己的托管授权。
+只有收到 portable ZIP 或需要离线交接时，才阅读 [`HANDOFF-READ-FIRST.html`](HANDOFF-READ-FIRST.html) 和 [`HANDOFF.md`](HANDOFF.md)，并使用下方按需命令。
 
 ## 模块批次打磨
 
@@ -38,15 +32,23 @@ npm run module:polish -- prepare next
 
 批次完成定向验证后，主 Agent 暂存本批次快照，再运行全量门禁；门禁通过后只把进度推进为 `complete`，最终提交、推送和 Sites 验证完成后生成本地 seal receipt。完整流程见 `.agents/skills/curate-portable-knowledge-base/references/module-batch-workflow.md`。
 
-## 聊天沉淀与 Portable
+## 按需 Portable 与聊天沉淀
+
+Portable 仅用于离线 ZIP、跨机器交接、迁移或需要私有聊天沉淀的任务；不会在常规 GitHub + Sites 发布中自动执行。
+
+```bash
+npm run portable:check
+```
+
+`portable:check` 会运行 portable 契约、handoff 和相关安全测试。通过后再按实际需求打包或审计。
 
 - `UserPromptSubmit` 与 `Stop` Hook 默认只把可见的用户问题和最终回答保存在 `knowledge/private-inbox/.runtime/`。Hook 绑定经过逐级校验的项目根；有 Git 时拒绝嵌套仓库遮蔽，无 Git 时只接受当前项目根。任何定位、导入或写入失败都不会阻断聊天。完整 transcript 默认关闭；显式启用后也只接受 Codex 会话目录内的真实文件，且仍按不稳定的私有输入处理。
 - 已处理记录只有在载荷完整性通过且结果 ID 能解析到真实候选、Claim、模块、来源或发布记录后，才会进入定期原文清理；清理前会再次确认结果仍存在且仍能反向追到该捕获。未处理、受阻或结果已失效的记录不会静默删除。
-- `curate-portable-knowledge-base` Skill 负责脱敏、去重、事实核验、更新现有模块内容和来源，并在通过质量门禁后才把知识晋升到公开网站。
-- 每轮聊天都会获得处理机会，但闲聊、重复内容、仅助手内容、部分捕获、敏感内容和缺少证据的断言不会自动公开。
+- `curate-portable-knowledge-base` Skill 在明确请求时负责脱敏、去重、事实核验、更新现有模块内容和来源，并在通过质量门禁后才把知识晋升到公开网站。
+- 私有 capture 只在明确启动聊天沉淀或 portable 工作流时处理；闲聊、重复内容、仅助手内容、部分捕获、敏感内容和缺少证据的断言不会自动公开。
 - 当前网页的内容架构和视觉系统仍是公开知识的呈现层；portable 能力不会建立另一套页面或改变现有样式。
 
-常用命令：
+按需 portable 命令：
 
 ```bash
 npm run kb:doctor
@@ -57,7 +59,7 @@ npm run kb:package -- --audience internal
 npm run kb:release-check -- --mode local --audience internal
 ```
 
-修改 `HANDOFF.md` 后，同步生成并检查 HTML：
+修改 `HANDOFF.md`（仅 portable 交接时）后，同步生成并检查 HTML：
 
 ```bash
 npm run handoff:build
@@ -99,9 +101,9 @@ npm run handoff:check
 - `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则
 - `external_reference/`：仅保留在维护者本机的参考资料投放区，不进入 GitHub
 - `.openai/hosting.json`：公开站点发布配置
-- `kb.config.json`：portable、聊天采集、知识整理和可选发布模式的统一配置
-- `.agents/skills/curate-portable-knowledge-base/`：项目级知识整理 Skill
-- `.codex/hooks.json`：私有聊天采集入口
+- `kb.config.json`：GitHub + Sites 日常发布与按需 portable 的统一配置
+- `.agents/skills/curate-portable-knowledge-base/`：按需 portable、聊天沉淀和知识整理 Skill
+- `.codex/hooks.json`：本机可选私有聊天采集入口
 - `knowledge/attachment-distribution.json`：原始附件的分发授权范围与人工复核台账
 - `knowledge/claims/`：动态事实生命周期台账
 - `knowledge/module-polish/`：模块批次计划与已验证进度；`.runtime/` 始终保持本地私有

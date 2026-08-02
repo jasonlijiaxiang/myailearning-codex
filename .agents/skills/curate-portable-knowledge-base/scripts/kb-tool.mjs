@@ -95,11 +95,11 @@ const REQUIRED_PORTABLE_FILES = [
   "knowledge/schemas/release.schema.json",
   "scripts/release-check.mjs",
 ];
-const SAFE_QUALITY_COMMANDS = Object.freeze([
-  "npm run kb:validate",
+const DAILY_QUALITY_COMMANDS = Object.freeze([
   "npm run lint",
   "npm test",
 ]);
+const ALLOWED_DEFAULT_PUBLISHING_MODES = new Set(["local", "git", "sites"]);
 const HANDOFF_AUDIENCES = Object.freeze(["internal", "external"]);
 const HANDOFF_CONTROL_FILES = new Set(["README.md", "MANIFEST.md", ".gitkeep"]);
 const OFFICE_ATTACHMENT_EXTENSIONS = new Set([
@@ -828,8 +828,8 @@ async function validate({
   const errors = [];
   const config = await loadConfig();
   if (config.schemaVersion !== 1) errors.push("kb.config.json schemaVersion must be 1");
-  if (config.publishing?.defaultMode !== "local") {
-    errors.push("Portable default publishing mode must remain local");
+  if (!ALLOWED_DEFAULT_PUBLISHING_MODES.has(config.publishing?.defaultMode)) {
+    errors.push("publishing.defaultMode must be one of: local, git, sites");
   }
   const sourceRepositoryVisibility = config.publishing?.sourceRepository?.visibility;
   if (sourceRepositoryVisibility != null
@@ -846,8 +846,8 @@ async function validate({
   if (typeof config.capture?.storeRawTranscript !== "boolean") {
     errors.push("capture.storeRawTranscript must be true or false");
   }
-  if (!sameStringArray(config.quality?.commands, SAFE_QUALITY_COMMANDS)) {
-    errors.push(`quality.commands must be exactly: ${SAFE_QUALITY_COMMANDS.join(", ")}`);
+  if (!sameStringArray(config.quality?.commands, DAILY_QUALITY_COMMANDS)) {
+    errors.push(`quality.commands must be exactly: ${DAILY_QUALITY_COMMANDS.join(", ")}`);
   }
   if (!Number.isInteger(config.packaging?.maxArchiveBytes)
     || config.packaging.maxArchiveBytes <= 0

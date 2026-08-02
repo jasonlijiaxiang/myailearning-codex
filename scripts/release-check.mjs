@@ -177,15 +177,6 @@ function readCommittedConfig(sha, mode) {
   return parseConfig(text, `kb.config.json at ${sha}`);
 }
 
-function verifyCommittedIncludes(sha, config, mode) {
-  for (const included of config.packaging?.include ?? []) {
-    const entry = git(["cat-file", "-e", `${sha}:${included}`]);
-    if (entry.status !== 0) {
-      throw new Error(`${mode} release mode requires portable source in the target commit: ${included}`);
-    }
-  }
-}
-
 function parseSitesBinding(bytes, source) {
   let binding;
   try {
@@ -280,12 +271,6 @@ async function runQualityCommands(config, cwd, releaseSha = null) {
     console.log(`Running quality command: ${command}`);
     await runCommand(command, cwd, releaseSha);
   }
-}
-
-async function runHandoffAudit(config, cwd, audience, releaseSha = null) {
-  if (!config?.handoff?.attachmentPolicy) return;
-  console.log(`Running handoff attachment audit for ${audience} distribution.`);
-  await runCommand(`npm run kb:handoff-audit -- --audience ${audience}`, cwd, releaseSha);
 }
 
 function addExactWorktree(sha, mode) {
@@ -548,7 +533,6 @@ async function main() {
       readFileSync(path.join(PROJECT_ROOT, "kb.config.json"), "utf8"),
       "kb.config.json",
     );
-    await runHandoffAudit(config, PROJECT_ROOT, audience);
     await runQualityCommands(config, PROJECT_ROOT);
     console.log("Release checks passed for local mode.");
     return;
@@ -557,16 +541,12 @@ async function main() {
   const initialGitState = inspectExactGitState(mode);
   const config = readCommittedConfig(initialGitState.sha, mode);
   requireReleaseAudience(config, mode, audience);
-  verifyCommittedIncludes(initialGitState.sha, config, mode);
   const sitesBinding = mode === "sites" ? readSitesBinding(config, initialGitState.sha) : null;
   let worktree = null;
   let stagedArtifact = null;
 
   try {
     worktree = addExactWorktree(initialGitState.sha, mode);
-    if (mode === "git") {
-      await runHandoffAudit(config, worktree.sourceRoot, audience, initialGitState.sha);
-    }
     await installExactDependencies(worktree.sourceRoot, initialGitState.sha);
     if (sitesBinding) installSitesBinding(worktree.sourceRoot, sitesBinding);
     await runQualityCommands(config, worktree.sourceRoot, initialGitState.sha);

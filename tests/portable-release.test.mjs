@@ -146,7 +146,7 @@ test("local release mode uses configured quality commands without requiring Git"
   }
 });
 
-test("local release mode runs the configured handoff audit with an explicit audience", async () => {
+test("local release mode skips an optional portable handoff audit", async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "portable-release-handoff-"));
   try {
     const marker = path.join(root, "handoff-marker.json");
@@ -178,8 +178,7 @@ test("local release mode runs the configured handoff audit with an explicit audi
       { cwd: root, env: { HANDOFF_TEST_MARKER: marker } },
     );
     assert.equal(result.status, 0, result.stderr);
-    assert.match(result.stdout, /handoff attachment audit for external distribution/);
-    assert.deepEqual(JSON.parse(await fs.readFile(marker, "utf8")), ["--audience", "external"]);
+    await assert.rejects(fs.access(marker), { code: "ENOENT" });
   } finally {
     await removeFixture(root);
   }
@@ -203,50 +202,6 @@ test("public Git and Sites release surfaces reject an internal audience", async 
         await removeFixture(fixture.root);
       }
     });
-  }
-});
-
-test("public Git external release cannot bypass unknown attachment audit", async () => {
-  const packageManifest = {
-    name: "public-git-handoff-fixture",
-    version: "1.0.0",
-    private: true,
-    scripts: { "kb:handoff-audit": "node scripts/handoff-audit.mjs" },
-  };
-  const fixture = await createGitFixture({
-    config: releaseConfig("node scripts/quality.mjs", {
-      sourceVisibility: "public",
-      handoff: { attachmentPolicy: "knowledge/attachment-distribution.json" },
-    }),
-    files: {
-      "package.json": `${JSON.stringify(packageManifest, null, 2)}\n`,
-      "package-lock.json": `${JSON.stringify({
-        name: packageManifest.name,
-        version: packageManifest.version,
-        lockfileVersion: 3,
-        requires: true,
-        packages: {
-          "": {
-            name: packageManifest.name,
-            version: packageManifest.version,
-          },
-        },
-      }, null, 2)}\n`,
-      "scripts/handoff-audit.mjs": [
-        'if (process.argv.slice(2).join(" ") !== "--audience external") process.exit(9);',
-        'console.error("Attachment authorization is unknown for external distribution: external_reference/unknown.pptx");',
-        "process.exit(1);",
-        "",
-      ].join("\n"),
-    },
-  });
-  try {
-    const result = runRelease(fixture.project, "git", {}, "external");
-    assert.notEqual(result.status, 0);
-    assert.match(result.stdout, /handoff attachment audit for external distribution/);
-    assert.match(result.stderr, /Attachment authorization is unknown for external distribution/);
-  } finally {
-    await removeFixture(fixture.root);
   }
 });
 
