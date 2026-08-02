@@ -216,7 +216,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   ];
 
   return (
-    <main className={`modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
+    <main className={`fieldbookTheme modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">

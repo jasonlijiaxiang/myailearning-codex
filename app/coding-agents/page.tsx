@@ -24,7 +24,7 @@ const evaluationDimensions = [
 
 export default function CodingAgentsPage() {
   return (
-    <main className="codingAgentPage">
+    <main className="fieldbookTheme codingAgentPage">
       <ReadingProgress />
       <header className="hero heroV2 codingAgentHero" id="top">
         <nav className="topbar" aria-label="Coding Agent 选型页导航">

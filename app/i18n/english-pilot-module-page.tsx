@@ -372,7 +372,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
   );
 
   return (
-    <main lang="en" className={`modulePage moduleBriefPage${publication.visualProfile === "dense-reading" ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
+    <main lang="en" className={`fieldbookTheme modulePage moduleBriefPage${publication.visualProfile === "dense-reading" ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="Module navigation">

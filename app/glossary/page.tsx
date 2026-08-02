@@ -36,7 +36,7 @@ const abbreviationCount = terms.filter((term) => term.abbr).length;
 
 export default function GlossaryPage() {
   return (
-    <main className="glossaryPage">
+    <main className="fieldbookTheme glossaryPage">
       <ReadingProgress />
       <header className="hero glossaryHero" id="top">
         <nav className="topbar" aria-label="术语库导航">

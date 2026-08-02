@@ -255,7 +255,7 @@ const agentSystemLens: LensPanel[] = [
 
 export default function AgentModulePage() {
   return (
-    <main className="modulePage modulePilot modulePilot--dedicated">
+    <main className="fieldbookTheme modulePage modulePilot modulePilot--dedicated">
       <ReadingProgress />
       <section className="ragHero" id="agent" aria-labelledby="agent-title">
         <nav className="topbar" aria-label="模块导航">

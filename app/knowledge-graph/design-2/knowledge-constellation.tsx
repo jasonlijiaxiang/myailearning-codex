@@ -21,7 +21,7 @@ type Neighbor = {
 type Point = Neighbor & { x: number; y: number };
 
 const DEFAULT_FOCUS: Focus = { kind: "module", id: "rag" };
-const layerColors = ["#6ff4bd", "#47cfff", "#5b9cff", "#8177ff", "#b871ff", "#e76dc7", "#ffad46"];
+const layerColors = ["#8eb49a", "#9fc4ca", "#8da9c1", "#9897b4", "#a59bbb", "#b08c9c", "#c6a96c"];
 const graphCopy = {
   zh: {
     graphAria: "动态知识星图",

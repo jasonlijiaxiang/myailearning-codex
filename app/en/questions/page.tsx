@@ -16,5 +16,14 @@ const items: EnglishPilotDirectoryItem[] = englishQuestions.map((item) => ({
 }));
 
 export default function EnglishQuestionsPage() {
-  return <main lang="en" className="questionDirectoryPage"><nav className="topbar" aria-label="Question directory navigation"><Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link><div className="toplinks"><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/questions" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link></div></nav><header className="questionDirectoryHero"><p className="kicker">CUSTOMER QUESTION PACK</p><h1>Find the answer you need in a customer conversation</h1><p>This directory covers all {items.length} questions across the fieldbook. Each answer continues into technical detail, evidence limits, and a recommended discovery question.</p></header><EnglishPilotDirectory items={items} label="Search customer questions" placeholder="Try grounding, open weights, EU AI Act…" /></main>;
+  return (
+    <main lang="en" className="fieldbookTheme questionDirectoryPage">
+      <nav className="topbar" aria-label="Question directory navigation">
+        <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
+        <div className="toplinks"><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/questions" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link></div>
+      </nav>
+      <header className="questionDirectoryHero"><p className="kicker">CUSTOMER QUESTION PACK</p><h1>Find the answer you need in a customer conversation</h1><p>This directory covers all {items.length} questions across the fieldbook. Each answer continues into technical detail, evidence limits, and a recommended discovery question.</p></header>
+      <EnglishPilotDirectory items={items} label="Search customer questions" placeholder="Try grounding, open weights, EU AI Act…" />
+    </main>
+  );
 }

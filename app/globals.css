@@ -1,19 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #182027;
-  --paper: #f4f1e8;
-  --paper-2: #ebe7db;
-  --line: #c9c3b5;
-  --lime: #bafc61;
-  --blue: #7ac7ff;
-  --orange: #ff7e59;
-  --purple: #b7a8ff;
-  --gold: #f2bd52;
-  --teal: #54c9b5;
-  --rose: #f08aa2;
-  --white: #fffdf7;
-  --muted: #5f665f;
+  /* A / Mist: the canonical site-wide design tokens. */
+  --fb-ink: #153047;
+  --fb-ink-2: #29485a;
+  --fb-muted: #5f727e;
+  --fb-meta: #5b6f7b;
+  --fb-link: #3e6879;
+  --fb-marker: #88a7b3;
+  --fb-guide: #c8d8da;
+  --fb-line: #dee7e5;
+  --fb-control: #b9cdd1;
+  --fb-accent: #a8d84f;
+  --fb-accent-soft: #f3f7e9;
+  --fb-canvas: #fafcfb;
+  --fb-mist: #f3f7f7;
+  --fb-mint: #f3f7f3;
+  --fb-surface: #ffffff;
+  --fb-risk: #b9654b;
+  --fb-risk-soft: #fbf3f0;
+  --fb-shadow: 0 14px 34px rgba(21, 48, 71, .07);
+  --fb-focus: #315f72;
+
+  /* Compatibility names used by the established knowledge components. */
+  --ink: var(--fb-ink);
+  --ink-2: var(--fb-ink-2);
+  --paper: var(--fb-mist);
+  --paper-2: #e8efee;
+  --line: var(--fb-line);
+  --lime: var(--fb-accent);
+  --blue: var(--fb-link);
+  --orange: var(--fb-risk);
+  --purple: #756d87;
+  --gold: #987b3d;
+  --teal: #5f8c84;
+  --rose: #a66774;
+  --white: var(--fb-surface);
+  --muted: var(--fb-muted);
+  --readable: 820px;
+  --wide: 1480px;
+  --shadow: var(--fb-shadow);
   --font-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun";
 }
 

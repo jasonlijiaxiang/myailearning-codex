@@ -21,5 +21,14 @@ const items: EnglishPilotDirectoryItem[] = Object.entries(englishSourceCopy).map
 });
 
 export default function EnglishReferencesPage() {
-  return <main lang="en" className="questionDirectoryPage"><nav className="topbar" aria-label="Reference ledger navigation"><Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link><div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/references" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link></div></nav><header className="questionDirectoryHero"><p className="kicker">SOURCE LEDGER</p><h1>Know what each source supports—and what it does not</h1><p>Every entry keeps the original title, URL, evidence grade, verification date, supported claim, and explicit limit together.</p></header><EnglishPilotDirectory items={items} label="Search sources" placeholder="Try NIST, ISO, retrieval, model directory…" /></main>;
+  return (
+    <main lang="en" className="fieldbookTheme questionDirectoryPage">
+      <nav className="topbar" aria-label="Reference ledger navigation">
+        <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
+        <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/references" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link></div>
+      </nav>
+      <header className="questionDirectoryHero"><p className="kicker">SOURCE LEDGER</p><h1>Know what each source supports—and what it does not</h1><p>Every entry keeps the original title, URL, evidence grade, verification date, supported claim, and explicit limit together.</p></header>
+      <EnglishPilotDirectory items={items} label="Search sources" placeholder="Try NIST, ISO, retrieval, model directory…" />
+    </main>
+  );
 }

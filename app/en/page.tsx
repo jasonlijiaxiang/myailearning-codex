@@ -136,12 +136,23 @@ function EnglishHomeTermGroups() {
 
 export default function EnglishHome() {
   return (
-    <main lang="en" className="fieldbookHome">
+    <main lang="en" className="fieldbookTheme fieldbookHome fieldbookHomeEn">
       <ReadingProgress />
       <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="Main navigation">
           <Link className="brand" href="/en" prefetch={false}><span><strong>Cloud × AI Presales Fieldbook</strong><small>Evidence-backed technical field guide</small></span></Link>
           <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><a href="#available-modules">Find modules</a><Link href="/en/knowledge-graph" prefetch={false}>Dynamic explorer</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link></div>
+          <details className="homeMobileNav">
+            <summary>More</summary>
+            <nav aria-label="More navigation">
+              <Link href="/en/questions" prefetch={false}>Questions</Link>
+              <Link href="/en/glossary" prefetch={false}>Glossary</Link>
+              <a href="#available-modules">Find modules</a>
+              <Link href="/en/knowledge-graph" prefetch={false}>Dynamic explorer</Link>
+              <Link href="/en/references" prefetch={false}>References</Link>
+              <Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link>
+            </nav>
+          </details>
         </nav>
         <div className="heroGrid heroGridV2">
           <div className="heroCopy"><p className="kicker">EVIDENCE-BACKED FIELD GUIDE</p><h1>Turn complex AI technology<br />into decisions customers can act on</h1><p className="heroLead">A technical fieldbook that connects principles, architecture, failure analysis, cloud capabilities, acceptance evidence, and customer-ready answers—built for focused learning and live presales conversations.</p><KnowledgeSearchLaunch labels={searchLabels} /><div className="heroActions"><a className="textButton" href="#learning-paths">Follow a mission-based path <span>→</span></a><a className="textButton" href="#map">Browse the knowledge map <span>→</span></a></div></div>

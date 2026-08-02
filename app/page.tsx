@@ -93,7 +93,7 @@ const learningPaths = [
 
 export default function Home() {
   return (
-    <main className="fieldbookHome fieldbookHomeZh">
+    <main className="fieldbookTheme fieldbookHome fieldbookHomeZh">
       <ReadingProgress />
       <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="主导航">
@@ -111,6 +111,8 @@ export default function Home() {
           <details className="homeMobileNav">
             <summary>更多</summary>
             <nav aria-label="更多导航">
+              <a href="#available-modules">从问题开始</a>
+              <Link href="/glossary">术语库</Link>
               <Link href="/coding-agents">Coding Agent 选型</Link>
               <Link href="/knowledge-graph">模块关系</Link>
               <Link href="/references">来源与证据</Link>

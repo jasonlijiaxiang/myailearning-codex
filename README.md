@@ -85,12 +85,15 @@ npm run handoff:check
 - `app/prompt-content.mjs`：Prompt Engineering 问答与证据卡内容源
 - `app/module-content-components.tsx`：模块共用的动态证据卡与深度问答组件
 - `app/fieldbook-interactions.tsx`：全库搜索、章节导航、机制视图、问答与来源筛选
-- `app/fieldbook-v2.css`：V2 网页原生阅读与响应式视觉系统
+- `app/fieldbook-v2.css`：历史阅读组件与响应式布局基础；全站颜色统一消费 `globals.css` 的语义 token
+- `app/fieldbook-v3.css`：模块、目录与共享阅读组件的当前视觉层
+- `app/home-refresh.css`：中英文首页共用的 A / Mist 首页构图
 - `app/reference-content.mjs`：全站来源台账与模块来源分组的唯一内容源
 - `app/references/page.tsx`：所有模块共用的 Reference 页面
 - `app/globals.css`：基础组件视觉系统与历史兼容样式
 - `tests/rendered-html.test.mjs`：内容、导航和构图规则检查
 - `docs/CONTENT-DESIGN-STANDARD.md`：后续模块必须遵守的内容与构图规范
+- `docs/DESIGN-LANGUAGE.md`：A / Mist 全站颜色、字体、留白、组件和页面家族规则
 - `docs/MODULE-BUILD-STANDARD.md`：由 RAG 提炼的模块建设、证据、云服务与验收标准
 - `docs/MODULE-QUALITY-GATES.md`：历史问题追溯、防复发机制与新模块 Definition of Done
 - `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则

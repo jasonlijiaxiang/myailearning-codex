@@ -300,12 +300,13 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
 });
 
 test("v3 reading system keeps discovery functional, compact, and portable", async () => {
-  const [html, moduleHtml, layoutSource, interactionSource, styles] = await Promise.all([
+  const [html, moduleHtml, layoutSource, interactionSource, styles, globalStyles] = await Promise.all([
     renderHtml("/"),
     renderHtml("/modules/evaluation"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
   assert.match(layoutSource, /import "\.\/fieldbook-v3\.css"/);
@@ -315,7 +316,7 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   assert.match(interactionSource, /export function KnowledgeSearchLaunch/);
   assert.match(moduleHtml, /<div class="readingNavHead"><span>正在阅读 ·/);
   assert.match(interactionSource, /String\(activeIndex \+ 1\)\.padStart\(2, "0"\)/);
-  assert.match(styles, /--readable:\s*820px/);
+  assert.match(globalStyles, /--readable:\s*820px/);
   assert.match(styles, /\.moduleResult\s*\{[^}]*display:\s*grid[^}]*grid-template-areas:/s);
   assert.match(styles, /\.moduleSearch\s*\{[^}]*grid-template-columns:/s);
   assert.match(styles, /@media \(max-width:\s*720px\)[\s\S]*\.topbar\s*\{[^}]*flex-wrap:\s*wrap/s);
@@ -1179,6 +1180,48 @@ test("reader pages omit internal build notes and use the shared related-module l
       `公开页面应使用普通中文：${path}`,
     );
   }
+});
+
+test("all public page families use the shared A / Mist design contract", async () => {
+  const representativeRoutes = [
+    "/",
+    "/en",
+    "/modules/solution-patterns",
+    "/modules/rag",
+    "/en/modules/rag",
+    "/questions",
+    "/glossary",
+    "/references",
+    "/coding-agents",
+    "/en/questions",
+    "/en/glossary",
+    "/en/references",
+    "/knowledge-graph",
+    "/en/knowledge-graph",
+  ];
+
+  for (const path of representativeRoutes) {
+    const html = await renderHtml(path);
+    assert.match(html, /<main[^>]*class="[^"]*\bfieldbookTheme\b[^"]*"/, `${path} 缺少全站设计语言根类`);
+  }
+
+  const [globals, v2Styles, v3Styles, homeStyles, designLanguage] = await Promise.all([
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/home-refresh.css", import.meta.url), "utf8"),
+    readFile(new URL("../docs/DESIGN-LANGUAGE.md", import.meta.url), "utf8"),
+  ]);
+
+  for (const token of ["--fb-ink", "--fb-muted", "--fb-link", "--fb-line", "--fb-accent", "--fb-canvas", "--fb-mist", "--fb-risk"]) {
+    assert.match(globals, new RegExp(escapeRegExp(token)), `缺少设计 token：${token}`);
+  }
+  assert.doesNotMatch(v2Styles, /^:root\s*\{/m, "V2 不应重新定义全站 token");
+  assert.doesNotMatch(v3Styles, /^:root\s*\{/m, "V3 不应重新定义全站 token");
+  assert.doesNotMatch(homeStyles, /\.fieldbookHomeZh\b/, "首页设计应同时服务中英文页面");
+  assert.match(homeStyles, /\.fieldbookHome\s*\{/);
+  assert.match(designLanguage, /全站设计语言：雾灰青 A/);
+  assert.match(designLanguage, /动态知识关系图/);
 });
 
 test("references route is the complete centralized source ledger", async () => {

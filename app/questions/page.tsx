@@ -34,7 +34,7 @@ const moduleCountLead = `把 ${questionDirectoryModules.length} 个模块的客�
 
 export default function QuestionsPage() {
   return (
-    <main className="questionPage">
+    <main className="fieldbookTheme questionPage">
       <ReadingProgress />
       <header className="hero questionHero" id="top">
         <nav className="topbar" aria-label="问题查询页导航">

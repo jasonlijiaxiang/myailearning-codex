@@ -171,7 +171,7 @@ function SourceLinks({ sourceIds, label }: { sourceIds: string[]; label: string 
 
 export default function RagModulePage() {
   return (
-    <main className="modulePage modulePilot modulePilot--dedicated moduleFocused">
+    <main className="fieldbookTheme modulePage modulePilot modulePilot--dedicated moduleFocused">
       <ReadingProgress />
       <section className="ragHero" id="rag" aria-labelledby="rag-title">
         <nav className="topbar" aria-label="模块导航">

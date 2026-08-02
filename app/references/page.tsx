@@ -65,7 +65,7 @@ const referenceFilterItems: ReferenceFilterItem[] = referenceModules.flatMap((mo
 
 export default function ReferencesPage() {
   return (
-    <main className="referencePage">
+    <main className="fieldbookTheme referencePage">
       <ReadingProgress />
       <header className="hero referenceHero" id="top">
         <nav className="topbar" aria-label="来源页导航">

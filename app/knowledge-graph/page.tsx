@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function KnowledgeGraphPage() {
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} fieldbookTheme fieldbookGraphTheme`}>
       <ReadingProgress />
       <header className={styles.siteHeader}>
         <nav className="topbar" aria-label="动态探索导航">

@@ -1,21 +1,5 @@
 /* V3: laptop-first editorial reading system. Content remains code-native and portable. */
 
-:root {
-  --ink: #0b1b3b;
-  --ink-2: #17284a;
-  --paper: #f4f6f2;
-  --paper-2: #e9ede7;
-  --line: #cbd2d0;
-  --lime: #a8dc19;
-  --blue: #2462a8;
-  --orange: #d94f24;
-  --white: #ffffff;
-  --muted: #526071;
-  --readable: 820px;
-  --wide: 1480px;
-  --shadow: 0 18px 46px rgba(11, 27, 59, .08);
-}
-
 html { scroll-padding-top: 22px; }
 body { background: var(--paper); color: var(--ink); font-size: 17px; line-height: 1.76; }
 ::selection { background: #dff59f; color: var(--ink); }
@@ -2202,4 +2186,505 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .relationScenario nav::before { display: none; }
 
   .deepDiveEditorialChecklist li { grid-template-columns: 38px minmax(0,1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   A / Mist — shared visual language
+
+   Home keeps its accepted composition in home-refresh.css. This block owns
+   the shared shell and high-frequency reading components for every other
+   public page. Feature visualizations keep their own layouts but inherit the
+   same semantic tokens from globals.css.
+   -------------------------------------------------------------------------- */
+
+.fieldbookTheme {
+  min-height: 100vh;
+  background: var(--fb-canvas);
+  color: var(--fb-ink);
+}
+
+.fieldbookTheme::selection,
+.fieldbookTheme *::selection { background: #e4f3bf; color: var(--fb-ink); }
+
+.fieldbookTheme :where(a, button, input, select, summary):focus-visible {
+  outline: 3px solid var(--fb-focus);
+  outline-offset: 3px;
+}
+
+.fieldbookTheme .readingProgress { background: rgba(21, 48, 71, .08); }
+.fieldbookTheme .readingProgress span { background: var(--fb-accent); }
+
+/* Shared navigation */
+.fieldbookTheme .topbar {
+  width: 100%;
+  max-width: 1360px;
+  height: 68px;
+  margin-inline: auto;
+  color: var(--fb-ink);
+  border-bottom-color: var(--fb-line);
+}
+
+.fieldbookTheme .topbar .brand {
+  min-width: 0;
+  color: var(--fb-ink);
+  font-size: 13px;
+  font-weight: 720;
+  letter-spacing: 0;
+}
+
+.fieldbookTheme .topbar .brand > span { min-width: 0; display: grid; line-height: 1.25; }
+.fieldbookTheme .topbar .brand strong { font-size: 15px; }
+.fieldbookTheme .topbar .brand small { margin-top: 2px; color: var(--fb-muted); font-size: 10px; font-weight: 500; }
+.fieldbookTheme .topbar .toplinks { gap: clamp(17px, 2vw, 29px); font-size: 13px; }
+.fieldbookTheme .topbar .toplinks a { color: var(--fb-muted); text-underline-offset: 7px; }
+.fieldbookTheme .topbar .toplinks a:hover {
+  color: var(--fb-link);
+  text-decoration-color: var(--fb-accent);
+  text-decoration-thickness: 3px;
+}
+
+/* Shared page heroes */
+.fieldbookTheme :where(.modulePageHero, .ragHero, .questionHero, .referenceHero, .glossaryHero, .codingAgentHero) {
+  min-height: 0;
+  padding-inline: clamp(24px, 4vw, 64px);
+  background: var(--fb-surface);
+  color: var(--fb-ink);
+  border-bottom: 1px solid var(--fb-line);
+}
+
+.fieldbookTheme :where(.modulePageHero, .ragHero, .questionHero, .referenceHero, .glossaryHero)::after { display: none; }
+
+.fieldbookTheme :where(.questionHeroGrid, .referenceHeroGrid, .glossaryHeroGrid, .codingAgentHeroGrid) {
+  width: 100%;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding: clamp(52px, 6vw, 78px) 0 0;
+}
+
+.fieldbookTheme :where(.eyebrow, .kicker, .miniLabel, .answerLabel) {
+  color: var(--fb-meta);
+  letter-spacing: .1em;
+}
+
+.fieldbookTheme :where(.questionHero, .referenceHero, .glossaryHero, .codingAgentHero) h1 {
+  max-width: 960px;
+  color: var(--fb-ink);
+  font-family: var(--font-serif), "Songti SC", serif;
+  font-size: clamp(48px, 5vw, 70px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.fieldbookTheme :where(.questionHero, .referenceHero, .glossaryHero, .codingAgentHero) .heroLead {
+  max-width: 820px;
+  color: var(--fb-muted);
+  font-size: 17px;
+  line-height: 1.76;
+}
+
+.fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats, .codingAgentHeroGrid > aside) {
+  overflow: hidden;
+  border: 1px solid var(--fb-line);
+  border-radius: 12px;
+  background: var(--fb-mist);
+}
+
+.fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) > :where(div, p) { border-color: var(--fb-line); }
+.fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) strong,
+.fieldbookTheme .codingAgentHeroGrid > aside strong { color: var(--fb-link); }
+.fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) :where(span, p),
+.fieldbookTheme .codingAgentHeroGrid > aside span { color: var(--fb-muted); }
+
+.fieldbookTheme :where(.primaryButton, .questionHero .primaryButton, .referenceHero .primaryButton, .glossaryHero .primaryButton) {
+  padding: 12px 18px;
+  border: 1px solid var(--fb-accent);
+  border-radius: 8px;
+  background: var(--fb-accent);
+  color: var(--fb-ink);
+  box-shadow: none;
+}
+
+.fieldbookTheme :where(.primaryButton, .questionHero .primaryButton, .referenceHero .primaryButton, .glossaryHero .primaryButton):hover {
+  border-color: var(--fb-marker);
+  background: #b5df68;
+}
+
+.fieldbookTheme :where(.questionHero, .referenceHero, .glossaryHero) .textButton {
+  color: var(--fb-ink);
+  border-bottom-color: var(--fb-line);
+}
+
+/* Module reader */
+.fieldbookTheme.modulePage :where(.moduleBriefHeader, .ragHeader) {
+  width: 100%;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-top: clamp(42px, 5vw, 66px);
+}
+
+.fieldbookTheme.modulePage .moduleBriefHeader > .eyebrow { color: var(--fb-meta); }
+.fieldbookTheme.modulePage .moduleHeroTitle { color: var(--fb-ink); }
+.fieldbookTheme.modulePage .moduleHeroTitle > span { color: var(--fb-muted); }
+.fieldbookTheme.modulePage :where(.moduleBriefDefinition, .ragDefinition > p) { color: var(--fb-ink); }
+.fieldbookTheme.modulePage .moduleBriefPosition { color: var(--fb-muted); }
+
+.fieldbookTheme.modulePage .moduleHeroMetrics {
+  overflow: hidden;
+  border-color: var(--fb-line);
+  border-radius: 10px;
+  background: var(--fb-mist);
+}
+
+.fieldbookTheme.modulePage .moduleHeroMetrics > div { border-color: var(--fb-line); }
+.fieldbookTheme.modulePage .moduleHeroMetrics dd strong { color: var(--fb-link); }
+
+.fieldbookTheme.modulePage .moduleArticleLayout {
+  max-width: 1480px;
+  gap: 18px;
+  padding: 18px;
+  background: var(--fb-canvas);
+}
+
+.fieldbookTheme.modulePage .moduleReadingNav {
+  top: 10px;
+  overflow: hidden;
+  border: 1px solid var(--fb-line);
+  border-radius: 10px;
+  background: var(--fb-mist);
+}
+
+.fieldbookTheme.modulePage .readingNavHead { background: var(--fb-surface); }
+.fieldbookTheme.modulePage .readingNavHead > span { color: var(--fb-meta); }
+.fieldbookTheme.modulePage .readingNavHead > i { background: #e7efed; }
+.fieldbookTheme.modulePage .readingNavHead > i > span { background: var(--fb-accent); }
+.fieldbookTheme.modulePage .moduleReadingNav li a { border-color: transparent; }
+.fieldbookTheme.modulePage .moduleReadingNav li.active a {
+  border-color: var(--fb-accent);
+  background: var(--fb-mint);
+}
+
+.fieldbookTheme.modulePage :where(.moduleArticleContent, .dedicatedArticleLayout > .section) {
+  overflow: hidden;
+  border: 1px solid var(--fb-line);
+  border-radius: 12px;
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme.modulePage .decisionBanner {
+  margin: 18px;
+  padding: 28px 32px;
+  border: 0;
+  border-left: 5px solid var(--fb-accent);
+  border-radius: 10px;
+  background: var(--fb-accent-soft);
+}
+
+.fieldbookTheme.modulePage .subsection { border-color: var(--fb-line); }
+.fieldbookTheme.modulePage .subHead > span {
+  border: 1px solid var(--fb-guide);
+  background: var(--fb-mist);
+  color: var(--fb-link);
+}
+
+.fieldbookTheme.modulePage .sectionLead { color: var(--fb-muted); }
+.fieldbookTheme.modulePage :where(.conceptGrid, .mechanicGrid, .tableWrap, .memoryCompare, .workedExample, .systemLens, .learningRoute, .learningLab) {
+  overflow: hidden;
+  border-color: var(--fb-line);
+  border-radius: 10px;
+}
+
+.fieldbookTheme.modulePage :where(.conceptCard, .mechanicGrid article, .technicalNotes article, .metricCard, .qaBasisList a, .relatedModuleGrid a) {
+  border-color: var(--fb-line);
+  background: var(--fb-surface);
+  box-shadow: none;
+}
+
+.fieldbookTheme.modulePage :where(.conceptMeta span, .qaTag, .questionDirectoryTag) { background: var(--fb-mist); }
+.fieldbookTheme.modulePage .paperBoundary { border-color: var(--fb-link); background: var(--fb-mist); }
+.fieldbookTheme.modulePage .modulePilot .decisionBanner { background: var(--fb-accent-soft); }
+.fieldbookTheme.modulePage .moduleReadingNav li :where(small, span),
+.fieldbookTheme.modulePage :where(.conceptGrid p, .mechanicGrid p, .technicalNotes p) { color: var(--fb-muted); }
+
+.fieldbookTheme.modulePage .tableWrap { border-color: var(--fb-line); }
+.fieldbookTheme.modulePage .tableWrap thead th { background: var(--fb-mist); color: var(--fb-meta); }
+.fieldbookTheme.modulePage .tableWrap :where(th, td) { border-color: var(--fb-line); }
+
+.fieldbookTheme.modulePage :where(.qaToolbar, .moduleExplorerControls) {
+  border-color: var(--fb-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: var(--fb-shadow);
+}
+
+.fieldbookTheme.modulePage .qaTagFilters button.active {
+  border-color: var(--fb-guide);
+  background: var(--fb-mint);
+  color: var(--fb-ink);
+}
+
+.fieldbookTheme.modulePage .qaItem { border-color: var(--fb-line); }
+.fieldbookTheme.modulePage .qaList summary:hover { background: var(--fb-mint); }
+.fieldbookTheme.modulePage .callout {
+  border: 0;
+  border-left: 5px solid var(--fb-risk);
+  border-radius: 8px;
+  background: var(--fb-risk-soft);
+  box-shadow: none;
+}
+.fieldbookTheme.modulePage .calloutTitle { color: var(--fb-risk); }
+
+/* Chinese directory and evidence pages */
+.fieldbookTheme :where(.questionDirectorySection, .glossaryDirectorySection) {
+  width: calc(100% - 48px);
+  max-width: 1360px;
+  margin: 28px auto 0;
+  padding: clamp(60px, 6vw, 84px) clamp(28px, 5vw, 70px);
+  border: 0;
+  border-radius: 16px;
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme :where(.questionDirectoryIntro, .glossaryDirectoryIntro) h2,
+.fieldbookTheme.referencePage .sectionIntro h2 {
+  color: var(--fb-ink);
+  font-family: var(--font-serif), "Songti SC", serif;
+  text-wrap: balance;
+}
+
+.fieldbookTheme :where(.questionDirectoryIntro, .glossaryDirectoryIntro) > p,
+.fieldbookTheme.referencePage .sectionIntro > p { color: var(--fb-muted); }
+
+.fieldbookTheme :where(.questionDirectoryToolbar, .glossaryToolbar, .referenceToolbar, .codingAgentControls) {
+  border-color: var(--fb-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: var(--fb-shadow);
+}
+
+.fieldbookTheme :where(.questionDirectorySearch, .glossarySearch) { border-color: var(--fb-line); }
+.fieldbookTheme :where(.questionDirectorySearch, .glossarySearch) input::placeholder { color: #72818a; }
+.fieldbookTheme :where(.glossaryFilters, .referenceGradeFilters) button.active,
+.fieldbookTheme .questionDirectoryToolbar select:focus-visible {
+  border-color: var(--fb-guide);
+  background: var(--fb-mint);
+  color: var(--fb-ink);
+}
+
+.fieldbookTheme .questionDirectoryList { gap: 0; border-top: 1px solid var(--fb-line); }
+.fieldbookTheme .questionDirectoryItem,
+.fieldbookTheme .questionDirectoryItem:nth-child(n) {
+  scroll-margin-top: 180px;
+  padding: clamp(26px, 3vw, 38px) 8px;
+  border: 0;
+  border-bottom: 1px solid var(--fb-line);
+  border-radius: 0;
+  background: var(--fb-surface);
+  box-shadow: none;
+}
+
+.fieldbookTheme .questionDirectoryItem:hover {
+  border-color: var(--fb-line);
+  background: var(--fb-mint);
+  box-shadow: inset 4px 0 0 var(--fb-accent);
+}
+
+.fieldbookTheme .questionDirectoryTag {
+  border-radius: 6px;
+  background: var(--fb-mist);
+  color: var(--fb-meta);
+}
+
+.fieldbookTheme .questionDirectoryAsk { border-color: var(--fb-accent); background: var(--fb-accent-soft); }
+.fieldbookTheme .questionDirectoryEvidence a { border-color: var(--fb-line); border-radius: 8px; background: var(--fb-surface); }
+
+.fieldbookTheme .glossaryGroup { border-color: var(--fb-line); }
+.fieldbookTheme .glossaryGroup > header { border-color: var(--fb-line); background: var(--fb-mist); }
+.fieldbookTheme .glossaryGroup > header > span { color: var(--fb-meta); }
+.fieldbookTheme .glossaryTerm { border-color: var(--fb-line); }
+.fieldbookTheme .glossaryTerm:target { background: var(--fb-accent-soft); box-shadow: inset 4px 0 0 var(--fb-accent); }
+.fieldbookTheme .glossaryTerm nav a:hover { border-color: var(--fb-accent); background: var(--fb-mint); }
+
+.fieldbookTheme.referencePage { background: var(--fb-canvas); }
+.fieldbookTheme.referencePage > .section,
+.fieldbookTheme.referencePage .referenceFilterShell > .section {
+  max-width: 1360px;
+  border-color: var(--fb-line);
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme.referencePage .sectionNumber { color: var(--fb-meta); border-color: var(--fb-line); }
+.fieldbookTheme.referencePage :where(.referenceModuleNav, .sourceList) { border-color: var(--fb-line); }
+.fieldbookTheme.referencePage .referenceModuleLink {
+  border-color: var(--fb-line);
+  background: var(--fb-surface);
+}
+.fieldbookTheme.referencePage .referenceModuleLink:hover { background: var(--fb-mint); box-shadow: inset 0 4px 0 var(--fb-accent); }
+.fieldbookTheme.referencePage .sourceItem { border-color: var(--fb-line); background: var(--fb-surface); }
+.fieldbookTheme.referencePage .sourceItem:hover { background: var(--fb-mint); }
+.fieldbookTheme.referencePage .sourceLevel { color: var(--fb-meta); }
+
+/* English lightweight directories */
+.fieldbookTheme.questionDirectoryPage {
+  min-height: 100vh;
+  padding-bottom: 54px;
+  background: var(--fb-canvas);
+}
+
+.fieldbookTheme.questionDirectoryPage > .topbar {
+  width: calc(100% - 48px);
+  max-width: 1360px;
+}
+
+.fieldbookTheme .questionDirectoryHero {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: clamp(64px, 8vw, 104px) clamp(24px, 4vw, 54px) clamp(46px, 6vw, 76px);
+  border-bottom: 1px solid var(--fb-line);
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme .questionDirectoryHero .kicker { margin-bottom: 18px; }
+.fieldbookTheme .questionDirectoryHero h1 {
+  max-width: 940px;
+  margin: 0;
+  color: var(--fb-ink);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(46px, 5vw, 70px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.fieldbookTheme .questionDirectoryHero > p:last-child {
+  max-width: 780px;
+  margin: 24px 0 0;
+  color: var(--fb-muted);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.fieldbookTheme.questionDirectoryPage > .questionDirectoryShell {
+  max-width: 1360px;
+  margin: 28px auto 0;
+  padding: clamp(32px, 4vw, 54px);
+  border-radius: 16px;
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme.questionDirectoryPage .questionDirectoryToolbar { top: 8px; margin-bottom: 20px; }
+.fieldbookTheme.questionDirectoryPage .questionDirectoryItem > a {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--fb-link);
+  font-size: 13px;
+  font-weight: 750;
+  text-underline-offset: 4px;
+}
+
+/* Coding Agent directory */
+.fieldbookTheme.codingAgentPage > .section {
+  max-width: 1360px;
+  border-color: var(--fb-line);
+  background: var(--fb-surface);
+}
+.fieldbookTheme .codingAgentDimensionGrid,
+.fieldbookTheme .codingBenchmarkList,
+.fieldbookTheme .codingAgentList { border-color: var(--fb-line); }
+.fieldbookTheme .codingAgentDimensionGrid article,
+.fieldbookTheme .codingBenchmarkList article,
+.fieldbookTheme .codingAgentItem { border-color: var(--fb-line); }
+.fieldbookTheme .codingAgentDimensionGrid span,
+.fieldbookTheme .codingBenchmarkList article > p { color: var(--fb-meta); }
+.fieldbookTheme .codingAgentItem:hover { background: var(--fb-mint); }
+
+/* Shared footer */
+.fieldbookTheme > footer,
+.fieldbookTheme .siteFooter {
+  max-width: 1360px;
+  margin-inline: auto;
+  color: var(--fb-muted);
+  border-color: var(--fb-line);
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme > footer a,
+.fieldbookTheme .siteFooter a { color: var(--fb-link); }
+
+@media (max-width: 980px) {
+  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks {
+    max-width: 68%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks::-webkit-scrollbar { display: none; }
+  .fieldbookTheme.modulePage .moduleArticleLayout { gap: 0; padding: 0; }
+  .fieldbookTheme.modulePage :where(.moduleArticleContent, .dedicatedArticleLayout > .section) { border-radius: 0; }
+}
+
+@media (max-width: 720px) {
+  .fieldbookTheme:not(.fieldbookHome) .topbar {
+    width: 100%;
+    min-height: 64px;
+    padding-block: 12px;
+  }
+
+  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks {
+    width: 100%;
+    max-width: none;
+    padding-top: 8px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    overflow-x: auto;
+    border-top: 1px solid var(--fb-line);
+  }
+  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks::-webkit-scrollbar { display: none; }
+  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) > div {
+    min-height: 96px;
+    padding: 16px 10px;
+  }
+  .fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) strong { font-size: 32px; }
+  .fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) span { font-size: 11px; }
+  .fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) > p { grid-column: 1 / -1; }
+
+  .fieldbookTheme :where(.questionHeroGrid, .referenceHeroGrid, .glossaryHeroGrid, .codingAgentHeroGrid) { padding-top: 38px; }
+  .fieldbookTheme :where(.questionHero, .referenceHero, .glossaryHero, .codingAgentHero) h1 { font-size: clamp(40px, 11vw, 52px); }
+  .fieldbookTheme :where(.questionDirectorySection, .glossaryDirectorySection) {
+    width: 100%;
+    margin-top: 16px;
+    padding: 52px 20px;
+    border-radius: 0;
+  }
+
+  .fieldbookTheme .questionDirectoryItem,
+  .fieldbookTheme .questionDirectoryItem:nth-child(n) { padding-inline: 0; }
+
+  .fieldbookTheme.questionDirectoryPage > .topbar { width: calc(100% - 40px); }
+  .fieldbookTheme .questionDirectoryHero { padding: 48px 20px 42px; }
+  .fieldbookTheme .questionDirectoryHero h1 { font-size: clamp(40px, 11vw, 52px); }
+  .fieldbookTheme.questionDirectoryPage > .questionDirectoryShell {
+    margin-top: 16px;
+    padding: 36px 20px;
+    border-radius: 0;
+  }
+
+  .fieldbookTheme.modulePage .moduleReadingNav { border-radius: 0; }
+  .fieldbookTheme.modulePage .decisionBanner { margin: 12px; padding: 24px 20px; }
+  .fieldbookTheme.referencePage > .section,
+  .fieldbookTheme.referencePage .referenceFilterShell > .section { border-inline: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fieldbookTheme .questionDirectoryItem { transition: none; }
 }

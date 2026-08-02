@@ -1,25 +1,5 @@
 /* V2: an editorial, web-native field manual layered over the preserved content system. */
 
-:root {
-  --ink: #14212b;
-  --ink-2: #203340;
-  --paper: #f4f1e8;
-  --paper-2: #e9e5da;
-  --line: #c8c2b4;
-  --lime: #b9ff66;
-  --blue: #69bfff;
-  --orange: #ff7653;
-  --purple: #a995ff;
-  --gold: #eeb74b;
-  --teal: #4fc3ad;
-  --rose: #ed829d;
-  --white: #fffdf7;
-  --muted: #59635f;
-  --readable: 780px;
-  --wide: 1420px;
-  --shadow: 0 18px 50px rgba(20, 33, 43, .09);
-}
-
 body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 ::selection { background: var(--lime); color: var(--ink); }
 :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }

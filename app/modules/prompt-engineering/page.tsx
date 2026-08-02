@@ -148,7 +148,7 @@ const promptSystemLens: LensPanel[] = [
 
 export default function PromptEngineeringModulePage() {
   return (
-    <main className="modulePage modulePilot promptModulePage">
+    <main className="fieldbookTheme modulePage modulePilot promptModulePage">
       <ReadingProgress />
       <section className="ragHero" id="prompt-engineering" aria-labelledby="prompt-title">
         <nav className="topbar" aria-label="模块导航">
