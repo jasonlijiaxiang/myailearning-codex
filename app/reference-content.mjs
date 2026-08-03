@@ -1458,7 +1458,61 @@ export const sourceLedger = {
     grade: "A", kind: "任务特定研究", shortTitle: "SWE-bench",
     title: "SWE-bench — Can Language Models Resolve Real-World GitHub Issues?",
     note: "用真实 GitHub Issue 与仓库测试评估代码修复，可比较特定模型与 Agent 设置；排行榜条目、污染控制、成本、重试和验证配置必须逐项阅读，不能直接等同日常开发体验。",
-    verifiedAt: "2026-07-23", href: "https://www.swebench.com/",
+    verifiedAt: "2026-08-02", href: "https://www.swebench.com/verified.html",
+  },
+  "artificial-analysis-models": {
+    grade: "A", kind: "模型目录", shortTitle: "Artificial Analysis Models",
+    title: "AI Model Comparison — Artificial Analysis",
+    note: "提供模型版本、Intelligence Index 以及 Coding、Agentic 和组成 benchmark 的公开分数；页面数据会变化，快照必须连同模型版本与核验日期阅读。",
+    verifiedAt: "2026-08-02", href: "https://artificialanalysis.ai/models",
+  },
+  "artificial-analysis-methodology": {
+    grade: "A", kind: "官方架构指南", shortTitle: "AA Intelligence v4.1",
+    title: "Intelligence Benchmarking Methodology — Artificial Analysis",
+    note: "定义 Artificial Analysis Intelligence Index v4.1 的九项评测、四个能力域、权重和版本边界；Coding 与 Agentic 的 50/50 项目指数不是该官方方法论中的同名官方总分。",
+    verifiedAt: "2026-08-02", href: "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
+  },
+  "terminal-bench-v21": {
+    grade: "A", kind: "任务特定研究", shortTitle: "Terminal-Bench 2.1",
+    title: "Terminal-Bench 2.1 Leaderboard",
+    note: "在终端环境中评估 Agent 浏览文件、运行命令、调用工具并完成任务的能力；版本、环境、权限、超时和运行预算会影响结果。",
+    verifiedAt: "2026-08-02", href: "https://artificialanalysis.ai/data-api/docs",
+  },
+  scicode: {
+    grade: "A", kind: "任务特定研究", shortTitle: "SciCode",
+    title: "SciCode — Scientific Code Benchmark",
+    note: "评估模型在科学计算问题中理解问题、编写代码并得到可验证结果的能力；题目集、执行环境、工具和评分协议决定可比性。",
+    verifiedAt: "2026-08-02", href: "https://scicode-bench.github.io/",
+  },
+  "gdpval-aa-v2": {
+    grade: "A", kind: "任务特定研究", shortTitle: "GDPval-AA v2",
+    title: "GDPval — Knowledge Work Evaluation",
+    note: "用真实职业任务观察模型交付知识工作产物的质量，并结合评审与人类锚定的比较方法；任务、职业覆盖、评审设置和版本必须一起阅读。",
+    verifiedAt: "2026-08-02", href: "https://artificialanalysis.ai/data-api",
+  },
+  "tau3-banking": {
+    grade: "A", kind: "任务特定研究", shortTitle: "τ³-Banking",
+    title: "τ²-bench / τ³-Banking — Tool- and State-Based Evaluation",
+    note: "在带有工具和后端状态的银行任务中评估模型能否遵守业务规则、调用工具并完成状态变化；它是金融 Agent 任务切片，不是金融建议质量或合规认证。",
+    verifiedAt: "2026-08-02", href: "https://arxiv.org/abs/2603.04370",
+  },
+  "intelligence-index": {
+    grade: "A", kind: "官方综合指数 · 任务特定研究", shortTitle: "Intelligence Index",
+    title: "Artificial Analysis Intelligence Index v4.1",
+    note: "采用 Artificial Analysis 官方 v4.1 综合分：智能体任务 34%、编程 24%、科学推理 24%、通用知识与长文本 18%。页面直接展示官方分数，不重新计算。",
+    verifiedAt: "2026-08-02", href: "https://artificialanalysis.ai/articles/artificial-analysis-intelligence-index-v4-1/",
+  },
+  "coding-index": {
+    grade: "A", kind: "项目组合指数 · 任务特定研究", shortTitle: "Coding Index",
+    title: "Coding Index · Terminal-Bench 2.1 + SciCode",
+    note: "本项目指数：Terminal-Bench 2.1 与 SciCode 各占 50%，分别覆盖真实终端操作和科学编程；它不是 Artificial Analysis 官方同名 Coding Index。",
+    verifiedAt: "2026-08-02", href: "https://tbench.ai/leaderboard/terminal-bench/2.1",
+  },
+  "agentic-index": {
+    grade: "A", kind: "项目组合指数 · 任务特定研究", shortTitle: "Agentic Index",
+    title: "Agentic Index · GDPval-AA v2 + τ³-Banking",
+    note: "本项目指数：GDPval-AA v2 与 τ³-Banking 各占 50%，分别覆盖知识工作交付和带工具、状态的复杂任务；它不是 Artificial Analysis 官方同名 Agentic Index。",
+    verifiedAt: "2026-08-02", href: "https://huggingface.co/datasets/openai/gdpval",
   },
   "terminal-bench": {
     grade: "A", kind: "任务特定研究", shortTitle: "Terminal-Bench",
@@ -1471,6 +1525,42 @@ export const sourceLedger = {
     title: "SWE-ReBench",
     note: "以持续刷新与可复现设置降低静态软件工程基准过时和污染风险；仍需核对每个条目的模型、Harness、预算、日期和任务范围。",
     verifiedAt: "2026-07-23", href: "https://swe-rebench.com/",
+  },
+  "arena-leaderboard": {
+    grade: "A", kind: "任务特定研究", shortTitle: "Arena Leaderboard",
+    title: "Arena Leaderboard — Human Preference Evaluation",
+    note: "通过匿名模型对战与人类投票形成偏好信号，并提供不同任务类别的榜单；它反映用户偏好而非完整的通用能力、代码能力或企业生产结果。",
+    verifiedAt: "2026-08-02", href: "https://arena.ai/leaderboard/text",
+  },
+  "livebench": {
+    grade: "A", kind: "任务特定研究", shortTitle: "LiveBench",
+    title: "LiveBench — A Challenging, Contamination-Free LLM Benchmark",
+    note: "覆盖推理、编程、数学、数据分析、语言和指令遵循等任务切片；分数必须连同 benchmark 版本、模型快照和运行配置阅读，不能直接作为采购结论。",
+    verifiedAt: "2026-08-02", href: "https://livebench.ai/",
+  },
+  "financebench": {
+    grade: "A", kind: "任务特定研究", shortTitle: "FinanceBench",
+    title: "FinanceBench: A New Benchmark for Financial Question Answering",
+    note: "面向金融文档问答和数字事实核对的领域基准；适合形成金融能力切片，但不替代客户真实数据、RAG、引用链、权限和合规验收。",
+    verifiedAt: "2026-08-02", href: "https://arxiv.org/abs/2311.11944",
+  },
+  "gpqa-diamond": {
+    grade: "A", kind: "任务特定研究", shortTitle: "GPQA Diamond",
+    title: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark",
+    note: "覆盖生物、物理和化学等研究生级别的多项选择题，强调领域专家设计与较难通过普通检索直接回答；结果受题目版本、提示与评测协议影响，不能等同通用推理或真实科研能力。",
+    verifiedAt: "2026-08-02", href: "https://arxiv.org/abs/2311.12022",
+  },
+  "humanity-last-exam": {
+    grade: "A", kind: "任务特定研究", shortTitle: "Humanity's Last Exam",
+    title: "Humanity's Last Exam",
+    note: "面向多学科前沿知识的多模态、闭式问题基准，用于观察前沿模型在广泛领域的高难度知识与推理表现；题型和评分不能替代开放式研究、工具使用或企业任务验收。",
+    verifiedAt: "2026-08-02", href: "https://labs.scale.com/leaderboard/humanitys_last_exam",
+  },
+  "bfcl": {
+    grade: "A", kind: "任务特定研究", shortTitle: "BFCL",
+    title: "Berkeley Function Calling Leaderboard",
+    note: "评估模型在单轮、多轮、并行与 Agentic 场景中选择函数并生成正确参数的能力；结果受工具 Schema、执行器、版本和任务集合影响，不能替代客户工具授权、幂等和端到端成功率。",
+    verifiedAt: "2026-08-02", href: "https://gorilla.cs.berkeley.edu/leaderboard.html",
   },
   "product-codex-docs": {
     grade: "P", kind: "官方产品文档", shortTitle: "Codex Docs",
@@ -1570,6 +1660,112 @@ export const sourceLedger = {
   },
 };
 
+/**
+ * Model Radar benchmark explanations. The page renders these beside the
+ * source-ledger entry so every displayed benchmark has a scope and a reading
+ * boundary, rather than only a name and a score.
+ */
+export const modelRadarBenchmarkGuides = Object.freeze({
+  "intelligence-index": Object.freeze({
+    summary: "官方综合能力指数，按四个能力域合成模型总分。",
+    what: "Artificial Analysis Intelligence Index v4.1 包含智能体任务、编程、科学推理、通用知识与长文本四个能力域，权重分别为 34%、24%、24%、18%。",
+    usefulFor: "适合快速比较模型在公开综合评测套件中的总体位置，并作为选择后续专项榜单的入口。",
+    limitation: "它是公开评测套件的综合信号，不等于客户真实任务成功率、成本、延迟、安全性或采购结论。",
+    readScore: "先确认 v4.1、模型版本和快照日期；不要把总分差异直接解释成业务 ROI。",
+  }),
+  "coding-index": Object.freeze({
+    summary: "本项目用终端操作与科学编程各 50% 组成编程指数。",
+    what: "Coding Index = (Terminal-Bench 2.1 + SciCode) / 2；前者观察 Agent 在真实终端环境的多步操作，后者观察科学问题中的代码理解、生成与验证。",
+    usefulFor: "适合同时看模型写代码和操作真实开发环境的能力，避免只用算法题代表完整编程工作。",
+    limitation: "这是本项目的透明组合指数，不是 Artificial Analysis 官方 Coding Index；它仍不代表客户代码库、Harness、预算和工程流程的生产结果。",
+    readScore: "两个组成项必须来自同一模型版本快照；任意一项缺失就不计算，不以零补齐。",
+  }),
+  "agentic-index": Object.freeze({
+    summary: "本项目用知识工作交付与带工具状态任务各 50% 组成 Agentic 指数。",
+    what: "Agentic Index = (GDPval-AA v2 + τ³-Banking) / 2；前者观察复杂知识工作产物，后者观察工具调用、规则遵守和后端状态变化。",
+    usefulFor: "适合观察模型是否能规划、调用工具并把多步任务推进到可验证结果。",
+    limitation: "这是本项目的透明组合指数，不是 Artificial Analysis 官方 Agentic Index；它不替代客户工作流、权限、安全与人工验收。",
+    readScore: "把分数理解成两个公开任务切片的平均信号；先看任务配置、评审方式和模型版本，再比较名次。",
+  }),
+  "arena-leaderboard": Object.freeze({
+    summary: "通过匿名对战与人类投票观察用户偏好。",
+    what: "匿名模型两两回答同一问题，由用户选择更好的回答，再聚合成偏好排名。",
+    usefulFor: "适合看通用对话体验、回答风格和用户主观偏好的相对变化。",
+    limitation: "它不是完整能力考试，也不能代表代码修复、金融事实性或企业生产效果。",
+    readScore: "先看榜单版本、任务类别和置信区间；排名接近时不要过度解读名次差异。",
+  }),
+  livebench: Object.freeze({
+    summary: "用持续更新的任务切片降低静态题库污染风险。",
+    what: "覆盖推理、编程、数学、数据分析、语言和指令遵循等任务，按题目与评分规则计算结果。",
+    usefulFor: "适合做跨任务的能力切片，并观察模型快照在动态题集上的相对表现。",
+    limitation: "它仍不是客户业务验收；版本、提示、工具和运行预算会显著影响结果。",
+    readScore: "必须连同 LiveBench 版本、模型版本和运行配置阅读；不同版本的分数不要直接拼接。",
+  }),
+  "gpqa-diamond": Object.freeze({
+    summary: "用研究生级别的 STEM 问题观察高难度知识与推理。",
+    what: "以生物、物理和化学等领域的高难度多项选择题，测试模型在专家级知识问题上的回答能力。",
+    usefulFor: "适合看高难度科学问答、知识调用和相对稳定的推理能力切片。",
+    limitation: "它不是通用智能、真实科研工作或工具使用能力的完整代表，题目污染与提示协议也会影响结果。",
+    readScore: "确认使用的是 GPQA Diamond 还是其他子集，并和题目版本、是否允许工具一起阅读。",
+  }),
+  "humanity-last-exam": Object.freeze({
+    summary: "覆盖多学科前沿知识的高难度多模态考试。",
+    what: "用来自多个学科的封闭式高难度问题，观察模型在广泛知识范围内的理解、推理和视觉文本处理能力。",
+    usefulFor: "适合看前沿模型在跨学科、长尾知识和高难度问题上的压力测试结果。",
+    limitation: "闭式考试分数不能代表开放式研究、事实核验、工具调用或客户业务流程的成功率。",
+    readScore: "同时看题目版本、模态、评分方式和是否使用外部工具；不要把一个总分解释成所有领域的均衡能力。",
+  }),
+  "swe-bench": Object.freeze({
+    summary: "用真实 GitHub Issue 与仓库测试代码修复能力。",
+    what: "让模型或 Coding Agent 理解真实仓库、修改代码并通过项目测试，衡量 issue 解决成功率。",
+    usefulFor: "适合看软件工程任务、代码修改、测试驱动修复和 Agent 工具链的组合效果。",
+    limitation: "榜单结果受仓库版本、污染控制、Agent Harness、重试、成本和验证方式影响。",
+    readScore: "优先比较同一 split、同一预算和同一 Harness；pass rate 不等于日常研发生产率。",
+  }),
+  "terminal-bench": Object.freeze({
+    summary: "在终端环境中评估 Agent 完成真实操作任务的能力。",
+    what: "让 Agent 在可执行的终端环境里浏览文件、运行命令、调用工具并完成任务。",
+    usefulFor: "适合看模型与 Harness 组合在多步操作、环境交互和工具使用上的完成度。",
+    limitation: "任务覆盖、环境镜像、权限、网络、超时和预算不等于客户生产环境。",
+    readScore: "核对榜单版本、任务集、环境和成功判定；最好把模型分数与运行成本、失败类型一起看。",
+  }),
+  "swe-rebench": Object.freeze({
+    summary: "持续刷新软件工程任务，降低静态基准过时和污染风险。",
+    what: "通过周期性更新任务与可复现运行设置，评估 Agent 解决软件工程问题的表现。",
+    usefulFor: "适合看新模型在较新任务上的代码修复趋势，并补充静态 SWE-bench 的时间切片。",
+    limitation: "不同条目的模型、Harness、预算、日期和任务范围可能不同，不能只看一个总分。",
+    readScore: "按任务日期、运行配置和评测版本分组比较；将趋势理解为相对信号，不当作绝对能力。",
+  }),
+  financebench: Object.freeze({
+    summary: "面向金融文档问答与数字事实核对的领域基准。",
+    what: "围绕金融报告、文档问答和数字事实性问题，检查回答是否正确并能追溯到材料。",
+    usefulFor: "适合看金融知识、数字抽取、文档问答和引用链质量的一个领域切片。",
+    limitation: "不能替代客户真实数据、检索增强、权限、引用审计、时效性和合规验收。",
+    readScore: "把答案正确性、数字准确性、引用完整性和检索设置分开看；不要把领域分数外推成投资建议能力。",
+  }),
+  bfcl: Object.freeze({
+    summary: "专门测试模型选择工具与生成函数参数的准确性。",
+    what: "在单轮、多轮、并行和 Agentic 工具场景中，检查模型是否选择正确函数并生成可执行参数。",
+    usefulFor: "适合看 Tool Calling、函数参数约束和多步工具交互的基础能力。",
+    limitation: "它不能替代真实工具权限、Schema 设计、幂等处理、错误恢复和端到端业务成功率。",
+    readScore: "按单轮、多轮、并行和 Agentic 子集拆开看，并固定工具 Schema、执行器和错误处理策略。",
+  }),
+  "webarena-2024": Object.freeze({
+    summary: "在可复现网页环境中测试 Agent 的多步浏览任务。",
+    what: "让 Agent 在多个自托管网站中完成搜索、填写、管理和信息操作，并以可验证终态判断任务是否完成。",
+    usefulFor: "适合看浏览器操作、网页工具调用、规划和多步任务闭环能力。",
+    limitation: "环境镜像、网站覆盖、权限、浏览器工具和任务预算与企业真实网站仍有差异。",
+    readScore: "优先看同一任务集、环境、工具和成功判定；任务成功率不等于生产稳定性或安全性。",
+  }),
+  "harness-bench-2026": Object.freeze({
+    summary: "尝试分离模型能力与 Agent Harness 对工作流结果的影响。",
+    what: "在多模型和真实工作流中改变 Harness、工具与运行控制，观察同一模型在不同外壳下的结果差异。",
+    usefulFor: "适合解释为什么模型名次不能脱离提示、工具、权限、上下文管理和验证环节。",
+    limitation: "论文仍受任务、模型版本、工具、运行配置和预印本研究设计限制。",
+    readScore: "重点看对照设计和效应大小，不要把单一工作流的提升率当作所有 Agent 场景的固定收益。",
+  }),
+});
+
 const referenceShortTitles = Object.freeze({
   "solution-patterns": "Solution Patterns & AI FinOps",
   "model-landscape": "Model Landscape",
@@ -1595,6 +1791,7 @@ const referenceShortTitles = Object.freeze({
 });
 
 const additionalSourceIds = Object.freeze({
+  "model-landscape": ["intelligence-index", "coding-index", "agentic-index", "artificial-analysis-models", "artificial-analysis-methodology", "terminal-bench-v21", "scicode", "gdpval-aa-v2", "tau3-banking", "arena-leaderboard", "livebench", "gpqa-diamond", "humanity-last-exam", "swe-bench", "terminal-bench", "swe-rebench", "bfcl", "webarena-2024", "financebench"],
   mcp: ["mcp-2026-07-28-rc", "mcp-specification-2026-07-28", "mcp-changelog-2026-07-28", "mcp-server-overview-2026-07-28", "mcp-tools-2026-07-28", "mcp-resources-2026-07-28", "mcp-prompts-2026-07-28", "mcp-tasks-extension"],
   multimodal: ["gb-45438-2025"],
   rag: [
