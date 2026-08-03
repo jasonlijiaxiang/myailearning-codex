@@ -519,6 +519,9 @@ export type QuestionDirectoryFilterItem = {
   moduleId: string;
   tag: string;
   text: string;
+  intentId?: string;
+  tier?: string | null;
+  fieldId?: string | null;
 };
 
 export type QuestionDirectoryModule = {
@@ -530,22 +533,35 @@ export type QuestionDirectoryModule = {
 export function QuestionDirectoryShell({
   items,
   modules,
+  intentDefinitions = [],
+  initialView = "all",
+  initialIntentId = "all",
+  initialModuleId = "all",
   children,
 }: {
   items: QuestionDirectoryFilterItem[];
   modules: QuestionDirectoryModule[];
+  intentDefinitions?: Array<{ id: string; zh: string; scope?: string }>;
+  initialView?: string;
+  initialIntentId?: string;
+  initialModuleId?: string;
   children: ReactNode;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
-  const [moduleId, setModuleId] = useState("all");
+  const [moduleId, setModuleId] = useState(initialModuleId);
   const [tag, setTag] = useState("all");
+  const [intentId, setIntentId] = useState(initialIntentId);
+  const [view, setView] = useState(initialView === "field-kit" ? "field-kit" : initialView === "core" || initialView === "situational" ? initialView : "all");
   const availableTags = useMemo(() => [...new Set(items.filter((item) => moduleId === "all" || item.moduleId === moduleId).map((item) => item.tag))].sort((a, b) => a.localeCompare(b, "zh-CN")), [items, moduleId]);
-  const visibleItems = useMemo(() => filterQuestionDirectoryItems(items, { query, moduleId, tag }), [items, moduleId, query, tag]);
+  const visibleItems = useMemo(() => filterQuestionDirectoryItems(items, { query, moduleId, tag, intentId, view }), [items, intentId, moduleId, query, tag, view]);
   const visibleKeys = useMemo(() => new Set(visibleItems.map((item) => item.key)), [visibleItems]);
   const visibleModules = useMemo(() => new Set(visibleItems.map((item) => item.moduleId)).size, [visibleItems]);
   const allModulesLabel = `全部 ${modules.length} 个模块`;
+  const fieldKitCount = useMemo(() => items.filter((item) => item.tier).length, [items]);
+  const coreCount = useMemo(() => items.filter((item) => item.tier === "core").length, [items]);
+  const situationalCount = useMemo(() => items.filter((item) => item.tier === "situational").length, [items]);
 
   useEffect(() => {
     rootRef.current?.querySelectorAll<HTMLElement>("[data-question-key]").forEach((node) => {
@@ -570,6 +586,8 @@ export function QuestionDirectoryShell({
     setQuery("");
     setModuleId("all");
     setTag("all");
+    setIntentId("all");
+    setView("all");
   };
 
   return (
@@ -582,8 +600,15 @@ export function QuestionDirectoryShell({
         </label>
         <label><span>模块</span><select value={moduleId} onChange={(event) => { setModuleId(event.target.value); setTag("all"); }}><option value="all">{allModulesLabel}</option>{modules.map((directoryModule) => <option value={directoryModule.id} key={directoryModule.id}>{directoryModule.label}（{directoryModule.count}）</option>)}</select></label>
         <label><span>问题类别</span><select value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">全部类别</option>{availableTags.map((item) => <option value={item} key={item}>{item}</option>)}</select></label>
+        <label><span>问题意图</span><select value={intentId} onChange={(event) => setIntentId(event.target.value)}><option value="all">全部意图</option>{intentDefinitions.map((intent) => <option value={intent.id} key={intent.id}>{intent.zh}</option>)}</select></label>
+        <div className="questionDirectoryViewTabs" aria-label="现场精选筛选">
+          <button type="button" className={view === "all" ? "active" : ""} onClick={() => setView("all")}>全部 {items.length}</button>
+          <button type="button" className={view === "field-kit" ? "active" : ""} onClick={() => setView("field-kit")}>现场精选 {fieldKitCount}</button>
+          <button type="button" className={view === "core" ? "active" : ""} onClick={() => setView("core")}>核心 {coreCount}</button>
+          <button type="button" className={view === "situational" ? "active" : ""} onClick={() => setView("situational")}>场景 {situationalCount}</button>
+        </div>
         <div className="questionDirectoryStatus" aria-live="polite"><strong>{visibleItems.length}</strong><span>个问题 · {visibleModules} 个模块</span></div>
-        {(query || moduleId !== "all" || tag !== "all") && <button className="questionDirectoryClear" type="button" onClick={clear}>清除全部筛选</button>}
+        {(query || moduleId !== "all" || tag !== "all" || intentId !== "all" || view !== "all") && <button className="questionDirectoryClear" type="button" onClick={clear}>清除全部筛选</button>}
       </div>
       {children}
       {visibleItems.length === 0 && <div className="emptySearch questionDirectoryEmpty"><strong>没有匹配的问题</strong><p>尝试更短的关键词，或清除模块与类别筛选。</p></div>}

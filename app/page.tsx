@@ -12,6 +12,7 @@ import { publishedModuleSlugs } from "./module-publication.mjs";
 import { referenceModules, sourceLedger } from "./reference-content.mjs";
 import { glossaryTermIds, homepageTermGroups, terminology } from "./terminology.mjs";
 import { TermHintGroups } from "./term-hint";
+import { scenarioDefinitionsForHome, timeBudgetPaths } from "./home-learning-paths.mjs";
 
 const layerCount = layers.length;
 const moduleCount = moduleList.length;
@@ -159,8 +160,14 @@ export default function Home() {
           <div className="toplinks">
             <a href="#available-modules">从问题开始</a>
             <Link href="/glossary">术语库</Link>
-            <Link href="/coding-agents">Coding Agent 选型</Link>
             <Link href="/knowledge-graph">模块关系</Link>
+            <details className="homeSelectionMenu">
+              <summary>选型</summary>
+              <div className="homeSelectionMenuList">
+                <Link href="/model-radar">模型</Link>
+                <Link href="/coding-agents">Code Agent</Link>
+              </div>
+            </details>
             <Link href="/references">来源与证据 / Reference</Link>
             <Link href="/en" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
@@ -169,8 +176,14 @@ export default function Home() {
             <nav aria-label="更多导航">
               <a href="#available-modules">从问题开始</a>
               <Link href="/glossary">术语库</Link>
-              <Link href="/coding-agents">Coding Agent 选型</Link>
               <Link href="/knowledge-graph">模块关系</Link>
+              <details className="homeSelectionMenu">
+                <summary>选型</summary>
+                <div className="homeSelectionMenuList">
+                  <Link href="/model-radar">模型</Link>
+                  <Link href="/coding-agents">Code Agent</Link>
+                </div>
+              </details>
               <Link href="/references">来源与证据</Link>
               <Link href="/en" hrefLang="en" lang="en" prefetch={false}>English</Link>
             </nav>
@@ -238,6 +251,33 @@ export default function Home() {
               <p className="learningPathOutcome">{path.outcome}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="timeBudgetPathsV2" id="time-budget-paths" aria-labelledby="time-budget-paths-title">
+        <header>
+          <div><p className="kicker">LEARN BY AVAILABLE TIME</p><h2 id="time-budget-paths-title">按可用时间准备</h2></div>
+          <p>从 10 分钟现场速查到系统学习，每条路径都只指向正式问题、模块和实战入口；不新增第二份答案内容。</p>
+        </header>
+        <div className="timeBudgetPathList">
+          {timeBudgetPaths.map((path) => (
+            <article key={path.id}>
+              <span>{path.duration}</span>
+              <h3>{path.label}</h3>
+              <p>{path.focus}</p>
+              <ol>
+                {path.steps.map((step) => (
+                  <li key={`${path.id}-${step.label}`}>
+                    {step.type === "module" ? <Link href={`/modules/${step.slug}`}>{step.label} ↗</Link> : <Link href={path.href}>{step.label} ↗</Link>}
+                  </li>
+                ))}
+              </ol>
+              <strong>{path.deliverable}</strong>
+            </article>
+          ))}
+        </div>
+        <div className="timeBudgetScenarioIndex" aria-label="场景入口">
+          {scenarioDefinitionsForHome.map((scenario) => <Link href={scenario.href} key={scenario.id}>{scenario.title} ↗</Link>)}
         </div>
       </section>
 

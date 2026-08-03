@@ -2688,3 +2688,287 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 @media (prefers-reduced-motion: reduce) {
   .fieldbookTheme .questionDirectoryItem { transition: none; }
 }
+
+/* Field kit: question intents, field tier, and fallback scripts */
+.questionFieldKit {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: clamp(72px, 8vw, 116px) clamp(24px, 5vw, 70px);
+  display: grid;
+  gap: 34px;
+  background: var(--fb-surface);
+  border-left: 1px solid var(--fb-line);
+  border-right: 1px solid var(--fb-line);
+}
+.questionFieldKitIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, .6fr);
+  gap: clamp(36px, 6vw, 88px);
+  align-items: end;
+}
+.questionFieldKitIntro h2 {
+  margin: 4px 0 0;
+  font-family: var(--font-serif), "Songti SC", serif;
+  font-size: clamp(36px, 4.2vw, 60px);
+  font-weight: 500;
+  line-height: 1.14;
+}
+.questionFieldKitIntro > p {
+  margin: 0;
+  color: var(--fb-muted);
+  font-size: 16px;
+  line-height: 1.8;
+}
+.questionIntentStrip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--fb-line);
+  background: var(--fb-line);
+}
+.questionIntentStrip > span {
+  min-width: 0;
+  padding: 18px;
+  background: var(--fb-mist);
+}
+.questionIntentStrip strong {
+  display: block;
+  font-size: 15px;
+}
+.questionIntentStrip small {
+  display: block;
+  margin-top: 6px;
+  color: var(--fb-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.fallbackScriptGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.fallbackScriptGrid article {
+  min-width: 0;
+  padding: 22px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  border: 1px solid var(--fb-line);
+  background: var(--fb-canvas);
+}
+.fallbackScriptGrid article > span {
+  color: var(--fb-link);
+  font-size: 12px;
+  font-weight: 900;
+}
+.fallbackScriptGrid h3 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.fallbackScriptGrid p {
+  margin: 0;
+  color: var(--fb-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.fallbackScriptGrid strong {
+  font-size: 12px;
+  line-height: 1.55;
+}
+.fallbackScriptGrid small {
+  color: var(--fb-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.questionDirectoryToolbar {
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+}
+.questionDirectoryViewTabs {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.questionDirectoryViewTabs button {
+  padding: 8px 12px;
+  border: 1px solid var(--fb-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fb-muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.questionDirectoryViewTabs button.active {
+  border-color: var(--fb-ink);
+  background: var(--fb-ink);
+  color: var(--fb-surface);
+}
+.questionDirectoryIntent,
+.questionDirectoryTier {
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.questionDirectoryIntent {
+  background: #eaf4fa;
+  color: #315f72;
+}
+.questionDirectoryTier--core {
+  background: #eefbdc;
+  color: #29470d;
+}
+.questionDirectoryTier--situational {
+  background: #fff0ea;
+  color: #7a2918;
+}
+.questionDirectoryPhrase {
+  margin: -4px 0 16px;
+  color: var(--fb-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Home time-budget paths */
+.timeBudgetPathsV2 {
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: clamp(78px, 8vw, 116px) clamp(24px, 5vw, 70px);
+  background: var(--fb-surface);
+  border-left: 1px solid var(--fb-line);
+  border-right: 1px solid var(--fb-line);
+}
+.timeBudgetPathsV2 > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, .6fr);
+  gap: clamp(40px, 7vw, 100px);
+  align-items: end;
+  margin-bottom: 42px;
+}
+.timeBudgetPathsV2 > header h2 {
+  margin: 4px 0 0;
+  font-family: var(--font-serif), "Songti SC", serif;
+  font-size: clamp(38px, 4.4vw, 64px);
+  font-weight: 500;
+  line-height: 1.1;
+}
+.timeBudgetPathsV2 > header > p {
+  margin: 0;
+  color: var(--fb-muted);
+  font-size: 16px;
+  line-height: 1.8;
+}
+.timeBudgetPathList {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--fb-line);
+  background: var(--fb-line);
+}
+.timeBudgetPathList article {
+  min-width: 0;
+  padding: 24px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  background: var(--fb-canvas);
+}
+.timeBudgetPathList article > span {
+  color: var(--fb-link);
+  font-size: 12px;
+  font-weight: 900;
+}
+.timeBudgetPathList h3 {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.35;
+}
+.timeBudgetPathList p {
+  margin: 0;
+  color: var(--fb-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.timeBudgetPathList ol {
+  margin: 4px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+}
+.timeBudgetPathList li {
+  padding: 10px 12px;
+  border-left: 3px solid var(--fb-accent);
+  background: var(--fb-mist);
+}
+.timeBudgetPathList a {
+  color: var(--fb-link);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+}
+.timeBudgetPathList li a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.timeBudgetPathList strong {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.timeBudgetScenarioIndex {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.timeBudgetScenarioIndex a {
+  padding: 9px 12px;
+  border: 1px solid var(--fb-line);
+  border-radius: 999px;
+  color: var(--fb-link);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+.timeBudgetScenarioIndex a:hover {
+  border-color: var(--fb-ink);
+  color: var(--fb-ink);
+}
+
+@media (max-width: 1120px) {
+  .questionIntentStrip,
+  .fallbackScriptGrid,
+  .timeBudgetPathList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .questionFieldKit,
+  .timeBudgetPathsV2 {
+    width: 100%;
+    padding: 52px 20px;
+    border-inline: 0;
+  }
+  .questionFieldKitIntro,
+  .timeBudgetPathsV2 > header {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .questionIntentStrip,
+  .fallbackScriptGrid,
+  .timeBudgetPathList {
+    grid-template-columns: 1fr;
+  }
+  .questionDirectoryToolbar {
+    grid-template-columns: 1fr;
+  }
+  .questionDirectoryViewTabs {
+    grid-column: 1;
+  }
+}

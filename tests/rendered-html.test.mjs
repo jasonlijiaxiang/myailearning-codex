@@ -12,6 +12,7 @@ import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPoli
 import { exposesLongFormSearchSections, searchableEnglishSectionGroups, searchableQuestions } from "../app/home-search-visibility.mjs";
 import { englishModuleRegistry } from "../app/i18n/en/registry.mjs";
 import { buildEnglishSectionGroups } from "../app/i18n/english-section-outline.mjs";
+import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
@@ -178,7 +179,8 @@ test("module updates and newly added questions use distinct, non-repeating date 
     const englishModuleDateCount = (englishHtml.match(/class="moduleUpdatedAt"/g) ?? []).length;
     assert.equal(englishModuleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} 的英文模块最近更新时间必须只显示一次`);
     if (publication.updatedAt) {
-      assert.match(englishHtml, new RegExp(`<footer\\b[^>]*>[\\s\\S]*?Last updated ${publication.updatedAt}[\\s\\S]*?<\\/footer>`), `${publication.slug} 的英文模块最近更新时间必须位于页尾`);
+      const englishDate = getEnglishUpdatedAt(publication.slug) ?? publication.updatedAt;
+      assert.match(englishHtml, new RegExp(`<footer\\b[^>]*>[\\s\\S]*?Last updated ${englishDate}[\\s\\S]*?<\\/footer>`), `${publication.slug} 的英文模块最近更新时间必须位于页尾`);
     }
   }
 
@@ -226,6 +228,7 @@ test("homepage leads from scenario to questions with links to every independent 
   assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/i);
   assert.match(html, /href="\/references"/);
   assert.match(html, /href="\/coding-agents"/);
+  assert.match(html, /href="\/knowledge-graph">模块关系<\/a>[\s\S]*?<details class="homeSelectionMenu">[\s\S]*?<summary>选型<\/summary>[\s\S]*?href="\/model-radar">模型<\/a>[\s\S]*?href="\/coding-agents">Code Agent<\/a>/);
   assert.match(html, /Reference/);
   assert.match(html, /讲清 AI 技术，[\s\S]*?心中有数，丝毫不慌/);
   assert.match(html, /三种阅读深度/);

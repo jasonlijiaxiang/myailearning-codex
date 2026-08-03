@@ -10,6 +10,8 @@ import { getPublishedModule, publishedModuleSlugs } from "../app/module-publicat
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputDirectory = path.join(root, "knowledge", "claims", "bilingual-reviews", "2026-07-23");
 const mode = process.argv.includes("--write") ? "write" : "check";
+const localizationDeferments = JSON.parse(await readFile(path.join(root, "knowledge", "localization-deferments.json"), "utf8"));
+const defermentsBySlug = new Map(localizationDeferments.deferments.map((deferment) => [deferment.moduleSlug, deferment]));
 
 const stages = Object.freeze([
   Object.freeze({
@@ -75,6 +77,18 @@ function buildRecord(slug, stage) {
     publication: getPublishedModule(slug),
     content: moduleContentRegistry[slug],
   };
+  const deferment = defermentsBySlug.get(slug);
+  const currentZhContentHash = contentHash(canonical);
+  const currentEnContentHash = contentHash(english);
+  if (deferment) {
+    if (currentEnContentHash !== deferment.baselineEnAuthoredHash) {
+      throw new Error(`${slug} English authored content changed during a Chinese-only deferment: ${currentEnContentHash}`);
+    }
+    if (currentEnContentHash !== deferment.baselineEnEffectiveHash) {
+      throw new Error(`${slug} English effective content changed during a Chinese-only deferment: ${currentEnContentHash}`);
+    }
+  }
+  const zhContentHash = deferment ? deferment.baselineZhHash : currentZhContentHash;
   return {
     schemaVersion: "bilingual-review/v1",
     reviewId: `br-${slug}-${stage.id}`,
@@ -83,8 +97,8 @@ function buildRecord(slug, stage) {
       locale: "en",
       objectType: "module",
       objectId: null,
-      zhContentHash: contentHash(canonical),
-      enContentHash: contentHash(english),
+      zhContentHash,
+      enContentHash: currentEnContentHash,
       termIds: Object.keys(english.terms ?? {}).sort(),
       sourceIds: Object.keys(english.sources ?? {}).sort(),
     },

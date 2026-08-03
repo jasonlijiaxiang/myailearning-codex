@@ -5,16 +5,16 @@
  * 但正文根据内容选择流程、循环、分层、光谱或决策矩阵，不强迫同一版式。
  */
 const moduleSpecs = [
-  ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-08-01", "2026-07-17"],
-  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-07-30", "2026-07-17"],
+  ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-08-02", "2026-07-17"],
+  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-08-02", "2026-07-17"],
   ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-29", "2026-07-17"],
   ["ai-agent", "agent-title", ["ai-agent", "harness", "harness-engineering", "agent-engineering", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-08-01", "2026-07-17"],
-  ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-07-30", "2026-07-17"],
+  ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-08-02", "2026-07-17"],
   ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-08-01", "2026-07-17"],
   ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-message", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-08-01", "2026-07-17"],
-  ["evaluation", "evaluation-title", ["evaluation", "evaluation-contract", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-07-30", "2026-07-17"],
-  ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "human-oversight", "governance-evidence", "continuous-assurance"], "brief", "2026-07-30", "2026-07-21"],
-  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-07-30", "2026-07-17"],
+  ["evaluation", "evaluation-title", ["evaluation", "evaluation-contract", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-08-02", "2026-07-17"],
+  ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "human-oversight", "governance-evidence", "continuous-assurance"], "brief", "2026-08-02", "2026-07-21"],
+  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-08-02", "2026-07-17"],
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-08-01", "2026-07-17"],
   ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-08-01", "2026-07-17"],
   ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-08-01", "2026-07-21"],
@@ -23,9 +23,9 @@ const moduleSpecs = [
   ["fine-tuning", "fine-tuning-title", ["fine-tuning", "sft", "peft", "lora", "qlora", "dpo", "evaluation"], "brief", "2026-07-30", "2026-07-17"],
   ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-08-01", "2026-07-17"],
   ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching", "quantization", "ttft", "tpot", "goodput"], "brief", "2026-08-01", "2026-07-17"],
-  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-07-29", "2026-07-17"],
+  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-08-02", "2026-07-17"],
   ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-08-01", "2026-07-17"],
-  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out", "tco"], "brief", "2026-08-01", "2026-07-17"],
+  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out", "tco"], "brief", "2026-08-02", "2026-07-17"],
 ];
 
 // 2026-07-20 日期策略生效前无 addedAt 问题的稳定身份集合摘要。

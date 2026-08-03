@@ -10,6 +10,7 @@ import {
 import { questionDirectoryItems, questionDirectoryModules } from "../question-index.mjs";
 import { sourceLedger } from "../reference-content.mjs";
 import { QuestionAddedAt } from "../module-content-components";
+import { fallbackScripts, intentDefinitions } from "../question-field-kit.mjs";
 
 export const metadata: Metadata = {
   title: "客户问题查询 | 云计算 × AI 平台售前知识库",
@@ -21,6 +22,9 @@ const filterItems: QuestionDirectoryFilterItem[] = questionDirectoryItems.map((i
   moduleId: item.moduleId,
   tag: item.tag,
   text: item.searchText,
+  intentId: item.intentId,
+  tier: item.tier,
+  fieldId: item.fieldId,
 }));
 
 const filterModules: QuestionDirectoryModule[] = questionDirectoryModules.map((module) => ({
@@ -30,9 +34,19 @@ const filterModules: QuestionDirectoryModule[] = questionDirectoryModules.map((m
 }));
 
 const uniqueTagCount = new Set(questionDirectoryItems.map((item) => item.tag)).size;
-const moduleCountLead = `把 ${questionDirectoryModules.length} 个模块的客户问题集中在一个入口。搜索客户原话、技术概念、风险或方案取舍，先拿到结论短答，再展开机制、售前下一问和题内证据。`;
+const fieldKitCount = questionDirectoryItems.filter((item) => item.tier).length;
+const moduleCountLead = `把 ${questionDirectoryModules.length} 个模块的客户问题集中在一个入口。搜索客户原话、技术概念、风险或方案取舍，先拿到结论短答，再展开机制、售前下一问和题内证据；现场备战可以用 ${fieldKitCount} 道精选题快速入场。`;
 
-export default function QuestionsPage() {
+type QuestionsSearchParams = { view?: string; module?: string; intent?: string };
+
+export default async function QuestionsPage({ searchParams }: { searchParams?: Promise<QuestionsSearchParams> }) {
+  const resolvedSearchParams = await (searchParams ?? Promise.resolve({}));
+  const initialView = resolvedSearchParams.view === "field-kit" || resolvedSearchParams.view === "core" || resolvedSearchParams.view === "situational" ? resolvedSearchParams.view : "all";
+  const requestedModule = resolvedSearchParams.module;
+  const requestedIntent = resolvedSearchParams.intent;
+  const initialModuleId = requestedModule && questionDirectoryModules.some((module) => module.id === requestedModule) ? requestedModule : "all";
+  const initialIntentId = requestedIntent && intentDefinitions.some((intent) => intent.id === requestedIntent) ? requestedIntent : "all";
+
   return (
     <main className="fieldbookTheme questionPage">
       <ReadingProgress />
@@ -64,18 +78,39 @@ export default function QuestionsPage() {
             <div><strong>{questionDirectoryItems.length}</strong><span>个客户问题</span></div>
             <div><strong>{questionDirectoryModules.length}</strong><span>个正式模块</span></div>
             <div><strong>{uniqueTagCount}</strong><span>个问题类别</span></div>
-            <p>覆盖概念边界、方案选择、工程风险、上线运营与客户反对意见，可从问题直接进入完整回答。</p>
+            <p>覆盖概念边界、方案选择、工程风险、上线运营与客户反对意见，可从问题直接进入完整回答；现场题不复制答案，仍指向正式问答。</p>
           </aside>
         </div>
       </header>
 
+      <section className="questionFieldKit" id="field-kit" aria-labelledby="field-kit-title">
+        <div className="questionFieldKitIntro">
+          <div><p className="kicker">FIELD KIT · 现场备战层</p><h2 id="field-kit-title">会前先看现场题，答不上来时用兜底话术</h2></div>
+          <p>现场精选直接绑定正式问答，不建立第二份答案。按问题意图缩小范围，或用客户口语搜索；遇到信息不足、动态事实、法律安全和业务状态未知时，使用下方四类兜底话术。</p>
+        </div>
+        <div className="questionIntentStrip">
+          {intentDefinitions.map((intent) => <span key={intent.id}><strong>{intent.zh}</strong><small>{intent.scope}</small></span>)}
+        </div>
+        <div className="fallbackScriptGrid">
+          {fallbackScripts.map((script) => (
+            <article key={script.id}>
+              <span>{script.title}</span>
+              <h3>{script.trigger}</h3>
+              <p>{script.script}</p>
+              <strong>还需要确认：{script.need}</strong>
+              <small>不能越过：{script.boundary}</small>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="questionDirectorySection" id="question-directory" aria-labelledby="question-directory-title">
         <div className="questionDirectoryIntro">
           <div><p className="kicker">SEARCH, ANSWER, THEN ASK</p><h2 id="question-directory-title">从客户问题找到结论和依据</h2></div>
-          <p>默认展示全部问题。可以组合关键词、模块和类别筛选；每条结果都保留短答、深答、下一问、证据，以及返回原模块上下文的入口。</p>
+          <p>默认展示全部问题。可以组合关键词、模块、类别和问题意图筛选，也可以只看现场精选；每条结果都保留短答、深答、下一问、证据，以及返回原模块上下文的入口。</p>
         </div>
 
-        <QuestionDirectoryShell items={filterItems} modules={filterModules}>
+        <QuestionDirectoryShell items={filterItems} modules={filterModules} intentDefinitions={intentDefinitions} initialView={initialView} initialModuleId={initialModuleId} initialIntentId={initialIntentId}>
           <div className="questionDirectoryList">
             {questionDirectoryItems.map((item) => (
               <article
@@ -84,14 +119,20 @@ export default function QuestionsPage() {
                 data-question-key={item.key}
                 data-question-module={item.moduleId}
                 data-question-tag={item.tag}
+                data-question-intent={item.intentId}
+                data-question-tier={item.tier ?? ""}
+                data-field-id={item.fieldId ?? ""}
                 key={item.key}
               >
                 <header>
                   <Link href={item.moduleHref}>{item.moduleZh}<span>{item.moduleEn}</span></Link>
                   <span className="questionDirectoryTag">{item.tag}</span>
+                  <span className="questionDirectoryIntent">{item.intentName}</span>
+                  {item.tier ? <span className={`questionDirectoryTier questionDirectoryTier--${item.tier}`}>{item.tier === "core" ? "现场核心" : "场景重点"}</span> : null}
                   <span className="questionDirectoryNo">Q{String(item.number).padStart(2, "0")}</span>
                 </header>
                 <h3>{item.question}</h3>
+                {item.displayPhrase ? <p className="questionDirectoryPhrase">客户常这样说：{item.displayPhrase}</p> : null}
                 <QuestionAddedAt value={item.addedAt ?? undefined} className="questionDirectoryAddedAt" />
                 <div className="questionDirectoryShort"><span>结论短答</span><p>{item.answer}</p></div>
                 <details>

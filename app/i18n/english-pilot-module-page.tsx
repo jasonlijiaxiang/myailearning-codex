@@ -11,6 +11,7 @@ import { ModuleKnowledgeExplorer, type ExtensionView } from "../module-visual-ex
 import { getPublishedModule } from "../module-publication.mjs";
 import { sourceLedger } from "../reference-content.mjs";
 import { englishSourceCopy } from "./en/registry.mjs";
+import { getEnglishUpdatedAt } from "../english-update-dates.mjs";
 import { shouldVisualizeEnglishSteps } from "./english-representation-assessment.mjs";
 import { buildEnglishSectionGroups } from "./english-section-outline.mjs";
 import { englishModuleSlugs } from "./locale-config.mjs";
@@ -438,7 +439,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
         </div>
       </div>
 
-      <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{module.title}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} locale="en" /></p><a href="#top">Back to top ↑</a></footer>
+      <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{module.title}<ModuleUpdatedAt value={getEnglishUpdatedAt(module.slug) ?? publication.updatedAt ?? undefined} locale="en" /></p><a href="#top">Back to top ↑</a></footer>
     </main>
   );
 }

@@ -26,6 +26,9 @@ const baseModuleLearningContent = Object.freeze({
       { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
       { title: "设计一条客服问题解决闭环", scenario: "客户希望机器人减少人工量，但当前只统计回复次数，并准备默认加入 RAG 与 Agent。", tasks: ["由 CRM 或工单状态区分真正解决、转人工、放弃、错误承诺和返工", "只为授权知识引入 RAG，为业务查询与受限动作使用确定性工作流，把动态例外交给有界 Agent 与人工", "定义解决率、关键错误、P95、接管、恢复和每解决一单的完整成本"], deliverable: "客服最小闭环、八层责任图与阶段验收表", acceptance: "每项能力都有必要性、Owner 和退出条件，高风险问题不会被自动处理，结果由权威系统确认。", sourceIds: ["ragas", "nist-genai-profile", "anthropic-effective-agents", "finops-unit-economics"] },
       { title: "为 ChatBI 加上语义与执行护栏", scenario: "管理层希望用自然语言查询经营指标，但多个部门的口径不一致。", tasks: ["选定五个有权威定义的指标", "限制只读数据域、查询成本和允许操作", "设计结果校验、引用、人工确认和错误回退"], deliverable: "语义层边界、查询流程与反例测试集", acceptance: "相同问题不会因自由生成 SQL 得到不同业务口径，模型不能写入或越权读取数据。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
+      { title: "签订客户责任四角与资产交接", scenario: "客户希望项目“全包”，但数据、接口、口径、评估样本和审批人员都没有指定。", tasks: ["为业务决策、数据与 IT、知识运营、安全合规四类角色定义可交付物与签字线", "把 PoC 的成功、失败、停止指标和资产交接写进一页契约", "区分可替换件与客户沉淀资产，并明确退出时哪些资产可带走"], deliverable: "客户责任矩阵、PoC 契约和资产交接清单", acceptance: "任一角色缺失都会被明确标记为风险；PoC 结论不依赖单个 Demo 或口头承诺。", sourceIds: ["nist-genai-profile", "nist-zero-trust", "finops-unit-economics"] },
+      { title: "演练中国交付上线证据包", scenario: "客户准备在国内发布一个会生成内容的 AI 助手，希望快速上线。", tasks: ["按受众、主体、部署方式、模型来源和数据流完成分诊", "把内容标识、日志、申诉、人工复核和事件处置映射为控制与证据", "列出需要法律、安全和业务复核的未决项并设置复核人"], deliverable: "中国交付分诊表、义务—控制—证据映射和上线证据包", acceptance: "不出现“已合规”结论；每个义务都有证据产物、负责人和复核日期。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "nist-genai-profile"] },
+      { title: "验证保险理赔初审蓝图", scenario: "跨地区团队希望 AI 自动处理理赔材料并给出赔付结论。", tasks: ["冻结业务结果、AI 允许与禁止动作、权威业务系统和人工 owner", "沿材料接收、质量检查、证据提取、初审建议、人工决定和申诉设计流程", "为每种失败模式定义证据、人工接管、事件和退出路径"], deliverable: "理赔初审场景合同、控制矩阵和验收集", acceptance: "AI 不自动核赔、拒赔、确定金额或付款；行业法规与阈值由专业审查确认后才进入生产。", sourceIds: ["nist-genai-profile", "nist-ai-800-3", "finops-unit-economics"] },
       ...applicationFinopsLearning["ai-finops"].labs,
     ],
   },
@@ -40,6 +43,7 @@ const baseModuleLearningContent = Object.freeze({
       { title: "建立理赔初审候选可行域", scenario: "跨地区团队接收多语言表单、扫描件和事故照片，数据敏感且最终赔付必须由授权人员决定。", tasks: ["拆分任务与不可接受错误", "把地域、模态、版本、许可和时延分成硬门与偏好", "为每个候选登记精确身份和排除理由"], deliverable: "任务契约、模型可行域与候选身份表", acceptance: "未知项不会写成通过，平均质量不能补偿任一硬门失败。", sourceIds: ["nist-genai-profile", "osi-open-source-ai-definition-1-0", "openai-models", "google-models", "anthropic-models"] },
       { title: "完成一次同条件模型 PoC", scenario: "团队想用公开榜单直接指定模型，并准备让便宜模型处理所有常规案件。", tasks: ["冻结 Prompt、上下文、工具、Schema、预算与客户考卷", "按语言、版式、风险与长尾报告严重错误和不确定性", "比较单模型、候选路由和人工升级的单位合格结果成本"], deliverable: "逐切片 PoC 结果与 Go / Hold / No-Go 建议", acceptance: "每个结论能回到完整候选元组，高风险漏检不被平均分掩盖。", sourceIds: ["nist-ai-800-3", "finops-unit-economics", "nist-genai-profile"] },
       { title: "演练模型升级与供应商退出", scenario: "主端点准备更换默认版本，备用模型从未跑过扫描件与数据地域硬门。", tasks: ["冻结当前发布包并对新旧版本离线回放", "验证备用候选的硬门、禁止降级任务和路由行为", "设计影子、灰度、阻断、人工接管与回滚"], deliverable: "升级评审单、退出演练与恢复证据", acceptance: "替代路径通过相同硬门；无法安全降级时会明确阻断或转人工。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
+      { title: "建立国内 MaaS 决策面", scenario: "客户在国内采购模型服务，面对 API、托管、专属实例和私有化等多种交付方式。", tasks: ["按地域、数据与日志政策、模型目录、版本、配额、SLA、评测、回滚和退出建立决策面", "把平台名称、价格、版本和地区状态标记为动态事实", "用同一硬门和客户任务集比较候选，而不是比较榜单"], deliverable: "MaaS 决策面模板、动态事实 Claim 清单和采购验证计划", acceptance: "任何采购结论都绑定候选身份、核验日期和同条件评估；不写死平台当前价格或版本。", sourceIds: ["nist-genai-profile", "finops-unit-economics", "openai-models", "google-models", "anthropic-models"] },
     ],
   },
   multimodal: {
@@ -53,6 +57,7 @@ const baseModuleLearningContent = Object.freeze({
     labs: [
       { title: "设计一条可核验的现场巡检链", scenario: "设备巡检同时包含照片、铭牌、短视频、语音说明和表单，系统要给出异常结论并引用原始证据。", tasks: ["定义质量门、证据坐标和不可接受漏检", "比较 OCR/文档解析、原生 VLM 与混合路线", "把带坐标观察交给可选 RAG，并为创建工单设置独立 Agent 授权"], deliverable: "巡检证据链、路线矩阵与降级图", acceptance: "每个结论可回跳；路线来自客户困难切片，RAG、Agent 和人工责任没有混入模型能力。", sourceIds: ["docling-report", "pp-ocrv5-2026", "longvideobench-2024", "nist-genai-profile"] },
       { title: "拆解实时语音体验", scenario: "客服语音助手平均延迟可接受，但用户仍频繁打断或重复问题。", tasks: ["分解端点检测、识别、推理、合成和网络延迟", "加入打断、噪声、口音和沉默场景", "分别记录任务完成率和轮次修复成本"], deliverable: "端到端时延瀑布图与体验故障清单", acceptance: "能区分模型慢、管线慢和交互策略错误，并给出对应修复责任。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"] },
+      { title: "验收 Barge-in 取消与状态恢复", scenario: "用户说话到一半被系统播报打断，系统继续播放旧回复并沿用已被否决的上下文。", tasks: ["定义检测打断、停止播放、取消旧生成、丢弃失效输出和确认已听到边界的顺序", "为旧任务、新任务和上下文恢复分别设计状态机", "记录取消、延迟和状态证据并加入回归集"], deliverable: "Barge-in 状态机、验收用例和证据日志", acceptance: "旧生成不会在用户表态后继续影响新回复；取消与业务状态恢复都有可观测证据。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"] },
     ],
   },
   mcp: {
@@ -91,6 +96,7 @@ const baseModuleLearningContent = Object.freeze({
     labs: [
       { title: "为退款 Agent 写一份评估契约", scenario: "候选 Agent 会解释政策、调用订单工具并提交退款；团队需要决定是否交给 AI Ops 做有限放量。", tasks: ["冻结 Agent、模型、Prompt、工具、策略、环境和预算版本", "按正常、边界、越权、工具故障和高价值退款分层任务", "用代码验证权限与业务终态，用 Judge 评开放说明并以人工样本校准", "重复运行并预先定义硬门与 Go/Hold/No-Go 规则"], deliverable: "版本化评估契约、逐切片结果、不确定性与发布建议", acceptance: "错误退款和越权不能被平均分抵消；Evaluation 不执行灰度、回滚或风险例外。", sourceIds: ["anthropic-agent-evals", "llm-as-judge-2023", "nist-ai-800-3"] },
       { title: "定位一次总分下降", scenario: "候选版本总体得分下降，但部分高价值任务和用户反馈变好。", tasks: ["区分模型、Prompt、检索、工具、样本与评分器版本变化", "检查对象 × 生命周期位置、关键切片与量尺漂移", "判断差异是否超过自然波动，并列出未决外推边界"], deliverable: "归因树、切片报告与补做/接受/拒绝建议", acceptance: "结论能区分系统变化和评估变化，不用 OpenTelemetry 或单一平均分冒充发布门。", sourceIds: ["nist-ai-800-3", "nist-ai-800-4", "opentelemetry-genai-semconv"] },
+      { title: "制作客户任务 Benchmark Atlas", scenario: "团队想用公开榜单直接决定模型，但客户任务包含长尾语言、工具调用和高风险切片。", tasks: ["为每类基准记录测量对象、适合筛选阶段、数据与评分条件、不能证明的结论", "把客户任务、Estimand、重复试验和人工终审放在最终验收位置", "把模型版本与榜单分数标为动态事实"], deliverable: "Benchmark Atlas、候选初筛表和客户终审计划", acceptance: "榜单只用于缩小候选；生产结论必须回到客户任务与完整评估契约。", sourceIds: ["nist-ai-800-3", "nist-genai-profile"] },
     ],
   },
   security: {
@@ -105,6 +111,7 @@ const baseModuleLearningContent = Object.freeze({
       { title: "为恶意简历到 ATS 建威胁模型", scenario: "招聘 Agent 会解析候选人 PDF、检索招聘政策、生成筛选建议，并可向 ATS 写入部分字段。", tasks: ["标出简历、解析、RAG、模型提案、策略和 ATS 的 Source—Sink 路径", "枚举隐藏注入、跨候选人检索、参数篡改和审批绕过", "为每个高影响 Sink 指定真实身份、允许字段、业务授权和停止动作"], deliverable: "招聘威胁模型、控制映射和残余技术风险", acceptance: "恶意简历即使影响模型，也不能获得其他候选人数据或直接改变高影响 ATS 状态。", sourceIds: ["owasp-prompt-injection", "owasp-vector-weaknesses", "nist-zero-trust"] },
       { title: "验证候选人向量数据隔离与删除", scenario: "招聘人员调岗或候选人撤回资料，但切块、Embedding、缓存和评估样本可能继续被检索。", tasks: ["由 Data Engineering 追踪原文到所有派生层", "按招聘人员、职位与候选人测试正向和负向访问", "由客户定义撤权删除时限、失败处理和完成证据"], deliverable: "派生数据清单、权限矩阵与负向探针结果", acceptance: "客户承诺时限内所有读取路径停止返回内容，例外有 owner、范围和补救；该时限是系统 SLO，不是 OWASP 给出的通用值。", sourceIds: ["owasp-vector-weaknesses", "nist-zero-trust"] },
       { title: "演练 ATS 越权和结果未知事件", scenario: "Agent 似乎绕过审批修改了候选人状态，部分请求超时且是否已写入未知。", tasks: ["暂停高影响写入、撤销凭据并停止队列", "还原简历、上下文、版本、身份、策略、参数和 ATS 审计", "查询权威状态、执行补偿、验证恢复并形成回归样本"], deliverable: "事件时间线、影响清单、补偿记录与恢复签署", acceptance: "团队不盲目重试，能证明受影响候选人和业务状态已经恢复或进入人工修复。", sourceIds: ["nist-sp-800-61r3", "nist-genai-profile", "nist-zero-trust"] },
+      { title: "评审高风险内容交付", scenario: "客户准备发布会生成图文内容的助手，但标识、审核、撤回和申诉责任不清。", tasks: ["按生成、审核、标识、发布、撤回、更正、申诉和事件处置建立控制", "区分技术生成成功、审核通过、标识与分发满足、业务批准发布和持续责任", "把未决法务问题交给复核人并设置复核日期"], deliverable: "内容交付控制矩阵、证据清单和未决项表", acceptance: "每个发布动作都有责任人和证据；不把“已标识”写成“已合规”。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "nist-genai-profile"] },
     ],
   },
   "ai-gateway": {
@@ -196,6 +203,7 @@ const baseModuleLearningContent = Object.freeze({
     labs: [
       { title: "建立文档管道验收集", scenario: "客户资料跨年份、模板、语言和扫描质量，解析结果偶发错表。", tasks: ["按版式与质量分层抽样", "定义文本、结构、表格、页码和元数据指标", "为静默错误设置人工抽检与阻断"], deliverable: "管道黄金集与阶段质量门", acceptance: "不是只看 OCR 字符准确率，关键表格和证据位置可复核。", sourceIds: ["docling-report", "pp-ocr-2020"] },
       { title: "演练替换、撤权与删除传播", scenario: "源系统发布新版本、撤销一名员工的访问，并要求旧版本按保留规则退出生产用途。", tasks: ["为对象及派生物标记 active、superseded、revoked、quarantined、retained-by-exception 或 physically-deleted", "追踪缓存、对象、切块、Embedding、索引、评估与导出资产", "定义传播窗口、失败重试、全量对账和负向证明"], deliverable: "状态传播图、SLO、例外清单与验证记录", acceptance: "当前身份只看到当前权威版本；撤权内容在承诺窗口内不可访问，保留例外受控且每层结果可证明。", sourceIds: ["nist-zero-trust", "w3c-prov-o", "openlineage-spec"] },
+      { title: "做一次会前数据就绪分诊", scenario: "客户希望直接开始 RAG PoC，但数据能否合法访问、是否有稳定身份和权限传播都未确认。", tasks: ["用五类就绪问题逐项检查数据访问、身份版本、权限传播、质量和变更纠错", "把未就绪范围缩到单一来源、有限对象、明确 ACL 和可回放评估集", "为每个缺口定义负责人、验证证据和进入下一阶段条件"], deliverable: "数据就绪分诊表、PoC 缩围范围和缺口清单", acceptance: "不会因为“先建向量库”绕过数据契约；每个缺口都能阻止或缩小后续范围。", sourceIds: ["nist-genai-profile", "nist-zero-trust", "w3c-prov-o"] },
     ],
   },
   "ai-infra-platform": {
@@ -223,6 +231,7 @@ const baseModuleLearningContent = Object.freeze({
     labs: [
       { title: "完成一份算力工作负载包络", scenario: "客户只提供模型参数量和预计 GPU 卡数，希望直接报价。", tasks: ["补齐模型版本、训练/推理、精度、数据或上下文、并发、质量、SLO、增长和恢复", "分开估算权重、激活、梯度、优化器、KV Cache、工作区和余量", "列出紧耦合互联、跨域网络、存储、故障域、供电和散热验证项"], deliverable: "工作负载包络与待测假设清单", acceptance: "任何容量数字都能追溯到同口径负载和质量门，训练与服务不会混用同一估算。", sourceIds: ["roofline-2009", "mlperf-training", "mlperf-inference-datacenter", "vllm-2023"] },
       { title: "比较两种集群投资方案", scenario: "方案 A 峰值算力更高，方案 B 软件成熟且云上交付更快。", tasks: ["在同一质量目标和负载上测冷启动、稳态、峰值、长跑、缩放和恢复", "加入软件迁移、供应、能耗、闲置、设施和故障恢复成本", "对流量增长、交付延迟和利用率做敏感性分析"], deliverable: "有效产能—风险—资源级 TCO 决策记录", acceptance: "推荐不依赖单一规格或公开提交，并明确项目 ROI 仍需上层业务证据。", sourceIds: ["mlperf-training", "mlperf-inference-datacenter", "mlperf-storage-v2", "finops-unit-economics"] },
+      { title: "把采购问题改写成约束就绪门", scenario: "客户只问“买几张卡”，但训练/推理负载、设施、网络、软件运维和供给周期都未知。", tasks: ["先排工作负载合同、设施、内存与数据路径、通信、软件与运维、供应连续性和 TCO", "把每个约束写成 pass、fail 或待验证", "为缺证据项定义验证负责人和进入采购的条件"], deliverable: "采购前约束就绪门、验证项和敏感区间", acceptance: "不会用“利用率达到某百分比就自建”或“几张卡即可”回答；每个就绪门都有证据。", sourceIds: ["mlperf-training", "mlperf-storage-v2", "finops-unit-economics"] },
     ],
   },
 });

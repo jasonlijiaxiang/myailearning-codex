@@ -27,6 +27,10 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "会议助手要确认行动是否落实", en: "Meeting Assistant", explanation: "采集、语音识别、说话人区分、摘要、决定与行动项抽取、确认、通知和后续系统写入组成完整链。指标不仅包括转写准确率，还包括关键决定召回、责任人与截止时间正确率。", decision: "先决定会议内容可否采集、保存和进入哪些后续系统。", boundary: "摘要会省时间，但不能自动代表参会者同意或替代正式决策记录。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"] },
       { title: "四个阶段门回答四类问题", en: "Discovery to Production", explanation: "Discovery 判断是否有值得改变的结果，PoC 证伪最大技术或数据不确定性，Pilot 验证真实负载、边界样本与约束，Production 验证持续责任、恢复、单位经济与业务结果。", decision: "每一阶段预先写明 Go、Hold、No-Go、修复、扩展与 Exit 条件。", boundary: "几个漂亮答案只能证明演示路径可走；硬门缺证据时不能以更多资源换取放行。", sourceIds: ["ragas", "nist-genai-profile"] },
       { title: "用单位达标结果决定运营与退出", en: "Economics & Exit", explanation: "模型与云资源只是成本的一部分；还要计入数据、集成、评估、安全、人工、失败、补偿、维护、迁移和退役。把完整成本连接到权威业务终态，并保留扩展、限制、回滚、迁移和停止决定。", decision: "以每个达标业务结果的完整成本和投资状态比较方案。", boundary: "缺少最终状态和客户基线时只能报告假设与区间；单位经济不能单独证明因果 ROI。", sourceIds: ["finops-unit-economics", "finops-ai-tools-considerations", "nist-genai-profile"] },
+      { title: "客户侧责任四角", en: "Customer Responsibility Contract", explanation: "业务决策人确认业务结果、损失函数和是否进入下一阶段；数据与 IT Owner 提供数据、身份、权限、系统接口和运行环境；知识与口径运营人维护规则、术语、评估样本和争议处理；安全与合规签字人确认上线条件、责任和专业复核。", decision: "在方案第一页写明四类角色、可交付物和签字线，并允许同一人兼任但责任不消失。", boundary: "把甲方应出的数据、接口、口径和审批人员全部算进“我们全包”会直接破坏交付边界。", sourceIds: ["nist-genai-profile", "nist-zero-trust", "finops-unit-economics"] },
+      { title: "PoC 契约与资产交接", en: "PoC Contract & Asset Handover", explanation: "PoC 使用代表性真实数据或明确限制的合成数据，预先签字成功、失败和停止指标，并说明基线、范围、预算、责任和验收线。PoC 通过后如何进入生产验证、失败后沉淀什么，都要写成契约。", decision: "把可替换件与客户沉淀资产分开：模型、工具和框架可替换；指标口径、评估集、权限映射、数据契约、Runbook 和退出脚本必须落到客户自己人手上。", boundary: "Demo 顺畅、单次样例正确或公开 Benchmark 较高都不能替代签字指标和可带走资产。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents", "finops-unit-economics"] },
+      { title: "中国交付上线证据包", en: "China Delivery Evidence Pack", explanation: "面向中国交付时先按服务受众、主体角色、部署方式、模型来源和数据流做分诊，再把法规义务、工程控制、运营证据和责任人映射成上线证据包；具体适用性由法律、安全和业务责任人复核。", decision: "把内容标识、备案与登记、日志与申诉、人工复核和事件处置作为可检查的上线证据，而不是一句“已合规”。", boundary: "本知识库提供分诊方法，不提供法律意见，也不给产品贴永久合规标签。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "nist-genai-profile"] },
+      { title: "跨地区保险理赔材料受理与初审助手", en: "Insurance Claims Blueprint", explanation: "以跨地区理赔材料受理与初审为教学蓝图：AI 只负责材料接收、质量检查、事实与证据提取、缺件提示和初审建议；不得自动核赔、定损、拒赔、确定资格、决定金额或发起付款。", decision: "把业务结果、AI 允许与禁止动作、权威业务系统、人工 owner、证据保留、申诉与事件路径写进同一场景合同。", boundary: "该蓝图是跨行业迁移验证，不是保险业务的生产标准；行业法规、时限和阈值必须由官方法源和专业审查确认。", sourceIds: ["nist-genai-profile", "nist-ai-800-3", "finops-unit-economics"] },
       ...applicationFinopsCurriculum["ai-finops"].chapters,
     ],
   },
@@ -39,6 +43,7 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "运行经济与结果单位", en: "Operating Economics", explanation: "输入、输出、缓存、批处理、工具循环、重试、人工复核和失败返工共同决定成本；具体计价与性能必须按候选当期产品资料和目标负载测量。", decision: "在相同质量门下报告 P95、成功率与每个被接受业务结果成本。", boundary: "Token 单价、一次调用成本和客户 ROI 是三个不同层次；公开单价与上下文上限变化很快。", sourceIds: ["finops-unit-economics", "openai-models", "anthropic-models", "google-models"] },
       { title: "路由、回退与组合", en: "Routing & Fallback", explanation: "规则路由处理明确约束，分类器或模型路由处理复杂度判断，人工或高能力模型承接高风险和低置信请求。回退不仅是换供应商，还要明确允许牺牲的质量、功能和数据边界。", decision: "为每类请求预先定义主路径、保护组、回退和停止条件。", boundary: "动态路由本身会误判，必须独立评估、观测并可快速关闭。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
       { title: "版本发布与可替换性", en: "Release Discipline", explanation: "模型版本改变会影响输出、拒答、工具 Schema、Token 使用和延迟。可替换性来自统一契约、代表性回归、影子验证和数据可迁移，而不是在配置里保留第二个模型名称。", decision: "把模型升级当作软件与风险策略共同变更。", boundary: "同一家族的新版本也可能出现行为漂移，不能因厂商兼容承诺跳过客户回归。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
+      { title: "国内模型与 MaaS 决策面", en: "MaaS Decision Plane", explanation: "国内模型与 MaaS 选型仍按地域、交付方式、模型目录、版本治理、数据与日志政策、配额、SLA、评测、回滚、路由和退出组织。API、托管、专属实例与私有化改变责任边界，不改变“先冻结任务与硬门”的方法。", decision: "把平台名称、价格、版本和地区状态放入动态 Claim 或研究清单，不在稳定课程骨架中写死。", boundary: "产品目录与地区状态会变化；平台能力不能外推出客户合规结论，也不能替代同条件评估。", sourceIds: ["nist-genai-profile", "finops-unit-economics", "openai-models", "google-models", "anthropic-models"] },
     ],
   },
   multimodal: {
@@ -53,6 +58,8 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "显式标识、水印与内容凭证", en: "Content Provenance", explanation: "显式标识负责向人告知，水印或 Soft Binding 帮助资产与凭证重关联，C2PA 签名清单（Manifest） 则记录可验证的来源与编辑声明。三者解决的问题不同，发布和接收侧都要定义缺失、失效与验证失败时如何处置。", decision: "把‘是否告知、能否重关联、能否验证来源链’拆成三项验收。", boundary: "内容凭证只证明声明、签名和资产绑定的验证结果，不证明内容为真、拥有版权或已经合规；凭证也可能被移除。", sourceIds: ["c2pa-2-4", "china-ai-content-labeling"] },
       { title: "实时语音与视频链路", en: "Real-time Loop", explanation: "实时体验由采集、端点检测、识别、推理、合成、网络和打断策略共同决定。平均时延无法解释卡顿、抢话、误唤醒和多轮修复，需要按阶段和任务终态观测。", decision: "用端到端任务完成率和分阶段尾延迟共同验收。", boundary: "模型首包速度不能代表客户端播放、网络和交互策略后的真实体验。", sourceIds: ["opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-genai-profile"] },
       { title: "安全、降级与责任交接", en: "Trust, Degradation & Handoff", explanation: "媒体可能携带敏感信息和间接注入；不可读、证据冲突或低置信时要转专用解析、重传或人工复核。Multimodal 交付证据与失真信息，RAG、Agent、Security、Evaluation 和 AI Ops 各自接管后续责任。", decision: "让模型输出停留在可核验建议层，直到外部权限、业务终态和降级规则允许继续。", boundary: "图片中的文字仍是不可信数据；看见异常不等于获得工具权限，向量化也不等于自动降敏。", sourceIds: ["owasp-prompt-injection", "nist-zero-trust"] },
+      { title: "Barge-in 状态与取消语义", en: "Barge-in State Recovery", explanation: "实时语音打断要按“检测打断、停止播放、取消或隔离旧生成、丢弃失效输出、确认已听到边界、恢复上下文、生成新响应、记录取消与延迟证据”的顺序验收；级联和端到端路线的责任层不同。", decision: "把打断当成有状态的交互事件验收，而不只是 ASR 端点检测或延迟优化。", boundary: "停止播放不表示旧生成已取消，新响应也不应继承已被用户否决的上下文。", sourceIds: ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"] },
+      { title: "多模态内容交付闭环", en: "Multimodal Delivery Chain", explanation: "内容交付要区分输入素材授权与溯源、生成与版本记录、自动与人工审核、生成内容标识、发布与分发、撤回与更正、申诉与事件处置，以及批量、实时交互和公开发布的差异门。", decision: "把“技术生成成功、审核通过、标识与分发满足、业务批准发布、发布后持续责任”拆成五道独立验收。", boundary: "视觉质量好、审核通过或已发布都不自动证明素材授权、标识要求和持续责任已经闭环。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "c2pa-2-4", "nist-genai-profile"] },
     ],
   },
   mcp: {
@@ -89,6 +96,7 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "规则、Judge 与人工", en: "Scoring Spectrum", explanation: "规则适合结构和确定约束，LLM Judge 扩展语义评分，人工负责高风险、模糊和校准样本。上线前要用人工双评样本检查一致性，并通过答案顺序交换、长度扰动和跨模型抽检暴露位置与冗长偏差。", decision: "把评分器当作需要评估、校准和版本化的模型组件。", boundary: "同一个模型生成又自证会产生相关偏差，Judge 分数不是业务真值，也不能独立授权高风险动作。", sourceIds: ["llm-as-judge-2023", "nist-genai-profile"] },
       { title: "开发集、回归集与盲留出集", en: "Development, Regression & Holdout", explanation: "开发集支持迭代，冻结回归集保护已知能力，盲留出集检查泛化；每条样本应保留来源、适用期、切片、期望行为和裁决。", decision: "让真实失败经过脱敏、去重和业务裁决后进入下一版回归集，同时保护留出集不被调参污染。", boundary: "更多样本不能修复错误标签和选择偏差，点赞或模型自评也不是自动真值。", sourceIds: ["nist-genai-profile"] },
       { title: "评估结果与运行责任交接", en: "Evaluation-to-Operations Handoff", explanation: "Evaluation 输出数据集、评分器、逐样本与切片结果、不确定性、硬门和未决失败；AI Ops 负责发布清单、影子/金丝雀、流量、告警、停止、回滚与恢复。", decision: "把 Go、Hold、No-Go 或补做建议连同未决失败交给明确责任人，不由评估团队自行批准例外。", boundary: "OpenTelemetry 只提供运行遥测语义，不是质量门、风险批准或发布证明。", sourceIds: ["nist-ai-800-4", "opentelemetry-genai-semconv"] },
+      { title: "Benchmark Atlas 的用途边界", en: "Benchmark Atlas", explanation: "Benchmark Atlas 只回答每类基准测量什么能力、适合哪轮筛选、数据与评分条件如何，以及不能证明什么生产结论；模型版本、当前榜单和领先分数不进入稳定正文。", decision: "把基准当作候选初筛和假设来源，把客户任务、Estimand、重复试验和人工终审当作最终验收。", boundary: "榜单名次、单次成绩、污染风险和工具版本差异都不能直接变成客户生产结论。", sourceIds: ["nist-ai-800-3", "nist-genai-profile"] },
     ],
   },
   security: {
@@ -102,6 +110,7 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "第三方组件与供应链准入", en: "Supply-chain Admission", explanation: "解析器、模型、数据、插件、连接器和托管 API 都需要来源、版本、许可证、漏洞、完整性、权限、清单与替代路径。", decision: "在隔离环境验证并把批准版本绑定到发布证据。", boundary: "可下载、开放权重、官方托管或供应商认证都不自动证明客户集成安全；MCP 指南只适用于采用该协议的实现。", sourceIds: ["nist-genai-profile", "nist-sp-800-218a"] },
       { title: "验证控制措施并进行对抗测试", en: "Control Assurance", explanation: "测试普通与恶意简历、隐藏文本、跨候选人检索、参数篡改、审批绕过、供应链变化和控制失效后的残余影响。", decision: "验证每层能限制后果，并让已裁决事件进入回归集。", boundary: "Guardrail 命中率和一次红队通过不能证明未知攻击不存在。", sourceIds: ["nist-aml-100-2e2025", "owasp-prompt-injection", "nist-genai-profile"] },
       { title: "事件证据、遏制与恢复", en: "Incident Response", explanation: "发现泄露、越权或错误淘汰后，暂停高影响写入、撤销凭据、停止队列、保存来源与上下文证据、核对 ATS 状态、补偿并验证恢复。", decision: "事故前约定谁能停、停什么、保留哪些证据和怎样签署恢复。", boundary: "恢复接口不等于修复已发生的业务状态，具体阈值和时限需按系统定义。", sourceIds: ["nist-sp-800-61r3", "nist-genai-profile", "nist-zero-trust"] },
+      { title: "生成内容标识与合规边界", en: "Content Labeling Boundary", explanation: "生成合成内容标识办法与 GB 45438-2025 已施行，工程落地要把显式标识、隐式标识、传播角色和适用条件作为待核验项；不把“做过标识”写成产品已合规。", decision: "由工程、内容、安全和法务共同确认服务角色、输出类型和发布渠道，再设计标识、日志与撤回。", boundary: "官方办法和强制国标说明义务框架，不替代具体系统的主体、地域和内容分类判断。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "nist-genai-profile"] },
     ],
   },
   "ai-gateway": {
@@ -189,6 +198,7 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "质量、血缘与反馈", en: "Data Quality", explanation: "覆盖、结构、时效、唯一性、冲突、策略完整性和可追溯要在各阶段测量。运行事件关联 Job、Run 与输入输出，业务失败再按来源、解析、清洗、版本、派生、检索或模型责任回流。", decision: "优先修复产生错误的数据机制，并报告隔离、重放、人工复核与每个合格数据单元成本。", boundary: "标准、事件、模型或解析器置信度都不能自动证明业务正确；阈值必须用客户材料和用途校准。", sourceIds: ["docling-report", "iso-iec-5259-2", "w3c-prov-o", "openlineage-spec"] },
       { title: "标注、合成与两条处理路径", en: "Label & Synthesize", explanation: "专家标注建立权威样本，弱监督和合成扩展覆盖。坏案例可进入数据修复线或模型/应用评估线，两条线共享身份和来源，但不能让自动生成结果未经裁决成为真值。", decision: "把专家时间投入高风险、争议和校准样本。", boundary: "合成数据会继承教师和提示偏差，规模扩大前必须抽样审核。", sourceIds: ["nist-genai-profile"] },
       { title: "权限引用、状态与生命周期", en: "Governance", explanation: "数据工程携带策略引用并传播 active、superseded、revoked、quarantined、retained-by-exception 与 physically-deleted 状态；Security/IAM 和应用在查询时按当前主体执行授权。", decision: "为所有派生层定义传播 SLO、重试、对账与负向验证，保留受控例外和完成证据。", boundary: "数据工程不定义授权策略；删除源文档也不表示训练权重自动遗忘，法律保留冲突由相应 Owner 裁决。", sourceIds: ["nist-zero-trust", "w3c-prov-o", "openlineage-spec"] },
+      { title: "会前数据就绪分诊", en: "Data Readiness Triage", explanation: "会前先确认数据能否合法稳定访问、对象是否有稳定身份与删除语义、权限能否传播到索引与生成、质量是否支持目标任务，以及变更纠错能否进入运行流程；未就绪时缩小到单一来源、有限对象、明确 ACL 和可回放评估集。", decision: "把“数据很乱”改写成五类就绪问题和 PoC 缩围路径，而不是先选向量库。", boundary: "数据就绪分诊不替代连接器实现；每个连接器仍要验证认证、同步、删除传播、失败恢复和观测责任。", sourceIds: ["nist-genai-profile", "nist-zero-trust", "w3c-prov-o"] },
     ],
   },
   "ai-infra-platform": {
@@ -214,6 +224,7 @@ const baseModuleCurriculumContent = Object.freeze({
       { title: "跨节点网络与集合通信", en: "Scale-out", explanation: "当工作负载跨越紧耦合加速器互联域时，数据、张量或流水线并行的通信进入跨域网络。RDMA、拥塞、拓扑与集合通信的实际占比决定网络是否成为瓶颈；IB 与 RoCE 的选择还受现有运营能力和故障域影响。", decision: "用 AllReduce/All-to-All 和真实作业长跑验证跨域网络设计。", boundary: "NCCL 和 Megatron 说明通信机制与特定实验，不证明跨节点就必然跨域，也不证明任意网络升级都会提高 Goodput；短时链路测试同样不会覆盖拥塞与恢复。", sourceIds: ["nccl-collectives", "megatron-3d-parallelism-2021"] },
       { title: "存储、数据管线与供电", en: "Feed the Cluster", explanation: "训练读取、Checkpoint 保存/加载、模型分发和推理加载需要对象、并行文件系统、本地缓存和网络协同。电力、散热、机柜密度、布线和故障容量限制物理规模。", decision: "把持续数据供给、Checkpoint、恢复路径和设施工程验收纳入容量计划。", boundary: "MLPerf Storage 是标准化存储工作负载，DGX H100 是产品参考架构；二者都不能替代客户站点与状态正确性验收。", sourceIds: ["mlperf-storage-v2", "nvidia-dgx-h100-data-center"] },
       { title: "算力经济与采购证据", en: "TCO & Supply", explanation: "采购、长期租用、按需云和模型 API 分别承担资本、利用率、弹性和运维风险。TCO 还包括软件适配、网络存储、能耗、闲置、故障、人才和供应周期。", decision: "用每个满足质量与 SLO 的达标训练或推理结果成本和交付风险比较。", boundary: "资源级 TCO 不等于项目 ROI；当前小时价、一次库存和单次 benchmark 也不能代表长期可交付容量。", sourceIds: ["finops-ai-category", "finops-unit-economics"] },
+      { title: "采购前设施与供给就绪门", en: "Infra Constraint Gate", explanation: "在讨论卡数和采购前先排工作负载合同、设施条件、内存与数据路径、通信、软件运维和供应连续性；电力、散热、机架、布线、故障容量和交付周期都属于就绪门。", decision: "把“几张卡”问题改写成按约束排序的就绪门，再进入 TCO 与采购比较。", boundary: "拒绝“利用率达到某百分比就自建”或“几张卡即可”的通用口袋结论；就绪门是决策顺序，不是固定数值门槛。", sourceIds: ["mlperf-training", "mlperf-storage-v2", "finops-unit-economics"] },
     ],
   },
 });

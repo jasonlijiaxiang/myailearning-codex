@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "knowledge/schemas/localization-deferment.schema.json",
+  "title": "Chinese-only localization deferment",
+  "type": "object",
+  "required": ["schemaVersion", "receipts", "deferments"],
+  "properties": {
+    "schemaVersion": { "const": "localization-deferment/v1" },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["receiptId", "date", "baselineCommit", "requirements", "checks"]
+      }
+    },
+    "deferments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "defermentId",
+          "moduleSlug",
+          "sourceLocale",
+          "targetLocale",
+          "status",
+          "openedAt",
+          "openedFromCommit",
+          "decisionId",
+          "reason",
+          "localeRequirements",
+          "affectedObjects",
+          "baselineZhHash",
+          "baselineEnAuthoredHash",
+          "baselineEnEffectiveHash",
+          "baselineReviewIds",
+          "baselineEnglishUpdatedAt",
+          "localeGateReceipt",
+          "closureCriteria"
+        ],
+        "properties": {
+          "moduleSlug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "sourceLocale": { "const": "zh-CN" },
+          "targetLocale": { "const": "en" },
+          "status": { "enum": ["deferred", "ready-for-english-review", "closed"] },
+          "affectedObjects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["objectType", "objectId", "change"],
+              "properties": {
+                "objectType": { "type": "string" },
+                "objectId": { "type": "string" },
+                "change": { "enum": ["added", "modified", "deleted", "reordered"] }
+              }
+            }
+          },
+          "baselineZhHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "baselineEnAuthoredHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "baselineEnEffectiveHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "baselineEnglishUpdatedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+        }
+      }
+    }
+  }
+}

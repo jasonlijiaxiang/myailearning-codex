@@ -61,6 +61,53 @@
 .fieldbookHome .topbar .toplinks { gap: clamp(17px, 2vw, 29px); font-size: 13px; }
 .fieldbookHome .topbar .toplinks a { color: var(--home-nav); }
 .fieldbookHome .topbar .toplinks a:hover { color: var(--home-link); text-decoration-color: var(--home-accent); }
+.fieldbookHome .homeSelectionMenu {
+  position: relative;
+  flex: 0 0 auto;
+}
+.fieldbookHome .homeSelectionMenu summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--home-nav);
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+}
+.fieldbookHome .homeSelectionMenu summary::-webkit-details-marker { display: none; }
+.fieldbookHome .homeSelectionMenu summary::after {
+  content: "⌄";
+  color: var(--home-meta);
+  font-size: 12px;
+  transform: translateY(-1px);
+}
+.fieldbookHome .homeSelectionMenu[open] summary::after { content: "⌃"; }
+.fieldbookHome .homeSelectionMenu summary:hover { color: var(--home-link); }
+.fieldbookHome .homeSelectionMenuList {
+  position: absolute;
+  top: calc(100% + 13px);
+  left: 50%;
+  z-index: 30;
+  min-width: 136px;
+  padding: 7px;
+  display: grid;
+  transform: translateX(-50%);
+  border: 1px solid var(--home-line);
+  border-radius: 9px;
+  background: var(--home-surface);
+  box-shadow: 0 14px 34px var(--home-shadow);
+}
+.fieldbookHome .homeSelectionMenuList a {
+  padding: 9px 11px;
+  color: var(--home-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.fieldbookHome .homeSelectionMenuList a + a { border-top: 1px solid var(--home-line); }
+.fieldbookHome .homeSelectionMenuList a:hover {
+  background: var(--home-mist);
+  color: var(--home-link);
+}
 .fieldbookHome .homeMobileNav { display: none; }
 
 .fieldbookHome .heroGridV2 {
@@ -668,6 +715,28 @@
     text-decoration: none;
   }
   .fieldbookHome .homeMobileNav nav a + a { border-top: 1px solid var(--home-line); }
+  .fieldbookHome .homeMobileNav .homeSelectionMenu {
+    border-top: 1px solid var(--home-line);
+  }
+  .fieldbookHome .homeMobileNav .homeSelectionMenu summary {
+    padding: 10px 11px;
+    color: var(--home-ink);
+    font-size: 13px;
+  }
+  .fieldbookHome .homeMobileNav .homeSelectionMenuList {
+    position: static;
+    min-width: 0;
+    padding: 0 0 4px 12px;
+    transform: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .fieldbookHome .homeMobileNav .homeSelectionMenuList a {
+    padding: 8px 11px;
+    background: var(--home-mist);
+  }
+  .fieldbookHome .homeMobileNav .homeSelectionMenuList a + a { border-top: 1px solid var(--home-line); }
   .fieldbookHome .heroGridV2 { padding-top: 42px; gap: 26px; }
   .fieldbookHome .heroV2 h1 { font-size: clamp(38px, 10.5vw, 44px); line-height: 1.12; letter-spacing: -.032em; }
   .fieldbookHome .heroV2 .heroLead { margin-top: 18px; font-size: 16px; line-height: 1.65; }
@@ -732,4 +801,26 @@
 
   .fieldbookHome .heroFlightArtwork,
   .fieldbookHome .heroFlightSignal { animation: none; }
+}
+
+.fieldbookHome .timeBudgetPathsV2 {
+  margin-top: 18px;
+  border-radius: 0;
+}
+.fieldbookHome .timeBudgetPathsV2 > header {
+  display: block;
+}
+.fieldbookHome .timeBudgetPathsV2 > header > p {
+  margin-top: 12px;
+}
+.fieldbookHome .timeBudgetPathsV2::before,
+.fieldbookHome .timeBudgetPathsV2::after {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .fieldbookHome .timeBudgetPathsV2 {
+    margin-top: 18px;
+    padding: 44px 20px;
+  }
 }

@@ -155,6 +155,8 @@ export const governanceMlopsCurriculum = {
       { title: "批准、条件批准与例外", en: "Approval & Exceptions", explanation: "条件批准只授权证据已支持的限域运行；例外是对一项明确控制或政策的有权、留痕、限时偏离。两者都要记录范围、残余风险、补偿控制、负责人、到期日和自动撤销条件。", decision: "证据不足时缩小用途、Hold 或 No-Go。", boundary: "条件批准不能推迟关键伤害或未决法律问题，例外也不能绕过核心控制或强制要求。", sourceIds: ["nist-ai-rmf", "iso-iec-42001"] },
       { title: "人工监督、申诉与治理事件", en: "Oversight & Redress", explanation: "高影响用途需要可理解的人工复核、覆盖、停止、告知、挑战、申诉和补救；治理事件还包括错误淘汰、投诉与不公平结果。", decision: "人工角色必须拥有信息、权限、时限和明确责任。", boundary: "HITL 的单次点击不等于完整人工监督，也不自动消除系统影响。", sourceIds: ["iso-iec-42005", "eu-ai-act"] },
       { title: "持续保证、变更复审与退役", en: "Continuous Assurance", explanation: "模型、Prompt、数据、ATS、供应商、地区、用途或法规重大变化先暂停受影响范围，刷新清单、影响、控制与证据，再由有权责任人决定恢复、限域或退役。", decision: "批准只覆盖记录的版本与条件，触发复审后不能自动延续。", boundary: "一次评审不是永久状态，停止端点也不等于业务和数据处置完成。", sourceIds: ["nist-ai-rmf", "iso-iec-42001", "eu-ai-act-2026-1744"] },
+      { title: "中国交付适用性分诊", en: "China Delivery Triage", explanation: "面向中国交付先按服务受众、主体角色、部署方式、模型来源和数据流分诊，再区分内容生成、推荐、决策支持和自动执行的不同责任面，以及个人信息、重要数据、敏感行业数据和跨境触发点。", decision: "把法规问题转成场景卡和证据收集任务，明确哪些结论必须由法律、安全和业务责任人复核。", boundary: "本模块提供工程与治理分诊，不提供法律意见；任何“必须、禁止、已合规、无需备案”的确定性措辞都要先回到官方法源和专业复核。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "nist-genai-profile"] },
+      { title: "义务—控制—证据映射", en: "Obligation Evidence Map", explanation: "把法规义务、工程控制、运营证据和责任人映射成同一张表：内容标识、备案与登记、日志、申诉、人工复核、事件处理、撤回与更正都应有对应控制、证据产物和复核周期。", decision: "用一张映射表回答“哪个义务由什么控制承载、留下什么证据、谁负责复核”。", boundary: "控制存在不等于证据有效；证据有效也不等于法律适用性已经终审。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "nist-ai-rmf"] },
     ],
   },
 };
@@ -184,6 +186,7 @@ export const governanceMlopsLearning = {
       { title: "组装招聘 AI 治理决策包", scenario: "第三方 LLM 已用于写职位描述，业务希望追加简历筛选、评分和候选人排序。", tasks: ["拆分用途并登记人群、决定、数据、模型、ATS、供应商和地区", "完成影响评估与组织风险分层，列出需法务确认的分类问题", "分配业务、治理、安全、评估、AI Ops 与人工监督责任", "形成批准、条件批准、Hold 或 No-Go 建议"], deliverable: "版本化治理状态、证据包、批准条件与复审触发器", acceptance: "写作与筛选不共用一个风险结论；任何未决法律分类都明确交给专业人员。", sourceIds: ["nist-ai-rmf", "iso-iec-42001", "iso-iec-42005", "eu-ai-act"] },
       { title: "设计可操作的人工监督与申诉", scenario: "招聘人员可以看到模型排序，却不知道证据、如何覆盖结果或怎样处理候选人申诉。", tasks: ["定义人工必须看到的信息与禁止自动化决定", "设计覆盖、停止、超时、申诉和补救状态", "为正常、偏差、证据冲突和系统故障建立测试"], deliverable: "人工监督控制、运行证据与失效路径", acceptance: "人工拥有足够信息、权限和时限纠正结果；一次 Approve 点击不被当作完整治理。", sourceIds: ["iso-iec-42005", "eu-ai-act"] },
       { title: "复核动态法规与批准复审", scenario: "产品材料仍沿用旧 EU 时间线，同时模型、ATS 字段和供应商条款已经变化。", tasks: ["用委员会实施页与正式修法核对日期", "把法律判断、组织 tier 和工程控制分开", "枚举哪些变化触发暂停与复审并设置 owner、reviewBy 和事件触发器", "定义补证后恢复、限域或退役的重新决定"], deliverable: "法规 claim、批准复审矩阵和待法务确认项", acceptance: "不使用永久合规标签；时间线能回到当前法源，受影响批准先暂停并在补证后形成新决定，系统分类不由知识库自动给出。", sourceIds: ["eu-ai-act", "eu-ai-act-2026-1744"] },
+      { title: "组装中国交付义务证据包", scenario: "客户准备在国内发布生成内容服务，要求上线前把义务、控制和证据一次理清。", tasks: ["按受众、主体角色、部署方式、模型来源和数据流完成分诊", "把内容标识、日志、申诉、人工复核、事件处置映射为控制与证据", "列出必须由法律、安全和业务复核的未决项并设置复核人"], deliverable: "中国交付分诊表、义务—控制—证据映射和上线证据包", acceptance: "不出现“已合规”或“无需备案”的绝对结论；每项义务都有证据产物、责任人和复核日期。", sourceIds: ["china-ai-content-labeling", "gb-45438-2025", "nist-ai-rmf"] },
     ],
   },
 };
