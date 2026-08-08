@@ -1,0 +1,60 @@
+{
+  "planId": "ai-knowledge-base-content-improvement-2026-08",
+  "stageId": "stage-0",
+  "stagePlanStatus": "approved",
+  "generatedAt": "2026-08-05",
+  "freezeStatus": "frozen-for-research",
+  "current": {
+    "repo": "jasonlijiaxiang/myailearning-codex",
+    "origin": "https://github.com/jasonlijiaxiang/myailearning-codex.git",
+    "auditBaselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
+    "branch": "codex/ai-knowledge-base-content-improvement",
+    "modules": [
+      "solution-patterns", "model-landscape", "rag", "ai-agent", "multimodal",
+      "mcp", "a2a", "evaluation", "ai-governance", "security", "ai-gateway",
+      "ai-ops", "predictive-ai-mlops", "llm", "prompt-engineering",
+      "fine-tuning", "llm-training", "llm-inference", "data-engineering",
+      "ai-infra-platform", "ai-infra-compute"
+    ],
+    "moduleCount": 21,
+    "questionCount": 320,
+    "evidenceCardCount": 105,
+    "deepDiveCount": 54,
+    "keyFileHashes": {
+      "app/module-publication.mjs": "3a345bf3d7642de0d513f8a0a35e01c285143f223ea223d571ca759d58e4cdb3",
+      "app/module-content-registry.mjs": "577e8d105c5b9b467f025b86ee9489b47354ff49214ae02759801873374583da",
+      "app/terminology.mjs": "a3a7b339a93d993d0a6cd31d00e71830529b94199945db6572f5fdaae9f4e29c",
+      "app/reference-content.mjs": "b1add34696d6c4aea83ea63e2ec62c4b6d4c18a0f5dd33d166f1b9271d630b79",
+      "knowledge/claims/index.json": "552367b6247759a41bcbf811c54284682bc7b830d546aaa45b2997565ff70f0c",
+      "app/question-index.mjs": "4e39bfd43c74b4a002573453b5597f6a529f0d1520d43ae30119c4c52df9396b"
+    }
+  },
+  "target": {
+    "repo": "jasonlijiaxiang/ai-knowledge-base",
+    "origin": "https://github.com/jasonlijiaxiang/ai-knowledge-base.git",
+    "pinnedCommit": "100ca761fec3e55ceea01609d01f66b0c05802dc",
+    "localAccess": "外部冻结提交的临时只读检出；不记录本机路径，也不构成正式依赖",
+    "modulePageCount": 19,
+    "pptDeckCount": 19,
+    "manifestCount": 19,
+    "moduleQaExpectedCount": 231,
+    "practiceQuestionExpectedCount": 91,
+    "keyFileHashes": {
+      "README.md": "d0187bcc2a87f51729ce2bdbe9cc09921461abf728c4ccf908390de6e2388cbe",
+      "Web-version/qa/index.html": "61fb2dd443c09c3c68c7f1606d1ed1aec4703917d0674b73f6324c94fa746ef3",
+      "_prep/实战包.html": "2cde8ff0a6caeb238e2d7d4f122e8a52584456a83af6d0793d3556aa62ab1330",
+      "_prep/学习路径.html": "5993867c66db5eebe6cd998fb07fba65a019435e485e711ebda5bd97d7861e66",
+      "_prep/全库一页纸.html": "74f7b4a2ca459c9c174bf961dfefe0f46952537efac6b7ab9e3c134cd8e1d63a",
+      "_prep/MANIFEST.md": "77a3c850a08b132704511b1636972c4dabbf2a8035d6b100b75553f065fec77c",
+      "_reference/吸收清单.md": "7bb83be8b219ef72632adef78cb9337ed7d10c9cfa242e8fa01fd1dd1073e23e"
+    }
+  },
+  "comparisonNote": "对照目标：吸收对照库真正净新增的现场备战、中国交付、诊断式教学和方案方法；不回流当前库已输出的知识工程机制；对照库是 provenance 与研究线索，不是最终事实来源。",
+  "startupGateCheck": {
+    "workspaceClean": true,
+    "branchMatchesPlan": "codex/ai-knowledge-base-content-improvement",
+    "targetPinnedCommitAvailable": true,
+    "baselineDrift": "none within allowed plan-directory scope",
+    "confirmed": true
+  }
+}

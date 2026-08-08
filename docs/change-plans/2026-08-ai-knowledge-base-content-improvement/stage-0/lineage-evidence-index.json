@@ -1,0 +1,54 @@
+{
+ "generatedAt": "2026-08-05",
+ "scope": "工作包 C：回流、证据与风险预索引（第二轮）",
+ "backflowEvidence": [
+  {
+   "id": "BF-001",
+   "location": "_reference/吸收清单.md",
+   "claim": "对照库 2026-07-12 从 Codex - AI Learning（当前库，skill v3.1 产出、核实窗口 07-11）吸收事实级内容，涉及 10 个模块 B 类更新（Inference/Agent/Fine-tuning/AI-Gateway/A2A/RAG/Observability/Infra-Platform/Data-Knowledge/MCP），其余 9 模块判定当前库覆盖更全而忽略。",
+   "confidence": "confirmed",
+   "mechanism": "事实级（版本/口径/许可证）",
+   "implication": "对应候选一律视为 current-to-target-backflow 或 shared-upstream，不得反向作为净新增吸收。"
+  },
+  {
+   "id": "BF-002",
+   "location": "_maintenance/2026-08-02-Codex对照库借鉴-设计.md",
+   "claim": "对照库明确设计从 jasonlijiaxiang/myailearning-codex@3588cbb 借鉴：事实生命周期状态机（claim schema/watch/announcement）、超期即阻断发布的硬门禁、历史问题→永久门禁矩阵、深度标尺（定义→机制→边界→判断→证据）、机制/判断/边界三元组等。",
+   "confidence": "confirmed",
+   "mechanism": "知识工程机制",
+   "implication": "D-006 明列这些机制为回流，不反向吸收；对照库当前是否已落地需另行核验，与本轮吸收无关。"
+  },
+  {
+   "id": "BF-003",
+   "location": "_reference/吸收清单.md 内容级比对补充",
+   "claim": "对照库比对后认为当前库（Codex 册）独有价值在框架深潜页与生产验收清单，对照库已在 v3.2 收尾四件套中补齐；框架打包/验收清单形式为共享设计取向。",
+   "confidence": "high",
+   "mechanism": "框架深潜/生产验收清单",
+   "implication": "候选若只是‘框架化打包’形式，属于表达层；判断净增量要看机制本体。"
+  },
+  {
+   "id": "BF-004",
+   "location": "_prep/raw-data/2026-07-10-备战包-开题.md",
+   "claim": "实战包/学习路径/全库一页纸为对照库原创（2026-07-10 D 类交付），素材 100% 抽取自本库讲义对练页，非来自当前库。",
+   "confidence": "confirmed",
+   "mechanism": "现场备战层",
+   "implication": "C-001~C-005 现场备战层候选为对照库净新增，可吸收。"
+  }
+ ],
+ "evidenceSourceDistribution": {
+  "arXiv/论文": 68,
+  "行业/市场报告": 32,
+  "OWASP/安全框架": 14,
+  "官方产品文档": 9,
+  "EU AI Act/暂行办法/NIST/GB 等法规标准": 14,
+  "基准榜页与交叉确认": 6,
+  "白皮书": 1
+ },
+ "evidenceNote": "来源类型为 raw-data 联网核实笔记关键词扫描；对照库自身不能使 evidenceGate=pass，只提供 provenance 与研究线索。",
+ "riskDynamicityFindings": {
+  "dynamicFacts": "实战包 91 题中带 ⏳ 口径日期的约 34 题；问答页 231 题全部带核验日期；模块页含大量价格/份额/版本数字（如 GPT-5.6 三档价、Claude 5 家族、Anthropic 40%、ChatGPT 74% 等）。",
+  "absoluteExpressions": "对照库存在‘最强永远带定语’等纠偏表述（属正确用法）；正文中‘唯一/永远/一定/80%’类绝对表述需在 Stage 5 硬化时与当前库一并扫描。",
+  "legalExposure": "H1 备案、H2 内容标识、H3 数据出境、H6/H7 模型权属与训练数据合规、security 第 8 节中国监管合规为法规面，必须官方法源+法律复核，未核验前 hold。",
+  "highRisk": "Agent 记忆教坏（C-023）、侵权责任（C-015）、开源许可（C-009）、多模态交付链（C-037）属安全/法律面，进入正文前需专项复核。"
+ }
+}

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { ReadingProgress, ReferenceFilterShell, type ReferenceFilterItem } from "../fieldbook-interactions";
 import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
-import { referenceModules, sourceLedger } from "../reference-content.mjs";
+import { chineseReferenceModules, sourceLedger } from "../reference-content.mjs";
 
 export const metadata: Metadata = {
   title: "来源与证据 | 云计算 × AI 平台售前知识库",
@@ -44,16 +44,16 @@ const evidenceLegend = [
   },
 ];
 
-const referenceModuleRows = balanceGridRows(referenceModules, 4);
+const referenceModuleRows = balanceGridRows(chineseReferenceModules, 4);
 const sourceAnchorOwner = new Map<string, string>();
 
-for (const referenceModule of referenceModules) {
+for (const referenceModule of chineseReferenceModules) {
   for (const sourceId of referenceModule.sourceIds) {
     if (!sourceAnchorOwner.has(sourceId)) sourceAnchorOwner.set(sourceId, referenceModule.id);
   }
 }
 
-const referenceFilterItems: ReferenceFilterItem[] = referenceModules.flatMap((module) => module.sourceIds.map((sourceId) => {
+const referenceFilterItems: ReferenceFilterItem[] = chineseReferenceModules.flatMap((module) => module.sourceIds.map((sourceId) => {
   const source = sourceLedger[sourceId as keyof typeof sourceLedger];
   return {
     key: `${module.id}:${sourceId}`,
@@ -130,8 +130,8 @@ export default function ReferencesPage() {
               className="referenceModuleNav"
               id="reference-modules"
               aria-label="来源模块目录"
-              data-count={referenceModules.length}
-              data-odd={referenceModules.length % 2 === 1 ? "true" : "false"}
+              data-count={chineseReferenceModules.length}
+              data-odd={chineseReferenceModules.length % 2 === 1 ? "true" : "false"}
             >
               {referenceModuleRows.flatMap((row) =>
                 row.map((module) => (
@@ -153,7 +153,7 @@ export default function ReferencesPage() {
       </section>
 
       <ReferenceFilterShell items={referenceFilterItems}>
-        {referenceModules.map((module, moduleIndex) => (
+        {chineseReferenceModules.map((module, moduleIndex) => (
           <section
             className="section referenceModuleSection"
             id={`module-${module.id}`}
@@ -191,10 +191,11 @@ export default function ReferencesPage() {
                         rel="noreferrer"
                         key={sourceId}
                       >
+                        {source.versionOf && sourceAnchorOwner.get(sourceId) === module.id ? <span className="sourceAnchorAlias" id={`source-${source.versionOf}`} aria-hidden="true" /> : null}
                         <span className="sourceLevel">{source.grade} / {source.kind}</span>
                       <span className="sourceTitle">
                         <strong>{source.title}</strong>
-                        <small><b className="sourceShortTitle">{source.shortTitle}</b>{source.note}</small>
+                        <small><b className="sourceShortTitle">{source.shortTitle}</b>{source.versionOf ? "同址来源的更新核验快照。" : null}{source.note}</small>
                       </span>
                         <span className="sourceDate">核验：{source.verifiedAt}<br />打开原文 ↗</span>
                       </a>

@@ -1,0 +1,2870 @@
+{
+ "generatedAt": "2026-08-05",
+ "note": "第一轮 occurrence：实战包 91 + 兜底话术 4 + 模块问答 231 + 学习路径/一页纸锚点；第二轮补模块网页与 PPT 出现项。",
+ "occurrences": [
+  {
+   "occurrenceId": "O-P-A1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A1（★必背）",
+   "summary": "现在到底谁家模型最强？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A2",
+   "summary": "开源模型和 GPT 们到底还差多少？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A3",
+   "summary": "国产模型到底赶上国际水平没有？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A4",
+   "summary": "豆包和 DeepSeek、Qwen 比强在哪？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A5",
+   "summary": "GPT 和 Claude 到底该选哪个？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A6",
+   "summary": "Llama 不是开源吗，为什么法务不让用？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A7（★必背）",
+   "summary": "模型更新这么快，今天选的半年后会不会亏？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A8",
+   "summary": "榜单第一的模型为什么你们不直接推荐？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A9",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A9",
+   "summary": "thinking 模式为什么这么贵？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A10",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A10（★必背）",
+   "summary": "国内这几个平台（方舟 / 百炼 / 千帆 / 腾讯）到底选哪个？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-A11",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 A11",
+   "summary": "平台会不会把我们锁死？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B1（★必背）",
+   "summary": "你们和纯卖模型 API 的有什么区别？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B2",
+   "summary": "先做哪个场景最容易见效？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B3（★必背）",
+   "summary": "POC 成功了，为什么上生产还要再收钱？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B4",
+   "summary": "客服解决率能承诺多少？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B5",
+   "summary": "员工会不会搜到不该看的东西？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B6",
+   "summary": "AI 生成的内容侵权了算谁的？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B7（★必背）",
+   "summary": "RAG 和微调到底该选哪个？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B8",
+   "summary": "都有 1M 上下文了，还要 RAG 吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B9",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B9",
+   "summary": "Agent 和普通对话机器人有什么区别、什么时候该上？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B10",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B10",
+   "summary": "自然语言问数（ChatBI）算错一个数怎么办？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B11",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B11",
+   "summary": "我们数据很乱，AI 项目是不是做不了？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B12",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B12",
+   "summary": "要不要专门买一套向量数据库？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B13",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B13",
+   "summary": "POC 都过了，上生产你们到底\"验收\"什么？给份清单。",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B14",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B14",
+   "summary": "我们的资料全是扫描件和图纸，该上原生多模态还是自己拼 OCR + 大模型？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B15",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B15",
+   "summary": "视频生成到底能不能商用了？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B16",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B16",
+   "summary": "什么时候该派 sub-agent、什么时候一个 agent 就够？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-B17",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 B17",
+   "summary": "我们已经买了 RPA，Computer Use 有什么不一样？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C1（★必背）",
+   "summary": "为什么按 token 计费、输出凭什么比输入贵？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C2",
+   "summary": "语音客服一分钟多少钱？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C3",
+   "summary": "缓存能省多少钱？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C4（★必背）",
+   "summary": "为什么不全用最便宜的 DeepSeek？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C5（★必背）",
+   "summary": "两家报价差三倍，是不是有人坑我？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C6",
+   "summary": "DeepSeek 为什么那么便宜？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C7",
+   "summary": "自建算力和上云到底哪个便宜？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C8",
+   "summary": "多 agent 协作成本会不会失控？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C9",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C9",
+   "summary": "上网关到底能省多少钱？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C10",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C10",
+   "summary": "70B 模型到底要几张卡？（现场心算版）",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-C11",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 C11",
+   "summary": "微调要多少数据、多少钱、多久见效？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D1（★必背）",
+   "summary": "提示注入能彻底防住吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D2",
+   "summary": "大模型不就是个聊天框，能有多大风险？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D3",
+   "summary": "幻觉是不是训练没做好？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D4",
+   "summary": "系统没报错，但用户说 AI 变笨了，怎么排查？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D5（★必背）",
+   "summary": "上线之后你们还管吗？管什么？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D6",
+   "summary": "模型是大厂的，还能悄悄变吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D7",
+   "summary": "改个提示词而已，为什么要走发布流程？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D8（★必背）",
+   "summary": "你们的 AI 有没有「刹车」？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D9",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D9",
+   "summary": "怎么证明 agent 上线后不出乱子？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D10",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D10",
+   "summary": "系统不报错，但效果肉眼变差，你们怎么定位是哪一环坏的？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D11",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D11",
+   "summary": "你们交付的 agent / 工具，是生产级还是 demo？凭什么这么说？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D12",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D12",
+   "summary": "语义缓存会不会给不同用户串答、泄露别人的数据？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D13",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D13",
+   "summary": "自动路由到便宜模型，质量掉了怎么办？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D14",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D14",
+   "summary": "Agent 的记忆会不会被人「教坏」？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-D15",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 D15",
+   "summary": "追踪日志里有客户的对话内容，安全吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E1（★必背）",
+   "summary": "榜单分数能信吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E2",
+   "summary": "让 AI 评 AI（LLM-as-a-Judge），靠谱吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E3（★必背）",
+   "summary": "我们没数据没标注团队，评估怎么起步？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E4",
+   "summary": "RAG 答错了，是检索还是生成的锅？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E5（★必背）",
+   "summary": "评估体系要建多久、多少钱？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E6",
+   "summary": "换了新模型，评估要重做吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E7",
+   "summary": "Agent 这种多步任务怎么验收？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E8",
+   "summary": "微调完的模型，怎么证明没「变笨」？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-E9",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 E9",
+   "summary": "你们能承诺多少并发？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F1（★必背）",
+   "summary": "用一句话给 CEO 讲什么是大模型？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F2",
+   "summary": "为什么模型回答一个字一个字蹦？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F3（★必背）",
+   "summary": "私有化部署为什么并发上不去？显存明明够装模型。",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F4",
+   "summary": "量化会不会把模型变笨？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F5（★必背）",
+   "summary": "MCP 和 Function Calling 什么关系？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F6",
+   "summary": "A2A 和 MCP 到底啥区别？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F7",
+   "summary": "微调会不会把模型调坏？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F8",
+   "summary": "为什么训练要几千张卡，推理几张就行？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F9",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F9",
+   "summary": "参数量 7B、70B 到底意味着什么？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F10",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F10",
+   "summary": "模型知识为什么会过时？能打补丁吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F11",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F11",
+   "summary": "为什么我说「不要 X」它还是做了？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-F12",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 F12",
+   "summary": "长任务客户端断了怎么办？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G1（★必背）",
+   "summary": "我已经有 API 网关了，为什么还要 AI 网关？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G2",
+   "summary": "我们有几百个内部 API 要让 Agent 用，是不是要一个个改造？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G3",
+   "summary": "我们卡不多，直接 SSH 上去跑不行吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G4（★必背）",
+   "summary": "有了 vLLM 这些引擎，为什么还要一套推理平台？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G5",
+   "summary": "一张卡到底能给几个团队用？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G6",
+   "summary": "不用 NVIDIA 到底行不行？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G7（★必背）",
+   "summary": "网关 / 平台，我们该自建还是买托管？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-G8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 G8",
+   "summary": "Dify 是开源的，我们为什么要付钱？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H1（★必背）",
+   "summary": "我们私有化部署、只给内部员工用，要备案吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H2（★必背）",
+   "summary": "不打 AI 标识会怎样？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H3",
+   "summary": "数据能不能出境？走哪条通道？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H4（★必背）",
+   "summary": "我们的数据会不会被模型学走、被别人问出来？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H5",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H5",
+   "summary": "向量化之后是不是就安全了？删除能真删干净吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H6",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H6",
+   "summary": "用开源模型微调出来的模型算谁的？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H7",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H7",
+   "summary": "用 GPT 生成的数据训我们的模型，合规吗？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-P-H8",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 H8",
+   "summary": "我们要出海，EU AI Act 要做什么、什么时候？",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #01",
+   "summary": "A2A 和 MCP 到底啥区别，是不是二选一？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #02",
+   "summary": "能不能只用一个 Agent，别搞这么复杂？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #03",
+   "summary": "这是不是 Google 的私有协议，用了会被锁定吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #04",
+   "summary": "接 A2A 要不要换我现在的 Agent 框架？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #05",
+   "summary": "Task 有状态，服务端要一直存着？会不会很重？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #06",
+   "summary": "长任务客户端断了怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #07",
+   "summary": "怎么防止别人伪造一个 Agent 冒充我们？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #08",
+   "summary": "跨多个 Agent，出错了怎么定位？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #09",
+   "summary": "现在上是不是太早了？你说 150 家在用，真跑在生产上的有几家？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #10",
+   "summary": "我们几个 Agent 都是自己开发的，还需要上标准协议吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #11",
+   "summary": "跨厂商协作，对方那个 Agent 给错了结果，算谁的？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-A2A-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 A2A #12",
+   "summary": "非得现在就定协议吗？万一它没成主流，这笔投入不打水漂了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #01",
+   "summary": "我已经有 API 网关了，为什么还要 AI 网关？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #02",
+   "summary": "上网关到底能省多少钱？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #03",
+   "summary": "自动路由到便宜模型，质量掉了怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #04",
+   "summary": "语义缓存会不会给不同用户串答、泄露数据？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #05",
+   "summary": "护栏能 100% 挡住提示注入吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #06",
+   "summary": "合规审计具体能提供什么证据？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #07",
+   "summary": "我们有几百个内部 API，要让 Agent 用，是不是要一个个改造？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #08",
+   "summary": "Agent 替用户调工具，权限会不会被放大、被滥用？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #09",
+   "summary": "我们该自建还是买托管？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #10",
+   "summary": "一句话，AI 网关到底给我带来什么？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #11",
+   "summary": "网关是所有流量的必经之路，它自己挂了，全公司的 AI 不就一起停？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #12",
+   "summary": "网关上线，怎么算「上得好」？验收看什么？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIGateway-13",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Gateway #13",
+   "summary": "把所有 AI 流量都收到这一层，以后想换掉网关是不是特别难？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #01",
+   "summary": "我们已经有机房，直接买卡装进去行不行？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #02",
+   "summary": "标称几千 TFLOPS，为什么我们实测差那么远？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #03",
+   "summary": "70B 模型到底要几张卡？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #04",
+   "summary": "不用 NVIDIA 到底行不行？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #05",
+   "summary": "NVLink 和 InfiniBand 到底什么关系？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #06",
+   "summary": "存储要配多少才够？直接用对象存储训练行不行？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #07",
+   "summary": "自建和上云到底哪个便宜？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #08",
+   "summary": "现在下单还是等下一代卡？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #09",
+   "summary": "你们报的这个容量，凭什么证明？跑分能不能信？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #10",
+   "summary": "卡坏了谁修？修的那几天算力算谁的？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraCompute-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Compute #11",
+   "summary": "同样一批卡，别家报价低不少，凭什么？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #01",
+   "summary": "我们卡不多，直接 SSH 上去跑不行吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #02",
+   "summary": "K8s 自带调度器不能跑训练吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #03",
+   "summary": "一张卡到底能给几个团队用？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #04",
+   "summary": "故障真有那么频繁吗？感觉有点夸张。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #05",
+   "summary": "nvidia-smi 利用率一直 90%+，还有优化空间吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #06",
+   "summary": "有了 vLLM 这些引擎，为什么还要推理平台？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #07",
+   "summary": "我们到底该自建平台还是用托管？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #08",
+   "summary": "你们说利用率能翻一倍，这个敢写进合同吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #09",
+   "summary": "这套平台搭起来要多久？要配几个人？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIInfraPlatform-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Infra-Platform #10",
+   "summary": "平台交付了怎么算验收？拿什么证明它建好了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #01",
+   "summary": "我们已经有 Datadog 了，为什么还要一套 AI 观测？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #02",
+   "summary": "系统没报错，但用户说 AI 变笨了，怎么排查？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #03",
+   "summary": "大厂的模型还能悄悄变吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #04",
+   "summary": "线上打分会不会拖慢用户请求？LLM 判官可信吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #05",
+   "summary": "改个提示词而已，为什么要走发布流程？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #06",
+   "summary": "你们的 AI 有没有「刹车」？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #07",
+   "summary": "trace 里有客户的对话内容，安全吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #08",
+   "summary": "上线之后你们还管吗？管什么、怎么收费？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #09",
+   "summary": "这套上了之后，你们能承诺什么？给个 SLO。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #10",
+   "summary": "以后换了模型供应商、或者不用这家观测平台了，这套是不是重做？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-AIOps-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 AI-Ops #11",
+   "summary": "「观测做到位了」怎么算数？验收拿什么签？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #01",
+   "summary": "Agent 和普通的对话机器人到底有什么区别？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #02",
+   "summary": "是不是所有场景都该升级成 agent？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #03",
+   "summary": "模型会不会直接操作我们的生产系统？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #04",
+   "summary": "多个 agent 是不是一定比一个强？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #05",
+   "summary": "现在模型上下文都百万级了，还需要上下文工程吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #06",
+   "summary": "怎么证明 agent 上线后不会出乱子？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #07",
+   "summary": "Dify 是开源的，我们为什么要付钱？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #08",
+   "summary": "Agent 的记忆会不会被人「教坏」？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #09",
+   "summary": "Computer Use 和 RPA 有什么区别？我们已经买了 RPA。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #10",
+   "summary": "Sub-agent 会不会把费用跑爆？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #11",
+   "summary": "怎么保证某个 sub-agent 每次都被调用？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #12",
+   "summary": "万一它自己干错了事，谁负责？出了问题怎么查？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-13",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #13",
+   "summary": "这套跑起来一个月要花多少钱？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-14",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #14",
+   "summary": "以后换模型、换平台，是不是整套都要重做？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Agent-15",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Agent #15",
+   "summary": "能不能就交给它自己干，不用人盯着？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #01",
+   "summary": "我们数据很乱，AI 项目是不是做不了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #02",
+   "summary": "我们全是扫描件和图纸，能处理吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #03",
+   "summary": "接一个系统要多久？数据多久能同步一次？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #04",
+   "summary": "要不要专门买一套向量数据库？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #05",
+   "summary": "AI 老答错，是不是模型不行？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #06",
+   "summary": "标注要雇多少人？合成数据可靠吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #07",
+   "summary": "数据向量化之后是不是就安全了？删除能真删干净吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #08",
+   "summary": "先做个 POC——数据这块怎么算做完了？拿什么验收？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #09",
+   "summary": "覆盖率、准确率你们能承诺到多少？先给个数。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-DataEngineering-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Data-Engineering #10",
+   "summary": "上线之后这套谁来维护？每个月还要养几个人？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #01",
+   "summary": "你们模型在榜单上分数很高，是不是拿来就好用？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #02",
+   "summary": "让 AI 评 AI，靠谱吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #03",
+   "summary": "判官会不会偏向你们自家模型？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #04",
+   "summary": "我们没数据、没标注团队，评估怎么起步？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #05",
+   "summary": "RAG 答错了，怎么知道是检索还是生成的锅？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #06",
+   "summary": "Agent 这种多步任务怎么验收？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #07",
+   "summary": "微调完的模型，怎么证明没有「变笨」？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #08",
+   "summary": "万一评估平台以后停服了怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #09",
+   "summary": "评估体系建起来要多久、多少钱？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #10",
+   "summary": "有了护栏是不是就不用评估了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #11",
+   "summary": "我们已经有测试团队和 QA 流程了，为什么还要单建一套？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Evaluation-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Evaluation #12",
+   "summary": "评估都做了，线上还是出问题——那这套评估有什么用？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #01",
+   "summary": "30 秒说清：提示词、RAG、微调怎么选？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #02",
+   "summary": "要多少数据、多少钱、多久见效？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #03",
+   "summary": "微调会不会把模型调笨？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #04",
+   "summary": "GPT / Claude / 开源，微调路径分别是什么？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #05",
+   "summary": "SFT 和 DPO 我们都要做吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #06",
+   "summary": "怎么证明微调真的有效？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #07",
+   "summary": "怎么灰度？出问题怎么回滚？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #08",
+   "summary": "用 GPT 生成的数据训我们的模型，合规吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #09",
+   "summary": "我们想微调一个自己的模型。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #10",
+   "summary": "数据交给你们训练，会不会泄露？会不会拿去喂别人的模型？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Finetuning-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Fine-tuning #11",
+   "summary": "过两个月基座模型升级了，我这次微调是不是白做了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #01",
+   "summary": "为什么现在的大模型清一色 Transformer？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #02",
+   "summary": "参数量 7B、70B 到底意味着什么？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #03",
+   "summary": "都有 1M 上下文了，还要 RAG 吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #04",
+   "summary": "私有化部署为什么并发上不去？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #05",
+   "summary": "DeepSeek 为什么那么便宜？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #06",
+   "summary": "被问到完全没听过的架构名词怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #07",
+   "summary": "模型知识为什么会过时？能打补丁吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #08",
+   "summary": "客户抱怨「AI 又胡说」，怎么系统性接住？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #09",
+   "summary": "你们这东西为什么又贵又慢？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #10",
+   "summary": "同一个问题问两次，答案不一样——这不是 bug 吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLM-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM #11",
+   "summary": "为什么答一半就停？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #01",
+   "summary": "为什么模型回答是一个字一个字往外蹦？能不能一次出全文？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #02",
+   "summary": "我买了 8 张卡，为什么并发一高就排队？显存明明够装模型。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #03",
+   "summary": "128K 长上下文这么好，为什么按输入收费还这么贵？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #04",
+   "summary": "1000 个用户都开 1M 窗口，要备多少张卡？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #05",
+   "summary": "vLLM 和 SGLang 到底选哪个？给句准话。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #06",
+   "summary": "量化会不会把模型「变笨」？我们业务敢用吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #07",
+   "summary": "投机解码听着像「猜答案」，会不会导致质量下降？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #08",
+   "summary": "我们要支撑几千并发，直接堆卡行不行？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #09",
+   "summary": "你们能承诺多少并发？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #10",
+   "summary": "别家报价比你们便宜一半，是不是你们黑？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #11",
+   "summary": "你们说的性能，拿什么证明？这个 POC 怎么算通过？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #12",
+   "summary": "高峰期扛不住了会怎样？会不会整个服务瘫掉？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMInference-13",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Inference #13",
+   "summary": "我们自己用 Ollama 已经跑起来了，为什么还要再上一套？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #01",
+   "summary": "你们的模型到底是怎么训出来的？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #02",
+   "summary": "训练一个大模型到底要多少钱多少卡？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #03",
+   "summary": "为什么 DeepSeek 能把训练成本压那么低？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #04",
+   "summary": "MoE 模型报的 400B 参数，跟稠密 70B 怎么比？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #05",
+   "summary": "我们只有几千条数据，够微调吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #06",
+   "summary": "对齐会不会把模型调笨？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #07",
+   "summary": "推理模型和普通模型到底差在哪？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #08",
+   "summary": "榜单分数能信吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #09",
+   "summary": "我们该自建集群还是用云？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #10",
+   "summary": "我们要不要训一个自己的大模型？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-LLMTraining-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 LLM-Training #11",
+   "summary": "你们支持分布式训练吗？那这个训练项目怎么算验收通过？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #01",
+   "summary": "MCP 和 Function Calling 到底什么关系，是不是替代？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #02",
+   "summary": "这是不是 Anthropic 的私有协议，用了会被锁定吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #03",
+   "summary": "我们已经在用 Function Calling 了，还有必要上 MCP 吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #04",
+   "summary": "能不能不让模型自己决定调用？我们不放心。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #05",
+   "summary": "月底新版发布，我现在的 server 要立刻改代码吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #06",
+   "summary": "开发一个 MCP server 到底要多少工作量？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #07",
+   "summary": "员工乱接外面的 server 怎么治？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #08",
+   "summary": "我们内部系统的 server 能放到官方 Registry 吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #09",
+   "summary": "MCP 出了这么多 CVE，还能用吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #10",
+   "summary": "上线之后出了问题，怎么定位是谁的责任？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #11",
+   "summary": "我们有几百个内部 API，是不是要全改造成 MCP server？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #12",
+   "summary": "让模型自己调工具，它是拿谁的权限在干活？出事怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-13",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #13",
+   "summary": "我们已经有 API 网关和集成平台了，这不是重复建设吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-MCP-14",
+   "artifactId": "t-qa-page",
+   "location": "问答库 MCP #14",
+   "summary": "加了这一层，成本和延迟要增加多少？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #01",
+   "summary": "现在到底谁家模型最强？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #02",
+   "summary": "GPT 和 Claude 到底该选哪个？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #03",
+   "summary": "开源模型和 GPT 们到底还差多少？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #04",
+   "summary": "Llama 不是开源吗，为什么法务不让我们用？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #05",
+   "summary": "用开源模型微调出来的模型算谁的？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #06",
+   "summary": "为什么不全用最便宜的 DeepSeek？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #07",
+   "summary": "现在签一年合同，明年价格跌了怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #08",
+   "summary": "上下文窗口越大越好吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #09",
+   "summary": "评测榜单第一的模型，为什么你们不推荐？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #10",
+   "summary": "国内这几个平台，到底选哪个？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #11",
+   "summary": "平台会不会把我们锁死？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #12",
+   "summary": "我们全公司已经统一用一家了，为什么还要再引一家？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-13",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #13",
+   "summary": "你凭什么说这家适合我们？选型怎么验？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-ModelLandscape-14",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Model-Landscape #14",
+   "summary": "我们押的这个模型，厂商说停就停怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #01",
+   "summary": "我的场景到底要不要上多模态？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #02",
+   "summary": "该用原生多模态，还是自己拼 OCR + LLM？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #03",
+   "summary": "传一张图到底要多少钱？为什么比文本慢？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #04",
+   "summary": "开源 VLM 能打过闭源旗舰吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #05",
+   "summary": "模型看图会不会瞎编、看错？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #06",
+   "summary": "生成图片用扩散还是自回归？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #07",
+   "summary": "端到端语音又快又自然，为什么还推级联？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #08",
+   "summary": "语音客服的延迟能压到多少？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #09",
+   "summary": "视频生成到底能不能商用了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #10",
+   "summary": "识别准确率能做到多少？能不能把录入的人省了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #11",
+   "summary": "我们早就买了 OCR / 影像系统，凭什么再上一套？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #12",
+   "summary": "生成的图和视频，法务能不能过？版权算谁的、必须打标识吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Multimodal-13",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Multimodal #13",
+   "summary": "量真上来以后，成本会不会失控？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #01",
+   "summary": "提示词工程会不会很快就没用了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #02",
+   "summary": "怎么保证输出永远是合法 JSON？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #03",
+   "summary": "推理模型还需要写思维链提示吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #04",
+   "summary": "怎么降低我们的 API 成本？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #05",
+   "summary": "提示词能自动优化吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #06",
+   "summary": "提示词注入能彻底防住吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #07",
+   "summary": "提示词也要版本管理？至于吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #08",
+   "summary": "为什么我说「不要 X」它还是做了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #09",
+   "summary": "不就是写几句话吗，凭什么单收这笔钱？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #10",
+   "summary": "以后换个模型，提示词是不是全废了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-PromptEngineering-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Prompt-Engineering #11",
+   "summary": "提示词能不能交给业务同事自己写？改坏了算谁的？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #01",
+   "summary": "RAG 和直接微调模型，我到底该选哪个？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #02",
+   "summary": "块到底该切多大？有没有标准答案？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #03",
+   "summary": "已经有向量检索了，为什么还要单独加重排序？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #04",
+   "summary": "回答不准，到底是检索的锅还是模型的锅？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #05",
+   "summary": "向量检索不是更先进吗，为什么还要「老古董」BM25？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #06",
+   "summary": "Agentic RAG 比普通 RAG 贵多少、慢多少？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #07",
+   "summary": "上线后效果越来越差，怎么排查？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #08",
+   "summary": "数据安全怎么保证？会不会泄露？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #09",
+   "summary": "GraphRAG 是不是智商税？听说索引贵好几倍。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #10",
+   "summary": "我们的资料全是扫描件 PDF，怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #11",
+   "summary": "问数这块，这不就是 BI 吗？会不会替代我们 BI 团队？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #12",
+   "summary": "准确率能做到多少？给个数。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-13",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #13",
+   "summary": "我们已经有搜索/知识库了，凭什么再上一套？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-14",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #14",
+   "summary": "以后模型更新了，是不是整套都要重做？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-RAG-15",
+   "artifactId": "t-qa-page",
+   "location": "问答库 RAG #15",
+   "summary": "先做个 POC 吧——那怎么算成功？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #01",
+   "summary": "大模型不就是个聊天框，能有多大安全风险？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #02",
+   "summary": "提示注入到底能不能彻底解决？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #03",
+   "summary": "我们的数据会不会被模型学走、被别人问出来？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #04",
+   "summary": "从开源社区下模型很方便，有什么风险？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #05",
+   "summary": "给 Agent 放权自动干活，出了事谁负责、怎么控？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #06",
+   "summary": "买一个 AI 护栏产品，是不是就安全了？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #07",
+   "summary": "我们要过 EU AI Act，具体要做什么、什么时候？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #08",
+   "summary": "我们私有化部署、只给内部员工用，要备案吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #09",
+   "summary": "不打 AI 标识会怎样？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #10",
+   "summary": "你们能保证上线之后不出安全事故吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #11",
+   "summary": "我们安全体系和团队都齐，为什么还要再上一套 AI 安全？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-Security-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Security #12",
+   "summary": "安全这块怎么验收？总不能等出事了才知道没做好。",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-01",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #01",
+   "summary": "POC 成功了，为什么上生产还要再收一笔钱？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-02",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #02",
+   "summary": "你们报价比竞品贵 30%，贵在哪？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-03",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #03",
+   "summary": "客服解决率能承诺多少？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-04",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #04",
+   "summary": "员工会不会搜到不该看的东西？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-05",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #05",
+   "summary": "生成的内容侵权了算谁的？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-06",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #06",
+   "summary": "AI Coding 该买 Copilot 还是 Cursor 还是 Claude Code？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-07",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #07",
+   "summary": "数字人会不会有法律风险？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-08",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #08",
+   "summary": "ChatBI 准确率能到多少？算错数怎么办？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-09",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #09",
+   "summary": "会议助手和 Teams/Zoom 自带的 AI 比，强在哪？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-10",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #10",
+   "summary": "这个项目多久能上线？我们这边要出几个人配合？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-11",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #11",
+   "summary": "AI 答错了、办错了事，造成损失算谁的？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-QA-SolutionPatterns-12",
+   "artifactId": "t-qa-page",
+   "location": "问答库 Solution-Patterns #12",
+   "summary": "这套做完，是我们的资产还是绑死在你们身上？换一家能接手吗？",
+   "occurrenceForm": "qa",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-FB-1",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 附·兜底话术",
+   "summary": "被问没听过的名词",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-FB-2",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 附·兜底话术",
+   "summary": "被要求承诺数字",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-FB-3",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 附·兜底话术",
+   "summary": "被质疑数字来源",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-FB-4",
+   "artifactId": "t-practice-pack",
+   "location": "实战包 附·兜底话术",
+   "summary": "被问「我们已经有 X 了」",
+   "occurrenceForm": "practice",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-01",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "学习路径 · 三条取用路线",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-02",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "AI 知识库 网页版",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-03",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "PPT 总览 实战包 学习路径 全库一页纸 开始使用",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-04",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "v0723m",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-05",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "学习路径 · 三条取用路线",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-06",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "19 模块 / 1700+ 页——这页解决「怎么读」：系统学习走七天，见客户前看 30 分钟，大战之前冲一晚",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-07",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "每一步的模块名都可以点 ——直达网页版对应章节，手机上也能读；要放映或讲给别人听时再回 PPT 总览 取讲义。",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-08",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "路线一 · 七天通读 每天 2–3 小时；读讲义 + 做每章「动手做」第 1 题",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-09",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "天 主题 读什么 目标",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-10",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "D1 先拿地图 全库一页纸 → Solution-Patterns 第 1–2 章 （场景×积木、五层架构、三本账、口径鉴别）→ Model-Landscape",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-11",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "D2 基础层：发动机原理 LLM 原理第 1、2、4 章 （Transformer、QKV、KV 缓存）→ LLM-Training 第 1、3 章 → LLM",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-12",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "D3 应用层 I：知识 RAG 第 1–7 章 （基础五件套 + 最小管线 + 混合检索） 能画 RAG 架构图、讲清切分/重排/混合的取舍",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-13",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "D4 应用层 II：行动与感官 Agent 第 1–5 章 → RAG 第 8 章 （Agentic RAG）→ Multimodal 第 1、3 章 （感知全",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-14",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "D5 协议与保障 MCP 第 1、6 章 → A2A 第 1 章 → Security 第 1、2、5 章 （威胁、注入、Agent 安全）→ Evaluati",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-15",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "D6 解决方案层深读 Solution-Patterns 第 3–9 章 （七场景）→ Model-Landscape 第 2–6 章 （名片、开源、中国、许可",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-16",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "D7 底座、运维与合规 + 收口 AI-Ops 第 1、3、8 章 （新学科、在线评估、运营包）→ AI-Gateway 第 1、8 章 → AI-Infra-",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-17",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "跳读许可： LLM-Training 4–6 章、LLM-Inference 4–7 章、Infra 两模块中段、Multimodal 4–7 章、Agent ",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-LP-18",
+   "artifactId": "t-learning-path",
+   "location": "学习路径",
+   "summary": "路线二 · 对客前 30 分钟 按客户场景查，顺序即优先级",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-01",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "全库一页纸 · 七层书架 × 19 模块",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-02",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "AI 知识库 网页版",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-03",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "PPT 总览 实战包 学习路径 全库一页纸 开始使用",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-04",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "v0723m",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-05",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "全库一页纸",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-06",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "七层书架 × 19 模块——30 秒找到要翻的那一册",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-07",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "七层书架 19 模块 · 实测 1738 页（放映序口径）",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-08",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "点 模块名 直接读，点后面的 页数 取讲义放映。",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-09",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "层 模块 一句话",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-10",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "解决方案层 Solution-Patterns 100 页 方案 = 场景 × 积木：七大场景图纸（含 ChatBI、会议助手）+ 方法底座（五层架构 / 三本",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-11",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "Model-Landscape 98 页 ⏳ 全库最易过期 谁在造发动机、该买哪台：三阵营 / 五名片 / 中国四强 / 许可证 / 价格 / 选型法 / 国内",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-12",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "应用模式层 RAG 128 页 检索增强生成 12 章全谱：基础五件套到 GraphRAG / 多模态 / 结构化",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-13",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "Agent 122 页 会做事的模型：循环、组件、编排、MCP、上下文工程、护栏、低代码平台、记忆、Computer Use、Sub-agent 编排",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  },
+  {
+   "occurrenceId": "O-1P-14",
+   "artifactId": "t-one-pager",
+   "location": "全库一页纸",
+   "summary": "Multimodal 115 页 看图听声读文档 + 生成 + 语音实时链路（第 8 章）+ 视频生成（第 9 章）",
+   "occurrenceForm": "learning-path",
+   "sameSourceRelations": []
+  }
+ ]
+}

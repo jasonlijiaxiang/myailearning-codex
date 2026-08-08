@@ -1,6 +1,6 @@
 # 第 3 阶段：中国交付专项计划
 
-状态：`in-review`
+状态：`approved-for-execution`（2026-08-05 用户指示全量自主执行，见 DECISIONS.md D-012）
 
 ## 1. 阶段目标
 
@@ -22,6 +22,8 @@
 - 当前分支为 `codex/ai-knowledge-base-content-improvement`，工作区、HEAD、正式基线和前一批 receipt 一致。
 - 用户确认进入高风险研究阶段。
 - 对具体法律义务的表达有可用的人工或专业 Review 路径。
+
+历史实施说明：本轮 Stage 0 screening 实际未完成，路由候选不能作为正式入场证明。Stage 3 已写入内容必须以一手法源、当前 Claim/Reference、风险边界、本地化 v2 登记和最终门禁独立复核；该历史例外不允许未来高风险写入绕过上述进入条件。
 
 ### 2.1 研究授权门
 

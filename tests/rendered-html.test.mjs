@@ -10,7 +10,7 @@ import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
 import { exposesLongFormSearchSections, searchableEnglishSectionGroups, searchableQuestions } from "../app/home-search-visibility.mjs";
-import { englishModuleRegistry } from "../app/i18n/en/registry.mjs";
+import { englishModuleRegistry, englishQuestions } from "../app/i18n/en/registry.mjs";
 import { buildEnglishSectionGroups } from "../app/i18n/english-section-outline.mjs";
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { agentQa } from "../app/agent-content.mjs";
@@ -28,16 +28,17 @@ import { promptQa } from "../app/prompt-content.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
 import { questionDirectoryItems, questionDirectoryModules } from "../app/question-index.mjs";
 import { evidenceCards, ragLearningContent, ragQa } from "../app/rag-content.mjs";
-import { referenceModules, sourceLedger } from "../app/reference-content.mjs";
+import { chineseReferenceModules, referenceModules, sourceLedger } from "../app/reference-content.mjs";
 import { sourceFreshness } from "../app/source-freshness.mjs";
 import { glossaryGroups, glossaryTermIds, homepageTermGroups, requireTerm, terminology } from "../app/terminology.mjs";
+
+let workerPromise;
 
 async function render(path = "/") {
   assert.match(path, /^\//, "render(path) 必须接收站内绝对路径");
 
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${Math.random()}`);
-  const { default: worker } = await import(workerUrl.href);
+  workerPromise ??= import(new URL("../dist/server/index.js", import.meta.url).href).then(({ default: worker }) => worker);
+  const worker = await workerPromise;
 
   return worker.fetch(
     new Request(new URL(path, "http://localhost"), {
@@ -675,6 +676,7 @@ test("customer questions follow module decision coverage instead of a shared num
 test("question directory searches every published question from one canonical index", async () => {
   const html = await renderHtml("/questions");
   const registeredCount = Object.values(moduleContentRegistry).reduce((total, content) => total + content.qa.length, 0);
+  const moduleHtmlById = new Map();
 
   assert.equal(questionDirectoryModules.length, publishedModuleRegistry.length);
   assert.equal(questionDirectoryItems.length, registeredCount);
@@ -694,11 +696,41 @@ test("question directory searches every published question from one canonical in
 
   for (const item of questionDirectoryItems) {
     const sourceQuestion = moduleContentRegistry[item.moduleId].qa[item.number - 1];
+    let moduleHtml = moduleHtmlById.get(item.moduleId);
+    if (!moduleHtml) {
+      moduleHtml = await renderHtml(item.moduleHref);
+      moduleHtmlById.set(item.moduleId, moduleHtml);
+    }
     assert.equal(item.question, sourceQuestion.q, `${item.key} 与正式问题内容不一致`);
     assert.match(html, new RegExp(`id="question-${escapeRegExp(item.key)}"`));
     assert.match(html, new RegExp(`href="${escapeRegExp(item.originalHref)}"`));
+    assert.match(moduleHtml, new RegExp(`id="qa-${item.number}"`), `${item.originalHref} 必须指向模块页上的真实问题锚点`);
     assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(item.question))));
   }
+});
+
+test("English question directory never links beyond the focused module preview", async () => {
+  const html = await renderHtml("/en/questions");
+  const scopedHtml = await renderHtml("/en/questions?module=solution-patterns");
+  const llmScopedHtml = await renderHtml("/en/questions?module=llm");
+  const invalidScopeHtml = await renderHtml("/en/questions?module=not-a-module");
+
+  for (const englishModule of Object.values(englishModuleRegistry)) {
+    const exactIds = new Set(searchableQuestions(englishModule.slug, englishModule.qa, "en").map((item) => item.id));
+    for (const item of englishQuestions.filter((question) => question.moduleSlug === englishModule.slug)) {
+      const hash = exactIds.has(item.id) ? `qa-${item.id}` : "qa";
+      assert.match(html, new RegExp(`href="/en/modules/${escapeRegExp(englishModule.slug)}#${escapeRegExp(hash)}"`));
+    }
+  }
+  assert.match(html, /gives a concise answer for each one/);
+  assert.equal((scopedHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishModuleRegistry["solution-patterns"].qa.length);
+  assert.match(scopedHtml, /all 19 questions for Solution Patterns/);
+  assert.match(scopedHtml, /id="question-solution-patterns-/);
+  assert.doesNotMatch(scopedHtml, /id="question-rag-/);
+  assert.equal((llmScopedHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishModuleRegistry.llm.qa.length);
+  assert.match(llmScopedHtml, /id="question-llm-/);
+  assert.doesNotMatch(llmScopedHtml, /id="question-llm-training-|id="question-llm-inference-/);
+  assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishQuestions.length);
 });
 
 test("question directory combines keyword, module, and category filters", () => {
@@ -1096,7 +1128,6 @@ test("Batch 09 control views expose every step and focused search entries resolv
     assert.equal(exposesLongFormSearchSections(publication.slug), false);
     const html = await renderHtml(publication.path);
     questions.forEach((_, index) => assert.match(html, new RegExp(`id="qa-${index + 1}"`)));
-    if (publication.routeKind === "brief") assert.doesNotMatch(html, /id="qa-6"/);
   }
 
   const solutionGroups = searchableEnglishSectionGroups("solution-patterns", buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]));
@@ -1233,6 +1264,11 @@ test("all public page families use the shared A / Mist design contract", async (
   assert.match(homeStyles, /\.fieldbookHome\s*\{/);
   assert.match(designLanguage, /全站设计语言：雾灰青 A/);
   assert.match(designLanguage, /动态知识关系图/);
+  assert.ok(
+    v3Styles.indexOf(".fieldbookTheme.modulePage .tableWrap {") > v3Styles.indexOf(".fieldbookTheme.modulePage :where(.conceptGrid, .mechanicGrid, .tableWrap"),
+    "模块表格的横向滚动覆盖必须位于通用卡片裁剪规则之后",
+  );
+  assert.match(v3Styles, /\.fieldbookTheme\.modulePage \.tableWrap\s*\{[^}]*overflow-x:\s*auto;/s);
 });
 
 test("references route is the complete centralized source ledger", async () => {
@@ -1246,7 +1282,7 @@ test("references route is the complete centralized source ledger", async () => {
   assert.match(html, /查找来源，而不是翻阅长名单/);
   assert.match(html, /检索标题、边界或模块/);
 
-  for (const referenceModule of referenceModules) {
+  for (const referenceModule of chineseReferenceModules) {
     assert.match(html, new RegExp(`id="module-${escapeRegExp(referenceModule.id)}"`));
     assert.match(html, new RegExp(`href="${escapeRegExp(referenceModule.href)}"`));
     assert.match(html, new RegExp(escapeRegExp(referenceModule.zh)));
@@ -1261,14 +1297,18 @@ test("references route is the complete centralized source ledger", async () => {
     }
   }
 
-  for (const sourceId of Object.keys(sourceLedger)) {
+  const publicSourceIds = new Set(chineseReferenceModules.flatMap((module) => module.sourceIds));
+  for (const [sourceId, source] of Object.entries(sourceLedger)) {
     assert.match(html, new RegExp(`id="source-${escapeRegExp(sourceId)}"`), `来源未出现在统一台账：${sourceId}`);
     assert.equal(
       (html.match(new RegExp(`<a class="sourceItem" id="source-${escapeRegExp(sourceId)}"`, "g")) ?? []).length,
-      1,
-      `每个稳定来源锚点只能出现一次：${sourceId}`,
+      publicSourceIds.has(sourceId) ? 1 : 0,
+      `每个 sourceId 的 owner 锚必须唯一，旧版本只保留稳定别名锚点：${sourceId}`,
     );
+    if (!publicSourceIds.has(sourceId)) assert.ok(source.versionOf === undefined, `${sourceId} 不应被较旧来源替换`);
   }
+  assert.match(html, /同址来源的更新核验快照/);
+  assert.doesNotMatch(html, /本轮中文内容|英文证据视图|避免静默/);
 });
 
 test("legacy module addresses resolve to the current published knowledge base", async () => {
@@ -1352,11 +1392,21 @@ test("knowledge-map registry supports changing layer and module counts without d
 test("every published module claim resolves to a unique, grouped, and verified source", () => {
   const sourceEntries = Object.entries(sourceLedger);
   const sourceIds = new Set(sourceEntries.map(([sourceId]) => sourceId));
-  const sourceUrls = sourceEntries.map(([, source]) => source.href);
   const allowedGrades = new Set(["O", "P", "A", "B", "G"]);
 
   assert.ok(sourceEntries.length > 0);
-  assert.equal(new Set(sourceUrls).size, sourceUrls.length, "来源 URL 不应重复维护");
+
+  const sourcesByUrl = Map.groupBy(sourceEntries, ([, source]) => source.href);
+  for (const [href, entries] of sourcesByUrl) {
+    if (entries.length === 1) continue;
+    const canonical = entries.filter(([, source]) => !source.versionOf);
+    assert.equal(canonical.length, 1, `重复 URL 必须保留且只保留一个 canonical source：${href}`);
+    for (const [sourceId, source] of entries.filter(([, item]) => item.versionOf)) {
+      assert.equal(source.versionOf, canonical[0][0], `${sourceId} 必须显式指向同 URL 的 canonical source`);
+      assert.equal(source.localeScope, "zh-CN", `${sourceId} 版本化来源必须限定中文作用域`);
+      assert.ok(source.verifiedAt >= canonical[0][1].verifiedAt, `${sourceId} 的核验日期不得早于 canonical source`);
+    }
+  }
 
   for (const [sourceId, source] of sourceEntries) {
     assert.match(sourceId, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
@@ -1588,9 +1638,9 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(genericModuleRoute, /const relatedRows = balanceGridRows\(relatedModules, 4\)/);
   assert.match(genericModuleRoute, /"--related-span": gridSpan\(row\.length\)/);
   assert.match(genericModuleRoute, /data-odd=\{relatedModules\.length % 2 === 1/);
-  assert.match(referencesRoute, /const referenceModuleRows = balanceGridRows\(referenceModules, 4\)/);
+  assert.match(referencesRoute, /const referenceModuleRows = balanceGridRows\(chineseReferenceModules, 4\)/);
   assert.match(referencesRoute, /"--reference-span": gridSpan\(row\.length\)/);
-  assert.match(referencesRoute, /data-odd=\{referenceModules\.length % 2 === 1/);
+  assert.match(referencesRoute, /data-odd=\{chineseReferenceModules\.length % 2 === 1/);
   assert.match(moduleComponents, /if \(cards\.length === 0\) return null/);
   assert.match(moduleComponents, /const rows = balanceGridRows\(cards, maxColumns\)/);
   assert.match(moduleComponents, /const rows = balanceGridRows\(items, maxColumns\)/);
@@ -1601,6 +1651,8 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(moduleComponents, /className="balancedGridCell"/);
   assert.match(styles, /\.mechanicGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
   assert.match(styles, /\.balancedGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  assert.match(styles, /\.sourceItem\s*\{[^}]*position:\s*relative/s);
+  assert.match(styles, /\.sourceAnchorAlias\s*\{[^}]*position:\s*absolute/s);
   for (const [source, variable] of [[styles, "module"], [styles, "concept"], [styles, "mechanic"], [styles, "balanced"], [styles, "evidence"], [styles, "qa-evidence"], [styles, "related"], [styles, "brief"], [styles, "reference"], [v2Styles, "result"], [v2Styles, "search"]]) {
     assert.match(source, new RegExp(`var\\(--${variable}-span,\\s*12\\)`), `--${variable}-span 必须有通栏 fallback`);
   }

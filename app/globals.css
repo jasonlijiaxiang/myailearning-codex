@@ -370,7 +370,8 @@ details[open] .plus { transform: rotate(45deg); }
 .sourceLegend span { padding: 6px 9px; border: 1px solid #b9d8eb; background: var(--white); font-size: 10px; }
 .sourceLegend strong { margin-right: 4px; color: #44614c; }
 .sourceList { border-top: 1px solid var(--ink); }
-.sourceItem { scroll-margin-top: 24px; display: grid; grid-template-columns: 180px 1fr 140px; gap: 24px; align-items: center; text-decoration: none; padding: 21px 0; border-bottom: 1px solid var(--line); }
+.sourceItem { position: relative; scroll-margin-top: 24px; display: grid; grid-template-columns: 180px 1fr 140px; gap: 24px; align-items: center; text-decoration: none; padding: 21px 0; border-bottom: 1px solid var(--line); }
+.sourceAnchorAlias { position: absolute; top: 0; left: 0; width: 1px; height: 1px; pointer-events: none; }
 .sourceItem:hover { background: var(--paper); padding-left: 14px; padding-right: 14px; }
 .sourceItem:target { padding-left: 14px; padding-right: 14px; border-left: 3px solid var(--blue); background: #e9f5fd; }
 .sourceLevel { font-size: 10px; font-weight: 800; color: #44614c; }

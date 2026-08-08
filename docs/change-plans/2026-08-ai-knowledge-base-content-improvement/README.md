@@ -17,12 +17,11 @@
 | --- | --- |
 | 总体方向 | 已确认 |
 | 中文优先、英文延期 | 已确认 |
-| 第 0 阶段计划 | 已确认 |
-| 第 1～5 阶段计划 | 已完整细化，联合 Review 中 |
-| 中文单线交付契约 | 已完整细化，联合 Review 中 |
-| 内容实施 | 未开始 |
-| 当前工作分支 | `codex/ai-knowledge-base-content-improvement` |
-| Git 提交、推送与 Sites 发布 | 不适用于当前计划阶段 |
+| 第 0 阶段计划 | 结构已建立，但 screening 未完成（492 项 pending/blocked） |
+| 第 1～5 阶段计划 | 已批准并执行（专项分支检查点） |
+| 中文单线交付契约 | 已批准并执行（契约 07 生效） |
+| 内容实施 | 已完成，正在进行合并硬化与独立复核 |
+| Git 与发布 | 只有最终合并候选通过全量门禁后，才按项目规则提交、推送并发布同一精确提交 |
 
 ## 基线
 
@@ -45,19 +44,19 @@
 
 | 文档 | 用途 | 状态 |
 | --- | --- | --- |
-| [`00-MASTER-PLAN.md`](00-MASTER-PLAN.md) | 总体目标、阶段边界、实施顺序和全局门禁 | Review 中 |
-| [`01-STAGE-0-GAP-MATRIX-PLAN.md`](01-STAGE-0-GAP-MATRIX-PLAN.md) | 第 0 阶段差异矩阵详细设计 | 已确认 |
-| [`02-STAGE-1-FIELD-KIT-PLAN.md`](02-STAGE-1-FIELD-KIT-PLAN.md) | 第 1 阶段中文现场备战层与学习路径 | Review 中 |
-| [`03-STAGE-2-STABLE-CONTENT-PLAN.md`](03-STAGE-2-STABLE-CONTENT-PLAN.md) | 第 2 阶段稳定内容小批次 | Review 中 |
-| [`04-STAGE-3-CHINA-DELIVERY-PLAN.md`](04-STAGE-3-CHINA-DELIVERY-PLAN.md) | 第 3 阶段中国交付专项 | Review 中 |
-| [`05-STAGE-4-INDUSTRY-TRANSFER-PLAN.md`](05-STAGE-4-INDUSTRY-TRANSFER-PLAN.md) | 第 4 阶段跨行业迁移验证 | Review 中 |
-| [`06-STAGE-5-HARDENING-RELEASE-PLAN.md`](06-STAGE-5-HARDENING-RELEASE-PLAN.md) | 第 5 阶段内容硬化、验证与发布 | Review 中 |
-| [`07-CHINESE-ONLY-DELIVERY-CONTRACT.md`](07-CHINESE-ONLY-DELIVERY-CONTRACT.md) | 中文先行、英文延期时的检查与日期契约 | Review 中 |
+| [`00-MASTER-PLAN.md`](00-MASTER-PLAN.md) | 总体目标、阶段边界、实施顺序和全局门禁 | 已批准并执行 |
+| [`01-STAGE-0-GAP-MATRIX-PLAN.md`](01-STAGE-0-GAP-MATRIX-PLAN.md) | 第 0 阶段差异矩阵详细设计 | 未完成；仅保留结构化历史草稿 |
+| [`02-STAGE-1-FIELD-KIT-PLAN.md`](02-STAGE-1-FIELD-KIT-PLAN.md) | 第 1 阶段中文现场备战层与学习路径 | 已批准并执行 |
+| [`03-STAGE-2-STABLE-CONTENT-PLAN.md`](03-STAGE-2-STABLE-CONTENT-PLAN.md) | 第 2 阶段稳定内容小批次 | 已批准并执行 |
+| [`04-STAGE-3-CHINA-DELIVERY-PLAN.md`](04-STAGE-3-CHINA-DELIVERY-PLAN.md) | 第 3 阶段中国交付专项 | 已批准并执行 |
+| [`05-STAGE-4-INDUSTRY-TRANSFER-PLAN.md`](05-STAGE-4-INDUSTRY-TRANSFER-PLAN.md) | 第 4 阶段跨行业迁移验证 | 已批准并执行 |
+| [`06-STAGE-5-HARDENING-RELEASE-PLAN.md`](06-STAGE-5-HARDENING-RELEASE-PLAN.md) | 第 5 阶段内容硬化、验证与发布 | 已批准并执行（待终审） |
+| [`07-CHINESE-ONLY-DELIVERY-CONTRACT.md`](07-CHINESE-ONLY-DELIVERY-CONTRACT.md) | 中文先行、英文延期时的检查与日期契约 | 已批准并执行 |
 | [`DECISIONS.md`](DECISIONS.md) | 用户确认过的范围、顺序和例外决定 | 持续维护 |
 
-第 0 阶段计划已经确认。根据用户最新要求，第 1～5 阶段和中文单线横向契约已经一次性细化并进入联合 Review；文档完整不代表尚未确认的阶段可以开始实施。
+第 0 阶段已经建立输入账、occurrence 映射和候选结构，但 507 个输入中仍有 492 个 pending/blocked，不能声称完成了 100% screening，也不能把这些产物作为本次合并的完成证据。第 1～5 阶段产生的公开内容必须以当前代码、来源、Claim、本地化对象差异和最终门禁独立复核。
 
-第 0 阶段真正执行后，候选差异矩阵及其 Review 结果也归档在本目录，但它们只记录研究决策，不成为正式内容源。
+Stage 0 产物只记录研究线索与历史决策，不成为正式内容源；`npm run stage0:validate` 只检查这些文件的结构和内部引用，不进入日常 `npm run check`，也不证明 screening 已完成。
 
 ## Review 与执行规则
 
@@ -71,13 +70,14 @@
 
 ## 本轮语言范围
 
-本轮只更新中文内容：
+本轮只更新中文知识内容：
 
 - 不修改 `app/i18n/en/**`。
 - 不撰写、翻译或审校英文正文、问答和学习路径。
 - 只记录未来可能需要同步的稳定模块 ID、问题 ID 和术语 ID。
-- 共享数据结构必须向后兼容，现有英文页面必须继续通过回归检查。
+- 共享数据结构必须向后兼容，现有英文模块页必须继续通过回归检查。
 - 不允许英文页面因为共享元数据而错误显示为已经同步到最新中文内容。
+- `/en/questions` 可做不新增模块知识断言的技术导航修复：把 focused 预览范围外的死锚改为真实模块区段，并纠正目录自身对可达深度的说明；该例外不构成英文模块同步。
 
 未来英文同步将作为独立计划处理。
 
@@ -88,6 +88,7 @@
 - `draft`：正在起草。
 - `in-review`：等待或正在用户 Review。
 - `approved`：计划已确认，但尚未执行。
+- `executed`：阶段研究或实施已完成并留痕，等待用户终审确认。
 - `in-progress`：阶段已经开始执行。
 - `completed`：阶段交付物与验收均已完成。
 - `blocked`：存在明确阻塞条件。

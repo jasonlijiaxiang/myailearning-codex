@@ -5,16 +5,16 @@
  * 但正文根据内容选择流程、循环、分层、光谱或决策矩阵，不强迫同一版式。
  */
 const moduleSpecs = [
-  ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-08-02", "2026-07-17"],
-  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-08-02", "2026-07-17"],
+  ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-08-05", "2026-07-17"],
+  ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-08-08", "2026-07-17"],
   ["rag", "rag-title", ["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"], "dedicated", "2026-07-29", "2026-07-17"],
-  ["ai-agent", "agent-title", ["ai-agent", "harness", "harness-engineering", "agent-engineering", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-08-01", "2026-07-17"],
-  ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-08-02", "2026-07-17"],
-  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-08-01", "2026-07-17"],
+  ["ai-agent", "agent-title", ["ai-agent", "harness", "harness-engineering", "agent-engineering", "perceive", "reason", "act", "observe", "planning", "memory", "tools"], "dedicated", "2026-08-05", "2026-07-17"],
+  ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-08-05", "2026-07-17"],
+  ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-08-05", "2026-07-17"],
   ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-message", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-08-01", "2026-07-17"],
-  ["evaluation", "evaluation-title", ["evaluation", "evaluation-contract", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-08-02", "2026-07-17"],
-  ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "human-oversight", "governance-evidence", "continuous-assurance"], "brief", "2026-08-02", "2026-07-21"],
-  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-08-02", "2026-07-17"],
+  ["evaluation", "evaluation-title", ["evaluation", "evaluation-contract", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-08-05", "2026-07-17"],
+  ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "human-oversight", "governance-evidence", "continuous-assurance"], "brief", "2026-08-05", "2026-07-21"],
+  ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-08-05", "2026-07-17"],
   ["ai-gateway", "ai-gateway-title", ["ai-gateway", "model-routing", "rate-limiting", "semantic-cache", "guardrails"], "brief", "2026-08-01", "2026-07-17"],
   ["ai-ops", "ai-ops-title", ["ai-ops", "ai-application-engineering", "genaiops", "ai-release-manifest", "configuration-bundle", "release-evaluation", "shadow-traffic", "observability", "golden-set", "cost-allocation", "cost-anomaly"], "brief", "2026-08-01", "2026-07-17"],
   ["predictive-ai-mlops", "predictive-ai-mlops-title", ["predictive-ai-mlops", "feature-store", "model-registry", "point-in-time-correctness", "training-serving-skew", "model-drift"], "brief", "2026-08-01", "2026-07-21"],
@@ -23,9 +23,9 @@ const moduleSpecs = [
   ["fine-tuning", "fine-tuning-title", ["fine-tuning", "sft", "peft", "lora", "qlora", "dpo", "evaluation"], "brief", "2026-07-30", "2026-07-17"],
   ["llm-training", "llm-training-title", ["llm-training", "distributed-training", "evaluation"], "brief", "2026-08-01", "2026-07-17"],
   ["llm-inference", "llm-inference-title", ["llm-inference", "kv-cache", "batching", "quantization", "ttft", "tpot", "goodput"], "brief", "2026-08-01", "2026-07-17"],
-  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-08-02", "2026-07-17"],
+  ["data-engineering", "data-engineering-title", ["data-engineering", "document-intelligence", "dense-retrieval", "data-contract", "data-lineage", "deletion-propagation"], "brief", "2026-08-08", "2026-07-17"],
   ["ai-infra-platform", "ai-infra-platform-title", ["ai-infra-platform", "resource-scheduling", "observability", "gang-scheduling", "goodput"], "brief", "2026-08-01", "2026-07-17"],
-  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out", "tco"], "brief", "2026-08-02", "2026-07-17"],
+  ["ai-infra-compute", "ai-infra-compute-title", ["ai-infra-compute", "heterogeneous-compute", "vram", "hbm", "scale-up", "scale-out", "tco"], "brief", "2026-08-05", "2026-07-17"],
 ];
 
 // 2026-07-20 日期策略生效前无 addedAt 问题的稳定身份集合摘要。
@@ -85,10 +85,12 @@ const moduleQaCoverageTags = Object.freeze({
     "方案边界", "PoC 验收", "TCO", "场景选择", "架构组合", "智能客服", "企业搜索",
     "内容生成", "AI Coding", "数字人", "ChatBI", "会议助手", "生产运营",
     "成本边界", "范围设计", "单位经济", "采购选型", "价值衡量", "内部结算",
+    "禁止动作",
   ]),
   "model-landscape": Object.freeze([
     "选型方法", "供应连续性", "TCO", "生命周期", "组合策略", "版本治理", "候选初筛", "退出策略",
     "任务分层", "模型身份", "部署责任", "上下文边界",
+    "平台边界", "采购边界", "能力比较",
   ]),
   rag: Object.freeze(["方案判断", "离线证据", "在线检索", "有据回答", "局部验收"]),
   "ai-agent": Object.freeze([
@@ -100,6 +102,7 @@ const moduleQaCoverageTags = Object.freeze({
   multimodal: Object.freeze([
     "方案选择", "成本与性能", "实时交互", "多模态安全", "证据链", "评估设计", "结构恢复",
     "输入预算", "时序证据", "语音交互", "模态隐私", "降级策略",
+    "发布责任", "发布状态",
   ]),
   mcp: Object.freeze([
     "协议边界", "身份授权", "供应链安全", "选型与锁定", "安全边界", "平台治理", "错误语义", "Server 供应链",
@@ -116,10 +119,12 @@ const moduleQaCoverageTags = Object.freeze({
   "ai-governance": Object.freeze([
     "职责边界", "框架边界", "系统清单", "风险分级", "第三方治理", "法规时效", "治理落地", "责任模型",
     "影响评估", "条件批准", "变更复审",
+    "适用分诊", "备案分诊", "内容标识", "行业治理",
   ]),
   security: Object.freeze([
     "共享责任", "提示注入", "RAG 安全", "Agent 安全", "安全验证", "风险盘点",
     "供应链", "事件响应",
+    "监管控制", "事件取证", "行业安全",
   ]),
   "ai-gateway": Object.freeze([
     "架构定位", "模型路由", "可靠性", "MCP 治理", "路由策略", "策略发布", "故障降级",
@@ -156,6 +161,7 @@ const moduleQaCoverageTags = Object.freeze({
   "data-engineering": Object.freeze([
     "建设顺序", "向量库选型", "权限与删除", "生命周期", "解析质量", "用途治理",
     "增量同步", "索引发布", "质量契约", "主数据治理",
+    "数据出境",
   ]),
   "ai-infra-platform": Object.freeze([
     "建设起点", "调度选型", "DRA", "平台边界", "资源效率", "升级治理", "有效产出", "混部边界",

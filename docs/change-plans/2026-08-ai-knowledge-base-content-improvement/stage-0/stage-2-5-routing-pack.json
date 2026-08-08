@@ -1,0 +1,441 @@
+{
+ "generatedAt": "2026-08-05",
+ "routing": {
+  "stage-1": [
+   {
+    "candidateId": "C-001",
+    "conceptKey": "field-core-question-set",
+    "recommendedAction": "absorb",
+    "priority": "P0",
+    "ownerId": "questions-directory",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "售前人员会前/现场取用效率与一致性显著提升，避免现场凭记忆答。"
+   },
+   {
+    "candidateId": "C-002",
+    "conceptKey": "fallback-scripts",
+    "recommendedAction": "absorb",
+    "priority": "P0",
+    "ownerId": "questions-directory",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "现场遇到信息不足或数字压力时给出一致、不越界的回答边界。"
+   },
+   {
+    "candidateId": "C-003",
+    "conceptKey": "time-budget-learning-paths",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "questions-directory",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "不同准备时间的人都能找到对应入口并产出可交付物。"
+   },
+   {
+    "candidateId": "C-004",
+    "conceptKey": "customer-colloquial-aliases",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "questions-directory",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "客户用自己的话能搜到正确正式问题，提升搜索命中与现场认同感。"
+   },
+   {
+    "candidateId": "C-005",
+    "conceptKey": "field-confrontation-framing",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "questions-directory",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "现场题集合不膨胀、每题都有决策价值与可复述判据。"
+   },
+   {
+    "candidateId": "C-014",
+    "conceptKey": "enterprise-search-permission-first",
+    "recommendedAction": "expression-only",
+    "priority": "P2",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "pass",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "搜索类方案验收时明确越权测试与签字门。"
+   },
+   {
+    "candidateId": "C-021",
+    "conceptKey": "70b-gpu-quick-estimate",
+    "recommendedAction": "expression-only",
+    "priority": "P2",
+    "ownerId": "llm-inference",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "现场快速给出数量级判断并引导到正式容量规划。"
+   },
+   {
+    "candidateId": "C-031",
+    "conceptKey": "mcp-fc-a2a-colloquial",
+    "recommendedAction": "expression-only",
+    "priority": "P2",
+    "ownerId": "mcp",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "客户能用自己的话问对协议问题。"
+   },
+   {
+    "candidateId": "C-041",
+    "conceptKey": "kill-switch-operations-promise",
+    "recommendedAction": "expression-only",
+    "priority": "P2",
+    "ownerId": "ai-ops",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "客户对运营承诺的疑问能对到正式内容。"
+   },
+   {
+    "candidateId": "C-044",
+    "conceptKey": "delivery-tool-patterns",
+    "recommendedAction": "expression-only",
+    "priority": "P2",
+    "ownerId": "questions-directory",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "现场分诊更快更一致；但需先评估交互复杂度与维护成本。"
+   },
+   {
+    "candidateId": "C-047",
+    "conceptKey": "kv-budget-quick-calc",
+    "recommendedAction": "expression-only",
+    "priority": "P2",
+    "ownerId": "llm-inference",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "现场快速估算长上下文并发容量。"
+   },
+   {
+    "candidateId": "C-048",
+    "conceptKey": "training-compute-estimator",
+    "recommendedAction": "expression-only",
+    "priority": "P2",
+    "ownerId": "llm-training",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "现场给训练集群数量级判断。"
+   }
+  ],
+  "stage-3/stage-3b": [
+   {
+    "candidateId": "C-006",
+    "conceptKey": "china-platform-selection",
+    "recommendedAction": "research",
+    "priority": "P1",
+    "ownerId": "model-landscape",
+    "evidenceGate": "research-required",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "国内客户选平台时给出不依赖排行榜的决策维度，而不是排位推荐。"
+   },
+   {
+    "candidateId": "C-008",
+    "conceptKey": "china-model-gap-tiering",
+    "recommendedAction": "research",
+    "priority": "P2",
+    "ownerId": "model-landscape",
+    "evidenceGate": "research-required",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "客户问国产模型赶上没有时给出分层、带口径的回答框架。"
+   },
+   {
+    "candidateId": "C-027",
+    "conceptKey": "agent-platform-open-source-value",
+    "recommendedAction": "research",
+    "priority": "P2",
+    "ownerId": "ai-agent",
+    "evidenceGate": "research-required",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "客户对开源工具付费产生疑问时给出价值边界。"
+   },
+   {
+    "candidateId": "C-050",
+    "conceptKey": "domestic-chip-landscape",
+    "recommendedAction": "research",
+    "priority": "P2",
+    "ownerId": "ai-infra-compute",
+    "evidenceGate": "research-required",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "国内算力采购有决策维度而非型号排位。"
+   }
+  ],
+  "stage-2/stage-2b": [
+   {
+    "candidateId": "C-007",
+    "conceptKey": "model-portability-contract",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "model-landscape",
+    "evidenceGate": "research-required",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "采购合同中把可换性落实为可执行条款，避免锁定。"
+   },
+   {
+    "candidateId": "C-010",
+    "conceptKey": "leaderboard-illusion",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "evaluation",
+    "evidenceGate": "research-required",
+    "riskLevel": "low",
+    "decisionImpactSummary": "客户拿榜单质疑时给出机制解释与正确用法。"
+   },
+   {
+    "candidateId": "C-023",
+    "conceptKey": "memory-poisoning",
+    "recommendedAction": "absorb",
+    "priority": "P0",
+    "ownerId": "ai-agent",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "high",
+    "decisionImpactSummary": "设计记忆系统时明确写入信任与污染控制，避免记忆成为持久后门。"
+   },
+   {
+    "candidateId": "C-024",
+    "conceptKey": "lowcode-vs-codefirst-agent",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "ai-agent",
+    "evidenceGate": "pass",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "客户选 Agent 平台时不凭『开源/低代码』标签，按决策维度判断。"
+   },
+   {
+    "candidateId": "C-025",
+    "conceptKey": "benchmark-atlas",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "evaluation",
+    "evidenceGate": "research-required",
+    "riskLevel": "low",
+    "decisionImpactSummary": "客户用榜单选型时能快速对到『该看什么、不该信什么』。"
+   }
+  ],
+  "stage-3": [
+   {
+    "candidateId": "C-009",
+    "conceptKey": "open-weight-license-practice",
+    "recommendedAction": "research",
+    "priority": "P1",
+    "ownerId": "model-landscape",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "high",
+    "decisionImpactSummary": "企业法务不通过时能解释『开源』与许可边界，并给出替代方案。"
+   }
+  ],
+  "stage-2/stage-2a": [
+   {
+    "candidateId": "C-011",
+    "conceptKey": "customer-responsibility-quad",
+    "recommendedAction": "absorb",
+    "priority": "P0",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "方案合同与启动会明确客户侧责任边界，避免交付扯皮。"
+   },
+   {
+    "candidateId": "C-012",
+    "conceptKey": "poc-to-production-gap",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "现场解释 PoC 与生产的工程差距，管理报价预期。"
+   },
+   {
+    "candidateId": "C-013",
+    "conceptKey": "scenario-priority-matrix",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "给客户可复用的场景优先排序方法，减少拍脑袋选场景。"
+   },
+   {
+    "candidateId": "C-017",
+    "conceptKey": "support-resolution-rate",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "research-required",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "客服项目验收线有可复现测法与口径对齐方法。"
+   },
+   {
+    "candidateId": "C-018",
+    "conceptKey": "quote-calibration",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "客户比价时避免被裸单价误导，建立统一口径。"
+   },
+   {
+    "candidateId": "C-019",
+    "conceptKey": "three-ledgers-unit-economics",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "成本报价与验收有可核对的三个账本，减少『只算 token』的争议。"
+   },
+   {
+    "candidateId": "C-038",
+    "conceptKey": "gateway-build-vs-managed",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "ai-gateway",
+    "evidenceGate": "pass",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "网关采购决策有明确判断维度而非口号。"
+   },
+   {
+    "candidateId": "C-045",
+    "conceptKey": "data-readiness-first",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "data-engineering",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "数据未就绪时不假装完整数据工程成立，先缩范围。"
+   },
+   {
+    "candidateId": "C-049",
+    "conceptKey": "labeling-synthetic-data-ops",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "data-engineering",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "评估类项目的数据建设有可验收的运营方法。"
+   },
+   {
+    "candidateId": "C-052",
+    "conceptKey": "tech-axis-to-scenario-axis",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "售前表达更贴近客户业务语言。"
+   }
+  ],
+  "stage-3/stage-3c": [
+   {
+    "candidateId": "C-015",
+    "conceptKey": "content-generation-liability",
+    "recommendedAction": "research",
+    "priority": "P1",
+    "ownerId": "solution-patterns",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "high",
+    "decisionImpactSummary": "内容生成类方案上线前明确责任与留痕要求。"
+   },
+   {
+    "candidateId": "C-037",
+    "conceptKey": "multimodal-delivery-chain",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "multimodal",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "high",
+    "decisionImpactSummary": "内容生成类交付有完整生命周期责任链与证据。"
+   }
+  ],
+  "stage-2/stage-2c": [
+   {
+    "candidateId": "C-028",
+    "conceptKey": "multimodal-rag-routes",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "rag",
+    "evidenceGate": "research-required",
+    "riskLevel": "medium",
+    "decisionImpactSummary": "扫描件/图片/图纸场景选检索架构时有明确路线与取舍。"
+   },
+   {
+    "candidateId": "C-029",
+    "conceptKey": "barge-in-state-restore",
+    "recommendedAction": "absorb",
+    "priority": "P1",
+    "ownerId": "multimodal",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "实时语音 Agent 打断场景有可验收的状态机。"
+   },
+   {
+    "candidateId": "C-046",
+    "conceptKey": "mcp-when-not",
+    "recommendedAction": "absorb",
+    "priority": "P2",
+    "ownerId": "mcp",
+    "evidenceGate": "pass",
+    "riskLevel": "low",
+    "decisionImpactSummary": "避免为协议而协议，选型更清醒。"
+   }
+  ],
+  "stage-3/stage-3a": [
+   {
+    "candidateId": "C-033",
+    "conceptKey": "china-filing-triage",
+    "recommendedAction": "research",
+    "priority": "P0",
+    "ownerId": "ai-governance",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "critical",
+    "decisionImpactSummary": "中国交付项目上线前先做适用性分诊，避免『内部用要不要备案』拍脑袋。"
+   },
+   {
+    "candidateId": "C-034",
+    "conceptKey": "ai-content-labeling",
+    "recommendedAction": "research",
+    "priority": "P0",
+    "ownerId": "ai-governance",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "critical",
+    "decisionImpactSummary": "多模态/内容生成交付链明确标识与合规边界。"
+   },
+   {
+    "candidateId": "C-035",
+    "conceptKey": "cross-border-data-triage",
+    "recommendedAction": "research",
+    "priority": "P0",
+    "ownerId": "ai-governance",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "critical",
+    "decisionImpactSummary": "涉及跨境/跨区域数据流时给出分诊与证据要求。"
+   },
+   {
+    "candidateId": "C-036",
+    "conceptKey": "training-data-compliance",
+    "recommendedAction": "research",
+    "priority": "P1",
+    "ownerId": "fine-tuning",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "critical",
+    "decisionImpactSummary": "微调与数据训练类项目避免在权属/合规上踩雷。"
+   },
+   {
+    "candidateId": "C-051",
+    "conceptKey": "china-regulation-framework",
+    "recommendedAction": "research",
+    "priority": "P0",
+    "ownerId": "ai-governance",
+    "evidenceGate": "expert-review-required",
+    "riskLevel": "critical",
+    "decisionImpactSummary": "中国交付项目上线前有统一合规自查入口。"
+   }
+  ]
+ }
+}

@@ -2407,7 +2407,14 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .fieldbookTheme.modulePage .moduleReadingNav li :where(small, span),
 .fieldbookTheme.modulePage :where(.conceptGrid p, .mechanicGrid p, .technicalNotes p) { color: var(--fb-muted); }
 
-.fieldbookTheme.modulePage .tableWrap { border-color: var(--fb-line); }
+.fieldbookTheme.modulePage .tableWrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  border-color: var(--fb-line);
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
 .fieldbookTheme.modulePage .tableWrap thead th { background: var(--fb-mist); color: var(--fb-meta); }
 .fieldbookTheme.modulePage .tableWrap :where(th, td) { border-color: var(--fb-line); }
 

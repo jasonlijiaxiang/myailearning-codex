@@ -47,6 +47,30 @@ export const solutionPatternsBrief = {
       decision:
         "用完整成本和单位达标结果决定扩大、限制、迁移或停止，不用 Token 单价或理论节省冒充 ROI。",
     },
+    {
+      zh: "客户侧责任四角",
+      en: "Customer Responsibility Quad",
+      explanation:
+        "方案启动前先确认四类责任角色：业务决策人确认业务结果、损失函数与是否进入下一阶段；数据与 IT Owner 提供数据、身份、权限、系统接口和运行环境；知识与口径运营人维护规则、术语、评估样本与争议处理；安全与合规签字人确认上线条件、责任与专业复核。",
+      decision:
+        "角色可以由同一人或团队兼任，但四类责任都不能消失；没有签字人的上线决定不属于方案范畴。",
+    },
+    {
+      zh: "三本账连接单位经济",
+      en: "Three Ledgers of Unit Economics",
+      explanation:
+        "用三本账核算方案经济性：Token 与模型调用账、并发容量与服务等级账、人工建设运营与复核账；三本账必须连接到单位经济与客户业务结果。",
+      decision:
+        "不给脱离工作负载的统一比例；缺账本的数字只能作为待验证假设。",
+    },
+    {
+      zh: "禁止动作先于能力",
+      en: "Prohibited Actions First",
+      explanation:
+        "高影响行业场景先写死模型不能做什么，再定义它能做什么；允许动作必须绑定授权检索、带引用建议与人工最终决定。",
+      decision:
+        "把禁止动作写入场景合同与发布门，所有模块使用同一表述。",
+    },
   ],
   decisions: [
     {
@@ -102,6 +126,42 @@ export const solutionPatternsBrief = {
         "分别建立模型、平台资源、集成、评估安全和人工运营成本模型，并给出规模变化的敏感性区间。",
       boundary:
         "PoC 账单不能直接外推生产 TCO；失败重试、峰值容量和人工接管必须计入。",
+    },
+    {
+      question: "客户侧谁为方案结果负责？",
+      signal:
+        "能列出业务决策人、数据与 IT Owner、知识与口径运营人、安全与合规签字人，以及各自要确认的事项。",
+      recommendation:
+        "把四角角色写进启动契约：业务结果与损失函数、数据/身份/权限/环境、规则/术语/评估样本/争议、上线条件/责任/专业复核各有人确认。",
+      boundary:
+        "角色可兼任但责任不能消失；没有安全合规签字的上线决定不属于方案范畴。",
+    },
+    {
+      question: "PoC 通过后上生产为什么还要继续投入？",
+      signal:
+        "PoC 已验证最大技术或数据假设，但生产还需要高可用、权限、审计、评估回归、运营与责任交接。",
+      recommendation:
+        "把 PoC 视为模型与数据两层样板墙，生产件还包括入口、保障与运营三层；按生产验收线逐项补证据。",
+      boundary:
+        "演示成功不等于生产就绪；缺少生产层的验收线不能进入 Pilot。",
+    },
+    {
+      question: "多个场景先做哪一个？",
+      signal:
+        "候选场景已有数据可用性、权限复杂度、容错成本与 ROI 判断的初步信息。",
+      recommendation:
+        "用「数据就绪度 × 容错成本」矩阵排序：数据现成、权限可控且容错成本低的最先起步；数据未就绪时先缩范围而非硬上。",
+      boundary:
+        "行业热点或 ROI 单一指标不能代替矩阵；数据就绪度不足时先做 PoC 缩围。",
+    },
+    {
+      question: "内容生成方案验收时，怎样才算可上线？",
+      signal:
+        "方案能生成看起来不错的图片、视频或文案，但审核、标识、发布与撤回责任尚未定义。",
+      recommendation:
+        "把五状态门连成验收链：生成成功、审核通过、标识与分发要求满足、业务批准发布、发布后的撤回/更正/申诉与事件责任；为每个门定义证据、owner 与失败动作，并把素材授权列为前置条件。",
+      boundary:
+        "视觉或语言质量好不能证明可发布；实时或批量场景都不能跳过强制审核与标识门。",
     },
   ],
     deepDiveTitle: "把方案落到可验收的业务系统",
@@ -210,6 +270,106 @@ export const solutionPatternsBrief = {
         decision: "验证与云服务落点",
         boundary: "不能误判",
       },
+    },
+    {
+      kind: "sequence",
+      eyebrow: "CLAIM INTAKE BLUEPRINT",
+      title: "理赔材料受理与初审助手教学蓝图",
+      intro:
+        "本蓝图是教学案例，不是保险行业生产标准。AI 只负责材料接收、质量检查、事实与证据提取、缺件提示和带引用的初审建议；资格、责任、金额与付款由授权人工或确定性业务系统决定。",
+      sourceIds: ["nist-genai-profile", "nist-zero-trust", "owasp-prompt-injection", "opentelemetry-genai-semconv"],
+      items: [
+        {
+          name: "材料接收与身份授权检查",
+          en: "Receive & Verify Identity",
+          mechanism:
+            "输入申请表、扫描件、照片与补充材料；权威来源是提交人身份、代理关系和授权记录。AI 允许校验身份、登记材料批次并做格式预检。",
+          decision:
+            "受理系统与人工确认身份和授权；登记材料来源、版本与时间。",
+          boundary:
+            "AI 不把无授权材料转入检索；身份或授权校验失败时转人工，不自动放行。",
+        },
+        {
+          name: "文件质量、完整性、来源与溯源",
+          en: "Quality & Provenance",
+          mechanism:
+            "AI 允许检测模糊、缺页、格式异常、重复和来源信息，并登记文件哈希与溯源。",
+          decision:
+            "低质量材料要求重传或人工补录；每份材料保留稳定资产身份。",
+          boundary:
+            "AI 不跳过低质量材料，也不把解析结果冒充原始证据。",
+        },
+        {
+          name: "授权权威源检索",
+          en: "Authorized Retrieval",
+          mechanism:
+            "AI 允许按案件、角色和当前权限检索保单、条款与业务记录，并把检索结果与来源绑定。",
+          decision:
+            "检索时 ACL 与租户隔离；无权限内容连存在性都不暴露。",
+          boundary:
+            "AI 不跨客户检索，也不因相关度或向量接近而获得读取权。",
+        },
+        {
+          name: "事实提取与缺件提示",
+          en: "Extract & Missing Items",
+          mechanism:
+            "AI 允许抽取事实、定位证据坐标、列出缺件、不一致与不确定性。",
+          decision:
+            "证据冲突或无法定位的内容标记为待人工裁决，不进入初审结论。",
+          boundary:
+            "AI 不推断资格或责任；提取正确不等于业务事实成立。",
+        },
+        {
+          name: "生成带引用初审建议",
+          en: "Cited Intake Suggestion",
+          mechanism:
+            "AI 允许生成带引用、缺件清单和不确定性的初审说明草稿。",
+          decision:
+            "每个建议绑定材料、保单条款与证据坐标；缺证据时拒答或转人工。",
+          boundary:
+            "AI 不决定资格与金额；草稿再流畅也不具备决定效力。",
+        },
+        {
+          name: "授权人工或确定性规则决定",
+          en: "Authorized Decision",
+          mechanism:
+            "规则引擎与授权人员核对资格、责任、金额与付款前置条件，作出最终决定。",
+          decision:
+            "最终决定 owner 明确，决定依据与复核路径留痕。",
+          boundary:
+            "模型不参与最终决定；人工点击不能变成无证据的自动放行。",
+        },
+        {
+          name: "写入权威业务系统并通知",
+          en: "Commit & Notify",
+          mechanism:
+            "确定性服务按批准结果写入权威业务系统，并触发客户通知。",
+          decision:
+            "写入幂等、可回读；失败时先查询再重试并保留证据。",
+          boundary:
+            "AI 不直接写入赔付状态；接口成功不等于业务终态正确。",
+        },
+        {
+          name: "纠正、申诉、事件与重新评估",
+          en: "Redress & Reassessment",
+          mechanism:
+            "登记客户纠正、申诉与安全事件，触发重新评估与补救路径。",
+          decision:
+            "申诉与事件由业务 owner 处置，证据链完整保留。",
+          boundary:
+            "AI 不自动撤销或赔付；重新评估也不覆盖已生效业务动作。",
+        },
+        {
+          name: "模型、供应商或流程退出",
+          en: "Exit & Fallback",
+          mechanism:
+            "演练模型替换、供应商退出、区域故障与人工兜底流程。",
+          decision:
+            "替代路径通过相同硬门；退出后有对账与补救计划。",
+          boundary:
+            "退出不改变已生效业务状态，也不能让 AI 在故障时自动接管决定权。",
+        },
+      ],
     },
   ],
   criticalBoundary:
@@ -325,8 +485,7 @@ export const solutionPatternsBrief = {
           supports: "支持按用途、影响对象与风险上下文进行治理和优先级判断。",
         },
       ],
-    },
-  ],
+    },],
   evidenceCards: [
     {
       metric: "场景 × 能力",
@@ -431,6 +590,22 @@ export const multimodalBrief = {
       decision:
         "按端到端首响、打断成功和任务完成评估体验，而不是只比较单个模型速度。",
     },
+    {
+      zh: "生成不等于可发布",
+      en: "Generation Is Not Publication",
+      explanation:
+        "技术生成成功、内容审核通过、标识与分发要求满足、业务批准发布与发布后的持续责任是五个不同状态；每个状态都有自己的门禁、证据和责任人。",
+      decision:
+        "把交付链定义为可安全发布的资产与持续责任，不是一次生成成功。",
+    },
+    {
+      zh: "素材授权与溯源先行",
+      en: "Material Authorization & Provenance",
+      explanation:
+        "输入素材的来源、授权、肖像与品牌权利、版权和合同边界要在生成前确认；生成和编辑记录要保留版本与溯源，以便撤回、更正与事件取证。",
+      decision:
+        "先确认可用素材与授权边界，再进入生成管线；缺授权的素材不进入商用输出。",
+    },
   ],
   decisions: [
     {
@@ -483,6 +658,51 @@ export const multimodalBrief = {
   deepDiveLead:
     "以一次设备现场巡检为主线：工程师上传设备照片、铭牌、短视频、语音说明和巡检表，系统要生成可回跳原始证据的异常结论，而不是只证明模型能看图。",
   deepDives: [
+    {
+      kind: "sequence",
+      eyebrow: "BARGE-IN STATE MACHINE",
+      title: "打断不是停播，而是一次状态恢复",
+      intro:
+        "实时语音 Agent 被用户打断时，错误处理是继续播放过期内容、让旧生成任务继续写状态。正确做法是把打断当作一次需要恢复上下文并丢弃失效输出的状态迁移。",
+      items: [
+        {
+          name: "检测打断",
+          en: "Detect Interruption",
+          mechanism: "用 VAD 与端点检测识别用户开始说话，并绑定当前播放帧的时间戳。",
+          decision: "打断信号是否带因果时间，能区分噪声与真实打断？",
+          boundary: "只在模型层判断会把打断语义变成自由猜测。",
+        },
+        {
+          name: "停止播放",
+          en: "Stop Playback",
+          mechanism: "立即停止当前 TTS 播放，避免新指令被覆盖或产生双通道噪声。",
+          decision: "停止后是否还有缓冲内容在音箱侧继续出声？",
+          boundary: "停止播放不等于取消生成任务。",
+        },
+        {
+          name: "取消或隔离旧生成",
+          en: "Cancel Old Generation",
+          mechanism: "取消或隔离旧响应生成，防止其继续消耗预算、写入状态或覆盖新上下文。",
+          decision: "取消是尽力而为还是保证生效？哪些资源需要释放？",
+          boundary: "已部分写出的外部动作需要幂等与补偿，不能靠取消解决。",
+        },
+        {
+          name: "丢弃失效输出",
+          en: "Discard Stale Output",
+          mechanism: "到达过晚的旧输出不允许进入播放或上下文，避免新旧指令串扰。",
+          decision: "过期输出是否有独立标记，并被下游消费方拒绝？",
+          boundary: "只要旧任务还能写状态，就可能污染对话历史。",
+        },
+        {
+          name: "恢复上下文并生成新响应",
+          en: "Restore & Respond",
+          mechanism: "以用户最新指令与已被确认听到/看到的边界重建上下文，生成新响应并记录取消、延迟与状态证据。",
+          decision: "哪些历史片段仍可信？被旧输出覆盖的状态是否回滚？",
+          boundary: "恢复的上下文必须与已播放内容一致，否则会前后矛盾。",
+        },
+      ],
+      sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"],
+    },
     {
       kind: "sequence",
       eyebrow: "EVIDENCE-PRESERVING PIPELINE",
@@ -603,6 +823,96 @@ export const multimodalBrief = {
         decision: "诊断与云服务接点",
         boundary: "重要边界",
       },
+    },
+    {
+      kind: "sequence",
+      eyebrow: "CONTENT DELIVERY LOOP",
+      title: "多模态内容交付闭环：从素材授权到发布后责任",
+      intro:
+        "把生成、审核、标识、发布、撤回和事件处置连成一条可审计链；每个状态独立验收，不能因为前一步成功就自动获得下一步资格。",
+      sourceIds: ["nist-genai-profile", "c2pa-2-4", "china-ai-content-labeling-2026-08-05"],
+      items: [
+        {
+          name: "素材来源与授权",
+          en: "Material & Rights",
+          mechanism:
+            "登记素材来源、版权、肖像、品牌、许可与合同边界，并为原始资产保留稳定身份与版本。",
+          decision:
+            "缺授权素材不进入生成管线；合同边界由业务与专业人员确认。",
+          boundary:
+            "平台免责声明或模型卡不能覆盖客户对素材权利与发布用途的责任。",
+        },
+        {
+          name: "生成与版本记录",
+          en: "Generate & Version",
+          mechanism:
+            "记录模型、版本、Prompt、参数、输入素材与输出资产之间的关系，生成编辑历史。",
+          decision:
+            "每个输出都能回到一次完整生成，并保留中间版本。",
+          boundary:
+            "生成成功只证明资产产生，不表示内容可发布。",
+        },
+        {
+          name: "自动与人工审核",
+          en: "Auto & Human Review",
+          mechanism:
+            "事实、版权、敏感、冒用与品牌检查；高风险内容由有权限人员复核并留痕。",
+          decision:
+            "审核通过后才进入标识与分发准备。",
+          boundary:
+            "自动审核命中率不能替代业务判断，审核通过也不等于已经合规。",
+        },
+        {
+          name: "生成内容标识",
+          en: "Content Labeling",
+          mechanism:
+            "按适用主体与发布渠道完成显式标识、元数据隐式标识与发布侧核验提示。",
+          decision:
+            "标识与分发要求满足是独立状态，单独验收。",
+          boundary:
+            "标识满足不等于内容正确或已获业务批准；凭证也可能被移除。",
+        },
+        {
+          name: "发布与分发",
+          en: "Publish & Distribute",
+          mechanism:
+            "明确发布渠道、范围、时限与接收方，由有权限角色执行并记录发布日志。",
+          decision:
+            "业务批准后发布，发布版本与渠道可追溯。",
+          boundary:
+            "渠道可用不表示内容正确或责任结束。",
+        },
+        {
+          name: "撤回、更正与申诉",
+          en: "Retract & Correct",
+          mechanism:
+            "定义撤回、更正、覆盖与申诉路径，并保留版本历史与通知记录。",
+          decision:
+            "错误内容先撤回再更正，必要时通知接收方。",
+          boundary:
+            "撤回不等于副本、缓存与分发渠道已全部清除。",
+        },
+        {
+          name: "事件处置与证据保留",
+          en: "Incident & Evidence",
+          mechanism:
+            "篡改、冒用、泄露或违规发布事件按证据链处置：保留素材、生成、审核、标识、发布与撤回证据。",
+          decision:
+            "先停止扩散并撤回，再核对版本与哈希、定位路径并评估影响。",
+          boundary:
+            "技术取证不自动等于法律结论，证据保留时长按义务与专业意见确认。",
+        },
+        {
+          name: "批量、实时与公开发布差异门",
+          en: "Batch / Real-time / Public Gates",
+          mechanism:
+            "批量生产、实时交互与公开发布对审核、标识、人工介入与撤回的要求不同。",
+          decision:
+            "按发布面分别定义门禁，不共用一套默认流程。",
+          boundary:
+            "实时性不能作为跳过审核或标识的理由。",
+        },
+      ],
     },
   ],
   criticalBoundary:
@@ -732,8 +1042,7 @@ export const multimodalBrief = {
           supports: "支持资源访问前持续验证主体和权限，而不信任内容来源。",
         },
       ],
-    },
-  ],
+    },],
   evidenceCards: [
     {
       metric: "Patch → Token",
@@ -770,6 +1079,13 @@ export const multimodalBrief = {
       finding: "网页、文档和图片文字可形成间接提示注入，不能因其不是纯文本输入而默认可信。",
       boundary: "输入检测不能单独消除风险，工具权限和动作控制仍需在模型外执行。",
       sourceId: "owasp-prompt-injection",
+    },
+    {
+      metric: "声明 ≠ 事实",
+      title: "内容凭证验证的是声明与绑定",
+      finding: "C2PA 签名清单验证内容与来源声明的绑定和防篡改，不证明内容真实、版权成立或已经合规。",
+      boundary: "凭证可能被移除；标识与凭证满足是分发层状态，不是业务批准。",
+      sourceId: "c2pa-2-4",
     },
   ],
 };
@@ -878,6 +1194,15 @@ export const mcpBrief = {
         "以 2026-07-28 作为当前协议基线，在隔离兼容轨中验证无状态请求、server/discover、Tasks 扩展、授权变化及双版本互操作；确认生态支持后再决定切换和回滚窗口。",
       boundary:
         "正式规范已经发布，但不证明具体 SDK、Client、Server、网关或私有扩展已经兼容。",
+    },
+    {
+      question: "什么时候不该上 MCP？",
+      signal:
+        "单一应用直连少量固定 API、没有跨客户端复用需求、安全边界简单、团队没有 Server 运维与升级能力。",
+      recommendation:
+        "先用直接函数调用或 API 网关；只有协议标准化带来的复用与治理收益明确时再引入 MCP。",
+      boundary:
+        "MCP 是工具标准化协议，不是银弹；协议引入的成本（版本、授权、排错、供应链）必须纳入选型。",
     },
   ],
     deepDiveTitle: "采用 MCP 前，核对主体、资源、权限和版本",
@@ -1657,6 +1982,15 @@ export const evaluationBrief = {
         "榜单名次和固定 Benchmark Accuracy 不构成客户场景表现、业务价值或 Generalized Accuracy 承诺。",
     },
     {
+      question: "Benchmark 应该怎样分层使用？",
+      signal:
+        "存在知识问答、推理、编码、检索、Agent 与多模态等多类候选基准，但客户任务与它们重叠程度不同。",
+      recommendation:
+        "把基准当 Atlas 分层使用：先按任务类型选相关基准缩小候选，再用客户数据评估集做终审；基准版本与当前领先分数单独进入动态事实记录或不下结论。",
+      boundary:
+        "基准测的是受限题集与环境，不能证明生产结论；模型榜单不能替代客户任务验收。",
+    },
+    {
       question: "没有历史标注数据怎样开始？",
       signal:
         "存在领域专家、真实日志、SOP、历史工单或可验证业务状态。",
@@ -1697,6 +2031,53 @@ export const evaluationBrief = {
   deepDiveLead:
     "评估系统不仅计算结果，还要说明被测对象、量尺、样本和环境是否一致，变化影响哪些任务与风险切片，以及证据足以支持发布、补做还是停止。",
   deepDives: [
+    {
+      kind: "matrix",
+      eyebrow: "BENCHMARK ATLAS",
+      title: "每类基准测什么、不能证明什么",
+      intro:
+        "把基准当作能力地图而不是排行榜：先知道它测量什么、适合哪轮筛选，再决定能否外推到客户任务。",
+      columnLabels: { name: "基准类别", mechanism: "测量对象", decision: "适合的用法", boundary: "不能证明" },
+      items: [
+        {
+          name: "通用知识问答",
+          mechanism: "静态知识、事实回忆与多选能力，覆盖广但容易饱和和污染。",
+          decision: "用于候选初筛与知识基线比较，不用于客户任务终审。",
+          boundary: "高分不代表检索、权限、时效与业务事实正确。",
+        },
+        {
+          name: "推理与数学",
+          mechanism: "符号、逻辑与多步推理，反映思考链与预算调参空间。",
+          decision: "用于判断推理模型是否值得按任务启用思考预算。",
+          boundary: "单点成绩不反映延迟成本；overthinking 会降低收益。",
+        },
+        {
+          name: "编码",
+          mechanism: "仓库级任务、测试通过率与工具使用，如 SWE-bench 与 Terminal-Bench。",
+          decision: "用于 Agentic Coding 场景的候选筛选，配合客户代码库评估。",
+          boundary: "公开集成绩不能证明私有代码库、权限与发布流程下的表现。",
+        },
+        {
+          name: "检索与 RAG",
+          mechanism: "召回、重排、上下文相关性与忠实度，如 BEIR 与 RAGAS 类指标。",
+          decision: "用于定位检索层或生成层问题，配合客户文档集复测。",
+          boundary: "公开检索基准不能代表企业权限、更新与多模态混合文档。",
+        },
+        {
+          name: "Agent 与工具",
+          mechanism: "多步规划、工具调用、状态恢复与安全边界，如 WebArena 与 Harness Bench。",
+          decision: "用于 Agent 能力初筛，配合场景测试集验收轨迹与终态。",
+          boundary: "评测环境的工具契约与生产工具契约不同，不能直接外推上线风险。",
+        },
+        {
+          name: "多模态",
+          mechanism: "视觉、语音与长视频理解，如 LongVideoBench 等时序与感知任务。",
+          decision: "用于多模态输入质量与降级策略的候选判断。",
+          boundary: "理解分不代表生成、审核、标识与发布链路达标。",
+        },
+      ],
+      sourceIds: ["swe-bench", "terminal-bench", "beir-2021", "webarena-2024", "harness-bench-2026", "longvideobench-2024", "openai-eval-best-practices"],
+    },
     {
       kind: "diagnostic",
       eyebrow: "SCORE CHANGE DIAGNOSTICS",
@@ -2327,8 +2708,7 @@ export const securityBrief = {
           supports: "支持测试覆盖多类生成式 AI 应用风险，而不只检查内容过滤。",
         },
       ],
-    },
-  ],
+    },],
   evidenceCards: [
     {
       metric: "模型 + 应用 + Agent",
@@ -2372,6 +2752,13 @@ export const securityBrief = {
       finding: "NIST SP 800-61 Rev. 3 把事件响应纳入 CSF 2.0 风险管理，要求准备、检测、响应、恢复与持续改进协同。",
       boundary: "该指南不规定招聘 AI 的统一告警阈值、取证字段或恢复时限，具体机制仍需按系统设计。",
       sourceId: "nist-sp-800-61r3",
+    },
+    {
+      metric: "标识 + 元数据 + 日志",
+      title: "标识义务可翻译为可测试控制",
+      finding: "标识办法把显式标识、元数据隐式标识、传播平台核验提示与特定情形的日志留存连成一条可执行链，工程控制可对应生成、写入、核验、提示与留痕。",
+      boundary: "控制存在不等于已经满足全部法定义务；适用主体与情形需由专业人员确认。",
+      sourceId: "china-ai-content-labeling-2026-08-05",
     },
   ],
 };

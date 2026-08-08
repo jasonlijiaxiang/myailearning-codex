@@ -58,6 +58,37 @@ export const agentDeepDives = [
     ],
     sourceIds: ["aws-agentcore-memory", "oauth-token-exchange", "a2a-task-lifecycle", "nist-genai-profile"],
   },
+  {
+    kind: "sequence",
+    eyebrow: "MEMORY POISONING",
+    title: "记忆被「教坏」：写入、持久化与影响未来运行",
+    intro: "记忆攻击的成立条件是恶意或错误内容跨会话持久化并影响后续决策。控制写入源和信任边界，比事后清洗更有效。",
+    items: [
+      { name: "写入源与信任边界", en: "Write Source & Trust", mechanism: "区分用户显式写入、对话归纳、工具结果、文档注入和系统内部状态；每个写入源声明可信度与可覆盖范围。", decision: "不可信来源写入前是否需要审批、隔离或降权？", boundary: "只要支持任意写入，就有被植入的可能；「内部记忆」不等于可信。" },
+      { name: "提取、摘要与归并", en: "Extract, Summarize & Merge", mechanism: "候选记忆经清洗、去重和冲突裁决后入库；摘要可能固化推断、玩笑或过期信息。", decision: "自动摘要哪些需要用户或策略确认才能成为长期事实？", boundary: "向量相似度不能解决来源、版本和语义冲突。" },
+      { name: "持久化与检索链", en: "Persist & Retrieve", mechanism: "记忆进入向量库、摘要缓存和运行时上下文；检索时按来源、作用域与新鲜度加权。", decision: "检索结果是否携带来源、写入时间和信任级别？", boundary: "被污染的记忆可能被当成高可信证据反复使用。" },
+      { name: "影响未来运行", en: "Future Influence", mechanism: "污染记忆改变后续规划、工具选择和回答倾向，形成持久后门或系统性偏差。", decision: "能否定位是哪条记忆影响了哪次决策？", boundary: "模型自身无法区分「长期规则」与「被注入的记忆」。" },
+      { name: "控制与恢复", en: "Control & Recovery", mechanism: "按来源、作用域、TTL、审批、隔离、删除与重建管理记忆；支持审计、清除和降级。", decision: "用户要求删除时，能否同步清理向量、摘要与缓存副本？", boundary: "实验中的攻击成功率不能直接外推为生产发生率；生产评估必须分开统计。" },
+    ],
+    sourceIds: ["aws-agentcore-memory", "nist-genai-profile", "owasp-llm-top-ten"],
+  },
+  {
+    kind: "matrix",
+    eyebrow: "LOW-CODE VS CODE-FIRST",
+    title: "低代码与 Code-first 的决策维度",
+    intro: "选择 Agent 平台或自建栈时，不按「开源/低代码」标签定论，而按六个决策维度判断。",
+    maxColumns: 2,
+    columnLabels: { name: "决策维度", mechanism: "判断内容", decision: "售前问题", boundary: "常见误区" },
+    items: [
+      { name: "状态与分支复杂度", en: "State & Branching", mechanism: "流程分支数、状态机、超时、重试和人工介入是否超出低代码表达范围。", decision: "当前业务逻辑能否在平台内完整表达并测试？", boundary: "Demo 里画得出来不等于生产状态机正确。" },
+      { name: "自定义工具与协议深度", en: "Tool & Protocol Depth", mechanism: "需要自研 MCP Server、协议扩展、流式编排或深度工具契约时的改造能力。", decision: "平台能否承载自定义工具、协议版本和部署方式？", boundary: "拖拽接入一个 API 不等于生产工具契约。" },
+      { name: "测试、版本、调试与审计", en: "Test, Version & Audit", mechanism: "评估集、Canary、回滚、Trace 和不可变审计记录是否可配置。", decision: "发布流程与审计证据能否满足上线门？", boundary: "「开源社区版」不自动具备企业级发布与审计能力。" },
+      { name: "性能、隔离与部署", en: "Performance & Isolation", mechanism: "多租户隔离、配额、延迟、地域与数据驻留是否受平台约束。", decision: "关键负载能否满足隔离、SLO 与驻留要求？", boundary: "自建不一定更快更稳；托管不一定更贵更慢。" },
+      { name: "迁移、导出与退出", en: "Migration & Exit", mechanism: "工作流、Prompt、工具、评估集和配置能否导出，切换成本是多少。", decision: "未来换平台或自建时，什么资产能带走？", boundary: "锁定主要来自数据与工作流，不来自 API。" },
+      { name: "团队技能与运营责任", en: "Team Skills & Ops", mechanism: "低代码降低上手门槛，但运营、排错、安全和升级责任不会消失。", decision: "平台团队或客户团队谁负责持续运营与升级治理？", boundary: "“平台免费”不等于运营免费；生产级能力要单独计价与验收。" },
+    ],
+    sourceIds: ["openai-agents-run-loop", "mcp-specification-2026-07-28"],
+  },
 ];
 
 export const agentEvidenceCards = [

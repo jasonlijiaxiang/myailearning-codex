@@ -1,15 +1,24 @@
 import assert from "node:assert/strict";
-import { readdir } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { publishedModuleSlugs, getPublishedModule } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
 import { terminology } from "../app/terminology.mjs";
 
-const modulesDirectory = path.resolve("app/i18n/en/modules");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const modulesDirectory = path.join(root, "app", "i18n", "en", "modules");
 const requireAll = process.argv.includes("--require-all");
+execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: root, encoding: "utf8" });
+const defermentsRegistry = JSON.parse(await readFile(path.join(root, "knowledge", "localization-deferments.json"), "utf8"));
+const deferredSlugs = new Set(
+  defermentsRegistry.deferments
+    .filter((deferment) => deferment.status !== "closed")
+    .map((deferment) => deferment.moduleSlug),
+);
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const sourceCopyFields = ["kind", "note", "shortTitle"];
 const nonUsEditorialSpellings = /\b(?:analys(?:e|ed|es|ing)|anonymis(?:e|ed|es|ing|ation)|artefacts?|(?:un)?authoris(?:ation|ations|e|ed|es|ing)|behaviou(?:r|rs|ral|rally)|catalogu(?:e|ed|es|ing)|centralis(?:e|ed|es|ing|ation)|colou(?:r|rs|red|ring)|customis(?:e|ed|es|ing|ation)|defence|emphasis(?:e|ed|es|ing)|favour(?:s|ed|ing|able)?|fulfil(?:s|led|ling|ment)?|generalis(?:e|ed|es|ing|ation)|judgement|labell(?:ed|ing)|labou(?:r|rs|red|ring)|licence|localis(?:e|ed|es|ing|ation)|maximis(?:e|ed|es|ing|ation)|memoris(?:e|ed|es|ing|ation)|minimis(?:e|ed|es|ing|ation)|modelled|modelling|normalis(?:e|ed|es|ing|ation)|optimis(?:e|ed|es|ing|ation|ations)|organis(?:e|ed|es|ing|ation|ations|ational)|personalis(?:e|ed|es|ing|ation)|practise|practised|practising|prioritis(?:e|ed|es|ing|ation)|programme|quantis(?:e|ed|es|ing|ation)|recognis(?:e|ed|es|ing)|serialis(?:e|ed|es|ing|ation)|specialis(?:e|ed|es|ing|ation)|standardis(?:e|ed|es|ing|ation)|summaris(?:e|ed|es|ing|ation)|synchronis(?:e|ed|es|ing|ation|ations)|synthes(?:ise|ised|ises|ising)|towards|utilis(?:e|ed|es|ing|ation)|vectoris(?:e|ed|es|ing|ation)|visualis(?:e|ed|es|ing|ation))\b/i;
@@ -65,17 +74,18 @@ for (const file of files) {
   const spellingDrift = spellingSerializedModule.match(nonUsEditorialSpellings);
   if (spellingDrift) throw new Error(`${slug} contains non-US editorial spelling: ${spellingDrift[0]}`);
 
-  assert.equal(englishModule.qa.length, canonical.qa.length, `${slug} question count`);
   assertUniqueIds(englishModule.qa, `${slug} question`);
-  englishModule.qa.forEach((item, index) => {
-    const canonicalItem = canonical.qa[index];
-    assert.deepEqual(item.evidence.map((entry) => entry.sourceId), canonicalItem.evidence.map((entry) => entry.sourceId), `${slug} / ${item.id} evidence order`);
-    assert.equal(item.addedAt ?? null, canonicalItem.addedAt ?? null, `${slug} / ${item.id} addedAt`);
-  });
-
-  assert.equal(englishModule.evidenceCards.length, canonical.evidenceCards.length, `${slug} evidence-card count`);
   assertUniqueIds(englishModule.evidenceCards, `${slug} evidence card`);
-  assert.deepEqual(englishModule.evidenceCards.map((card) => card.sourceId), canonical.evidenceCards.map((card) => card.sourceId), `${slug} evidence-card source order`);
+  if (!deferredSlugs.has(slug)) {
+    assert.equal(englishModule.qa.length, canonical.qa.length, `${slug} question count`);
+    englishModule.qa.forEach((item, index) => {
+      const canonicalItem = canonical.qa[index];
+      assert.deepEqual(item.evidence.map((entry) => entry.sourceId), canonicalItem.evidence.map((entry) => entry.sourceId), `${slug} / ${item.id} evidence order`);
+      assert.equal(item.addedAt ?? null, canonicalItem.addedAt ?? null, `${slug} / ${item.id} addedAt`);
+    });
+    assert.equal(englishModule.evidenceCards.length, canonical.evidenceCards.length, `${slug} evidence-card count`);
+    assert.deepEqual(englishModule.evidenceCards.map((card) => card.sourceId), canonical.evidenceCards.map((card) => card.sourceId), `${slug} evidence-card source order`);
+  }
 
   assertUniqueIds(englishModule.sections, `${slug} section`);
   const sectionItemIds = englishModule.sections.flatMap((section) => section.blocks.flatMap((block) => block.items.map((item) => item.id)));
@@ -100,7 +110,7 @@ for (const file of files) {
     assert.deepEqual(Object.keys(copy).sort(), sourceCopyFields, `${slug} / ${sourceId} may not duplicate canonical URL, grade, or verification metadata`);
   }
 
-  console.log(`PASS ${slug}: ${englishModule.sections.length} sections, ${englishModule.qa.length} questions, ${englishModule.evidenceCards.length} evidence cards`);
+  console.log(`${deferredSlugs.has(slug) ? "DEFERRED/NOT_ALIGNED" : "PASS"} ${slug}: ${englishModule.sections.length} sections, ${englishModule.qa.length} questions, ${englishModule.evidenceCards.length} evidence cards`);
 }
 
 console.log(`English module audit passed for ${files.length}/${publishedModuleSlugs.length} modules${requireAll ? " (complete edition)" : ""}.`);

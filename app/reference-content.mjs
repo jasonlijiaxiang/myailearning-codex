@@ -470,6 +470,44 @@ export const sourceLedger = {
     verifiedAt: "2026-07-21",
     href: "https://www.nrta.gov.cn/art/2025/3/14/art_113_70340.html?xxgkhide=1",
   },
+  "china-ai-content-labeling-2026-08-05": {
+    grade: "O",
+    kind: "官方规范性文件",
+    shortTitle: "生成合成内容标识办法（2026-08-05 核验）",
+    title: "人工智能生成合成内容标识办法",
+    note: "规定生成合成内容的显式与隐式标识、服务提供者与传播平台的核验义务及用户声明要求，自 2025 年 9 月 1 日起施行；具体适用性需按主体、内容与发布情形判断。",
+    verifiedAt: "2026-08-05",
+    href: "https://www.nrta.gov.cn/art/2025/3/14/art_113_70340.html?xxgkhide=1",
+    versionOf: "china-ai-content-labeling",
+    localeScope: "zh-CN",
+  },
+  "china-ai-service-management": {
+    grade: "O",
+    kind: "部门规章",
+    shortTitle: "生成式AI服务管理暂行办法",
+    title: "生成式人工智能服务管理暂行办法",
+    note: "七部门令第 15 号，自 2023 年 8 月 15 日起施行；第二条明确其适用于向境内公众提供生成式人工智能服务的场景，第七条、第十二条、第十四条、第十五条与第十七条分别涉及训练数据、内容标识、违法内容处置、投诉举报及安全评估与算法备案；是否适用需按服务对象、主体角色与部署方式判断。",
+    verifiedAt: "2026-08-05",
+    href: "https://www.gov.cn/zhengce/zhengceku/202307/content_6891752.htm",
+  },
+  "china-data-cross-border-2024": {
+    grade: "O",
+    kind: "部门规章",
+    shortTitle: "促进和规范数据跨境流动规定",
+    title: "促进和规范数据跨境流动规定",
+    note: "国家互联网信息办公室令第 16 号，自公布之日（2024 年 3 月 22 日）起施行；规定数据出境安全评估、个人信息出境标准合同与个人信息保护认证的申报门槛和免申报情形，第十条保留告知、单独同意与个人信息保护影响评估等义务；具体通道与量级判断需按数据分类和当期监管口径核验。",
+    verifiedAt: "2026-08-05",
+    href: "https://www.gov.cn/gongbao/2024/issue_11366/202405/content_6954192.html",
+  },
+  "china-personal-information-protection-law": {
+    grade: "O",
+    kind: "法律文本",
+    shortTitle: "个人信息保护法",
+    title: "中华人民共和国个人信息保护法",
+    note: "第四条明确个人信息不包括匿名化处理后的信息，第七十三条将匿名化定义为无法识别特定自然人且不能复原；这为重新判断个人信息属性提供法定边界，但不能证明向量化、切块、Embedding 或缓存本身已经达到匿名化，也不自动排除重要数据等其他分类。",
+    verifiedAt: "2026-08-08",
+    href: "https://www.cac.gov.cn/2021-08/20/c_1631050028355286.htm",
+  },
   "c2pa-2-4": {
     grade: "O",
     kind: "开放标准",
@@ -496,6 +534,17 @@ export const sourceLedger = {
     note: "欧盟委员会页面当前把招聘和候选人筛选列为高风险用途示例，并列出 2026 年 8 月的总体适用节点及经 2026 年正式修法调整的部分高风险规则时点；页面是动态实施入口，不能替代正式法律文本或针对具体系统的法律意见。",
     verifiedAt: "2026-07-30",
     href: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+  },
+  "eu-ai-act-implementation-2026-08-05": {
+    grade: "O",
+    kind: "官方法规实施页面",
+    shortTitle: "EU AI Act（2026-08-05 核验）",
+    title: "European AI Act — Regulatory Framework",
+    note: "欧盟委员会页面把招聘和候选人筛选列为高风险用途示例，并确认 AI Act 自 2026-08-02 起适用、经 2026 年正式修法调整的部分高风险规则时点（Annex III 自 2027-12-02、Annex I 自 2028-08-02）；页面是动态实施入口，不能替代正式法律文本或针对具体系统的法律意见。",
+    verifiedAt: "2026-08-05",
+    href: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+    versionOf: "eu-ai-act",
+    localeScope: "zh-CN",
   },
   "eu-ai-act-2026-1744": {
     grade: "O",
@@ -1141,6 +1190,24 @@ export const sourceLedger = {
     title: "The Open Source AI Definition — 1.0",
     note: "定义开放源代码 AI 所需的使用、研究、修改和分享自由，并要求提供足够的数据说明、训练与运行代码和参数；获得权重本身不足以证明整个 AI 系统满足该定义。",
     verifiedAt: "2026-07-30", href: "https://opensource.org/ai/open-source-ai-definition",
+  },
+  "dify-open-source-license": {
+    grade: "P",
+    kind: "官方许可证",
+    shortTitle: "Dify License",
+    title: "Dify Open Source License",
+    note: "Dify 官方仓库采用基于 Apache License 2.0 的修改版许可证，并对未经书面授权的多租户服务以及前端 Logo、版权信息设置附加条件；能获取和自托管代码不等于可以忽略这些许可证边界。",
+    verifiedAt: "2026-08-08",
+    href: "https://github.com/langgenius/dify/blob/main/LICENSE",
+  },
+  "dify-enterprise-pricing": {
+    grade: "P",
+    kind: "产品规格",
+    shortTitle: "Dify Enterprise",
+    title: "Dify Enterprise Pricing and Plan Comparison",
+    note: "Dify 当期官方页面把 Community 与 Enterprise 的工作区、商业授权、SSO、安全控制、维护、支持和协商 SLA 等能力分开列示；这些是会变化的厂商自述，采购时仍需以目标版本和合同为准。",
+    verifiedAt: "2026-08-08",
+    href: "https://dify.ai/pricing/dify-enterprise",
   },
   "openai-prompt-caching": {
     grade: "P", kind: "官方技术文档", shortTitle: "Prompt Caching",
@@ -1793,7 +1860,8 @@ const referenceShortTitles = Object.freeze({
 const additionalSourceIds = Object.freeze({
   "model-landscape": ["intelligence-index", "coding-index", "agentic-index", "artificial-analysis-models", "artificial-analysis-methodology", "terminal-bench-v21", "scicode", "gdpval-aa-v2", "tau3-banking", "arena-leaderboard", "livebench", "gpqa-diamond", "humanity-last-exam", "swe-bench", "terminal-bench", "swe-rebench", "bfcl", "webarena-2024", "financebench"],
   mcp: ["mcp-2026-07-28-rc", "mcp-specification-2026-07-28", "mcp-changelog-2026-07-28", "mcp-server-overview-2026-07-28", "mcp-tools-2026-07-28", "mcp-resources-2026-07-28", "mcp-prompts-2026-07-28", "mcp-tasks-extension"],
-  multimodal: ["gb-45438-2025"],
+  multimodal: ["gb-45438-2025", "china-ai-content-labeling"],
+  "ai-governance": ["eu-ai-act"],
   rag: [
     "bm25-book", "dpr-2020", "rrf-2009", "beir-2021", "mteb-2023", "miracl-2023",
     "clirmatrix-2020", "hnsw-2016", "rag-survey", "graphrag", "chunking-study",
@@ -1859,4 +1927,21 @@ export const referenceModules = moduleList.map((module) => ({
     ...curriculumSourceIds(module.slug),
     ...(additionalSourceIds[module.slug] ?? []),
   ])],
+}));
+
+const chineseVersionByCanonicalSourceId = new Map();
+for (const [sourceId, source] of Object.entries(sourceLedger)) {
+  if (source.localeScope !== "zh-CN" || !source.versionOf) continue;
+  if (chineseVersionByCanonicalSourceId.has(source.versionOf)) {
+    throw new Error(`Multiple Chinese source versions point to ${source.versionOf}`);
+  }
+  chineseVersionByCanonicalSourceId.set(source.versionOf, sourceId);
+}
+
+export const chineseReferenceModules = referenceModules.map((module) => ({
+  ...module,
+  sourceIds: module.sourceIds.filter((sourceId) => {
+    const localizedVersionId = chineseVersionByCanonicalSourceId.get(sourceId);
+    return !localizedVersionId || !module.sourceIds.includes(localizedVersionId);
+  }),
 }));

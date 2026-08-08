@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { englishModuleRegistry, englishQuestions, englishSourceCopy, englishTermCopy } from "../app/i18n/en/registry.mjs";
 import { englishRepresentationAssessment } from "../app/i18n/english-representation-assessment.mjs";
@@ -11,8 +13,28 @@ import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { getPublishedModule, hasDedicatedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
 import { terminology } from "../app/terminology.mjs";
+import { validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
+import { assertJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
+import { loadLocalizationProject } from "../scripts/lib/localization-contract.mjs";
 
 const slugIdPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const defermentsRegistry = JSON.parse(await readFile(new URL("../knowledge/localization-deferments.json", import.meta.url), "utf8"));
+const defermentSchema = JSON.parse(await readFile(new URL("../knowledge/schemas/localization-deferment.schema.json", import.meta.url), "utf8"));
+const reviewSchema = JSON.parse(await readFile(new URL("../knowledge/schemas/bilingual-review.schema.json", import.meta.url), "utf8"));
+const candidateMatrix = JSON.parse(await readFile(new URL("../docs/change-plans/2026-08-ai-knowledge-base-content-improvement/stage-0/candidate-matrix.json", import.meta.url), "utf8"));
+assertJsonSchema(defermentsRegistry, defermentSchema, "localization registry");
+const localizationResult = validateLocalizationRegistry(defermentsRegistry, await loadLocalizationProject(fileURLToPath(new URL("..", import.meta.url))), {
+  candidateIds: new Set(candidateMatrix.candidates.map((candidate) => candidate.candidateId)),
+  reviewSchema,
+});
+assert.deepEqual(localizationResult.failures, []);
+const today = new Date().toISOString().slice(0, 10);
+const deferredSlugs = new Set(
+  defermentsRegistry.deferments
+    .filter((deferment) => deferment.status !== "closed")
+    .map((deferment) => deferment.moduleSlug),
+);
 
 function collectSourceIds(value, result = new Set()) {
   if (Array.isArray(value)) value.forEach((item) => collectSourceIds(item, result));
@@ -34,13 +56,30 @@ test("English edition registers every published module", () => {
   assert.equal(englishModuleSlugs.length, 21);
   assert.deepEqual([...englishModuleSlugs], [...publishedModuleSlugs]);
   assert.deepEqual(Object.keys(englishModuleRegistry).sort(), [...publishedModuleSlugs].sort());
-  assert.equal(englishQuestions.length, publishedModuleSlugs.reduce((total, slug) => total + requireModuleContent(slug).qa.length, 0));
+  const expectedEnglishTotal = publishedModuleSlugs.reduce((total, slug) => {
+    if (deferredSlugs.has(slug)) return total + englishModuleRegistry[slug].qa.length;
+    return total + requireModuleContent(slug).qa.length;
+  }, 0);
+  assert.equal(englishQuestions.length, expectedEnglishTotal);
+});
+
+test("active and watch claims stay inside their review window", () => {
+  const claimItems = JSON.parse(readFileSync(new URL("../knowledge/claims/index.json", import.meta.url), "utf8")).items;
+  const overdue = claimItems
+    .filter((claim) => ["active", "watch"].includes(claim.status))
+    .filter((claim) => claim.reviewBy < today)
+    .map((claim) => `${claim.id} (reviewBy ${claim.reviewBy})`);
+  assert.deepEqual(overdue, [], `Claim 复核窗口已过期：${overdue.join("; ")}`);
 });
 
 test("shared English modules preserve canonical related-module routes and order", () => {
   for (const [slug, canonical] of Object.entries(moduleBriefs)) {
     assert.equal(canonical.relatedSlugs.includes(slug), false, `${slug} relatedSlugs must not link to itself`);
     assert.equal(new Set(canonical.relatedSlugs).size, canonical.relatedSlugs.length, `${slug} relatedSlugs must be unique`);
+    if (deferredSlugs.has(slug)) {
+      assert.ok(defermentsRegistry.deferments.some((deferment) => deferment.moduleSlug === slug), `${slug} deferred module must carry a deferment record`);
+      continue;
+    }
     assert.deepEqual(
       englishModuleRegistry[slug].relatedSlugs,
       canonical.relatedSlugs,
@@ -53,6 +92,10 @@ test("English edition preserves canonical question order, evidence relationships
   for (const slug of englishModuleSlugs) {
     const english = englishModuleRegistry[slug];
     const chinese = requireModuleContent(slug);
+    if (deferredSlugs.has(slug)) {
+      assert.ok(defermentsRegistry.deferments.some((deferment) => deferment.moduleSlug === slug), `${slug} deferred module must carry a deferment record`);
+      continue;
+    }
     assert.equal(english.qa.length, chinese.qa.length, `${slug} question parity`);
     assertUniqueIds(english.qa, `${slug} question`);
     english.qa.forEach((item, index) => {
@@ -67,6 +110,7 @@ test("English evidence cards keep canonical source relationships", () => {
   for (const slug of englishModuleSlugs) {
     const english = englishModuleRegistry[slug];
     const chinese = requireModuleContent(slug);
+    if (deferredSlugs.has(slug)) continue;
     assert.equal(english.evidenceCards.length, chinese.evidenceCards.length, `${slug} evidence-card parity`);
     assertUniqueIds(english.evidenceCards, `${slug} evidence card`);
     assert.deepEqual(english.evidenceCards.map((card) => card.sourceId), chinese.evidenceCards.map((card) => card.sourceId), `${slug} evidence-card source order`);

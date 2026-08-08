@@ -268,8 +268,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
       </section>
 
       <section className="subsection moduleBriefSection qaSection focusedSection" id="qa" data-quality-section="qa">
-        <div className="subHead"><span>05</span><div><p className="kicker">FIVE QUESTIONS FOR THE ROOM</p><h2>客户高频问题与深度回答</h2></div></div>
-        <ModuleQaList items={brief.qa.slice(0, 5)} sourceLedger={sourceLedger} />
+        <div className="subHead"><span>05</span><div><p className="kicker">QUESTIONS FOR THE ROOM</p><h2>客户高频问题与深度回答</h2></div></div>
+        <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} />
         <p className="focusedDirectoryLink"><Link href={`/questions?module=${currentModule.canonicalSlug}`}>继续查询本模块全部客户问题 →</Link></p>
       </section>
 

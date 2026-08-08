@@ -1,19 +1,13 @@
-import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { englishModuleRegistry } from "../app/i18n/en/registry.mjs";
-import { moduleContentRegistry } from "../app/module-content-registry.mjs";
-import { getPublishedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
+import { assertJsonSchema } from "./lib/json-schema-lite.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const outputDirectory = path.join(root, "knowledge", "claims", "bilingual-reviews", "2026-07-23");
-const mode = process.argv.includes("--write") ? "write" : "check";
-const localizationDeferments = JSON.parse(await readFile(path.join(root, "knowledge", "localization-deferments.json"), "utf8"));
-const defermentsBySlug = new Map(localizationDeferments.deferments.map((deferment) => [deferment.moduleSlug, deferment]));
+const registryPath = path.join(root, "knowledge", "localization-deferments.json");
 
-const stages = Object.freeze([
+export const stages = Object.freeze([
   Object.freeze({
     id: "xhigh-author",
     gateId: "english-module-contract",
@@ -59,103 +53,54 @@ const stages = Object.freeze([
   }),
 ]);
 
-function stableValue(value) {
-  if (Array.isArray(value)) return value.map(stableValue);
-  if (value && typeof value === "object") {
-    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableValue(value[key])]));
-  }
-  return value;
-}
-
-function contentHash(value) {
-  return `sha256:${createHash("sha256").update(JSON.stringify(stableValue(value))).digest("hex")}`;
-}
-
-function buildRecord(slug, stage) {
-  const english = englishModuleRegistry[slug];
-  const canonical = {
-    publication: getPublishedModule(slug),
-    content: moduleContentRegistry[slug],
-  };
-  const deferment = defermentsBySlug.get(slug);
-  const currentZhContentHash = contentHash(canonical);
-  const currentEnContentHash = contentHash(english);
-  if (deferment) {
-    if (currentEnContentHash !== deferment.baselineEnAuthoredHash) {
-      throw new Error(`${slug} English authored content changed during a Chinese-only deferment: ${currentEnContentHash}`);
-    }
-    if (currentEnContentHash !== deferment.baselineEnEffectiveHash) {
-      throw new Error(`${slug} English effective content changed during a Chinese-only deferment: ${currentEnContentHash}`);
-    }
-  }
-  const zhContentHash = deferment ? deferment.baselineZhHash : currentZhContentHash;
-  return {
-    schemaVersion: "bilingual-review/v1",
-    reviewId: `br-${slug}-${stage.id}`,
-    scope: {
-      moduleId: slug,
-      locale: "en",
-      objectType: "module",
-      objectId: null,
-      zhContentHash,
-      enContentHash: currentEnContentHash,
-      termIds: Object.keys(english.terms ?? {}).sort(),
-      sourceIds: Object.keys(english.sources ?? {}).sort(),
-    },
-    stage: stage.id,
-    deterministic: [{
-      gateId: stage.gateId,
-      status: "PASS",
-      evidence: [...stage.evidence],
-    }],
-    rubric: { ...stage.rubric },
-    findings: [],
-    verdict: "PASS",
-    blockClass: "NONE",
-    attempt: stage.attempt,
-    nextStage: "publish-candidate",
-  };
-}
-
-function assertRecord(record, expected) {
+function assertRecord(record, { slug, baseline, reviewSchema }) {
   const failures = [];
-  const requiredKeys = ["schemaVersion", "reviewId", "scope", "stage", "deterministic", "rubric", "findings", "verdict", "blockClass", "attempt", "nextStage"];
-  if (JSON.stringify(Object.keys(record).sort()) !== JSON.stringify(requiredKeys.sort())) failures.push("top-level fields");
-  if (record.schemaVersion !== "bilingual-review/v1") failures.push("schemaVersion");
-  if (!/^br-[a-z0-9-]+$/.test(record.reviewId)) failures.push("reviewId");
-  if (record.reviewId !== expected.reviewId || record.stage !== expected.stage) failures.push("identity");
-  if (JSON.stringify(record.scope) !== JSON.stringify(expected.scope)) failures.push("scope or content hashes");
-  if (!Array.isArray(record.deterministic) || record.deterministic.length < 1 || record.deterministic.some((gate) => gate.status !== "PASS")) failures.push("deterministic");
-  const rubricKeys = ["semanticFidelity", "mechanismAccuracy", "boundaryPreservation", "evidenceFaithfulness", "technicalEnglish", "presalesUsability"];
-  if (rubricKeys.some((key) => !Number.isInteger(record.rubric?.[key]) || record.rubric[key] < 1 || record.rubric[key] > 5)) failures.push("rubric");
-  if (!Array.isArray(record.findings)) failures.push("findings");
-  if (record.verdict !== "PASS" || record.blockClass !== "NONE" || record.nextStage !== "publish-candidate") failures.push("pass contract");
-  if (!Number.isInteger(record.attempt) || record.attempt < 1) failures.push("attempt");
-  if (failures.length) throw new Error(`${record.reviewId ?? "unknown review"} failed ${failures.join(", ")}`);
+  try {
+    assertJsonSchema(record, reviewSchema, `review ${record.reviewId ?? slug}`);
+  } catch (error) {
+    failures.push(error.message);
+  }
+  if (record.scope?.moduleId !== slug || record.scope?.locale !== "en" || record.scope?.objectType !== "module") failures.push("scope identity");
+  if (record.scope?.zhContentHash !== baseline.zhReviewHash) failures.push("Chinese baseline hash");
+  if (record.scope?.enContentHash !== baseline.enReviewHash) failures.push("English baseline hash");
+  if (!Array.isArray(record.deterministic) || record.deterministic.some((gate) => gate.status !== "PASS")) failures.push("deterministic gates");
+  if (record.verdict !== "PASS" || record.blockClass !== "NONE" || record.nextStage !== "publish-candidate") failures.push("verdict");
+  if (failures.length) throw new Error(`${record.reviewId ?? slug} failed ${failures.join(", ")}`);
 }
 
-const expectedFiles = [];
-for (const slug of publishedModuleSlugs) {
-  for (const stage of stages) {
-    const record = buildRecord(slug, stage);
-    const filename = `${slug}.${stage.id}.json`;
-    expectedFiles.push(filename);
-    const file = path.join(outputDirectory, filename);
-    if (mode === "write") {
-      await mkdir(outputDirectory, { recursive: true });
-      await writeFile(file, `${JSON.stringify(record, null, 2)}\n`);
-    } else {
-      const stored = JSON.parse(await readFile(file, "utf8"));
-      assertRecord(stored, record);
+async function checkRecords(registry) {
+  const reviewSchema = JSON.parse(await readFile(path.join(root, "knowledge", "schemas", "bilingual-review.schema.json"), "utf8"));
+  let count = 0;
+  for (const [slug, baseline] of Object.entries(registry.moduleBaselines)) {
+    const reviewStages = [];
+    for (const reviewId of baseline.reviewSetIds) {
+      const registered = baseline.reviewFiles[reviewId];
+      if (!registered) throw new Error(`${slug}: missing immutable baseline review ${reviewId}`);
+      const record = JSON.parse(await readFile(path.join(root, registered.path), "utf8"));
+      if (record.reviewId !== reviewId) throw new Error(`${slug}: review file identity does not match ${reviewId}`);
+      assertRecord(record, { slug, baseline, reviewSchema });
+      reviewStages.push(record.stage);
+      count += 1;
     }
+    const expectedStages = stages.map((stage) => stage.id).sort();
+    if (JSON.stringify(reviewStages.sort()) !== JSON.stringify(expectedStages)) throw new Error(`${slug}: baseline review set must contain exactly the four review stages`);
   }
+  console.log(`Validated ${count} immutable bilingual review records for ${Object.keys(registry.moduleBaselines).length} modules.`);
 }
 
-if (mode === "check") {
-  const actualFiles = (await readdir(outputDirectory)).filter((name) => name.endsWith(".json")).sort();
-  if (JSON.stringify(actualFiles) !== JSON.stringify(expectedFiles.sort())) {
-    throw new Error(`Bilingual review record set mismatch: expected ${expectedFiles.length}; received ${actualFiles.length}`);
-  }
+async function writeRecords() {
+  throw new Error("Automatic PASS review generation is disabled; candidate records must come from an independent four-stage English review and then be registered explicitly.");
 }
 
-console.log(`${mode === "write" ? "Wrote" : "Validated"} ${expectedFiles.length} bilingual review records for ${publishedModuleSlugs.length} modules and ${stages.length} stages.`);
+async function main() {
+  const registry = JSON.parse(await readFile(registryPath, "utf8"));
+  if (process.argv.includes("--write")) await writeRecords();
+  else await checkRecords(registry);
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

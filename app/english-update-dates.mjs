@@ -3,6 +3,9 @@
  *
  * 本轮中文单线交付不撰写英文内容；英文页面读取本表，而不是读取中文
  * module-publication.updatedAt，避免中文模块更新被误报为英文同步日期。
+ *
+ * 日期按每个英文模块最后一次真实撰写与专业审校提交维护。中文单线更新
+ * 不得刷新本表；未来英文同步只更新对应模块，不修改中文 updatedAt。
  */
 export const englishUpdatedDates = Object.freeze({
   "solution-patterns": "2026-08-01",

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Stage 0 candidate matrix",
+  "description": "01-STAGE-0-GAP-MATRIX-PLAN.md §8 核心差异矩阵契约。JSON 为规范研究产物，Markdown 仅为 Review 视图。",
+  "type": "object",
+  "required": ["planId", "stageId", "baseline", "candidates"],
+  "properties": {
+    "planId": { "type": "string" },
+    "stageId": { "const": "stage-0" },
+    "generatedAt": { "type": "string" },
+    "canonicalStatus": { "enum": ["approved", "draft", "superseded"] },
+    "note": { "type": "string" },
+    "baseline": {
+      "type": "object",
+      "required": ["currentCommit", "targetCommit", "coverageLedgerHash"],
+      "properties": {
+        "currentCommit": { "type": "string" },
+        "targetCommit": { "type": "string" },
+        "coverageLedgerHash": { "type": "string" }
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "candidateId", "conceptKey", "candidateKind", "candidateCategories",
+          "sourceOccurrenceIds", "summary"
+        ],
+        "properties": {
+          "candidateId": { "type": "string", "pattern": "^[A-Z0-9-]+$" },
+          "conceptKey": { "type": "string" },
+          "candidateKind": {
+            "enum": ["knowledge", "delivery-method", "expression", "error-conflict"]
+          },
+          "candidateCategories": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "sourceOccurrenceIds": { "type": "array", "items": { "type": "string" } },
+          "summary": { "type": "string" },
+          "coverageStatus": {
+            "enum": ["covered-equivalent", "covered-stronger", "partial", "net-new", "not-applicable", "unassessed"]
+          },
+          "currentLocations": { "type": "array", "items": { "type": "string" } },
+          "coverageDimensions": { "type": "object" },
+          "coverageRationale": { "type": "string" },
+          "deltaSummary": { "type": "string" },
+          "noMatchSearch": { "type": "string" },
+          "semanticConflict": {
+            "enum": ["none", "target-unsupported", "current-unsupported", "genuine-conflict", "unresolved"]
+          },
+          "contentLineage": {
+            "enum": ["independent", "shared-upstream", "current-to-target-backflow", "mixed", "unknown"]
+          },
+          "evidenceLineage": {
+            "enum": ["independent", "shared-upstream", "current-to-target-backflow", "mixed", "unknown"]
+          },
+          "lineageEvidence": { "type": "string" },
+          "lineageConfidence": {
+            "enum": ["confirmed", "high", "medium", "low", "unknown"]
+          },
+          "circularityRisk": { "enum": ["none", "potential", "confirmed"] },
+          "inheritedSummary": { "type": "string" },
+          "decisionDomains": { "type": "array", "items": { "type": "string" } },
+          "decisionImpactSummary": { "type": "string" },
+          "valueLevel": { "enum": ["high", "medium", "low"] },
+          "dynamicity": { "enum": ["stable", "dynamic", "event-driven", "unknown"] },
+          "reviewCadenceDays": { "type": ["integer", "null"] },
+          "evidenceGate": {
+            "enum": ["pass", "research-required", "expert-review-required", "blocked"]
+          },
+          "requiredEvidenceTypes": { "type": "array", "items": { "type": "string" } },
+          "existingSourceIds": { "type": "array", "items": { "type": "string" } },
+          "missingEvidence": { "type": "string" },
+          "claimRequired": { "enum": ["yes", "no", "to-determine"] },
+          "riskDomains": { "type": "array", "items": { "type": "string" } },
+          "riskLevel": { "enum": ["low", "medium", "high", "critical"] },
+          "expertReview": {
+            "enum": ["none", "security", "legal", "domain", "multiple"]
+          },
+          "ownerType": { "enum": ["module", "global", "shared", "unresolved"] },
+          "ownerId": { "type": "string" },
+          "ownerStatus": { "enum": ["resolved", "disputed", "not-required"] },
+          "ownerOptions": { "type": "array", "items": { "type": "string" } },
+          "relatedModules": { "type": "array", "items": { "type": "string" } },
+          "primaryTargetContract": { "type": "string" },
+          "requiredSyncContracts": { "type": "array", "items": { "type": "string" } },
+          "recommendedAction": {
+            "enum": ["absorb", "research", "expression-only", "watch", "reject"]
+          },
+          "actionReason": { "type": "string" },
+          "reviewGroup": { "type": "string" },
+          "reviewDecision": {
+            "enum": ["pending", "approved", "approved-with-changes", "deferred", "rejected"]
+          },
+          "finalAction": {
+            "enum": ["implement", "research", "expression-only", "watch", "no-op", "reject", "deferred"]
+          },
+          "approvedScope": { "type": "string" },
+          "decisionNotes": { "type": "string" },
+          "decidedAt": { "type": ["string", "null"] },
+          "recommendedStage": {
+            "enum": ["stage-1", "stage-2", "stage-3", "stage-4", "stage-5", "future", "none"]
+          },
+          "recommendedBatch": { "type": ["string", "null"] },
+          "targetStage": { "type": ["string", "null"] },
+          "targetBatch": { "type": ["string", "null"] },
+          "priority": { "enum": ["P0", "P1", "P2", "hold"] },
+          "prerequisites": { "type": "array", "items": { "type": "string" } },
+          "blockingQuestions": { "type": "array", "items": { "type": "string" } },
+          "executionReadiness": {
+            "enum": ["ready", "needs-research", "blocked", "no-op"]
+          },
+          "affectedContentIds": { "type": "array", "items": { "type": "string" } },
+          "changeKind": { "type": "string" },
+          "englishImpact": {
+            "enum": ["none", "prose", "qa-structure", "evidence-structure", "shared-metadata"]
+          },
+          "localeRequirement": {
+            "enum": ["none", "date-decoupling", "semantic-deferment", "structural-deferment", "shared-runtime-decoupling"]
+          },
+          "localeGate": { "enum": ["pass", "blocked"] },
+          "localeGateReceipt": { "type": "string" },
+          "futureEnglishIds": { "type": "array", "items": { "type": "string" } },
+          "dateImpact": {
+            "enum": ["none", "module-updatedAt", "new-question-addedAt", "claim-verification"]
+          },
+          "qualityGateImpact": { "enum": ["none", "existing-rule", "systemic-rule-update"] },
+          "expectedFiles": { "type": "array", "items": { "type": "string" } },
+          "testImpact": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

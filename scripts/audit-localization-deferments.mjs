@@ -1,0 +1,486 @@
+import { execFileSync, spawnSync } from "node:child_process";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+import { assertJsonSchema } from "./lib/json-schema-lite.mjs";
+import {
+  COMMIT_PATTERN,
+  affectedObjectKey,
+  assertAffectedObjectShape,
+  composeLocalizationModuleBaseline,
+  diffObjectCatalogs,
+  loadLocalizationProject,
+  normalizeRendererDependencyFiles,
+  persistableLocalizationModuleState,
+} from "./lib/localization-contract.mjs";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const registryPath = path.join(root, "knowledge", "localization-deferments.json");
+const schemaPath = path.join(root, "knowledge", "schemas", "localization-deferment.schema.json");
+const reviewSchemaPath = path.join(root, "knowledge", "schemas", "bilingual-review.schema.json");
+const candidateMatrixPath = path.join(root, "docs", "change-plans", "2026-08-ai-knowledge-base-content-improvement", "stage-0", "candidate-matrix.json");
+const requiredReviewStages = ["xhigh-author", "xhigh-semantic", "xhigh-language", "ultra-exception"];
+
+function same(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function sorted(values) {
+  return [...values].sort();
+}
+
+function baselineSourceIds(registry) {
+  const ids = new Set();
+  for (const baseline of Object.values(registry.moduleBaselines)) {
+    for (const object of Object.values(baseline.zhObjects)) {
+      for (const sourceId of object.sourceIds ?? []) ids.add(sourceId);
+    }
+  }
+  return ids;
+}
+
+function compareAffectedObjects(actual, registered) {
+  return same(actual.map(affectedObjectKey).sort(), registered.map(affectedObjectKey).sort());
+}
+
+function unchangedEnglish(current, baseline) {
+  return current.enAuthoredHash === baseline.enAuthoredHash
+    && current.enEffectiveHash === baseline.enEffectiveHash
+    && current.enReviewHash === baseline.enReviewHash
+    && same(current.enRendererFiles, baseline.enRendererFiles)
+    && current.englishUpdatedAt === baseline.englishUpdatedAt;
+}
+
+function matchesEnglishCandidate(current, candidate) {
+  return current.enAuthoredHash === candidate.enAuthoredHash
+    && current.enEffectiveHash === candidate.enEffectiveHash
+    && current.enReviewHash === candidate.enReviewHash
+    && same(current.zhRendererFiles, candidate.zhRendererFiles)
+    && same(current.enRendererFiles, candidate.enRendererFiles)
+    && current.englishUpdatedAt === candidate.englishUpdatedAt;
+}
+
+export function assertPromotionCheckoutClean(statusOutput) {
+  if (statusOutput.trim()) {
+    throw new Error("--close-and-promote requires a clean working tree so the promoted baseline is exactly attributable to HEAD");
+  }
+}
+
+export function promotedBaselineFromCommittedState({ currentModuleState, committedModuleState, commit, reviewIds }) {
+  const currentBaseline = persistableLocalizationModuleState(currentModuleState, commit, reviewIds);
+  const committedBaseline = persistableLocalizationModuleState(committedModuleState, commit, reviewIds);
+  if (!same(currentBaseline, committedBaseline)) {
+    throw new Error("--close-and-promote current module state does not match the committed HEAD provenance");
+  }
+  return committedBaseline;
+}
+
+function validatePassingReviewSet({ reviewIds, moduleState, moduleSlug, expectedZhHash, expectedEnHash, reviewSchema, label, fail }) {
+  if (!reviewSchema) {
+    fail(`${label}: bilingual review schema is required`);
+    return;
+  }
+  if (!same(sorted(reviewIds), sorted([...new Set(reviewIds)]))) fail(`${label}: review IDs must be unique`);
+  const stages = [];
+  for (const reviewId of reviewIds) {
+    const file = moduleState.reviewFiles[reviewId];
+    const record = moduleState.reviewRecords?.[reviewId];
+    if (!file || !record) {
+      fail(`${label}: review ${reviewId} is missing`);
+      continue;
+    }
+    try {
+      assertJsonSchema(record, reviewSchema, `${label} review ${reviewId}`);
+    } catch (error) {
+      fail(error.message);
+      continue;
+    }
+    if (record.scope.moduleId !== moduleSlug || record.scope.locale !== "en" || record.scope.objectType !== "module") {
+      fail(`${label}: review ${reviewId} has the wrong module scope`);
+    }
+    if (record.scope.zhContentHash !== expectedZhHash || file.zhContentHash !== expectedZhHash) {
+      fail(`${label}: review ${reviewId} does not cover the required Chinese content`);
+    }
+    if (record.scope.enContentHash !== expectedEnHash || file.enContentHash !== expectedEnHash) {
+      fail(`${label}: review ${reviewId} does not cover the required English content`);
+    }
+    if (record.verdict !== "PASS" || record.blockClass !== "NONE" || record.nextStage !== "publish-candidate") {
+      fail(`${label}: review ${reviewId} is not a publishable PASS`);
+    }
+    if (!Array.isArray(record.deterministic) || record.deterministic.length === 0 || record.deterministic.some((gate) => gate.status !== "PASS")) {
+      fail(`${label}: review ${reviewId} contains a failing deterministic gate`);
+    }
+    stages.push(record.stage);
+  }
+  if (!same(sorted(stages), sorted(requiredReviewStages))) {
+    fail(`${label}: review set must contain exactly ${requiredReviewStages.join(", ")}`);
+  }
+}
+
+export function validateLocalizationRegistry(registry, currentProject, { candidateIds = new Set(), reviewSchema, promotedProjectsByCommit = new Map() } = {}) {
+  const failures = [];
+  const messages = [];
+  const fail = (message) => failures.push(message);
+  const publishedSlugs = currentProject.publishedModuleSlugs;
+  const baselineSlugs = Object.keys(registry.moduleBaselines).sort();
+  if (!same(baselineSlugs, [...publishedSlugs].sort())) {
+    fail(`moduleBaselines must exactly cover published modules; received ${baselineSlugs.length}, expected ${publishedSlugs.length}`);
+  }
+
+  const receiptIds = new Set();
+  const receiptById = new Map();
+  for (const receipt of registry.receipts) {
+    if (receiptIds.has(receipt.receiptId)) fail(`duplicate receipt ID ${receipt.receiptId}`);
+    receiptIds.add(receipt.receiptId);
+    receiptById.set(receipt.receiptId, receipt);
+  }
+
+  const knownSourceIds = new Set([...currentProject.sourceIds, ...baselineSourceIds(registry)]);
+  const defermentIds = new Set();
+  const activeBySlug = new Map();
+  const closedDeferments = [];
+  for (const deferment of registry.deferments) {
+    if (defermentIds.has(deferment.defermentId)) fail(`duplicate deferment ID ${deferment.defermentId}`);
+    defermentIds.add(deferment.defermentId);
+    if (!publishedSlugs.includes(deferment.moduleSlug)) fail(`${deferment.defermentId}: unknown module ${deferment.moduleSlug}`);
+    if (!receiptIds.has(deferment.localeGateReceipt)) fail(`${deferment.defermentId}: unknown localeGateReceipt ${deferment.localeGateReceipt}`);
+    const localeGateReceipt = receiptById.get(deferment.localeGateReceipt);
+    if (localeGateReceipt && localeGateReceipt.kind !== "locale-gate") fail(`${deferment.defermentId}: localeGateReceipt must reference a locale-gate receipt`);
+    if (localeGateReceipt && localeGateReceipt.decisionId !== deferment.decisionId) fail(`${deferment.defermentId}: locale-gate receipt decision does not match the deferment`);
+    for (const candidateId of deferment.candidateIds) {
+      if (candidateIds.size && !candidateIds.has(candidateId)) fail(`${deferment.defermentId}: unknown candidate ${candidateId}`);
+    }
+    const objectIds = new Set();
+    for (const [index, object] of deferment.affectedObjects.entries()) {
+      try {
+        assertAffectedObjectShape(object, `${deferment.defermentId}.affectedObjects[${index}]`);
+      } catch (error) {
+        fail(error.message);
+      }
+      if (objectIds.has(object.objectId)) fail(`${deferment.defermentId}: duplicate affected object ${object.objectId}`);
+      objectIds.add(object.objectId);
+      for (const sourceId of object.sourceIds) {
+        if (!knownSourceIds.has(sourceId)) fail(`${deferment.defermentId}: affected object references unknown source ${sourceId}`);
+      }
+    }
+    if (deferment.status !== "closed") {
+      for (const field of ["closedAt", "promotedCommit", "closureReviewIds", "closureReceipt"]) {
+        if (Object.hasOwn(deferment, field)) fail(`${deferment.defermentId}: ${field} is only allowed on closed records`);
+      }
+      const active = activeBySlug.get(deferment.moduleSlug) ?? [];
+      active.push(deferment);
+      activeBySlug.set(deferment.moduleSlug, active);
+    } else {
+      if (!deferment.closedAt || !deferment.promotedCommit || !deferment.closureReviewIds?.length || !deferment.closureReceipt) {
+        fail(`${deferment.defermentId}: closed records require closedAt, promotedCommit, closureReviewIds, and closureReceipt`);
+      }
+      if (deferment.closureReceipt && !receiptIds.has(deferment.closureReceipt)) {
+        fail(`${deferment.defermentId}: unknown closureReceipt ${deferment.closureReceipt}`);
+      }
+      const closureReceipt = receiptById.get(deferment.closureReceipt);
+      if (closureReceipt && closureReceipt.kind !== "closure") fail(`${deferment.defermentId}: closureReceipt must reference a closure receipt`);
+      if (closureReceipt && closureReceipt.decisionId !== deferment.decisionId) fail(`${deferment.defermentId}: closure receipt decision does not match the deferment`);
+      if (!deferment.englishCandidate) fail(`${deferment.defermentId}: closed records must retain the reviewed English candidate`);
+      else if (!same(sorted(deferment.closureReviewIds ?? []), sorted(deferment.englishCandidate.reviewIds))) {
+        fail(`${deferment.defermentId}: closureReviewIds must exactly match the reviewed English candidate`);
+      }
+      closedDeferments.push(deferment);
+    }
+  }
+
+  for (const deferment of closedDeferments) {
+    const promotedModuleState = promotedProjectsByCommit.get(deferment.promotedCommit)?.modules[deferment.moduleSlug];
+    if (!promotedModuleState || !deferment.englishCandidate) {
+      if (deferment.promotedCommit) fail(`${deferment.defermentId}: promotedCommit cannot be reconstructed`);
+      continue;
+    }
+    let promotedBaseline;
+    try {
+      promotedBaseline = persistableLocalizationModuleState(promotedModuleState, deferment.promotedCommit, deferment.englishCandidate.reviewIds);
+    } catch (error) {
+      fail(`${deferment.defermentId}: cannot reconstruct promoted candidate: ${error.message}`);
+      continue;
+    }
+    if (deferment.englishCandidate.zhReviewHash !== promotedBaseline.zhReviewHash
+      || !same(deferment.englishCandidate.zhRendererFiles, promotedBaseline.zhRendererFiles)
+      || deferment.englishCandidate.enAuthoredHash !== promotedBaseline.enAuthoredHash
+      || deferment.englishCandidate.enEffectiveHash !== promotedBaseline.enEffectiveHash
+      || deferment.englishCandidate.enReviewHash !== promotedBaseline.enReviewHash
+      || !same(deferment.englishCandidate.enRendererFiles, promotedBaseline.enRendererFiles)
+      || deferment.englishCandidate.englishUpdatedAt !== promotedBaseline.englishUpdatedAt) {
+      fail(`${deferment.defermentId}: closed candidate must match its own promoted commit`);
+    }
+    validatePassingReviewSet({
+      reviewIds: deferment.closureReviewIds,
+      moduleState: promotedModuleState,
+      moduleSlug: deferment.moduleSlug,
+      expectedZhHash: deferment.englishCandidate.zhReviewHash,
+      expectedEnHash: deferment.englishCandidate.enReviewHash,
+      reviewSchema,
+      label: deferment.defermentId,
+      fail,
+    });
+  }
+
+  for (const [slug, active] of activeBySlug) {
+    if (active.length > 1) fail(`${slug}: only one active deferment is allowed; received ${active.length}`);
+  }
+
+  for (const slug of publishedSlugs) {
+    const baseline = registry.moduleBaselines[slug];
+    const current = currentProject.modules[slug];
+    if (!baseline || !current) continue;
+
+    for (const [reviewId, expectedFile] of Object.entries(baseline.reviewFiles)) {
+      const currentFile = current.reviewFiles[reviewId];
+      if (!currentFile) fail(`${slug}: baseline review ${reviewId} is missing`);
+      else if (!same(currentFile, expectedFile)) fail(`${slug}: baseline review ${reviewId} was modified or moved`);
+    }
+    validatePassingReviewSet({
+      reviewIds: baseline.reviewSetIds,
+      moduleState: current,
+      moduleSlug: slug,
+      expectedZhHash: baseline.zhReviewHash,
+      expectedEnHash: baseline.enReviewHash,
+      reviewSchema,
+      label: `${slug} baseline`,
+      fail,
+    });
+
+    const active = activeBySlug.get(slug)?.[0] ?? null;
+    const actualDiff = diffObjectCatalogs(baseline.zhObjects, current.zhObjects);
+    if (!active) {
+      if (current.zhStateHash !== baseline.zhStateHash || actualDiff.length) fail(`${slug}: Chinese content changed without an active deferment`);
+      if (!unchangedEnglish(current, baseline)) fail(`${slug}: English content or date changed outside the localization workflow`);
+      messages.push(`ALIGNED ${slug}: strict bilingual baseline holds.`);
+      continue;
+    }
+
+    if (active.openedFromCommit !== baseline.zhBaselineCommit) {
+      fail(`${active.defermentId}: openedFromCommit must match the module baseline commit`);
+    }
+
+    const expectedReviewIds = baseline.reviewSetIds;
+    if (!same(sorted(active.baselineReviewIds), expectedReviewIds)) {
+      fail(`${active.defermentId}: baselineReviewIds do not match the immutable review set`);
+    }
+    if (current.zhStateHash === baseline.zhStateHash || actualDiff.length === 0) {
+      fail(`${active.defermentId}: active deferment has no Chinese state delta`);
+    }
+    if (!compareAffectedObjects(actualDiff, active.affectedObjects)) {
+      const actualIds = actualDiff.map((item) => item.objectId);
+      const registeredIds = active.affectedObjects.map((item) => item.objectId);
+      fail(`${active.defermentId}: affectedObjects do not exactly match the live delta (actual ${actualIds.length}, registered ${registeredIds.length})`);
+    }
+
+    if (active.status === "deferred") {
+      if (!unchangedEnglish(current, baseline)) fail(`${active.defermentId}: deferred work changed English content or englishUpdatedAt`);
+      if (active.englishCandidate) fail(`${active.defermentId}: deferred state must not carry an English candidate`);
+      messages.push(`DEFERRED/NOT_ALIGNED ${slug}: ${active.defermentId}`);
+    } else if (active.status === "ready-for-english-review") {
+      if (!active.englishCandidate) fail(`${active.defermentId}: ready state requires englishCandidate hashes and review IDs`);
+      else {
+        if (active.englishCandidate.zhReviewHash !== current.zhReviewHash) fail(`${active.defermentId}: English candidate does not cover the current Chinese review scope`);
+        if (!matchesEnglishCandidate(current, active.englishCandidate)) fail(`${active.defermentId}: current English does not match the registered candidate`);
+        if (unchangedEnglish(current, baseline)) fail(`${active.defermentId}: ready state must contain a real English candidate delta`);
+        validatePassingReviewSet({
+          reviewIds: active.englishCandidate.reviewIds,
+          moduleState: current,
+          moduleSlug: slug,
+          expectedZhHash: current.zhReviewHash,
+          expectedEnHash: active.englishCandidate.enReviewHash,
+          reviewSchema,
+          label: active.defermentId,
+          fail,
+        });
+      }
+      messages.push(`READY/NOT_ALIGNED ${slug}: ${active.defermentId}`);
+    }
+  }
+
+  return { failures, messages };
+}
+
+function assertCommitAvailable(commit, label, { requireRemote = true } = {}) {
+  if (!COMMIT_PATTERN.test(commit)) throw new Error(`${label}: expected a full 40-character commit SHA`);
+  const exists = spawnSync("git", ["cat-file", "-e", `${commit}^{commit}`], { cwd: root });
+  if (exists.status !== 0) throw new Error(`${label}: commit ${commit} does not exist locally`);
+  const ancestor = spawnSync("git", ["merge-base", "--is-ancestor", commit, "HEAD"], { cwd: root });
+  if (ancestor.status !== 0) throw new Error(`${label}: commit ${commit} is not an ancestor of HEAD`);
+  if (requireRemote) {
+    const remoteContains = execFileSync("git", ["branch", "-r", "--contains", commit], { cwd: root, encoding: "utf8" }).trim();
+    if (!remoteContains) throw new Error(`${label}: commit ${commit} is not reachable from a remote-tracking branch`);
+  }
+}
+
+export function assertCanonicalRendererFileLists(project, expectedFilesBySlug) {
+  for (const [slug, expected] of Object.entries(expectedFilesBySlug)) {
+    const moduleState = project.modules[slug];
+    if (!moduleState) throw new Error(`${slug}: canonical renderer closure cannot be reconstructed`);
+    for (const [locale, files] of Object.entries(expected)) {
+      if (!["zh", "en"].includes(locale)) throw new Error(`${slug}: unknown renderer locale ${locale}`);
+      const canonicalFiles = locale === "zh" ? moduleState.zhRendererFiles : moduleState.enRendererFiles;
+      const normalizedFiles = normalizeRendererDependencyFiles(files, `${slug}.${locale}RendererFiles`);
+      if (!same(normalizedFiles, canonicalFiles)) {
+        throw new Error(`${slug}: stored ${locale} renderer files do not match the canonical commit closure`);
+      }
+    }
+  }
+}
+
+export async function loadProjectAtCommit(commit, expectedFilesBySlug = {}) {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "kb-localization-baseline-"));
+  try {
+    const archive = execFileSync("git", ["archive", "--format=tar", commit], { cwd: root, maxBuffer: 64 * 1024 * 1024 });
+    execFileSync("tar", ["-xf", "-", "-C", directory], { input: archive, maxBuffer: 64 * 1024 * 1024 });
+    const moduleSlugs = Object.keys(expectedFilesBySlug);
+    const project = await loadLocalizationProject(directory, { moduleSlugs: moduleSlugs.length ? moduleSlugs : null });
+    assertCanonicalRendererFileLists(project, expectedFilesBySlug);
+    return project;
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+}
+
+async function assertBaselineProvenance(registry, { requireRemote = false } = {}) {
+  const projectsByCommit = new Map();
+  const rendererFilesByCommit = new Map();
+  function register(commit, slug, locale, files) {
+    const bySlug = rendererFilesByCommit.get(commit) ?? {};
+    const expected = bySlug[slug] ?? {};
+    if (expected[locale] && !same(expected[locale], files)) throw new Error(`${slug}: conflicting ${locale} renderer provenance for ${commit}`);
+    expected[locale] = files;
+    bySlug[slug] = expected;
+    rendererFilesByCommit.set(commit, bySlug);
+  }
+  for (const [slug, baseline] of Object.entries(registry.moduleBaselines)) {
+    register(baseline.zhBaselineCommit, slug, "zh", baseline.zhRendererFiles);
+    register(baseline.enBaselineCommit, slug, "en", baseline.enRendererFiles);
+  }
+  for (const [commit, rendererFilesBySlug] of rendererFilesByCommit) {
+    assertCommitAvailable(commit, "module baselineCommit", { requireRemote });
+    projectsByCommit.set(commit, await loadProjectAtCommit(commit, rendererFilesBySlug));
+  }
+  for (const [slug, baseline] of Object.entries(registry.moduleBaselines)) {
+    const historicalZh = projectsByCommit.get(baseline.zhBaselineCommit)?.modules[slug];
+    const historicalEn = projectsByCommit.get(baseline.enBaselineCommit)?.modules[slug];
+    if (!historicalZh || !historicalEn) throw new Error(`${slug}: baseline commits do not contain the published module`);
+    const reconstructed = composeLocalizationModuleBaseline(
+      historicalZh,
+      historicalEn,
+      baseline.zhBaselineCommit,
+      baseline.enBaselineCommit,
+      baseline.reviewSetIds,
+    );
+    if (!same(reconstructed, baseline)) throw new Error(`${slug}: stored localization baseline does not match its declared commits`);
+  }
+}
+
+async function loadPromotedProjects(registry, { requireRemote = false } = {}) {
+  const projects = new Map();
+  const rendererFilesByCommit = new Map();
+  for (const deferment of registry.deferments.filter((item) => item.status === "closed" && item.promotedCommit && item.englishCandidate)) {
+    const bySlug = rendererFilesByCommit.get(deferment.promotedCommit) ?? {};
+    bySlug[deferment.moduleSlug] = {
+      zh: deferment.englishCandidate.zhRendererFiles,
+      en: deferment.englishCandidate.enRendererFiles,
+    };
+    rendererFilesByCommit.set(deferment.promotedCommit, bySlug);
+  }
+  for (const [commit, rendererFilesBySlug] of rendererFilesByCommit) {
+    if (!commit) continue;
+    assertCommitAvailable(commit, "promotedCommit", { requireRemote });
+    projects.set(commit, await loadProjectAtCommit(commit, rendererFilesBySlug));
+  }
+  return projects;
+}
+
+async function loadInputs() {
+  const [registryText, schemaText, reviewSchemaText, matrixText, currentProject] = await Promise.all([
+    readFile(registryPath, "utf8"),
+    readFile(schemaPath, "utf8"),
+    readFile(reviewSchemaPath, "utf8"),
+    readFile(candidateMatrixPath, "utf8"),
+    loadLocalizationProject(root),
+  ]);
+  const registry = JSON.parse(registryText);
+  const schema = JSON.parse(schemaText);
+  const reviewSchema = JSON.parse(reviewSchemaText);
+  const matrix = JSON.parse(matrixText);
+  return { registry, schema, reviewSchema, currentProject, candidateIds: new Set(matrix.candidates.map((candidate) => candidate.candidateId)) };
+}
+
+async function main() {
+  const { registry, schema, reviewSchema, currentProject, candidateIds } = await loadInputs();
+  assertJsonSchema(registry, schema, "localization registry");
+
+  if (process.argv.includes("--write-baseline")) throw new Error("--write-baseline is unsafe and unsupported; use the reviewed --close-and-promote transition");
+
+  const requireRemote = process.argv.includes("--require-remote") || Boolean(process.env.KB_RELEASE_COMMIT);
+  assertCommitAvailable(registry.baselineCommit, "baselineCommit", { requireRemote });
+  for (const commit of new Set(registry.deferments.map((deferment) => deferment.openedFromCommit))) {
+    assertCommitAvailable(commit, "openedFromCommit", { requireRemote });
+  }
+  await assertBaselineProvenance(registry, { requireRemote });
+  const promotedProjectsByCommit = await loadPromotedProjects(registry, { requireRemote });
+
+  const { failures, messages } = validateLocalizationRegistry(registry, currentProject, { candidateIds, reviewSchema, promotedProjectsByCommit });
+  for (const message of messages) console.log(message);
+  if (failures.length) throw new Error(`Localization contract failures:\n${failures.map((failure) => `- ${failure}`).join("\n")}`);
+
+  const closeIndex = process.argv.indexOf("--close-and-promote");
+  if (closeIndex !== -1) {
+    const slug = process.argv[closeIndex + 1];
+    const receiptIndex = process.argv.indexOf("--closure-receipt");
+    const dateIndex = process.argv.indexOf("--closed-at");
+    const closureReceipt = receiptIndex === -1 ? null : process.argv[receiptIndex + 1];
+    const closedAt = dateIndex === -1 ? null : process.argv[dateIndex + 1];
+    if (!slug || slug.startsWith("--")) throw new Error("--close-and-promote requires one explicit module slug");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(closedAt ?? "")) throw new Error("--close-and-promote requires --closed-at YYYY-MM-DD");
+    const worktreeStatus = execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=normal"], { cwd: root, encoding: "utf8" });
+    assertPromotionCheckoutClean(worktreeStatus);
+    const deferment = registry.deferments.find((item) => item.moduleSlug === slug && item.status === "ready-for-english-review");
+    if (!deferment?.englishCandidate) throw new Error(`${slug}: no reviewed ready-for-english-review transition exists`);
+    const receipt = registry.receipts.find((item) => item.receiptId === closureReceipt);
+    if (!receipt || receipt.kind !== "closure" || receipt.decisionId !== deferment.decisionId) throw new Error(`${slug}: --closure-receipt must reference a matching closure receipt`);
+    const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+    assertCommitAvailable(head, "promotion commit", { requireRemote: false });
+    const committedProject = await loadProjectAtCommit(head, {
+      [slug]: {
+        zh: deferment.englishCandidate.zhRendererFiles,
+        en: deferment.englishCandidate.enRendererFiles,
+      },
+    });
+    const committedModuleState = committedProject.modules[slug];
+    if (!committedModuleState) throw new Error(`${slug}: committed HEAD does not contain the module being promoted`);
+    registry.moduleBaselines[slug] = promotedBaselineFromCommittedState({
+      currentModuleState: currentProject.modules[slug],
+      committedModuleState,
+      commit: head,
+      reviewIds: deferment.englishCandidate.reviewIds,
+    });
+    deferment.status = "closed";
+    deferment.closedAt = closedAt;
+    deferment.promotedCommit = head;
+    deferment.closureReviewIds = [...deferment.englishCandidate.reviewIds];
+    deferment.closureReceipt = closureReceipt;
+    promotedProjectsByCommit.set(head, committedProject);
+    assertJsonSchema(registry, schema, "localization registry");
+    const promoted = validateLocalizationRegistry(registry, currentProject, { candidateIds, reviewSchema, promotedProjectsByCommit });
+    if (promoted.failures.length) throw new Error(`Refusing invalid closure:\n${promoted.failures.map((failure) => `- ${failure}`).join("\n")}`);
+    await writeFile(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
+    console.log(`Closed ${slug} and promoted its reviewed baseline from ${head}.`);
+    return;
+  }
+
+  console.log(`Localization contract passed for ${currentProject.publishedModuleSlugs.length} modules.`);
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

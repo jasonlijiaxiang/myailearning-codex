@@ -1,0 +1,1437 @@
+{
+ "generatedAt": "2026-08-05",
+ "mapping": {
+  "O-P-A1": {
+   "candidateId": "C-005",
+   "mappingBasis": "explicit"
+  },
+  "O-P-A10": {
+   "candidateId": "C-018",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B3": {
+   "candidateId": "C-012",
+   "mappingBasis": "explicit"
+  },
+  "O-P-C1": {
+   "candidateId": "C-019",
+   "mappingBasis": "explicit"
+  },
+  "O-P-D1": {
+   "candidateId": "C-001",
+   "mappingBasis": "explicit"
+  },
+  "O-P-E1": {
+   "candidateId": "C-025",
+   "mappingBasis": "explicit"
+  },
+  "O-P-F1": {
+   "candidateId": "C-001",
+   "mappingBasis": "explicit"
+  },
+  "O-P-G1": {
+   "candidateId": "C-001",
+   "mappingBasis": "explicit"
+  },
+  "O-P-H1": {
+   "candidateId": "C-033",
+   "mappingBasis": "explicit"
+  },
+  "O-P-H4": {
+   "candidateId": "C-001",
+   "mappingBasis": "explicit"
+  },
+  "O-FB-1": {
+   "candidateId": "C-002",
+   "mappingBasis": "explicit"
+  },
+  "O-FB-2": {
+   "candidateId": "C-002",
+   "mappingBasis": "explicit"
+  },
+  "O-FB-3": {
+   "candidateId": "C-002",
+   "mappingBasis": "explicit"
+  },
+  "O-FB-4": {
+   "candidateId": "C-002",
+   "mappingBasis": "explicit"
+  },
+  "O-LP-01": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-02": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-03": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-04": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-05": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-06": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-P-A7": {
+   "candidateId": "C-007",
+   "mappingBasis": "explicit"
+  },
+  "O-P-A11": {
+   "candidateId": "C-007",
+   "mappingBasis": "explicit"
+  },
+  "O-P-D8": {
+   "candidateId": "C-041",
+   "mappingBasis": "explicit"
+  },
+  "O-P-F3": {
+   "candidateId": "C-004",
+   "mappingBasis": "explicit"
+  },
+  "O-P-G8": {
+   "candidateId": "C-027",
+   "mappingBasis": "explicit"
+  },
+  "O-P-C5": {
+   "candidateId": "C-018",
+   "mappingBasis": "explicit"
+  },
+  "O-P-D5": {
+   "candidateId": "C-041",
+   "mappingBasis": "explicit"
+  },
+  "O-P-E5": {
+   "candidateId": "C-005",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-ModelLandscape-11": {
+   "candidateId": "C-006",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-ModelLandscape-13": {
+   "candidateId": "C-006",
+   "mappingBasis": "explicit"
+  },
+  "O-P-G7": {
+   "candidateId": "C-038",
+   "mappingBasis": "explicit"
+  },
+  "O-P-A3": {
+   "candidateId": "C-008",
+   "mappingBasis": "explicit"
+  },
+  "O-P-A4": {
+   "candidateId": "C-008",
+   "mappingBasis": "explicit"
+  },
+  "O-P-A6": {
+   "candidateId": "C-009",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-ModelLandscape-09": {
+   "candidateId": "C-044",
+   "mappingBasis": "explicit"
+  },
+  "O-P-A8": {
+   "candidateId": "C-010",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Evaluation-01": {
+   "candidateId": "C-010",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-ModelLandscape-06": {
+   "candidateId": "C-025",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B1": {
+   "candidateId": "C-011",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B13": {
+   "candidateId": "C-011",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B2": {
+   "candidateId": "C-013",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B5": {
+   "candidateId": "C-014",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-SolutionPatterns-04": {
+   "candidateId": "C-014",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B6": {
+   "candidateId": "C-015",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B15": {
+   "candidateId": "C-015",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B10": {
+   "candidateId": "C-016",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-SolutionPatterns-05": {
+   "candidateId": "C-016",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B4": {
+   "candidateId": "C-017",
+   "mappingBasis": "explicit"
+  },
+  "O-P-C8": {
+   "candidateId": "C-019",
+   "mappingBasis": "explicit"
+  },
+  "O-P-C11": {
+   "candidateId": "C-019",
+   "mappingBasis": "explicit"
+  },
+  "O-P-C7": {
+   "candidateId": "C-020",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIInfraCompute-03": {
+   "candidateId": "C-020",
+   "mappingBasis": "explicit"
+  },
+  "O-P-C10": {
+   "candidateId": "C-021",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIInfraCompute-04": {
+   "candidateId": "C-021",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-LLMInference-02": {
+   "candidateId": "C-047",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B16": {
+   "candidateId": "C-029",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Agent-03": {
+   "candidateId": "C-022",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Agent-04": {
+   "candidateId": "C-022",
+   "mappingBasis": "explicit"
+  },
+  "O-P-D14": {
+   "candidateId": "C-023",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Agent-08": {
+   "candidateId": "C-023",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Agent-11": {
+   "candidateId": "C-023",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Agent-13": {
+   "candidateId": "C-024",
+   "mappingBasis": "explicit"
+  },
+  "O-P-E6": {
+   "candidateId": "C-025",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Evaluation-02": {
+   "candidateId": "C-044",
+   "mappingBasis": "explicit"
+  },
+  "O-P-D9": {
+   "candidateId": "C-026",
+   "mappingBasis": "explicit"
+  },
+  "O-P-E7": {
+   "candidateId": "C-026",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Evaluation-04": {
+   "candidateId": "C-026",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Agent-06": {
+   "candidateId": "C-026",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B14": {
+   "candidateId": "C-028",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-RAG-06": {
+   "candidateId": "C-028",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Multimodal-01": {
+   "candidateId": "C-028",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Multimodal-06": {
+   "candidateId": "C-029",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Multimodal-07": {
+   "candidateId": "C-029",
+   "mappingBasis": "explicit"
+  },
+  "O-P-F12": {
+   "candidateId": "C-030",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-A2A-03": {
+   "candidateId": "C-030",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-A2A-05": {
+   "candidateId": "C-030",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-MCP-14": {
+   "candidateId": "C-030",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Agent-10": {
+   "candidateId": "C-030",
+   "mappingBasis": "explicit"
+  },
+  "O-P-F5": {
+   "candidateId": "C-031",
+   "mappingBasis": "explicit"
+  },
+  "O-P-F6": {
+   "candidateId": "C-031",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-MCP-01": {
+   "candidateId": "C-046",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-A2A-01": {
+   "candidateId": "C-031",
+   "mappingBasis": "explicit"
+  },
+  "O-P-B12": {
+   "candidateId": "C-032",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-RAG-03": {
+   "candidateId": "C-032",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-DataEngineering-02": {
+   "candidateId": "C-045",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Security-05": {
+   "candidateId": "C-051",
+   "mappingBasis": "explicit"
+  },
+  "O-P-H2": {
+   "candidateId": "C-034",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Multimodal-08": {
+   "candidateId": "C-037",
+   "mappingBasis": "explicit"
+  },
+  "O-P-H3": {
+   "candidateId": "C-035",
+   "mappingBasis": "explicit"
+  },
+  "O-P-H5": {
+   "candidateId": "C-035",
+   "mappingBasis": "explicit"
+  },
+  "O-P-H6": {
+   "candidateId": "C-036",
+   "mappingBasis": "explicit"
+  },
+  "O-P-H7": {
+   "candidateId": "C-036",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Finetuning-08": {
+   "candidateId": "C-036",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Multimodal-04": {
+   "candidateId": "C-037",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIGateway-01": {
+   "candidateId": "C-038",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIOps-09": {
+   "candidateId": "C-038",
+   "mappingBasis": "explicit"
+  },
+  "O-P-G4": {
+   "candidateId": "C-039",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-LLMInference-04": {
+   "candidateId": "C-039",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIInfraPlatform-04": {
+   "candidateId": "C-039",
+   "mappingBasis": "explicit"
+  },
+  "O-P-G5": {
+   "candidateId": "C-040",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIInfraPlatform-05": {
+   "candidateId": "C-040",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIInfraPlatform-07": {
+   "candidateId": "C-040",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIOps-06": {
+   "candidateId": "C-041",
+   "mappingBasis": "explicit"
+  },
+  "O-P-D6": {
+   "candidateId": "C-042",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIOps-03": {
+   "candidateId": "C-042",
+   "mappingBasis": "explicit"
+  },
+  "O-P-D15": {
+   "candidateId": "C-043",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIOps-05": {
+   "candidateId": "C-043",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-DataEngineering-01": {
+   "candidateId": "C-045",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-DataEngineering-06": {
+   "candidateId": "C-049",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-MCP-04": {
+   "candidateId": "C-046",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-LLM-04": {
+   "candidateId": "C-047",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-LLMInference-07": {
+   "candidateId": "C-047",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-LLMTraining-01": {
+   "candidateId": "C-048",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-LLMTraining-09": {
+   "candidateId": "C-048",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Finetuning-07": {
+   "candidateId": "C-049",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIInfraCompute-06": {
+   "candidateId": "C-050",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-AIInfraCompute-08": {
+   "candidateId": "C-050",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-Security-06": {
+   "candidateId": "C-051",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-SolutionPatterns-01": {
+   "candidateId": "C-052",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-SolutionPatterns-02": {
+   "candidateId": "C-052",
+   "mappingBasis": "explicit"
+  },
+  "O-QA-A2A-02": {
+   "candidateId": "C-N01",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-04": {
+   "candidateId": "C-N02",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-06": {
+   "candidateId": "C-N03",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-07": {
+   "candidateId": "C-N04",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-08": {
+   "candidateId": "C-N05",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-09": {
+   "candidateId": "C-N06",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-10": {
+   "candidateId": "C-N07",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-11": {
+   "candidateId": "C-N08",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-A2A-12": {
+   "candidateId": "C-N09",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIGateway-13": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraCompute-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraCompute-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraCompute-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraCompute-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraCompute-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraCompute-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraCompute-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraPlatform-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraPlatform-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraPlatform-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraPlatform-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraPlatform-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraPlatform-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIInfraPlatform-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIOps-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIOps-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIOps-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIOps-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIOps-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIOps-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-AIOps-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-14": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Agent-15": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-DataEngineering-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-DataEngineering-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-DataEngineering-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-DataEngineering-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-DataEngineering-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-DataEngineering-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-DataEngineering-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Evaluation-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Finetuning-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLM-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMInference-13": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-LLMTraining-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-MCP-13": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-ModelLandscape-14": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Multimodal-13": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-PromptEngineering-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-05": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-13": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-14": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-RAG-15": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-01": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-02": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-04": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-Security-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-03": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-06": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-07": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-08": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-09": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-10": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-11": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-QA-SolutionPatterns-12": {
+   "candidateId": "C-N10",
+   "mappingBasis": "module-noop"
+  },
+  "O-P-A2": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-A5": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-A9": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-B7": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-B8": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-B9": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-B11": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-B17": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-C2": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-C3": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-C4": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-C6": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-C9": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D2": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D3": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D4": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D7": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D10": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D11": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D12": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-D13": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-E2": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-E3": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-E4": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-E8": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-E9": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-F2": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-F4": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-F7": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-F8": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-F9": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-F10": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-F11": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-G2": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-G3": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-G6": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-P-H8": {
+   "candidateId": "C-999",
+   "mappingBasis": "practice-noop"
+  },
+  "O-LP-07": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-08": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-09": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-10": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-11": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-12": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-13": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-14": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-15": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-16": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-17": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-LP-18": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-01": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-02": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-03": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-04": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-05": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-06": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-07": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-08": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-09": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-10": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-11": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-12": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-13": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  },
+  "O-1P-14": {
+   "candidateId": "C-003",
+   "mappingBasis": "path-candidate"
+  }
+ }
+}

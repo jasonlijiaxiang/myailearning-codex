@@ -35,6 +35,18 @@ export const modelLandscape = {
       explanation: "模型会升级、退役和改变接口。候选版本应经过冻结评估、影子流量、金丝雀、观察和可回滚晋升，而不是直接替换模型 ID。",
       decision: "把评估集、网关抽象、主备模型与退出条款当成选型交付件。",
     },
+    {
+      zh: "先核验区域与交付硬约束",
+      en: "Region & Delivery Hard Constraints",
+      explanation: "国内交付先核对目标区域、数据驻留、网络、采购渠道与模型服务可用范围，再比较能力；API、托管、专属实例与私有化是不同的交付面，责任边界和数据路径可能不同。",
+      decision: "官方产品文档只作为当期能力声明，不能外推为合规、SLA 或数据处理承诺。",
+    },
+    {
+      zh: "动态事实进记录与合同",
+      en: "Dynamic Facts to Records & Contracts",
+      explanation: "模型目录、版本、价格、配额、SLA、弃用时间线和数据处理政策变化快，不写死推荐；每个变化面单独成为带核验日期与复核日期的动态事实记录，采购约束写进客户合同核验。",
+      decision: "平台能力与价格属于快变事实，报价与采购决策前应重新核验当期官方文档；不能从平台能力反推客户合规。",
+    },
   ],
   decisions: [
     {
@@ -66,6 +78,12 @@ export const modelLandscape = {
       signal: "讨论停留在参数、榜单和 Token 价格，尚未定义业务成功。",
       recommendation: "先定义质量、安全、时延和成本验收，再反推模型组合与云服务。",
       boundary: "模型只是完整方案的一层；数据、工作流、权限与运营可能才是主要瓶颈。",
+    },
+    {
+      question: "国内模型服务（MaaS）采购先确认哪些决策面？",
+      signal: "客户在国内区域交付，需要公共 API、专属实例、托管或私有化中的一种或多种，且关心数据、版本、配额、SLA 与退出。",
+      recommendation: "沿八个决策面逐项核验：区域与交付硬约束、API/托管/专属/私有化、采购与合同路径、数据与训练使用及日志留存、模型目录与版本弃用迁移、配额限流与 SLA 支持、评测回滚与多模型路由、供应商退出与客户沉淀资产。",
+      boundary: "每个决策面都要按当期官方文档与合同核验，不能由平台能力外推客户义务或长期承诺。",
     },
   ],
   deepDiveTitle: "用一条理赔初审链把排行榜问题变成组合工程",
@@ -155,6 +173,70 @@ export const modelLandscape = {
         },
       ],
     },
+    {
+      kind: "matrix",
+      eyebrow: "MAAS DECISION FACES",
+      title: "模型服务（MaaS）采购的八个决策面",
+      intro:
+        "把采购问题拆成可核验的决策面，每个面都有当期证据、合同事项和退出条件；决策面本身适用于任何区域的模型服务采购，国内交付还需额外核验区域可用、数据驻留、采购渠道与监管口径（相关分诊见 AI Governance 中国交付分诊）。不做平台排名，也不把产品能力外推为合规结论。",
+      sourceIds: ["nist-genai-profile", "finops-unit-economics", "osi-open-source-ai-definition-1-0", "openai-models", "google-models", "anthropic-models"],
+      columnLabels: {
+        name: "决策面",
+        mechanism: "核验对象",
+        decision: "采购动作",
+        boundary: "适用边界",
+      },
+      items: [
+        {
+          name: "区域与交付硬约束",
+          mechanism: "目标区域、数据驻留、网络与采购渠道，以及服务可用范围。",
+          decision: "先按硬约束收敛可行候选，再投入评测预算。",
+          boundary: "厂商区域清单只证明当期声明，不证明客户工作负载上的质量或 SLA。",
+        },
+        {
+          name: "API、托管、专属与私有化",
+          mechanism: "公共 API、托管平台、专属实例与开放权重私有化对应不同责任和数据路径。",
+          decision: "用同一条代表性流水线比较接入、身份、数据边界、运维与退出。",
+          boundary: "私有化不自动等于合规；许可证、供应链、运维权限和审计仍需验证。",
+        },
+        {
+          name: "采购与合同路径",
+          mechanism: "计费主体、账单归属、合同版本、数据使用条款与支持责任。",
+          decision: "把档位、缓存、批量折扣与降价传导对齐后再比价，动态条款写进合同核验。",
+          boundary: "平台能力、宣传价格与客户合同义务是不同层次，不能互相替代。",
+        },
+        {
+          name: "数据、训练使用与日志留存",
+          mechanism: "输入输出是否用于训练、日志保留、删除与审计能力。",
+          decision: "按数据类别与跨境路径核验产品设置与合同承诺，形成可审计证据包。",
+          boundary: "产品开关不等于数据处理承诺；客户专属数据与 SLA 留在项目交付物，不进公开动态事实记录。",
+        },
+        {
+          name: "模型目录、版本、弃用与迁移",
+          mechanism: "模型标识、精确版本、弃用时间线与迁移兼容性。",
+          decision: "每个变化面单独核验并记录核验日期，版本迁移必须演练。",
+          boundary: "同一模型家族不同版本行为不兼容；公开版本信息变化快，不能当长期卖点。",
+        },
+        {
+          name: "配额、限流、SLA 与支持",
+          mechanism: "配额上限、限流阈值、SLA 定义、赔偿与支持响应责任。",
+          decision: "用目标负载压测并核对合同 SLA 与失败降级行为。",
+          boundary: "测试峰值不等于合同 SLA；配额与支持责任按账户层级与区域核验。",
+        },
+        {
+          name: "评测、回滚、路由与供应连续性",
+          mechanism: "评估集、主备模型、多模型路由与区域故障切换演练。",
+          decision: "只有通过相同硬门的候选才可作回退路径，并定期演练切换。",
+          boundary: "模型自报置信度不能作为路由真值；每条路径与误分流要独立验收。",
+        },
+        {
+          name: "供应商退出与沉淀资产",
+          mechanism: "数据集、评估集、Prompt、配置与迁移文档是否随供应商解耦。",
+          decision: "把数据集与 Prompt 资产和模型解耦，明确退出期与数据取回。",
+          boundary: "退出条款存在不等于可无痛迁移；工具协议与结构化输出差异仍需回归。",
+        },
+      ],
+    },
   ],
   criticalBoundary: "模型目录、价格、版本和平台能力都是高时效事实。任何对客比较都必须绑定核验日期、地域、精确候选身份与同条件试点；模型榜单、一次 Demo 和消费端产品体验都不能替代客户场景结论。",
   cloudHooks: [
@@ -235,8 +317,7 @@ export const modelLandscape = {
         { sourceId: "nist-genai-profile", supports: "支持部署前后持续评估、监测和风险处置。" },
         { sourceId: "openai-models", supports: "支持模型家族与能力按版本区分；不表示版本间行为完全兼容。" },
       ],
-    },
-  ],
+    },],
   evidenceCards: [
     {
       metric: "任务 × 约束",
@@ -259,6 +340,13 @@ export const modelLandscape = {
       finding: "FinOps Unit Economics 区分资源效率单位与业务结果单位，模型成本应与被接受的初审结果、人工复核和失败返工一起观察。",
       boundary: "单位经济只建立比较口径；没有客户基线、真实结果和完整成本时，不能宣称 ROI。",
       sourceId: "finops-unit-economics",
+    },
+    {
+      metric: "开放权重 ≠ 开源",
+      title: "社区获取自由不等于企业交付责任",
+      finding: "开放源代码 AI 定义要求使用、研究、修改与分享自由，并要求足够的数据说明、代码与参数；可下载权重只是其中一部分条件。",
+      boundary: "许可证原文与商用、改造、分发边界必须由专业人员确认，社区版免费不能替代企业 SLA 与支持责任。",
+      sourceId: "osi-open-source-ai-definition-1-0",
     },
   ],
 };
