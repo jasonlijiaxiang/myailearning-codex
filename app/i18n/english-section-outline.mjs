@@ -15,6 +15,10 @@ export const focusedEnglishModuleSlugs = Object.freeze(
   publishedModules.filter((module) => module.readingProfile === "focused").map((module) => module.slug),
 );
 
+export function usesFocusedEnglishPreview(module) {
+  return focusedEnglishModuleSlugs.includes(module.slug) && !hasDedicatedModule(module.slug);
+}
+
 export function classifySharedSection(section) {
   if (/(?:study-guide|study|practice|learning-studio)/.test(section.id)) return "learning";
   if (/(?:curriculum|course-map)/.test(section.id)) return "curriculum";
@@ -53,4 +57,17 @@ export function buildEnglishSectionGroups(module) {
       sections,
     }];
   });
+}
+
+export function selectVisibleEnglishSectionGroups(module, sectionGroups = buildEnglishSectionGroups(module)) {
+  if (!usesFocusedEnglishPreview(module)) return sectionGroups;
+  return sectionGroups.filter((group) => group.role === "cloud" || ["decision", "deep"].includes(group.role));
+}
+
+export function selectVisibleEnglishEvidenceCards(module) {
+  return usesFocusedEnglishPreview(module) ? module.evidenceCards.slice(0, 4) : module.evidenceCards;
+}
+
+export function selectVisibleEnglishQuestions(module) {
+  return usesFocusedEnglishPreview(module) ? module.qa.slice(0, 5) : module.qa;
 }

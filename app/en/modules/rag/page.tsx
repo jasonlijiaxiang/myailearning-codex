@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 
 import { EnglishModulePage } from "../../../i18n/english-pilot-module-page";
+import { englishPageMetadata } from "../../../i18n/english-page-metadata";
 import { requireEnglishModule } from "../../../i18n/en/registry.mjs";
 
 const rag = requireEnglishModule("rag");
 
-export const metadata: Metadata = {
+export const metadata: Metadata = englishPageMetadata({
   title: rag.title,
   description: rag.definition,
-  alternates: { canonical: "/en/modules/rag", languages: { en: "/en/modules/rag", "zh-CN": "/modules/rag" } },
-};
+  path: "/en/modules/rag",
+  zhPath: "/modules/rag",
+});
 
 export default function EnglishRagPage() {
   return <EnglishModulePage module={rag} />;

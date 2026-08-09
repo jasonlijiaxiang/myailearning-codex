@@ -6,12 +6,19 @@ export const metadata: Metadata = {
   title: { default: "Cloud × AI Presales Fieldbook", template: "%s | Cloud × AI Presales Fieldbook" },
   description: "An evidence-backed fieldbook for cloud and AI presales learning, architecture decisions, and customer conversations.",
   robots: { index: false, follow: false },
-  alternates: { languages: { "zh-CN": "/", en: "/en" } },
   openGraph: {
+    type: "website",
     locale: "en_US",
     siteName: "Cloud × AI Presales Fieldbook",
     title: "Cloud × AI Presales Fieldbook",
     description: "An evidence-backed fieldbook for cloud and AI presales learning.",
+    images: [],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cloud × AI Presales Fieldbook",
+    description: "An evidence-backed fieldbook for cloud and AI presales learning.",
+    images: [],
   },
 };
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { EnglishModulePage } from "../../../i18n/english-pilot-module-page";
+import { englishPageMetadata } from "../../../i18n/english-page-metadata";
 import { englishModuleRegistry, requireEnglishModule } from "../../../i18n/en/registry.mjs";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -14,11 +15,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const localizedModule = englishModuleRegistry[slug];
   if (!localizedModule || slug === "rag") return {};
-  return {
+  return englishPageMetadata({
     title: localizedModule.title,
     description: localizedModule.definition,
-    alternates: { canonical: `/en/modules/${slug}`, languages: { en: `/en/modules/${slug}`, "zh-CN": `/modules/${slug}` } },
-  };
+    path: `/en/modules/${slug}`,
+    zhPath: `/modules/${slug}`,
+  });
 }
 
 export default async function EnglishSharedModulePage({ params }: PageProps) {

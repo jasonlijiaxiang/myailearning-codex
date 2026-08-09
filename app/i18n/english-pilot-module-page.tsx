@@ -13,7 +13,12 @@ import { sourceLedger } from "../reference-content.mjs";
 import { englishSourceCopy } from "./en/registry.mjs";
 import { getEnglishUpdatedAt } from "../english-update-dates.mjs";
 import { shouldVisualizeEnglishSteps } from "./english-representation-assessment.mjs";
-import { buildEnglishSectionGroups } from "./english-section-outline.mjs";
+import {
+  buildEnglishSectionGroups,
+  selectVisibleEnglishEvidenceCards,
+  selectVisibleEnglishQuestions,
+  selectVisibleEnglishSectionGroups,
+} from "./english-section-outline.mjs";
 import { englishModuleSlugs } from "./locale-config.mjs";
 
 type SourceRef = { sourceId: string; supports?: string };
@@ -159,6 +164,8 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
     .slice(0, 5)
     .map(([termId]) => termId);
   const fallbackChecks = primaryItems.slice(0, 3).map((item) => ({ title: item.title, detail: item.decision ?? item.boundary ?? item.body ?? "Validate this stage against the customer workload." }));
+  const visibleGroups = selectVisibleEnglishSectionGroups(module);
+  const focusedReadingTarget = visibleGroups.find((group) => /(?:production|deep)/.test(group.id))?.id ?? visibleGroups[0]?.id ?? "evidence";
 
   return {
     id: knowledgeView,
@@ -177,7 +184,7 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
     checks: (decisionItems.length ? decisionItems.slice(0, 3).map((item) => ({ title: item.title, detail: item.body ?? item.decision ?? item.boundary ?? "Validate this choice against the customer context." })) : fallbackChecks),
     application: module.position,
     links: getPublishedModule(module.slug)?.readingProfile === "focused"
-      ? [{ href: "#deep-dive", label: "Follow the production argument" }, { href: "#evidence", label: "Review evidence limits" }, { href: "#qa", label: "Prepare customer questions" }]
+      ? [{ href: `#${focusedReadingTarget}`, label: "Follow the production argument" }, { href: "#evidence", label: "Review evidence limits" }, { href: "#qa", label: "Prepare customer questions" }]
       : module.sections.slice(0, 3).map((section) => ({ href: `#${section.id}`, label: `Review ${section.title}` })),
   };
 }
@@ -343,11 +350,11 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
   const primer = publication.knowledgeView ? module.primer ?? deriveEnglishPrimer(module, publication.knowledgeView) : null;
   const sectionGroups = buildEnglishSectionGroups(module) as EnglishSectionGroup[];
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
-  const cloudGroups = sectionGroups.filter((group) => group.role === "cloud");
-  const mainGroups = sectionGroups.filter((group) => group.role !== "cloud");
-  const visibleMainGroups = usesFocusedReadingProfile ? mainGroups.filter((group) => ["decision", "deep"].includes(group.role)) : mainGroups;
-  const visibleEvidenceCards = usesFocusedReadingProfile ? module.evidenceCards.slice(0, 4) : module.evidenceCards;
-  const visibleQuestions = usesFocusedReadingProfile ? module.qa.slice(0, 5) : module.qa;
+  const visibleSectionGroups = selectVisibleEnglishSectionGroups(module, sectionGroups) as EnglishSectionGroup[];
+  const cloudGroups = visibleSectionGroups.filter((group) => group.role === "cloud");
+  const visibleMainGroups = visibleSectionGroups.filter((group) => group.role !== "cloud");
+  const visibleEvidenceCards = selectVisibleEnglishEvidenceCards(module);
+  const visibleQuestions = selectVisibleEnglishQuestions(module);
   const contentReadingSections: ReadingSection[] = [
     ...visibleMainGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "evidence", label: "Evidence and limits", eyebrow: "Know what sources prove" },
@@ -399,7 +406,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
         <ModuleReadingNav moduleName={module.title} sections={readingSections} quickLinks={[
           { href: "#evidence", label: "Evidence" },
           { href: "#qa", label: "Customer questions" },
-          { href: `/modules/${module.slug}`, label: "中文原版" },
+          { href: `/modules/${module.slug}`, label: "Chinese original" },
         ]} labels={{ navigation: "section navigation", progress: "Reading", quickLinks: "Quick links" }} />
         <div className="moduleArticleContent">
           {primer ? <EnglishModulePrimer module={module} primer={primer} /> : null}
@@ -415,7 +422,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
               if (!source || !localizedSource) throw new Error(`Unknown evidence sourceId: ${card.sourceId}`);
               return <article className={`metricCard${card.accent ? " accent" : ""}`} id={`evidence-${card.id}`} key={card.id} style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}><p className="metric">{card.metric}</p><h4>{card.title}</h4><p className="metricFinding">{card.finding}</p><p className="metricBoundary"><strong>Evidence limit</strong>{card.boundary}</p><Link href={`/en/references#source-${card.sourceId}`} prefetch={false}>{localizedSource.shortTitle} ↘</Link></article>;
             }))}</div>
-            {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/references#module-${module.slug}`} prefetch={false}>Review every source and verification date in the reference ledger →</Link></p> : null}
+            {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/references?module=${module.slug}`} prefetch={false}>Review this module’s source ledger and verification dates →</Link></p> : null}
           </section>
 
           {cloudGroups.map((group, index) => <EnglishSectionGroupView group={group} number={visibleMainGroups.length + index + 3} key={group.id} />)}

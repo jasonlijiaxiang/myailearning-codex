@@ -432,11 +432,16 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null 
     const english = englishModule.englishModuleRegistry[slug];
     const englishSourceIds = collectSourceIds(english);
     const sectionGroups = englishOutlineModule.buildEnglishSectionGroups(english);
-    const visibleSectionGroups = focused
-      ? sectionGroups.filter((group) => group.role === "cloud" || ["decision", "deep"].includes(group.role))
-      : sectionGroups;
-    const visibleQuestions = focused ? english.qa.slice(0, 5) : english.qa;
-    const visibleEvidenceCards = focused ? english.evidenceCards.slice(0, 4) : english.evidenceCards;
+    const hasSharedEnglishSelection = typeof englishOutlineModule.selectVisibleEnglishSectionGroups === "function";
+    const visibleSectionGroups = hasSharedEnglishSelection
+      ? englishOutlineModule.selectVisibleEnglishSectionGroups(english, sectionGroups)
+      : (focused ? sectionGroups.filter((group) => group.role === "cloud" || ["decision", "deep"].includes(group.role)) : sectionGroups);
+    const visibleQuestions = hasSharedEnglishSelection
+      ? englishOutlineModule.selectVisibleEnglishQuestions(english)
+      : (focused ? english.qa.slice(0, 5) : english.qa);
+    const visibleEvidenceCards = hasSharedEnglishSelection
+      ? englishOutlineModule.selectVisibleEnglishEvidenceCards(english)
+      : (focused ? english.evidenceCards.slice(0, 4) : english.evidenceCards);
     const canonicalModuleSlugs = [...new Set([slug, ...(english.related ?? [])])];
     const englishPublication = {
       slug: publication.slug,
