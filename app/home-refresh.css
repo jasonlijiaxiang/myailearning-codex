@@ -243,15 +243,18 @@
 .fieldbookHome .heroDecisionPanel li strong { font-size: 16px; }
 .fieldbookHome .heroDecisionPanel li p { margin: 4px 0 0; color: var(--home-muted); font-size: 13px; line-height: 1.55; }
 
-.fieldbookHome .learningPathsV2 {
+.fieldbookHome .learningPathsV2,
+.fieldbookHome .timeBudgetPathsV2 {
   max-width: 1360px;
   margin: 34px auto 0;
   padding: clamp(52px, 6vw, 74px) clamp(28px, 5vw, 72px);
   position: relative;
+  border: 0;
   border-radius: 16px;
   background: var(--home-mist);
 }
 .fieldbookHome .learningPathsV2::before,
+.fieldbookHome .timeBudgetPathsV2::before,
 .fieldbookHome .moduleExplorer::before,
 .fieldbookHome .homeTermGuide::before {
   content: "";
@@ -261,6 +264,7 @@
   background: var(--home-guide);
 }
 .fieldbookHome .learningPathsV2::after,
+.fieldbookHome .timeBudgetPathsV2::after,
 .fieldbookHome .moduleExplorer::after,
 .fieldbookHome .homeTermGuide::after {
   content: "";
@@ -273,7 +277,8 @@
   border-radius: 50%;
   background: var(--home-surface);
 }
-.fieldbookHome .learningPathsV2 > header {
+.fieldbookHome .learningPathsV2 > header,
+.fieldbookHome .timeBudgetPathsV2 > header {
   margin-bottom: 28px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, .58fr);
@@ -281,6 +286,7 @@
   align-items: end;
 }
 .fieldbookHome .learningPathsV2 > header h2,
+.fieldbookHome .timeBudgetPathsV2 > header h2,
 .fieldbookHome .moduleExplorerIntro h2,
 .fieldbookHome .homeTermGuide h2 {
   margin: 0;
@@ -291,7 +297,8 @@
   line-height: 1.12;
   letter-spacing: -.035em;
 }
-.fieldbookHome .learningPathsV2 > header > p {
+.fieldbookHome .learningPathsV2 > header > p,
+.fieldbookHome .timeBudgetPathsV2 > header > p {
   margin: 0;
   color: var(--home-muted);
   font-size: 16px;
@@ -666,6 +673,7 @@
   }
   .fieldbookHome .heroFlightArtwork { width: 108%; }
   .fieldbookHome .learningPathsV2 > header,
+  .fieldbookHome .timeBudgetPathsV2 > header,
   .fieldbookHome .moduleExplorerIntro,
   .fieldbookHome .homeTermGuide { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .fieldbookHome .moduleExplorerIntro > div:first-child { display: block; }
@@ -754,6 +762,7 @@
   .fieldbookHome .heroDecisionPanel { border-radius: 10px; }
   .fieldbookHome .heroDecisionPanel li { padding: 18px; grid-template-columns: 68px minmax(0, 1fr); }
   .fieldbookHome .learningPathsV2,
+  .fieldbookHome .timeBudgetPathsV2,
   .fieldbookHome .moduleExplorer,
   .fieldbookHome .homeTermGuide {
     margin-top: 18px;
@@ -761,13 +770,17 @@
     border-radius: 0;
   }
   .fieldbookHome .learningPathsV2::before,
+  .fieldbookHome .timeBudgetPathsV2::before,
   .fieldbookHome .moduleExplorer::before,
   .fieldbookHome .homeTermGuide::before,
   .fieldbookHome .learningPathsV2::after,
+  .fieldbookHome .timeBudgetPathsV2::after,
   .fieldbookHome .moduleExplorer::after,
   .fieldbookHome .homeTermGuide::after { display: none; }
-  .fieldbookHome .learningPathsV2 > header { grid-template-columns: 1fr; gap: 12px; margin-bottom: 22px; }
+  .fieldbookHome .learningPathsV2 > header,
+  .fieldbookHome .timeBudgetPathsV2 > header { grid-template-columns: 1fr; gap: 12px; margin-bottom: 22px; }
   .fieldbookHome .learningPathsV2 > header h2,
+  .fieldbookHome .timeBudgetPathsV2 > header h2,
   .fieldbookHome .moduleExplorerIntro h2,
   .fieldbookHome .homeTermGuide h2 { font-size: 34px; }
   .fieldbookHome .mapHeading h2,
@@ -801,26 +814,4 @@
 
   .fieldbookHome .heroFlightArtwork,
   .fieldbookHome .heroFlightSignal { animation: none; }
-}
-
-.fieldbookHome .timeBudgetPathsV2 {
-  margin-top: 18px;
-  border-radius: 0;
-}
-.fieldbookHome .timeBudgetPathsV2 > header {
-  display: block;
-}
-.fieldbookHome .timeBudgetPathsV2 > header > p {
-  margin-top: 12px;
-}
-.fieldbookHome .timeBudgetPathsV2::before,
-.fieldbookHome .timeBudgetPathsV2::after {
-  display: none;
-}
-
-@media (max-width: 720px) {
-  .fieldbookHome .timeBudgetPathsV2 {
-    margin-top: 18px;
-    padding: 44px 20px;
-  }
 }

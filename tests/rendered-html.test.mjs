@@ -235,6 +235,13 @@ test("homepage leads from scenario to questions with links to every independent 
   assert.match(html, /三种阅读深度/);
   assert.match(html, /从场景开始/);
   assert.match(html, /从问题开始/);
+  assert.match(html, /从时间开始/);
+  assert.doesNotMatch(html, /按可用时间准备/);
+  assert.ok(
+    html.indexOf('id="learning-paths"') < html.indexOf('id="available-modules"')
+      && html.indexOf('id="available-modules"') < html.indexOf('id="time-budget-paths"'),
+    "首页三个准备入口应按从场景、从问题、从时间排列",
+  );
   assert.match(html, /输入客户问题、技术或风险/);
   assert.match(html, new RegExp(`${layers.length} 层[\\s\\S]{0,80}${moduleList.length} 个模块`));
   assert.match(html, /href="\/knowledge-graph"[^>]*>查看模块关系/);
@@ -1262,6 +1269,10 @@ test("all public page families use the shared A / Mist design contract", async (
   assert.doesNotMatch(v3Styles, /^:root\s*\{/m, "V3 不应重新定义全站 token");
   assert.doesNotMatch(homeStyles, /\.fieldbookHomeZh\b/, "首页设计应同时服务中英文页面");
   assert.match(homeStyles, /\.fieldbookHome\s*\{/);
+  assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2,\s*\.fieldbookHome \.timeBudgetPathsV2\s*\{[^}]*max-width:\s*1360px;[^}]*border:\s*0;[^}]*border-radius:\s*16px;/s);
+  assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2::before,\s*\.fieldbookHome \.timeBudgetPathsV2::before,/s);
+  assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2::after,\s*\.fieldbookHome \.timeBudgetPathsV2::after,/s);
+  assert.doesNotMatch(homeStyles, /\.fieldbookHome \.timeBudgetPathsV2::before,\s*\.fieldbookHome \.timeBudgetPathsV2::after\s*\{\s*display:\s*none;/s);
   assert.match(designLanguage, /全站设计语言：雾灰青 A/);
   assert.match(designLanguage, /动态知识关系图/);
   assert.ok(

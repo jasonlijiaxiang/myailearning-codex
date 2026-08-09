@@ -254,9 +254,24 @@ export default function Home() {
         </div>
       </section>
 
+      <div id="available-modules" className="explorerAnchor">
+        <ModuleExplorer
+          modules={explorerModules}
+          knowledgeEntries={knowledgeSearchEntries}
+          structureGuide={{
+            badge: `${layerCount} 层 · ${moduleCount} 个模块`,
+            title: "先从问题搜，需要时按层缩小范围",
+            body: "筛选项已按知识层排列；客户问题还不清晰时，先选一层缩小范围。需要看模块关系，再进入动态探索。",
+            href: "/knowledge-graph",
+            link: "查看模块关系",
+          }}
+          resultLimit={{ initial: 8, showAll: `查看全部 ${moduleCount} 个模块`, showLess: "收起模块目录" }}
+        />
+      </div>
+
       <section className="timeBudgetPathsV2" id="time-budget-paths" aria-labelledby="time-budget-paths-title">
         <header>
-          <div><p className="kicker">LEARN BY AVAILABLE TIME</p><h2 id="time-budget-paths-title">按可用时间准备</h2></div>
+          <h2 id="time-budget-paths-title">从时间开始</h2>
           <p>从 10 分钟现场速查到系统学习，每条路径都只指向正式问题、模块和实战入口；不新增第二份答案内容。</p>
         </header>
         <div className="timeBudgetPathList">
@@ -280,21 +295,6 @@ export default function Home() {
           {scenarioDefinitionsForHome.map((scenario) => <Link href={scenario.href} key={scenario.id}>{scenario.title} ↗</Link>)}
         </div>
       </section>
-
-      <div id="available-modules" className="explorerAnchor">
-        <ModuleExplorer
-          modules={explorerModules}
-          knowledgeEntries={knowledgeSearchEntries}
-          structureGuide={{
-            badge: `${layerCount} 层 · ${moduleCount} 个模块`,
-            title: "先从问题搜，需要时按层缩小范围",
-            body: "筛选项已按知识层排列；客户问题还不清晰时，先选一层缩小范围。需要看模块关系，再进入动态探索。",
-            href: "/knowledge-graph",
-            link: "查看模块关系",
-          }}
-          resultLimit={{ initial: 8, showAll: `查看全部 ${moduleCount} 个模块`, showLess: "收起模块目录" }}
-        />
-      </div>
 
       <section className="homeTermGuide" aria-labelledby="home-term-guide-title">
         <div>
