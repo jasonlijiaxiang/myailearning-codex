@@ -10,8 +10,13 @@ import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
 import { exposesLongFormSearchSections, searchableEnglishSectionGroups, searchableQuestions } from "../app/home-search-visibility.mjs";
-import { englishModuleRegistry, englishQuestions } from "../app/i18n/en/registry.mjs";
-import { buildEnglishSectionGroups } from "../app/i18n/english-section-outline.mjs";
+import { englishModuleRegistry, englishQuestions, englishSourceCopy } from "../app/i18n/en/registry.mjs";
+import {
+  buildEnglishSectionGroups,
+  selectVisibleEnglishEvidenceCards,
+  selectVisibleEnglishQuestions,
+  selectVisibleEnglishSectionGroups,
+} from "../app/i18n/english-section-outline.mjs";
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
@@ -738,6 +743,74 @@ test("English question directory never links beyond the focused module preview",
   assert.match(llmScopedHtml, /id="question-llm-/);
   assert.doesNotMatch(llmScopedHtml, /id="question-llm-training-|id="question-llm-inference-/);
   assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishQuestions.length);
+});
+
+test("English RAG renders its complete dedicated reader and its source ledger can be scoped", async () => {
+  const rag = englishModuleRegistry.rag;
+  const sourceIds = Object.keys(rag.sources);
+  const unrelatedSourceId = Object.keys(englishSourceCopy).find((sourceId) => !sourceIds.includes(sourceId));
+  assert.ok(unrelatedSourceId, "RAG should not own every English source entry");
+  const focusedSlugs = publishedModuleRegistry.filter((module) => module.readingProfile === "focused").map((module) => module.slug);
+  const [ragHtml, scopedReferencesHtml, allReferencesHtml, invalidScopeHtml, ...focusedPages] = await Promise.all([
+    renderHtml("/en/modules/rag"),
+    renderHtml("/en/references?module=rag"),
+    renderHtml("/en/references"),
+    renderHtml("/en/references?module=not-a-module"),
+    ...focusedSlugs.map((slug) => renderHtml(`/en/modules/${slug}`)),
+  ]);
+
+  const visibleGroups = selectVisibleEnglishSectionGroups(rag);
+  const visibleEvidence = selectVisibleEnglishEvidenceCards(rag);
+  const visibleQuestions = selectVisibleEnglishQuestions(rag);
+  assert.equal(visibleGroups.length, rag.sections.length);
+  assert.equal(visibleEvidence.length, rag.evidenceCards.length);
+  assert.equal(visibleQuestions.length, rag.qa.length);
+  for (const group of visibleGroups) assert.match(ragHtml, new RegExp(`id="${escapeRegExp(group.id)}"`), `RAG must render its ${group.id} section`);
+  for (const card of visibleEvidence) assert.match(ragHtml, new RegExp(`id="evidence-${escapeRegExp(card.id)}"`), `RAG must render its ${card.id} evidence card`);
+  for (const question of visibleQuestions) assert.match(ragHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `RAG must render its ${question.id} question`);
+  const primerTarget = visibleGroups.find((group) => /(?:production|deep)/.test(group.id))?.id ?? visibleGroups[0]?.id;
+  assert.ok(primerTarget);
+  assert.match(ragHtml, new RegExp(`href="#${escapeRegExp(primerTarget)}"`));
+  assert.equal((ragHtml.match(/class="qaItem"/g) ?? []).length, rag.qa.length);
+
+  for (const [index, slug] of focusedSlugs.entries()) {
+    assert.match(focusedPages[index], new RegExp(`href="/en/references\\?module=${escapeRegExp(slug)}"`), `${slug} must link to its actual source ledger view`);
+    assert.doesNotMatch(focusedPages[index], /\/en\/references#module-/, `${slug} must not link to a nonexistent source anchor`);
+  }
+
+  assert.match(scopedReferencesHtml, new RegExp(`Showing ${sourceIds.length} sources used by ${escapeRegExp(rag.title)}\\.`));
+  assert.match(scopedReferencesHtml, /href="\/en\/references">Show all sources<\/a>/);
+  assert.match(scopedReferencesHtml, /Open source ↗/);
+  assert.match(scopedReferencesHtml, /target="_blank"/);
+  assert.equal((scopedReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, sourceIds.length);
+  for (const sourceId of sourceIds) assert.match(scopedReferencesHtml, new RegExp(`id="source-${escapeRegExp(sourceId)}"`));
+  assert.doesNotMatch(scopedReferencesHtml, new RegExp(`id="source-${escapeRegExp(unrelatedSourceId)}"`));
+  assert.equal((allReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(englishSourceCopy).length);
+  assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(englishSourceCopy).length);
+});
+
+test("English pages publish route-specific English sharing metadata", async () => {
+  const site = "https://cloud-ai-presales-fieldbook.lijx.chatgpt.site";
+  const cases = [
+    ["/en", "/en", "/", "Cloud × AI Presales Fieldbook"],
+    ["/en/questions", "/en/questions", "/questions", "Customer Questions"],
+    ["/en/glossary", "/en/glossary", "/glossary", "Glossary"],
+    ["/en/references", "/en/references", "/references", "References"],
+    ["/en/knowledge-graph", "/en/knowledge-graph", "/knowledge-graph", "Dynamic Knowledge Explorer"],
+    ["/en/modules/rag", "/en/modules/rag", "/modules/rag", englishModuleRegistry.rag.title],
+    ["/en/modules/mcp", "/en/modules/mcp", "/modules/mcp", englishModuleRegistry.mcp.title],
+  ];
+
+  for (const [route, englishPath, chinesePath, title] of cases) {
+    const html = await renderHtml(route);
+    assert.match(html, new RegExp(`<meta property="og:title" content="${escapeRegExp(title)}"/>`), `${route} needs its own Open Graph title`);
+    assert.match(html, new RegExp(`<meta name="twitter:title" content="${escapeRegExp(title)}"/>`), `${route} needs its own Twitter title`);
+    assert.match(html, new RegExp(`<link rel="canonical" href="${escapeRegExp(`${site}${englishPath}`)}"/>`), `${route} needs its own canonical URL`);
+    assert.match(html, new RegExp(`<link rel="alternate" hrefLang="en" href="${escapeRegExp(`${site}${englishPath}`)}"/>`), `${route} needs an English alternate`);
+    assert.match(html, new RegExp(`<link rel="alternate" hrefLang="zh-CN" href="${escapeRegExp(`${site}${chinesePath}`)}"/>`), `${route} needs its Chinese counterpart`);
+    assert.doesNotMatch(html, /<meta name="twitter:title" content="云计算 × AI 平台售前知识库"\/>/);
+    assert.doesNotMatch(html, /social-card\.png/, `${route} must not inherit the Chinese social card`);
+  }
 });
 
 test("question directory combines keyword, module, and category filters", () => {

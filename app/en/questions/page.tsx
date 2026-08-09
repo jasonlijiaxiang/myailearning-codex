@@ -3,9 +3,15 @@ import Link from "next/link";
 
 import { searchableQuestions } from "../../home-search-visibility.mjs";
 import { EnglishPilotDirectory, type EnglishPilotDirectoryItem } from "../../i18n/english-pilot-directory";
+import { englishPageMetadata } from "../../i18n/english-page-metadata";
 import { englishModuleRegistry, englishQuestions } from "../../i18n/en/registry.mjs";
 
-export const metadata: Metadata = { title: "Customer Questions", description: "Search the fieldbook's evidence-backed customer question pack." };
+export const metadata: Metadata = englishPageMetadata({
+  title: "Customer Questions",
+  description: "Search the fieldbook's evidence-backed customer question pack.",
+  path: "/en/questions",
+  zhPath: "/questions",
+});
 
 const exactQuestionTargets = new Set(Object.values(englishModuleRegistry).flatMap((module) =>
   searchableQuestions(module.slug, module.qa, "en").map((item) => `${module.slug}:${item.id}`),

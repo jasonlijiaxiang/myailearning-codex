@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ReadingProgress } from "../../fieldbook-interactions";
+import { englishPageMetadata } from "../../i18n/english-page-metadata";
 import {
   englishGraphLayers,
   englishGraphModules,
@@ -13,10 +14,12 @@ import {
 import { KnowledgeConstellation } from "../../knowledge-graph/design-2/knowledge-constellation";
 import styles from "../../knowledge-graph/design-2/knowledge-constellation.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = englishPageMetadata({
   title: "Dynamic Knowledge Explorer",
   description: "Explore direct relationships among cloud and AI modules, mechanisms, controls, and technical terms.",
-};
+  path: "/en/knowledge-graph",
+  zhPath: "/knowledge-graph",
+});
 
 export default function EnglishKnowledgeGraphPage() {
   return (

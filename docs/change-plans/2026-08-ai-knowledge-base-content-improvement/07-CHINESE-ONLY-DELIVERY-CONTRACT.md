@@ -118,6 +118,6 @@
 
 ## 9. 当前登记结果
 
-当前 21 个模块都有可从 Git 重建的基线。按真实 route/import 闭包核算后，19 个模块各有且只有一条活动延期，共 500 个自动生成并核验的对象差异；RAG 与提示词工程的 dedicated 页面没有执行本轮变化的通用 `[slug]` 入口，因此保持严格 `ALIGNED`，不再被共享 renderer 假阳性污染。仅共享渲染器发生变化的模块仍明确登记为 `shared-runtime-decoupling`。
+当前 21 个模块都有可从 Git 重建的基线。按真实 route/import 闭包核算后，19 个模块各有且只有一条活动延期，共 500 个自动生成并核验的对象差异；英文 reader runtime receipt 覆盖其可见 renderer 变化，但审计仍输出 `DEFERRED/NOT_ALIGNED`。RAG 与提示词工程没有活动英文内容延期，因同一可重建 runtime maintenance 明确输出 `ALIGNED/RUNTIME-MAINTAINED`，而不是把 renderer 变化误报为新的内容对齐。
 
 未来英文同步必须独立撰写、独立专业审校、登记候选哈希并通过 ready 状态，随后提升模块基线、关闭延期并重新运行全量门禁。

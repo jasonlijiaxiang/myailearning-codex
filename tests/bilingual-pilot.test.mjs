@@ -7,14 +7,22 @@ import { fileURLToPath } from "node:url";
 
 import { englishModuleRegistry, englishQuestions, englishSourceCopy, englishTermCopy } from "../app/i18n/en/registry.mjs";
 import { englishRepresentationAssessment } from "../app/i18n/english-representation-assessment.mjs";
-import { buildEnglishSectionGroups, focusedEnglishModuleSlugs, focusedSectionRoleOrder, sharedSectionRoleOrder } from "../app/i18n/english-section-outline.mjs";
+import {
+  buildEnglishSectionGroups,
+  focusedEnglishModuleSlugs,
+  focusedSectionRoleOrder,
+  selectVisibleEnglishEvidenceCards,
+  selectVisibleEnglishQuestions,
+  selectVisibleEnglishSectionGroups,
+  sharedSectionRoleOrder,
+} from "../app/i18n/english-section-outline.mjs";
 import { englishModuleSlugs } from "../app/i18n/locale-config.mjs";
 import { moduleBriefs } from "../app/module-brief-content.mjs";
 import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { getPublishedModule, hasDedicatedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
 import { terminology } from "../app/terminology.mjs";
-import { validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
+import { loadRuntimeMaintenanceOverlays, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import { loadLocalizationProject } from "../scripts/lib/localization-contract.mjs";
 
@@ -25,9 +33,12 @@ const defermentSchema = JSON.parse(await readFile(new URL("../knowledge/schemas/
 const reviewSchema = JSON.parse(await readFile(new URL("../knowledge/schemas/bilingual-review.schema.json", import.meta.url), "utf8"));
 const candidateMatrix = JSON.parse(await readFile(new URL("../docs/change-plans/2026-08-ai-knowledge-base-content-improvement/stage-0/candidate-matrix.json", import.meta.url), "utf8"));
 assertJsonSchema(defermentsRegistry, defermentSchema, "localization registry");
+const runtimeMaintenance = await loadRuntimeMaintenanceOverlays(defermentsRegistry);
+assert.deepEqual(runtimeMaintenance.failures, []);
 const localizationResult = validateLocalizationRegistry(defermentsRegistry, await loadLocalizationProject(fileURLToPath(new URL("..", import.meta.url))), {
   candidateIds: new Set(candidateMatrix.candidates.map((candidate) => candidate.candidateId)),
   reviewSchema,
+  runtimeOverlays: runtimeMaintenance.overlays,
 });
 assert.deepEqual(localizationResult.failures, []);
 const today = new Date().toISOString().slice(0, 10);
@@ -482,8 +493,21 @@ test("shared English sidebars preserve the canonical reading-role order", async 
   ]);
 
   const englishModulePage = await readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8");
-  assert.ok(englishModulePage.indexOf("mainGroups.map") < englishModulePage.indexOf('id="evidence"'), "main reading roles must render before evidence");
+  assert.ok(englishModulePage.indexOf("visibleMainGroups.map") < englishModulePage.indexOf('id="evidence"'), "main reading roles must render before evidence");
   assert.ok(englishModulePage.indexOf('id="evidence"') < englishModulePage.lastIndexOf("cloudGroups.map"), "evidence must render before cloud connections");
+});
+
+test("a dedicated focused English module keeps its complete authored reader instead of a preview", () => {
+  const rag = englishModuleRegistry.rag;
+  const ragGroups = buildEnglishSectionGroups(rag);
+  assert.deepEqual(selectVisibleEnglishSectionGroups(rag).map((group) => group.id), ragGroups.map((group) => group.id));
+  assert.equal(selectVisibleEnglishEvidenceCards(rag).length, rag.evidenceCards.length);
+  assert.equal(selectVisibleEnglishQuestions(rag).length, rag.qa.length);
+
+  const mcp = englishModuleRegistry.mcp;
+  assert.deepEqual(selectVisibleEnglishSectionGroups(mcp).map((group) => group.role), ["decision", "deep", "cloud"], "focused brief modules retain their reviewed main-argument preview");
+  assert.equal(selectVisibleEnglishEvidenceCards(mcp).length, 4);
+  assert.equal(selectVisibleEnglishQuestions(mcp).length, 5);
 });
 
 test("Chinese global entry pages expose their matching English routes", async () => {

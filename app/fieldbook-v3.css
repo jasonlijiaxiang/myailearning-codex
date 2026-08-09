@@ -2480,6 +2480,33 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 }
 
 .fieldbookTheme .questionDirectoryList { gap: 0; border-top: 1px solid var(--fb-line); }
+.fieldbookTheme.questionDirectoryPage :where(
+  .questionDirectoryShell,
+  .questionDirectoryList,
+  .questionDirectoryItem,
+  .questionDirectoryItem > header,
+  .questionDirectoryItem h3,
+  .questionDirectoryShort,
+  .questionDirectoryShort p
+) { min-width: 0; }
+.fieldbookTheme.questionDirectoryPage :where(.questionDirectoryItem h3, .questionDirectoryTag, .questionDirectoryShort p) { overflow-wrap: anywhere; }
+.fieldbookTheme.questionDirectoryPage .questionDirectoryTag { max-inline-size: 100%; }
+.fieldbookTheme.questionDirectoryPage .questionDirectoryScope {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin: -8px 0 20px;
+  color: var(--fb-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.fieldbookTheme.questionDirectoryPage .questionDirectoryScope a {
+  color: var(--fb-ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .fieldbookTheme .questionDirectoryItem,
 .fieldbookTheme .questionDirectoryItem:nth-child(n) {
   scroll-margin-top: 180px;

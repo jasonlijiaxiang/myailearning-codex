@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { getPublishedModule, publishedModules, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, loadProjectAtCommit, promotedBaselineFromCommittedState, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
+import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, loadProjectAtCommit, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
@@ -24,12 +24,19 @@ const matrix = JSON.parse(await readFile(new URL("../docs/change-plans/2026-08-a
 const candidateIds = new Set(matrix.candidates.map((candidate) => candidate.candidateId));
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 const currentProject = await loadLocalizationProject(projectRoot);
+const runtimeMaintenance = await loadRuntimeMaintenanceOverlays(registry);
+assert.deepEqual(runtimeMaintenance.failures, [], "the committed runtime-maintenance receipt must reconstruct cleanly");
+const runtimeOverlays = runtimeMaintenance.overlays;
 const fullHashA = `sha256:${"a".repeat(64)}`;
 const fullHashB = `sha256:${"b".repeat(64)}`;
 const fullHashC = `sha256:${"c".repeat(64)}`;
 
 function validate(candidateRegistry = registry, candidateProject = currentProject, options = {}) {
   return validateLocalizationRegistry(candidateRegistry, candidateProject, { candidateIds, reviewSchema, ...options });
+}
+
+function runtimeOverlaysExcept(...slugs) {
+  return new Map([...runtimeOverlays].filter(([slug]) => !slugs.includes(slug)));
 }
 
 function addPassingCandidateReviews(moduleState, slug, zhHash, enHash, suffix = "candidate-test") {
@@ -56,7 +63,13 @@ function addPassingCandidateReviews(moduleState, slug, zhHash, enHash, suffix = 
 test("localization registry passes its recursive schema and covers every module", () => {
   assert.doesNotThrow(() => assertJsonSchema(registry, schema, "localization registry"));
   assert.equal(registry.schemaVersion, "localization-deferment/v3");
-  assert.deepEqual(registry.runtimeMaintenances, []);
+  assert.equal(registry.runtimeMaintenances.length, 1);
+  const [maintenance] = registry.runtimeMaintenances;
+  assert.equal(maintenance.maintenanceId, "erm-english-reader-2026-08-09");
+  assert.equal(maintenance.receiptId, "receipt-english-reader-runtime-2026-08-09");
+  assert.deepEqual(maintenance.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(maintenance.contentProjectionChangeSlugs, ["rag"]);
+  assert.equal(maintenance.metadataScope, "all-en-routes");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   for (const publication of publishedModules) {
@@ -96,12 +109,24 @@ test("runtime maintenance records cannot masquerade as locale-gate receipts", ()
 test("one active deferment per module records the exact live object delta", () => {
   const activeSlugs = registry.deferments.filter((item) => item.status !== "closed").map((item) => item.moduleSlug);
   assert.equal(new Set(activeSlugs).size, activeSlugs.length);
-  const result = validate();
+  const result = validate(registry, currentProject, { runtimeOverlays });
   assert.deepEqual(result.failures, []);
   assert.equal(result.messages.filter((line) => line.startsWith("DEFERRED/NOT_ALIGNED ")).length, activeSlugs.length);
   assert.ok(
     registry.deferments.find((item) => item.moduleSlug === "solution-patterns")?.affectedObjects.some((item) => item.objectId.endsWith("/renderedProjection/sharedRendererHash")),
     "shared Chinese renderer changes must be represented in each affected module delta",
+  );
+});
+
+test("runtime maintenance overlays only the verified English renderer state", () => {
+  assert.equal(runtimeOverlays.size, publishedModuleSlugs.length);
+  assert.equal(runtimeOverlays.get("rag")?.maintenanceId, "erm-english-reader-2026-08-09");
+
+  const driftedProject = structuredClone(currentProject);
+  driftedProject.modules.rag.enEffectiveHash = fullHashA;
+  assert.match(
+    validate(registry, driftedProject, { runtimeOverlays }).failures.join("\n"),
+    /rag: English content or date changed outside the localization workflow/,
   );
 });
 
@@ -282,13 +307,13 @@ test("ready state requires a real, reviewed English candidate", () => {
   moduleState.enEffectiveHash = fullHashB;
   moduleState.enReviewHash = fullHashC;
   moduleState.englishUpdatedAt = "2026-08-08";
-  assert.deepEqual(validate(readyRegistry, readyProject).failures, []);
+  assert.deepEqual(validate(readyRegistry, readyProject, { runtimeOverlays }).failures, []);
 
   moduleState.reviewRecords[candidateReviewIds[0]].deterministic[0].status = "FAIL";
-  assert.match(validate(readyRegistry, readyProject).failures.join("\n"), /failing deterministic gate|must equal "PASS"/);
+  assert.match(validate(readyRegistry, readyProject, { runtimeOverlays }).failures.join("\n"), /failing deterministic gate|must equal "PASS"/);
   moduleState.reviewRecords[candidateReviewIds[0]].deterministic[0].status = "PASS";
   moduleState.reviewRecords[candidateReviewIds[0]].verdict = "BLOCK";
-  assert.match(validate(readyRegistry, readyProject).failures.join("\n"), /not a publishable PASS|Schema validation failed/);
+  assert.match(validate(readyRegistry, readyProject, { runtimeOverlays }).failures.join("\n"), /not a publishable PASS|Schema validation failed/);
 });
 
 test("closed state cannot hide an unpromoted Chinese delta", () => {
@@ -331,13 +356,22 @@ test("reviewed ready state can close only through an exact promoted baseline", (
   closedRegistry.moduleBaselines[deferment.moduleSlug] = persistableLocalizationModuleState(moduleState, deferment.promotedCommit, reviewIds);
   const promotedProjectsByCommit = new Map([[deferment.promotedCommit, closedProject]]);
 
-  assert.deepEqual(validate(closedRegistry, closedProject, { promotedProjectsByCommit }).failures, []);
+  assert.deepEqual(validate(closedRegistry, closedProject, {
+    promotedProjectsByCommit,
+    runtimeOverlays: runtimeOverlaysExcept(deferment.moduleSlug),
+  }).failures, []);
 
   moduleState.reviewRecords[reviewIds[0]].deterministic[0].status = "FAIL";
-  assert.match(validate(closedRegistry, closedProject, { promotedProjectsByCommit }).failures.join("\n"), /failing deterministic gate|must equal "PASS"/);
+  assert.match(validate(closedRegistry, closedProject, {
+    promotedProjectsByCommit,
+    runtimeOverlays: runtimeOverlaysExcept(deferment.moduleSlug),
+  }).failures.join("\n"), /failing deterministic gate|must equal "PASS"/);
   moduleState.reviewRecords[reviewIds[0]].deterministic[0].status = "PASS";
   deferment.closureReviewIds = ["br-does-not-exist"];
-  assert.match(validate(closedRegistry, closedProject, { promotedProjectsByCommit }).failures.join("\n"), /closureReviewIds must exactly match|review br-does-not-exist is missing/);
+  assert.match(validate(closedRegistry, closedProject, {
+    promotedProjectsByCommit,
+    runtimeOverlays: runtimeOverlaysExcept(deferment.moduleSlug),
+  }).failures.join("\n"), /closureReviewIds must exactly match|review br-does-not-exist is missing/);
 });
 
 test("historical closures remain valid after a later baseline promotion", () => {
@@ -398,7 +432,10 @@ test("historical closures remain valid after a later baseline promotion", () => 
     [latest.promotedCommit, latestProject],
     [historical.promotedCommit, historicalProject],
   ]);
-  assert.deepEqual(validate(latestRegistry, latestProject, { promotedProjectsByCommit }).failures, []);
+  assert.deepEqual(validate(latestRegistry, latestProject, {
+    promotedProjectsByCommit,
+    runtimeOverlays: runtimeOverlaysExcept(latest.moduleSlug),
+  }).failures, []);
 });
 
 test("review schema enforces conditional gates and numeric bounds", () => {
@@ -452,11 +489,11 @@ test("localization audit emits line-anchored aligned and deferred states", () =>
   const output = execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: projectRoot, encoding: "utf8" });
   const lines = output.trim().split("\n");
   assert.ok(lines.some((line) => /^DEFERRED\/NOT_ALIGNED solution-patterns: dfr-solution-patterns-/.test(line)));
-  assert.ok(lines.includes("ALIGNED rag: strict bilingual baseline holds."));
-  assert.ok(lines.includes("ALIGNED prompt-engineering: strict bilingual baseline holds."));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-english-reader-2026-08-09"));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-english-reader-2026-08-09"));
   assert.ok(lines.includes("Localization contract passed for 21 modules."));
   assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, 19);
-  assert.equal(lines.filter((line) => /^ALIGNED /.test(line)).length, 2);
+  assert.equal(lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length, 2);
 });
 
 test("English pages read englishUpdatedAt instead of Chinese updatedAt", async () => {

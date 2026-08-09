@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { EnglishPilotDirectory, type EnglishPilotDirectoryItem } from "../../i18n/english-pilot-directory";
+import { englishPageMetadata } from "../../i18n/english-page-metadata";
 import { englishTermCopy } from "../../i18n/en/registry.mjs";
 import { englishModulePath } from "../../i18n/locale-config.mjs";
 import { terminology } from "../../terminology.mjs";
 
-export const metadata: Metadata = { title: "Glossary", description: "Definitions for the stable concept IDs used across the fieldbook." };
+export const metadata: Metadata = englishPageMetadata({
+  title: "Glossary",
+  description: "Definitions for the stable concept IDs used across the fieldbook.",
+  path: "/en/glossary",
+  zhPath: "/glossary",
+});
 
 const items: EnglishPilotDirectoryItem[] = Object.entries(englishTermCopy).map(([termId, copy]) => {
   const canonical = terminology[termId];

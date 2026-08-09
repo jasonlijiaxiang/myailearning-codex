@@ -1,8 +1,10 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { KnowledgeSearchLaunch, ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "../fieldbook-interactions";
 import { searchableEnglishSectionGroups, searchableQuestions } from "../home-search-visibility.mjs";
+import { englishPageMetadata } from "../i18n/english-page-metadata";
 import { englishModuleRegistry, englishSourceCopy, englishTermCopy } from "../i18n/en/registry.mjs";
 import { buildEnglishSectionGroups } from "../i18n/english-section-outline.mjs";
 import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
@@ -10,6 +12,13 @@ import { layers, moduleList } from "../knowledge-map.mjs";
 import { publishedModuleSlugs } from "../module-publication.mjs";
 import { sourceLedger } from "../reference-content.mjs";
 import { homepageTermGroups } from "../terminology.mjs";
+
+export const metadata: Metadata = englishPageMetadata({
+  title: "Cloud × AI Presales Fieldbook",
+  description: "An evidence-backed fieldbook for cloud and AI presales learning, architecture decisions, and customer conversations.",
+  path: "/en",
+  zhPath: "/",
+});
 
 const englishModuleCount = Object.keys(englishModuleRegistry).length;
 const totalModuleCount = moduleList.length;
