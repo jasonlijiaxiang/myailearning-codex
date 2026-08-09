@@ -62,6 +62,34 @@ function matchesEnglishCandidate(current, candidate) {
     && current.englishUpdatedAt === candidate.englishUpdatedAt;
 }
 
+function englishRuntimeState(state) {
+  return {
+    enAuthoredHash: state.enAuthoredHash,
+    enEffectiveHash: state.enEffectiveHash,
+    enReviewHash: state.enReviewHash,
+    enRendererFiles: state.enRendererFiles,
+    englishUpdatedAt: state.englishUpdatedAt,
+  };
+}
+
+function sameEnglishRuntimeState(left, right) {
+  return left.enAuthoredHash === right.enAuthoredHash
+    && left.enEffectiveHash === right.enEffectiveHash
+    && left.enReviewHash === right.enReviewHash
+    && same(left.enRendererFiles, right.enRendererFiles)
+    && left.englishUpdatedAt === right.englishUpdatedAt;
+}
+
+function sameEnglishAuthoredReviewAndDate(left, right) {
+  return left.enAuthoredHash === right.enAuthoredHash
+    && left.enReviewHash === right.enReviewHash
+    && left.englishUpdatedAt === right.englishUpdatedAt;
+}
+
+function withRuntimeEnglishBaseline(baseline, runtimeState) {
+  return { ...baseline, ...englishRuntimeState(runtimeState) };
+}
+
 export function assertPromotionCheckoutClean(statusOutput) {
   if (statusOutput.trim()) {
     throw new Error("--close-and-promote requires a clean working tree so the promoted baseline is exactly attributable to HEAD");
@@ -119,7 +147,7 @@ function validatePassingReviewSet({ reviewIds, moduleState, moduleSlug, expected
   }
 }
 
-export function validateLocalizationRegistry(registry, currentProject, { candidateIds = new Set(), reviewSchema, promotedProjectsByCommit = new Map() } = {}) {
+export function validateLocalizationRegistry(registry, currentProject, { candidateIds = new Set(), reviewSchema, promotedProjectsByCommit = new Map(), runtimeOverlays = new Map() } = {}) {
   const failures = [];
   const messages = [];
   const fail = (message) => failures.push(message);
@@ -135,6 +163,28 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     if (receiptIds.has(receipt.receiptId)) fail(`duplicate receipt ID ${receipt.receiptId}`);
     receiptIds.add(receipt.receiptId);
     receiptById.set(receipt.receiptId, receipt);
+  }
+
+  const runtimeMaintenanceIds = new Set();
+  const runtimeMaintenanceBySlug = new Map();
+  for (const maintenance of registry.runtimeMaintenances ?? []) {
+    if (runtimeMaintenanceIds.has(maintenance.maintenanceId)) fail(`duplicate runtime maintenance ID ${maintenance.maintenanceId}`);
+    runtimeMaintenanceIds.add(maintenance.maintenanceId);
+    const receipt = receiptById.get(maintenance.receiptId);
+    if (!receipt) fail(`${maintenance.maintenanceId}: unknown runtime-maintenance receipt ${maintenance.receiptId}`);
+    else if (receipt.kind !== "runtime-maintenance") fail(`${maintenance.maintenanceId}: receipt must be runtime-maintenance`);
+    else if (receipt.decisionId !== maintenance.decisionId) fail(`${maintenance.maintenanceId}: receipt decision does not match the maintenance`);
+    if (new Set(maintenance.affectedModuleSlugs).size !== maintenance.affectedModuleSlugs.length) fail(`${maintenance.maintenanceId}: affected module slugs must be unique`);
+    if (new Set(maintenance.changedRendererFiles).size !== maintenance.changedRendererFiles.length) fail(`${maintenance.maintenanceId}: changed renderer files must be unique`);
+    for (const slug of maintenance.affectedModuleSlugs) {
+      if (!publishedSlugs.includes(slug)) fail(`${maintenance.maintenanceId}: unknown affected module ${slug}`);
+      const existing = runtimeMaintenanceBySlug.get(slug);
+      if (existing) fail(`${maintenance.maintenanceId}: ${slug} is already covered by ${existing}`);
+      runtimeMaintenanceBySlug.set(slug, maintenance.maintenanceId);
+    }
+    for (const slug of maintenance.contentProjectionChangeSlugs) {
+      if (!maintenance.affectedModuleSlugs.includes(slug)) fail(`${maintenance.maintenanceId}: content projection module ${slug} is not affected`);
+    }
   }
 
   const knownSourceIds = new Set([...currentProject.sourceIds, ...baselineSourceIds(registry)]);
@@ -232,6 +282,8 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     const baseline = registry.moduleBaselines[slug];
     const current = currentProject.modules[slug];
     if (!baseline || !current) continue;
+    const runtimeOverlay = runtimeOverlays.get(slug) ?? null;
+    const englishBaseline = runtimeOverlay ? withRuntimeEnglishBaseline(baseline, runtimeOverlay.state) : baseline;
 
     for (const [reviewId, expectedFile] of Object.entries(baseline.reviewFiles)) {
       const currentFile = current.reviewFiles[reviewId];
@@ -253,8 +305,10 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     const actualDiff = diffObjectCatalogs(baseline.zhObjects, current.zhObjects);
     if (!active) {
       if (current.zhStateHash !== baseline.zhStateHash || actualDiff.length) fail(`${slug}: Chinese content changed without an active deferment`);
-      if (!unchangedEnglish(current, baseline)) fail(`${slug}: English content or date changed outside the localization workflow`);
-      messages.push(`ALIGNED ${slug}: strict bilingual baseline holds.`);
+      if (!unchangedEnglish(current, englishBaseline)) fail(`${slug}: English content or date changed outside the localization workflow`);
+      messages.push(runtimeOverlay
+        ? `ALIGNED/RUNTIME-MAINTAINED ${slug}: ${runtimeOverlay.maintenanceId}`
+        : `ALIGNED ${slug}: strict bilingual baseline holds.`);
       continue;
     }
 
@@ -276,15 +330,17 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     }
 
     if (active.status === "deferred") {
-      if (!unchangedEnglish(current, baseline)) fail(`${active.defermentId}: deferred work changed English content or englishUpdatedAt`);
+      if (!unchangedEnglish(current, englishBaseline)) fail(`${active.defermentId}: deferred work changed English content or englishUpdatedAt`);
       if (active.englishCandidate) fail(`${active.defermentId}: deferred state must not carry an English candidate`);
-      messages.push(`DEFERRED/NOT_ALIGNED ${slug}: ${active.defermentId}`);
+      messages.push(runtimeOverlay
+        ? `DEFERRED/NOT_ALIGNED ${slug}: ${active.defermentId} (runtime ${runtimeOverlay.maintenanceId})`
+        : `DEFERRED/NOT_ALIGNED ${slug}: ${active.defermentId}`);
     } else if (active.status === "ready-for-english-review") {
       if (!active.englishCandidate) fail(`${active.defermentId}: ready state requires englishCandidate hashes and review IDs`);
       else {
         if (active.englishCandidate.zhReviewHash !== current.zhReviewHash) fail(`${active.defermentId}: English candidate does not cover the current Chinese review scope`);
         if (!matchesEnglishCandidate(current, active.englishCandidate)) fail(`${active.defermentId}: current English does not match the registered candidate`);
-        if (unchangedEnglish(current, baseline)) fail(`${active.defermentId}: ready state must contain a real English candidate delta`);
+        if (unchangedEnglish(current, englishBaseline)) fail(`${active.defermentId}: ready state must contain a real English candidate delta`);
         validatePassingReviewSet({
           reviewIds: active.englishCandidate.reviewIds,
           moduleState: current,
@@ -397,6 +453,104 @@ async function loadPromotedProjects(registry, { requireRemote = false } = {}) {
   return projects;
 }
 
+function commitParent(commit) {
+  return execFileSync("git", ["rev-parse", `${commit}^`], { cwd: root, encoding: "utf8" }).trim();
+}
+
+function isAncestor(ancestor, descendant) {
+  return spawnSync("git", ["merge-base", "--is-ancestor", ancestor, descendant], { cwd: root }).status === 0;
+}
+
+function changedFilesBetween(baseCommit, implementationCommit) {
+  return execFileSync("git", ["diff", "--name-only", baseCommit, implementationCommit], { cwd: root, encoding: "utf8" })
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .sort();
+}
+
+function derivedAffectedModuleSlugs(beforeProject, implementationProject, changedRendererFiles) {
+  return beforeProject.publishedModuleSlugs.filter((slug) => {
+    const before = beforeProject.modules[slug];
+    const after = implementationProject.modules[slug];
+    const rendererFiles = new Set([...(before?.enRendererFiles ?? []), ...(after?.enRendererFiles ?? [])]);
+    return changedRendererFiles.some((file) => rendererFiles.has(file));
+  }).sort();
+}
+
+export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote = false } = {}) {
+  const failures = [];
+  const overlays = new Map();
+  const records = registry.runtimeMaintenances ?? [];
+  const knownMaintenanceIds = new Set();
+
+  for (const maintenance of records) {
+    const label = maintenance.maintenanceId ?? "runtime-maintenance";
+    if (knownMaintenanceIds.has(maintenance.maintenanceId)) {
+      failures.push(`duplicate runtime maintenance ID ${maintenance.maintenanceId}`);
+      continue;
+    }
+    knownMaintenanceIds.add(maintenance.maintenanceId);
+
+    try {
+      assertCommitAvailable(maintenance.baseCommit, `${label} baseCommit`, { requireRemote });
+      assertCommitAvailable(maintenance.implementationCommit, `${label} implementationCommit`, { requireRemote });
+      if (commitParent(maintenance.implementationCommit) !== maintenance.baseCommit) {
+        failures.push(`${label}: baseCommit must be the direct parent of implementationCommit`);
+        continue;
+      }
+
+      const actualChangedFiles = changedFilesBetween(maintenance.baseCommit, maintenance.implementationCommit);
+      if (!same(actualChangedFiles, sorted(maintenance.changedRendererFiles))) {
+        failures.push(`${label}: changedRendererFiles must exactly match the implementation commit diff`);
+        continue;
+      }
+
+      const [beforeProject, implementationProject] = await Promise.all([
+        loadProjectAtCommit(maintenance.baseCommit),
+        loadProjectAtCommit(maintenance.implementationCommit),
+      ]);
+      const derivedAffected = derivedAffectedModuleSlugs(beforeProject, implementationProject, maintenance.changedRendererFiles);
+      if (!same(derivedAffected, sorted(maintenance.affectedModuleSlugs))) {
+        failures.push(`${label}: affectedModuleSlugs must exactly match the renderer dependency closure`);
+        continue;
+      }
+
+      for (const slug of maintenance.affectedModuleSlugs) {
+        const baseline = registry.moduleBaselines[slug];
+        const before = beforeProject.modules[slug];
+        const after = implementationProject.modules[slug];
+        if (!baseline || !before || !after) {
+          failures.push(`${label}: cannot reconstruct ${slug}`);
+          continue;
+        }
+        if (!sameEnglishRuntimeState(before, baseline)) {
+          if (isAncestor(maintenance.implementationCommit, baseline.enBaselineCommit)) continue;
+          failures.push(`${label}: ${slug} base commit does not match the registered English baseline`);
+          continue;
+        }
+        if (!sameEnglishAuthoredReviewAndDate(before, after) || !same(before.reviewFiles, after.reviewFiles)) {
+          failures.push(`${label}: ${slug} changes English authored content, review scope, review files, or update date`);
+          continue;
+        }
+        if (sameEnglishRuntimeState(before, after)) {
+          failures.push(`${label}: ${slug} has no effective English renderer change`);
+          continue;
+        }
+        if (overlays.has(slug)) {
+          failures.push(`${label}: ${slug} already has a runtime overlay`);
+          continue;
+        }
+        overlays.set(slug, { maintenanceId: maintenance.maintenanceId, state: after });
+      }
+    } catch (error) {
+      failures.push(`${label}: ${error.message}`);
+    }
+  }
+
+  return { failures, overlays };
+}
+
 async function loadInputs() {
   const [registryText, schemaText, reviewSchemaText, matrixText, currentProject] = await Promise.all([
     readFile(registryPath, "utf8"),
@@ -412,11 +566,106 @@ async function loadInputs() {
   return { registry, schema, reviewSchema, currentProject, candidateIds: new Set(matrix.candidates.map((candidate) => candidate.candidateId)) };
 }
 
+function cliValue(flag, { required = false } = {}) {
+  const index = process.argv.indexOf(flag);
+  if (index === -1) {
+    if (required) throw new Error(`--record-runtime-maintenance requires ${flag}`);
+    return null;
+  }
+  const value = process.argv[index + 1];
+  if (!value || value.startsWith("--")) throw new Error(`${flag} requires a value`);
+  return value;
+}
+
+function cliCsv(flag, options) {
+  const value = cliValue(flag, options);
+  if (!value) return [];
+  return value.split(",").map((item) => item.trim()).filter(Boolean).sort();
+}
+
+function assertRuntimeMaintenanceCheckoutClean(statusOutput) {
+  if (statusOutput.trim()) {
+    throw new Error("--record-runtime-maintenance requires a clean working tree so the renderer state is exactly attributable to HEAD");
+  }
+}
+
+async function recordRuntimeMaintenance({ registry, schema, reviewSchema, currentProject, candidateIds }) {
+  const recordIndex = process.argv.indexOf("--record-runtime-maintenance");
+  const maintenanceId = process.argv[recordIndex + 1];
+  if (!maintenanceId || maintenanceId.startsWith("--")) throw new Error("--record-runtime-maintenance requires one explicit maintenance ID");
+  const receiptId = cliValue("--receipt", { required: true });
+  const decisionId = cliValue("--decision-id", { required: true });
+  const recordedAt = cliValue("--recorded-at", { required: true });
+  const summary = cliValue("--summary", { required: true });
+  const metadataScope = cliValue("--metadata-scope") ?? "none";
+  const contentProjectionChangeSlugs = cliCsv("--content-projection");
+  const declaredFiles = cliCsv("--files", { required: true });
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(recordedAt)) throw new Error("--recorded-at requires YYYY-MM-DD");
+
+  const worktreeStatus = execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=normal"], { cwd: root, encoding: "utf8" });
+  assertRuntimeMaintenanceCheckoutClean(worktreeStatus);
+  const implementationCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+  const baseCommit = commitParent(implementationCommit);
+  const actualChangedFiles = changedFilesBetween(baseCommit, implementationCommit);
+  if (!same(actualChangedFiles, declaredFiles)) throw new Error("--files must exactly match the implementation commit diff");
+
+  const [beforeProject, implementationProject] = await Promise.all([
+    loadProjectAtCommit(baseCommit),
+    loadProjectAtCommit(implementationCommit),
+  ]);
+  const affectedModuleSlugs = derivedAffectedModuleSlugs(beforeProject, implementationProject, declaredFiles);
+  if (!affectedModuleSlugs.length) throw new Error("--record-runtime-maintenance found no affected English module renderer closure");
+
+  const candidateRegistry = structuredClone(registry);
+  candidateRegistry.receipts.push({
+    receiptId,
+    kind: "runtime-maintenance",
+    recordedAt,
+    decisionId,
+    summary: `English renderer maintenance ${maintenanceId}: ${summary}`,
+  });
+  candidateRegistry.runtimeMaintenances.push({
+    maintenanceId,
+    status: "applied",
+    kind: "english-renderer",
+    decisionId,
+    recordedAt,
+    baseCommit,
+    implementationCommit,
+    receiptId,
+    changedRendererFiles: declaredFiles,
+    affectedModuleSlugs,
+    contentProjectionChangeSlugs,
+    metadataScope,
+    summary,
+  });
+  assertJsonSchema(candidateRegistry, schema, "localization registry");
+  await assertBaselineProvenance(candidateRegistry, { requireRemote: false });
+  const [promotedProjectsByCommit, runtime] = await Promise.all([
+    loadPromotedProjects(candidateRegistry, { requireRemote: false }),
+    loadRuntimeMaintenanceOverlays(candidateRegistry, { requireRemote: false }),
+  ]);
+  if (runtime.failures.length) throw new Error(`Refusing runtime maintenance:\n${runtime.failures.map((failure) => `- ${failure}`).join("\n")}`);
+  const validation = validateLocalizationRegistry(candidateRegistry, currentProject, {
+    candidateIds,
+    reviewSchema,
+    promotedProjectsByCommit,
+    runtimeOverlays: runtime.overlays,
+  });
+  if (validation.failures.length) throw new Error(`Refusing runtime maintenance:\n${validation.failures.map((failure) => `- ${failure}`).join("\n")}`);
+  await writeFile(registryPath, `${JSON.stringify(candidateRegistry, null, 2)}\n`);
+  console.log(`Recorded ${maintenanceId} from ${implementationCommit}.`);
+}
+
 async function main() {
   const { registry, schema, reviewSchema, currentProject, candidateIds } = await loadInputs();
   assertJsonSchema(registry, schema, "localization registry");
 
   if (process.argv.includes("--write-baseline")) throw new Error("--write-baseline is unsafe and unsupported; use the reviewed --close-and-promote transition");
+  if (process.argv.includes("--record-runtime-maintenance")) {
+    await recordRuntimeMaintenance({ registry, schema, reviewSchema, currentProject, candidateIds });
+    return;
+  }
 
   const requireRemote = process.argv.includes("--require-remote") || Boolean(process.env.KB_RELEASE_COMMIT);
   assertCommitAvailable(registry.baselineCommit, "baselineCommit", { requireRemote });
@@ -424,9 +673,18 @@ async function main() {
     assertCommitAvailable(commit, "openedFromCommit", { requireRemote });
   }
   await assertBaselineProvenance(registry, { requireRemote });
-  const promotedProjectsByCommit = await loadPromotedProjects(registry, { requireRemote });
+  const [promotedProjectsByCommit, runtime] = await Promise.all([
+    loadPromotedProjects(registry, { requireRemote }),
+    loadRuntimeMaintenanceOverlays(registry, { requireRemote }),
+  ]);
+  if (runtime.failures.length) throw new Error(`Runtime maintenance failures:\n${runtime.failures.map((failure) => `- ${failure}`).join("\n")}`);
 
-  const { failures, messages } = validateLocalizationRegistry(registry, currentProject, { candidateIds, reviewSchema, promotedProjectsByCommit });
+  const { failures, messages } = validateLocalizationRegistry(registry, currentProject, {
+    candidateIds,
+    reviewSchema,
+    promotedProjectsByCommit,
+    runtimeOverlays: runtime.overlays,
+  });
   for (const message of messages) console.log(message);
   if (failures.length) throw new Error(`Localization contract failures:\n${failures.map((failure) => `- ${failure}`).join("\n")}`);
 
@@ -468,7 +726,14 @@ async function main() {
     deferment.closureReceipt = closureReceipt;
     promotedProjectsByCommit.set(head, committedProject);
     assertJsonSchema(registry, schema, "localization registry");
-    const promoted = validateLocalizationRegistry(registry, currentProject, { candidateIds, reviewSchema, promotedProjectsByCommit });
+    const refreshedRuntime = await loadRuntimeMaintenanceOverlays(registry, { requireRemote: false });
+    if (refreshedRuntime.failures.length) throw new Error(`Refusing invalid closure:\n${refreshedRuntime.failures.map((failure) => `- ${failure}`).join("\n")}`);
+    const promoted = validateLocalizationRegistry(registry, currentProject, {
+      candidateIds,
+      reviewSchema,
+      promotedProjectsByCommit,
+      runtimeOverlays: refreshedRuntime.overlays,
+    });
     if (promoted.failures.length) throw new Error(`Refusing invalid closure:\n${promoted.failures.map((failure) => `- ${failure}`).join("\n")}`);
     await writeFile(registryPath, `${JSON.stringify(registry, null, 2)}\n`);
     console.log(`Closed ${slug} and promoted its reviewed baseline from ${head}.`);

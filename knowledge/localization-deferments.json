@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "localization-deferment/v2",
+  "schemaVersion": "localization-deferment/v3",
   "frozenAt": "2026-08-08",
   "baselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
   "receipts": [
@@ -35065,6 +35065,7 @@
       }
     }
   },
+  "runtimeMaintenances": [],
   "deferments": [
     {
       "defermentId": "dfr-solution-patterns-2026-08-05-consolidated",

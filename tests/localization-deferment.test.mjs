@@ -55,6 +55,8 @@ function addPassingCandidateReviews(moduleState, slug, zhHash, enHash, suffix = 
 
 test("localization registry passes its recursive schema and covers every module", () => {
   assert.doesNotThrow(() => assertJsonSchema(registry, schema, "localization registry"));
+  assert.equal(registry.schemaVersion, "localization-deferment/v3");
+  assert.deepEqual(registry.runtimeMaintenances, []);
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   for (const publication of publishedModules) {
@@ -68,6 +70,26 @@ test("localization registry passes its recursive schema and covers every module"
   const escapingRendererPath = structuredClone(registry);
   escapingRendererPath.moduleBaselines.rag.enRendererFiles = ["../../etc/hosts"];
   assert.throws(() => assertJsonSchema(escapingRendererPath, schema, "localization registry"), /does not match/);
+});
+
+test("runtime maintenance records cannot masquerade as locale-gate receipts", () => {
+  const mutated = structuredClone(registry);
+  mutated.runtimeMaintenances.push({
+    maintenanceId: "erm-test-runtime",
+    status: "applied",
+    kind: "english-renderer",
+    decisionId: "D-014",
+    recordedAt: "2026-08-09",
+    baseCommit: registry.moduleBaselines.rag.enBaselineCommit,
+    implementationCommit: registry.moduleBaselines.rag.enBaselineCommit,
+    receiptId: "receipt-contract07-2026-08-08",
+    changedRendererFiles: ["app/i18n/english-pilot-module-page.tsx"],
+    affectedModuleSlugs: ["rag"],
+    contentProjectionChangeSlugs: ["rag"],
+    metadataScope: "rag",
+    summary: "Fixture only.",
+  });
+  assert.match(validate(mutated).failures.join("\n"), /receipt must be runtime-maintenance/);
 });
 
 test("one active deferment per module records the exact live object delta", () => {
