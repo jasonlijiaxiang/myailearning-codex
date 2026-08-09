@@ -83,12 +83,13 @@ test("runtime maintenance records cannot masquerade as locale-gate receipts", ()
     baseCommit: registry.moduleBaselines.rag.enBaselineCommit,
     implementationCommit: registry.moduleBaselines.rag.enBaselineCommit,
     receiptId: "receipt-contract07-2026-08-08",
-    changedRendererFiles: ["app/i18n/english-pilot-module-page.tsx"],
+    changedRendererFiles: ["scripts/lib/localization-contract.mjs"],
     affectedModuleSlugs: ["rag"],
     contentProjectionChangeSlugs: ["rag"],
     metadataScope: "rag",
     summary: "Fixture only.",
   });
+  assert.doesNotThrow(() => assertJsonSchema(mutated, schema, "localization registry"));
   assert.match(validate(mutated).failures.join("\n"), /receipt must be runtime-maintenance/);
 });
 

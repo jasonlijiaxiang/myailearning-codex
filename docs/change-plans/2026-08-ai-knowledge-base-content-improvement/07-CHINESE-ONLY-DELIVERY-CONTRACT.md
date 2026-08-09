@@ -56,7 +56,7 @@
 
 新增对象必须是 `baselineHash=null/currentHash=sha256`；删除对象相反；修改对象必须有两个不同的完整 SHA-256。语义检查在 schema 之上执行这些条件与实际差异的集合相等验证。
 
-`runtimeMaintenances` 仅记录英文 reader runtime 的受控维护，不改变任何模块 baseline 或 deferment 状态。每条记录都固定：前一提交、实现提交、对应 receipt、实现提交中准确变更的 renderer 文件、由真实 import closure 推导的受影响模块、明确的可见投影模块和 metadata 范围。`scripts/audit-localization-deferments.mjs --record-runtime-maintenance …` 只能在干净的实现提交上执行；审计会从父提交与实现提交的 archive 重建状态，要求英文 authored/review/date 和历史 review files 完全不变，并且只能更新实际 renderer closure/effective hash。它不能将 `deferred` 转为 `ready-for-english-review` 或 `closed`。
+`runtimeMaintenances` 仅记录英文 reader runtime 的受控维护，不改变任何模块 baseline 或 deferment 状态。每条记录都固定：前一提交、实现提交、对应 receipt、实现提交中准确变更的 renderer 文件（以及唯一允许的 visible-projection contract 文件 `scripts/lib/localization-contract.mjs`）、由真实 import closure 推导的受影响模块、明确的可见投影模块和 metadata 范围。`scripts/audit-localization-deferments.mjs --record-runtime-maintenance …` 只能在干净的实现提交上执行；审计会从父提交与实现提交的 archive 重建状态，要求英文 authored/review/date 和历史 review files 完全不变，并且只能更新实际 renderer closure/effective hash。它不能将 `deferred` 转为 `ready-for-english-review` 或 `closed`。
 
 ## 5. 状态机
 
