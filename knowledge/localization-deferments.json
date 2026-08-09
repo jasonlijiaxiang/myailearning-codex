@@ -16,6 +16,13 @@
       "recordedAt": "2026-08-08",
       "decisionId": "D-012",
       "summary": "将本轮中文变化合并为每模块一条活动延期，并以自动生成的完整对象差异和不可变双语审校文件为门禁。"
+    },
+    {
+      "receiptId": "receipt-english-reader-runtime-2026-08-09",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-09",
+      "decisionId": "D-014",
+      "summary": "English renderer maintenance erm-english-reader-2026-08-09: Restores the complete dedicated RAG reader and replaces inherited Chinese social metadata with English module metadata."
     }
   ],
   "moduleBaselines": {
@@ -35065,7 +35072,55 @@
       }
     }
   },
-  "runtimeMaintenances": [],
+  "runtimeMaintenances": [
+    {
+      "maintenanceId": "erm-english-reader-2026-08-09",
+      "status": "applied",
+      "kind": "english-renderer",
+      "decisionId": "D-014",
+      "recordedAt": "2026-08-09",
+      "baseCommit": "81bc1b58c99a31cf0b8f05055ff093e4c11d89aa",
+      "implementationCommit": "1699a686b7e1347038ffc5e5b994861f5e4ef579",
+      "receiptId": "receipt-english-reader-runtime-2026-08-09",
+      "changedRendererFiles": [
+        "app/en/layout.tsx",
+        "app/en/modules/[slug]/page.tsx",
+        "app/en/modules/rag/page.tsx",
+        "app/i18n/english-page-metadata.ts",
+        "app/i18n/english-pilot-module-page.tsx",
+        "app/i18n/english-section-outline.mjs",
+        "scripts/lib/localization-contract.mjs"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns"
+      ],
+      "contentProjectionChangeSlugs": [
+        "rag"
+      ],
+      "metadataScope": "all-en-routes",
+      "summary": "Restores the complete dedicated RAG reader and replaces inherited Chinese social metadata with English module metadata."
+    }
+  ],
   "deferments": [
     {
       "defermentId": "dfr-solution-patterns-2026-08-05-consolidated",
