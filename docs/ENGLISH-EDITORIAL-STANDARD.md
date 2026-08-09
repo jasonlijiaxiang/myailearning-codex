@@ -55,3 +55,5 @@ Parity does not require sentence alignment, identical paragraph structure, or li
 4. Exception adjudication: unresolved or high-impact disagreements receive the highest-capability review before release.
 
 No model review converts weak evidence into a strong claim. If the source is insufficient, narrow the wording or record the issue as a release blocker.
+
+`npm run audit:english:complete` verifies that the complete English module set is structurally sound. It is not an English-release certificate while any active localization deferment remains. Before releasing an English content update, run `npm run check:english-release`; it requires every affected module to complete independent writing, the four-stage review, and formal deferment closure.

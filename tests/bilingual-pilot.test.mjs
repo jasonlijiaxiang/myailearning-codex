@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -61,6 +62,22 @@ test("English edition registers every published module", () => {
     return total + requireModuleContent(slug).qa.length;
   }, 0);
   assert.equal(englishQuestions.length, expectedEnglishTotal);
+});
+
+test("English release audit refuses active localization deferments", () => {
+  const result = spawnSync(process.execPath, ["scripts/audit-english-modules.mjs", "--require-all", "--require-aligned"], {
+    cwd: fileURLToPath(new URL("..", import.meta.url)),
+    encoding: "utf8",
+  });
+  const output = `${result.stdout}${result.stderr}`;
+  assert.match(output, /English localization alignment:/);
+  if (deferredSlugs.size) {
+    assert.notEqual(result.status, 0, "English release audit must fail while localization deferments are active");
+    assert.match(output, /English release audit failed/);
+  } else {
+    assert.equal(result.status, 0, output);
+    assert.match(output, /English localization alignment passed/);
+  }
 });
 
 test("active and watch claims stay inside their review window", () => {

@@ -12,6 +12,7 @@ import { terminology } from "../app/terminology.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const modulesDirectory = path.join(root, "app", "i18n", "en", "modules");
 const requireAll = process.argv.includes("--require-all");
+const requireAligned = process.argv.includes("--require-aligned");
 execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: root, encoding: "utf8" });
 const defermentsRegistry = JSON.parse(await readFile(path.join(root, "knowledge", "localization-deferments.json"), "utf8"));
 const deferredSlugs = new Set(
@@ -113,4 +114,18 @@ for (const file of files) {
   console.log(`${deferredSlugs.has(slug) ? "DEFERRED/NOT_ALIGNED" : "PASS"} ${slug}: ${englishModule.sections.length} sections, ${englishModule.qa.length} questions, ${englishModule.evidenceCards.length} evidence cards`);
 }
 
-console.log(`English module audit passed for ${files.length}/${publishedModuleSlugs.length} modules${requireAll ? " (complete edition)" : ""}.`);
+console.log(`English structural audit passed for ${files.length}/${publishedModuleSlugs.length} modules${requireAll ? " (complete edition)" : ""}.`);
+
+const deferredModuleSlugs = [...deferredSlugs].sort();
+const alignedModuleCount = publishedModuleSlugs.length - deferredModuleSlugs.length;
+if (deferredModuleSlugs.length === 0) {
+  console.log(`English localization alignment passed for ${alignedModuleCount}/${publishedModuleSlugs.length} modules.`);
+} else {
+  const alignmentSummary = `English localization alignment: ${alignedModuleCount}/${publishedModuleSlugs.length} aligned; ${deferredModuleSlugs.length} deferred/not aligned (${deferredModuleSlugs.join(", ")}).`;
+  if (requireAligned) {
+    console.error(`${alignmentSummary} English release audit failed: close every active localization deferment before releasing an English update.`);
+    process.exitCode = 1;
+  } else {
+    console.log(`${alignmentSummary} This structural audit does not certify bilingual alignment.`);
+  }
+}
