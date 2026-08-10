@@ -111,13 +111,13 @@
 - 任何自动写 PASS 的尝试。
 - 从每个声明 Git 提交重建并核对模块基线。
 - 中英文逐模块 renderer import 闭包、dedicated/brief 入口隔离、间接组件变更、基线固化文件清单、可见 QA/evidence/section 投影与全局英文来源视图。
-- runtime maintenance 的 receipt、直接父提交、准确变更文件、derived affected closure、内容/日期漂移拒绝、后续 drift 拒绝，以及 runtime overlay 不改变 19 条 deferment 的状态。
+- runtime maintenance 的 receipt、直接父提交、准确变更文件、derived affected closure、内容/日期漂移拒绝、后续 drift 拒绝，以及 runtime overlay 不改变其覆盖模块的活动 deferment 状态。
 - 行级 `ALIGNED` 与 `DEFERRED/NOT_ALIGNED` 输出，避免子串假阳性。
 
 日常 `npm run check` 必须继续运行完整英文审计、本地化审计、构建与渲染测试；不得关闭或放宽这些检查来获得绿色结果。发布候选还必须在已推送精确提交上运行远端 provenance 门。
 
 ## 9. 当前登记结果
 
-当前 21 个模块都有可从 Git 重建的基线。按真实 route/import 闭包核算后，19 个模块各有且只有一条活动延期，共 500 个自动生成并核验的对象差异；英文 reader runtime receipt 覆盖其可见 renderer 变化，但审计仍输出 `DEFERRED/NOT_ALIGNED`。RAG 与提示词工程没有活动英文内容延期，因同一可重建 runtime maintenance 明确输出 `ALIGNED/RUNTIME-MAINTAINED`，而不是把 renderer 变化误报为新的内容对齐。
+当前 21 个模块都有可从 Git 重建的基线。按真实 route/import 闭包核算后，16 个模块各有且只有一条活动延期，共 497 个自动生成并核验的对象差异；英文 reader runtime receipt 覆盖其可见 renderer 变化，但审计仍输出 `DEFERRED/NOT_ALIGNED`。AI Gateway、AI Ops 与 LLM Inference 已完成独立英文撰写、四阶段审校和严格基线提升，明确输出 `ALIGNED`；RAG 与提示词工程没有活动英文内容延期，因同一可重建 runtime maintenance 明确输出 `ALIGNED/RUNTIME-MAINTAINED`，而不是把 renderer 变化误报为新的内容对齐。
 
 未来英文同步必须独立撰写、独立专业审校、登记候选哈希并通过 ready 状态，随后提升模块基线、关闭延期并重新运行全量门禁。
