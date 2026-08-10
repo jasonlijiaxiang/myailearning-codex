@@ -6101,16 +6101,16 @@
       }
     },
     "ai-agent": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "055d6994e6de0a87daf7f9f100d9cd087401b5bf",
+      "enBaselineCommit": "055d6994e6de0a87daf7f9f100d9cd087401b5bf",
       "reviewSetIds": [
-        "br-ai-agent-ultra-exception",
-        "br-ai-agent-xhigh-author",
-        "br-ai-agent-xhigh-language",
-        "br-ai-agent-xhigh-semantic"
+        "br-ai-agent-2026-08-10-ultra-exception",
+        "br-ai-agent-2026-08-10-xhigh-author",
+        "br-ai-agent-2026-08-10-xhigh-language",
+        "br-ai-agent-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:e2776ef3ebdc0c079ce3b654f580af8854bebac5decfff2c3470b913a528d2ff",
-      "zhStateHash": "sha256:3d8001269d01c0f6cfef361c2834f2f26303a287ebfb8e50a236529b80391f9f",
+      "zhReviewHash": "sha256:ac301a4fd3c2f9d4e4535957cecac9276b3f406a35c9c7eef0a3bab2c5865592",
+      "zhStateHash": "sha256:ac301a4fd3c2f9d4e4535957cecac9276b3f406a35c9c7eef0a3bab2c5865592",
       "zhObjects": {
         "/module:ai-agent/brief": {
           "hash": "sha256:74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
@@ -6123,11 +6123,37 @@
           "sourceIds": []
         },
         "/module:ai-agent/claims/$order": {
-          "hash": "sha256:ff5e3bb4b1f0b8f7ed9ad04afc64f4dcfe35987a91305d7ee21b4938120c611f",
+          "hash": "sha256:8bdc4729397d59e69eb95d276497cf3119c196de13de89cfa770b7b74ae52a3e",
           "objectType": "claims-order",
           "sourceIds": []
         },
         "/module:ai-agent/claims/000": {
+          "hash": "sha256:2f4dd81a08c2ae1f0bdfa052130df2bf6d01e2ad25fdffb616c1f83c8f241645",
+          "objectType": "claims",
+          "sourceIds": [
+            "mcp-lifecycle-2025-11-25",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-2025-11-25"
+          ]
+        },
+        "/module:ai-agent/claims/001": {
+          "hash": "sha256:4e82d08656c51c4c4373ba59a1f2516839fc0fa6ca7d24acbab11dcf8d1c2d80",
+          "objectType": "claims",
+          "sourceIds": [
+            "mcp-2026-07-28-rc",
+            "mcp-specification-2026-07-28"
+          ]
+        },
+        "/module:ai-agent/claims/002": {
+          "hash": "sha256:318a1b0bc4c6605755595b79577ef19951c60de1a2df9031bf2be459810e924a",
+          "objectType": "claims",
+          "sourceIds": [
+            "mcp-changelog-2026-07-28",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-extension"
+          ]
+        },
+        "/module:ai-agent/claims/003": {
           "hash": "sha256:5e388e03ff06f1ecded38d0aefe06c39b6a175b27f5ad29597e8c3dee500d9db",
           "objectType": "claims",
           "sourceIds": [
@@ -6136,112 +6162,112 @@
             "opentelemetry-semconv"
           ]
         },
-        "/module:ai-agent/claims/001": {
+        "/module:ai-agent/claims/004": {
           "hash": "sha256:6d87bf7100bd900b617df35b550b66ec87819451465f6b7a40c6a3a68944d62d",
           "objectType": "claims",
           "sourceIds": [
             "product-codex-docs"
           ]
         },
-        "/module:ai-agent/claims/002": {
+        "/module:ai-agent/claims/005": {
           "hash": "sha256:0a66eadb51e38eb428e71824ffbb932e2870cc56cf57db3fa83baac68e668924",
           "objectType": "claims",
           "sourceIds": [
             "product-claude-code-docs"
           ]
         },
-        "/module:ai-agent/claims/003": {
+        "/module:ai-agent/claims/006": {
           "hash": "sha256:ddaf9773d8a666bf167bb1aec02b0f84333df6fa4ead1f7125be34bf76ef60ab",
           "objectType": "claims",
           "sourceIds": [
             "product-github-copilot-coding-agent"
           ]
         },
-        "/module:ai-agent/claims/004": {
+        "/module:ai-agent/claims/007": {
           "hash": "sha256:b9a664be15763cf5359744eb8f5128cc3093f1862272ef46bbe1c9f121097079",
           "objectType": "claims",
           "sourceIds": [
             "product-cursor-docs"
           ]
         },
-        "/module:ai-agent/claims/005": {
+        "/module:ai-agent/claims/008": {
           "hash": "sha256:93d20375877164e8b6b4bf86b0aeffb10728efd0ed307e95eb493daf39594ba5",
           "objectType": "claims",
           "sourceIds": [
             "product-kiro-cli"
           ]
         },
-        "/module:ai-agent/claims/006": {
+        "/module:ai-agent/claims/009": {
           "hash": "sha256:061d5317fc4083f859f5879fbde0f6c68a22907febe93f7add6639f0128fcbe9",
           "objectType": "claims",
           "sourceIds": [
             "product-devin-docs"
           ]
         },
-        "/module:ai-agent/claims/007": {
+        "/module:ai-agent/claims/010": {
           "hash": "sha256:44da5279d01e71857cb8f5bb6772978affd82fe8ec4f906799da3a8d600f31c9",
           "objectType": "claims",
           "sourceIds": [
             "product-openhands-docs"
           ]
         },
-        "/module:ai-agent/claims/008": {
+        "/module:ai-agent/claims/011": {
           "hash": "sha256:9c7fd29c036e7686e2601f8bc436fd9dfe520ec4f67afb3de6e172beba5f18a4",
           "objectType": "claims",
           "sourceIds": [
             "product-cline-docs"
           ]
         },
-        "/module:ai-agent/claims/009": {
+        "/module:ai-agent/claims/012": {
           "hash": "sha256:1d5d31f473e01585810cf3fd7aeeaf5589adffd975d262ecda909c9d3b11c78a",
           "objectType": "claims",
           "sourceIds": [
             "product-aider-docs"
           ]
         },
-        "/module:ai-agent/claims/010": {
+        "/module:ai-agent/claims/013": {
           "hash": "sha256:c408bff94b2c3aa049a7f6eae4eefb91deeeb66c3fc065900ba1977f36508fe2",
           "objectType": "claims",
           "sourceIds": [
             "product-opencode-docs"
           ]
         },
-        "/module:ai-agent/claims/011": {
+        "/module:ai-agent/claims/014": {
           "hash": "sha256:1731cf91fccc1657ba30ef903e226134888c9a5539e72d833380957999748ed4",
           "objectType": "claims",
           "sourceIds": [
             "product-antigravity-migration"
           ]
         },
-        "/module:ai-agent/claims/012": {
+        "/module:ai-agent/claims/015": {
           "hash": "sha256:10e92b2f5844d1e4c41fbd6e79ab0efe99905e014fb25c240f369b8e6caec206",
           "objectType": "claims",
           "sourceIds": [
             "product-qwen-code-docs"
           ]
         },
-        "/module:ai-agent/claims/013": {
+        "/module:ai-agent/claims/016": {
           "hash": "sha256:646d811e266d8059be6da24131693542146be39bb27f6cda2ae34355e7a6a11b",
           "objectType": "claims",
           "sourceIds": [
             "product-kimi-code-docs"
           ]
         },
-        "/module:ai-agent/claims/014": {
+        "/module:ai-agent/claims/017": {
           "hash": "sha256:4edcfd3cea3204a7cc7f7ce8f459637e42cc2a4130bbcdd0e35c158721527014",
           "objectType": "claims",
           "sourceIds": [
             "product-codebuddy-docs"
           ]
         },
-        "/module:ai-agent/claims/015": {
+        "/module:ai-agent/claims/018": {
           "hash": "sha256:612384c86095c7bab0280a8f3578362dc5c634a5449dabff0d60c0cba904ddd2",
           "objectType": "claims",
           "sourceIds": [
             "product-comate-agent-docs"
           ]
         },
-        "/module:ai-agent/claims/016": {
+        "/module:ai-agent/claims/019": {
           "hash": "sha256:1d9c887effa9543836637857322277b22d39da43b3da41a5e171121511a0f9ff",
           "objectType": "claims",
           "sourceIds": [
@@ -6249,7 +6275,7 @@
           ]
         },
         "/module:ai-agent/content/deepDives/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -6289,6 +6315,23 @@
             "aws-agentcore-memory",
             "nist-genai-profile",
             "oauth-token-exchange"
+          ]
+        },
+        "/module:ai-agent/content/deepDives/004": {
+          "hash": "sha256:a1bad1adb8ec6f7b95de71d41996b0b1746f4388b5201cad48960c7b04863676",
+          "objectType": "content",
+          "sourceIds": [
+            "aws-agentcore-memory",
+            "nist-genai-profile",
+            "owasp-llm-top-ten"
+          ]
+        },
+        "/module:ai-agent/content/deepDives/005": {
+          "hash": "sha256:5a8ce85b172aba24899d7358468d46f6db2c64f15972f721d58f4a539fcc3297",
+          "objectType": "content",
+          "sourceIds": [
+            "mcp-specification-2026-07-28",
+            "openai-agents-run-loop"
           ]
         },
         "/module:ai-agent/content/evidenceCards/$order": {
@@ -6869,7 +6912,7 @@
           "sourceIds": []
         },
         "/module:ai-agent/publication/updatedAt": {
-          "hash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "hash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -6899,7 +6942,7 @@
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/$order": {
-          "hash": "sha256:eddffaac5b8f989adae635ff5b2a5ef93eb84a73d25997094f275deba354818e",
+          "hash": "sha256:9d974e5ba0ecaa9e494362a6bcc0d8651a7b80f68fec541a1ff3b5d1323437e0",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -7049,101 +7092,111 @@
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/029": {
-          "hash": "sha256:5e0218e7cd3038c15f891c0ef41560c2abb1eb9674d6feaa316ec16c2cea4efa",
+          "hash": "sha256:21d9299a5418c1660140fdacc846e5df65cb32ed4b630860df8e51ff2f41df28",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/030": {
-          "hash": "sha256:464386c88b1a69b533e4d369571468161a822bd5cc9f67334b7c768c47104fac",
+          "hash": "sha256:1a4d86b64424e2bf2897f02a86975cf77e191288fea6fc09e616c9fc33ca4478",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/031": {
-          "hash": "sha256:302be7e6356b1e956d24373e8acfd4c3440bfa2ca1a36af59af72ba6d6bb1554",
+          "hash": "sha256:5e0218e7cd3038c15f891c0ef41560c2abb1eb9674d6feaa316ec16c2cea4efa",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/032": {
-          "hash": "sha256:2802a29f310432dfd3a5a22c146ff8e39bc4e73c440ddef2b3124f39ef7f1c69",
+          "hash": "sha256:464386c88b1a69b533e4d369571468161a822bd5cc9f67334b7c768c47104fac",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/033": {
-          "hash": "sha256:0dd63d34068ab4b90cc34d30812defd2b883d68e5ba6646edab282b90665dc28",
+          "hash": "sha256:302be7e6356b1e956d24373e8acfd4c3440bfa2ca1a36af59af72ba6d6bb1554",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/034": {
-          "hash": "sha256:e0526942e5823cbeecd001e6572fdb308ff59d183f77b91f3f6cd26d8bd20b3a",
+          "hash": "sha256:2802a29f310432dfd3a5a22c146ff8e39bc4e73c440ddef2b3124f39ef7f1c69",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/035": {
-          "hash": "sha256:e50cb0517f4f562fc10500bd0e66a187fda516b186150a09456df894dfea308e",
+          "hash": "sha256:0dd63d34068ab4b90cc34d30812defd2b883d68e5ba6646edab282b90665dc28",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/036": {
-          "hash": "sha256:22e7c351d5040c31c00ff88990fad8cde8309a8098903bb3e26a6a15e242333f",
+          "hash": "sha256:e0526942e5823cbeecd001e6572fdb308ff59d183f77b91f3f6cd26d8bd20b3a",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/037": {
-          "hash": "sha256:9ad79aad339ffe5ce7b4992b54d85b5dd47c03242b683ff6aef999fb2179f746",
+          "hash": "sha256:e50cb0517f4f562fc10500bd0e66a187fda516b186150a09456df894dfea308e",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/038": {
-          "hash": "sha256:170d0b9b44de2d7eaff021c822b1ff8ac1b830c2abaa5903d439495f6dea2338",
+          "hash": "sha256:22e7c351d5040c31c00ff88990fad8cde8309a8098903bb3e26a6a15e242333f",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/039": {
-          "hash": "sha256:b78a0f2d943c34f8ae3cc2a0db39db6378016939241e091fc0d6a0bfdfe79085",
+          "hash": "sha256:9ad79aad339ffe5ce7b4992b54d85b5dd47c03242b683ff6aef999fb2179f746",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/040": {
-          "hash": "sha256:32b046ac92f71dda09f301821ee46db344894eb57f743855cafebbef18e86ac3",
+          "hash": "sha256:170d0b9b44de2d7eaff021c822b1ff8ac1b830c2abaa5903d439495f6dea2338",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/041": {
-          "hash": "sha256:9ac2f94cef4a7c8c98359cda767fe360133af2ae64efa6c1183d9359c0501921",
+          "hash": "sha256:b78a0f2d943c34f8ae3cc2a0db39db6378016939241e091fc0d6a0bfdfe79085",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/042": {
-          "hash": "sha256:e8f40af6f0a8e2593f8ff6cbe35afad22fc86c19dc4b6cb680a87b471a8162e2",
+          "hash": "sha256:32b046ac92f71dda09f301821ee46db344894eb57f743855cafebbef18e86ac3",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/043": {
-          "hash": "sha256:1bc409f5aaf5d25c49e5263857212320b4178d2eacec8c40db3408fcf8bd331e",
+          "hash": "sha256:9ac2f94cef4a7c8c98359cda767fe360133af2ae64efa6c1183d9359c0501921",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/044": {
-          "hash": "sha256:3b6cb04ae0925dcfc9e461c4458c8207a4b26283912b2836e9394408f5e78ddc",
+          "hash": "sha256:e8f40af6f0a8e2593f8ff6cbe35afad22fc86c19dc4b6cb680a87b471a8162e2",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/045": {
-          "hash": "sha256:215e841ff55c176986853950591db48e1edf01bfab8f75e1929434678a4f74b2",
+          "hash": "sha256:1bc409f5aaf5d25c49e5263857212320b4178d2eacec8c40db3408fcf8bd331e",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/046": {
-          "hash": "sha256:662a6163ecde3b1c3405ab94aee0beb1e322f9aca10c42b4918c16c0dd6717b3",
+          "hash": "sha256:3b6cb04ae0925dcfc9e461c4458c8207a4b26283912b2836e9394408f5e78ddc",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/047": {
-          "hash": "sha256:c4591add507312c16657cc536e14e6ab99a24dce9d60572f8478aab8eea9ca1e",
+          "hash": "sha256:215e841ff55c176986853950591db48e1edf01bfab8f75e1929434678a4f74b2",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:ai-agent/referenceModule/sourceIds/048": {
+          "hash": "sha256:662a6163ecde3b1c3405ab94aee0beb1e322f9aca10c42b4918c16c0dd6717b3",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-agent/referenceModule/sourceIds/049": {
+          "hash": "sha256:c4591add507312c16657cc536e14e6ab99a24dce9d60572f8478aab8eea9ca1e",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-agent/referenceModule/sourceIds/050": {
           "hash": "sha256:ccd9f442a58525865c11531e855ea312cc285f78b99bc28c0c7810a888dad93c",
           "objectType": "referenceModule",
           "sourceIds": []
@@ -7313,8 +7366,38 @@
           "objectType": "sources",
           "sourceIds": []
         },
+        "/module:ai-agent/sources/mcp-2026-07-28-rc": {
+          "hash": "sha256:687224371b3860298b7978f0c677001486818cd7ddb765b1e749a6a8995f9306",
+          "objectType": "sources",
+          "sourceIds": []
+        },
         "/module:ai-agent/sources/mcp-architecture": {
           "hash": "sha256:92d2509d1f5ecbc512978910cb653967fd87f2b559f62bb78dfb8531fff1af01",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-agent/sources/mcp-changelog-2026-07-28": {
+          "hash": "sha256:89a9bc16596ddca9840ec387b85df7bf67eaf1e861c3a306815ca255846bb739",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-agent/sources/mcp-lifecycle-2025-11-25": {
+          "hash": "sha256:ecc3209125e99d276a8d97f2dcd3594fd2b5e413ab83f5110173faf3533255a5",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-agent/sources/mcp-specification-2026-07-28": {
+          "hash": "sha256:36bab08903672720625cf3e6fe082b430f41f0949bff07e486b5f038eeba0602",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-agent/sources/mcp-tasks-2025-11-25": {
+          "hash": "sha256:12e01497a5146ba1327dd93ec391b091a0c79330e4382431cd740b3b7cd0192e",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-agent/sources/mcp-tasks-extension": {
+          "hash": "sha256:745abdccf8167e09e96f2f3a9e5724365f15856acc98ceea8cdf3e518f5505b7",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -7390,6 +7473,11 @@
         },
         "/module:ai-agent/sources/opentelemetry-semconv": {
           "hash": "sha256:9bd412548f999e512c8e1551987054aec60dab3fb89f9946c0afab99723da5eb",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-agent/sources/owasp-llm-top-ten": {
+          "hash": "sha256:1772a4801d5a24d495f5d86a90168ed698976b4f23f7cef81bb9c3b6983079a6",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -7816,9 +7904,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:5da95eabd7d1c66efffc8c54f1a4fea164e2db4ae32b24bb43e1b7e65d1eb19f",
-      "enEffectiveHash": "sha256:37fe1ae4e34c0569fa5e2732447fbd7040708cacd4452f2a3af9cb45999fb502",
-      "enReviewHash": "sha256:bd78dc6e91da997d70ae0cedac966f2b271aeef80fe9ae82b69d2a156c58da6c",
+      "enAuthoredHash": "sha256:9be127131f6cac48fe991958ef3016ae9a5277095db01b2a1a024c236b9cd91d",
+      "enEffectiveHash": "sha256:318d78d425ca4c3776f78d86b0218dbcd4286fd2210e2457682dec56c50a2a72",
+      "enReviewHash": "sha256:5d2403f6c041416e9f6581862b2fae69cc2447a08fee50058c5b48b03dfb62fa",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -7826,6 +7914,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -7837,8 +7926,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-08-01",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-ai-agent-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-agent.ultra-exception.json",
+          "hash": "sha256:80088fe9c838e196b8905bbfbc23931dddb24306c354c7c58f0a20c4d7fb0f94",
+          "zhContentHash": "sha256:ac301a4fd3c2f9d4e4535957cecac9276b3f406a35c9c7eef0a3bab2c5865592",
+          "enContentHash": "sha256:5d2403f6c041416e9f6581862b2fae69cc2447a08fee50058c5b48b03dfb62fa"
+        },
+        "br-ai-agent-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-agent.xhigh-author.json",
+          "hash": "sha256:223e7cfa9f11caca596cb10b1e6c68b8170ec3cd0132dea2d73f8e5cb6e227c2",
+          "zhContentHash": "sha256:ac301a4fd3c2f9d4e4535957cecac9276b3f406a35c9c7eef0a3bab2c5865592",
+          "enContentHash": "sha256:5d2403f6c041416e9f6581862b2fae69cc2447a08fee50058c5b48b03dfb62fa"
+        },
+        "br-ai-agent-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-agent.xhigh-language.json",
+          "hash": "sha256:b1a319ca14c55067678183184ae762a6b2e5193279d71dfef66355595b86516b",
+          "zhContentHash": "sha256:ac301a4fd3c2f9d4e4535957cecac9276b3f406a35c9c7eef0a3bab2c5865592",
+          "enContentHash": "sha256:5d2403f6c041416e9f6581862b2fae69cc2447a08fee50058c5b48b03dfb62fa"
+        },
+        "br-ai-agent-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-agent.xhigh-semantic.json",
+          "hash": "sha256:d3f1dfb26fd5fea9c9d90099e2f2c340254ced99167f9e9350ed596001795502",
+          "zhContentHash": "sha256:ac301a4fd3c2f9d4e4535957cecac9276b3f406a35c9c7eef0a3bab2c5865592",
+          "enContentHash": "sha256:5d2403f6c041416e9f6581862b2fae69cc2447a08fee50058c5b48b03dfb62fa"
+        },
         "br-ai-agent-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/ai-agent.ultra-exception.json",
           "hash": "sha256:fb62e0faf0d3eb24c25c284920ada0cadda81317f3582abb0185b8947a2be658",
@@ -38526,7 +38639,7 @@
       "moduleSlug": "ai-agent",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -39113,7 +39226,16 @@
           "br-ai-agent-2026-08-10-xhigh-language",
           "br-ai-agent-2026-08-10-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "055d6994e6de0a87daf7f9f100d9cd087401b5bf",
+      "closureReviewIds": [
+        "br-ai-agent-2026-08-10-xhigh-author",
+        "br-ai-agent-2026-08-10-xhigh-semantic",
+        "br-ai-agent-2026-08-10-xhigh-language",
+        "br-ai-agent-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-ai-agent-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-multimodal-2026-08-05-consolidated",
