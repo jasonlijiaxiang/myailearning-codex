@@ -16789,16 +16789,16 @@
       }
     },
     "ai-gateway": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "99e1b71bc96566b6b08126a92cef9b15205626cc",
+      "enBaselineCommit": "99e1b71bc96566b6b08126a92cef9b15205626cc",
       "reviewSetIds": [
-        "br-ai-gateway-ultra-exception",
-        "br-ai-gateway-xhigh-author",
-        "br-ai-gateway-xhigh-language",
-        "br-ai-gateway-xhigh-semantic"
+        "br-ai-gateway-2026-08-10-ultra-exception",
+        "br-ai-gateway-2026-08-10-xhigh-author",
+        "br-ai-gateway-2026-08-10-xhigh-language",
+        "br-ai-gateway-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:e425e454d16f8b3ac901b8d782b655a448caa4d5355825075a78aaa0cfe82647",
-      "zhStateHash": "sha256:76b557b651f3e5a90360bd2197c0ff13ed868cf0c7908c518d4518e4655c99ce",
+      "zhReviewHash": "sha256:b26d75325fdf20ceb0518ed968264e8ec10df2343f2a08f18f21374b2e529b4e",
+      "zhStateHash": "sha256:b26d75325fdf20ceb0518ed968264e8ec10df2343f2a08f18f21374b2e529b4e",
       "zhObjects": {
         "/module:ai-gateway/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -18096,7 +18096,7 @@
           "sourceIds": []
         },
         "/module:ai-gateway/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -18317,9 +18317,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:5013baf21e51dc7a587f15eba5bda080f2b44b0da159186a532eeddb2ec73e0f",
-      "enEffectiveHash": "sha256:932ff4e0e73d5a284231b315dc2ad3934c5ad66883e93ec508d4ba753791d535",
-      "enReviewHash": "sha256:d2e0ad09f0192a8ea318e2c158a57813de7e16c22a826f2c71660cf97ebbbe89",
+      "enAuthoredHash": "sha256:d16bd91800338b556edf99c9605f8e712e41779572c55566e233881bae10ee1e",
+      "enEffectiveHash": "sha256:6f0355dc85e48b65aefa45747b70d09c908322e28644be424be8849673d9f63f",
+      "enReviewHash": "sha256:43e0f3839bb868c9b8d6046ab9ef5556f0346cd2cb52b638fd407472bf2dcf09",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -18327,6 +18327,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -18340,6 +18341,30 @@
       ],
       "englishUpdatedAt": "2026-08-01",
       "reviewFiles": {
+        "br-ai-gateway-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-gateway.ultra-exception.json",
+          "hash": "sha256:c059fbb6e9512555626a7ddb03b000037e0c729e4c9dca0a4f7e216803c49d09",
+          "zhContentHash": "sha256:b26d75325fdf20ceb0518ed968264e8ec10df2343f2a08f18f21374b2e529b4e",
+          "enContentHash": "sha256:43e0f3839bb868c9b8d6046ab9ef5556f0346cd2cb52b638fd407472bf2dcf09"
+        },
+        "br-ai-gateway-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-gateway.xhigh-author.json",
+          "hash": "sha256:4900134d5291997249b59c235c68ca8ad87ab7cbab8e485eed94a511474591cb",
+          "zhContentHash": "sha256:b26d75325fdf20ceb0518ed968264e8ec10df2343f2a08f18f21374b2e529b4e",
+          "enContentHash": "sha256:43e0f3839bb868c9b8d6046ab9ef5556f0346cd2cb52b638fd407472bf2dcf09"
+        },
+        "br-ai-gateway-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-gateway.xhigh-language.json",
+          "hash": "sha256:2af4a5e0e1b0bc9c059eec2456f2d63251e65dcc5b7b32724d6f9a09f51c82bd",
+          "zhContentHash": "sha256:b26d75325fdf20ceb0518ed968264e8ec10df2343f2a08f18f21374b2e529b4e",
+          "enContentHash": "sha256:43e0f3839bb868c9b8d6046ab9ef5556f0346cd2cb52b638fd407472bf2dcf09"
+        },
+        "br-ai-gateway-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-gateway.xhigh-semantic.json",
+          "hash": "sha256:e4bebad36b458419f07f24bc496ac25ccac6daaa9df6c8aedf04cd52689353a3",
+          "zhContentHash": "sha256:b26d75325fdf20ceb0518ed968264e8ec10df2343f2a08f18f21374b2e529b4e",
+          "enContentHash": "sha256:43e0f3839bb868c9b8d6046ab9ef5556f0346cd2cb52b638fd407472bf2dcf09"
+        },
         "br-ai-gateway-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/ai-gateway.ultra-exception.json",
           "hash": "sha256:38173ead534fcf8d2b60b3d77ac66350627af6319fd1387ab49b570503457091",
@@ -39660,7 +39685,7 @@
       "moduleSlug": "ai-gateway",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -39738,7 +39763,16 @@
         "br-ai-gateway-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "closedAt": "2026-08-10",
+      "promotedCommit": "99e1b71bc96566b6b08126a92cef9b15205626cc",
+      "closureReviewIds": [
+        "br-ai-gateway-2026-08-10-xhigh-author",
+        "br-ai-gateway-2026-08-10-xhigh-semantic",
+        "br-ai-gateway-2026-08-10-xhigh-language",
+        "br-ai-gateway-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-ai-gateway-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-ai-ops-2026-08-08-shared-renderer",
