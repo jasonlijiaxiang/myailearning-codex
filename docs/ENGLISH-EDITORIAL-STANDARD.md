@@ -20,6 +20,14 @@ The English edition is a parallel professional knowledge layer, not a sentence-b
 - Explain overloaded terms at first use and state the operational meaning used by the module.
 - Use American English for editorial prose. Preserve an official source title as published.
 
+## Direct technical prose
+
+- Write the English argument from the technical mechanism and the cited source, not from the word order, noun stacks, or rhetorical cadence of the Chinese copy.
+- Prefer an explicit actor and verb over a compressed noun chain. Split a sentence when it carries more than one mechanism, control, or decision.
+- Use ordinary lowercase nouns for generic `tool`, `agent`, `gateway`, `server`, `client`, `run`, and `memory`. Capitalize `Tools`, `Resources`, and `Prompts` only when referring to MCP's named protocol primitives; preserve product and official API names exactly.
+- Do not use a blanket synonym for `accepted`, `successful`, or `conforming`. Name the validation boundary: infrastructure measures SLO-satisfying Goodput; an application reports a task that meets stated criteria; a business result is authoritatively confirmed; and a data product is usable only under its declared quality and lifecycle conditions.
+- Keep a technical boundary direct: say what a control does, what it does not establish, and who or what validates the remaining decision. Avoid future-sounding answers such as `Not yet` when the correct answer is a present limitation.
+
 ## Reader-facing copy
 
 - Let the route, language switch, and prose establish the language; do not repeat `English edition`, `in English`, or `available in English` as decorative labels.
@@ -55,5 +63,7 @@ Parity does not require sentence alignment, identical paragraph structure, or li
 4. Exception adjudication: unresolved or high-impact disagreements receive the highest-capability review before release.
 
 No model review converts weak evidence into a strong claim. If the source is insufficient, narrow the wording or record the issue as a release blocker.
+
+For every completed English editing batch, add a targeted regression check for the corrected translation-drift patterns. The check should protect the professional wording and terminology boundary without treating a keyword match as a substitute for human editorial review.
 
 `npm run audit:english:complete` verifies that the complete English module set is structurally sound. It is not an English-release certificate while any active localization deferment remains. Before releasing an English content update, run `npm run check:english-release`; it requires every affected module to complete independent writing, the four-stage review, and formal deferment closure.

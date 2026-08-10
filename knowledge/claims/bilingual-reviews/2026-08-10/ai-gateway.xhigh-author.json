@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-gateway-2026-08-10-xhigh-author",
+  "scope": {
+    "moduleId": "ai-gateway",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:b26d75325fdf20ceb0518ed968264e8ec10df2343f2a08f18f21374b2e529b4e",
+    "enContentHash": "sha256:43e0f3839bb868c9b8d6046ab9ef5556f0346cd2cb52b638fd407472bf2dcf09",
+    "termIds": [
+      "ai-gateway",
+      "api",
+      "finops",
+      "guardrails",
+      "identity-authorization",
+      "model-routing",
+      "observability",
+      "rate-limiting",
+      "semantic-cache",
+      "shadow-traffic",
+      "slo"
+    ],
+    "sourceIds": [
+      "aws-builders-library-retries",
+      "azure-apim-ai-gateway",
+      "cloudflare-ai-gateway",
+      "cloudflare-ai-gateway-authentication",
+      "cloudflare-ai-gateway-caching",
+      "cloudflare-ai-gateway-dynamic-routing",
+      "cloudflare-ai-gateway-spend-limits",
+      "mcp-authorization",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv"
+    ]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [
+    {
+      "gateId": "english-module-contract",
+      "status": "PASS",
+      "evidence": [
+        "Independent authoring review confirmed direct, professional English and stable section, question, content-item, and evidence-card identifiers.",
+        "All canonical terms and source IDs resolve, and the module has no unresolved English source-copy entry.",
+        "The final candidate preserves explicit acceptance boundaries rather than translating Chinese sentence structure."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

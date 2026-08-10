@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-ops-2026-08-10-xhigh-semantic",
+  "scope": {
+    "moduleId": "ai-ops",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
+    "enContentHash": "sha256:75b15cfa7dc9cd74befc577fe0f3057911149b18c777b9f9364f0853ce66eb60",
+    "termIds": [
+      "ai-application-engineering",
+      "ai-ops",
+      "ai-release-manifest",
+      "configuration-bundle",
+      "cost-allocation",
+      "cost-anomaly",
+      "genaiops",
+      "golden-set",
+      "observability",
+      "release-evaluation",
+      "shadow-traffic"
+    ],
+    "sourceIds": [
+      "aws-genai-lifecycle",
+      "azure-foundation-model-lifecycle",
+      "azure-genaiops",
+      "finops-ai-category",
+      "finops-ai-overview",
+      "finops-framework",
+      "google-genai-app-lifecycle",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "openai-eval-best-practices",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "opentelemetry-tail-sampling"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-alignment",
+      "status": "PASS",
+      "evidence": [
+        "Canonical question order, evidence relationships, evidence-card relationships, and addedAt values were independently checked against the Chinese owner.",
+        "Independent semantic review confirmed the routing success-rate, sampled-evaluation, and versioned-serving-configuration boundaries without new factual claims."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

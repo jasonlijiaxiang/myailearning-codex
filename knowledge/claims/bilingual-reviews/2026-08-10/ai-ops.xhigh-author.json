@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-ops-2026-08-10-xhigh-author",
+  "scope": {
+    "moduleId": "ai-ops",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
+    "enContentHash": "sha256:75b15cfa7dc9cd74befc577fe0f3057911149b18c777b9f9364f0853ce66eb60",
+    "termIds": [
+      "ai-application-engineering",
+      "ai-ops",
+      "ai-release-manifest",
+      "configuration-bundle",
+      "cost-allocation",
+      "cost-anomaly",
+      "genaiops",
+      "golden-set",
+      "observability",
+      "release-evaluation",
+      "shadow-traffic"
+    ],
+    "sourceIds": [
+      "aws-genai-lifecycle",
+      "azure-foundation-model-lifecycle",
+      "azure-genaiops",
+      "finops-ai-category",
+      "finops-ai-overview",
+      "finops-framework",
+      "google-genai-app-lifecycle",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "openai-eval-best-practices",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "opentelemetry-tail-sampling"
+    ]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [
+    {
+      "gateId": "english-module-contract",
+      "status": "PASS",
+      "evidence": [
+        "Independent authoring review confirmed direct, professional English and stable section, question, content-item, and evidence-card identifiers.",
+        "All canonical terms and source IDs resolve, and the module has no unresolved English source-copy entry.",
+        "The final candidate preserves explicit acceptance boundaries rather than translating Chinese sentence structure."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

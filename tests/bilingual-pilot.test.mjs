@@ -510,6 +510,39 @@ test("a dedicated focused English module keeps its complete authored reader inst
   assert.equal(selectVisibleEnglishQuestions(mcp).length, 5);
 });
 
+test("reviewed English production modules retain direct professional copy and controlled acceptance terms", async () => {
+  const gateway = JSON.stringify(englishModuleRegistry["ai-gateway"]);
+  assert.doesNotMatch(gateway, /appropriately minimized historical traffic|Model requests, tokens, concurrency|exercise route reason|exercise the routing rationale|Not yet\.|cost per successful task/);
+  assert.match(gateway, /historical traffic samples minimized for the stated purpose/);
+  assert.match(gateway, /No—not on its own\./);
+  assert.match(gateway, /task success rate/);
+  assert.match(gateway, /least-privilege downstream scope for its tenant, project, model, and task/);
+
+  const { sources: aiOpsSources, ...aiOpsReaderCopy } = englishModuleRegistry["ai-ops"];
+  assert.ok(aiOpsSources);
+  const aiOps = JSON.stringify(aiOpsReaderCopy);
+  assert.doesNotMatch(aiOps, /\bTool(?:s)?\b/, "generic tools must remain lowercase outside MCP protocol copy");
+  assert.doesNotMatch(aiOps, /cost per accepted|complete release versions|RAG evaluates retrieval and citation, agents Tools|useful throughput/);
+  assert.match(aiOps, /OpenTelemetry Collector/);
+  assert.match(aiOps, /tool and side-effect tests/);
+  assert.match(aiOps, /responses to requests with compatible authorization/);
+  assert.match(aiOps, /scale sampled evaluation/);
+  assert.match(aiOps, /SLO-satisfying Goodput/);
+
+  const inference = JSON.stringify(englishModuleRegistry["llm-inference"]);
+  assert.doesNotMatch(inference, /regress facts, Chinese|fit fewer devices or more sessions|combination can canary|queue has already failed|Average response time cannot accept inference|cost per successful task/);
+  assert.match(inference, /Chinese-language behavior, long-context handling/);
+  assert.match(inference, /run on fewer devices or support more concurrent sessions/);
+  assert.match(inference, /highest concurrency at which the workload still meets its SLO/);
+  assert.match(inference, /demonstrate canary deployment, traffic draining, and rollback/);
+  assert.match(inference, /SLO-satisfying Goodput/);
+
+  const standard = await readFile(new URL("../docs/ENGLISH-EDITORIAL-STANDARD.md", import.meta.url), "utf8");
+  assert.match(standard, /Direct technical prose/);
+  assert.match(standard, /MCP's named protocol primitives/);
+  assert.match(standard, /SLO-satisfying Goodput/);
+});
+
 test("Chinese global entry pages expose their matching English routes", async () => {
   const routes = [
     ["../app/page.tsx", "/en"],
