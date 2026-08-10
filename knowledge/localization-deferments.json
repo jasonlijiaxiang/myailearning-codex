@@ -31870,16 +31870,16 @@
       }
     },
     "data-engineering": {
-      "zhBaselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "044d2e3328c8ed99fb7839732cac9c95c6c2a833",
+      "enBaselineCommit": "044d2e3328c8ed99fb7839732cac9c95c6c2a833",
       "reviewSetIds": [
-        "br-data-engineering-ultra-exception",
-        "br-data-engineering-xhigh-author",
-        "br-data-engineering-xhigh-language",
-        "br-data-engineering-xhigh-semantic"
+        "br-data-engineering-2026-08-10-ultra-exception",
+        "br-data-engineering-2026-08-10-xhigh-author",
+        "br-data-engineering-2026-08-10-xhigh-language",
+        "br-data-engineering-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:b31ac8b49246250c4acde4a10b52f3c0f5d0f99fcb072ec4ed2a7c548f5da1d5",
-      "zhStateHash": "sha256:5302bebf5eff2db01a62a68079e16c44589c37107b6efb2be095141c75e824f5",
+      "zhReviewHash": "sha256:ee10adaf2433d9a77ff3ca052c11365ef678c9430551a2daea10dfc247df8958",
+      "zhStateHash": "sha256:ee10adaf2433d9a77ff3ca052c11365ef678c9430551a2daea10dfc247df8958",
       "zhObjects": {
         "/module:data-engineering/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -31912,7 +31912,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/brief/decisions/$order": {
-          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -31943,6 +31943,16 @@
         },
         "/module:data-engineering/brief/decisions/005": {
           "hash": "sha256:b2dc15f7cd32d2fbe6f1e1d857efb548637e640a03f24c96f3fe2f0e862edced",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:data-engineering/brief/decisions/006": {
+          "hash": "sha256:ac1329afd598da3874d34344db261fa2b0df1ce97e832df9312cb5cde944f98c",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:data-engineering/brief/decisions/007": {
+          "hash": "sha256:35768109b9b2230184fc9cf57624b0209f0eb6f286270856432141296cf4f9e8",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -32046,7 +32056,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/brief/principles/$order": {
-          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -32085,13 +32095,23 @@
           "objectType": "brief",
           "sourceIds": []
         },
+        "/module:data-engineering/brief/principles/007": {
+          "hash": "sha256:0ebf932af3ecda7e6936bb54a7af47060df801637ea3efef44c8364729a0c085",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:data-engineering/brief/principles/008": {
+          "hash": "sha256:0730da11212558e6734970dd5ae80ff6b461c0d3594e04a27ec777c7af0af94a",
+          "objectType": "brief",
+          "sourceIds": []
+        },
         "/module:data-engineering/brief/principleTitle": {
           "hash": "sha256:f3ce5bf33421e703533fcb8c3a0a57c02c649e16ec14f74a1c12bfdfd8f160da",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:data-engineering/brief/qa/$order": {
-          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -32176,6 +32196,14 @@
             "w3c-prov-o"
           ]
         },
+        "/module:data-engineering/brief/qa/010": {
+          "hash": "sha256:8c6a98667c88bf2c499babf349826b7c7bf6acfda28e8c2d8066cd4046deab70",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-data-cross-border-2024",
+            "china-personal-information-protection-law"
+          ]
+        },
         "/module:data-engineering/brief/relatedSlugs/$order": {
           "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "objectType": "brief-order",
@@ -32252,7 +32280,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/claims/$order": {
-          "hash": "sha256:ff167537378188a14d9c6fe6e244a079cdffa81a79e8a1d26ba7dbc1ef04abe7",
+          "hash": "sha256:dd923d2643f4f68b9bc910dcfa07887382664691d1ab37eeaae05c36d1c4f61d",
           "objectType": "claims-order",
           "sourceIds": []
         },
@@ -32263,6 +32291,20 @@
             "opentelemetry-genai-observability-2026",
             "opentelemetry-genai-semconv",
             "opentelemetry-semconv"
+          ]
+        },
+        "/module:data-engineering/claims/001": {
+          "hash": "sha256:24e58bd3d9a2214cfa14dd3773810bb4769bf6c14a3d67cc196985256c87507b",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-data-cross-border-2024"
+          ]
+        },
+        "/module:data-engineering/claims/002": {
+          "hash": "sha256:1e2c023d1a89e3b0000259e2c53c1c633258f451e5f7bd9d705f254e57767a94",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-personal-information-protection-law"
           ]
         },
         "/module:data-engineering/content/deepDives/$order": {
@@ -32340,7 +32382,7 @@
           ]
         },
         "/module:data-engineering/content/qa/$order": {
-          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -32425,8 +32467,16 @@
             "w3c-prov-o"
           ]
         },
+        "/module:data-engineering/content/qa/010": {
+          "hash": "sha256:8c6a98667c88bf2c499babf349826b7c7bf6acfda28e8c2d8066cd4046deab70",
+          "objectType": "content",
+          "sourceIds": [
+            "china-data-cross-border-2024",
+            "china-personal-information-protection-law"
+          ]
+        },
         "/module:data-engineering/curriculum/chapters/$order": {
-          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
@@ -32500,6 +32550,15 @@
           ]
         },
         "/module:data-engineering/curriculum/chapters/008": {
+          "hash": "sha256:842f26f113bce7b25ae21c022fbecddcbbbe56aa71a4a28e73053fd1d1a34485",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "nist-genai-profile",
+            "nist-zero-trust",
+            "w3c-prov-o"
+          ]
+        },
+        "/module:data-engineering/curriculum/chapters/009": {
           "hash": "sha256:2fa9659230a09ebdaede225e4446dbc3b4882404d0330ca4576ad044ac63150d",
           "objectType": "curriculum",
           "sourceIds": [
@@ -32643,7 +32702,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/learning/labs/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -32665,6 +32724,15 @@
           ]
         },
         "/module:data-engineering/learning/labs/002": {
+          "hash": "sha256:82655b6e1c1c6c4843ddaa8429cbcee9d174dc2b50a2c55c85351143a1dfdda7",
+          "objectType": "learning",
+          "sourceIds": [
+            "nist-genai-profile",
+            "nist-zero-trust",
+            "w3c-prov-o"
+          ]
+        },
+        "/module:data-engineering/learning/labs/003": {
           "hash": "sha256:a8e56f2a61da9391de19ece0d2c6387824de167d942bd6f2126bae80d614b8aa",
           "objectType": "learning",
           "sourceIds": [
@@ -32799,7 +32867,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/publication/qaCoverageTags/$order": {
-          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "publication-order",
           "sourceIds": []
         },
@@ -32850,6 +32918,11 @@
         },
         "/module:data-engineering/publication/qaCoverageTags/009": {
           "hash": "sha256:3b81968c14dd1bc54e21eed74dbf7d619a8e60d7e98f29a8d4b756569f25b1bd",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:data-engineering/publication/qaCoverageTags/010": {
+          "hash": "sha256:41fac0254e022859ec8d70ace16f24754797b9d05313ec2bdd898bcc13c638ae",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -32904,7 +32977,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/publication/updatedAt": {
-          "hash": "sha256:ffe01c96d1240f2049626e943f685c98e41463ae9c5679b66a2c2192e8de47ca",
+          "hash": "sha256:6e392071622ab807e8679b38b29b570b2e2bdf7f960cd9370c903fbfd7800f29",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -32934,7 +33007,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/referenceModule/sourceIds/$order": {
-          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -32974,11 +33047,21 @@
           "sourceIds": []
         },
         "/module:data-engineering/referenceModule/sourceIds/007": {
-          "hash": "sha256:24a4691ec01f61550d72b2ba48679e9c27979ee4147ee6940343839a9228e14e",
+          "hash": "sha256:9fe0743f99b8d99ce44f11e1a2a9f71233b3eeb31f6c21176fafb12fdc68a459",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:data-engineering/referenceModule/sourceIds/008": {
+          "hash": "sha256:65809aac53047c19b0c37f1abf6cd53bf748f5417ab736a6657b0ec24e570b89",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:data-engineering/referenceModule/sourceIds/009": {
+          "hash": "sha256:24a4691ec01f61550d72b2ba48679e9c27979ee4147ee6940343839a9228e14e",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:data-engineering/referenceModule/sourceIds/010": {
           "hash": "sha256:6b5e39847c247778f93f7c05ae40ed136cf39312dccfb23f47756a2832c4b073",
           "objectType": "referenceModule",
           "sourceIds": []
@@ -33019,7 +33102,7 @@
           "sourceIds": []
         },
         "/module:data-engineering/renderedProjection/questionIds/$order": {
-          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -33070,6 +33153,11 @@
         },
         "/module:data-engineering/renderedProjection/questionIds/009": {
           "hash": "sha256:344f0c38e8b23067d036373f46f1d93078b2c15ca99cb2807545f37460a57a59",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:data-engineering/renderedProjection/questionIds/010": {
+          "hash": "sha256:06337d62e81482356248f0869a7c12bde34b7711097e450247cee96446564696",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -33149,8 +33237,18 @@
           "sourceIds": []
         },
         "/module:data-engineering/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:1db3b88e04ddac3bcf0b5603090882573033c5d44de25910c698f9e9e1c20e74",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:data-engineering/sources/china-data-cross-border-2024": {
+          "hash": "sha256:5a79ba29cb4de01f570c88d03a7b5fa1a3e0664f3372bbeb40109da2536bda40",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:data-engineering/sources/china-personal-information-protection-law": {
+          "hash": "sha256:bc7ace3a42438795fcb7bca770782d3258d1eaa5038049a402495b3aac25453e",
+          "objectType": "sources",
           "sourceIds": []
         },
         "/module:data-engineering/sources/docling-report": {
@@ -33410,9 +33508,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:2fac6ca067bad5e67a4cbe6ff0667b61b77ad75f62c8468e49b9be3efacf20fc",
-      "enEffectiveHash": "sha256:a9051d400011cdefa61ef38618a457afeb87a45c910a65e8dd3ecef85666450c",
-      "enReviewHash": "sha256:422c434f8d749c16fe392eeee51d6821fce693290ef80fc341ac94fc614cacb8",
+      "enAuthoredHash": "sha256:29d18d9e9418ba44fc15032f1babab9763eb471b164652f60e96a7d2860f239c",
+      "enEffectiveHash": "sha256:a4a110d5d947c6457feb8f7fb0f753e44ed6a9f22718cd1778ffff6509be3ec9",
+      "enReviewHash": "sha256:95880cd3d3bd06580e0501148bcc0c18e849700a01c24f60288297d9d5a07007",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -33420,6 +33518,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -33431,8 +33530,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-07-29",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-data-engineering-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/data-engineering.ultra-exception.json",
+          "hash": "sha256:e3a38d68846539579644a4f0335db627750492779ae3f12bb8bdefe966cfa2af",
+          "zhContentHash": "sha256:ee10adaf2433d9a77ff3ca052c11365ef678c9430551a2daea10dfc247df8958",
+          "enContentHash": "sha256:95880cd3d3bd06580e0501148bcc0c18e849700a01c24f60288297d9d5a07007"
+        },
+        "br-data-engineering-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/data-engineering.xhigh-author.json",
+          "hash": "sha256:c35b5507759d1dee9000fec0cd5364fc9ffb107bcbcb4eb3f490f7a29a3a0ccf",
+          "zhContentHash": "sha256:ee10adaf2433d9a77ff3ca052c11365ef678c9430551a2daea10dfc247df8958",
+          "enContentHash": "sha256:95880cd3d3bd06580e0501148bcc0c18e849700a01c24f60288297d9d5a07007"
+        },
+        "br-data-engineering-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/data-engineering.xhigh-language.json",
+          "hash": "sha256:9627d3ca5075444b6795e87e555436e9ec85f995ff3885d634e9952118a695de",
+          "zhContentHash": "sha256:ee10adaf2433d9a77ff3ca052c11365ef678c9430551a2daea10dfc247df8958",
+          "enContentHash": "sha256:95880cd3d3bd06580e0501148bcc0c18e849700a01c24f60288297d9d5a07007"
+        },
+        "br-data-engineering-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/data-engineering.xhigh-semantic.json",
+          "hash": "sha256:a7514f15aa1e51969a5f5d5a5adffa2cf73c88ddea1605cdd5ad2ad6ea6de52a",
+          "zhContentHash": "sha256:ee10adaf2433d9a77ff3ca052c11365ef678c9430551a2daea10dfc247df8958",
+          "enContentHash": "sha256:95880cd3d3bd06580e0501148bcc0c18e849700a01c24f60288297d9d5a07007"
+        },
         "br-data-engineering-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/data-engineering.ultra-exception.json",
           "hash": "sha256:436145d1d70cea62d9c50f4a46444b123441cb5df19dc8287d3430e010b48369",
@@ -42639,7 +42762,7 @@
       "moduleSlug": "data-engineering",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -42997,7 +43120,16 @@
           "br-data-engineering-2026-08-10-xhigh-language",
           "br-data-engineering-2026-08-10-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "044d2e3328c8ed99fb7839732cac9c95c6c2a833",
+      "closureReviewIds": [
+        "br-data-engineering-2026-08-10-xhigh-author",
+        "br-data-engineering-2026-08-10-xhigh-semantic",
+        "br-data-engineering-2026-08-10-xhigh-language",
+        "br-data-engineering-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-data-engineering-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-ai-infra-platform-2026-08-08-shared-renderer",
