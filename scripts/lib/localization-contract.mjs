@@ -146,14 +146,14 @@ export async function resolveRendererDependencyFiles(projectRoot, entryFiles) {
   return [...resolved].sort();
 }
 
-export function chineseRendererEntryFiles(publication, { routeGroups = false } = {}) {
+export function chineseRendererEntryFiles(publication, { routeGroups = true } = {}) {
   const route = publication.routeKind === "dedicated"
     ? (routeGroups ? `app/(zh)${publication.path}/page.tsx` : `app${publication.path}/page.tsx`)
     : (routeGroups ? "app/(zh)/modules/[slug]/page.tsx" : "app/modules/[slug]/page.tsx");
   return [...(routeGroups ? CHINESE_MODULE_RENDERER_ENTRY_FILES : LEGACY_CHINESE_MODULE_RENDERER_ENTRY_FILES), route];
 }
 
-export function englishRendererEntryFiles(slug, { routeGroups = false } = {}) {
+export function englishRendererEntryFiles(slug, { routeGroups = true } = {}) {
   const route = slug === "rag"
     ? (routeGroups ? "app/(en)/en/modules/rag/page.tsx" : "app/en/modules/rag/page.tsx")
     : (routeGroups ? "app/(en)/en/modules/[slug]/page.tsx" : "app/en/modules/[slug]/page.tsx");

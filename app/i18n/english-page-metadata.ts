@@ -24,10 +24,9 @@ export function englishPageMetadata({ title, description, path, zhPath }: Englis
       images: [],
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title,
       description,
-      images: [],
     },
   };
 }
