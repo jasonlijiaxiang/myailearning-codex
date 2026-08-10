@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-governance-2026-08-10-xhigh-author",
+  "scope": {
+    "moduleId": "ai-governance",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
+    "enContentHash": "sha256:235da7576e1c5476f0f575612e9c907d7c6a105a11ba29e814da38721436b5f1",
+    "termIds": ["ai-governance", "ai-inventory", "ai-risk-tiering", "continuous-assurance", "governance-evidence", "human-oversight", "impact-assessment"],
+    "sourceIds": ["china-ai-content-labeling-2026-08-05", "china-ai-service-management", "china-data-cross-border-2024", "eu-ai-act", "eu-ai-act-2026-1744", "eu-ai-act-implementation-2026-08-05", "gb-45438-2025", "iso-iec-42001", "iso-iec-42005", "nist-ai-rmf", "nist-genai-profile"]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [{
+    "gateId": "english-module-contract",
+    "status": "PASS",
+    "evidence": [
+      "The English module was authored directly from the governance mechanism, source boundaries, and reader task rather than translated from Chinese sentence structure.",
+      "New China-delivery triage, obligation mapping, curriculum, lab, questions, and evidence cards preserve stable IDs, canonical source order, and addedAt values.",
+      "Current EU implementation wording is dated and keeps legal classification with qualified professionals."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

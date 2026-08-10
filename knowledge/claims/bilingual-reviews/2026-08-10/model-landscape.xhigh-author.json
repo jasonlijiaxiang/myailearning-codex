@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-model-landscape-2026-08-10-xhigh-author",
+  "scope": {
+    "moduleId": "model-landscape",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
+    "enContentHash": "sha256:b873bb0f0ccfae12195d9317563a32df170e4a341e85497b013f17b691138d9e",
+    "termIds": ["access-spectrum", "capability-matrix", "llm", "model-landscape", "model-lifecycle", "model-routing", "poc", "sla", "tco"],
+    "sourceIds": ["agentic-index", "anthropic-models", "arena-leaderboard", "artificial-analysis-methodology", "artificial-analysis-models", "bfcl", "coding-index", "deepseek-r1-2025", "dify-enterprise-pricing", "dify-open-source-license", "financebench", "finops-unit-economics", "gdpval-aa-v2", "google-models", "gpqa-diamond", "humanity-last-exam", "intelligence-index", "livebench", "lost-middle", "nist-ai-800-3", "nist-genai-profile", "openai-models", "openai-reasoning-guide", "opentelemetry-genai-semconv", "osi-open-source-ai-definition-1-0", "scicode", "swe-bench", "swe-rebench", "tau3-banking", "terminal-bench", "terminal-bench-v21", "webarena-2024"]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [{
+    "gateId": "english-module-contract",
+    "status": "PASS",
+    "evidence": [
+      "The English module was rewritten as a direct model-selection and procurement guide, not a translation of Chinese sentence order.",
+      "The MaaS procurement framework separates time-sensitive provider facts from stable selection criteria and keeps catalog claims bounded.",
+      "All added benchmark, Dify, and provider sources retain their independent English copy and no stable content identifier was changed."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

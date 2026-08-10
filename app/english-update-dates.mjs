@@ -9,14 +9,14 @@
  */
 export const englishUpdatedDates = Object.freeze({
   "solution-patterns": "2026-08-01",
-  "model-landscape": "2026-07-30",
+  "model-landscape": "2026-08-10",
   rag: "2026-07-29",
   "ai-agent": "2026-08-01",
   multimodal: "2026-07-30",
   mcp: "2026-08-01",
   a2a: "2026-08-01",
   evaluation: "2026-07-30",
-  "ai-governance": "2026-07-30",
+  "ai-governance": "2026-08-10",
   security: "2026-07-30",
   "ai-gateway": "2026-08-01",
   "ai-ops": "2026-08-01",

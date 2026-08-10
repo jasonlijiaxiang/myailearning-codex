@@ -72,6 +72,20 @@
       "recordedAt": "2026-08-10",
       "decisionId": "D-015",
       "summary": "English renderer maintenance erm-english-source-scope-2026-08-10: Scopes each English module effective hash to the English sources that module actually renders, so unrelated reference-directory additions do not create module-content drift."
+    },
+    {
+      "receiptId": "receipt-ai-governance-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for ai-governance; direct professional copy preserves canonical evidence relationships, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-model-landscape-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for model-landscape; direct professional copy preserves canonical evidence relationships, visible source links, stable IDs, and dates for atomic baseline promotion."
     }
   ],
   "moduleBaselines": {
@@ -36152,7 +36166,7 @@
       "moduleSlug": "model-landscape",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -36171,6 +36185,54 @@
       "workItemIds": [
         "dfr-model-landscape-stage3b"
       ],
+      "englishCandidate": {
+        "zhReviewHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:ee28d52a344f3f7fa84c7eb883409c6049d5dfde387f4ae94ca679af9c7ebe68",
+        "enEffectiveHash": "sha256:286a2e8b275b5e6f706f61558107820662b884e75523264f63c3c1399b9dae19",
+        "enReviewHash": "sha256:b873bb0f0ccfae12195d9317563a32df170e4a341e85497b013f17b691138d9e",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-10",
+        "reviewIds": [
+          "br-model-landscape-2026-08-10-xhigh-author",
+          "br-model-landscape-2026-08-10-xhigh-semantic",
+          "br-model-landscape-2026-08-10-xhigh-language",
+          "br-model-landscape-2026-08-10-ultra-exception"
+        ]
+      },
       "affectedObjects": [
         {
           "objectId": "/module:model-landscape/brief/decisions/$order",
@@ -38629,7 +38691,7 @@
       "moduleSlug": "ai-governance",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -38650,6 +38712,54 @@
         "dfr-ai-governance-stage3a",
         "dfr-ai-governance-stage4b"
       ],
+      "englishCandidate": {
+        "zhReviewHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:b13990479402c8f306461b80f5fc792660816a97be6cb7fee3b00fb54ec4f029",
+        "enEffectiveHash": "sha256:7454fc2d26b8f54ec272af4f723eb4b4c01435d7d1892cb5a4b7074739b95bf0",
+        "enReviewHash": "sha256:235da7576e1c5476f0f575612e9c907d7c6a105a11ba29e814da38721436b5f1",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-10",
+        "reviewIds": [
+          "br-ai-governance-2026-08-10-xhigh-author",
+          "br-ai-governance-2026-08-10-xhigh-semantic",
+          "br-ai-governance-2026-08-10-xhigh-language",
+          "br-ai-governance-2026-08-10-ultra-exception"
+        ]
+      },
       "affectedObjects": [
         {
           "objectId": "/module:ai-governance/brief/decisions/$order",

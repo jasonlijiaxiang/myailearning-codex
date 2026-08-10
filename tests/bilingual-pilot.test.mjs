@@ -569,6 +569,45 @@ test("reviewed English production modules retain direct professional copy and co
   assert.match(standard, /SLO-satisfying Goodput/);
 });
 
+test("Batch 10 English content preserves governance and model-selection boundaries", () => {
+  const governance = englishModuleRegistry["ai-governance"];
+  assert.equal(governance.qa.length, 15);
+  assert.equal(governance.qa.at(-4).id, "china-private-deployment-triage");
+  assert.equal(governance.qa.at(-1).id, "claim-intake-governance-boundary");
+  assert.deepEqual(governance.qa.at(-2).evidence.map((item) => item.sourceId), ["china-ai-content-labeling-2026-08-05", "china-ai-service-management"]);
+  assert.match(JSON.stringify(governance), /Successful generation, content review, labeling, and business approval for publication are four distinct control states/);
+  assert.doesNotMatch(JSON.stringify(governance), /Generation succeeding|align filing thresholds/);
+  const governanceLab = governance.sections
+    .find((section) => section.id === "governance-study-guide")
+    .blocks.flatMap((block) => block.items)
+    .find((item) => item.id === "governance-lab-china-delivery-evidence");
+  assert.deepEqual(governanceLab.sourceIds, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-ai-rmf"]);
+  const governanceLabeling = governance.sections
+    .find((section) => section.id === "governance-deep-dive")
+    .blocks.flatMap((block) => block.items)
+    .find((item) => item.id === "governance-obligation-labeling");
+  assert.deepEqual(governanceLabeling.sourceIds, ["china-ai-content-labeling-2026-08-05", "china-ai-service-management"]);
+
+  const modelLandscape = englishModuleRegistry["model-landscape"];
+  assert.equal(modelLandscape.qa.length, 15);
+  assert.equal(modelLandscape.qa.at(-3).id, "platform-catalog-claim-boundary");
+  assert.equal(modelLandscape.qa.at(-1).id, "domestic-international-model-comparison");
+  const maasTable = modelLandscape.sections
+    .find((section) => section.id === "deep-dive")
+    .blocks.find((block) => block.type === "table" && block.title === "Eight procurement dimensions for Model-as-a-Service");
+  assert.ok(maasTable);
+  assert.ok(maasTable.items.every((item) => item.sourceIds?.length), "every MaaS procurement dimension must render its source links");
+  assert.deepEqual(maasTable.items[0].sourceIds, ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"]);
+  const { sources: modelSources, ...modelReaderCopy } = modelLandscape;
+  assert.ok(modelSources["dify-open-source-license"]);
+  assert.ok(modelSources["dify-enterprise-pricing"]);
+  const modelCopy = JSON.stringify(modelReaderCopy);
+  assert.doesNotMatch(modelCopy, /decision face|China delivery|dynamic facts|cost per accepted/i);
+  assert.match(modelCopy, /qualified task/);
+  assert.match(modelCopy, /self-hosted without a subscription/);
+
+});
+
 test("Chinese global entry pages expose their matching English routes", async () => {
   const routes = [
     ["../app/page.tsx", "/en"],
