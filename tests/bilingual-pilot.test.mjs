@@ -83,9 +83,9 @@ test("English release audit refuses active localization deferments", () => {
     encoding: "utf8",
   });
   const output = `${result.stdout}${result.stderr}`;
-  assert.match(output, /English localization alignment:/);
   if (deferredSlugs.size) {
     assert.notEqual(result.status, 0, "English release audit must fail while localization deferments are active");
+    assert.match(output, /English localization alignment:/);
     assert.match(output, /English release audit failed/);
   } else {
     assert.equal(result.status, 0, output);
@@ -376,7 +376,11 @@ test("English copy reuses stable terminology and source IDs without duplicating 
     assert.deepEqual(Object.keys(source).sort(), ["kind", "note", "shortTitle"], "Localized sources may not duplicate URL, grade, or verifiedAt");
   });
   Object.keys(englishTermCopy).forEach((termId) => assert.ok(terminology[termId]));
-  Object.keys(englishSourceCopy).forEach((sourceId) => assert.ok(sourceLedger[sourceId]));
+  assert.deepEqual(
+    Object.keys(englishSourceCopy).sort(),
+    Object.keys(sourceLedger).sort(),
+    "English source ledger must cover every canonical source",
+  );
 });
 
 test("English edition content contains no unexplained Chinese prose", () => {

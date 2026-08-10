@@ -21,6 +21,7 @@ import { englishModule as aiInfraPlatform } from "./modules/ai-infra-platform.mj
 import { englishModule as aiInfraCompute } from "./modules/ai-infra-compute.mjs";
 import { englishModuleSlugs } from "../locale-config.mjs";
 import { englishCopyOwners, englishSourceCopyOverrides } from "./shared-copy-policy.mjs";
+import { englishSupplementalSourceCopy } from "./reference-ledger-copy.mjs";
 
 const localizedModules = [
   solutionPatterns,
@@ -115,7 +116,16 @@ function mergeLocalizedMap(field) {
 }
 
 export const englishTermCopy = mergeLocalizedMap("terms");
-export const englishSourceCopy = mergeLocalizedMap("sources");
+const moduleEnglishSourceCopy = mergeLocalizedMap("sources");
+for (const sourceId of Object.keys(englishSupplementalSourceCopy)) {
+  if (Object.hasOwn(moduleEnglishSourceCopy, sourceId)) {
+    throw new Error(`Supplemental English source collides with module copy: ${sourceId}`);
+  }
+}
+export const englishSourceCopy = Object.freeze({
+  ...moduleEnglishSourceCopy,
+  ...englishSupplementalSourceCopy,
+});
 
 export const englishQuestions = Object.freeze(Object.values(englishModuleRegistry).flatMap((localizedModule) =>
   localizedModule.qa.map((item) => Object.freeze({ ...item, moduleSlug: localizedModule.slug, moduleTitle: localizedModule.title })),

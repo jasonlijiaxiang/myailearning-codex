@@ -747,9 +747,10 @@ test("English question directory never links beyond the focused module preview",
 
 test("English RAG renders its complete dedicated reader and its source ledger can be scoped", async () => {
   const rag = englishModuleRegistry.rag;
-  const sourceIds = Object.keys(rag.sources);
-  const unrelatedSourceId = Object.keys(englishSourceCopy).find((sourceId) => !sourceIds.includes(sourceId));
-  assert.ok(unrelatedSourceId, "RAG should not own every English source entry");
+  const sourceIds = referenceModules.find((module) => module.id === "rag")?.sourceIds;
+  assert.ok(sourceIds, "RAG must have a canonical Reference group");
+  const unrelatedSourceId = Object.keys(sourceLedger).find((sourceId) => !sourceIds.includes(sourceId));
+  assert.ok(unrelatedSourceId, "RAG should not use every canonical source entry");
   const focusedSlugs = publishedModuleRegistry.filter((module) => module.readingProfile === "focused").map((module) => module.slug);
   const [ragHtml, scopedReferencesHtml, allReferencesHtml, invalidScopeHtml, ...focusedPages] = await Promise.all([
     renderHtml("/en/modules/rag"),
@@ -785,8 +786,16 @@ test("English RAG renders its complete dedicated reader and its source ledger ca
   assert.equal((scopedReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, sourceIds.length);
   for (const sourceId of sourceIds) assert.match(scopedReferencesHtml, new RegExp(`id="source-${escapeRegExp(sourceId)}"`));
   assert.doesNotMatch(scopedReferencesHtml, new RegExp(`id="source-${escapeRegExp(unrelatedSourceId)}"`));
-  assert.equal((allReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(englishSourceCopy).length);
-  assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(englishSourceCopy).length);
+  assert.equal((allReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(sourceLedger).length);
+  assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(sourceLedger).length);
+});
+
+test("English Reference scopes preserve the canonical module-ledger source order", async () => {
+  const pages = await Promise.all(referenceModules.map((module) => renderHtml(`/en/references?module=${module.id}`)));
+  for (const [index, module] of referenceModules.entries()) {
+    const renderedSourceIds = [...pages[index].matchAll(/<article class="questionDirectoryItem" id="source-([^"]+)"/g)].map((match) => match[1]);
+    assert.deepEqual(renderedSourceIds, module.sourceIds, `${module.id} must render its complete canonical Reference group in order`);
+  }
 });
 
 test("English LLM and predictive modules render their authored mechanism views", async () => {
