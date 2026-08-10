@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-llm-2026-08-10-xhigh-semantic",
+  "scope": {
+    "moduleId": "llm",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:4113502ccebe479afd0c29ba8176abe27f563263440becf14c5c90428d932027",
+    "enContentHash": "sha256:5c982eb4940660fac061def57ae7d52a8e5b1469c94497bd5baaf92baca25cc1",
+    "termIds": ["attention", "context-window", "embedding", "generation", "kv-cache", "llm", "moe", "pretraining", "qkv", "token", "transformer"],
+    "sourceIds": ["anthropic-models", "attention-not-explanation-2019", "chinchilla-2022", "deepseek-r1-2025", "dpr-2020", "flashattention-2022", "google-models", "gqa-2023", "instructgpt-2022", "lost-middle", "nist-genai-profile", "nist-zero-trust", "openai-model-spec-hidden-cot", "openai-models", "sentencepiece-2018", "switch-transformer-2022", "transformer-2017", "vllm-2023"]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [{
+    "gateId": "mechanism-and-source-alignment",
+    "status": "PASS",
+    "evidence": [
+      "All 10 questions, four evidence cards, related-module links, source order, and historical null addedAt values preserve their canonical relationships.",
+      "The primer distinguishes attention from provenance, next-token prediction from factual grounding, and model mechanisms from authorization or business state.",
+      "MHA, MQA, GQA, post-training, KV-cache, and long-context boundaries remain technically scoped to their cited evidence."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

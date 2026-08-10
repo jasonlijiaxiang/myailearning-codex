@@ -740,6 +740,47 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
   assert.doesNotMatch(mcpCopy, /As of August 1, 2026|both parties can opt in/);
 });
 
+test("Batch 14 English content preserves model mechanisms and predictive lifecycle controls", () => {
+  const llm = englishModuleRegistry.llm;
+  assert.equal(llm.qa.length, 10);
+  assert.equal(llm.evidenceCards.length, 4);
+  assert.equal(llm.primer.id, "theory-atlas");
+  assert.equal(llm.primer.layout, "pipeline");
+  assert.deepEqual(llm.primer.steps.map((step) => step.title), [
+    "Tokenize the request",
+    "Embed tokens and encode position",
+    "Aggregate context with attention",
+    "Refine representations in Transformer blocks",
+    "Form a next-token distribution",
+    "Select the output sequence",
+  ]);
+  for (const termId of llm.primer.termIds) assert.ok(llm.terms[termId], `LLM primer term must resolve: ${termId}`);
+  const llmCurriculum = llm.sections.find((section) => section.id === "curriculum");
+  assert.deepEqual(llmCurriculum.blocks[0].items.find((item) => item.id === "curriculum-attention-heads").sourceIds, ["transformer-2017", "gqa-2023", "attention-not-explanation-2019"]);
+  assert.deepEqual(llmCurriculum.blocks[0].items.find((item) => item.id === "curriculum-autoregressive-generation").sourceIds, ["deepseek-r1-2025", "openai-model-spec-hidden-cot", "nist-genai-profile"]);
+  assert.deepEqual(llmCurriculum.blocks[0].items.find((item) => item.id === "curriculum-runtime-context").sourceIds, ["vllm-2023", "flashattention-2022", "lost-middle"]);
+  const llmCopy = JSON.stringify(llm);
+  assert.match(llmCopy, /returned reasoning summary is not a verbatim chain of thought/);
+  assert.doesNotMatch(llmCopy, /Ask the customer:|repeated-transfer|recognizable capability|any supported reasoning configuration|Acceptance:/);
+
+  const predictive = englishModuleRegistry["predictive-ai-mlops"];
+  assert.equal(predictive.qa.length, 10);
+  assert.equal(predictive.evidenceCards.length, 4);
+  assert.equal(predictive.primer.id, "predictive-model-lifecycle");
+  assert.equal(predictive.primer.layout, "lifecycle");
+  assert.equal(predictive.primer.steps.length, 5);
+  const predictiveCurriculum = predictive.sections.find((section) => section.id === "predictive-curriculum");
+  assert.deepEqual(predictiveCurriculum.blocks[0].items.find((item) => item.id === "predictive-chapter-feature-pipelines").sourceIds, ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"]);
+  assert.deepEqual(predictiveCurriculum.blocks[0].items.find((item) => item.id === "predictive-chapter-governance").sourceIds, ["google-mlops-predictive-ai", "nist-genai-profile"]);
+  const predictivePractice = predictive.sections.find((section) => section.id === "predictive-study-guide");
+  const predictiveLabs = predictivePractice.blocks.find((block) => block.title === "Practice labs").items;
+  assert.deepEqual(predictiveLabs[0].sourceIds, ["google-mlops-predictive-ai"]);
+  assert.equal(predictiveLabs[2].title, "Diagnose training–serving skew");
+  assert.deepEqual(predictiveLabs[2].sourceIds, ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"]);
+  assert.match(predictiveLabs[2].boundary, /Completion criterion/);
+  assert.doesNotMatch(JSON.stringify(predictive), /Acceptance:|Respond to drift without automatic release|Control data time/);
+});
+
 test("Chinese global entry pages expose their matching English routes", async () => {
   const routes = [
     ["../app/page.tsx", "/en"],

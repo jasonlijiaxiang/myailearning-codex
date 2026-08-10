@@ -789,6 +789,18 @@ test("English RAG renders its complete dedicated reader and its source ledger ca
   assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(englishSourceCopy).length);
 });
 
+test("English LLM and predictive modules render their authored mechanism views", async () => {
+  const [llmHtml, predictiveHtml] = await Promise.all([
+    renderHtml("/en/modules/llm"),
+    renderHtml("/en/modules/predictive-ai-mlops"),
+  ]);
+  assert.match(llmHtml, /data-knowledge-view="theory-atlas"/);
+  assert.match(llmHtml, /visualPipelineCanvas/);
+  assert.match(llmHtml, /Trace an application request from tokens to output/);
+  assert.match(predictiveHtml, /data-knowledge-view="predictive-model-lifecycle"/);
+  assert.match(predictiveHtml, /Build a time-correct, evidence-backed, recoverable decision system/);
+});
+
 test("English pages publish route-specific English sharing metadata", async () => {
   const site = "https://cloud-ai-presales-fieldbook.lijx.chatgpt.site";
   const cases = [

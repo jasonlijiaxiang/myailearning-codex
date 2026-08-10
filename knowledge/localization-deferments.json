@@ -149,6 +149,20 @@
       "recordedAt": "2026-08-10",
       "decisionId": "D-012",
       "summary": "Independent English editorial review completed for MCP; /module:mcp/brief/decisions/006 is covered by the native mcp-adoption-direct-api, mcp-adoption-function-calling, mcp-adoption-thin-adapter, and mcp-adoption-gate decision chain rather than a redundant translated row. Protocol, canonical evidence, stable IDs, and dates are ready for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-predictive-ai-mlops-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for Predictive AI & MLOps; direct professional copy preserves temporal semantics, canonical evidence relationships, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-llm-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for Large Language Model Foundations; direct professional copy preserves mechanism, evidence, stable IDs, and dates for atomic baseline promotion."
     }
   ],
   "moduleBaselines": {
@@ -42479,7 +42493,7 @@
       "moduleSlug": "predictive-ai-mlops",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -42509,14 +42523,62 @@
         "br-predictive-ai-mlops-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:d8f245ad7bb026563d3d7ca408e0e7047f9267004dda9aa1313030cc6163de63",
+        "enEffectiveHash": "sha256:439c909e4a0cab769d986aecbac79cdecc26e90eb7ae5f5d37d8ef80ce69680b",
+        "enReviewHash": "sha256:8f390afd2a4bcb44fd68973bda15d2e812b5d175357aa8b8e3fc7e65ca6b22e2",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-10",
+        "reviewIds": [
+          "br-predictive-ai-mlops-2026-08-10-xhigh-author",
+          "br-predictive-ai-mlops-2026-08-10-xhigh-semantic",
+          "br-predictive-ai-mlops-2026-08-10-xhigh-language",
+          "br-predictive-ai-mlops-2026-08-10-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-llm-2026-08-08-shared-renderer",
       "moduleSlug": "llm",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -42546,7 +42608,55 @@
         "br-llm-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:4113502ccebe479afd0c29ba8176abe27f563263440becf14c5c90428d932027",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:d1a9af7296056fb47ed7f41a635a91f2eba3859ecb95d989442c60b45bfc9bf6",
+        "enEffectiveHash": "sha256:290d21445be54caa22f470bf744be211e972b70fa5fa77cd552169d63b1f991c",
+        "enReviewHash": "sha256:5c982eb4940660fac061def57ae7d52a8e5b1469c94497bd5baaf92baca25cc1",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-10",
+        "reviewIds": [
+          "br-llm-2026-08-10-xhigh-author",
+          "br-llm-2026-08-10-xhigh-semantic",
+          "br-llm-2026-08-10-xhigh-language",
+          "br-llm-2026-08-10-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-fine-tuning-2026-08-08-shared-renderer",

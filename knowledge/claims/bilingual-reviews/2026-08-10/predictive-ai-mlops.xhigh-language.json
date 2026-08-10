@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-predictive-ai-mlops-2026-08-10-xhigh-language",
+  "scope": {
+    "moduleId": "predictive-ai-mlops",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
+    "enContentHash": "sha256:8f390afd2a4bcb44fd68973bda15d2e812b5d175357aa8b8e3fc7e65ca6b22e2",
+    "termIds": ["feature-store", "model-drift", "model-registry", "point-in-time-correctness", "predictive-ai-mlops", "training-serving-skew"],
+    "sourceIds": ["aws-sagemaker-deployment-guardrails", "aws-sagemaker-feature-store", "aws-sagemaker-model-registry", "azure-ml-model-monitoring", "azure-ml-registries", "google-mlops-predictive-ai", "google-rules-of-ml", "ml-test-score-2017", "nist-genai-profile"]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [{
+    "gateId": "technical-english-style",
+    "status": "PASS",
+    "evidence": [
+      "The copy uses direct professional English for temporal integrity, release bundles, cohort analysis, and operational handoff.",
+      "It removes translated acceptance labels while retaining explicit completion and authorization boundaries.",
+      "Sentences are concise, grammatical, and avoid ambiguous ownership of predictions, actions, and delayed labels."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}
