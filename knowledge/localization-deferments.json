@@ -26947,16 +26947,16 @@
       }
     },
     "fine-tuning": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "979d7f3ed5302270466c89c39b83e06f5f643f89",
+      "enBaselineCommit": "979d7f3ed5302270466c89c39b83e06f5f643f89",
       "reviewSetIds": [
-        "br-fine-tuning-ultra-exception",
-        "br-fine-tuning-xhigh-author",
-        "br-fine-tuning-xhigh-language",
-        "br-fine-tuning-xhigh-semantic"
+        "br-fine-tuning-2026-08-10-ultra-exception",
+        "br-fine-tuning-2026-08-10-xhigh-author",
+        "br-fine-tuning-2026-08-10-xhigh-language",
+        "br-fine-tuning-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:062c1ac1567938000a91e15e6826a91eb507061345cc86efdf5c9096917954aa",
-      "zhStateHash": "sha256:42fa19d17b72fe55f6e8f6eee7fc8ca3348edac744784c86bacedaea24f85c76",
+      "zhReviewHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
+      "zhStateHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
       "zhObjects": {
         "/module:fine-tuning/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -28154,7 +28154,7 @@
           "sourceIds": []
         },
         "/module:fine-tuning/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -28465,9 +28465,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:41495998e5f756c13de56798d51b0de81a671d8c2aa85fc3398dde602b270fd0",
-      "enEffectiveHash": "sha256:662ddd60cac9edb3e9d9064a6abd52f9825f03e62844533f9291dfcc9898fce5",
-      "enReviewHash": "sha256:50231a2a2afdf22a42e18414587061b8c0defcbbeb3bfd132e1d943b2f2383d8",
+      "enAuthoredHash": "sha256:77f0b9fe9dc1d2aa5654fa4bb7d49649195a5c4588488f4c4bf464602d2d2206",
+      "enEffectiveHash": "sha256:84c5b6dc49cd972f56f6ca0e0bc617cb00f62cd316a801809345745adffde152",
+      "enReviewHash": "sha256:89d037111708b424227cfa6cdb04b7cac950509febdcb76fa52ceec143bc5a7c",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -28475,6 +28475,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -28486,8 +28487,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-07-30",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-fine-tuning-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/fine-tuning.ultra-exception.json",
+          "hash": "sha256:9773ebce62716e65e1dfed155a276e85f7cb449bd2c2299a6327c36d78edff56",
+          "zhContentHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
+          "enContentHash": "sha256:89d037111708b424227cfa6cdb04b7cac950509febdcb76fa52ceec143bc5a7c"
+        },
+        "br-fine-tuning-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/fine-tuning.xhigh-author.json",
+          "hash": "sha256:1d1477d0dfb759ceb8868ca2fb96536c052c63daf0990fa3cd231d4a29401075",
+          "zhContentHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
+          "enContentHash": "sha256:89d037111708b424227cfa6cdb04b7cac950509febdcb76fa52ceec143bc5a7c"
+        },
+        "br-fine-tuning-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/fine-tuning.xhigh-language.json",
+          "hash": "sha256:2b85a5b0d1a0ad8bde6ca4641ee124a41fd6ee2181e0baa2d78b390eb12bb801",
+          "zhContentHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
+          "enContentHash": "sha256:89d037111708b424227cfa6cdb04b7cac950509febdcb76fa52ceec143bc5a7c"
+        },
+        "br-fine-tuning-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/fine-tuning.xhigh-semantic.json",
+          "hash": "sha256:5238817260e5fce93f641e34584d19bda8bdb8e6ac2f8f7551e32d5b49a81fc8",
+          "zhContentHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
+          "enContentHash": "sha256:89d037111708b424227cfa6cdb04b7cac950509febdcb76fa52ceec143bc5a7c"
+        },
         "br-fine-tuning-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/fine-tuning.ultra-exception.json",
           "hash": "sha256:49842f7def5f1ca6dcba58f1dd814c331174d08dad5ec9609c1a91e202594692",
@@ -42489,7 +42514,7 @@
       "moduleSlug": "fine-tuning",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -42567,7 +42592,16 @@
           "br-fine-tuning-2026-08-10-xhigh-language",
           "br-fine-tuning-2026-08-10-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "979d7f3ed5302270466c89c39b83e06f5f643f89",
+      "closureReviewIds": [
+        "br-fine-tuning-2026-08-10-xhigh-author",
+        "br-fine-tuning-2026-08-10-xhigh-semantic",
+        "br-fine-tuning-2026-08-10-xhigh-language",
+        "br-fine-tuning-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-fine-tuning-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-llm-training-2026-08-08-shared-renderer",
