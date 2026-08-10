@@ -163,6 +163,13 @@
       "recordedAt": "2026-08-10",
       "decisionId": "D-012",
       "summary": "Independent English editorial review completed for Large Language Model Foundations; direct professional copy preserves mechanism, evidence, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-english-document-shell-2026-08-10",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-016",
+      "summary": "English renderer maintenance erm-english-document-shell-2026-08-10: Uses route-group root layouts so English URLs emit an English document language and English social metadata without changing localized module content."
     }
   ],
   "moduleBaselines": {
@@ -37321,6 +37328,68 @@
       "contentProjectionChangeSlugs": [],
       "metadataScope": "none",
       "summary": "Scopes each English module effective hash to the English sources that module actually renders, so unrelated reference-directory additions do not create module-content drift."
+    },
+    {
+      "maintenanceId": "erm-english-document-shell-2026-08-10",
+      "status": "applied",
+      "kind": "document-shell",
+      "decisionId": "D-016",
+      "recordedAt": "2026-08-10",
+      "baseCommit": "ba36a247c65373e954d310858d3d8e5b01175329",
+      "implementationCommit": "e994acda992d609b54e0b5abc216d8a82955dd30",
+      "receiptId": "receipt-english-document-shell-2026-08-10",
+      "changedRendererFiles": [
+        "app/(en)/en/glossary/page.tsx",
+        "app/(en)/en/knowledge-graph/page.tsx",
+        "app/(en)/en/modules/[slug]/page.tsx",
+        "app/(en)/en/modules/rag/page.tsx",
+        "app/(en)/en/page.tsx",
+        "app/(en)/en/questions/page.tsx",
+        "app/(en)/en/references/page.tsx",
+        "app/(en)/layout.tsx",
+        "app/(zh)/coding-agents/page.tsx",
+        "app/(zh)/glossary/page.tsx",
+        "app/(zh)/knowledge-graph/page.tsx",
+        "app/(zh)/layout.tsx",
+        "app/(zh)/model-radar/page.tsx",
+        "app/(zh)/modules/[slug]/page.tsx",
+        "app/(zh)/modules/ai-agent/page.tsx",
+        "app/(zh)/modules/prompt-engineering/page.tsx",
+        "app/(zh)/modules/rag/page.tsx",
+        "app/(zh)/page.tsx",
+        "app/(zh)/questions/page.tsx",
+        "app/(zh)/references/page.tsx",
+        "app/en/layout.tsx",
+        "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
+        "scripts/lib/localization-contract.mjs"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns"
+      ],
+      "contentProjectionChangeSlugs": [],
+      "metadataScope": "all-en-routes",
+      "summary": "Uses route-group root layouts so English URLs emit an English document language and English social metadata without changing localized module content."
     }
   ],
   "deferments": [
