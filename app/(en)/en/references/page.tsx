@@ -63,7 +63,7 @@ export default async function EnglishReferencesPage({ searchParams }: { searchPa
     <main lang="en" className="fieldbookTheme questionDirectoryPage">
       <nav className="topbar" aria-label="Reference ledger navigation">
         <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
-        <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/references" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link></div>
+        <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/references" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
       </nav>
       <header className="questionDirectoryHero"><p className="kicker">SOURCE LEDGER</p><h1>Know what each source supports—and what it does not</h1><p>Every entry pairs an English evidence note with the canonical URL, evidence grade, verification date, and explicit limit.</p></header>
       <EnglishPilotDirectory items={items} label="Search sources" placeholder="Try NIST, ISO, retrieval, model directory…" actionLabel="Open source ↗" scope={scope} />

@@ -50,6 +50,7 @@ export default function ModelRadarPage() {
             <Link href="/modules/model-landscape">模型格局模块</Link>
             <Link href="/coding-agents">Coding Agent</Link>
             <Link href="/references">来源与证据</Link>
+            <Link href="/en/model-radar" hrefLang="en" lang="en">English</Link>
           </div>
         </nav>
 

@@ -34,7 +34,7 @@ export default function EnglishKnowledgeGraphPage() {
             <Link href="/en/glossary" prefetch={false}>Glossary</Link>
             <Link href="/en#available-modules" prefetch={false}>Find modules</Link>
             <Link href="/en/references" prefetch={false}>References</Link>
-            <Link href="/knowledge-graph" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link>
+            <Link href="/knowledge-graph" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
           </div>
         </nav>
       </header>

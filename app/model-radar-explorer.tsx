@@ -54,6 +54,71 @@ type Benchmark = {
   };
 };
 
+type ModelRadarLocale = "zh" | "en";
+
+const modelRadarCopy = {
+  zh: {
+    snapshot: "快照",
+    currentOrder: "当前排序",
+    selectorTitle: "按能力指数查看 Top 20",
+    dateOptionsAria: "榜单日期",
+    benchmarkOptionsAria: "模型 benchmark 选项",
+    evidenceGrade: "证据等级",
+    viewSource: "查看来源 ↗",
+    collapseBenchmark: "收起 Benchmark 解释",
+    expandBenchmark: "展开 Benchmark 解释",
+    what: "测什么",
+    usefulFor: "适合看什么",
+    limitation: "不能代表什么",
+    readScore: "如何读分数",
+    rank: "排名",
+    model: "模型",
+    provider: "公司 / 机构",
+    score: "得分",
+    strength: "主要优势领域",
+    caption: (benchmark: string, snapshot: string) => `Top 20 大模型在 ${benchmark} 的排名，当前快照为 ${snapshot}`,
+    scoreCoverage: (count: number, total: number) => `当前快照有 ${count}/${total} 个模型的精确公开分数；其余显示为 —。`,
+    noScoreCoverage: "当前快照没有与这些模型版本精确对应的公开分数，暂不填值。",
+    modelLandscape: "查看模型格局方法边界 ↗",
+    selectedModel: "已选模型",
+    currentScore: "当前快照单项得分",
+    indexComponents: "指数构成",
+    evidenceCoverage: "证据覆盖",
+    retention: "数据保留规则：",
+    retentionSuffix: "。页面不会记录每周完整历史；以后接入动态数据时，优先保存同一模型版本、benchmark 版本和运行配置。",
+  },
+  en: {
+    snapshot: "Snapshot",
+    currentOrder: "Current order",
+    selectorTitle: "View the top 20 by capability index",
+    dateOptionsAria: "Ranking date",
+    benchmarkOptionsAria: "Model benchmark options",
+    evidenceGrade: "evidence grade",
+    viewSource: "View source ↗",
+    collapseBenchmark: "Collapse benchmark explanation",
+    expandBenchmark: "Expand benchmark explanation",
+    what: "What it measures",
+    usefulFor: "What it is useful for",
+    limitation: "What it does not establish",
+    readScore: "How to read the score",
+    rank: "Rank",
+    model: "Model",
+    provider: "Provider",
+    score: "score",
+    strength: "Primary signal",
+    caption: (benchmark: string, snapshot: string) => `Top 20 models ranked by ${benchmark}; current snapshot: ${snapshot}`,
+    scoreCoverage: (count: number, total: number) => `${count}/${total} models in this snapshot have an exact public score; the rest display —.`,
+    noScoreCoverage: "No exact public score is available for these model versions in this snapshot, so no value is inferred.",
+    modelLandscape: "Review the model-landscape method boundary ↗",
+    selectedModel: "Selected model",
+    currentScore: "score in this snapshot",
+    indexComponents: "Index components",
+    evidenceCoverage: "Evidence coverage",
+    retention: "Data-retention rule: ",
+    retentionSuffix: ". The page does not preserve every weekly history. When new dynamic data is added, retain the exact model version, benchmark version, and run configuration first.",
+  },
+} as const;
+
 const benchmarkMarks: Record<string, string> = {
   "intelligence-index": "I",
   "coding-index": "C",
@@ -88,18 +153,21 @@ function providerLabel(model: Model) {
 function RankingTableHeader({
   benchmarkTitle,
   headerRef,
+  locale,
 }: {
   benchmarkTitle?: string;
   headerRef?: React.Ref<HTMLTableSectionElement>;
+  locale: ModelRadarLocale;
 }) {
+  const copy = modelRadarCopy[locale];
   return (
     <thead ref={headerRef}>
       <tr>
-        <th scope="col">排名</th>
-        <th scope="col">模型</th>
-        <th scope="col">公司 / 机构</th>
-        <th scope="col">{benchmarkTitle} 得分</th>
-        <th scope="col">主要优势领域</th>
+        <th scope="col">{copy.rank}</th>
+        <th scope="col">{copy.model}</th>
+        <th scope="col">{copy.provider}</th>
+        <th scope="col">{benchmarkTitle} {copy.score}</th>
+        <th scope="col">{copy.strength}</th>
       </tr>
     </thead>
   );
@@ -109,11 +177,18 @@ export function ModelRadarExplorer({
   snapshots,
   benchmarks,
   retention,
+  locale = "zh",
+  referencesHref = "/references",
+  modelLandscapeHref = "/modules/model-landscape#qa-1",
 }: {
   snapshots: readonly Snapshot[];
   benchmarks: readonly Benchmark[];
   retention: string;
+  locale?: ModelRadarLocale;
+  referencesHref?: string;
+  modelLandscapeHref?: string;
 }) {
+  const copy = modelRadarCopy[locale];
   const [snapshotId, setSnapshotId] = useState(snapshots[0]?.id ?? "");
   const [selectedId, setSelectedId] = useState(snapshots[0]?.models[0]?.id ?? "");
   const [benchmarkId, setBenchmarkId] = useState(benchmarks[0]?.sourceId ?? "");
@@ -217,13 +292,13 @@ export function ModelRadarExplorer({
     >
       <div className="modelPosterMetaLine">
         <span className="modelPosterDemoBadge">Artificial Analysis · v4.1</span>
-        <span>快照 · {snapshot?.label} · 当前排序 · {activeBenchmark?.shortTitle}</span>
+        <span>{copy.snapshot} · {snapshot?.label} · {copy.currentOrder} · {activeBenchmark?.shortTitle}</span>
       </div>
 
       <section ref={benchmarkSelectorRef} className="modelPosterBenchmarkSelector" aria-labelledby="benchmark-selector-title">
         <div className="modelPosterBenchmarkSelectorIntro">
-          <h3 id="benchmark-selector-title">按能力指数查看 Top 20</h3>
-          <div className="modelPosterDateOptions" role="group" aria-label="榜单日期">
+          <h3 id="benchmark-selector-title">{copy.selectorTitle}</h3>
+          <div className="modelPosterDateOptions" role="group" aria-label={copy.dateOptionsAria}>
             {snapshots.map((item) => (
               <button
                 className={snapshot?.id === item.id ? "active" : ""}
@@ -237,7 +312,7 @@ export function ModelRadarExplorer({
             ))}
           </div>
         </div>
-        <div className="modelPosterBenchmarkTabs" role="tablist" aria-label="模型 benchmark 选项">
+        <div className="modelPosterBenchmarkTabs" role="tablist" aria-label={copy.benchmarkOptionsAria}>
           {benchmarks.map((benchmark) => (
             <button
               aria-selected={benchmark.sourceId === benchmarkId}
@@ -254,15 +329,15 @@ export function ModelRadarExplorer({
         {activeBenchmark && (
           <div className="modelPosterActiveBenchmark" aria-live="polite">
             <span className="modelPosterBenchmarkMark" aria-hidden="true">{benchmarkMarks[activeBenchmark.sourceId] ?? "B"}</span>
-            <div><strong>{activeBenchmark.shortTitle}</strong><small>{activeBenchmark.kind} · 证据等级 {activeBenchmark.grade} · {activeBenchmark.scoreScale.unit}</small></div>
+            <div><strong>{activeBenchmark.shortTitle}</strong><small>{activeBenchmark.kind} · {copy.evidenceGrade} {activeBenchmark.grade} · {activeBenchmark.scoreScale.unit}</small></div>
             <p>{activeBenchmark.guide.summary}</p>
             <div className="modelPosterActiveBenchmarkActions">
-              <Link href={`/references#source-${activeBenchmark.sourceId}`}>查看来源 ↗</Link>
+              <Link href={`${referencesHref}#source-${activeBenchmark.sourceId}`}>{copy.viewSource}</Link>
               <button
                 className="modelPosterBenchmarkExpand"
                 type="button"
                 aria-expanded={isActiveBenchmarkOpen}
-                aria-label={isActiveBenchmarkOpen ? "收起 Benchmark 解释" : "展开 Benchmark 解释"}
+                aria-label={isActiveBenchmarkOpen ? copy.collapseBenchmark : copy.expandBenchmark}
                 onClick={() => setOpenBenchmark(isActiveBenchmarkOpen ? "" : activeBenchmark.sourceId)}
               >
                 <i aria-hidden="true">{isActiveBenchmarkOpen ? "⌃" : "⌄"}</i>
@@ -270,10 +345,10 @@ export function ModelRadarExplorer({
             </div>
             {isActiveBenchmarkOpen && (
               <div className="modelPosterActiveBenchmarkDetails">
-                <div><strong>测什么</strong><p>{activeBenchmark.guide.what}</p></div>
-                <div><strong>适合看什么</strong><p>{activeBenchmark.guide.usefulFor}</p></div>
-                <div><strong>不能代表什么</strong><p>{activeBenchmark.guide.limitation}</p></div>
-                <div><strong>如何读分数</strong><p>{activeBenchmark.guide.readScore}</p></div>
+                <div><strong>{copy.what}</strong><p>{activeBenchmark.guide.what}</p></div>
+                <div><strong>{copy.usefulFor}</strong><p>{activeBenchmark.guide.usefulFor}</p></div>
+                <div><strong>{copy.limitation}</strong><p>{activeBenchmark.guide.limitation}</p></div>
+                <div><strong>{copy.readScore}</strong><p>{activeBenchmark.guide.readScore}</p></div>
               </div>
             )}
           </div>
@@ -287,14 +362,14 @@ export function ModelRadarExplorer({
               <div className="modelPosterTableStickyHeadCover" />
               <div className="modelPosterTableStickyHeadViewport">
                 <table ref={stickyTableRef} className="modelPosterTable modelPosterStickyTable">
-                  <RankingTableHeader benchmarkTitle={activeBenchmark?.shortTitle} />
+                  <RankingTableHeader benchmarkTitle={activeBenchmark?.shortTitle} locale={locale} />
                 </table>
               </div>
             </div>
             <div ref={tableScrollRef} className="modelPosterTableScroll">
               <table className="modelPosterTable">
-                <caption>Top 20 大模型在 {activeBenchmark?.shortTitle} 的排名，当前快照为 {snapshot?.label}</caption>
-                <RankingTableHeader headerRef={tableHeaderRef} benchmarkTitle={activeBenchmark?.shortTitle} />
+                <caption>{copy.caption(activeBenchmark?.shortTitle ?? "", snapshot?.label ?? "")}</caption>
+                <RankingTableHeader headerRef={tableHeaderRef} benchmarkTitle={activeBenchmark?.shortTitle} locale={locale} />
                 <tbody>
                   {models.map((model, index) => {
                     const score = model.benchmarkScores[benchmarkId] ?? null;
@@ -324,32 +399,32 @@ export function ModelRadarExplorer({
               </table>
             </div>
             <div className="modelPosterTableFoot">
-              <span>{activeBenchmarkScoreCount > 0 ? `当前快照有 ${activeBenchmarkScoreCount}/${models.length} 个模型的精确公开分数；其余显示为 —。` : "当前快照没有与这些模型版本精确对应的公开分数，暂不填值。"}</span>
-              <Link href="/modules/model-landscape#qa-1">查看模型格局方法边界 ↗</Link>
+              <span>{activeBenchmarkScoreCount > 0 ? copy.scoreCoverage(activeBenchmarkScoreCount, models.length) : copy.noScoreCoverage}</span>
+              <Link href={modelLandscapeHref}>{copy.modelLandscape}</Link>
             </div>
           </div>
         </div>
 
         {selected && activeBenchmark && (
           <aside className="modelPosterSelected" aria-live="polite">
-            <div className="modelPosterSelectedHeader"><span>已选模型</span></div>
+            <div className="modelPosterSelectedHeader"><span>{copy.selectedModel}</span></div>
             <h3>{selected.name}</h3>
             <p className="modelPosterSelectedIdentity">{selected.provider} · {selected.tag}</p>
-            <div className="modelPosterSelectedScore"><span>{activeBenchmark.shortTitle}</span><strong>{scoreLabel(selectedBenchmarkScore)}</strong><small>当前快照单项得分</small></div>
+            <div className="modelPosterSelectedScore"><span>{activeBenchmark.shortTitle}</span><strong>{scoreLabel(selectedBenchmarkScore)}</strong><small>{copy.currentScore}</small></div>
             <div className="modelPosterSelectedMetrics"><span>Intelligence <b>{scoreLabel(selected.intelligence)}</b></span><span>Coding <b>{scoreLabel(selected.coding)}</b></span><span>Agentic <b>{scoreLabel(selected.agentic)}</b></span></div>
             {benchmarkComponents[benchmarkId] && (
               <div className="modelPosterSelectedBreakdown">
-                <span>指数构成</span>
+                <span>{copy.indexComponents}</span>
                 {benchmarkComponents[benchmarkId].map((component) => <b key={component.id}>{component.label} <em>{scoreLabel(selected.componentScores[component.id] ?? null)}</em></b>)}
               </div>
             )}
-            <div className="modelPosterEvidence"><span>证据覆盖</span>{selected.evidence.map((item) => <b key={item}>{item}</b>)}</div>
+            <div className="modelPosterEvidence"><span>{copy.evidenceCoverage}</span>{selected.evidence.map((item) => <b key={item}>{item}</b>)}</div>
             <p className="modelPosterSelectedNote">{selected.note}</p>
           </aside>
         )}
       </div>
 
-      <div className="modelPosterRetentionNote"><strong>数据保留规则：</strong>{retention}。页面不会记录每周完整历史；以后接入动态数据时，优先保存同一模型版本、benchmark 版本和运行配置。</div>
+      <div className="modelPosterRetentionNote"><strong>{copy.retention}</strong>{retention}{copy.retentionSuffix}</div>
     </div>
   );
 }

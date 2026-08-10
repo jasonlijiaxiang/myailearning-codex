@@ -205,7 +205,7 @@ export default function EnglishHome() {
       <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="Main navigation">
           <Link className="brand" href="/en" prefetch={false}><span><strong>Cloud × AI Presales Fieldbook</strong><small>Evidence-backed technical field guide</small></span></Link>
-          <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><a href="#available-modules">Find modules</a><Link href="/en/knowledge-graph" prefetch={false}>Dynamic explorer</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link></div>
+          <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><a href="#available-modules">Find modules</a><Link href="/en/knowledge-graph" prefetch={false}>Dynamic explorer</Link><Link href="/en/model-radar" prefetch={false}>Model radar</Link><Link href="/en/coding-agents" prefetch={false}>Coding agents</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
           <details className="homeMobileNav">
             <summary>More</summary>
             <nav aria-label="More navigation">
@@ -213,8 +213,10 @@ export default function EnglishHome() {
               <Link href="/en/glossary" prefetch={false}>Glossary</Link>
               <a href="#available-modules">Find modules</a>
               <Link href="/en/knowledge-graph" prefetch={false}>Dynamic explorer</Link>
+              <Link href="/en/model-radar" prefetch={false}>Model radar</Link>
+              <Link href="/en/coding-agents" prefetch={false}>Coding agents</Link>
               <Link href="/en/references" prefetch={false}>References</Link>
-              <Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link>
+              <Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
             </nav>
           </details>
         </nav>

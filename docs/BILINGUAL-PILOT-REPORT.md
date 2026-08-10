@@ -2,6 +2,8 @@
 
 > Historical checkpoint: this three-module pilot was the acceptance baseline for the later 21-module English edition. Its remaining-gates table is superseded by `ENGLISH-ULTRA-ADJUDICATION.md`, the complete English audit, and the stored four-stage review records; the scope and verdict below should not be read as the current edition status.
 
+> Supersession note (2026-08-10): BIL-002 and BIL-005 were resolved by the complete English edition’s route-group document shell, server-rendered English metadata, and full 21-module coverage. The historical table remains unchanged as a record of the pilot decision.
+
 Date: 2026-07-22
 
 ## Decision

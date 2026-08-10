@@ -121,7 +121,7 @@ The reported British editorial forms were normalized in module prose. The determ
 - `npm run audit:english:complete` — PASS for 21/21 modules.
 - `npm run report:english-conflicts` — PASS; live set remains 41 term and 39 source conflicts.
 - `npm run audit:english:reviews` — PASS; 84 schema-conformant records cover 21 modules across authoring, semantic, language, and exception-adjudication stages.
-- Runtime import of `app/i18n/en/registry.mjs` — PASS; 21 modules, 136 terms, 138 sources, and 332 questions.
+- Runtime import of `app/i18n/en/registry.mjs` — PASS; 21 modules, 140 terms, 237 sources, and 334 questions.
 - `npm run lint` — PASS.
 - Focused B2–B6 source, parity, date, spelling, and policy assertions — PASS.
 - Live primary/official source review for the 11 B2 additions — PASS within the scope recorded above.
@@ -130,7 +130,7 @@ The reported British editorial forms were normalized in module prose. The determ
 
 The former non-content blockers were resolved as follows:
 
-1. English routes set the hydrated document root to `lang="en"` through the locale layout and restore the previous language when leaving the subtree.
+1. English routes use a dedicated route-group root layout and emit `<html lang="en">` on the server; no client document-language mutation or restoration is needed.
 2. The home page now provides full fieldbook search, module-layer filtering, mission-based paths, terminology, the 21-module map, and a localized dynamic knowledge explorer.
 3. Every shared module exposes the full canonical role sequence, including decisions, deep dives, and cloud connections where previously absent.
 4. Eighty-four stored review records are regenerated from current canonical and English content hashes and validated on every bilingual test run.

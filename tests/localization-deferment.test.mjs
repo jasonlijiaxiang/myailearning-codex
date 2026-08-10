@@ -10,6 +10,7 @@ import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derived
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
+  diffObjectCatalogs,
   englishRendererEntryFiles,
   loadLocalizationProject,
   persistableLocalizationModuleState,
@@ -37,12 +38,40 @@ function validate(candidateRegistry = registry, candidateProject = currentProjec
     candidateIds,
     reviewSchema,
     promotedProjectsByCommit,
+    runtimeOverlays,
     ...options,
   });
 }
 
 function runtimeOverlaysExcept(...slugs) {
   return new Map([...runtimeOverlays].filter(([slug]) => !slugs.includes(slug)));
+}
+
+function makeDeferredFixture(slug = "solution-patterns") {
+  const candidateRegistry = structuredClone(registry);
+  const candidateProject = structuredClone(currentProject);
+  const deferment = candidateRegistry.deferments.find((item) => item.moduleSlug === slug);
+  const baseline = candidateRegistry.moduleBaselines[slug];
+  const moduleState = candidateProject.modules[slug];
+  const syntheticObjectId = `/module:${slug}/test-deferred-candidate`;
+
+  moduleState.zhObjects[syntheticObjectId] = {
+    hash: fullHashA,
+    objectType: "test-content",
+    sourceIds: [],
+  };
+  moduleState.zhStateHash = fullHashB;
+  moduleState.zhReviewHash = fullHashC;
+  deferment.status = "deferred";
+  deferment.openedFromCommit = baseline.zhBaselineCommit;
+  deferment.baselineReviewIds = [...baseline.reviewSetIds];
+  const effectiveZhBaseline = runtimeOverlays.get(slug)?.kind === "document-shell"
+    ? runtimeOverlays.get(slug).state.zhObjects
+    : baseline.zhObjects;
+  deferment.affectedObjects = diffObjectCatalogs(effectiveZhBaseline, moduleState.zhObjects);
+  for (const field of ["englishCandidate", "closedAt", "promotedCommit", "closureReviewIds", "closureReceipt"]) delete deferment[field];
+
+  return { candidateRegistry, candidateProject, deferment, moduleState, baseline };
 }
 
 function addPassingCandidateReviews(moduleState, slug, zhHash, enHash, suffix = "candidate-test") {
@@ -69,13 +98,23 @@ function addPassingCandidateReviews(moduleState, slug, zhHash, enHash, suffix = 
 test("localization registry passes its recursive schema and covers every module", () => {
   assert.doesNotThrow(() => assertJsonSchema(registry, schema, "localization registry"));
   assert.equal(registry.schemaVersion, "localization-deferment/v3");
-  assert.equal(registry.runtimeMaintenances.length, 1);
-  const [maintenance] = registry.runtimeMaintenances;
-  assert.equal(maintenance.maintenanceId, "erm-english-reader-2026-08-09");
-  assert.equal(maintenance.receiptId, "receipt-english-reader-runtime-2026-08-09");
-  assert.deepEqual(maintenance.affectedModuleSlugs, [...publishedModuleSlugs].sort());
-  assert.deepEqual(maintenance.contentProjectionChangeSlugs, ["rag"]);
-  assert.equal(maintenance.metadataScope, "all-en-routes");
+  const maintenances = new Map(registry.runtimeMaintenances.map((item) => [item.maintenanceId, item]));
+  assert.deepEqual([...maintenances.keys()].sort(), [
+    "erm-english-document-shell-2026-08-10",
+    "erm-english-reader-2026-08-09",
+    "erm-english-source-scope-2026-08-10",
+  ]);
+  const reader = maintenances.get("erm-english-reader-2026-08-09");
+  assert.equal(reader?.receiptId, "receipt-english-reader-runtime-2026-08-09");
+  assert.deepEqual(reader?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(reader?.contentProjectionChangeSlugs, ["rag"]);
+  assert.equal(reader?.metadataScope, "all-en-routes");
+  const documentShell = maintenances.get("erm-english-document-shell-2026-08-10");
+  assert.equal(documentShell?.kind, "document-shell");
+  assert.equal(documentShell?.receiptId, "receipt-english-document-shell-2026-08-10");
+  assert.deepEqual(documentShell?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(documentShell?.contentProjectionChangeSlugs, []);
+  assert.equal(documentShell?.metadataScope, "all-en-routes");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   for (const publication of publishedModules) {
@@ -128,23 +167,21 @@ test("an effective-hash contract change covers every English module", () => {
   assert.deepEqual(derived, [...publishedModuleSlugs].sort());
 });
 
-test("one active deferment per module records the exact live object delta", () => {
-  const activeSlugs = registry.deferments.filter((item) => item.status !== "closed").map((item) => item.moduleSlug);
+test("an active deferment records the exact live object delta", () => {
+  const { candidateRegistry, candidateProject, deferment } = makeDeferredFixture();
+  const activeSlugs = candidateRegistry.deferments.filter((item) => item.status !== "closed").map((item) => item.moduleSlug);
   assert.equal(new Set(activeSlugs).size, activeSlugs.length);
-  const result = validate(registry, currentProject, { runtimeOverlays });
+  const result = validate(candidateRegistry, candidateProject, { runtimeOverlays });
   assert.deepEqual(result.failures, []);
   assert.equal(result.messages.filter((line) => line.startsWith("DEFERRED/NOT_ALIGNED ")).length, activeSlugs.length);
-  assert.ok(
-    registry.deferments.find((item) => item.moduleSlug === "solution-patterns")?.affectedObjects.some((item) => item.objectId.endsWith("/renderedProjection/sharedRendererHash")),
-    "shared Chinese renderer changes must be represented in each affected module delta",
-  );
+  assert.equal(deferment.affectedObjects.length, 1);
+  assert.ok(deferment.affectedObjects[0].objectId.endsWith("/test-deferred-candidate"));
 });
 
-test("runtime maintenance overlays only the verified English renderer state", () => {
-  const closedSlugs = registry.deferments.filter((item) => item.status === "closed").map((item) => item.moduleSlug);
-  assert.equal(runtimeOverlays.size, publishedModuleSlugs.length - closedSlugs.length);
-  assert.ok(closedSlugs.every((slug) => !runtimeOverlays.has(slug)));
-  assert.equal(runtimeOverlays.get("rag")?.maintenanceId, "erm-english-reader-2026-08-09");
+test("document-shell maintenance overlays only verified renderer state", () => {
+  assert.equal(runtimeOverlays.size, publishedModuleSlugs.length);
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-document-shell-2026-08-10"));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "document-shell"));
 
   const driftedProject = structuredClone(currentProject);
   driftedProject.modules.rag.enEffectiveHash = fullHashA;
@@ -152,6 +189,27 @@ test("runtime maintenance overlays only the verified English renderer state", ()
     validate(registry, driftedProject, { runtimeOverlays }).failures.join("\n"),
     /rag: English content or date changed outside the localization workflow/,
   );
+
+  driftedProject.modules.rag.enEffectiveHash = currentProject.modules.rag.enEffectiveHash;
+  driftedProject.modules.rag.zhStateHash = fullHashB;
+  assert.match(
+    validate(registry, driftedProject, { runtimeOverlays }).failures.join("\n"),
+    /rag: Chinese content changed without an active deferment/,
+  );
+});
+
+test("runtime maintenance cannot relabel a document shell as an English-only renderer", async () => {
+  const mislabeledDocumentShell = structuredClone(registry);
+  const documentShell = mislabeledDocumentShell.runtimeMaintenances.find((item) => item.maintenanceId === "erm-english-document-shell-2026-08-10");
+  documentShell.kind = "english-renderer";
+  const mislabeledResult = await loadRuntimeMaintenanceOverlays(mislabeledDocumentShell);
+  assert.match(mislabeledResult.failures.join("\n"), /changes Chinese renderer state; record a document-shell maintenance instead/);
+
+  const mislabeledEnglishRuntime = structuredClone(registry);
+  const reader = mislabeledEnglishRuntime.runtimeMaintenances.find((item) => item.maintenanceId === "erm-english-reader-2026-08-09");
+  reader.kind = "document-shell";
+  const readerResult = await loadRuntimeMaintenanceOverlays(mislabeledEnglishRuntime);
+  assert.match(readerResult.failures.join("\n"), /changes Chinese reader content outside its renderer projection/);
 });
 
 test("candidate review scope covers the complete Chinese effective state", () => {
@@ -168,22 +226,26 @@ test("module renderer manifests cover indirect visible dependencies", async () =
   const englishSharedFiles = await resolveRendererDependencyFiles(projectRoot, englishRendererEntryFiles("solution-patterns"));
   const englishRagFiles = await resolveRendererDependencyFiles(projectRoot, englishRendererEntryFiles("rag"));
 
+  assert.ok(solutionFiles.includes("app/(zh)/layout.tsx"));
+  assert.ok(englishSharedFiles.includes("app/(en)/layout.tsx"));
+  assert.ok(!englishSharedFiles.includes("app/en/layout.tsx"));
+
   for (const relativePath of ["app/fieldbook-interactions.tsx", "app/deep-dive-relation-view.tsx", "app/layout-utils.mjs", "app/focused-visual-explainers.tsx", "app/module-visual-explorers.tsx"]) {
     assert.ok(solutionFiles.includes(relativePath), `${relativePath} must affect a shared Chinese module renderer hash`);
   }
   for (const [files, route] of [
-    [ragFiles, "app/modules/rag/page.tsx"],
-    [agentFiles, "app/modules/ai-agent/page.tsx"],
-    [promptFiles, "app/modules/prompt-engineering/page.tsx"],
+    [ragFiles, "app/(zh)/modules/rag/page.tsx"],
+    [agentFiles, "app/(zh)/modules/ai-agent/page.tsx"],
+    [promptFiles, "app/(zh)/modules/prompt-engineering/page.tsx"],
   ]) {
     assert.ok(files.includes(route), `${route} must be the module's real Chinese entry`);
     assert.ok(files.includes("app/flagship-labs.tsx"), `${route} must close over its interactive lab`);
-    assert.ok(!files.includes("app/modules/[slug]/page.tsx"), `${route} must not inherit the unused brief route`);
+    assert.ok(!files.includes("app/(zh)/modules/[slug]/page.tsx"), `${route} must not inherit the unused brief route`);
   }
-  assert.ok(englishSharedFiles.includes("app/en/modules/[slug]/page.tsx"));
+  assert.ok(englishSharedFiles.includes("app/(en)/en/modules/[slug]/page.tsx"));
   assert.ok(englishSharedFiles.includes("app/i18n/english-pilot-module-page.tsx"));
-  assert.ok(englishRagFiles.includes("app/en/modules/rag/page.tsx"));
-  assert.ok(!englishRagFiles.includes("app/en/modules/[slug]/page.tsx"));
+  assert.ok(englishRagFiles.includes("app/(en)/en/modules/rag/page.tsx"));
+  assert.ok(!englishRagFiles.includes("app/(en)/en/modules/[slug]/page.tsx"));
 
   const baselineHash = await rendererDependencyHash(projectRoot, solutionFiles);
   const mutatedHash = await rendererDependencyHash(projectRoot, solutionFiles, async (filePath) => {
@@ -207,7 +269,7 @@ test("module renderer manifests cover indirect visible dependencies", async () =
   const ragBaselineHash = await rendererDependencyHash(projectRoot, ragFiles);
   const ragRouteHash = await rendererDependencyHash(projectRoot, ragFiles, async (filePath) => {
     const bytes = await readFile(filePath);
-    return filePath.endsWith("app/modules/rag/page.tsx") ? Buffer.concat([bytes, Buffer.from("\n// dedicated route mutation")]) : bytes;
+    return filePath.endsWith("app/(zh)/modules/rag/page.tsx") ? Buffer.concat([bytes, Buffer.from("\n// dedicated route mutation")]) : bytes;
   });
   const flagshipHash = await rendererDependencyHash(projectRoot, ragFiles, async (filePath) => {
     const bytes = await readFile(filePath);
@@ -247,12 +309,12 @@ test("semantic audit rejects an added object without a current hash", () => {
 });
 
 test("semantic audit rejects omitted and invented object deltas", () => {
-  const omitted = structuredClone(registry);
-  omitted.deferments[0].affectedObjects.pop();
-  assert.match(validate(omitted).failures.join("\n"), /do not exactly match the live delta/);
+  const omitted = makeDeferredFixture();
+  omitted.deferment.affectedObjects.pop();
+  assert.match(validate(omitted.candidateRegistry, omitted.candidateProject).failures.join("\n"), /do not exactly match the live delta/);
 
-  const invented = structuredClone(registry);
-  invented.deferments[0].affectedObjects.push({
+  const invented = makeDeferredFixture();
+  invented.deferment.affectedObjects.push({
     objectId: "/module:solution-patterns/invented",
     objectType: "content",
     changeKind: "modified",
@@ -260,7 +322,7 @@ test("semantic audit rejects omitted and invented object deltas", () => {
     currentHash: fullHashB,
     sourceIds: [],
   });
-  assert.match(validate(invented).failures.join("\n"), /do not exactly match the live delta/);
+  assert.match(validate(invented.candidateRegistry, invented.candidateProject).failures.join("\n"), /do not exactly match the live delta/);
 });
 
 test("semantic audit rejects invalid modified hashes and duplicate active records", () => {
@@ -270,9 +332,9 @@ test("semantic audit rejects invalid modified hashes and duplicate active record
   modified.currentHash = modified.baselineHash;
   assert.match(validate(sameHash).failures.join("\n"), /modified requires two different hashes/);
 
-  const duplicate = structuredClone(registry);
-  duplicate.deferments.push({ ...structuredClone(duplicate.deferments[0]), defermentId: "dfr-duplicate-active-record" });
-  assert.match(validate(duplicate).failures.join("\n"), /only one active deferment is allowed/);
+  const duplicate = makeDeferredFixture();
+  duplicate.candidateRegistry.deferments.push({ ...structuredClone(duplicate.deferment), defermentId: "dfr-duplicate-active-record" });
+  assert.match(validate(duplicate.candidateRegistry, duplicate.candidateProject).failures.join("\n"), /only one active deferment is allowed/);
 });
 
 test("semantic audit resolves candidate, receipt, and source references", () => {
@@ -292,29 +354,26 @@ test("semantic audit resolves candidate, receipt, and source references", () => 
   badSource.deferments[0].affectedObjects[0].sourceIds.push("source-not-real");
   assert.match(validate(badSource).failures.join("\n"), /unknown source/);
 
-  const closureFieldsOnDeferred = structuredClone(registry);
-  Object.assign(closureFieldsOnDeferred.deferments[0], {
+  const closureFieldsOnDeferred = makeDeferredFixture();
+  Object.assign(closureFieldsOnDeferred.deferment, {
     closedAt: "2026-08-08",
     promotedCommit: "d".repeat(40),
-    closureReviewIds: closureFieldsOnDeferred.deferments[0].baselineReviewIds,
+    closureReviewIds: closureFieldsOnDeferred.deferment.baselineReviewIds,
     closureReceipt: "receipt-localization-baseline-2026-08-08",
   });
-  assert.match(validate(closureFieldsOnDeferred).failures.join("\n"), /only allowed on closed records/);
+  assert.match(validate(closureFieldsOnDeferred.candidateRegistry, closureFieldsOnDeferred.candidateProject).failures.join("\n"), /only allowed on closed records/);
 });
 
 test("deferred state rejects every English hash or date drift", () => {
-  const changed = structuredClone(currentProject);
-  const slug = registry.deferments[0].moduleSlug;
+  const { candidateRegistry, candidateProject: changed, deferment } = makeDeferredFixture();
+  const slug = deferment.moduleSlug;
   changed.modules[slug].enAuthoredHash = fullHashA;
   changed.modules[slug].englishUpdatedAt = "2026-08-08";
-  assert.match(validate(registry, changed).failures.join("\n"), /deferred work changed English content or englishUpdatedAt/);
+  assert.match(validate(candidateRegistry, changed).failures.join("\n"), /deferred work changed English content or englishUpdatedAt/);
 });
 
 test("ready state requires a real, reviewed English candidate", () => {
-  const readyRegistry = structuredClone(registry);
-  const readyProject = structuredClone(currentProject);
-  const deferment = readyRegistry.deferments[0];
-  const moduleState = readyProject.modules[deferment.moduleSlug];
+  const { candidateRegistry: readyRegistry, candidateProject: readyProject, deferment, moduleState } = makeDeferredFixture();
   const candidateReviewIds = addPassingCandidateReviews(moduleState, deferment.moduleSlug, moduleState.zhReviewHash, fullHashC);
   deferment.status = "ready-for-english-review";
   deferment.englishCandidate = {
@@ -341,14 +400,13 @@ test("ready state requires a real, reviewed English candidate", () => {
 });
 
 test("closed state cannot hide an unpromoted Chinese delta", () => {
-  const closed = structuredClone(registry);
-  const deferment = closed.deferments[0];
+  const { candidateRegistry: closed, candidateProject: closedProject, deferment } = makeDeferredFixture();
   closed.receipts.push({ receiptId: "receipt-test-closure", kind: "closure", recordedAt: "2026-08-08", decisionId: "D-012", summary: "Test closure." });
   deferment.status = "closed";
   deferment.closedAt = "2026-08-08";
   deferment.closureReviewIds = deferment.baselineReviewIds;
   deferment.closureReceipt = "receipt-test-closure";
-  assert.match(validate(closed).failures.join("\n"), /Chinese content changed without an active deferment/);
+  assert.match(validate(closed, closedProject).failures.join("\n"), /Chinese content changed without an active deferment/);
 });
 
 test("reviewed ready state can close only through an exact promoted baseline", () => {
@@ -513,18 +571,14 @@ test("review generator refuses to overwrite PASS records while deferments are ac
   assert.match(`${result.stdout}${result.stderr}`, /Automatic PASS review generation is disabled/);
 });
 
-test("localization audit emits line-anchored aligned and deferred states", () => {
+test("localization audit reports document-shell-maintained alignment", () => {
   const output = execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: projectRoot, encoding: "utf8" });
   const lines = output.trim().split("\n");
-  assert.ok(lines.some((line) => /^DEFERRED\/NOT_ALIGNED solution-patterns: dfr-solution-patterns-/.test(line)));
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-english-reader-2026-08-09"));
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-english-reader-2026-08-09"));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-english-document-shell-2026-08-10"));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-english-document-shell-2026-08-10"));
   assert.ok(lines.includes("Localization contract passed for 21 modules."));
-  assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, registry.deferments.filter((item) => item.status !== "closed").length);
-  assert.equal(
-    lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length,
-    publishedModuleSlugs.filter((slug) => !registry.deferments.some((item) => item.moduleSlug === slug && item.status !== "closed") && runtimeOverlays.has(slug)).length,
-  );
+  assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, 0);
+  assert.equal(lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length, publishedModuleSlugs.length);
 });
 
 test("English pages read englishUpdatedAt instead of Chinese updatedAt", async () => {

@@ -5,6 +5,11 @@ import test from "node:test";
 
 import { balanceGridRows, balanceRows, gridSpan } from "../app/layout-utils.mjs";
 import { codingAgentBenchmarks, codingAgentLandscapePolicy, codingAgentProducts } from "../app/coding-agent-landscape.mjs";
+import { englishCodingAgentBenchmarks, englishCodingAgentProducts } from "../app/i18n/en/coding-agent-landscape.mjs";
+import {
+  englishModelRadarBenchmarkSourceIds,
+  englishModelRadarSnapshots,
+} from "../app/i18n/en/model-radar.mjs";
 import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt, isValidIsoDate } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
@@ -29,6 +34,7 @@ import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
 import { moduleRepresentationAssessment } from "../app/module-representation-assessment.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
+import { modelRadarBenchmarkSourceIds, modelRadarSnapshots } from "../app/model-radar-data.mjs";
 import { promptQa } from "../app/prompt-content.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
 import { questionDirectoryItems, questionDirectoryModules } from "../app/question-index.mjs";
@@ -194,7 +200,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
 
   const [components, questionsPage, questionIndex, styles, v2Styles, agentRules, moduleStandard] = await Promise.all([
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/questions/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/questions/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/question-index.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
@@ -225,7 +231,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
 test("homepage leads from scenario to questions with links to every independent module", async () => {
   const [html, englishHtml] = await Promise.all([renderHtml("/"), renderHtml("/en")]);
   assertValidGridSpans(html, "/");
-  const homepageSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const homepageSource = await readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8");
 
   assert.match(html, /<html lang="zh-CN">/i);
   assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1"\/>/i);
@@ -234,6 +240,8 @@ test("homepage leads from scenario to questions with links to every independent 
   assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/i);
   assert.match(html, /href="\/references"/);
   assert.match(html, /href="\/coding-agents"/);
+  assert.match(englishHtml, /href="\/en\/model-radar"/);
+  assert.match(englishHtml, /href="\/en\/coding-agents"/);
   assert.match(html, /href="\/knowledge-graph">模块关系<\/a>[\s\S]*?<details class="homeSelectionMenu">[\s\S]*?<summary>选型<\/summary>[\s\S]*?href="\/model-radar">模型<\/a>[\s\S]*?href="\/coding-agents">Code Agent<\/a>/);
   assert.match(html, /Reference/);
   assert.match(html, /讲清 AI 技术，[\s\S]*?心中有数，丝毫不慌/);
@@ -323,17 +331,65 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
   assert.match(html, /CodeBuddy/);
 });
 
+test("English decision tools preserve canonical facts without exposing Chinese reader copy", async () => {
+  const [codingHtml, radarHtml] = await Promise.all([
+    renderHtml("/en/coding-agents"),
+    renderHtml("/en/model-radar"),
+  ]);
+
+  assert.deepEqual(englishCodingAgentProducts.map((item) => item.id), codingAgentProducts.map((item) => item.id));
+  assert.deepEqual(englishCodingAgentBenchmarks.map((item) => item.id), codingAgentBenchmarks.map((item) => item.id));
+  for (const [index, item] of englishCodingAgentProducts.entries()) {
+    const canonical = codingAgentProducts[index];
+    assert.equal(item.status, canonical.status);
+    assert.equal(item.verifiedAt, canonical.verifiedAt);
+    assert.equal(item.nextReviewAt, canonical.nextReviewAt);
+    assert.deepEqual(item.sourceIds, canonical.sourceIds);
+  }
+
+  assert.deepEqual(englishModelRadarBenchmarkSourceIds, modelRadarBenchmarkSourceIds);
+  assert.deepEqual(englishModelRadarSnapshots.map((item) => item.id), modelRadarSnapshots.map((item) => item.id));
+  for (const [snapshotIndex, snapshot] of englishModelRadarSnapshots.entries()) {
+    const canonicalSnapshot = modelRadarSnapshots[snapshotIndex];
+    assert.equal(snapshot.asOf, canonicalSnapshot.asOf);
+    assert.deepEqual(snapshot.models.map((model) => model.id), canonicalSnapshot.models.map((model) => model.id));
+    for (const [modelIndex, model] of snapshot.models.entries()) {
+      const canonicalModel = canonicalSnapshot.models[modelIndex];
+      assert.deepEqual(model.sourceRefs, canonicalModel.sourceRefs);
+      assert.deepEqual(model.benchmarkScores, canonicalModel.benchmarkScores);
+    }
+  }
+
+  for (const [path, html] of [["/en/coding-agents", codingHtml], ["/en/model-radar", radarHtml]]) {
+    assert.match(html, /<html\b[^>]*\blang="en"/i);
+    assert.match(html, /fieldbookTheme/);
+    assert.doesNotMatch(html, /[\u3400-\u9fff]/, `${path} must not render Chinese reader copy`);
+  }
+
+  assert.match(codingHtml, /Product and Harness Radar/);
+  assert.match(codingHtml, /Model × Harness × Task × Environment/);
+  assert.equal((codingHtml.match(/class="codingAgentItem"/g) ?? []).length, codingAgentProducts.length);
+  assert.match(codingHtml, /href="\/en\/references#source-product-codex-docs"/);
+  assert.match(codingHtml, /href="\/coding-agents"[^>]*hrefLang="zh-CN"/);
+
+  assert.match(radarHtml, /capability snapshot: Top 20/i);
+  assert.match(radarHtml, /View the top 20 by capability index/);
+  assert.match(radarHtml, /href="\/en\/references#source-intelligence-index"/);
+  assert.match(radarHtml, /href="\/en\/modules\/model-landscape#qa-1"/);
+  assert.match(radarHtml, /href="\/model-radar"[^>]*hrefLang="zh-CN"/);
+});
+
 test("v3 reading system keeps discovery functional, compact, and portable", async () => {
   const [html, moduleHtml, layoutSource, interactionSource, styles, globalStyles] = await Promise.all([
     renderHtml("/"),
     renderHtml("/modules/evaluation"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
-  assert.match(layoutSource, /import "\.\/fieldbook-v3\.css"/);
+  assert.match(layoutSource, /import "\.\.\/fieldbook-v3\.css"/);
   assert.doesNotMatch(html, /class="heroSearch"/, "首页只保留一个从问题开始的入口");
   assert.match(html, /class="moduleSearch"/);
   assert.match(html, /输入客户问题、技术或风险/);
@@ -818,19 +874,26 @@ test("English pages publish route-specific English sharing metadata", async () =
     ["/en/glossary", "/en/glossary", "/glossary", "Glossary"],
     ["/en/references", "/en/references", "/references", "References"],
     ["/en/knowledge-graph", "/en/knowledge-graph", "/knowledge-graph", "Dynamic Knowledge Explorer"],
+    ["/en/coding-agents", "/en/coding-agents", "/coding-agents", "Coding Agent and Harness Radar"],
+    ["/en/model-radar", "/en/model-radar", "/model-radar", "Model Capability Radar: Top 20 Snapshot"],
     ["/en/modules/rag", "/en/modules/rag", "/modules/rag", englishModuleRegistry.rag.title],
     ["/en/modules/mcp", "/en/modules/mcp", "/modules/mcp", englishModuleRegistry.mcp.title],
   ];
 
   for (const [route, englishPath, chinesePath, title] of cases) {
     const html = await renderHtml(route);
+    assert.match(html, /<html\b[^>]*\blang="en"/i, `${route} must emit an English document root on the server`);
+    assert.doesNotMatch(html, /<html\b[^>]*\blang="zh-CN"/i, `${route} must not inherit the Chinese document language`);
     assert.match(html, new RegExp(`<meta property="og:title" content="${escapeRegExp(title)}"/>`), `${route} needs its own Open Graph title`);
     assert.match(html, new RegExp(`<meta name="twitter:title" content="${escapeRegExp(title)}"/>`), `${route} needs its own Twitter title`);
+    assert.match(html, /<meta name="twitter:card" content="summary"\/>/i, `${route} needs an image-free English Twitter card`);
     assert.match(html, new RegExp(`<link rel="canonical" href="${escapeRegExp(`${site}${englishPath}`)}"/>`), `${route} needs its own canonical URL`);
     assert.match(html, new RegExp(`<link rel="alternate" hrefLang="en" href="${escapeRegExp(`${site}${englishPath}`)}"/>`), `${route} needs an English alternate`);
     assert.match(html, new RegExp(`<link rel="alternate" hrefLang="zh-CN" href="${escapeRegExp(`${site}${chinesePath}`)}"/>`), `${route} needs its Chinese counterpart`);
     assert.doesNotMatch(html, /<meta name="twitter:title" content="云计算 × AI 平台售前知识库"\/>/);
     assert.doesNotMatch(html, /social-card\.png/, `${route} must not inherit the Chinese social card`);
+    assert.doesNotMatch(html, /summary_large_image/i, `${route} must not claim an absent social image`);
+    assert.doesNotMatch(html, /<meta\b(?=[^>]*\bname="robots")(?=[^>]*\bcontent="[^"]*(?:noindex|nofollow))[^>]*>/i, `${route} must remain indexable`);
   }
 });
 
@@ -1163,7 +1226,7 @@ test("Batch 08 routes render inference overload and compute procurement evidence
   assert.match(inference, /Goodput/);
   assert.match(inference, /等待上限、背压和拒绝语义/);
   assert.match(inference, /扩容不能替代过载准入/);
-  assert.match(inferenceEn, /real workload, quality, and SLO constraints/);
+  assert.match(inferenceEn, /input and output distributions, arrival rate, priority, quality, and SLO/);
   assert.match(inferenceEn, /Goodput/);
   assert.match(inferenceEn, /unavailable or loading capacity/);
   assert.match(inferenceEn, /cache_salt/);
@@ -1193,7 +1256,7 @@ test("Batch 09 routes render platform-product and minimum-sufficient-loop eviden
   assert.match(platform, /OCI 镜像或 Kubernetes YAML 不是跨云、跨加速器的迁移证明/);
   assert.match(platform, /容器化并部署在 Kubernetes 上，是否就代表 AI 工作负载可以跨云和跨硬件自由迁移/);
   assert.match(platformEn, /platform control layer provides a capability catalog, APIs, templates, policy, quota, versions, and audit/i);
-  assert.match(platformEn, /Four multi-tenant acceptance boundaries/);
+  assert.match(platformEn, /Four multi-tenant validation boundaries/);
   assert.match(platformEn, /OCI image or Kubernetes YAML is not evidence of cross-cloud or cross-accelerator migration/);
   assert.match(platformEn, /Does containerizing an AI workload and deploying it on Kubernetes make it freely portable/);
 
@@ -1214,11 +1277,11 @@ test("Batch 09 control views expose every step and focused search entries resolv
     renderHtml("/modules/ai-infra-platform"),
     renderHtml("/en/modules/ai-infra-platform"),
     renderHtml("/en/modules/solution-patterns"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(platform, /<section class="controlDataPlane"[^>]*data-step-count="6"[^>]*>[\s\S]*?<span>RUN<\/span>[\s\S]*?<span>PROVE<\/span>[\s\S]*?<\/section>/);
-  assert.match(platformEn, /<section class="controlDataPlane"[^>]*data-step-count="6"[^>]*>[\s\S]*?Recovery, upgrade, and exit[\s\S]*?Useful output and resource economics[\s\S]*?<\/section>/i);
+  assert.match(platformEn, /<section class="controlDataPlane"[^>]*data-step-count="6"[^>]*>[\s\S]*?Recovery, upgrade, and exit[\s\S]*?Measurable service outcomes and resource economics[\s\S]*?<\/section>/i);
   assert.match(homepageSource, /searchableQuestions\(slug, content\.qa\)/);
   assert.match(homepageSource, /exposesLongFormSearchSections\(slug\)/);
 
@@ -1440,6 +1503,14 @@ test("every public knowledge route is anonymously readable and directly shareabl
     "/questions",
     "/references",
     "/knowledge-graph",
+    "/en",
+    "/en/coding-agents",
+    "/en/model-radar",
+    "/en/glossary",
+    "/en/questions",
+    "/en/references",
+    "/en/knowledge-graph",
+    ...publishedModuleSlugs.map((slug) => `/en/modules/${slug}`),
     ...moduleList.map((knowledgeModule) => knowledgeModule.href),
     ...Object.keys(legacyModuleAliases).map((slug) => `/modules/${slug}`),
   ];
@@ -1728,10 +1799,10 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   const [styles, v2Styles, homepage, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/modules/[slug]/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/references/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/references/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/module-publication.mjs", import.meta.url), "utf8"),
   ]);
@@ -1804,11 +1875,11 @@ test("source URLs have one code owner and are absent from content and route file
     readFile(new URL("../app/rag-content.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/agent-content.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/prompt-content.mjs", import.meta.url), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/modules/rag/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/modules/prompt-engineering/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/references/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/rag/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/prompt-engineering/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/references/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
   ]);
   const nonLedgerFiles = [ragContent, agentContent, promptContent, homepage, ragRoute, agentRoute, promptRoute, referencesRoute, moduleComponents];
@@ -1851,7 +1922,7 @@ test("project docs require independent routes, one reference page, and publish-a
     readFile(new URL("../docs/MODULE-QUALITY-GATES.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/CONTENT-MAINTENANCE.md", import.meta.url), "utf8"),
     readFile(new URL("../AGENTS.md", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);

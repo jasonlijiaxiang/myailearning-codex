@@ -397,24 +397,27 @@ test("bilingual review contract blocks inconsistent release verdicts", async () 
 });
 
 test("English pages reuse the established Chinese design system", async () => {
-  const [englishHome, englishModulePage, englishLayout] = await Promise.all([
-    readFile(new URL("../app/en/page.tsx", import.meta.url), "utf8"),
+  const [englishHome, englishModulePage, englishLayout, chineseLayout] = await Promise.all([
+    readFile(new URL("../app/(en)/en/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/en/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
   ]);
   ["fieldbookHome", "hero heroV2", "topbar", "heroGrid heroGridV2", "heroDecisionPanel", "fieldbookPromise", "promiseGrid"].forEach((className) => assert.match(englishHome, new RegExp(className)));
   ["modulePageHero moduleBriefHero", "moduleArticleLayout", "moduleBriefSection", "evidenceGrid", "qaList"].forEach((className) => assert.match(englishModulePage, new RegExp(className)));
   assert.match(englishModulePage, /ModuleReadingNav/);
   assert.match(englishModulePage, /ModuleHeroMetrics/);
-  assert.doesNotMatch(`${englishHome}\n${englishModulePage}\n${englishLayout}`, /import\s+["'][^"']+\.css["']/, "English routes must not introduce a separate visual stylesheet");
+  const cssImports = (source) => [...source.matchAll(/^import\s+["']([^"']+\.css)["'];?$/gm)].map((match) => match[1]);
+  assert.deepEqual(cssImports(englishLayout), cssImports(chineseLayout), "English and Chinese root layouts must share the same visual system");
+  assert.doesNotMatch(`${englishHome}\n${englishModulePage}`, /import\s+["'][^"']+\.css["']/, "English routes must not introduce route-specific stylesheets");
 });
 
 test("English home and knowledge graph expose the same interactive discovery capabilities", async () => {
   const [englishHome, englishGraph, englishGraphData, englishLayout] = await Promise.all([
-    readFile(new URL("../app/en/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/en/knowledge-graph/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/en/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/en/knowledge-graph/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/i18n/en/graph-data.mjs", import.meta.url), "utf8"),
-    readFile(new URL("../app/en/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/layout.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(englishHome, /KnowledgeSearchLaunch/);
   assert.match(englishHome, /ModuleExplorer/);
@@ -425,16 +428,17 @@ test("English home and knowledge graph expose the same interactive discovery cap
   assert.match(englishGraph, /language="en"/);
   assert.match(englishGraphData, /englishGraphModules/);
   assert.match(englishGraphData, /englishGraphTerms/);
-  assert.match(englishLayout, /DocumentLanguage lang="en"/);
+  assert.match(englishLayout, /<html lang="en">/);
+  assert.doesNotMatch(englishLayout, /DocumentLanguage/);
 });
 
 test("reader-facing English routes use interface space for knowledge instead of language-status labels", async () => {
   const routeSources = await Promise.all([
-    "../app/en/page.tsx",
-    "../app/en/questions/page.tsx",
-    "../app/en/glossary/page.tsx",
-    "../app/en/references/page.tsx",
-    "../app/en/layout.tsx",
+    "../app/(en)/en/page.tsx",
+    "../app/(en)/en/questions/page.tsx",
+    "../app/(en)/en/glossary/page.tsx",
+    "../app/(en)/en/references/page.tsx",
+    "../app/(en)/layout.tsx",
     "../app/i18n/english-pilot-module-page.tsx",
   ].map((file) => readFile(new URL(file, import.meta.url), "utf8")));
   const renderedCopy = routeSources.join("\n");
@@ -787,10 +791,10 @@ test("Batch 14 English content preserves model mechanisms and predictive lifecyc
 
 test("Chinese global entry pages expose their matching English routes", async () => {
   const routes = [
-    ["../app/page.tsx", "/en"],
-    ["../app/questions/page.tsx", "/en/questions"],
-    ["../app/glossary/page.tsx", "/en/glossary"],
-    ["../app/references/page.tsx", "/en/references"],
+    ["../app/(zh)/page.tsx", "/en"],
+    ["../app/(zh)/questions/page.tsx", "/en/questions"],
+    ["../app/(zh)/glossary/page.tsx", "/en/glossary"],
+    ["../app/(zh)/references/page.tsx", "/en/references"],
   ];
   for (const [file, englishHref] of routes) {
     const source = await readFile(new URL(file, import.meta.url), "utf8");
@@ -801,13 +805,13 @@ test("Chinese global entry pages expose their matching English routes", async ()
 
 test("English routes and all Chinese module page families expose reciprocal language paths", async () => {
   const [sharedZh, ragZh, agentZh, promptZh, enHome, enShared, enRag, enModulePage] = await Promise.all([
-    readFile(new URL("../app/modules/[slug]/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/modules/rag/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/modules/prompt-engineering/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/en/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/en/modules/[slug]/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/en/modules/rag/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/rag/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/prompt-engineering/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/en/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/en/modules/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(en)/en/modules/rag/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(sharedZh, /englishModulePath/);

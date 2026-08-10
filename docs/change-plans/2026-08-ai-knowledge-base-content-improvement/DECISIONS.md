@@ -118,3 +118,12 @@
   - 所有批次/阶段确认只形成 `codex/ai-knowledge-base-content-improvement` 上的本地检查点提交与 receipt。
   - Stage 5 的 Git/Sites 发布链路整体后移：`npm run check`、`sites:release-check` 只作为本地验证执行，不产生远端或公开部署动作。
   - 最终 Review 包交付前，任务视为未完成；用户终审后按 D-011 决定合并与发布。
+
+## D-016：英文服务端文档壳独立维护
+
+- 状态：已确认（2026-08-10）
+- 决定：英文路由使用独立 `(en)` route-group root layout，在服务器直接输出 `<html lang="en">`、英文 metadata 和可索引的 `summary` 分享卡；中文根布局保持独立。该变更作为 document-shell runtime maintenance 记录，不改变任何模块的英文 authored 内容、审校结果或更新时间。
+- 影响：
+  - 不再依赖 hydration 后的 document-language mutation。
+  - 共享文档壳变更须以 `document-shell` maintenance receipt 记录，并通过中英文 renderer 投影、root language、metadata、robots 与路由 HTML 回归。
+  - 本决定不改变 D-013 的分支检查点边界，不授权远端推送或公开部署。
