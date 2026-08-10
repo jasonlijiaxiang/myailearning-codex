@@ -16253,16 +16253,16 @@
       }
     },
     "security": {
-      "zhBaselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "35fb4e1a99823b0bcb9202834b36833470bc2551",
+      "enBaselineCommit": "35fb4e1a99823b0bcb9202834b36833470bc2551",
       "reviewSetIds": [
-        "br-security-ultra-exception",
-        "br-security-xhigh-author",
-        "br-security-xhigh-language",
-        "br-security-xhigh-semantic"
+        "br-security-2026-08-10-ultra-exception",
+        "br-security-2026-08-10-xhigh-author",
+        "br-security-2026-08-10-xhigh-language",
+        "br-security-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:52097a883f8e2919fc8a8c0772c1aca7841e22b2235800e8c2407cf0f79f7f37",
-      "zhStateHash": "sha256:42411c01086226b07a707eab1fcd564b1673bd09b39823bf4d15b90f9e72595a",
+      "zhReviewHash": "sha256:d70254ffffc7c20c8fa87b11565f86a9dd3d21aaf0de1b95de14b78ec4d20913",
+      "zhStateHash": "sha256:d70254ffffc7c20c8fa87b11565f86a9dd3d21aaf0de1b95de14b78ec4d20913",
       "zhObjects": {
         "/module:security/brief/cloudHooks/$order": {
           "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
@@ -16371,7 +16371,7 @@
           "sourceIds": []
         },
         "/module:security/brief/evidenceCards/$order": {
-          "hash": "sha256:cfee408a27ea6bf3dd22c220339b3297d87d81d7387b0e156135e9e87180db71",
+          "hash": "sha256:90f589f81832cb3fedf7606d77ddb2272972930b7c8c71f0481135f7bfed54af",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -16415,6 +16415,13 @@
           "objectType": "brief",
           "sourceIds": [
             "nist-sp-800-61r3"
+          ]
+        },
+        "/module:security/brief/evidenceCards/006": {
+          "hash": "sha256:7fc18b8aa9096e920662d2c95889ff9f34d523fac2710b2f47b74760317c2377",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05"
           ]
         },
         "/module:security/brief/position": {
@@ -16468,7 +16475,7 @@
           "sourceIds": []
         },
         "/module:security/brief/qa/$order": {
-          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -16533,6 +16540,29 @@
           "sourceIds": [
             "nist-genai-profile",
             "nist-sp-800-61r3"
+          ]
+        },
+        "/module:security/brief/qa/008": {
+          "hash": "sha256:9c7522febd5801adbe8d9f36288657ac72eb22adf6e8be0aefbd8753c46f664e",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05"
+          ]
+        },
+        "/module:security/brief/qa/009": {
+          "hash": "sha256:30b72e12c29ec3409b999b9f30f6a67bdf42bd1a4376055054bbd65e13fc4189",
+          "objectType": "brief",
+          "sourceIds": [
+            "c2pa-2-4",
+            "nist-sp-800-61r3"
+          ]
+        },
+        "/module:security/brief/qa/010": {
+          "hash": "sha256:eeb4098ac7d87f992e63d396297be8ee4947cae6685b407ff43338d01c7ee776",
+          "objectType": "brief",
+          "sourceIds": [
+            "nist-zero-trust",
+            "owasp-prompt-injection"
           ]
         },
         "/module:security/brief/relatedSlugs/$order": {
@@ -16651,15 +16681,30 @@
           "sourceIds": []
         },
         "/module:security/claims/$order": {
-          "hash": "sha256:9df0b1d9201f0aa34411c473a67794e37da5b95705edf7ac10aa997fd774fc2f",
+          "hash": "sha256:2ee1d1b74d8fae6a097fcc9978448171b46258f6ab8bb25d3d6ba34974743aa3",
           "objectType": "claims-order",
           "sourceIds": []
         },
         "/module:security/claims/000": {
+          "hash": "sha256:bc8637ba16885cd48312a9d15a6c5c6563e52b629294ef5beb079d1d0c91e88b",
+          "objectType": "claims",
+          "sourceIds": [
+            "c2pa-2-4"
+          ]
+        },
+        "/module:security/claims/001": {
           "hash": "sha256:bd5377fd4325251f1e0d1ad50c81761be22a1e094efe9fa03f3f28b76cea6339",
           "objectType": "claims",
           "sourceIds": [
             "nist-aml-100-2e2025"
+          ]
+        },
+        "/module:security/claims/002": {
+          "hash": "sha256:72bcf2b3f7cd5c458e99409adab31148440aa09f068e6e01d21d9b21d33ffc3d",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025"
           ]
         },
         "/module:security/content/deepDives/$order": {
@@ -16689,7 +16734,7 @@
           ]
         },
         "/module:security/content/evidenceCards/$order": {
-          "hash": "sha256:cfee408a27ea6bf3dd22c220339b3297d87d81d7387b0e156135e9e87180db71",
+          "hash": "sha256:90f589f81832cb3fedf7606d77ddb2272972930b7c8c71f0481135f7bfed54af",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -16735,8 +16780,15 @@
             "nist-sp-800-61r3"
           ]
         },
+        "/module:security/content/evidenceCards/006": {
+          "hash": "sha256:7fc18b8aa9096e920662d2c95889ff9f34d523fac2710b2f47b74760317c2377",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05"
+          ]
+        },
         "/module:security/content/qa/$order": {
-          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -16803,8 +16855,31 @@
             "nist-sp-800-61r3"
           ]
         },
+        "/module:security/content/qa/008": {
+          "hash": "sha256:9c7522febd5801adbe8d9f36288657ac72eb22adf6e8be0aefbd8753c46f664e",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05"
+          ]
+        },
+        "/module:security/content/qa/009": {
+          "hash": "sha256:30b72e12c29ec3409b999b9f30f6a67bdf42bd1a4376055054bbd65e13fc4189",
+          "objectType": "content",
+          "sourceIds": [
+            "c2pa-2-4",
+            "nist-sp-800-61r3"
+          ]
+        },
+        "/module:security/content/qa/010": {
+          "hash": "sha256:eeb4098ac7d87f992e63d396297be8ee4947cae6685b407ff43338d01c7ee776",
+          "objectType": "content",
+          "sourceIds": [
+            "nist-zero-trust",
+            "owasp-prompt-injection"
+          ]
+        },
         "/module:security/curriculum/chapters/$order": {
-          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
@@ -16873,6 +16948,15 @@
             "nist-zero-trust"
           ]
         },
+        "/module:security/curriculum/chapters/008": {
+          "hash": "sha256:5764c5dfc9b3840440583e08e2e42a32eaa4da8709cf241b958485ee3ede7a55",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025",
+            "nist-genai-profile"
+          ]
+        },
         "/module:security/curriculum/lead": {
           "hash": "sha256:b58380b4b394b7107c48a8961eb0e450b939aafd0e90469703c2611ba6d6808a",
           "objectType": "curriculum",
@@ -16884,7 +16968,7 @@
           "sourceIds": []
         },
         "/module:security/learning/labs/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -16912,6 +16996,15 @@
             "nist-genai-profile",
             "nist-sp-800-61r3",
             "nist-zero-trust"
+          ]
+        },
+        "/module:security/learning/labs/003": {
+          "hash": "sha256:95c78894c24e5e46d3cf8967c48cab19bd043a9860666365a217c9166e8609ad",
+          "objectType": "learning",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025",
+            "nist-genai-profile"
           ]
         },
         "/module:security/learning/outcomes/$order": {
@@ -17035,7 +17128,7 @@
           "sourceIds": []
         },
         "/module:security/publication/qaCoverageTags/$order": {
-          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "publication-order",
           "sourceIds": []
         },
@@ -17076,6 +17169,21 @@
         },
         "/module:security/publication/qaCoverageTags/007": {
           "hash": "sha256:de6d3ba3153b0f3d70a706c078046e3bc151ebe443aeb3f054608fe9244ff6cd",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:security/publication/qaCoverageTags/008": {
+          "hash": "sha256:fd1cfc58064fd31cfa9f8069c67910320c7db1162bad0beb0ea855ff6cf0e210",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:security/publication/qaCoverageTags/009": {
+          "hash": "sha256:f46fac0b9fbe339747b98cb622d4c18e033d7595384d32563901df7188a188d4",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:security/publication/qaCoverageTags/010": {
+          "hash": "sha256:6f45efd31efcceb52898b419708cb4492621386ea812f4c4a520d7f5ec6820a8",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -17120,7 +17228,7 @@
           "sourceIds": []
         },
         "/module:security/publication/updatedAt": {
-          "hash": "sha256:9681da27411be1030770a458fb5d906315210c609f090ba83afdaf99baf63dd7",
+          "hash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -17150,7 +17258,7 @@
           "sourceIds": []
         },
         "/module:security/referenceModule/sourceIds/$order": {
-          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "hash": "sha256:7861861f1344999672a1802b279bf03aa2d152c96916bca5c74a622717c621ed",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -17180,26 +17288,41 @@
           "sourceIds": []
         },
         "/module:security/referenceModule/sourceIds/005": {
-          "hash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "hash": "sha256:6d8226447b3bb98405e86ecc1da536d3db2f0fd2ceb754e93955e9efd16b51ca",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:security/referenceModule/sourceIds/006": {
-          "hash": "sha256:2271a7569ae441322e44061557a81620e55b4ed801bc2a6243994628859390a2",
+          "hash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:security/referenceModule/sourceIds/007": {
-          "hash": "sha256:66aad64630c5ce09bd4ffbfe6bd1a841dd4e0a5f703da6013733c0c503ed6c85",
+          "hash": "sha256:2271a7569ae441322e44061557a81620e55b4ed801bc2a6243994628859390a2",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:security/referenceModule/sourceIds/008": {
-          "hash": "sha256:4d1caa74389c628039336536e61e35dd7582167a4d220947d9a62dea05f80711",
+          "hash": "sha256:66aad64630c5ce09bd4ffbfe6bd1a841dd4e0a5f703da6013733c0c503ed6c85",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:security/referenceModule/sourceIds/009": {
+          "hash": "sha256:619602fc116188bc94e9b0c483f985947ad3c756bc9d062e0e5305b3db773d1e",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:security/referenceModule/sourceIds/010": {
+          "hash": "sha256:97e88d61579f5145ca99ccc27ebf2df42ac6615898f25e1f11d38dde949cf6f9",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:security/referenceModule/sourceIds/011": {
+          "hash": "sha256:4d1caa74389c628039336536e61e35dd7582167a4d220947d9a62dea05f80711",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:security/referenceModule/sourceIds/012": {
           "hash": "sha256:31fef223dc1412462bbb813c96d8af6048051b200d0ee68b30be4296f6d6a011",
           "objectType": "referenceModule",
           "sourceIds": []
@@ -17210,7 +17333,7 @@
           "sourceIds": []
         },
         "/module:security/renderedProjection/evidenceCardIds/$order": {
-          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -17244,8 +17367,13 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:security/renderedProjection/evidenceCardIds/006": {
+          "hash": "sha256:983be97c1ff9d004e0db07cacc9048e8d7d8eee1e08f45f79ac644a681e0c880",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:security/renderedProjection/questionIds/$order": {
-          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -17286,6 +17414,21 @@
         },
         "/module:security/renderedProjection/questionIds/007": {
           "hash": "sha256:97b0e75c5cc2c15417f937382222a267d45362c48167cb5f1c2f09b1f641eff1",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:security/renderedProjection/questionIds/008": {
+          "hash": "sha256:662d847762007f23fc275c84f5bb87fcbc748f30d6f3530d308c2c4a0bec1c66",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:security/renderedProjection/questionIds/009": {
+          "hash": "sha256:344f0c38e8b23067d036373f46f1d93078b2c15ca99cb2807545f37460a57a59",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:security/renderedProjection/questionIds/010": {
+          "hash": "sha256:06337d62e81482356248f0869a7c12bde34b7711097e450247cee96446564696",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -17365,8 +17508,23 @@
           "sourceIds": []
         },
         "/module:security/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:1db3b88e04ddac3bcf0b5603090882573033c5d44de25910c698f9e9e1c20e74",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:security/sources/c2pa-2-4": {
+          "hash": "sha256:f7dff16399925b76fb3d0cea474552729d8ed6e3a43c6b2332cdf397e9e95d6b",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:security/sources/china-ai-content-labeling-2026-08-05": {
+          "hash": "sha256:839b87b9be0d0b1bcdc21c581a28cc5518dd71c5704ab77cc06f166a35146390",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:security/sources/gb-45438-2025": {
+          "hash": "sha256:0716b167e8231b27bbda55237f394aefa3575787586712edf73294f50692a5ef",
+          "objectType": "sources",
           "sourceIds": []
         },
         "/module:security/sources/mcp-authorization": {
@@ -17566,9 +17724,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:c2733dac455a80be115a52def36f52a3bf11e003b1872cc651ee8ffe10345c29",
-      "enEffectiveHash": "sha256:df1a329af4f680da1330c8476cc61e19bf8168e669aea37e4471be935eb3986a",
-      "enReviewHash": "sha256:13f9a95b7253778e6e477acd303f3f01603c309ff086c84697877488e3ee041b",
+      "enAuthoredHash": "sha256:96de9d7ca2c999b3ef019ae4ce39fca6af86938fc1f9b6cea02b9be2e51b57c5",
+      "enEffectiveHash": "sha256:44c78f6dabfb395e5705ebcc1dc67e8f6750ff2d6ca74c3d817af9fd610978e7",
+      "enReviewHash": "sha256:5b7779746ec0abf0148668ecf7424a60ce0399aa9b85ae2f5589dbd7ed98cec4",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -17576,6 +17734,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -17587,8 +17746,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-07-30",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-security-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/security.ultra-exception.json",
+          "hash": "sha256:d460c8238452a68316f925411d8d3a8009d1103ab13827e1f9300c638263a4f4",
+          "zhContentHash": "sha256:d70254ffffc7c20c8fa87b11565f86a9dd3d21aaf0de1b95de14b78ec4d20913",
+          "enContentHash": "sha256:5b7779746ec0abf0148668ecf7424a60ce0399aa9b85ae2f5589dbd7ed98cec4"
+        },
+        "br-security-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/security.xhigh-author.json",
+          "hash": "sha256:8c7e8c3310a6870c7b34f7c4d530926e9de9d349ae7d9754aa78f29b996e9f35",
+          "zhContentHash": "sha256:d70254ffffc7c20c8fa87b11565f86a9dd3d21aaf0de1b95de14b78ec4d20913",
+          "enContentHash": "sha256:5b7779746ec0abf0148668ecf7424a60ce0399aa9b85ae2f5589dbd7ed98cec4"
+        },
+        "br-security-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/security.xhigh-language.json",
+          "hash": "sha256:c2d976f52f3b456c3987fc5000e381c2c09f4fe84163a8f9b0ea6fd09bfb907f",
+          "zhContentHash": "sha256:d70254ffffc7c20c8fa87b11565f86a9dd3d21aaf0de1b95de14b78ec4d20913",
+          "enContentHash": "sha256:5b7779746ec0abf0148668ecf7424a60ce0399aa9b85ae2f5589dbd7ed98cec4"
+        },
+        "br-security-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/security.xhigh-semantic.json",
+          "hash": "sha256:595dca30bd2d041555fe62b66b9bb7a55c3918201ecb7d4aab7a914738e312bb",
+          "zhContentHash": "sha256:d70254ffffc7c20c8fa87b11565f86a9dd3d21aaf0de1b95de14b78ec4d20913",
+          "enContentHash": "sha256:5b7779746ec0abf0148668ecf7424a60ce0399aa9b85ae2f5589dbd7ed98cec4"
+        },
         "br-security-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/security.ultra-exception.json",
           "hash": "sha256:0bd2ecae8b5961098cda8cb3a109bb21db7f2de35f6eadbfc99fe2aa1bff55df",
@@ -36947,13 +37130,51 @@
       "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
       "englishCandidate": {
         "zhReviewHash": "sha256:2d44efea989eb9903121a4b6d51695753001583b46c2a18bae1f2f949879ee43",
-        "zhRendererFiles": ["app/content-update-metadata.mjs", "app/deep-dive-relation-view.tsx", "app/fieldbook-interactions.tsx", "app/focused-visual-explainers.tsx", "app/i18n/locale-config.mjs", "app/layout-utils.mjs", "app/layout.tsx", "app/module-content-components.tsx", "app/module-pilot-views.tsx", "app/module-representation-assessment.mjs", "app/module-visual-explorers.tsx", "app/modules/[slug]/page.tsx", "app/question-filter.mjs", "app/term-hint.tsx"],
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
         "enAuthoredHash": "sha256:4437ac5d46628e2d66ef0705d61d7dd68f463b580c34deaca7cc59309cf23b86",
         "enEffectiveHash": "sha256:6abf21f15736e6a52d0e1530386cc6dfb008a9d3beae968dafa8744e49463327",
         "enReviewHash": "sha256:066b837f791c8c87a9287812fc6da07173c14586b621b12fe68674df0d3aeecb",
-        "enRendererFiles": ["app/content-update-metadata.mjs", "app/deep-dive-relation-view.tsx", "app/en/layout.tsx", "app/en/modules/[slug]/page.tsx", "app/fieldbook-interactions.tsx", "app/i18n/document-language.tsx", "app/i18n/english-page-metadata.ts", "app/i18n/english-pilot-module-page.tsx", "app/i18n/english-representation-assessment.mjs", "app/i18n/english-section-outline.mjs", "app/i18n/locale-config.mjs", "app/layout-utils.mjs", "app/layout.tsx", "app/module-content-components.tsx", "app/module-representation-assessment.mjs", "app/module-visual-explorers.tsx", "app/question-filter.mjs"],
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
         "englishUpdatedAt": "2026-08-10",
-        "reviewIds": ["br-solution-patterns-2026-08-10-xhigh-author", "br-solution-patterns-2026-08-10-xhigh-semantic", "br-solution-patterns-2026-08-10-xhigh-language", "br-solution-patterns-2026-08-10-ultra-exception"]
+        "reviewIds": [
+          "br-solution-patterns-2026-08-10-xhigh-author",
+          "br-solution-patterns-2026-08-10-xhigh-semantic",
+          "br-solution-patterns-2026-08-10-xhigh-language",
+          "br-solution-patterns-2026-08-10-ultra-exception"
+        ]
       }
     },
     {
@@ -38989,13 +39210,51 @@
       "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
       "englishCandidate": {
         "zhReviewHash": "sha256:fba0430772188134c5b4fb1c7126e92675756475fbe06bb4dcc3ec765679e1dc",
-        "zhRendererFiles": ["app/content-update-metadata.mjs", "app/deep-dive-relation-view.tsx", "app/fieldbook-interactions.tsx", "app/focused-visual-explainers.tsx", "app/i18n/locale-config.mjs", "app/layout-utils.mjs", "app/layout.tsx", "app/module-content-components.tsx", "app/module-pilot-views.tsx", "app/module-representation-assessment.mjs", "app/module-visual-explorers.tsx", "app/modules/[slug]/page.tsx", "app/question-filter.mjs", "app/term-hint.tsx"],
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
         "enAuthoredHash": "sha256:c5aa00d5f5b376ed0359b25ae8830f2f4238b3a2032508975d44d0a0be58a588",
         "enEffectiveHash": "sha256:cc2f54a7b871704e761d27541f6cf9dffdabaf8b49858b4d7053687a735a48d0",
         "enReviewHash": "sha256:6042ced0a84360f65f751d046c8ee7f11060b29ea23f6fd185e34c7328711591",
-        "enRendererFiles": ["app/content-update-metadata.mjs", "app/deep-dive-relation-view.tsx", "app/en/layout.tsx", "app/en/modules/[slug]/page.tsx", "app/fieldbook-interactions.tsx", "app/i18n/document-language.tsx", "app/i18n/english-page-metadata.ts", "app/i18n/english-pilot-module-page.tsx", "app/i18n/english-representation-assessment.mjs", "app/i18n/english-section-outline.mjs", "app/i18n/locale-config.mjs", "app/layout-utils.mjs", "app/layout.tsx", "app/module-content-components.tsx", "app/module-representation-assessment.mjs", "app/module-visual-explorers.tsx", "app/question-filter.mjs"],
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
         "englishUpdatedAt": "2026-08-10",
-        "reviewIds": ["br-multimodal-2026-08-10-xhigh-author", "br-multimodal-2026-08-10-xhigh-semantic", "br-multimodal-2026-08-10-xhigh-language", "br-multimodal-2026-08-10-ultra-exception"]
+        "reviewIds": [
+          "br-multimodal-2026-08-10-xhigh-author",
+          "br-multimodal-2026-08-10-xhigh-semantic",
+          "br-multimodal-2026-08-10-xhigh-language",
+          "br-multimodal-2026-08-10-ultra-exception"
+        ]
       }
     },
     {
@@ -40418,7 +40677,7 @@
       "moduleSlug": "security",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -40839,14 +41098,61 @@
       "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
       "englishCandidate": {
         "zhReviewHash": "sha256:d70254ffffc7c20c8fa87b11565f86a9dd3d21aaf0de1b95de14b78ec4d20913",
-        "zhRendererFiles": ["app/content-update-metadata.mjs", "app/deep-dive-relation-view.tsx", "app/fieldbook-interactions.tsx", "app/focused-visual-explainers.tsx", "app/i18n/locale-config.mjs", "app/layout-utils.mjs", "app/layout.tsx", "app/module-content-components.tsx", "app/module-pilot-views.tsx", "app/module-representation-assessment.mjs", "app/module-visual-explorers.tsx", "app/modules/[slug]/page.tsx", "app/question-filter.mjs", "app/term-hint.tsx"],
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
         "enAuthoredHash": "sha256:96de9d7ca2c999b3ef019ae4ce39fca6af86938fc1f9b6cea02b9be2e51b57c5",
         "enEffectiveHash": "sha256:44c78f6dabfb395e5705ebcc1dc67e8f6750ff2d6ca74c3d817af9fd610978e7",
         "enReviewHash": "sha256:5b7779746ec0abf0148668ecf7424a60ce0399aa9b85ae2f5589dbd7ed98cec4",
-        "enRendererFiles": ["app/content-update-metadata.mjs", "app/deep-dive-relation-view.tsx", "app/en/layout.tsx", "app/en/modules/[slug]/page.tsx", "app/fieldbook-interactions.tsx", "app/i18n/document-language.tsx", "app/i18n/english-page-metadata.ts", "app/i18n/english-pilot-module-page.tsx", "app/i18n/english-representation-assessment.mjs", "app/i18n/english-section-outline.mjs", "app/i18n/locale-config.mjs", "app/layout-utils.mjs", "app/layout.tsx", "app/module-content-components.tsx", "app/module-representation-assessment.mjs", "app/module-visual-explorers.tsx", "app/question-filter.mjs"],
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
         "englishUpdatedAt": "2026-08-10",
-        "reviewIds": ["br-security-2026-08-10-xhigh-author", "br-security-2026-08-10-xhigh-semantic", "br-security-2026-08-10-xhigh-language", "br-security-2026-08-10-ultra-exception"]
-      }
+        "reviewIds": [
+          "br-security-2026-08-10-xhigh-author",
+          "br-security-2026-08-10-xhigh-semantic",
+          "br-security-2026-08-10-xhigh-language",
+          "br-security-2026-08-10-ultra-exception"
+        ]
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "35fb4e1a99823b0bcb9202834b36833470bc2551",
+      "closureReviewIds": [
+        "br-security-2026-08-10-xhigh-author",
+        "br-security-2026-08-10-xhigh-semantic",
+        "br-security-2026-08-10-xhigh-language",
+        "br-security-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-security-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-ai-gateway-2026-08-08-shared-renderer",
