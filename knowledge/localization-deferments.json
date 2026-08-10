@@ -18392,16 +18392,16 @@
       }
     },
     "ai-ops": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "1abc88dd740b84427c3afe13707d2a3fa8fd6f53",
+      "enBaselineCommit": "1abc88dd740b84427c3afe13707d2a3fa8fd6f53",
       "reviewSetIds": [
-        "br-ai-ops-ultra-exception",
-        "br-ai-ops-xhigh-author",
-        "br-ai-ops-xhigh-language",
-        "br-ai-ops-xhigh-semantic"
+        "br-ai-ops-2026-08-10-ultra-exception",
+        "br-ai-ops-2026-08-10-xhigh-author",
+        "br-ai-ops-2026-08-10-xhigh-language",
+        "br-ai-ops-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:fc236ea529fb82865e48cc590209595067bcc03a177f1956e45cc575c77983fa",
-      "zhStateHash": "sha256:8405e8493bba1c11d40b1b0f9b12bec7c2371f41697cbf7de47024bfbf7ad9d8",
+      "zhReviewHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
+      "zhStateHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
       "zhObjects": {
         "/module:ai-ops/brief/cloudHooks/$order": {
           "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
@@ -20424,7 +20424,7 @@
           "sourceIds": []
         },
         "/module:ai-ops/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -20875,9 +20875,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:3012f2bd88347ff2804838a96cacfeb610c0c7753e33476a0f5deaa215475a2a",
-      "enEffectiveHash": "sha256:ac4c1ce03a4f5bd08a9e1bed7388e449f970e8cb66a4c11ea1c065c17b9169ef",
-      "enReviewHash": "sha256:afb5f216d30ac51c24788f5ccb4bee7c5c823bedbf4eb2cb33d86babc6e02e38",
+      "enAuthoredHash": "sha256:4b12c0b680714126f66bb56047251f01cb74f8f6b7f198adb6915c1199304909",
+      "enEffectiveHash": "sha256:9fab9ffe2170428c708240cc969bd9e0e4d793752fe95af7136c54454836e9a6",
+      "enReviewHash": "sha256:75b15cfa7dc9cd74befc577fe0f3057911149b18c777b9f9364f0853ce66eb60",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -20885,6 +20885,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -20898,6 +20899,30 @@
       ],
       "englishUpdatedAt": "2026-08-01",
       "reviewFiles": {
+        "br-ai-ops-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-ops.ultra-exception.json",
+          "hash": "sha256:c24a17307d54a0a8a74495c7507b68f3ee0dc49de4b99470be35590bfaff1adc",
+          "zhContentHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
+          "enContentHash": "sha256:75b15cfa7dc9cd74befc577fe0f3057911149b18c777b9f9364f0853ce66eb60"
+        },
+        "br-ai-ops-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-ops.xhigh-author.json",
+          "hash": "sha256:68a52f00bcecba23e536e84ca6a08e3f8561b9368380df3ba15477e6323badc5",
+          "zhContentHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
+          "enContentHash": "sha256:75b15cfa7dc9cd74befc577fe0f3057911149b18c777b9f9364f0853ce66eb60"
+        },
+        "br-ai-ops-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-ops.xhigh-language.json",
+          "hash": "sha256:1c82703d56a5ecc7429891c9a51a8a78e40969475efde96b8fd839146cdc970d",
+          "zhContentHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
+          "enContentHash": "sha256:75b15cfa7dc9cd74befc577fe0f3057911149b18c777b9f9364f0853ce66eb60"
+        },
+        "br-ai-ops-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-ops.xhigh-semantic.json",
+          "hash": "sha256:7ef9394e8d561ba351464d00a951f1e87f2b378ebee492b54700fd12efa4023f",
+          "zhContentHash": "sha256:9f5b31013035b0ae39a5d75400f3958cac438fa8808a7b65f6953655188bfc42",
+          "enContentHash": "sha256:75b15cfa7dc9cd74befc577fe0f3057911149b18c777b9f9364f0853ce66eb60"
+        },
         "br-ai-ops-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/ai-ops.ultra-exception.json",
           "hash": "sha256:67a4257373ac62a44d7de8dd2a5c4d1961cad2e18700b950c7ac62b405a0ab87",
@@ -39779,7 +39804,7 @@
       "moduleSlug": "ai-ops",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -39857,7 +39882,16 @@
         "br-ai-ops-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "closedAt": "2026-08-10",
+      "promotedCommit": "1abc88dd740b84427c3afe13707d2a3fa8fd6f53",
+      "closureReviewIds": [
+        "br-ai-ops-2026-08-10-xhigh-author",
+        "br-ai-ops-2026-08-10-xhigh-semantic",
+        "br-ai-ops-2026-08-10-xhigh-language",
+        "br-ai-ops-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-ai-ops-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-predictive-ai-mlops-2026-08-08-shared-renderer",
