@@ -369,6 +369,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null 
   ]);
   const claims = JSON.parse(await readFile(path.join(projectRoot, "knowledge", "claims", "index.json"), "utf8"));
   const sharedEnglishSources = englishSourceView(referenceModule.sourceLedger, englishModule.englishSourceCopy);
+  const sharedEnglishReferenceHash = contentHash(sharedEnglishSources);
 
   const modules = {};
   const rendererFilesCache = new Map();
@@ -456,6 +457,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null 
       publication: englishPublication,
       englishUpdatedAt,
       sharedSources: selectedEntries(sharedEnglishSources, englishSourceIds),
+      sharedReferenceDirectoryHash: sharedEnglishReferenceHash,
       sharedRendererHash: englishRendererHash,
       rendererDependencyFiles: enRendererFiles,
       extensionView: extensionModule.moduleExtensionViews[slug] ?? null,
