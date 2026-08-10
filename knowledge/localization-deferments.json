@@ -65,6 +65,13 @@
       "recordedAt": "2026-08-10",
       "decisionId": "D-012",
       "summary": "Independent English editorial review completed for llm-training; direct professional copy preserves canonical evidence relationships, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-english-source-scope-2026-08-10",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-015",
+      "summary": "English renderer maintenance erm-english-source-scope-2026-08-10: Scopes each English module effective hash to the English sources that module actually renders, so unrelated reference-directory additions do not create module-content drift."
     }
   ],
   "moduleBaselines": {
@@ -35344,6 +35351,45 @@
       ],
       "metadataScope": "all-en-routes",
       "summary": "Restores the complete dedicated RAG reader and replaces inherited Chinese social metadata with English module metadata."
+    },
+    {
+      "maintenanceId": "erm-english-source-scope-2026-08-10",
+      "status": "applied",
+      "kind": "english-renderer",
+      "decisionId": "D-015",
+      "recordedAt": "2026-08-10",
+      "baseCommit": "5b0a5ab917fb6b48389125d3eecd07dfa0661e02",
+      "implementationCommit": "5c370238977cf51ac18e7f479cd2ae48937bb007",
+      "receiptId": "receipt-english-source-scope-2026-08-10",
+      "changedRendererFiles": [
+        "scripts/lib/localization-contract.mjs"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns"
+      ],
+      "contentProjectionChangeSlugs": [],
+      "metadataScope": "none",
+      "summary": "Scopes each English module effective hash to the English sources that module actually renders, so unrelated reference-directory additions do not create module-content drift."
     }
   ],
   "deferments": [
