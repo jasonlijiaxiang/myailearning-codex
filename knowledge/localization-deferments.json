@@ -33493,16 +33493,16 @@
       }
     },
     "ai-infra-compute": {
-      "zhBaselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "c4c6e710f4e55b99e34b9f540f73e91631977e26",
+      "enBaselineCommit": "c4c6e710f4e55b99e34b9f540f73e91631977e26",
       "reviewSetIds": [
-        "br-ai-infra-compute-ultra-exception",
-        "br-ai-infra-compute-xhigh-author",
-        "br-ai-infra-compute-xhigh-language",
-        "br-ai-infra-compute-xhigh-semantic"
+        "br-ai-infra-compute-2026-08-10-ultra-exception",
+        "br-ai-infra-compute-2026-08-10-xhigh-author",
+        "br-ai-infra-compute-2026-08-10-xhigh-language",
+        "br-ai-infra-compute-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:7f0133f49baf3061f63a015be6a5210dc92669a6803c51fc6d0807295fbea694",
-      "zhStateHash": "sha256:34bce505efa16470c48125c1de2eeea434c10a52af04ab836069fd0fac2fa0cd",
+      "zhReviewHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
+      "zhStateHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
       "zhObjects": {
         "/module:ai-infra-compute/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -33535,7 +33535,7 @@
           "sourceIds": []
         },
         "/module:ai-infra-compute/brief/decisions/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -33561,6 +33561,16 @@
         },
         "/module:ai-infra-compute/brief/decisions/004": {
           "hash": "sha256:7aa50613026692994e725edce936fe45b7caa5a03542fa17a6e406b4df0ebb06",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:ai-infra-compute/brief/decisions/005": {
+          "hash": "sha256:7fd1b343d74254ae9c397a4f7eb8d401a1b28b3cc2211bacbcb928dc641b1b51",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:ai-infra-compute/brief/decisions/006": {
+          "hash": "sha256:8ce4ec149fdad5297199f81c7d095787cd475220cd9ce646d1f345ea17d6fac1",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -33642,7 +33652,7 @@
           "sourceIds": []
         },
         "/module:ai-infra-compute/brief/principles/$order": {
-          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -33673,6 +33683,11 @@
         },
         "/module:ai-infra-compute/brief/principles/005": {
           "hash": "sha256:1df7cf88afc4d6f0b950d5276185aad2868b9e79dff39e37284d3c3400758143",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:ai-infra-compute/brief/principles/006": {
+          "hash": "sha256:12fd5d21659ee0c0bc33c7f6c41254c8ace4e178a4d481674440f94dc8508295",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -34038,7 +34053,7 @@
           ]
         },
         "/module:ai-infra-compute/curriculum/chapters/$order": {
-          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
@@ -34108,6 +34123,15 @@
           ]
         },
         "/module:ai-infra-compute/curriculum/chapters/008": {
+          "hash": "sha256:b8cdc8faab5009bd7e11b876b8ff0d41a4e3b352fe701570583f2b1897fa2cfb",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "finops-unit-economics",
+            "mlperf-storage-v2",
+            "mlperf-training"
+          ]
+        },
+        "/module:ai-infra-compute/curriculum/chapters/009": {
           "hash": "sha256:1d9d60f16730716af5642f0415a708b46c26660e89b651fbb005cc6fed7531ec",
           "objectType": "curriculum",
           "sourceIds": [
@@ -34263,7 +34287,7 @@
           "sourceIds": []
         },
         "/module:ai-infra-compute/learning/labs/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -34288,6 +34312,15 @@
           ]
         },
         "/module:ai-infra-compute/learning/labs/002": {
+          "hash": "sha256:3f172a430192d864d18a1285cb54b3f8b37b78f71d2141e34021f6e8d72bf892",
+          "objectType": "learning",
+          "sourceIds": [
+            "finops-unit-economics",
+            "mlperf-storage-v2",
+            "mlperf-training"
+          ]
+        },
+        "/module:ai-infra-compute/learning/labs/003": {
           "hash": "sha256:85de255383dd1459a4d7323540266fb1f6763275ef336fc5ec4d044bfe00682c",
           "objectType": "learning",
           "sourceIds": [
@@ -34543,7 +34576,7 @@
           "sourceIds": []
         },
         "/module:ai-infra-compute/publication/updatedAt": {
-          "hash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "hash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -34808,7 +34841,7 @@
           "sourceIds": []
         },
         "/module:ai-infra-compute/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:1db3b88e04ddac3bcf0b5603090882573033c5d44de25910c698f9e9e1c20e74",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -35139,9 +35172,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:517f222228800f556418388cc66a58ac64b9e2f2091c59ff5f4f6ee1d12ec0f3",
-      "enEffectiveHash": "sha256:8e02dc77fe5ccf8d3621d37f756a2ff1301f61e9e49c99cac7c4ac6c090cd565",
-      "enReviewHash": "sha256:ea2bc71c0072929048e7fda6c19620283941d1c691a24a08afb467478774632f",
+      "enAuthoredHash": "sha256:5625c83ffdafcb4c0001981c1937f5e7c33301f592d1cf8f78c0c49107fc95ab",
+      "enEffectiveHash": "sha256:cd5dd7f0884086b3a499621eed67007785499e936ccfdea365c640bb1e1f96c2",
+      "enReviewHash": "sha256:6bf0a7d785991620f1d1fd56fc367d91b6b285619c8856f5f9c394dac448c02e",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -35149,6 +35182,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -35162,6 +35196,30 @@
       ],
       "englishUpdatedAt": "2026-08-01",
       "reviewFiles": {
+        "br-ai-infra-compute-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-compute.ultra-exception.json",
+          "hash": "sha256:d35b5a8ba1ad8dcd396f15af14c3a2d2a288af1bdb7b6a53bd24bd0185cf883d",
+          "zhContentHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
+          "enContentHash": "sha256:6bf0a7d785991620f1d1fd56fc367d91b6b285619c8856f5f9c394dac448c02e"
+        },
+        "br-ai-infra-compute-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-compute.xhigh-author.json",
+          "hash": "sha256:cf094e4f0849d4f0e639c0b8deef6224552b633359cdf21546a7429dc22ef040",
+          "zhContentHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
+          "enContentHash": "sha256:6bf0a7d785991620f1d1fd56fc367d91b6b285619c8856f5f9c394dac448c02e"
+        },
+        "br-ai-infra-compute-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-compute.xhigh-language.json",
+          "hash": "sha256:d6090084bd1b947add98b019be847f5387e4120ba6cf0823a4c6bdaec90c6273",
+          "zhContentHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
+          "enContentHash": "sha256:6bf0a7d785991620f1d1fd56fc367d91b6b285619c8856f5f9c394dac448c02e"
+        },
+        "br-ai-infra-compute-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-compute.xhigh-semantic.json",
+          "hash": "sha256:ab23e5be0dc3d3e5e7a65de16290474d009337dd7ef4cca389e756d345fb0840",
+          "zhContentHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
+          "enContentHash": "sha256:6bf0a7d785991620f1d1fd56fc367d91b6b285619c8856f5f9c394dac448c02e"
+        },
         "br-ai-infra-compute-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/ai-infra-compute.ultra-exception.json",
           "hash": "sha256:f342c213cb92e6730b947f0076d4407d0652e006ce7d00bfe9c2d6385d890568",
@@ -40636,7 +40694,7 @@
       "moduleSlug": "ai-infra-compute",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -40836,7 +40894,16 @@
         "br-ai-infra-compute-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "closedAt": "2026-08-10",
+      "promotedCommit": "c4c6e710f4e55b99e34b9f540f73e91631977e26",
+      "closureReviewIds": [
+        "br-ai-infra-compute-2026-08-10-xhigh-author",
+        "br-ai-infra-compute-2026-08-10-xhigh-semantic",
+        "br-ai-infra-compute-2026-08-10-xhigh-language",
+        "br-ai-infra-compute-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-ai-infra-compute-english-closure-2026-08-10"
     }
   ]
 }
