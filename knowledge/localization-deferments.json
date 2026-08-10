@@ -22711,16 +22711,16 @@
       }
     },
     "predictive-ai-mlops": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "52720668163da34896656bcb906cb3cd259def9b",
+      "enBaselineCommit": "52720668163da34896656bcb906cb3cd259def9b",
       "reviewSetIds": [
-        "br-predictive-ai-mlops-ultra-exception",
-        "br-predictive-ai-mlops-xhigh-author",
-        "br-predictive-ai-mlops-xhigh-language",
-        "br-predictive-ai-mlops-xhigh-semantic"
+        "br-predictive-ai-mlops-2026-08-10-ultra-exception",
+        "br-predictive-ai-mlops-2026-08-10-xhigh-author",
+        "br-predictive-ai-mlops-2026-08-10-xhigh-language",
+        "br-predictive-ai-mlops-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:92a2f759d84eda39529605c397b15ab55e642b4d09867aabed97f9970d41441e",
-      "zhStateHash": "sha256:2e92566b568226c7eaf7030130ebd1fadbab956c409e5012da5ce51189efce2f",
+      "zhReviewHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
+      "zhStateHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
       "zhObjects": {
         "/module:predictive-ai-mlops/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -23904,7 +23904,7 @@
           "sourceIds": []
         },
         "/module:predictive-ai-mlops/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -24145,9 +24145,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:8c84169637f5a8eff3ac32be7dc7882b39f61fbe4e86ee1efa19ffce30ac3de4",
-      "enEffectiveHash": "sha256:e90c8e25a01be6964ee5567ad19ec1b90df23ab06357e470231f7e85df0ae26c",
-      "enReviewHash": "sha256:009803b61f650740e671f172d40ad128010781385dd11e8967bb2263f51214af",
+      "enAuthoredHash": "sha256:d8f245ad7bb026563d3d7ca408e0e7047f9267004dda9aa1313030cc6163de63",
+      "enEffectiveHash": "sha256:439c909e4a0cab769d986aecbac79cdecc26e90eb7ae5f5d37d8ef80ce69680b",
+      "enReviewHash": "sha256:8f390afd2a4bcb44fd68973bda15d2e812b5d175357aa8b8e3fc7e65ca6b22e2",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -24155,6 +24155,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -24166,8 +24167,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-08-01",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-predictive-ai-mlops-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/predictive-ai-mlops.ultra-exception.json",
+          "hash": "sha256:36e990a10db9edc9e761e5de7f7e7cd76738e300f23766a929e3248390090785",
+          "zhContentHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
+          "enContentHash": "sha256:8f390afd2a4bcb44fd68973bda15d2e812b5d175357aa8b8e3fc7e65ca6b22e2"
+        },
+        "br-predictive-ai-mlops-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/predictive-ai-mlops.xhigh-author.json",
+          "hash": "sha256:19cd1ee94f575cc581cd91c1fa9c5ee616a43085127f6a061601087d655b4018",
+          "zhContentHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
+          "enContentHash": "sha256:8f390afd2a4bcb44fd68973bda15d2e812b5d175357aa8b8e3fc7e65ca6b22e2"
+        },
+        "br-predictive-ai-mlops-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/predictive-ai-mlops.xhigh-language.json",
+          "hash": "sha256:712b4ac5ed24fc6fd6af6ecb354e864deb3ba4a1c9de9d110f10da34dbbc9f9f",
+          "zhContentHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
+          "enContentHash": "sha256:8f390afd2a4bcb44fd68973bda15d2e812b5d175357aa8b8e3fc7e65ca6b22e2"
+        },
+        "br-predictive-ai-mlops-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/predictive-ai-mlops.xhigh-semantic.json",
+          "hash": "sha256:8a221255d066ac92d7bba5610e10ba72ad1e0dba6e45119890e6ede79d7ca08f",
+          "zhContentHash": "sha256:affbffdc9ce0098176a5f25d99b1a686efaefdf4f43c075fcd15a63b37557154",
+          "enContentHash": "sha256:8f390afd2a4bcb44fd68973bda15d2e812b5d175357aa8b8e3fc7e65ca6b22e2"
+        },
         "br-predictive-ai-mlops-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/predictive-ai-mlops.ultra-exception.json",
           "hash": "sha256:c404b399178d5194ba707b64f22d34870c8a9429aa4e0fbde1d8f73eabf80bb9",
@@ -42518,7 +42543,7 @@
       "moduleSlug": "predictive-ai-mlops",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -42596,7 +42621,16 @@
           "br-predictive-ai-mlops-2026-08-10-xhigh-language",
           "br-predictive-ai-mlops-2026-08-10-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "52720668163da34896656bcb906cb3cd259def9b",
+      "closureReviewIds": [
+        "br-predictive-ai-mlops-2026-08-10-xhigh-author",
+        "br-predictive-ai-mlops-2026-08-10-xhigh-semantic",
+        "br-predictive-ai-mlops-2026-08-10-xhigh-language",
+        "br-predictive-ai-mlops-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-predictive-ai-mlops-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-llm-2026-08-08-shared-renderer",
