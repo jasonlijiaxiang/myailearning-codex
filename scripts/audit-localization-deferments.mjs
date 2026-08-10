@@ -86,6 +86,31 @@ function sameEnglishAuthoredReviewAndDate(left, right) {
     && left.englishUpdatedAt === right.englishUpdatedAt;
 }
 
+function chineseRuntimeState(state) {
+  return {
+    zhStateHash: state.zhStateHash,
+    zhObjects: state.zhObjects,
+    zhRendererFiles: state.zhRendererFiles,
+  };
+}
+
+function sameChineseRuntimeState(left, right) {
+  return left.zhStateHash === right.zhStateHash
+    && same(left.zhObjects, right.zhObjects)
+    && same(left.zhRendererFiles, right.zhRendererFiles);
+}
+
+function withRuntimeChineseBaseline(baseline, runtimeState) {
+  return { ...baseline, ...chineseRuntimeState(runtimeState) };
+}
+
+function hasOnlyChineseRendererProjectionDelta(before, after) {
+  const delta = diffObjectCatalogs(before.zhObjects, after.zhObjects);
+  return delta.length > 0 && delta.every(({ objectId }) => objectId.startsWith("/module:")
+    && (objectId.includes("/renderedProjection/rendererDependencyFiles/")
+      || objectId.endsWith("/renderedProjection/sharedRendererHash")));
+}
+
 function withRuntimeEnglishBaseline(baseline, runtimeState) {
   return { ...baseline, ...englishRuntimeState(runtimeState) };
 }
@@ -280,6 +305,9 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     if (!baseline || !current) continue;
     const runtimeOverlay = runtimeOverlays.get(slug) ?? null;
     const englishBaseline = runtimeOverlay ? withRuntimeEnglishBaseline(baseline, runtimeOverlay.state) : baseline;
+    const chineseBaseline = runtimeOverlay?.kind === "document-shell"
+      ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state)
+      : baseline;
 
     for (const [reviewId, expectedFile] of Object.entries(baseline.reviewFiles)) {
       const currentFile = current.reviewFiles[reviewId];
@@ -298,9 +326,9 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     });
 
     const active = activeBySlug.get(slug)?.[0] ?? null;
-    const actualDiff = diffObjectCatalogs(baseline.zhObjects, current.zhObjects);
+    const actualDiff = diffObjectCatalogs(chineseBaseline.zhObjects, current.zhObjects);
     if (!active) {
-      if (current.zhStateHash !== baseline.zhStateHash || actualDiff.length) fail(`${slug}: Chinese content changed without an active deferment`);
+      if (current.zhStateHash !== chineseBaseline.zhStateHash || actualDiff.length) fail(`${slug}: Chinese content changed without an active deferment`);
       if (!unchangedEnglish(current, englishBaseline)) fail(`${slug}: English content or date changed outside the localization workflow`);
       messages.push(runtimeOverlay
         ? `ALIGNED/RUNTIME-MAINTAINED ${slug}: ${runtimeOverlay.maintenanceId}`
@@ -316,7 +344,7 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     if (!same(sorted(active.baselineReviewIds), expectedReviewIds)) {
       fail(`${active.defermentId}: baselineReviewIds do not match the immutable review set`);
     }
-    if (current.zhStateHash === baseline.zhStateHash || actualDiff.length === 0) {
+    if (current.zhStateHash === chineseBaseline.zhStateHash || actualDiff.length === 0) {
       fail(`${active.defermentId}: active deferment has no Chinese state delta`);
     }
     if (!compareAffectedObjects(actualDiff, active.affectedObjects)) {
@@ -496,7 +524,12 @@ export function derivedAffectedModuleSlugs(beforeProject, implementationProject,
   return beforeProject.publishedModuleSlugs.filter((slug) => {
     const before = beforeProject.modules[slug];
     const after = implementationProject.modules[slug];
-    const rendererFiles = new Set([...(before?.enRendererFiles ?? []), ...(after?.enRendererFiles ?? [])]);
+    const rendererFiles = new Set([
+      ...(before?.zhRendererFiles ?? []),
+      ...(after?.zhRendererFiles ?? []),
+      ...(before?.enRendererFiles ?? []),
+      ...(after?.enRendererFiles ?? []),
+    ]);
     return changedRendererFiles.some((file) => rendererFiles.has(file));
   }).sort();
 }
@@ -509,6 +542,7 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
 
   for (const maintenance of records) {
     const label = maintenance.maintenanceId ?? "runtime-maintenance";
+    const documentShell = maintenance.kind === "document-shell";
     if (knownMaintenanceIds.has(maintenance.maintenanceId)) {
       failures.push(`duplicate runtime maintenance ID ${maintenance.maintenanceId}`);
       continue;
@@ -558,6 +592,19 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           failures.push(`${label}: ${slug} base commit does not match the registered English baseline or prior runtime maintenance`);
           continue;
         }
+        if (documentShell) {
+          if (!sameChineseRuntimeState(before, expectedBefore)) {
+            failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer state`);
+            continue;
+          }
+          if (!hasOnlyChineseRendererProjectionDelta(before, after)) {
+            failures.push(`${label}: ${slug} changes Chinese reader content outside its renderer projection`);
+            continue;
+          }
+        } else if (!sameChineseRuntimeState(before, after)) {
+          failures.push(`${label}: ${slug} changes Chinese renderer state; record a document-shell maintenance instead`);
+          continue;
+        }
         if (!sameEnglishAuthoredReviewAndDate(before, after) || !same(before.reviewFiles, after.reviewFiles)) {
           failures.push(`${label}: ${slug} changes English authored content, review scope, review files, or update date`);
           continue;
@@ -566,7 +613,7 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           failures.push(`${label}: ${slug} has no effective English renderer change`);
           continue;
         }
-        overlays.set(slug, { maintenanceId: maintenance.maintenanceId, state: after });
+        overlays.set(slug, { maintenanceId: maintenance.maintenanceId, kind: maintenance.kind, state: after });
       }
     } catch (error) {
       failures.push(`${label}: ${error.message}`);
@@ -622,10 +669,14 @@ async function recordRuntimeMaintenance({ registry, schema, reviewSchema, curren
   const decisionId = cliValue("--decision-id", { required: true });
   const recordedAt = cliValue("--recorded-at", { required: true });
   const summary = cliValue("--summary", { required: true });
+  const kind = cliValue("--kind") ?? "english-renderer";
   const metadataScope = cliValue("--metadata-scope") ?? "none";
   const contentProjectionChangeSlugs = cliCsv("--content-projection");
   const declaredFiles = cliCsv("--files", { required: true });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(recordedAt)) throw new Error("--recorded-at requires YYYY-MM-DD");
+  if (!new Set(["english-renderer", "document-shell"]).has(kind)) {
+    throw new Error("--kind must be english-renderer or document-shell");
+  }
 
   const worktreeStatus = execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=normal"], { cwd: root, encoding: "utf8" });
   assertRuntimeMaintenanceCheckoutClean(worktreeStatus);
@@ -652,7 +703,7 @@ async function recordRuntimeMaintenance({ registry, schema, reviewSchema, curren
   candidateRegistry.runtimeMaintenances.push({
     maintenanceId,
     status: "applied",
-    kind: "english-renderer",
+    kind,
     decisionId,
     recordedAt,
     baseCommit,

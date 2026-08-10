@@ -18,12 +18,20 @@ export const MODULE_RENDERER_LOGIC_FILES = Object.freeze([
 
 const moduleRendererLogicFileSet = new Set(MODULE_RENDERER_LOGIC_FILES);
 
-export const SHARED_MODULE_RENDERER_ENTRY_FILES = Object.freeze([
-  "app/layout.tsx",
+export const CHINESE_MODULE_RENDERER_ENTRY_FILES = Object.freeze([
+  "app/(zh)/layout.tsx",
 ]);
 
 export const ENGLISH_MODULE_RENDERER_ENTRY_FILES = Object.freeze([
-  ...SHARED_MODULE_RENDERER_ENTRY_FILES,
+  "app/(en)/layout.tsx",
+]);
+
+const LEGACY_CHINESE_MODULE_RENDERER_ENTRY_FILES = Object.freeze([
+  "app/layout.tsx",
+]);
+
+const LEGACY_ENGLISH_MODULE_RENDERER_ENTRY_FILES = Object.freeze([
+  "app/layout.tsx",
   "app/en/layout.tsx",
 ]);
 
@@ -138,16 +146,18 @@ export async function resolveRendererDependencyFiles(projectRoot, entryFiles) {
   return [...resolved].sort();
 }
 
-export function chineseRendererEntryFiles(publication) {
+export function chineseRendererEntryFiles(publication, { routeGroups = false } = {}) {
   const route = publication.routeKind === "dedicated"
-    ? `app${publication.path}/page.tsx`
-    : "app/modules/[slug]/page.tsx";
-  return [...SHARED_MODULE_RENDERER_ENTRY_FILES, route];
+    ? (routeGroups ? `app/(zh)${publication.path}/page.tsx` : `app${publication.path}/page.tsx`)
+    : (routeGroups ? "app/(zh)/modules/[slug]/page.tsx" : "app/modules/[slug]/page.tsx");
+  return [...(routeGroups ? CHINESE_MODULE_RENDERER_ENTRY_FILES : LEGACY_CHINESE_MODULE_RENDERER_ENTRY_FILES), route];
 }
 
-export function englishRendererEntryFiles(slug) {
-  const route = slug === "rag" ? "app/en/modules/rag/page.tsx" : "app/en/modules/[slug]/page.tsx";
-  return [...ENGLISH_MODULE_RENDERER_ENTRY_FILES, route];
+export function englishRendererEntryFiles(slug, { routeGroups = false } = {}) {
+  const route = slug === "rag"
+    ? (routeGroups ? "app/(en)/en/modules/rag/page.tsx" : "app/en/modules/rag/page.tsx")
+    : (routeGroups ? "app/(en)/en/modules/[slug]/page.tsx" : "app/en/modules/[slug]/page.tsx");
+  return [...(routeGroups ? ENGLISH_MODULE_RENDERER_ENTRY_FILES : LEGACY_ENGLISH_MODULE_RENDERER_ENTRY_FILES), route];
 }
 
 function importFrom(projectRoot, relativePath) {
@@ -352,6 +362,15 @@ export function persistableLocalizationModuleState(moduleState, baselineCommit, 
   return composeLocalizationModuleBaseline(moduleState, moduleState, baselineCommit, baselineCommit, reviewSetIds);
 }
 
+async function hasProjectFile(projectRoot, relativePath) {
+  try {
+    return (await lstat(path.join(projectRoot, relativePath))).isFile();
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+}
+
 export async function loadLocalizationProject(projectRoot, { moduleSlugs = null, englishReferenceScope = "module" } = {}) {
   if (!["module", "directory"].includes(englishReferenceScope)) {
     throw new Error(`englishReferenceScope must be "module" or "directory"; received ${englishReferenceScope}`);
@@ -371,6 +390,8 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
     importFrom(projectRoot, "app/knowledge-map.mjs"),
   ]);
   const claims = JSON.parse(await readFile(path.join(projectRoot, "knowledge", "claims", "index.json"), "utf8"));
+  const routeGroups = await hasProjectFile(projectRoot, "app/(zh)/layout.tsx")
+    && await hasProjectFile(projectRoot, "app/(en)/layout.tsx");
   const sharedEnglishSources = englishSourceView(referenceModule.sourceLedger, englishModule.englishSourceCopy);
   const sharedEnglishReferenceHash = englishReferenceScope === "directory" ? contentHash(sharedEnglishSources) : null;
 
@@ -397,8 +418,8 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
     const learning = learningModule.moduleLearningContent[slug] ?? null;
     const terms = selectedEntries(terminologyModule.terminology, publication.requiredTerms);
     const referenceModuleView = referenceModule.referenceModules.find((item) => item.id === slug) ?? null;
-    const zhRendererFiles = await resolvedRendererFiles(chineseRendererEntryFiles(publication));
-    const enRendererFiles = await resolvedRendererFiles(englishRendererEntryFiles(slug));
+    const zhRendererFiles = await resolvedRendererFiles(chineseRendererEntryFiles(publication, { routeGroups }));
+    const enRendererFiles = await resolvedRendererFiles(englishRendererEntryFiles(slug, { routeGroups }));
     const [chineseRendererHash, englishRendererHash] = await Promise.all([
       resolvedRendererHash(zhRendererFiles),
       resolvedRendererHash(enRendererFiles),

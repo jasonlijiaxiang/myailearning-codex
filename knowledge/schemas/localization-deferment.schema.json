@@ -48,11 +48,11 @@
               "additionalProperties": false
             }
           },
-          "zhRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@\\[\\]-]+(?:/[A-Za-z0-9_.@\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
+          "zhRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@()\\[\\]-]+(?:/[A-Za-z0-9_.@()\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
           "enAuthoredHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
           "enEffectiveHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
           "enReviewHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
-          "enRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@\\[\\]-]+(?:/[A-Za-z0-9_.@\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
+          "enRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@()\\[\\]-]+(?:/[A-Za-z0-9_.@()\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
           "englishUpdatedAt": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
           "reviewFiles": {
             "type": "object",
@@ -80,13 +80,13 @@
         "properties": {
           "maintenanceId": { "type": "string", "pattern": "^erm-[a-z0-9-]+$" },
           "status": { "const": "applied" },
-          "kind": { "const": "english-renderer" },
+          "kind": { "enum": ["english-renderer", "document-shell"] },
           "decisionId": { "type": "string", "minLength": 1 },
           "recordedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
           "baseCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
           "implementationCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
           "receiptId": { "type": "string", "pattern": "^receipt-[a-z0-9-]+$" },
-          "changedRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(?:app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@\\[\\]-]+(?:/[A-Za-z0-9_.@\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)|scripts/lib/localization-contract\\.mjs)$" }, "uniqueItems": true },
+          "changedRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(?:app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@()\\[\\]-]+(?:/[A-Za-z0-9_.@()\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)|scripts/lib/localization-contract\\.mjs)$" }, "uniqueItems": true },
           "affectedModuleSlugs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
           "contentProjectionChangeSlugs": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
           "metadataScope": { "enum": ["none", "rag", "shared-module-routes", "all-en-routes"] },
@@ -148,11 +148,11 @@
             "required": ["zhReviewHash", "zhRendererFiles", "enAuthoredHash", "enEffectiveHash", "enReviewHash", "enRendererFiles", "englishUpdatedAt", "reviewIds"],
             "properties": {
               "zhReviewHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
-              "zhRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@\\[\\]-]+(?:/[A-Za-z0-9_.@\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
+              "zhRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@()\\[\\]-]+(?:/[A-Za-z0-9_.@()\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
               "enAuthoredHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
               "enEffectiveHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
               "enReviewHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
-              "enRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@\\[\\]-]+(?:/[A-Za-z0-9_.@\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
+              "enRendererFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^app/(?!\\.\\.(?:/|$))(?!.*\\/\\.\\.(?:/|$))[A-Za-z0-9_.@()\\[\\]-]+(?:/[A-Za-z0-9_.@()\\[\\]-]+)*\\.(?:tsx?|jsx?|mjs)$" }, "uniqueItems": true },
               "englishUpdatedAt": { "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
               "reviewIds": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true }
             },
