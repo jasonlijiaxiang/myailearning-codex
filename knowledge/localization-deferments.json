@@ -13911,16 +13911,16 @@
       }
     },
     "ai-governance": {
-      "zhBaselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "3b4206a70380999ff5cd1bf0bfae82f1455070bc",
+      "enBaselineCommit": "3b4206a70380999ff5cd1bf0bfae82f1455070bc",
       "reviewSetIds": [
-        "br-ai-governance-ultra-exception",
-        "br-ai-governance-xhigh-author",
-        "br-ai-governance-xhigh-language",
-        "br-ai-governance-xhigh-semantic"
+        "br-ai-governance-2026-08-10-ultra-exception",
+        "br-ai-governance-2026-08-10-xhigh-author",
+        "br-ai-governance-2026-08-10-xhigh-language",
+        "br-ai-governance-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:97caf2bb2dc94863002d7dd4b12256f758d098aba3176218dd3a6589e187da8b",
-      "zhStateHash": "sha256:d15c04212a037e4b1fc5c4e14ce4e52a3efc8638b94d0ecaf1a4267b15d843e0",
+      "zhReviewHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
+      "zhStateHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
       "zhObjects": {
         "/module:ai-governance/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -13953,7 +13953,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/brief/decisions/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -13982,35 +13982,63 @@
           "objectType": "brief",
           "sourceIds": []
         },
+        "/module:ai-governance/brief/decisions/005": {
+          "hash": "sha256:e1daaee02a481383fbfe4cb8a4f101ede8684a7f3a115b239d23caff6dcbd65a",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:ai-governance/brief/decisions/006": {
+          "hash": "sha256:2ba4857af55e8e9360ef31b1cada060f8b664e483b7c5e7546a31ea83bd99b4d",
+          "objectType": "brief",
+          "sourceIds": []
+        },
         "/module:ai-governance/brief/deepDiveLead": {
           "hash": "sha256:f554e2e25c085c7253a0890afa4a3ef428bc29456bc8ebffb3e9c227e2e8d64a",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:ai-governance/brief/deepDives/$order": {
-          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "brief-order",
           "sourceIds": []
         },
         "/module:ai-governance/brief/deepDives/000": {
-          "hash": "sha256:1bc25731255251d6e019da543a1f405f3d261ccc7fef48d7325b00812c5a3f51",
+          "hash": "sha256:79395e64a834e81c3c8d1b6248de362306707d2e1b10262521b1020b938895d5",
           "objectType": "brief",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "iso-iec-42001",
             "iso-iec-42005",
             "nist-ai-rmf"
           ]
         },
         "/module:ai-governance/brief/deepDives/001": {
-          "hash": "sha256:1212796dabf057055591f2edd5d60db0338f6a0804469206f821244f49510cf4",
+          "hash": "sha256:b1887933c4c4660e3f6d386e0f9b883c71f872a99d0f804fc1c12a7249f0da56",
           "objectType": "brief",
           "sourceIds": [
-            "eu-ai-act",
             "eu-ai-act-2026-1744",
+            "eu-ai-act-implementation-2026-08-05",
             "iso-iec-42001",
             "iso-iec-42005",
             "nist-ai-rmf"
+          ]
+        },
+        "/module:ai-governance/brief/deepDives/002": {
+          "hash": "sha256:e95ba5b065cd81bee3ea6dd38652794d66cc1fafd4aa004cac7e0609d3a904bc",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "china-ai-service-management",
+            "china-data-cross-border-2024"
+          ]
+        },
+        "/module:ai-governance/brief/deepDives/003": {
+          "hash": "sha256:276b3715a35f47e0300790bd14dc1c22d1ee239a34be37fcc23c50bc0dcd6d7f",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "china-ai-service-management",
+            "china-data-cross-border-2024"
           ]
         },
         "/module:ai-governance/brief/deepDiveTitle": {
@@ -14024,7 +14052,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/brief/evidenceCards/$order": {
-          "hash": "sha256:a96ee683d5942acf9bcbe26df7e779c6dc1282386894d64d630a401f2b787ef4",
+          "hash": "sha256:9e9eef9afde042b6a8a7342da773fe121b99b98b1b1c65970a492f9b9f9b4a68",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -14056,6 +14084,27 @@
             "eu-ai-act-2026-1744"
           ]
         },
+        "/module:ai-governance/brief/evidenceCards/004": {
+          "hash": "sha256:6ab1e9e2e1f1d84e13c10d77d28e50e7c44a038d0239fe5ff2d197683a29882b",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/brief/evidenceCards/005": {
+          "hash": "sha256:4747af8e081a41bb836dd79eea43c147b7c914ea9bb13c8d7c3b9e4b80b5a106",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05"
+          ]
+        },
+        "/module:ai-governance/brief/evidenceCards/006": {
+          "hash": "sha256:00366cc0622f5453cb83f9adec182a4690ddb2a9de9ad6cf23266269b91b6077",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-data-cross-border-2024"
+          ]
+        },
         "/module:ai-governance/brief/position": {
           "hash": "sha256:268b7333a80e5064d7cba73a2d21b422994d984a1818bf8dc823c3c68c3e2bf3",
           "objectType": "brief",
@@ -14067,7 +14116,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/brief/principles/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -14096,13 +14145,28 @@
           "objectType": "brief",
           "sourceIds": []
         },
+        "/module:ai-governance/brief/principles/005": {
+          "hash": "sha256:0a44885225cddc7b172511c1b0c472c29bce2916729257b463e7141e09306ead",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:ai-governance/brief/principles/006": {
+          "hash": "sha256:aa158b586727f4d5a877c3602286566a12bf8afa16dfc4822891e99af34d5be9",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:ai-governance/brief/principles/007": {
+          "hash": "sha256:4e6a111fbfaa2159c02037496bc693a6fb82e081b7f7733d3be16919d707e3b0",
+          "objectType": "brief",
+          "sourceIds": []
+        },
         "/module:ai-governance/brief/principleTitle": {
           "hash": "sha256:2ff2b530b47f63b6a66060eb9292c5a97278b7d019bbb958be736d4e3404105d",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:ai-governance/brief/qa/$order": {
-          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -14131,10 +14195,10 @@
           ]
         },
         "/module:ai-governance/brief/qa/003": {
-          "hash": "sha256:e5c92288544f674dd9bd9f2750000e7966ecd8bf8af2e7d1be9275c0c337c100",
+          "hash": "sha256:e95bb87fc8726ba0038c719d109fd29394b4ca9b5afb49cf44dccd9f25c90804",
           "objectType": "brief",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "nist-ai-rmf"
           ]
         },
@@ -14147,11 +14211,11 @@
           ]
         },
         "/module:ai-governance/brief/qa/005": {
-          "hash": "sha256:5ccfdb8b29be9c80e9c55209c5fea0c981ea91eba2724d48e5d4c71cf60d6b62",
+          "hash": "sha256:fd359e11a6a112084f1373eda5cbdb50171e522dad77800e6c9b75304d04ffd7",
           "objectType": "brief",
           "sourceIds": [
-            "eu-ai-act",
-            "eu-ai-act-2026-1744"
+            "eu-ai-act-2026-1744",
+            "eu-ai-act-implementation-2026-08-05"
           ]
         },
         "/module:ai-governance/brief/qa/006": {
@@ -14192,6 +14256,37 @@
           "sourceIds": [
             "iso-iec-42001",
             "nist-ai-rmf"
+          ]
+        },
+        "/module:ai-governance/brief/qa/011": {
+          "hash": "sha256:08a0b9cb74a0ad06c5a304f97238704ccdb08730fcfe089743e5588ae248c3da",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-service-management",
+            "china-data-cross-border-2024"
+          ]
+        },
+        "/module:ai-governance/brief/qa/012": {
+          "hash": "sha256:13cbb8ca7707fa9e49f3f785e4dae5be5d9a99498b92a16b596fedab4ec75454",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/brief/qa/013": {
+          "hash": "sha256:381ccdab979e409a2899acf16c578bf628c39c9cdb1289bd9567d445e151b9b4",
+          "objectType": "brief",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/brief/qa/014": {
+          "hash": "sha256:652ab71d7e52ac644b2fb4058e8f3d5d90849e39e09e2b22bf3b60162fc8b7bf",
+          "objectType": "brief",
+          "sourceIds": [
+            "iso-iec-42001",
+            "nist-genai-profile"
           ]
         },
         "/module:ai-governance/brief/relatedSlugs/$order": {
@@ -14290,7 +14385,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/claims/$order": {
-          "hash": "sha256:5c7f2997c22d6e1b52d926b397205e1b4e97e336f9f5b1a1e07ad66b608c0b6c",
+          "hash": "sha256:f5bd6a853dd0a69a50f468650ee0f0fda5967d42188de236857babf4708fc46f",
           "objectType": "claims-order",
           "sourceIds": []
         },
@@ -14302,11 +14397,11 @@
           ]
         },
         "/module:ai-governance/claims/001": {
-          "hash": "sha256:89d483a9140316d2d00f002d28e49f5c47293e552ee7bebaf0b18ded8cfee1cc",
+          "hash": "sha256:895be2ac895404829b1a3c822c6c514a39b90360cd8457f7f0e7e6b73245f062",
           "objectType": "claims",
           "sourceIds": [
-            "eu-ai-act",
-            "eu-ai-act-2026-1744"
+            "eu-ai-act-2026-1744",
+            "eu-ai-act-implementation-2026-08-05"
           ]
         },
         "/module:ai-governance/claims/002": {
@@ -14323,34 +14418,81 @@
             "iso-iec-42005"
           ]
         },
+        "/module:ai-governance/claims/004": {
+          "hash": "sha256:72bcf2b3f7cd5c458e99409adab31148440aa09f068e6e01d21d9b21d33ffc3d",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025"
+          ]
+        },
+        "/module:ai-governance/claims/005": {
+          "hash": "sha256:b26e19041747b168d7126f41d84f81eb5a00595fd380972bbc41fc1e0d1e8a9e",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/claims/006": {
+          "hash": "sha256:13a8fcd75f5bcb3ac7bf3239e0640ebd485069229bd73a79d4edecc6688a1010",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/claims/007": {
+          "hash": "sha256:24e58bd3d9a2214cfa14dd3773810bb4769bf6c14a3d67cc196985256c87507b",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-data-cross-border-2024"
+          ]
+        },
         "/module:ai-governance/content/deepDives/$order": {
-          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "content-order",
           "sourceIds": []
         },
         "/module:ai-governance/content/deepDives/000": {
-          "hash": "sha256:1bc25731255251d6e019da543a1f405f3d261ccc7fef48d7325b00812c5a3f51",
+          "hash": "sha256:79395e64a834e81c3c8d1b6248de362306707d2e1b10262521b1020b938895d5",
           "objectType": "content",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "iso-iec-42001",
             "iso-iec-42005",
             "nist-ai-rmf"
           ]
         },
         "/module:ai-governance/content/deepDives/001": {
-          "hash": "sha256:1212796dabf057055591f2edd5d60db0338f6a0804469206f821244f49510cf4",
+          "hash": "sha256:b1887933c4c4660e3f6d386e0f9b883c71f872a99d0f804fc1c12a7249f0da56",
           "objectType": "content",
           "sourceIds": [
-            "eu-ai-act",
             "eu-ai-act-2026-1744",
+            "eu-ai-act-implementation-2026-08-05",
             "iso-iec-42001",
             "iso-iec-42005",
             "nist-ai-rmf"
           ]
         },
+        "/module:ai-governance/content/deepDives/002": {
+          "hash": "sha256:e95ba5b065cd81bee3ea6dd38652794d66cc1fafd4aa004cac7e0609d3a904bc",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "china-ai-service-management",
+            "china-data-cross-border-2024"
+          ]
+        },
+        "/module:ai-governance/content/deepDives/003": {
+          "hash": "sha256:276b3715a35f47e0300790bd14dc1c22d1ee239a34be37fcc23c50bc0dcd6d7f",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "china-ai-service-management",
+            "china-data-cross-border-2024"
+          ]
+        },
         "/module:ai-governance/content/evidenceCards/$order": {
-          "hash": "sha256:a96ee683d5942acf9bcbe26df7e779c6dc1282386894d64d630a401f2b787ef4",
+          "hash": "sha256:9e9eef9afde042b6a8a7342da773fe121b99b98b1b1c65970a492f9b9f9b4a68",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -14382,8 +14524,29 @@
             "eu-ai-act-2026-1744"
           ]
         },
+        "/module:ai-governance/content/evidenceCards/004": {
+          "hash": "sha256:6ab1e9e2e1f1d84e13c10d77d28e50e7c44a038d0239fe5ff2d197683a29882b",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/content/evidenceCards/005": {
+          "hash": "sha256:4747af8e081a41bb836dd79eea43c147b7c914ea9bb13c8d7c3b9e4b80b5a106",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05"
+          ]
+        },
+        "/module:ai-governance/content/evidenceCards/006": {
+          "hash": "sha256:00366cc0622f5453cb83f9adec182a4690ddb2a9de9ad6cf23266269b91b6077",
+          "objectType": "content",
+          "sourceIds": [
+            "china-data-cross-border-2024"
+          ]
+        },
         "/module:ai-governance/content/qa/$order": {
-          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -14412,10 +14575,10 @@
           ]
         },
         "/module:ai-governance/content/qa/003": {
-          "hash": "sha256:e5c92288544f674dd9bd9f2750000e7966ecd8bf8af2e7d1be9275c0c337c100",
+          "hash": "sha256:e95bb87fc8726ba0038c719d109fd29394b4ca9b5afb49cf44dccd9f25c90804",
           "objectType": "content",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "nist-ai-rmf"
           ]
         },
@@ -14428,11 +14591,11 @@
           ]
         },
         "/module:ai-governance/content/qa/005": {
-          "hash": "sha256:5ccfdb8b29be9c80e9c55209c5fea0c981ea91eba2724d48e5d4c71cf60d6b62",
+          "hash": "sha256:fd359e11a6a112084f1373eda5cbdb50171e522dad77800e6c9b75304d04ffd7",
           "objectType": "content",
           "sourceIds": [
-            "eu-ai-act",
-            "eu-ai-act-2026-1744"
+            "eu-ai-act-2026-1744",
+            "eu-ai-act-implementation-2026-08-05"
           ]
         },
         "/module:ai-governance/content/qa/006": {
@@ -14475,8 +14638,39 @@
             "nist-ai-rmf"
           ]
         },
+        "/module:ai-governance/content/qa/011": {
+          "hash": "sha256:08a0b9cb74a0ad06c5a304f97238704ccdb08730fcfe089743e5588ae248c3da",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-service-management",
+            "china-data-cross-border-2024"
+          ]
+        },
+        "/module:ai-governance/content/qa/012": {
+          "hash": "sha256:13cbb8ca7707fa9e49f3f785e4dae5be5d9a99498b92a16b596fedab4ec75454",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/content/qa/013": {
+          "hash": "sha256:381ccdab979e409a2899acf16c578bf628c39c9cdb1289bd9567d445e151b9b4",
+          "objectType": "content",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "china-ai-service-management"
+          ]
+        },
+        "/module:ai-governance/content/qa/014": {
+          "hash": "sha256:652ab71d7e52ac644b2fb4058e8f3d5d90849e39e09e2b22bf3b60162fc8b7bf",
+          "objectType": "content",
+          "sourceIds": [
+            "iso-iec-42001",
+            "nist-genai-profile"
+          ]
+        },
         "/module:ai-governance/curriculum/chapters/$order": {
-          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
@@ -14489,10 +14683,10 @@
           ]
         },
         "/module:ai-governance/curriculum/chapters/001": {
-          "hash": "sha256:664bd096d50c743b0cf7fc75c526c66ef585253401167b7a59c4d5901b3e4919",
+          "hash": "sha256:b11c0a00705f3e95c8dbce908037ad15c40284cb3fc46b40cc23df42ce4998a2",
           "objectType": "curriculum",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "nist-ai-rmf"
           ]
         },
@@ -14529,10 +14723,10 @@
           ]
         },
         "/module:ai-governance/curriculum/chapters/006": {
-          "hash": "sha256:8f3ef9f9c8716fc4cedc516578e6076c98d2b3ebee59826591cfc9b1460f5aef",
+          "hash": "sha256:58b6eba8240bf5ca7d4185d4263b94f85a9ec172a5931c717c7864efff3de209",
           "objectType": "curriculum",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "iso-iec-42005"
           ]
         },
@@ -14542,6 +14736,24 @@
           "sourceIds": [
             "eu-ai-act-2026-1744",
             "iso-iec-42001",
+            "nist-ai-rmf"
+          ]
+        },
+        "/module:ai-governance/curriculum/chapters/008": {
+          "hash": "sha256:a0089d02565953c797dbbe281c4c052f1e87bd48173e1d56e43202d784f805f7",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025",
+            "nist-genai-profile"
+          ]
+        },
+        "/module:ai-governance/curriculum/chapters/009": {
+          "hash": "sha256:8ae2fd89c0671a27d728064e39b842e113a41b202a7959291bf215c7f2ed74f3",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025",
             "nist-ai-rmf"
           ]
         },
@@ -14671,34 +14883,43 @@
           "sourceIds": []
         },
         "/module:ai-governance/learning/labs/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "learning-order",
           "sourceIds": []
         },
         "/module:ai-governance/learning/labs/000": {
-          "hash": "sha256:4e10cdabc58a1d56c232ec740e2921945153a97830692bdaa970834bca95f3a0",
+          "hash": "sha256:0e5c0fefa49d315c9d5df42f459c1b04f24d3d44623877b3800717c714afce56",
           "objectType": "learning",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "iso-iec-42001",
             "iso-iec-42005",
             "nist-ai-rmf"
           ]
         },
         "/module:ai-governance/learning/labs/001": {
-          "hash": "sha256:780620eac7af1df12396c2feb27c424a29587a5c079fcf75df54309b35bcbec8",
+          "hash": "sha256:062cacc96d98cf0c9d842a4e43f4dd1e78d569d2a8ed061d00db773b5812dce4",
           "objectType": "learning",
           "sourceIds": [
-            "eu-ai-act",
+            "eu-ai-act-implementation-2026-08-05",
             "iso-iec-42005"
           ]
         },
         "/module:ai-governance/learning/labs/002": {
-          "hash": "sha256:bcf2680f189ccf7e74c14a479eefe8e5ffa0d5df3f6aec5bd5f298c4cd9d07f3",
+          "hash": "sha256:0b77adf1adb92c94555248bcda8be2238af73cc2402260ac861c18244b55c017",
           "objectType": "learning",
           "sourceIds": [
-            "eu-ai-act",
-            "eu-ai-act-2026-1744"
+            "eu-ai-act-2026-1744",
+            "eu-ai-act-implementation-2026-08-05"
+          ]
+        },
+        "/module:ai-governance/learning/labs/003": {
+          "hash": "sha256:d8746c6da0bc4cc0404e05c66fc5fd4fe60bf24ff0293991e5bb046237ee9fe4",
+          "objectType": "learning",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025",
+            "nist-ai-rmf"
           ]
         },
         "/module:ai-governance/learning/outcomes/$order": {
@@ -14817,7 +15038,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/publication/qaCoverageTags/$order": {
-          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "publication-order",
           "sourceIds": []
         },
@@ -14873,6 +15094,26 @@
         },
         "/module:ai-governance/publication/qaCoverageTags/010": {
           "hash": "sha256:c9e9c0efc5f54663d25bedb1b11af84f5b5163b7d0bb94017c2b4a1e10b703bb",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:ai-governance/publication/qaCoverageTags/011": {
+          "hash": "sha256:fe2f989a5e519839af4ab1e6e2cb893d3f83fbdd359165c75f195d42f84e6b9f",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:ai-governance/publication/qaCoverageTags/012": {
+          "hash": "sha256:6206c328ee10caf3f7ae4f8e6814fc68f4a4b0b16a3eaa0748ad4ac96bca06af",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:ai-governance/publication/qaCoverageTags/013": {
+          "hash": "sha256:112593aa540d54a3f95de759a08b233115a6d72f89e54c0cf61d55cd959e885f",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:ai-governance/publication/qaCoverageTags/014": {
+          "hash": "sha256:67310bae8c08e5e812385abd558849878d0b1d96921b7669212aaff2340f2c95",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -14932,7 +15173,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/publication/updatedAt": {
-          "hash": "sha256:9681da27411be1030770a458fb5d906315210c609f090ba83afdaf99baf63dd7",
+          "hash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -14962,7 +15203,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/referenceModule/sourceIds/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -14987,6 +15228,36 @@
           "sourceIds": []
         },
         "/module:ai-governance/referenceModule/sourceIds/004": {
+          "hash": "sha256:34b1ebabac99d8b70b3a3661b3a3d9d35fd77d9d70b11b3fdc35dd7dd463edce",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-governance/referenceModule/sourceIds/005": {
+          "hash": "sha256:6d8226447b3bb98405e86ecc1da536d3db2f0fd2ceb754e93955e9efd16b51ca",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-governance/referenceModule/sourceIds/006": {
+          "hash": "sha256:65809aac53047c19b0c37f1abf6cd53bf748f5417ab736a6657b0ec24e570b89",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-governance/referenceModule/sourceIds/007": {
+          "hash": "sha256:e22eb7457f948fdd5aebf0815564fbcb530e16990e889b69a4c79bba4d7473b1",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-governance/referenceModule/sourceIds/008": {
+          "hash": "sha256:8fb0ddfe9a0c760da8a29664ece2ff31acfa90fe1bda59d87482c4f50c7d5487",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-governance/referenceModule/sourceIds/009": {
+          "hash": "sha256:97e88d61579f5145ca99ccc27ebf2df42ac6615898f25e1f11d38dde949cf6f9",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:ai-governance/referenceModule/sourceIds/010": {
           "hash": "sha256:d8c39ebf01e057fcf7c0c9487889e66e7530cecf74aec7cce26fdfa580f56901",
           "objectType": "referenceModule",
           "sourceIds": []
@@ -14997,7 +15268,7 @@
           "sourceIds": []
         },
         "/module:ai-governance/renderedProjection/evidenceCardIds/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -15021,8 +15292,23 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:ai-governance/renderedProjection/evidenceCardIds/004": {
+          "hash": "sha256:b0de86d0f2045025a01fed3a25cf224d85bd299296597bb4aed5a0be56ad87fc",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:ai-governance/renderedProjection/evidenceCardIds/005": {
+          "hash": "sha256:eb004c9cf8d9d9c22ac2d6292e23db0624f79e8711beb0c2cd52eedc33c4e048",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:ai-governance/renderedProjection/evidenceCardIds/006": {
+          "hash": "sha256:983be97c1ff9d004e0db07cacc9048e8d7d8eee1e08f45f79ac644a681e0c880",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:ai-governance/renderedProjection/questionIds/$order": {
-          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -15078,6 +15364,26 @@
         },
         "/module:ai-governance/renderedProjection/questionIds/010": {
           "hash": "sha256:06337d62e81482356248f0869a7c12bde34b7711097e450247cee96446564696",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:ai-governance/renderedProjection/questionIds/011": {
+          "hash": "sha256:7507b0966f2e370fa32a3fbeb62d0e15506cd1d39a00c35809d0a22f281caa94",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:ai-governance/renderedProjection/questionIds/012": {
+          "hash": "sha256:7ff9c6797dd599b81e3b3a925bf23c1b142d3125e9931f5a7f698d1eea830cb4",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:ai-governance/renderedProjection/questionIds/013": {
+          "hash": "sha256:7dfe5c77a5afe9885d60d565ad4dd2bf2cf49d14bc8b90695d232be0942b03d4",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:ai-governance/renderedProjection/questionIds/014": {
+          "hash": "sha256:3c3f3beb27872ae7f704168401b278f6c8e53b0105ef0e0f2be843fd5f0ce251",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -15157,8 +15463,23 @@
           "sourceIds": []
         },
         "/module:ai-governance/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:1db3b88e04ddac3bcf0b5603090882573033c5d44de25910c698f9e9e1c20e74",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:ai-governance/sources/china-ai-content-labeling-2026-08-05": {
+          "hash": "sha256:839b87b9be0d0b1bcdc21c581a28cc5518dd71c5704ab77cc06f166a35146390",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-governance/sources/china-ai-service-management": {
+          "hash": "sha256:7a09c070ca8e1037e33bfa7dbd62b9b535cac059bc47ffc9b8ccce9b30aafa30",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-governance/sources/china-data-cross-border-2024": {
+          "hash": "sha256:5a79ba29cb4de01f570c88d03a7b5fa1a3e0664f3372bbeb40109da2536bda40",
+          "objectType": "sources",
           "sourceIds": []
         },
         "/module:ai-governance/sources/eu-ai-act": {
@@ -15168,6 +15489,16 @@
         },
         "/module:ai-governance/sources/eu-ai-act-2026-1744": {
           "hash": "sha256:21bbc863c33dfa10c126902d680330ef48ee9125feb44abd61a68e7e07934ac1",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-governance/sources/eu-ai-act-implementation-2026-08-05": {
+          "hash": "sha256:b111bfb192ad1b65018bab15b0d9202ef1aad87984d614b69a6af9e8355cdc90",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-governance/sources/gb-45438-2025": {
+          "hash": "sha256:0716b167e8231b27bbda55237f394aefa3575787586712edf73294f50692a5ef",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -15183,6 +15514,11 @@
         },
         "/module:ai-governance/sources/nist-ai-rmf": {
           "hash": "sha256:1cd354dc70324551a5561d096cc9aa5bd9db484d3d703cd9fc4baeb4c36eedcc",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:ai-governance/sources/nist-genai-profile": {
+          "hash": "sha256:5375bbd026661632535eed2b9b1d0982406c30dfd9e18473414abaf55d3a93cb",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -15418,9 +15754,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:b0b8c0dd597703a27bb286c87c998c086550ea11d9a936535f980fb8126acfc8",
-      "enEffectiveHash": "sha256:76b8230c1bc5631689c7828b5c3e52eed38312f111acd1d280366d31189185e9",
-      "enReviewHash": "sha256:ba8beb7b6a0dc8d3db8e8ca6b63d8eac6afa7071d2d118a3841dd001960a4208",
+      "enAuthoredHash": "sha256:b13990479402c8f306461b80f5fc792660816a97be6cb7fee3b00fb54ec4f029",
+      "enEffectiveHash": "sha256:7454fc2d26b8f54ec272af4f723eb4b4c01435d7d1892cb5a4b7074739b95bf0",
+      "enReviewHash": "sha256:235da7576e1c5476f0f575612e9c907d7c6a105a11ba29e814da38721436b5f1",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -15428,6 +15764,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -15439,8 +15776,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-07-30",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-ai-governance-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-governance.ultra-exception.json",
+          "hash": "sha256:d02d96c46b060f8e4431a6f05883bc2832e6383e3c7064d3d24a17da8380f523",
+          "zhContentHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
+          "enContentHash": "sha256:235da7576e1c5476f0f575612e9c907d7c6a105a11ba29e814da38721436b5f1"
+        },
+        "br-ai-governance-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-governance.xhigh-author.json",
+          "hash": "sha256:55ba1f1f9f74f363fbd5f562900d81d9b11413dbf4241da9954bab73fb8a4037",
+          "zhContentHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
+          "enContentHash": "sha256:235da7576e1c5476f0f575612e9c907d7c6a105a11ba29e814da38721436b5f1"
+        },
+        "br-ai-governance-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-governance.xhigh-language.json",
+          "hash": "sha256:885f03bec171420ad21d1dfee71ac13638b191c5337f309f4e994bdb542b9035",
+          "zhContentHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
+          "enContentHash": "sha256:235da7576e1c5476f0f575612e9c907d7c6a105a11ba29e814da38721436b5f1"
+        },
+        "br-ai-governance-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-governance.xhigh-semantic.json",
+          "hash": "sha256:a615329683580ee3739205c1523cea581dca2e83e6bfa1cdde8e72a05b137e4a",
+          "zhContentHash": "sha256:5d9670c98bd398ea4e44cc21215ab6eff49d4859bccf29a3b8a42baa93f68ba3",
+          "enContentHash": "sha256:235da7576e1c5476f0f575612e9c907d7c6a105a11ba29e814da38721436b5f1"
+        },
         "br-ai-governance-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/ai-governance.ultra-exception.json",
           "hash": "sha256:bd19f9531486d41d00e97ad71e6d530d1d154064350aa393be9b33289d02482b",
@@ -38691,7 +39052,7 @@
       "moduleSlug": "ai-governance",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -39588,7 +39949,16 @@
         "br-ai-governance-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "closedAt": "2026-08-10",
+      "promotedCommit": "3b4206a70380999ff5cd1bf0bfae82f1455070bc",
+      "closureReviewIds": [
+        "br-ai-governance-2026-08-10-xhigh-author",
+        "br-ai-governance-2026-08-10-xhigh-semantic",
+        "br-ai-governance-2026-08-10-xhigh-language",
+        "br-ai-governance-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-ai-governance-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-security-2026-08-05-consolidated",
