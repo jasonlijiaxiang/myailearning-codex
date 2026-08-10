@@ -393,17 +393,24 @@ export async function loadProjectAtCommit(commit, expectedFilesBySlug = {}) {
     // the current audit implementation may legitimately use a later contract.
     const archivedContractPath = path.join(directory, "scripts", "lib", "localization-contract.mjs");
     let loadArchivedLocalizationProject = loadLocalizationProject;
+    let archivedContractIsPresent = true;
     try {
       await readFile(archivedContractPath);
       const archivedContractUrl = pathToFileURL(archivedContractPath).href;
       ({ loadLocalizationProject: loadArchivedLocalizationProject } = await import(archivedContractUrl));
     } catch (error) {
-      // The earliest Chinese-only baseline predates the contract module. Its
-      // English state is never used for that baseline, so the current loader
-      // is sufficient to reconstruct the required Chinese state.
+      // The earliest baseline predates the contract module. Its stored English
+      // hash used the original full-reference-directory scope, which is
+      // selected explicitly below.
       if (error?.code !== "ENOENT") throw error;
+      archivedContractIsPresent = false;
     }
-    const project = await loadArchivedLocalizationProject(directory, { moduleSlugs: moduleSlugs.length ? moduleSlugs : null });
+    const project = await loadArchivedLocalizationProject(directory, {
+      moduleSlugs: moduleSlugs.length ? moduleSlugs : null,
+      // Before the contract module existed, stored English baselines were
+      // created with the original full-reference-directory scope.
+      ...(archivedContractIsPresent ? {} : { englishReferenceScope: "directory" }),
+    });
     assertCanonicalRendererFileLists(project, expectedFilesBySlug);
     return project;
   } finally {

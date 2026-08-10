@@ -352,7 +352,10 @@ export function persistableLocalizationModuleState(moduleState, baselineCommit, 
   return composeLocalizationModuleBaseline(moduleState, moduleState, baselineCommit, baselineCommit, reviewSetIds);
 }
 
-export async function loadLocalizationProject(projectRoot, { moduleSlugs = null } = {}) {
+export async function loadLocalizationProject(projectRoot, { moduleSlugs = null, englishReferenceScope = "directory" } = {}) {
+  if (!["module", "directory"].includes(englishReferenceScope)) {
+    throw new Error(`englishReferenceScope must be "module" or "directory"; received ${englishReferenceScope}`);
+  }
   const [publicationModule, contentModule, briefModule, curriculumModule, learningModule, terminologyModule, referenceModule, englishModule, englishDatesModule, englishOutlineModule, extensionModule, knowledgeMapModule] = await Promise.all([
     importFrom(projectRoot, "app/module-publication.mjs"),
     importFrom(projectRoot, "app/module-content-registry.mjs"),
@@ -369,6 +372,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null 
   ]);
   const claims = JSON.parse(await readFile(path.join(projectRoot, "knowledge", "claims", "index.json"), "utf8"));
   const sharedEnglishSources = englishSourceView(referenceModule.sourceLedger, englishModule.englishSourceCopy);
+  const sharedEnglishReferenceHash = englishReferenceScope === "directory" ? contentHash(sharedEnglishSources) : null;
 
   const modules = {};
   const rendererFilesCache = new Map();
@@ -456,6 +460,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null 
       publication: englishPublication,
       englishUpdatedAt,
       sharedSources: selectedEntries(sharedEnglishSources, englishSourceIds),
+      ...(sharedEnglishReferenceHash ? { sharedReferenceDirectoryHash: sharedEnglishReferenceHash } : {}),
       sharedRendererHash: englishRendererHash,
       rendererDependencyFiles: enRendererFiles,
       extensionView: extensionModule.moduleExtensionViews[slug] ?? null,
