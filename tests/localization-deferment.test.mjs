@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { getPublishedModule, publishedModules, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
+import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
@@ -110,6 +110,22 @@ test("runtime maintenance records cannot masquerade as locale-gate receipts", ()
   });
   assert.doesNotThrow(() => assertJsonSchema(mutated, schema, "localization registry"));
   assert.match(validate(mutated).failures.join("\n"), /receipt must be runtime-maintenance/);
+});
+
+test("a later runtime maintenance may supersede an earlier overlay for the same module", () => {
+  const chained = structuredClone(registry);
+  chained.runtimeMaintenances.push({
+    ...chained.runtimeMaintenances[0],
+    maintenanceId: "erm-test-runtime-chain",
+    summary: "Fixture that exercises registry-level overlay chaining.",
+  });
+  const result = validate(chained, currentProject, { runtimeOverlays });
+  assert.doesNotMatch(result.failures.join("\n"), /already covered by/);
+});
+
+test("an effective-hash contract change covers every English module", () => {
+  const derived = derivedAffectedModuleSlugs(currentProject, currentProject, ["scripts/lib/localization-contract.mjs"]);
+  assert.deepEqual(derived, [...publishedModuleSlugs].sort());
 });
 
 test("one active deferment per module records the exact live object delta", () => {

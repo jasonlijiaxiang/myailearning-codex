@@ -166,7 +166,6 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
   }
 
   const runtimeMaintenanceIds = new Set();
-  const runtimeMaintenanceBySlug = new Map();
   for (const maintenance of registry.runtimeMaintenances ?? []) {
     if (runtimeMaintenanceIds.has(maintenance.maintenanceId)) fail(`duplicate runtime maintenance ID ${maintenance.maintenanceId}`);
     runtimeMaintenanceIds.add(maintenance.maintenanceId);
@@ -178,9 +177,6 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     if (new Set(maintenance.changedRendererFiles).size !== maintenance.changedRendererFiles.length) fail(`${maintenance.maintenanceId}: changed renderer files must be unique`);
     for (const slug of maintenance.affectedModuleSlugs) {
       if (!publishedSlugs.includes(slug)) fail(`${maintenance.maintenanceId}: unknown affected module ${slug}`);
-      const existing = runtimeMaintenanceBySlug.get(slug);
-      if (existing) fail(`${maintenance.maintenanceId}: ${slug} is already covered by ${existing}`);
-      runtimeMaintenanceBySlug.set(slug, maintenance.maintenanceId);
     }
     for (const slug of maintenance.contentProjectionChangeSlugs) {
       if (!maintenance.affectedModuleSlugs.includes(slug)) fail(`${maintenance.maintenanceId}: content projection module ${slug} is not affected`);
@@ -469,7 +465,12 @@ function changedFilesBetween(baseCommit, implementationCommit) {
     .sort();
 }
 
-function derivedAffectedModuleSlugs(beforeProject, implementationProject, changedRendererFiles) {
+const effectiveHashContractFiles = new Set(["scripts/lib/localization-contract.mjs"]);
+
+export function derivedAffectedModuleSlugs(beforeProject, implementationProject, changedRendererFiles) {
+  if (changedRendererFiles.some((file) => effectiveHashContractFiles.has(file))) {
+    return [...beforeProject.publishedModuleSlugs].sort();
+  }
   return beforeProject.publishedModuleSlugs.filter((slug) => {
     const before = beforeProject.modules[slug];
     const after = implementationProject.modules[slug];
@@ -524,9 +525,15 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           failures.push(`${label}: cannot reconstruct ${slug}`);
           continue;
         }
-        if (!sameEnglishRuntimeState(before, baseline)) {
-          if (isAncestor(maintenance.implementationCommit, baseline.enBaselineCommit)) continue;
-          failures.push(`${label}: ${slug} base commit does not match the registered English baseline`);
+        if (isAncestor(maintenance.implementationCommit, baseline.enBaselineCommit)) {
+          // A later content promotion already includes this maintenance. It is
+          // historical provenance, not a live overlay for the current baseline.
+          overlays.delete(slug);
+          continue;
+        }
+        const expectedBefore = overlays.get(slug)?.state ?? baseline;
+        if (!sameEnglishRuntimeState(before, expectedBefore)) {
+          failures.push(`${label}: ${slug} base commit does not match the registered English baseline or prior runtime maintenance`);
           continue;
         }
         if (!sameEnglishAuthoredReviewAndDate(before, after) || !same(before.reviewFiles, after.reviewFiles)) {
@@ -535,10 +542,6 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
         }
         if (sameEnglishRuntimeState(before, after)) {
           failures.push(`${label}: ${slug} has no effective English renderer change`);
-          continue;
-        }
-        if (overlays.has(slug)) {
-          failures.push(`${label}: ${slug} already has a runtime overlay`);
           continue;
         }
         overlays.set(slug, { maintenanceId: maintenance.maintenanceId, state: after });
