@@ -390,7 +390,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
             <Link href="/en/glossary" prefetch={false}>Glossary</Link>
             <Link href="/en/questions" prefetch={false}>All customer questions</Link>
             <Link href="/en/references" prefetch={false}>References</Link>
-            <Link href={`/modules/${module.slug}`} hrefLang="zh-CN" lang="zh-CN" prefetch={false}>中文</Link>
+            <Link href={`/modules/${module.slug}`} hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
           </div>
         </nav>
         <div className="moduleBriefHeader">
