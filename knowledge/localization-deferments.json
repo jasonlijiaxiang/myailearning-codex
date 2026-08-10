@@ -9860,16 +9860,16 @@
       }
     },
     "mcp": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "4b633d33267a91219c009568bcbf84ff39f1902d",
+      "enBaselineCommit": "4b633d33267a91219c009568bcbf84ff39f1902d",
       "reviewSetIds": [
-        "br-mcp-ultra-exception",
-        "br-mcp-xhigh-author",
-        "br-mcp-xhigh-language",
-        "br-mcp-xhigh-semantic"
+        "br-mcp-2026-08-10-ultra-exception",
+        "br-mcp-2026-08-10-xhigh-author",
+        "br-mcp-2026-08-10-xhigh-language",
+        "br-mcp-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:08fc600b67c12cf07bc7847015768846abe4df2ec3e845e1f9457cbf952433d6",
-      "zhStateHash": "sha256:0ebe8a5b99de956b73da54e4447bd75c3ae159ea7493ca0b1ff475773f403f43",
+      "zhReviewHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+      "zhStateHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
       "zhObjects": {
         "/module:mcp/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -9902,7 +9902,7 @@
           "sourceIds": []
         },
         "/module:mcp/brief/decisions/$order": {
-          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -9933,6 +9933,11 @@
         },
         "/module:mcp/brief/decisions/005": {
           "hash": "sha256:7c3c554a685ac231f7976d04dafa3d2b1c52c26512d732c513c852f0515bf5e3",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:mcp/brief/decisions/006": {
+          "hash": "sha256:1ca757ec2e772104b7e627962c08daa9a31442c61ece6f3ec873e08de29c0b4a",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -11028,7 +11033,7 @@
           "sourceIds": []
         },
         "/module:mcp/publication/updatedAt": {
-          "hash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "hash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -11343,7 +11348,7 @@
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -11644,9 +11649,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:8bc6fe814e7846d2c34b938868b9c60b1fd0dad02e35ca28a458277b9db3ac4b",
-      "enEffectiveHash": "sha256:09fbf5cfa7f570a8ff248ec02059cf6f4012529aab7e4ca2d81f03aed4aa90af",
-      "enReviewHash": "sha256:09647f6c79e8f4f909edcd76fa4c03ee815e37a272c31659330f6fda949123ec",
+      "enAuthoredHash": "sha256:ddc84ef4f18d009034d5d093b4079a4d5dce0a1d14315fbf0087c494f71a227b",
+      "enEffectiveHash": "sha256:da3a0bca73024e6f35319eb24edd42900a6c5a73dddd98650b1df7bdc8a7736a",
+      "enReviewHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -11654,6 +11659,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -11665,8 +11671,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-08-01",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-mcp-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/mcp.ultra-exception.json",
+          "hash": "sha256:b6ff74188a742886b0a4c1da78dbbfd71845b988306e088852e744be5de57e02",
+          "zhContentHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+          "enContentHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c"
+        },
+        "br-mcp-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/mcp.xhigh-author.json",
+          "hash": "sha256:0ea7addfaecdb2ec2f521a83044568259b5d5b121aa18ffed3ef5f8b3a152c91",
+          "zhContentHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+          "enContentHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c"
+        },
+        "br-mcp-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/mcp.xhigh-language.json",
+          "hash": "sha256:d45c1f1deea157b5328837f4023a64c88f14fade547212d7f0c6d8155c32e750",
+          "zhContentHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+          "enContentHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c"
+        },
+        "br-mcp-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/mcp.xhigh-semantic.json",
+          "hash": "sha256:0f299d9db6c0990f70074aefee4baf011aa2705e7129c22c9374aac39046273f",
+          "zhContentHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+          "enContentHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c"
+        },
         "br-mcp-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/mcp.ultra-exception.json",
           "hash": "sha256:76ae234568af65b5b679e12f6a4bf776a0f260a7295d1b6f62179e33ce9d27f9",
@@ -40193,7 +40223,7 @@
       "moduleSlug": "mcp",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -40298,7 +40328,16 @@
           "br-mcp-2026-08-10-xhigh-language",
           "br-mcp-2026-08-10-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "4b633d33267a91219c009568bcbf84ff39f1902d",
+      "closureReviewIds": [
+        "br-mcp-2026-08-10-xhigh-author",
+        "br-mcp-2026-08-10-xhigh-semantic",
+        "br-mcp-2026-08-10-xhigh-language",
+        "br-mcp-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-mcp-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-a2a-2026-08-08-shared-renderer",
