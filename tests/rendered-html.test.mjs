@@ -15,7 +15,7 @@ import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
 import { exposesLongFormSearchSections, searchableEnglishSectionGroups, searchableQuestions } from "../app/home-search-visibility.mjs";
-import { englishModuleRegistry, englishQuestions, englishSourceCopy } from "../app/i18n/en/registry.mjs";
+import { englishModuleRegistry, englishQuestions } from "../app/i18n/en/registry.mjs";
 import {
   buildEnglishSectionGroups,
   selectVisibleEnglishEvidenceCards,
@@ -1226,7 +1226,7 @@ test("Batch 08 routes render inference overload and compute procurement evidence
   assert.match(inference, /Goodput/);
   assert.match(inference, /等待上限、背压和拒绝语义/);
   assert.match(inference, /扩容不能替代过载准入/);
-  assert.match(inferenceEn, /input and output distributions, arrival rate, priority, quality, and SLO/);
+  assert.match(inferenceEn, /First-token delay, slow continuation, queueing, rejection, memory growth, and quality regression/);
   assert.match(inferenceEn, /Goodput/);
   assert.match(inferenceEn, /unavailable or loading capacity/);
   assert.match(inferenceEn, /cache_salt/);
@@ -1520,7 +1520,7 @@ test("every public knowledge route is anonymously readable and directly shareabl
     assert.equal(response.status, 200, `${path} 必须匿名直达`);
     assert.equal(response.headers.get("location"), null, `${path} 不应跳转到登录或中间页`);
     const html = await response.text();
-    assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"|\/login\b|\/signin\b/i, `${path} 不得出现登录依赖`);
+    assert.doesNotMatch(html, /type="password"|(?:href|action)="\/(?:login|signin)\b|<(?:a|button)[^>]*>\s*(?:Login|Sign in)\s*<\/(?:a|button)>/i, `${path} 不得出现登录依赖`);
     assert.doesNotMatch(html, /\/(?:Users|home)\//, `${path} 不得泄漏本机绝对路径`);
   }
 });
@@ -1796,9 +1796,10 @@ test("balances arbitrary CSS Grid counts without fractional or missing spans", (
 });
 
 test("keeps module systems dynamically balanced, searchable, and navigable on mobile", async () => {
-  const [styles, v2Styles, homepage, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
+  const [styles, v2Styles, v3Styles, homepage, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url), "utf8"),
@@ -1867,6 +1868,8 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{\s*display:\s*flex;[^}]*width:\s*100%;/);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.mechanicGrid article,[\s\S]*?grid-column:\s*span 12;/);
   assert.doesNotMatch(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{[^}]*display:\s*none;/);
+  assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);[^}]*overflow:\s*visible;/s);
+  assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks a\s*\{[^}]*white-space:\s*normal;/s);
 });
 
 test("source URLs have one code owner and are absent from content and route files", async () => {

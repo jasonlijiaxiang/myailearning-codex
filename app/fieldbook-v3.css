@@ -2681,6 +2681,19 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
     white-space: nowrap;
   }
 
+  /* English labels are materially longer than the Chinese navigation labels.
+     Keep every destination visible instead of relying on a hidden horizontal
+     scroll affordance at phone widths. */
+  .fieldbookTheme[lang="en"]:not(.fieldbookHome) .topbar .toplinks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 18px;
+    overflow: visible;
+  }
+  .fieldbookTheme[lang="en"]:not(.fieldbookHome) .topbar .toplinks a {
+    white-space: normal;
+  }
+
   .fieldbookTheme :where(.questionHeroStats, .glossaryHeroStats) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
