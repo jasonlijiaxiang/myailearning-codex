@@ -210,7 +210,7 @@ test("Batch 07 English content preserves the training contract and predictive ro
   assert.equal(training.qa.length, 10);
   assert.equal(trainingIds.includes("gpu-scaling-efficiency"), false);
   assert.equal(trainingIds.includes("scaling-law-task-boundary"), false);
-  assert.match(JSON.stringify(training), /Run manifest/);
+  assert.match(JSON.stringify(training), /run manifest/);
   assert.match(JSON.stringify(training), /asynchronous completion/i);
   assert.match(JSON.stringify(training), /not guarantee bitwise|do not promise cross-platform bitwise|not promising bitwise identity/i);
   const modelCompute = training.sections
@@ -306,7 +306,7 @@ test("Batch 09 English content preserves the platform-product and minimum-suffic
   assert.equal(platform.qa.at(-1).id, "containerized-not-fully-portable");
   assert.equal(platform.qa.at(-1).addedAt, "2026-08-01");
   assert.match(JSON.stringify(platform), /platform control layer.*workload execution layer/is);
-  assert.match(JSON.stringify(platform), /management and control.*identity\/data\/network.*performance\/resources.*cost allocation\/accountability/is);
+  assert.match(JSON.stringify(platform), /Management\/control.*identity\/data\/network.*performance\/resources.*cost allocation\/accountability/is);
   assert.match(JSON.stringify(platform), /OCI image or Kubernetes YAML is not evidence of cross-cloud or cross-accelerator migration/i);
   assert.match(JSON.stringify(platform), /platform economics and application business ROI have different owners/i);
   [
@@ -538,6 +538,30 @@ test("reviewed English production modules retain direct professional copy and co
   assert.match(inference, /highest concurrency at which the workload still meets its SLO/);
   assert.match(inference, /demonstrate canary deployment, traffic draining, and rollback/);
   assert.match(inference, /SLO-satisfying Goodput/);
+
+  const { sources: computeSources, ...computeReaderCopy } = englishModuleRegistry["ai-infra-compute"];
+  assert.ok(computeSources);
+  const compute = JSON.stringify(computeReaderCopy);
+  assert.doesNotMatch(compute, /conforming result|accepted duration|Accept with rejection|\bSpot\b|Ask the customer:/);
+  assert.match(compute, /time to the stated quality target/);
+  assert.match(compute, /SLO-satisfying Goodput/);
+  assert.match(compute, /cost per result that meets the stated criteria/);
+
+  const { sources: platformSources, ...platformReaderCopy } = englishModuleRegistry["ai-infra-platform"];
+  assert.ok(platformSources);
+  const platform = JSON.stringify(platformReaderCopy);
+  assert.doesNotMatch(platform, /\bcosted\b|conforming service|accepted output|qualifying candidates|cost per success|unit success|\bQOS\b|\bSpot\b|Ask the customer:/);
+  assert.match(platform, /model FLOPs utilization \(MFU\)/);
+  assert.match(platform, /cost per task that meets stated acceptance criteria/);
+  assert.match(platform, /device preparation, image pulls, data mounting, and model loading/);
+
+  const { sources: trainingSources, ...trainingReaderCopy } = englishModuleRegistry["llm-training"];
+  assert.ok(trainingSources);
+  const training = JSON.stringify(trainingReaderCopy);
+  assert.doesNotMatch(training, /\bRun contract|resolves to|accepted metrics|OOM memory composition|OOM exposure|Most enterprises need|Ask the customer:/);
+  assert.match(training, /valid training progress while the cluster meets declared integrity, recovery, and service objectives/);
+  assert.match(training, /RLHF trains a reward model and then optimizes a policy against it/);
+  assert.match(training, /predeclared acceptance metrics/);
 
   const standard = await readFile(new URL("../docs/ENGLISH-EDITORIAL-STANDARD.md", import.meta.url), "utf8");
   assert.match(standard, /Direct technical prose/);

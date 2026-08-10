@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-infra-platform-2026-08-10-xhigh-language",
+  "scope": {
+    "moduleId": "ai-infra-platform",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
+    "enContentHash": "sha256:d0aeea357fae70f745de90e50e4c3f77d0a4dc3123e70572fd54b69a6e174315",
+    "termIds": [
+      "ai-infra-platform",
+      "batching",
+      "distributed-training",
+      "finops",
+      "gang-scheduling",
+      "goodput",
+      "heterogeneous-compute",
+      "observability",
+      "resource-scheduling"
+    ],
+    "sourceIds": [
+      "checkfreq-2021",
+      "cncf-platforms-whitepaper",
+      "finops-unit-economics",
+      "kubernetes-dra",
+      "kubernetes-dra-1-34-ga",
+      "kubernetes-dra-1-36",
+      "kubernetes-multi-tenancy",
+      "kueue-all-or-nothing",
+      "kueue-fair-sharing",
+      "nist-zero-trust",
+      "nvidia-gpu-operator",
+      "oci-image-spec-v1-1-1",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "slurm-multifactor-priority",
+      "slurm-overview",
+      "torchsnapshot-checkpoint",
+      "vllm-2023"
+    ]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [
+    {
+      "gateId": "technical-english",
+      "status": "PASS",
+      "evidence": [
+        "Independent language review confirmed direct professional technical English, corrected hardware-attribute terms, and concise discovery questions.",
+        "Reader-facing discovery questions use the renderer's label once, start with a capital letter, and preserve the original customer intent.",
+        "Terminology, capitalization, and acceptance language follow the English editorial standard."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

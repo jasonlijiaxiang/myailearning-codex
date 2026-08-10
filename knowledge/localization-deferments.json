@@ -44,6 +44,27 @@
       "recordedAt": "2026-08-10",
       "decisionId": "D-012",
       "summary": "Independent English editorial review completed for llm-inference; the reviewed candidate preserves canonical evidence relationships and is ready for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-ai-infra-compute-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for ai-infra-compute; direct professional copy preserves canonical evidence relationships, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-ai-infra-platform-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for ai-infra-platform; direct professional copy preserves canonical evidence relationships, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-llm-training-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for llm-training; direct professional copy preserves canonical evidence relationships, stable IDs, and dates for atomic baseline promotion."
     }
   ],
   "moduleBaselines": {
@@ -40034,7 +40055,7 @@
       "moduleSlug": "llm-training",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -40047,6 +40068,54 @@
       "workItemIds": [
         "shared-renderer-effective-state-2026-08-08"
       ],
+      "englishCandidate": {
+        "zhReviewHash": "sha256:d9b36dd53bb1bbc49e4789ecf37eb49d68aa0d7fdb4b45e29400790fdb11af3a",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:1d27e1ea8e8916e406ce3c58266f9c9b27d0eaf93ff1c92ac7cb95a5dc9036ca",
+        "enEffectiveHash": "sha256:5cfa8b4ff69073cfef071a4e0aef1136b09b8f55885842693c01f889c6e06e2b",
+        "enReviewHash": "sha256:31057f9128703d1e45b2a9f5d9deda2433dae7a03a3e57417c7054a7694feeaa",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-01",
+        "reviewIds": [
+          "br-llm-training-2026-08-10-xhigh-author",
+          "br-llm-training-2026-08-10-xhigh-semantic",
+          "br-llm-training-2026-08-10-xhigh-language",
+          "br-llm-training-2026-08-10-ultra-exception"
+        ]
+      },
       "affectedObjects": [
         {
           "objectId": "/module:llm-training/renderedProjection/sharedRendererHash",
@@ -40482,7 +40551,7 @@
       "moduleSlug": "ai-infra-platform",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -40495,6 +40564,54 @@
       "workItemIds": [
         "shared-renderer-effective-state-2026-08-08"
       ],
+      "englishCandidate": {
+        "zhReviewHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:4c14eac361b3b5252b633f86eaeedccb94b5419201464067e9e7def954e0976d",
+        "enEffectiveHash": "sha256:33913b3d4bf97af30fc52f36749169d11f4c8c4536f11dad4520e1fcad95d946",
+        "enReviewHash": "sha256:d0aeea357fae70f745de90e50e4c3f77d0a4dc3123e70572fd54b69a6e174315",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-01",
+        "reviewIds": [
+          "br-ai-infra-platform-2026-08-10-xhigh-author",
+          "br-ai-infra-platform-2026-08-10-xhigh-semantic",
+          "br-ai-infra-platform-2026-08-10-xhigh-language",
+          "br-ai-infra-platform-2026-08-10-ultra-exception"
+        ]
+      },
       "affectedObjects": [
         {
           "objectId": "/module:ai-infra-platform/renderedProjection/sharedRendererHash",
@@ -40519,7 +40636,7 @@
       "moduleSlug": "ai-infra-compute",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -40537,6 +40654,54 @@
         "dfr-ai-infra-compute-stage2a",
         "dfr-ai-infra-compute-stage3b"
       ],
+      "englishCandidate": {
+        "zhReviewHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:5625c83ffdafcb4c0001981c1937f5e7c33301f592d1cf8f78c0c49107fc95ab",
+        "enEffectiveHash": "sha256:cd5dd7f0884086b3a499621eed67007785499e936ccfdea365c640bb1e1f96c2",
+        "enReviewHash": "sha256:6bf0a7d785991620f1d1fd56fc367d91b6b285619c8856f5f9c394dac448c02e",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-01",
+        "reviewIds": [
+          "br-ai-infra-compute-2026-08-10-xhigh-author",
+          "br-ai-infra-compute-2026-08-10-xhigh-semantic",
+          "br-ai-infra-compute-2026-08-10-xhigh-language",
+          "br-ai-infra-compute-2026-08-10-ultra-exception"
+        ]
+      },
       "affectedObjects": [
         {
           "objectId": "/module:ai-infra-compute/brief/decisions/$order",

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-llm-training-2026-08-10-ultra-exception",
+  "scope": {
+    "moduleId": "llm-training",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:d9b36dd53bb1bbc49e4789ecf37eb49d68aa0d7fdb4b45e29400790fdb11af3a",
+    "enContentHash": "sha256:31057f9128703d1e45b2a9f5d9deda2433dae7a03a3e57417c7054a7694feeaa",
+    "termIds": [
+      "distributed-training",
+      "evaluation",
+      "fine-tuning",
+      "gang-scheduling",
+      "llm-training",
+      "pretraining",
+      "rlhf",
+      "scale-out",
+      "scale-up",
+      "sft",
+      "transformer"
+    ],
+    "sourceIds": [
+      "checkfreq-2021",
+      "chinchilla-2022",
+      "deduplicating-training-data-2022",
+      "deepseek-r1-2025",
+      "dpo-2023",
+      "flashattention-2022",
+      "hf-transformers-tokenizer-contract",
+      "hf-trl-data-formats",
+      "hf-trl-sft-trainer",
+      "instructgpt-2022",
+      "megatron-3d-parallelism-2021",
+      "nccl-collectives",
+      "nist-genai-profile",
+      "openai-model-spec-hidden-cot",
+      "opentelemetry-semconv",
+      "pytorch-distributed-checkpoint",
+      "pytorch-reproducibility",
+      "sentencepiece-2018",
+      "switch-transformer-2022",
+      "torchsnapshot-checkpoint",
+      "transformer-2017"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "Final adjudication found no EVIDENCE, DYNAMIC_FACT, EDITORIAL_DISPUTE, or ENGINEERING blocker.",
+        "Targeted module import, strict question/evidence parity, and rendered reader-copy checks passed before candidate registration.",
+        "All llm-training review findings were resolved without changing stable IDs, source bindings, dates, or source-ledger keys."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

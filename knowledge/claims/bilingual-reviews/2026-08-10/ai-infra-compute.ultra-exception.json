@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-ai-infra-compute-2026-08-10-ultra-exception",
+  "scope": {
+    "moduleId": "ai-infra-compute",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:3548717054ee2e2ba9e22306509d2af2e7484a65c601aa1023a8fe1f85d3950e",
+    "enContentHash": "sha256:6bf0a7d785991620f1d1fd56fc367d91b6b285619c8856f5f9c394dac448c02e",
+    "termIds": [
+      "access-spectrum",
+      "ai-infra-compute",
+      "hbm",
+      "heterogeneous-compute",
+      "kv-cache",
+      "scale-out",
+      "scale-up",
+      "tco",
+      "vram"
+    ],
+    "sourceIds": [
+      "chinchilla-2022",
+      "finops-ai-category",
+      "finops-unit-economics",
+      "flashattention-2022",
+      "megatron-3d-parallelism-2021",
+      "mlperf-inference-datacenter",
+      "mlperf-storage-v2",
+      "mlperf-training",
+      "nccl-collectives",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "nvidia-dgx-h100-data-center",
+      "nvidia-gpu-operator",
+      "opentelemetry-semconv",
+      "roofline-2009",
+      "torchsnapshot-checkpoint",
+      "vllm-2023"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "Final adjudication found no EVIDENCE, DYNAMIC_FACT, EDITORIAL_DISPUTE, or ENGINEERING blocker.",
+        "Targeted module import, strict question/evidence parity, and rendered reader-copy checks passed before candidate registration.",
+        "All ai-infra-compute review findings were resolved without changing stable IDs, source bindings, dates, or source-ledger keys."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}
