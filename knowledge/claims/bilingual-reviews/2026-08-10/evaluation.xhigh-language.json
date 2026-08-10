@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-evaluation-2026-08-10-xhigh-language",
+  "scope": {
+    "moduleId": "evaluation",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:7161579969b889dddea060e699bd9c422a6dee29553709cdacd355c743e7d1ea",
+    "enContentHash": "sha256:464059fb5380b6167c6989ee47e5f81db68a7980d63242991fb25d53acf4ecb6",
+    "termIds": ["evaluation", "evaluation-contract", "golden-set", "observability", "evaluation-layers", "llm-as-judge"],
+    "sourceIds": ["anthropic-agent-evals", "beir-2021", "harness-bench-2026", "llm-as-judge-2023", "longvideobench-2024", "nist-ai-800-3", "nist-ai-800-4", "nist-genai-profile", "openai-eval-best-practices", "opentelemetry-genai-semconv", "ragas", "swe-bench", "terminal-bench", "webarena-2024"]
+  },
+  "stage": "xhigh-language",
+  "deterministic": [{
+    "gateId": "technical-english",
+    "status": "PASS",
+    "evidence": [
+      "The copy uses native measurement and decision language: measurement system, contract, hard gate, uncertainty, handoff, and accountable owner.",
+      "It removes translated acceptance phrasing and oversized noun stacks while keeping technical distinctions useful in discovery conversations.",
+      "Dense tables and cards remain scannable and use compact boundary statements rather than duplicating interface labels."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

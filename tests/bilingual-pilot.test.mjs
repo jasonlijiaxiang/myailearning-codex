@@ -649,6 +649,47 @@ test("Batch 11 English content preserves content-delivery, multimodal, and claim
   assert.doesNotMatch(JSON.stringify(solution), /filing or registration triage/);
 });
 
+test("Batch 12 English content preserves protocol, memory, and evaluation boundaries", () => {
+  const a2a = englishModuleRegistry.a2a;
+  assert.deepEqual(Object.keys(a2a.sources), [
+    "a2a-concepts", "a2a-specification", "a2a-mcp-boundary", "mcp-tasks-extension", "anthropic-effective-agents",
+    "opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-genai-profile", "nist-zero-trust", "a2a-release-1-0-1",
+  ]);
+  const a2aCopy = JSON.stringify(a2a);
+  assert.match(a2aCopy, /protocol-level COMPLETED state/);
+  assert.match(a2aCopy, /reconcile side effects with the business system/);
+  assert.doesNotMatch(a2aCopy, /mcp-architecture|a2a-spec-1-0-0/);
+
+  const agent = englishModuleRegistry["ai-agent"];
+  assert.equal(agent.qa.length, 28);
+  assert.equal(agent.evidenceCards.length, 6);
+  const memorySection = agent.sections.find((section) => section.id === "agent-memory-poisoning");
+  assert.equal(memorySection.blocks[0].items.length, 5);
+  assert.deepEqual(memorySection.blocks[0].items[0].sourceIds, ["aws-agentcore-memory", "nist-genai-profile", "owasp-llm-top-ten"]);
+  const lowCodeSection = agent.sections.find((section) => section.id === "agent-low-code-choice");
+  assert.equal(lowCodeSection.blocks[0].items.length, 6);
+  assert.deepEqual(lowCodeSection.blocks[0].items[1].sourceIds, ["mcp-specification-2026-07-28"]);
+  assert.match(JSON.stringify(agent), /Lab attack rates do not predict production incidence/);
+
+  const evaluation = englishModuleRegistry.evaluation;
+  assert.equal(evaluation.qa.length, 11);
+  assert.equal(evaluation.evidenceCards.length, 4);
+  const evaluationCurriculum = evaluation.sections.find((section) => section.id === "evaluation-curriculum");
+  const courseChapters = evaluationCurriculum.blocks.find((block) => block.title === "Nine course chapters");
+  assert.equal(courseChapters.items.length, 9);
+  assert.deepEqual(courseChapters.items.find((item) => item.id === "chapter-evaluation-handoff").sourceIds, ["nist-ai-800-4", "opentelemetry-genai-semconv"]);
+  const benchmarkAtlas = evaluation.sections.find((section) => section.id === "evaluation-benchmark-atlas");
+  assert.equal(benchmarkAtlas.blocks[0].items.length, 6);
+  assert.deepEqual(benchmarkAtlas.blocks[1].items[0].sourceIds, ["swe-bench", "terminal-bench", "beir-2021", "webarena-2024", "harness-bench-2026", "longvideobench-2024", "openai-eval-best-practices"]);
+  const evaluationStudyGuide = evaluation.sections.find((section) => section.id === "evaluation-study-guide");
+  const evaluationRoute = evaluationStudyGuide.blocks.find((block) => block.title === "Recommended learning route");
+  assert.equal(evaluationRoute.items.length, 6);
+  assert.deepEqual(evaluationRoute.items.slice(-2).map((item) => item.id), ["route-freeze-complete-evaluation-contract", "route-report-uncertainty-and-handoff"]);
+  assert.equal(evaluationStudyGuide.blocks.find((block) => block.title === "Practice labs").items.length, 4);
+  assert.match(JSON.stringify(evaluation), /A leaderboard is a screening input/);
+  assert.doesNotMatch(JSON.stringify(evaluation), /cost per accepted/i);
+});
+
 test("Chinese global entry pages expose their matching English routes", async () => {
   const routes = [
     ["../app/page.tsx", "/en"],

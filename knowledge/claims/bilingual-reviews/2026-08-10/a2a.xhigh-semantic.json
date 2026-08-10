@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-a2a-2026-08-10-xhigh-semantic",
+  "scope": {
+    "moduleId": "a2a",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
+    "enContentHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791",
+    "termIds": ["a2a", "agent-card", "a2a-message", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"],
+    "sourceIds": ["a2a-concepts", "a2a-mcp-boundary", "a2a-release-1-0-1", "a2a-specification", "anthropic-effective-agents", "mcp-tasks-extension", "nist-genai-profile", "nist-zero-trust", "opentelemetry-genai-semconv", "opentelemetry-semconv"]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [{
+    "gateId": "protocol-boundary-review",
+    "status": "PASS",
+    "evidence": [
+      "The review preserves the formal distinction between an immediate Message and stateful Task outcomes, including the unspecified enum state.",
+      "A protocol-level COMPLETED state, a capability declaration, and cancellation reporting are not presented as identity, authorization, reversal, or business acceptance.",
+      "Question and evidence-card source order and the existing addedAt value remain aligned with the canonical module."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}
