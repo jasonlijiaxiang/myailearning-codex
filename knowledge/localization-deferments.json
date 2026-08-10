@@ -2273,16 +2273,16 @@
       }
     },
     "model-landscape": {
-      "zhBaselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "385a00d10fdc1e8d3da65c1dc6df253308fc5a60",
+      "enBaselineCommit": "385a00d10fdc1e8d3da65c1dc6df253308fc5a60",
       "reviewSetIds": [
-        "br-model-landscape-ultra-exception",
-        "br-model-landscape-xhigh-author",
-        "br-model-landscape-xhigh-language",
-        "br-model-landscape-xhigh-semantic"
+        "br-model-landscape-2026-08-10-ultra-exception",
+        "br-model-landscape-2026-08-10-xhigh-author",
+        "br-model-landscape-2026-08-10-xhigh-language",
+        "br-model-landscape-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:427b6a2779420a4d0f1c10d787b6d399b3e23271788a3ee2739c1adf27332531",
-      "zhStateHash": "sha256:3757965e7aeed4faeb6bb4012925a3ef658aaa54924384fe0b2c747fd4c51cec",
+      "zhReviewHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
+      "zhStateHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
       "zhObjects": {
         "/module:model-landscape/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -2315,7 +2315,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/decisions/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -2344,13 +2344,18 @@
           "objectType": "brief",
           "sourceIds": []
         },
+        "/module:model-landscape/brief/decisions/005": {
+          "hash": "sha256:81346f3ab14f45e0d6371592a6041787b142be0708c6d4a1b8e63adfd0f90404",
+          "objectType": "brief",
+          "sourceIds": []
+        },
         "/module:model-landscape/brief/deepDiveLead": {
           "hash": "sha256:ad1a9fbd4a963187aefb69d194ca77932c22f1b237b2e2ba3fff8febed7ef4a4",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:model-landscape/brief/deepDives/$order": {
-          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -2377,6 +2382,18 @@
             "openai-models"
           ]
         },
+        "/module:model-landscape/brief/deepDives/002": {
+          "hash": "sha256:1056e30f09531a5a0f508a266577b5e90f93a4a3f7c34d85c21c75d2fc2615d2",
+          "objectType": "brief",
+          "sourceIds": [
+            "anthropic-models",
+            "finops-unit-economics",
+            "google-models",
+            "nist-genai-profile",
+            "openai-models",
+            "osi-open-source-ai-definition-1-0"
+          ]
+        },
         "/module:model-landscape/brief/deepDiveTitle": {
           "hash": "sha256:eda85c169674532adad6136e5af8bb16dc44e89a8f526294186319238d7f9a2e",
           "objectType": "brief",
@@ -2388,7 +2405,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/evidenceCards/$order": {
-          "hash": "sha256:8e3080f26aeeaf0b96e7b1baaeb9607281a8ef6fc92d29ac0fe7147b10cd2bd2",
+          "hash": "sha256:bab0eb898df414ff6a17fc3946e658ae9fffea7028faf3468b2df49169255b4e",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -2413,6 +2430,13 @@
             "finops-unit-economics"
           ]
         },
+        "/module:model-landscape/brief/evidenceCards/003": {
+          "hash": "sha256:7dcfaa63ff21005df174b588525e9d70c617fc3140273dca8ba25ea89d56eb72",
+          "objectType": "brief",
+          "sourceIds": [
+            "osi-open-source-ai-definition-1-0"
+          ]
+        },
         "/module:model-landscape/brief/position": {
           "hash": "sha256:ee0dd8524712ed1c5353ac8818ff27816b4b5bfc38042baae2a78da6ddae63cf",
           "objectType": "brief",
@@ -2424,7 +2448,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/principles/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -2453,13 +2477,23 @@
           "objectType": "brief",
           "sourceIds": []
         },
+        "/module:model-landscape/brief/principles/005": {
+          "hash": "sha256:eb9098346ba8ed9c565dc57f19063204bd2a79adc65c761f8303a893f2af8382",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:model-landscape/brief/principles/006": {
+          "hash": "sha256:291c809d7cae26aac5ca57cd617fe7e05831ba54381a6385c49be0461e75b911",
+          "objectType": "brief",
+          "sourceIds": []
+        },
         "/module:model-landscape/brief/principleTitle": {
           "hash": "sha256:a84b0559f66ba5c235f0f611f0813762154b58ca0fa4157255de24479a608a3e",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:model-landscape/brief/qa/$order": {
-          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -2563,6 +2597,31 @@
             "opentelemetry-genai-semconv"
           ]
         },
+        "/module:model-landscape/brief/qa/012": {
+          "hash": "sha256:f66b69dfa46db0e7bc05b20a4fa058324066d63cbda6b0b3f6ff00259e6d4934",
+          "objectType": "brief",
+          "sourceIds": [
+            "nist-genai-profile",
+            "openai-models"
+          ]
+        },
+        "/module:model-landscape/brief/qa/013": {
+          "hash": "sha256:d9225f7b8eeaebfbe1fa117d5ff9930e14069f7c390aa2ae405b86b464c9a129",
+          "objectType": "brief",
+          "sourceIds": [
+            "dify-enterprise-pricing",
+            "dify-open-source-license"
+          ]
+        },
+        "/module:model-landscape/brief/qa/014": {
+          "hash": "sha256:83931b6492fe12d72a817f1779d2e3638b4fbc818d6bc128b1a47eda2ca5c690",
+          "objectType": "brief",
+          "sourceIds": [
+            "google-models",
+            "nist-genai-profile",
+            "openai-models"
+          ]
+        },
         "/module:model-landscape/brief/relatedSlugs/$order": {
           "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "brief-order",
@@ -2649,7 +2708,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/claims/$order": {
-          "hash": "sha256:0dc17442b1d28e91ed7afee42bee36ab1b8b361fc5e7161ddac3f51f2cbfd014",
+          "hash": "sha256:3dc892536455f5ac9d5ff18136cb15e5aabf8386532a9b066689829af71ba0c4",
           "objectType": "claims-order",
           "sourceIds": []
         },
@@ -2663,6 +2722,14 @@
           ]
         },
         "/module:model-landscape/claims/001": {
+          "hash": "sha256:4f5db9c2ed82e42ab10bf8f8470fd99fb1bb339668fc7905a3f5e7f74860500f",
+          "objectType": "claims",
+          "sourceIds": [
+            "dify-enterprise-pricing",
+            "dify-open-source-license"
+          ]
+        },
+        "/module:model-landscape/claims/002": {
           "hash": "sha256:5a70d03c9572cf9b945a439e97edcdd7687ceba14326332c0bc0c5e274524b2d",
           "objectType": "claims",
           "sourceIds": [
@@ -2672,7 +2739,7 @@
           ]
         },
         "/module:model-landscape/content/deepDives/$order": {
-          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -2699,8 +2766,20 @@
             "openai-models"
           ]
         },
+        "/module:model-landscape/content/deepDives/002": {
+          "hash": "sha256:1056e30f09531a5a0f508a266577b5e90f93a4a3f7c34d85c21c75d2fc2615d2",
+          "objectType": "content",
+          "sourceIds": [
+            "anthropic-models",
+            "finops-unit-economics",
+            "google-models",
+            "nist-genai-profile",
+            "openai-models",
+            "osi-open-source-ai-definition-1-0"
+          ]
+        },
         "/module:model-landscape/content/evidenceCards/$order": {
-          "hash": "sha256:8e3080f26aeeaf0b96e7b1baaeb9607281a8ef6fc92d29ac0fe7147b10cd2bd2",
+          "hash": "sha256:bab0eb898df414ff6a17fc3946e658ae9fffea7028faf3468b2df49169255b4e",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -2725,8 +2804,15 @@
             "finops-unit-economics"
           ]
         },
+        "/module:model-landscape/content/evidenceCards/003": {
+          "hash": "sha256:7dcfaa63ff21005df174b588525e9d70c617fc3140273dca8ba25ea89d56eb72",
+          "objectType": "content",
+          "sourceIds": [
+            "osi-open-source-ai-definition-1-0"
+          ]
+        },
         "/module:model-landscape/content/qa/$order": {
-          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -2830,8 +2916,33 @@
             "opentelemetry-genai-semconv"
           ]
         },
+        "/module:model-landscape/content/qa/012": {
+          "hash": "sha256:f66b69dfa46db0e7bc05b20a4fa058324066d63cbda6b0b3f6ff00259e6d4934",
+          "objectType": "content",
+          "sourceIds": [
+            "nist-genai-profile",
+            "openai-models"
+          ]
+        },
+        "/module:model-landscape/content/qa/013": {
+          "hash": "sha256:d9225f7b8eeaebfbe1fa117d5ff9930e14069f7c390aa2ae405b86b464c9a129",
+          "objectType": "content",
+          "sourceIds": [
+            "dify-enterprise-pricing",
+            "dify-open-source-license"
+          ]
+        },
+        "/module:model-landscape/content/qa/014": {
+          "hash": "sha256:83931b6492fe12d72a817f1779d2e3638b4fbc818d6bc128b1a47eda2ca5c690",
+          "objectType": "content",
+          "sourceIds": [
+            "google-models",
+            "nist-genai-profile",
+            "openai-models"
+          ]
+        },
         "/module:model-landscape/curriculum/chapters/$order": {
-          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
@@ -2890,6 +3001,17 @@
           ]
         },
         "/module:model-landscape/curriculum/chapters/006": {
+          "hash": "sha256:3c5085a0913938f71f0aac5099fb0ca97b10219616d344e021f0f6f7edc5648f",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "anthropic-models",
+            "finops-unit-economics",
+            "google-models",
+            "nist-genai-profile",
+            "openai-models"
+          ]
+        },
+        "/module:model-landscape/curriculum/chapters/007": {
           "hash": "sha256:10416b19c70da6f1d633b0ea6e3671a98241e6e65024dea15cd0981628cce2a6",
           "objectType": "curriculum",
           "sourceIds": [
@@ -3023,7 +3145,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/learning/labs/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -3056,6 +3178,17 @@
           ]
         },
         "/module:model-landscape/learning/labs/003": {
+          "hash": "sha256:1060ce9d6ec798894323052954450695a903776eccb2a252eaeaff4a34e30757",
+          "objectType": "learning",
+          "sourceIds": [
+            "anthropic-models",
+            "finops-unit-economics",
+            "google-models",
+            "nist-genai-profile",
+            "openai-models"
+          ]
+        },
+        "/module:model-landscape/learning/labs/004": {
           "hash": "sha256:ebc898c8afcc0cc990e81a5d58450b5c069aaec0aff5351c6604e52826fe43df",
           "objectType": "learning",
           "sourceIds": [
@@ -3184,7 +3317,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/publication/qaCoverageTags/$order": {
-          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "publication-order",
           "sourceIds": []
         },
@@ -3248,6 +3381,21 @@
           "objectType": "publication",
           "sourceIds": []
         },
+        "/module:model-landscape/publication/qaCoverageTags/012": {
+          "hash": "sha256:375ee2c9c01ae4422d0b4616abd19800de115f9058964c41239a194a6856daea",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:model-landscape/publication/qaCoverageTags/013": {
+          "hash": "sha256:765dde722e554e3d1f457badd629e215313b4e6ed69fbcba417bc8d0dcce0430",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:model-landscape/publication/qaCoverageTags/014": {
+          "hash": "sha256:00534c1216ca76e023b1e7474caf6c1aefd9e1cd2012876ecd6f8c03791c00ad",
+          "objectType": "publication",
+          "sourceIds": []
+        },
         "/module:model-landscape/publication/requiredTerms/$order": {
           "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
           "objectType": "publication-order",
@@ -3294,7 +3442,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/publication/updatedAt": {
-          "hash": "sha256:9681da27411be1030770a458fb5d906315210c609f090ba83afdaf99baf63dd7",
+          "hash": "sha256:6e392071622ab807e8679b38b29b570b2e2bdf7f960cd9370c903fbfd7800f29",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -3324,7 +3472,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/referenceModule/sourceIds/$order": {
-          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "hash": "sha256:dbb249b5afc3fcb146d132c3bfee4e6debf9ae7d56d46134a88461fe1763bebc",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -3344,42 +3492,147 @@
           "sourceIds": []
         },
         "/module:model-landscape/referenceModule/sourceIds/003": {
-          "hash": "sha256:94c47f836452c5264334dbdeb8c36c3ec3207ee573fb9b40efe63049243918f1",
-          "objectType": "referenceModule",
-          "sourceIds": []
-        },
-        "/module:model-landscape/referenceModule/sourceIds/004": {
-          "hash": "sha256:7253e8a1afa48c91264f52f47fada008608e4e782ff4f8880a0782ce97bf5f8f",
-          "objectType": "referenceModule",
-          "sourceIds": []
-        },
-        "/module:model-landscape/referenceModule/sourceIds/005": {
-          "hash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
-          "objectType": "referenceModule",
-          "sourceIds": []
-        },
-        "/module:model-landscape/referenceModule/sourceIds/006": {
-          "hash": "sha256:db257a51d73470240d5dc79d09927e80d8f66319f4effe7a3c0dbe856c67316e",
-          "objectType": "referenceModule",
-          "sourceIds": []
-        },
-        "/module:model-landscape/referenceModule/sourceIds/007": {
-          "hash": "sha256:21c5e05f4bd10477183b7a00941674b450653ec2453ac5f8af3182640f736833",
-          "objectType": "referenceModule",
-          "sourceIds": []
-        },
-        "/module:model-landscape/referenceModule/sourceIds/008": {
-          "hash": "sha256:002602760d0055e29e5a52a7f33c0189efd7d28b9c0372219bd065cf97a487c2",
-          "objectType": "referenceModule",
-          "sourceIds": []
-        },
-        "/module:model-landscape/referenceModule/sourceIds/009": {
           "hash": "sha256:f1d13eadc0cc39260862fe462bd768bbfe09a119c2ec4e1aff9f7fd56d960a10",
           "objectType": "referenceModule",
           "sourceIds": []
         },
+        "/module:model-landscape/referenceModule/sourceIds/004": {
+          "hash": "sha256:94c47f836452c5264334dbdeb8c36c3ec3207ee573fb9b40efe63049243918f1",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/005": {
+          "hash": "sha256:7253e8a1afa48c91264f52f47fada008608e4e782ff4f8880a0782ce97bf5f8f",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/006": {
+          "hash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/007": {
+          "hash": "sha256:db257a51d73470240d5dc79d09927e80d8f66319f4effe7a3c0dbe856c67316e",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/008": {
+          "hash": "sha256:21c5e05f4bd10477183b7a00941674b450653ec2453ac5f8af3182640f736833",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/009": {
+          "hash": "sha256:002602760d0055e29e5a52a7f33c0189efd7d28b9c0372219bd065cf97a487c2",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
         "/module:model-landscape/referenceModule/sourceIds/010": {
+          "hash": "sha256:fe9edb36ac3ef8346513af065db2834377e4ab550617729d71ced429493904d9",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/011": {
+          "hash": "sha256:2dcdb94ec3b0deb33946ecdfb7f99a05d53778aab591810d8a21f469c9947788",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/012": {
           "hash": "sha256:fdc85fae15da4b27fcce1f82743d5624490a4c1531364292e7a3e0dd70672f57",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/013": {
+          "hash": "sha256:ace89c3f31b2651fc6ca53339c48490a102cd316563959d24f26ded66e3f4ed2",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/014": {
+          "hash": "sha256:48620132bbb9d8be35f46f7a217eb0716d13d9645ec61839cd55ce2c600c5ac9",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/015": {
+          "hash": "sha256:d29febd12623f042729d5dcf0a8bfd27d5c8ca0f90d337fea981f338df440f50",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/016": {
+          "hash": "sha256:8b93eae45fa45bf8f5d77d2affec9d1a06815e059e5b34a26aaae5e76f6a0949",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/017": {
+          "hash": "sha256:3734eea75ab921abd4d570ec56d3b95fd3d6417870a5bb8a7670e3f7a9627798",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/018": {
+          "hash": "sha256:9b8043a1feb6c645f1150c638dc53230d062accfd65790108e76666eb9ef5b1b",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/019": {
+          "hash": "sha256:70b73f6653fe672b35a4692fefa2752ceba2442a136a813e0020921d51fdfb72",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/020": {
+          "hash": "sha256:bb3598d0f86b7fa799b03f75b72ee719406cc6c9e424cec0d13cad2b4699e4d0",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/021": {
+          "hash": "sha256:bef6310e200546c73b4e8f2d3e9f4ef26fe384c1171addc95869a2da49243822",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/022": {
+          "hash": "sha256:e07f164bd9027cfca0632e9c1ec598eddc75723ce590bdb7358970e874b5b813",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/023": {
+          "hash": "sha256:c568242c0c61669f9454b1630758f555de5beeae9111d1c4b3da8f34e0b80c7b",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/024": {
+          "hash": "sha256:99b5f4f59825154824de9f5758b19d8d4c871719070229f192a0e3d8fa393022",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/025": {
+          "hash": "sha256:67162dbc2dadef898ff5792430590eb6a28bd57932ee6500309c7e7c88edeca1",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/026": {
+          "hash": "sha256:464386c88b1a69b533e4d369571468161a822bd5cc9f67334b7c768c47104fac",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/027": {
+          "hash": "sha256:302be7e6356b1e956d24373e8acfd4c3440bfa2ca1a36af59af72ba6d6bb1554",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/028": {
+          "hash": "sha256:2802a29f310432dfd3a5a22c146ff8e39bc4e73c440ddef2b3124f39ef7f1c69",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/029": {
+          "hash": "sha256:834c5780f36b3353ad72ec789e929c19480de1e8942537f1c525b6965c360013",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/030": {
+          "hash": "sha256:ce55f6d5dfe99dda4c3e7ed18ab1beb4fc73f354f88c907def27afe69a0ca264",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:model-landscape/referenceModule/sourceIds/031": {
+          "hash": "sha256:586b0b44365eaa4162c1dd4f37ae3f468c92932caea52edd5aee8a84e57b6ee9",
           "objectType": "referenceModule",
           "sourceIds": []
         },
@@ -3389,7 +3642,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/evidenceCardIds/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -3408,8 +3661,13 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:model-landscape/renderedProjection/evidenceCardIds/003": {
+          "hash": "sha256:12e5d45ea97596ced804fd86084477c7ff415a8d5caa8620fac0d5ac0d2ea7d5",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:model-landscape/renderedProjection/questionIds/$order": {
-          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -3470,6 +3728,21 @@
         },
         "/module:model-landscape/renderedProjection/questionIds/011": {
           "hash": "sha256:7507b0966f2e370fa32a3fbeb62d0e15506cd1d39a00c35809d0a22f281caa94",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/questionIds/012": {
+          "hash": "sha256:7ff9c6797dd599b81e3b3a925bf23c1b142d3125e9931f5a7f698d1eea830cb4",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/questionIds/013": {
+          "hash": "sha256:7dfe5c77a5afe9885d60d565ad4dd2bf2cf49d14bc8b90695d232be0942b03d4",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/questionIds/014": {
+          "hash": "sha256:3c3f3beb27872ae7f704168401b278f6c8e53b0105ef0e0f2be843fd5f0ce251",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -3549,8 +3822,13 @@
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:1db3b88e04ddac3bcf0b5603090882573033c5d44de25910c698f9e9e1c20e74",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/agentic-index": {
+          "hash": "sha256:f36c5ff0cd534a9137d96bccf38fd86ffb72b7abb7bfbd5019b770c293fca02c",
+          "objectType": "sources",
           "sourceIds": []
         },
         "/module:model-landscape/sources/anthropic-models": {
@@ -3558,8 +3836,48 @@
           "objectType": "sources",
           "sourceIds": []
         },
+        "/module:model-landscape/sources/arena-leaderboard": {
+          "hash": "sha256:1192aa8f0b0a9ab4d814cb6509c25a1d056d5086896b1762c59e1ce2b243e71e",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/artificial-analysis-methodology": {
+          "hash": "sha256:864e41b5a3d7f3c06f017b9b6ed97843fd2abe9bc4a38ff29546f825de1bc956",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/artificial-analysis-models": {
+          "hash": "sha256:b3b6a7760bc525dfd1c4f6220aaf2c55df2dfbb603bc95beeaa6a1f59d9b8d22",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/bfcl": {
+          "hash": "sha256:6a2d1554137f3a48a6b34f24e6fcaa9111f926764d24629561705ef396d2202e",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/coding-index": {
+          "hash": "sha256:760384d1611d29248183a2e4bbed2e845f0913b9a5d208d34efa441485f20786",
+          "objectType": "sources",
+          "sourceIds": []
+        },
         "/module:model-landscape/sources/deepseek-r1-2025": {
           "hash": "sha256:e156b904d45456093fc9e94f90c8411bf9e92649e02ba69dec7ce9144d613f92",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/dify-enterprise-pricing": {
+          "hash": "sha256:2a8d467ed7afa1240b2f0c26ab12ef6fe1fed8752acaa687de13661519f0e040",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/dify-open-source-license": {
+          "hash": "sha256:7e3b3a4c7b233f5b4be9de2551dac854b717fad160eedfa7a000e849bb2ffc84",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/financebench": {
+          "hash": "sha256:8b173c57760cb5c7d733e8d22cea7c433711c1b89d15003a53e125e482591c79",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -3578,8 +3896,33 @@
           "objectType": "sources",
           "sourceIds": []
         },
+        "/module:model-landscape/sources/gdpval-aa-v2": {
+          "hash": "sha256:18678ddd33e8298544bf5423749045b0ea9e1ea94e7aa95b9fb11ef54301599f",
+          "objectType": "sources",
+          "sourceIds": []
+        },
         "/module:model-landscape/sources/google-models": {
           "hash": "sha256:cedccfe509c17c33c206023f3064c35cc5d426aa8bd8832f9c0a876bc30d197c",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/gpqa-diamond": {
+          "hash": "sha256:54f948d2fe962940aff5e8281d8aa0c8a87b22c74bb179d36272c8d4acf76804",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/humanity-last-exam": {
+          "hash": "sha256:ac1b351286289c7f5795c663d200c8f14767a1cfdcb03134bac90abf9e43cf76",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/intelligence-index": {
+          "hash": "sha256:cf5cc9bbc6c4272d851eb10669ea0a7c270fd3cb0ff939571219a5341501924e",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/livebench": {
+          "hash": "sha256:9f2f498c2bb408f83c2217fa596d12914ee46e8bb0524a26dcf208d8eb5fef7f",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -3625,6 +3968,41 @@
         },
         "/module:model-landscape/sources/osi-open-source-ai-definition-1-0": {
           "hash": "sha256:5ccf9b8b30260348f51c41abc03a7c445f075a3d0148e83bba7ae8ce7536bdd1",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/scicode": {
+          "hash": "sha256:85c03ebb72c842b01f1689a28158bc9df84cab8ede3f59db88c6efeb9fbe974b",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/swe-bench": {
+          "hash": "sha256:107d3f9fc99f534c2e763e049861a8ed0e55a72a5a3a77e6f582b074649758dc",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/swe-rebench": {
+          "hash": "sha256:b5de715b1daddd9884d50ef769f4328d9d73c9140ab8e2aca34d875ed0f59ade",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/tau3-banking": {
+          "hash": "sha256:a2bec3598a43e3eddb6335bc29c08bfbf05c9b6b5f2f25b8682735f504337fd4",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/terminal-bench": {
+          "hash": "sha256:7271db72908da6fb9870d0ee4f1b29598749a75a7a04d8f8127633182bdcbc62",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/terminal-bench-v21": {
+          "hash": "sha256:20c087401229041138a5afa474df5b38f9d5f96ac8724d582e089e9ef10a67bf",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:model-landscape/sources/webarena-2024": {
+          "hash": "sha256:3849297862b47763af715f01eb5f6b1023865f8c75628a502c4be3a593651dd3",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -3790,9 +4168,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:37c42d4459d7312bc05f858b6d4696f3f3efb22dd4fbcb0f18fc9f91ca4ed582",
-      "enEffectiveHash": "sha256:698b14606b91f3b87fd25144d10fee2d9aefc2d28c0135c913c006fdc13ca3dd",
-      "enReviewHash": "sha256:a3284c1637a926b3e3866313a4dc9d543cb040e54850f545fa7df9d3ff48c353",
+      "enAuthoredHash": "sha256:ee28d52a344f3f7fa84c7eb883409c6049d5dfde387f4ae94ca679af9c7ebe68",
+      "enEffectiveHash": "sha256:286a2e8b275b5e6f706f61558107820662b884e75523264f63c3c1399b9dae19",
+      "enReviewHash": "sha256:b873bb0f0ccfae12195d9317563a32df170e4a341e85497b013f17b691138d9e",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -3800,6 +4178,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -3811,8 +4190,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-07-30",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-model-landscape-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/model-landscape.ultra-exception.json",
+          "hash": "sha256:a5344bef4adb414aab2866c0ce63b9b530da5ad83e92089be7d2f6cbf344b6cf",
+          "zhContentHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
+          "enContentHash": "sha256:b873bb0f0ccfae12195d9317563a32df170e4a341e85497b013f17b691138d9e"
+        },
+        "br-model-landscape-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/model-landscape.xhigh-author.json",
+          "hash": "sha256:3864377209afb578ff552af33a7b76cbdc77b8e93c01bcedb6edca69986b2999",
+          "zhContentHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
+          "enContentHash": "sha256:b873bb0f0ccfae12195d9317563a32df170e4a341e85497b013f17b691138d9e"
+        },
+        "br-model-landscape-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/model-landscape.xhigh-language.json",
+          "hash": "sha256:92f1433254adbeb7c1042946f22b75c6efe70b511edca0a20626b3265e6b8c9f",
+          "zhContentHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
+          "enContentHash": "sha256:b873bb0f0ccfae12195d9317563a32df170e4a341e85497b013f17b691138d9e"
+        },
+        "br-model-landscape-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/model-landscape.xhigh-semantic.json",
+          "hash": "sha256:65df6586576d1ac802eb6f7697a1a468e5e0aabdef3a3a7201efeb715eb8414b",
+          "zhContentHash": "sha256:3f2696ee2c225e6b8e6862c21e90731af17140aeb451609ef8341f9913202233",
+          "enContentHash": "sha256:b873bb0f0ccfae12195d9317563a32df170e4a341e85497b013f17b691138d9e"
+        },
         "br-model-landscape-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/model-landscape.ultra-exception.json",
           "hash": "sha256:793e3d430a5ea800db742ff95a388b53309acc7b70c8f4d7ecb43e6a3db11ffa",
@@ -36527,7 +36930,7 @@
       "moduleSlug": "model-landscape",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -37415,7 +37818,16 @@
         "br-model-landscape-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "closedAt": "2026-08-10",
+      "promotedCommit": "385a00d10fdc1e8d3da65c1dc6df253308fc5a60",
+      "closureReviewIds": [
+        "br-model-landscape-2026-08-10-xhigh-author",
+        "br-model-landscape-2026-08-10-xhigh-semantic",
+        "br-model-landscape-2026-08-10-xhigh-language",
+        "br-model-landscape-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-model-landscape-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-ai-agent-2026-08-05-consolidated",
