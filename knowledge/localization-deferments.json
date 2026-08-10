@@ -170,6 +170,13 @@
       "recordedAt": "2026-08-10",
       "decisionId": "D-016",
       "summary": "English renderer maintenance erm-english-document-shell-2026-08-10: Uses route-group root layouts so English URLs emit an English document language and English social metadata without changing localized module content."
+    },
+    {
+      "receiptId": "receipt-erm-english-language-switch-2026-08-10",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-017",
+      "summary": "English renderer maintenance erm-english-language-switch-2026-08-10: Use an English language-switch label in the shared module reader without changing authored module content, review state, or dates."
     }
   ],
   "moduleBaselines": {
@@ -37390,6 +37397,45 @@
       "contentProjectionChangeSlugs": [],
       "metadataScope": "all-en-routes",
       "summary": "Uses route-group root layouts so English URLs emit an English document language and English social metadata without changing localized module content."
+    },
+    {
+      "maintenanceId": "erm-english-language-switch-2026-08-10",
+      "status": "applied",
+      "kind": "english-renderer",
+      "decisionId": "D-017",
+      "recordedAt": "2026-08-10",
+      "baseCommit": "d9fb97316c8436146d4e6990d8a652df90bce325",
+      "implementationCommit": "58e1b3760250390c38257c97dd61f0f32c2256ba",
+      "receiptId": "receipt-erm-english-language-switch-2026-08-10",
+      "changedRendererFiles": [
+        "app/i18n/english-pilot-module-page.tsx"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns"
+      ],
+      "contentProjectionChangeSlugs": [],
+      "metadataScope": "none",
+      "summary": "Use an English language-switch label in the shared module reader without changing authored module content, review state, or dates."
     }
   ],
   "deferments": [

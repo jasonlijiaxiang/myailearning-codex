@@ -127,3 +127,12 @@
   - 不再依赖 hydration 后的 document-language mutation。
   - 共享文档壳变更须以 `document-shell` maintenance receipt 记录，并通过中英文 renderer 投影、root language、metadata、robots 与路由 HTML 回归。
   - 本决定不改变 D-013 的分支检查点边界，不授权远端推送或公开部署。
+
+## D-017：英文模块页语言切换标签保持英文直写
+
+- 状态：已确认（2026-08-10）
+- 决定：英文模块页把回链中文版本的可见标签写为 `Chinese`，保留 `hrefLang="zh-CN"` 与稳定的中文 URL；不在英文读者界面显示中文 UI 标签。
+- 影响：
+  - 这是共享英文 reader 的可见呈现维护，不修改任何模块 authored 内容、来源关系、审校记录或更新时间。
+  - 维护记录 `erm-english-language-switch-2026-08-10` 在 document-shell 之后叠加；审计必须继续继承前序 document-shell 的中文 renderer 投影。
+  - 本决定不改变 D-013 的分支检查点边界，不授权远端推送或公开部署。

@@ -103,6 +103,7 @@ test("localization registry passes its recursive schema and covers every module"
   const maintenances = new Map(registry.runtimeMaintenances.map((item) => [item.maintenanceId, item]));
   assert.deepEqual([...maintenances.keys()].sort(), [
     "erm-english-document-shell-2026-08-10",
+    "erm-english-language-switch-2026-08-10",
     "erm-english-reader-2026-08-09",
     "erm-english-source-scope-2026-08-10",
   ]);
@@ -117,6 +118,13 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(documentShell?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
   assert.deepEqual(documentShell?.contentProjectionChangeSlugs, []);
   assert.equal(documentShell?.metadataScope, "all-en-routes");
+  const languageSwitch = maintenances.get("erm-english-language-switch-2026-08-10");
+  assert.equal(languageSwitch?.kind, "english-renderer");
+  assert.equal(languageSwitch?.receiptId, "receipt-erm-english-language-switch-2026-08-10");
+  assert.deepEqual(languageSwitch?.changedRendererFiles, ["app/i18n/english-pilot-module-page.tsx"]);
+  assert.deepEqual(languageSwitch?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(languageSwitch?.contentProjectionChangeSlugs, []);
+  assert.equal(languageSwitch?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   for (const publication of publishedModules) {
@@ -165,13 +173,10 @@ test("a later runtime maintenance may supersede an earlier overlay for the same 
 });
 
 test("a later English renderer maintenance retains an earlier document-shell Chinese projection", () => {
-  const chainedOverlays = new Map([...runtimeOverlays].map(([slug, overlay]) => [slug, {
-    ...overlay,
-    maintenanceId: "erm-test-english-after-document-shell",
-    kind: "english-renderer",
-  }]));
-  const result = validate(registry, currentProject, { runtimeOverlays: chainedOverlays });
-  assert.doesNotMatch(result.failures.join("\n"), /Chinese content changed without an active deferment/);
+  const result = validate(registry, currentProject, { runtimeOverlays });
+  assert.deepEqual(result.failures, []);
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "english-renderer"));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-language-switch-2026-08-10"));
 });
 
 test("an effective-hash contract change covers every English module", () => {
@@ -190,10 +195,15 @@ test("an active deferment records the exact live object delta", () => {
   assert.ok(deferment.affectedObjects[0].objectId.endsWith("/test-deferred-candidate"));
 });
 
-test("document-shell maintenance overlays only verified renderer state", () => {
+test("runtime-maintenance chain preserves the verified document shell and English reader state", async () => {
+  const beforeLanguageSwitch = structuredClone(registry);
+  beforeLanguageSwitch.runtimeMaintenances = beforeLanguageSwitch.runtimeMaintenances.filter((item) => item.maintenanceId !== "erm-english-language-switch-2026-08-10");
+  const documentShellRuntime = await loadRuntimeMaintenanceOverlays(beforeLanguageSwitch);
+  assert.deepEqual(documentShellRuntime.failures, []);
+  assert.ok([...documentShellRuntime.overlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-document-shell-2026-08-10"));
+  assert.ok([...documentShellRuntime.overlays.values()].every((overlay) => overlay.kind === "document-shell"));
+
   assert.equal(runtimeOverlays.size, publishedModuleSlugs.length);
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-document-shell-2026-08-10"));
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "document-shell"));
 
   const driftedProject = structuredClone(currentProject);
   driftedProject.modules.rag.enEffectiveHash = fullHashA;
@@ -583,11 +593,11 @@ test("review generator refuses to overwrite PASS records while deferments are ac
   assert.match(`${result.stdout}${result.stderr}`, /Automatic PASS review generation is disabled/);
 });
 
-test("localization audit reports document-shell-maintained alignment", () => {
+test("localization audit reports chained runtime-maintained alignment", () => {
   const output = execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: projectRoot, encoding: "utf8" });
   const lines = output.trim().split("\n");
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-english-document-shell-2026-08-10"));
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-english-document-shell-2026-08-10"));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-english-language-switch-2026-08-10"));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-english-language-switch-2026-08-10"));
   assert.ok(lines.includes("Localization contract passed for 21 modules."));
   assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, 0);
   assert.equal(lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length, publishedModuleSlugs.length);
