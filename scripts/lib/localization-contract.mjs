@@ -352,7 +352,7 @@ export function persistableLocalizationModuleState(moduleState, baselineCommit, 
   return composeLocalizationModuleBaseline(moduleState, moduleState, baselineCommit, baselineCommit, reviewSetIds);
 }
 
-export async function loadLocalizationProject(projectRoot, { moduleSlugs = null, englishReferenceScope = "directory" } = {}) {
+export async function loadLocalizationProject(projectRoot, { moduleSlugs = null, englishReferenceScope = "module" } = {}) {
   if (!["module", "directory"].includes(englishReferenceScope)) {
     throw new Error(`englishReferenceScope must be "module" or "directory"; received ${englishReferenceScope}`);
   }
