@@ -28307,16 +28307,16 @@
       }
     },
     "llm-inference": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "f7c4e5132210943359b2dc70ed126ac566fc8c8f",
+      "enBaselineCommit": "f7c4e5132210943359b2dc70ed126ac566fc8c8f",
       "reviewSetIds": [
-        "br-llm-inference-ultra-exception",
-        "br-llm-inference-xhigh-author",
-        "br-llm-inference-xhigh-language",
-        "br-llm-inference-xhigh-semantic"
+        "br-llm-inference-2026-08-10-ultra-exception",
+        "br-llm-inference-2026-08-10-xhigh-author",
+        "br-llm-inference-2026-08-10-xhigh-language",
+        "br-llm-inference-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:780b6ff71ccb6e5a6f22b3b62096b58cedbfe880399ce7906d72da9d5a977534",
-      "zhStateHash": "sha256:9700fc95cb4771bf2bd6afe43a959e3f25a76b0dbb42781d04cd98f1cfa8baab",
+      "zhReviewHash": "sha256:a49b29fe357dd8071d618a8938c90fd3785837e88930f5d3b5f8aebf342009e5",
+      "zhStateHash": "sha256:a49b29fe357dd8071d618a8938c90fd3785837e88930f5d3b5f8aebf342009e5",
       "zhObjects": {
         "/module:llm-inference/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -29707,7 +29707,7 @@
           "sourceIds": []
         },
         "/module:llm-inference/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -30053,9 +30053,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:13e24287d17bb6f8fd038df27dce4b756764bdf7c602c689dddca48174fb4113",
-      "enEffectiveHash": "sha256:d7033fab8f9ada3dd8f646e034986b6d10f0fbb4d9fb76960ecddfda5180efa7",
-      "enReviewHash": "sha256:7bbffbe628e39e10df8f6bc8888002233173da370ed780897f11671d95b34c4e",
+      "enAuthoredHash": "sha256:314129d0b422d7600e85c8aa693be7ab0c5805400bbb7e1fcc31099779fc01ac",
+      "enEffectiveHash": "sha256:ca5a0dff018a55e3fa47fdb32b5de67f421cad11e42eaecc9df834539c2d19c6",
+      "enReviewHash": "sha256:c775da302630ff568c9588264dfb18192b4e576e98a4475227745d5e665ceb29",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -30063,6 +30063,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -30076,6 +30077,30 @@
       ],
       "englishUpdatedAt": "2026-08-01",
       "reviewFiles": {
+        "br-llm-inference-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/llm-inference.ultra-exception.json",
+          "hash": "sha256:8c1cc760c15757bd13cf92c27a559991a83577a41a9b98c26d66d91e90c91dda",
+          "zhContentHash": "sha256:a49b29fe357dd8071d618a8938c90fd3785837e88930f5d3b5f8aebf342009e5",
+          "enContentHash": "sha256:c775da302630ff568c9588264dfb18192b4e576e98a4475227745d5e665ceb29"
+        },
+        "br-llm-inference-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/llm-inference.xhigh-author.json",
+          "hash": "sha256:f369ba1f4607bdfa62965092b14f1096694379b24d7139f4b05a100a6226f335",
+          "zhContentHash": "sha256:a49b29fe357dd8071d618a8938c90fd3785837e88930f5d3b5f8aebf342009e5",
+          "enContentHash": "sha256:c775da302630ff568c9588264dfb18192b4e576e98a4475227745d5e665ceb29"
+        },
+        "br-llm-inference-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/llm-inference.xhigh-language.json",
+          "hash": "sha256:0be1eaab5557367c8ec230c00fc74914cc91cd0ad6dcb0e9d54cba91f8befd2e",
+          "zhContentHash": "sha256:a49b29fe357dd8071d618a8938c90fd3785837e88930f5d3b5f8aebf342009e5",
+          "enContentHash": "sha256:c775da302630ff568c9588264dfb18192b4e576e98a4475227745d5e665ceb29"
+        },
+        "br-llm-inference-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/llm-inference.xhigh-semantic.json",
+          "hash": "sha256:c8df91ef523b879c371a4b40c3153f58dd3479b2550217da955768a7a49046cd",
+          "zhContentHash": "sha256:a49b29fe357dd8071d618a8938c90fd3785837e88930f5d3b5f8aebf342009e5",
+          "enContentHash": "sha256:c775da302630ff568c9588264dfb18192b4e576e98a4475227745d5e665ceb29"
+        },
         "br-llm-inference-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/llm-inference.ultra-exception.json",
           "hash": "sha256:97a4162bba0e05040005bdec8f7f104771419f6b8b1a6248dca219accad85469",
@@ -40046,7 +40071,7 @@
       "moduleSlug": "llm-inference",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -40124,7 +40149,16 @@
         "br-llm-inference-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "closedAt": "2026-08-10",
+      "promotedCommit": "f7c4e5132210943359b2dc70ed126ac566fc8c8f",
+      "closureReviewIds": [
+        "br-llm-inference-2026-08-10-xhigh-author",
+        "br-llm-inference-2026-08-10-xhigh-semantic",
+        "br-llm-inference-2026-08-10-xhigh-language",
+        "br-llm-inference-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-llm-inference-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-data-engineering-2026-08-05-consolidated",
