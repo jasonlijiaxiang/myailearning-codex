@@ -128,6 +128,27 @@
       "recordedAt": "2026-08-10",
       "decisionId": "D-012",
       "summary": "Independent English editorial review completed for evaluation; direct professional copy preserves measurement, uncertainty, and release-ownership boundaries, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-data-engineering-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for data-engineering; direct professional copy preserves data-readiness, cross-border evidence, canonical source relationships, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-fine-tuning-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for fine-tuning; direct professional copy preserves failure-routing, release, rollback, canonical evidence relationships, stable IDs, and dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-mcp-english-closure-2026-08-10",
+      "kind": "closure",
+      "recordedAt": "2026-08-10",
+      "decisionId": "D-012",
+      "summary": "Independent English editorial review completed for MCP; /module:mcp/brief/decisions/006 is covered by the native mcp-adoption-direct-api, mcp-adoption-function-calling, mcp-adoption-thin-adapter, and mcp-adoption-gate decision chain rather than a redundant translated row. Protocol, canonical evidence, stable IDs, and dates are ready for atomic baseline promotion."
     }
   ],
   "moduleBaselines": {
@@ -40024,7 +40045,7 @@
       "moduleSlug": "mcp",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-05",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -40081,7 +40102,55 @@
         "br-mcp-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:ddc84ef4f18d009034d5d093b4079a4d5dce0a1d14315fbf0087c494f71a227b",
+        "enEffectiveHash": "sha256:da3a0bca73024e6f35319eb24edd42900a6c5a73dddd98650b1df7bdc8a7736a",
+        "enReviewHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-10",
+        "reviewIds": [
+          "br-mcp-2026-08-10-xhigh-author",
+          "br-mcp-2026-08-10-xhigh-semantic",
+          "br-mcp-2026-08-10-xhigh-language",
+          "br-mcp-2026-08-10-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-a2a-2026-08-08-shared-renderer",
@@ -42297,7 +42366,7 @@
       "moduleSlug": "fine-tuning",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -42327,7 +42396,55 @@
         "br-fine-tuning-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:77f0b9fe9dc1d2aa5654fa4bb7d49649195a5c4588488f4c4bf464602d2d2206",
+        "enEffectiveHash": "sha256:84c5b6dc49cd972f56f6ca0e0bc617cb00f62cd316a801809345745adffde152",
+        "enReviewHash": "sha256:89d037111708b424227cfa6cdb04b7cac950509febdcb76fa52ceec143bc5a7c",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-10",
+        "reviewIds": [
+          "br-fine-tuning-2026-08-10-xhigh-author",
+          "br-fine-tuning-2026-08-10-xhigh-semantic",
+          "br-fine-tuning-2026-08-10-xhigh-language",
+          "br-fine-tuning-2026-08-10-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-llm-training-2026-08-08-shared-renderer",
@@ -42522,7 +42639,7 @@
       "moduleSlug": "data-engineering",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -42832,7 +42949,55 @@
         "br-data-engineering-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:ee10adaf2433d9a77ff3ca052c11365ef678c9430551a2daea10dfc247df8958",
+        "zhRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/modules/[slug]/page.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:29d18d9e9418ba44fc15032f1babab9763eb471b164652f60e96a7d2860f239c",
+        "enEffectiveHash": "sha256:a4a110d5d947c6457feb8f7fb0f753e44ed6a9f22718cd1778ffff6509be3ec9",
+        "enReviewHash": "sha256:95880cd3d3bd06580e0501148bcc0c18e849700a01c24f60288297d9d5a07007",
+        "enRendererFiles": [
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/en/layout.tsx",
+          "app/en/modules/[slug]/page.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/document-language.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/layout.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-10",
+        "reviewIds": [
+          "br-data-engineering-2026-08-10-xhigh-author",
+          "br-data-engineering-2026-08-10-xhigh-semantic",
+          "br-data-engineering-2026-08-10-xhigh-language",
+          "br-data-engineering-2026-08-10-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-ai-infra-platform-2026-08-08-shared-renderer",

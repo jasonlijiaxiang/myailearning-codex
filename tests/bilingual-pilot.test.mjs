@@ -154,7 +154,7 @@ test("Batch 05 English content preserves the Agent adoption gate and MCP control
   assert.match(agent, /There is no universal ROI threshold/);
 
   const mcp = JSON.stringify(englishModuleRegistry.mcp);
-  assert.match(mcp, /Start with repeated integration, not protocol enthusiasm/);
+  assert.match(mcp, /Adopt a protocol only when repeated integration justifies it/);
   assert.match(mcp, /Tools are model-controlled/);
   assert.match(mcp, /A Tool may be read-only/);
   assert.match(mcp, /Cancellation is cooperative/);
@@ -688,6 +688,56 @@ test("Batch 12 English content preserves protocol, memory, and evaluation bounda
   assert.equal(evaluationStudyGuide.blocks.find((block) => block.title === "Practice labs").items.length, 4);
   assert.match(JSON.stringify(evaluation), /A leaderboard is a screening input/);
   assert.doesNotMatch(JSON.stringify(evaluation), /cost per accepted/i);
+});
+
+test("Batch 13 English content preserves data, tuning, and MCP boundaries", () => {
+  const data = englishModuleRegistry["data-engineering"];
+  assert.equal(data.qa.length, 11);
+  assert.equal(data.evidenceCards.length, 5);
+  assert.equal(data.qa.at(-1).id, "cross-border-vectorized-data");
+  assert.equal(data.qa.at(-1).addedAt, "2026-08-05");
+  assert.deepEqual(data.qa.at(-1).evidence.map((item) => item.sourceId), ["china-personal-information-protection-law", "china-data-cross-border-2024"]);
+  assert.deepEqual(Object.keys(data.sources), [
+    "docling-report", "w3c-prov-o", "openlineage-spec", "iso-iec-5259-2", "nist-zero-trust", "hnsw-2016", "nist-genai-profile",
+    "china-personal-information-protection-law", "china-data-cross-border-2024", "pp-ocr-2020", "opentelemetry-semconv",
+  ]);
+  const dataCurriculum = data.sections.find((section) => section.id === "curriculum");
+  assert.equal(dataCurriculum.blocks[0].items.length, 10);
+  assert.deepEqual(dataCurriculum.blocks[0].items.find((item) => item.id === "curriculum-data-readiness-triage").sourceIds, ["nist-genai-profile", "nist-zero-trust", "w3c-prov-o"]);
+  const dataPractice = data.sections.find((section) => section.id === "study-guide");
+  assert.equal(dataPractice.blocks.find((block) => block.title === "Practice labs").items.length, 4);
+  const dataPrinciples = data.sections.find((section) => section.id === "principles");
+  assert.equal(dataPrinciples.blocks[0].items.length, 9);
+  assert.match(JSON.stringify(data), /Chunking, embeddings, vectorization, or caching do not by themselves change the data classification/);
+  assert.doesNotMatch(JSON.stringify(data), /Governability|withdrawable|Acceptance:/);
+
+  const fineTuning = englishModuleRegistry["fine-tuning"];
+  assert.equal(fineTuning.qa.length, 11);
+  assert.equal(fineTuning.evidenceCards.length, 3);
+  assert.deepEqual(fineTuning.qa[3].evidence.map((item) => item.sourceId), ["nist-genai-profile", "openai-eval-best-practices", "hf-trl-sft-trainer"]);
+  const tuningCurriculum = fineTuning.sections.find((section) => section.id === "tuning-curriculum");
+  assert.equal(tuningCurriculum.blocks[0].items.length, 9);
+  assert.deepEqual(tuningCurriculum.blocks[0].items[5].sourceIds, ["deepseek-r1-2025", "dpo-2023", "hf-trl-dpo-trainer", "nist-genai-profile"]);
+  const tuningPractice = fineTuning.sections.find((section) => section.id === "tuning-practice");
+  assert.equal(tuningPractice.blocks.find((block) => block.title === "Practice labs").items.length, 4);
+  assert.deepEqual(tuningPractice.blocks.find((block) => block.title === "Practice labs").items[1].sourceIds, ["hf-trl-peft", "lora-2021", "qlora-2023", "nist-genai-profile", "finops-unit-economics"]);
+  assert.equal(fineTuning.primer.layout, "lifecycle");
+  assert.equal(fineTuning.primer.steps.length, 6);
+  assert.equal(fineTuning.primer.steps.at(-1).title, "Canary, observe, roll back, or stop");
+  const fineTuningCopy = JSON.stringify(fineTuning);
+  assert.match(fineTuningCopy, /claims-intake|Completion criterion:|Define the evaluation before training/);
+  assert.doesNotMatch(fineTuningCopy, /claim-intake|cost per accepted|Acceptance:|Define the exam/);
+
+  const mcp = englishModuleRegistry.mcp;
+  assert.equal(mcp.qa.length, 15);
+  assert.equal(mcp.evidenceCards.length, 5);
+  assert.ok(Object.hasOwn(mcp.sources, "mcp-2026-07-28-rc"));
+  const mcpTasks = mcp.qa.find((item) => item.id === "long-running-mcp-call");
+  assert.match(mcpTasks.a, /Client opts in per request/);
+  assert.match(mcpTasks.depth, /Server advertise it through server\/discover/);
+  const mcpCopy = JSON.stringify(mcp);
+  assert.match(mcpCopy, /MCP 2026-07-28 is the current final specification/);
+  assert.doesNotMatch(mcpCopy, /As of August 1, 2026|both parties can opt in/);
 });
 
 test("Chinese global entry pages expose their matching English routes", async () => {

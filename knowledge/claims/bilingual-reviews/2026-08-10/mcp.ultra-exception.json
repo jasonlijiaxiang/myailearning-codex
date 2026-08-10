@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-mcp-2026-08-10-ultra-exception",
+  "scope": {
+    "moduleId": "mcp",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+    "enContentHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c",
+    "termIds": ["identity-authorization", "mcp", "mcp-primitives", "mcp-protocol-roles", "tool-discovery"],
+    "sourceIds": ["a2a-spec-1-0-0", "mcp-2026-07-28-rc", "mcp-architecture", "mcp-authorization", "mcp-changelog-2026-07-28", "mcp-elicitation-2025-11-25", "mcp-lifecycle-2025-11-25", "mcp-prompts-2026-07-28", "mcp-resources-2026-07-28", "mcp-security", "mcp-server-overview-2026-07-28", "mcp-specification-2026-07-28", "mcp-tasks-2025-11-25", "mcp-tasks-extension", "mcp-tools-2026-07-28", "nist-zero-trust", "openai-function-calling", "opentelemetry-genai-semconv", "owasp-prompt-injection"]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [{
+    "gateId": "exception-adjudication",
+    "status": "PASS",
+    "evidence": [
+      "The canonical added no-adoption decision is explicitly covered by the native Direct API, Function calling, Thin MCP adapter, and Go/Hold/No-Go adoption content rather than a duplicate formal row.",
+      "The historical RC source remains available only for the filtered References ledger and is not represented as the current normative specification.",
+      "The focused reading profile uses existing responsive cards and tables without a module-specific presentation exception."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

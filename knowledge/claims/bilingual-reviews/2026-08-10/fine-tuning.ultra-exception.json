@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-fine-tuning-2026-08-10-ultra-exception",
+  "scope": {
+    "moduleId": "fine-tuning",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:3dcf821298df70d374a525bc3c1e225596c549651f65b10abe5623b6188380da",
+    "enContentHash": "sha256:89d037111708b424227cfa6cdb04b7cac950509febdcb76fa52ceec143bc5a7c",
+    "termIds": ["dpo", "evaluation", "fine-tuning", "lora", "peft", "qlora", "sft"],
+    "sourceIds": ["deepseek-r1-2025", "dpo-2023", "finops-unit-economics", "hf-trl-chat-templates", "hf-trl-data-formats", "hf-trl-dpo-trainer", "hf-trl-peft", "hf-trl-sft-trainer", "instructgpt-2022", "lora-2021", "nist-genai-profile", "openai-eval-best-practices", "openai-structured-outputs", "qlora-2023"]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [{
+    "gateId": "exception-adjudication",
+    "status": "PASS",
+    "evidence": [
+      "The explicit primer uses the canonical knowledge-view identity and its links target real page sections.",
+      "Training remains bounded away from volatile knowledge, deterministic eligibility, and action authorization.",
+      "Existing responsive cards, lifecycle view, tables, and labs render the complete content without a module-specific exception."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}
