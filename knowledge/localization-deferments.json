@@ -11560,16 +11560,16 @@
       }
     },
     "a2a": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "74baebd5cf7bfca6181fade8d639586c1d239fd3",
+      "enBaselineCommit": "74baebd5cf7bfca6181fade8d639586c1d239fd3",
       "reviewSetIds": [
-        "br-a2a-ultra-exception",
-        "br-a2a-xhigh-author",
-        "br-a2a-xhigh-language",
-        "br-a2a-xhigh-semantic"
+        "br-a2a-2026-08-10-ultra-exception",
+        "br-a2a-2026-08-10-xhigh-author",
+        "br-a2a-2026-08-10-xhigh-language",
+        "br-a2a-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:4fbb0828847d82f57caa4dfc2b15010b571becca9f88f2543d4058885b5b8e28",
-      "zhStateHash": "sha256:3facbb440e042fb5b29d0114f7db1c4c79357defea2471b14092eae7a3286a90",
+      "zhReviewHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
+      "zhStateHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
       "zhObjects": {
         "/module:a2a/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -12849,7 +12849,7 @@
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -13145,9 +13145,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:c8eb7c7ee38356623d93b2acd7a4e7a44475327c66e20aac561a03046ed7e3d2",
-      "enEffectiveHash": "sha256:e1e813407eb53a12dc069f6b6971add1acc99a4d4ce7e7fbf893198f8809d796",
-      "enReviewHash": "sha256:a6eea7d16c69773623d6a5ac8638ab14508991cf0adcf78496c4c1392df3ece2",
+      "enAuthoredHash": "sha256:a99057b4e4425fdac05758f15278616330bdd1eda9d04cc2d74bebc0cb330de8",
+      "enEffectiveHash": "sha256:8a2fee303d573e6f3973ca996758b6cd9a9b25458c58f0259f35d0bd79e17feb",
+      "enReviewHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -13155,6 +13155,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -13166,8 +13167,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-08-01",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-a2a-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/a2a.ultra-exception.json",
+          "hash": "sha256:522eb8c998b4d9261ce35c1cf0987969e1e15e31c7b1bb5570ac26d2d84eaffa",
+          "zhContentHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
+          "enContentHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791"
+        },
+        "br-a2a-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/a2a.xhigh-author.json",
+          "hash": "sha256:1556c6cbe051aa168136a35ac7a598f37de268ec350d52aa6378b71d05ca70d1",
+          "zhContentHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
+          "enContentHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791"
+        },
+        "br-a2a-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/a2a.xhigh-language.json",
+          "hash": "sha256:7cc86811874681f71df20292f1d775721c51023af13da978ea5d6c325f1b475c",
+          "zhContentHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
+          "enContentHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791"
+        },
+        "br-a2a-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/a2a.xhigh-semantic.json",
+          "hash": "sha256:33b82406440be6d546c753d4f0f1b75e3cd956c29dc191702528b907bb25ee80",
+          "zhContentHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
+          "enContentHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791"
+        },
         "br-a2a-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/a2a.ultra-exception.json",
           "hash": "sha256:ae39e13ac182637401f8f9a7939df9de012f271c5ea8b54641fd2ea5f10ec394",
@@ -39799,7 +39824,7 @@
       "moduleSlug": "a2a",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -39877,7 +39902,16 @@
           "br-a2a-2026-08-10-xhigh-language",
           "br-a2a-2026-08-10-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "74baebd5cf7bfca6181fade8d639586c1d239fd3",
+      "closureReviewIds": [
+        "br-a2a-2026-08-10-xhigh-author",
+        "br-a2a-2026-08-10-xhigh-semantic",
+        "br-a2a-2026-08-10-xhigh-language",
+        "br-a2a-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-a2a-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-evaluation-2026-08-05-consolidated",
