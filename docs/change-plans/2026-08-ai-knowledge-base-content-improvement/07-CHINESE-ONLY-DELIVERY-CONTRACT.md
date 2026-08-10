@@ -118,6 +118,6 @@
 
 ## 9. 当前登记结果
 
-当前 21 个模块都有可从 Git 重建的基线。按真实 route/import 闭包核算后，16 个模块各有且只有一条活动延期，共 497 个自动生成并核验的对象差异；英文 reader runtime receipt 覆盖其可见 renderer 变化，但审计仍输出 `DEFERRED/NOT_ALIGNED`。AI Gateway、AI Ops 与 LLM Inference 已完成独立英文撰写、四阶段审校和严格基线提升，明确输出 `ALIGNED`；RAG 与提示词工程没有活动英文内容延期，因同一可重建 runtime maintenance 明确输出 `ALIGNED/RUNTIME-MAINTAINED`，而不是把 renderer 变化误报为新的内容对齐。
+当前 21 个模块都有可从 Git 重建的基线。按真实 route/import 闭包核算后，13 个模块各有且只有一条活动延期，共 482 个自动生成并核验的对象差异；英文 reader runtime receipt 覆盖其可见 renderer 变化，但审计仍输出 `DEFERRED/NOT_ALIGNED`。AI Gateway、AI Ops、LLM Inference、AI Compute、AI Infrastructure Platform 与 LLM Training 已完成独立英文撰写、四阶段审校和严格基线提升，明确输出 `ALIGNED`；RAG 与提示词工程没有活动英文内容延期，因同一可重建 runtime maintenance 明确输出 `ALIGNED/RUNTIME-MAINTAINED`，而不是把 renderer 变化误报为新的内容对齐。
 
 未来英文同步必须独立撰写、独立专业审校、登记候选哈希并通过 ready 状态，随后提升模块基线、关闭延期并重新运行全量门禁。
