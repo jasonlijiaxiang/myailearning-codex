@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-multimodal-2026-08-10-xhigh-author",
+  "scope": {
+    "moduleId": "multimodal",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:fba0430772188134c5b4fb1c7126e92675756475fbe06bb4dcc3ec765679e1dc",
+    "enContentHash": "sha256:6042ced0a84360f65f751d046c8ee7f11060b29ea23f6fd185e34c7328711591",
+    "termIds": ["asr", "document-intelligence", "multimodal", "ocr", "vision-transformer"],
+    "sourceIds": ["c2pa-2-4", "china-ai-content-labeling-2026-08-05", "clip-2021", "colpali-2025", "docling-report", "gb-45438-2025", "longvideobench-2024", "nist-genai-profile", "nist-zero-trust", "opentelemetry-genai-semconv", "opentelemetry-semconv", "owasp-prompt-injection", "pp-ocr-2020", "pp-ocrv5-2026", "vit-2021"]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [{
+    "gateId": "english-module-contract",
+    "status": "PASS",
+    "evidence": [
+      "The English module uses direct technical prose for evidence capture, state recovery, controlled publication, and reviewer accountability rather than translated Chinese sentence patterns.",
+      "Barge-in, failure slices, and content-delivery controls were authored as reader-facing operational material while preserving canonical identifiers and source relationships.",
+      "Evidence traceability, source coordinates, and release authority are stated as separate controls so model capability is never mistaken for action authority."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

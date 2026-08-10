@@ -8,16 +8,16 @@
  * 不得刷新本表；未来英文同步只更新对应模块，不修改中文 updatedAt。
  */
 export const englishUpdatedDates = Object.freeze({
-  "solution-patterns": "2026-08-01",
+  "solution-patterns": "2026-08-10",
   "model-landscape": "2026-08-10",
   rag: "2026-07-29",
   "ai-agent": "2026-08-01",
-  multimodal: "2026-07-30",
+  multimodal: "2026-08-10",
   mcp: "2026-08-01",
   a2a: "2026-08-01",
   evaluation: "2026-07-30",
   "ai-governance": "2026-08-10",
-  security: "2026-07-30",
+  security: "2026-08-10",
   "ai-gateway": "2026-08-01",
   "ai-ops": "2026-08-01",
   "predictive-ai-mlops": "2026-08-01",

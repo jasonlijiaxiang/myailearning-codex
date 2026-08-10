@@ -320,13 +320,13 @@ test("Batch 09 English content preserves the platform-product and minimum-suffic
   });
 
   const solution = englishModuleRegistry["solution-patterns"];
-  assert.equal(solution.qa.length, 19);
+  assert.equal(solution.qa.length, 20);
   assert.equal(solution.qa[0].id, "solution-versus-model-api");
-  assert.equal(solution.qa.at(-1).id, "production-change-ownership");
+  assert.equal(solution.qa.at(-1).id, "claim-intake-prohibited-actions");
   assert.match(JSON.stringify(solution), /Outcome and current baseline/);
   assert.match(JSON.stringify(solution), /Measurable constraint envelope/);
   assert.match(JSON.stringify(solution), /Minimum sufficient loop/);
-  assert.match(JSON.stringify(solution), /RAG.*Agent.*MCP.*A2A.*Gateway.*platform/is);
+  assert.match(JSON.stringify(solution), /RAG.*agent.*MCP.*A2A.*gateway.*platform/is);
   ["rag-original-2020", "mcp-architecture", "a2a-concepts", "cloudflare-ai-gateway", "cncf-platforms-whitepaper"].forEach((sourceId) => {
     assert.ok(englishSourceCopy[sourceId], `${sourceId} must have shared English source copy`);
     assert.match(JSON.stringify(solution), new RegExp(sourceId));
@@ -606,6 +606,47 @@ test("Batch 10 English content preserves governance and model-selection boundari
   assert.match(modelCopy, /qualified task/);
   assert.match(modelCopy, /self-hosted without a subscription/);
 
+});
+
+test("Batch 11 English content preserves content-delivery, multimodal, and claims boundaries", () => {
+  const security = englishModuleRegistry.security;
+  assert.equal(security.qa.length, 11);
+  assert.deepEqual(security.qa.at(-3).evidence.map((item) => item.sourceId), ["china-ai-content-labeling-2026-08-05"]);
+  assert.deepEqual(security.qa.at(-2).evidence.map((item) => item.sourceId), ["nist-sp-800-61r3", "c2pa-2-4"]);
+  assert.deepEqual(security.qa.at(-1).evidence.map((item) => item.sourceId), ["owasp-prompt-injection", "nist-zero-trust"]);
+  const securityCopy = JSON.stringify(security);
+  assert.match(securityCopy, /specific Article 9 scenario/);
+  assert.match(securityCopy, /does not independently establish the truth of assertions, a signer's real-world identity or authority/);
+  assert.match(securityCopy, /parse it in isolation, retain provenance and trust labels/);
+
+  const multimodal = englishModuleRegistry.multimodal;
+  assert.equal(multimodal.qa.length, 14);
+  assert.equal(multimodal.evidenceCards.length, 6);
+  const multimodalCurriculum = multimodal.sections.find((section) => section.id === "multimodal-curriculum");
+  assert.equal(multimodalCurriculum.blocks[0].items.length, 12);
+  const multimodalPractice = multimodal.sections.find((section) => section.id === "multimodal-practice");
+  assert.equal(multimodalPractice.blocks.find((block) => block.title === "Four practice labs").items.length, 4);
+  assert.deepEqual(
+    multimodalCurriculum.blocks[0].items.find((item) => item.id === "chapter-barge-in-state-recovery").sourceIds,
+    ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
+  );
+  assert.match(JSON.stringify(multimodal), /Generation, content review, disclosure and distribution requirements, authorized release, and post-release accountability are independent states/);
+  assert.match(JSON.stringify(multimodal), /C2PA validation checks the integrity of recorded provenance assertions and their binding to an asset/);
+
+  const solution = englishModuleRegistry["solution-patterns"];
+  assert.equal(solution.qa.length, 20);
+  assert.equal(solution.qa.at(-1).id, "claim-intake-prohibited-actions");
+  assert.equal(solution.qa.at(-1).addedAt, "2026-08-05");
+  const solutionCurriculum = solution.sections.find((section) => section.id === "solution-pattern-curriculum");
+  assert.equal(solutionCurriculum.blocks[0].items.length, 25);
+  const chinaChapter = solutionCurriculum.blocks[0].items.find((item) => item.id === "solution-chapter-china-delivery-evidence");
+  assert.deepEqual(chinaChapter.sourceIds, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-genai-profile"]);
+  const claimsBlueprint = solution.sections
+    .find((section) => section.id === "solution-deep-dive")
+    .blocks.find((block) => block.title === "Teaching blueprint: insurance claims intake and preliminary review");
+  assert.equal(claimsBlueprint.items.length, 9);
+  assert.match(JSON.stringify(solution), /must not automatically assess damage, deny a claim, determine eligibility or amount, or initiate payment/);
+  assert.doesNotMatch(JSON.stringify(solution), /filing or registration triage/);
 });
 
 test("Chinese global entry pages expose their matching English routes", async () => {

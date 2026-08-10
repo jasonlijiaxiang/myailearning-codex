@@ -736,7 +736,7 @@ test("English question directory never links beyond the focused module preview",
   }
   assert.match(html, /gives a concise answer for each one/);
   assert.equal((scopedHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishModuleRegistry["solution-patterns"].qa.length);
-  assert.match(scopedHtml, /all 19 questions for Solution Patterns/);
+  assert.match(scopedHtml, /all 20 questions for Solution Patterns/);
   assert.match(scopedHtml, /id="question-solution-patterns-/);
   assert.doesNotMatch(scopedHtml, /id="question-rag-/);
   assert.equal((llmScopedHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishModuleRegistry.llm.qa.length);
