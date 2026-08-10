@@ -434,7 +434,7 @@ async function assertBaselineProvenance(registry, { requireRemote = false } = {}
   }
 }
 
-async function loadPromotedProjects(registry, { requireRemote = false } = {}) {
+export async function loadPromotedProjects(registry, { requireRemote = false } = {}) {
   const projects = new Map();
   const rendererFilesByCommit = new Map();
   for (const deferment of registry.deferments.filter((item) => item.status === "closed" && item.promotedCommit && item.englishCandidate)) {

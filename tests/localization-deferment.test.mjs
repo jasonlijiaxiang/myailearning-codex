@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { getPublishedModule, publishedModules, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, loadProjectAtCommit, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
+import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
@@ -27,12 +27,18 @@ const currentProject = await loadLocalizationProject(projectRoot);
 const runtimeMaintenance = await loadRuntimeMaintenanceOverlays(registry);
 assert.deepEqual(runtimeMaintenance.failures, [], "the committed runtime-maintenance receipt must reconstruct cleanly");
 const runtimeOverlays = runtimeMaintenance.overlays;
+const promotedProjectsByCommit = await loadPromotedProjects(registry);
 const fullHashA = `sha256:${"a".repeat(64)}`;
 const fullHashB = `sha256:${"b".repeat(64)}`;
 const fullHashC = `sha256:${"c".repeat(64)}`;
 
 function validate(candidateRegistry = registry, candidateProject = currentProject, options = {}) {
-  return validateLocalizationRegistry(candidateRegistry, candidateProject, { candidateIds, reviewSchema, ...options });
+  return validateLocalizationRegistry(candidateRegistry, candidateProject, {
+    candidateIds,
+    reviewSchema,
+    promotedProjectsByCommit,
+    ...options,
+  });
 }
 
 function runtimeOverlaysExcept(...slugs) {
@@ -119,7 +125,9 @@ test("one active deferment per module records the exact live object delta", () =
 });
 
 test("runtime maintenance overlays only the verified English renderer state", () => {
-  assert.equal(runtimeOverlays.size, publishedModuleSlugs.length);
+  const closedSlugs = registry.deferments.filter((item) => item.status === "closed").map((item) => item.moduleSlug);
+  assert.equal(runtimeOverlays.size, publishedModuleSlugs.length - closedSlugs.length);
+  assert.ok(closedSlugs.every((slug) => !runtimeOverlays.has(slug)));
   assert.equal(runtimeOverlays.get("rag")?.maintenanceId, "erm-english-reader-2026-08-09");
 
   const driftedProject = structuredClone(currentProject);
@@ -354,22 +362,25 @@ test("reviewed ready state can close only through an exact promoted baseline", (
   deferment.closureReceipt = "receipt-test-closure";
   closedRegistry.receipts.push({ receiptId: "receipt-test-closure", kind: "closure", recordedAt: "2026-08-08", decisionId: deferment.decisionId, summary: "Reviewed test closure." });
   closedRegistry.moduleBaselines[deferment.moduleSlug] = persistableLocalizationModuleState(moduleState, deferment.promotedCommit, reviewIds);
-  const promotedProjectsByCommit = new Map([[deferment.promotedCommit, closedProject]]);
+  const fixturePromotedProjects = new Map([
+    ...promotedProjectsByCommit,
+    [deferment.promotedCommit, closedProject],
+  ]);
 
   assert.deepEqual(validate(closedRegistry, closedProject, {
-    promotedProjectsByCommit,
+    promotedProjectsByCommit: fixturePromotedProjects,
     runtimeOverlays: runtimeOverlaysExcept(deferment.moduleSlug),
   }).failures, []);
 
   moduleState.reviewRecords[reviewIds[0]].deterministic[0].status = "FAIL";
   assert.match(validate(closedRegistry, closedProject, {
-    promotedProjectsByCommit,
+    promotedProjectsByCommit: fixturePromotedProjects,
     runtimeOverlays: runtimeOverlaysExcept(deferment.moduleSlug),
   }).failures.join("\n"), /failing deterministic gate|must equal "PASS"/);
   moduleState.reviewRecords[reviewIds[0]].deterministic[0].status = "PASS";
   deferment.closureReviewIds = ["br-does-not-exist"];
   assert.match(validate(closedRegistry, closedProject, {
-    promotedProjectsByCommit,
+    promotedProjectsByCommit: fixturePromotedProjects,
     runtimeOverlays: runtimeOverlaysExcept(deferment.moduleSlug),
   }).failures.join("\n"), /closureReviewIds must exactly match|review br-does-not-exist is missing/);
 });
@@ -428,12 +439,13 @@ test("historical closures remain valid after a later baseline promotion", () => 
   latestRegistry.deferments.push(historical);
   latestRegistry.receipts.push({ receiptId: historical.closureReceipt, kind: "closure", recordedAt: "2026-08-07", decisionId: historical.decisionId, summary: "Historical test closure." });
 
-  const promotedProjectsByCommit = new Map([
+  const fixturePromotedProjects = new Map([
+    ...promotedProjectsByCommit,
     [latest.promotedCommit, latestProject],
     [historical.promotedCommit, historicalProject],
   ]);
   assert.deepEqual(validate(latestRegistry, latestProject, {
-    promotedProjectsByCommit,
+    promotedProjectsByCommit: fixturePromotedProjects,
     runtimeOverlays: runtimeOverlaysExcept(latest.moduleSlug),
   }).failures, []);
 });
@@ -492,8 +504,11 @@ test("localization audit emits line-anchored aligned and deferred states", () =>
   assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-english-reader-2026-08-09"));
   assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-english-reader-2026-08-09"));
   assert.ok(lines.includes("Localization contract passed for 21 modules."));
-  assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, 19);
-  assert.equal(lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length, 2);
+  assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, registry.deferments.filter((item) => item.status !== "closed").length);
+  assert.equal(
+    lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length,
+    publishedModuleSlugs.filter((slug) => !registry.deferments.some((item) => item.moduleSlug === slug && item.status !== "closed") && runtimeOverlays.has(slug)).length,
+  );
 });
 
 test("English pages read englishUpdatedAt instead of Chinese updatedAt", async () => {

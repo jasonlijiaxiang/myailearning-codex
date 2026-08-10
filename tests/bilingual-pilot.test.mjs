@@ -22,7 +22,7 @@ import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { getPublishedModule, hasDedicatedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
 import { terminology } from "../app/terminology.mjs";
-import { loadRuntimeMaintenanceOverlays, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
+import { loadPromotedProjects, loadRuntimeMaintenanceOverlays, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import { loadLocalizationProject } from "../scripts/lib/localization-contract.mjs";
 
@@ -35,9 +35,11 @@ const candidateMatrix = JSON.parse(await readFile(new URL("../docs/change-plans/
 assertJsonSchema(defermentsRegistry, defermentSchema, "localization registry");
 const runtimeMaintenance = await loadRuntimeMaintenanceOverlays(defermentsRegistry);
 assert.deepEqual(runtimeMaintenance.failures, []);
+const promotedProjectsByCommit = await loadPromotedProjects(defermentsRegistry);
 const localizationResult = validateLocalizationRegistry(defermentsRegistry, await loadLocalizationProject(fileURLToPath(new URL("..", import.meta.url))), {
   candidateIds: new Set(candidateMatrix.candidates.map((candidate) => candidate.candidateId)),
   reviewSchema,
+  promotedProjectsByCommit,
   runtimeOverlays: runtimeMaintenance.overlays,
 });
 assert.deepEqual(localizationResult.failures, []);
