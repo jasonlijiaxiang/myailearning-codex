@@ -31739,16 +31739,16 @@
       }
     },
     "ai-infra-platform": {
-      "zhBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "f2c7cf5e8364945885562edaa787f09086157174",
+      "enBaselineCommit": "f2c7cf5e8364945885562edaa787f09086157174",
       "reviewSetIds": [
-        "br-ai-infra-platform-ultra-exception",
-        "br-ai-infra-platform-xhigh-author",
-        "br-ai-infra-platform-xhigh-language",
-        "br-ai-infra-platform-xhigh-semantic"
+        "br-ai-infra-platform-2026-08-10-ultra-exception",
+        "br-ai-infra-platform-2026-08-10-xhigh-author",
+        "br-ai-infra-platform-2026-08-10-xhigh-language",
+        "br-ai-infra-platform-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:93c403c1747e3ea1d81e97d32305da3a93342d678fd5eab2a51beda31f0edb88",
-      "zhStateHash": "sha256:ecc3519d4bf49ac3ed42e095399f1e30a594f2eb7d8e12f28589f89e595b444a",
+      "zhReviewHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
+      "zhStateHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
       "zhObjects": {
         "/module:ai-infra-platform/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -33152,7 +33152,7 @@
           "sourceIds": []
         },
         "/module:ai-infra-platform/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:78538e276570ae9bf6d8ab8d5f008ac8a8d3fe8bdd85cdf0db9efbf0c1371c7a",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -33443,9 +33443,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:46b6032baf15230fbfb6855d4f70fa23bf47dc2499ade95eb609eb27101f0beb",
-      "enEffectiveHash": "sha256:b91598360efdafdb52bd828de9cb4eeb5e110fd4660f001fcf5ffb72c3fa1bf9",
-      "enReviewHash": "sha256:9680b12b339473603a0dc7d12545a6db721e4c7fad5fd1fced9e3db8d95b8b13",
+      "enAuthoredHash": "sha256:4c14eac361b3b5252b633f86eaeedccb94b5419201464067e9e7def954e0976d",
+      "enEffectiveHash": "sha256:33913b3d4bf97af30fc52f36749169d11f4c8c4536f11dad4520e1fcad95d946",
+      "enReviewHash": "sha256:d0aeea357fae70f745de90e50e4c3f77d0a4dc3123e70572fd54b69a6e174315",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -33453,6 +33453,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -33466,6 +33467,30 @@
       ],
       "englishUpdatedAt": "2026-08-01",
       "reviewFiles": {
+        "br-ai-infra-platform-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-platform.ultra-exception.json",
+          "hash": "sha256:3ff31406ddb8714d391c7b573bdf2bb962302167451c81594ed2247260b8f5c7",
+          "zhContentHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
+          "enContentHash": "sha256:d0aeea357fae70f745de90e50e4c3f77d0a4dc3123e70572fd54b69a6e174315"
+        },
+        "br-ai-infra-platform-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-platform.xhigh-author.json",
+          "hash": "sha256:f9a45cfad087b475e47e7a411a2efb1a51df741bdc8fb47840d517f745513ae6",
+          "zhContentHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
+          "enContentHash": "sha256:d0aeea357fae70f745de90e50e4c3f77d0a4dc3123e70572fd54b69a6e174315"
+        },
+        "br-ai-infra-platform-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-platform.xhigh-language.json",
+          "hash": "sha256:aa1eb9137ef669a41cca62e277b34b0392290273d94471676db44f6f66a2b3f5",
+          "zhContentHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
+          "enContentHash": "sha256:d0aeea357fae70f745de90e50e4c3f77d0a4dc3123e70572fd54b69a6e174315"
+        },
+        "br-ai-infra-platform-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/ai-infra-platform.xhigh-semantic.json",
+          "hash": "sha256:ee1a5f8e560a5d6d2f8dd89edcbec9327d8555528e12b0820bf5999fc6711080",
+          "zhContentHash": "sha256:eba595d895db72deda5f49856900f2e05a695af5a5d4fc37cb211532aeb94021",
+          "enContentHash": "sha256:d0aeea357fae70f745de90e50e4c3f77d0a4dc3123e70572fd54b69a6e174315"
+        },
         "br-ai-infra-platform-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/ai-infra-platform.ultra-exception.json",
           "hash": "sha256:39dcedf8be6b763f5c4fbac72a0fe5a95304d6135c3b80ba964a85f8aee101fd",
@@ -40609,7 +40634,7 @@
       "moduleSlug": "ai-infra-platform",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-08",
       "openedFromCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
       "decisionId": "D-012",
@@ -40687,7 +40712,16 @@
         "br-ai-infra-platform-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-contract07-2026-08-08",
-      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。"
+      "closureCriteria": "英文逐对象同步完成，独立四阶段审校通过并登记候选哈希后，先进入 ready-for-english-review；确认中英文与日期对齐并提升模块基线后方可关闭。",
+      "closedAt": "2026-08-10",
+      "promotedCommit": "f2c7cf5e8364945885562edaa787f09086157174",
+      "closureReviewIds": [
+        "br-ai-infra-platform-2026-08-10-xhigh-author",
+        "br-ai-infra-platform-2026-08-10-xhigh-semantic",
+        "br-ai-infra-platform-2026-08-10-xhigh-language",
+        "br-ai-infra-platform-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-ai-infra-platform-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-ai-infra-compute-2026-08-05-consolidated",
