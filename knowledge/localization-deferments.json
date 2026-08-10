@@ -111,16 +111,16 @@
   ],
   "moduleBaselines": {
     "solution-patterns": {
-      "zhBaselineCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
-      "enBaselineCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "zhBaselineCommit": "6be33d1c4e0c9189892994613769f12a94c7e2cf",
+      "enBaselineCommit": "6be33d1c4e0c9189892994613769f12a94c7e2cf",
       "reviewSetIds": [
-        "br-solution-patterns-ultra-exception",
-        "br-solution-patterns-xhigh-author",
-        "br-solution-patterns-xhigh-language",
-        "br-solution-patterns-xhigh-semantic"
+        "br-solution-patterns-2026-08-10-ultra-exception",
+        "br-solution-patterns-2026-08-10-xhigh-author",
+        "br-solution-patterns-2026-08-10-xhigh-language",
+        "br-solution-patterns-2026-08-10-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:569fd7f4cfcaf1582be4c26f15fde6b9ad537076fc0f98e5e8110fca025177ed",
-      "zhStateHash": "sha256:19f7bf667d5888200da83a7c181897f22c26e83c5e28bed08f7ca28ef546b05b",
+      "zhReviewHash": "sha256:2d44efea989eb9903121a4b6d51695753001583b46c2a18bae1f2f949879ee43",
+      "zhStateHash": "sha256:2d44efea989eb9903121a4b6d51695753001583b46c2a18bae1f2f949879ee43",
       "zhObjects": {
         "/module:solution-patterns/brief/cloudHooks/$order": {
           "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
@@ -173,7 +173,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/brief/decisions/$order": {
-          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -208,26 +208,46 @@
           "sourceIds": []
         },
         "/module:solution-patterns/brief/decisions/006": {
-          "hash": "sha256:5abc23d7597578de0eff68efc8a3befa908ab7c450e46dca841b6e4ba87596bc",
+          "hash": "sha256:cc3ee70e8eeeb553700a3589b9c5abaf4ac9b1bfe4771027a0b05e14fdb16fa4",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:solution-patterns/brief/decisions/007": {
-          "hash": "sha256:7723ef203905d35aad310b6f9a20ad278e539c88a00fb2c8a9aa987fc9d83c77",
+          "hash": "sha256:223caf6839dc6b5c14dda8dc59e376d69f0898783ee34a25f5d6a23f6810c54a",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:solution-patterns/brief/decisions/008": {
-          "hash": "sha256:9d5b8d5c086a2071b2d8fa9e53af504638f6230792b53c738cabd08080827cf0",
+          "hash": "sha256:6d80562c221ae9851ff6e09f2c24748aac1028be4eb774cc91f9267a7178ea37",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:solution-patterns/brief/decisions/009": {
-          "hash": "sha256:291de04e51f47daa89b65a6df2624a1531c1606d1b3ae4a4342e5558db19ccf2",
+          "hash": "sha256:1da9ffea424d251a33755074fe0c549e8f2ab732f696025840dd7b262bc69440",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:solution-patterns/brief/decisions/010": {
+          "hash": "sha256:5abc23d7597578de0eff68efc8a3befa908ab7c450e46dca841b6e4ba87596bc",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/brief/decisions/011": {
+          "hash": "sha256:7723ef203905d35aad310b6f9a20ad278e539c88a00fb2c8a9aa987fc9d83c77",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/brief/decisions/012": {
+          "hash": "sha256:9d5b8d5c086a2071b2d8fa9e53af504638f6230792b53c738cabd08080827cf0",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/brief/decisions/013": {
+          "hash": "sha256:291de04e51f47daa89b65a6df2624a1531c1606d1b3ae4a4342e5558db19ccf2",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/brief/decisions/014": {
           "hash": "sha256:991ad8cdcfbeac283233c1f934e66ec90bf3abd95271baf8c76d15b5cbab4581",
           "objectType": "brief",
           "sourceIds": []
@@ -238,7 +258,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/brief/deepDives/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -260,6 +280,16 @@
           ]
         },
         "/module:solution-patterns/brief/deepDives/002": {
+          "hash": "sha256:637901c5e0e572d6040e807a395c0cdb6e0f292878fd6101bafe1ea0fbc486dc",
+          "objectType": "brief",
+          "sourceIds": [
+            "nist-genai-profile",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv",
+            "owasp-prompt-injection"
+          ]
+        },
+        "/module:solution-patterns/brief/deepDives/003": {
           "hash": "sha256:150cafeb86fc6fde77d016da44a16666f2acb0459d72888a41ca72d150ce24d1",
           "objectType": "brief",
           "sourceIds": [
@@ -268,7 +298,7 @@
             "finops-framework"
           ]
         },
-        "/module:solution-patterns/brief/deepDives/003": {
+        "/module:solution-patterns/brief/deepDives/004": {
           "hash": "sha256:91939d3064a4c692cd85245334375d82c173efdd3ccceeea2832a3b61c01a356",
           "objectType": "brief",
           "sourceIds": [
@@ -373,7 +403,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/brief/principles/$order": {
-          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -403,16 +433,31 @@
           "sourceIds": []
         },
         "/module:solution-patterns/brief/principles/005": {
-          "hash": "sha256:9c9897f0e05908adbb1ade7d80344a6e1fd542e272b2348caa762323c000b55f",
+          "hash": "sha256:f401576fdd187823282dcf8f1c662cfbb6e3b03359b801e7f108bfb7577a9017",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:solution-patterns/brief/principles/006": {
-          "hash": "sha256:84562862871f2c7c1f5996bc5ee7b2c13ec81566e610e16e49ef5c93a04819cd",
+          "hash": "sha256:808073950ddf060e9684c19e26d27215722e27ca8421a2f6e55e9668e26731a7",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:solution-patterns/brief/principles/007": {
+          "hash": "sha256:8eb11bf9edb31310d389859ae5a1ccb6cf057c928ed8ee772bff1902609419d6",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/brief/principles/008": {
+          "hash": "sha256:9c9897f0e05908adbb1ade7d80344a6e1fd542e272b2348caa762323c000b55f",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/brief/principles/009": {
+          "hash": "sha256:84562862871f2c7c1f5996bc5ee7b2c13ec81566e610e16e49ef5c93a04819cd",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/brief/principles/010": {
           "hash": "sha256:743e3a473277c4e82002128791777c6a1beb27b080a153a2fc66f3b5e2677500",
           "objectType": "brief",
           "sourceIds": []
@@ -423,7 +468,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/brief/qa/$order": {
-          "hash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
+          "hash": "sha256:8f4414bc84fda1428c7c3be502ff0d71cb80e68e8b85fd531f58df3edd3891e8",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -578,6 +623,14 @@
             "opentelemetry-genai-semconv"
           ]
         },
+        "/module:solution-patterns/brief/qa/019": {
+          "hash": "sha256:c2d73e1f3c7739429006ef3559589ff2f7922b7fd5fedaad96fe4fa4f6944910",
+          "objectType": "brief",
+          "sourceIds": [
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
         "/module:solution-patterns/brief/relatedSlugs/$order": {
           "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
           "objectType": "brief-order",
@@ -714,7 +767,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/claims/$order": {
-          "hash": "sha256:1c9c90b4bc0cb08d723b50bc205ba09583c176886b6397dde29edb46ecfbef92",
+          "hash": "sha256:c72b8f94ca7df5bc2690348094bb3267c06b423ce0ad0e9d5f8165a262d474a5",
           "objectType": "claims-order",
           "sourceIds": []
         },
@@ -728,6 +781,14 @@
           ]
         },
         "/module:solution-patterns/claims/001": {
+          "hash": "sha256:72bcf2b3f7cd5c458e99409adab31148440aa09f068e6e01d21d9b21d33ffc3d",
+          "objectType": "claims",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025"
+          ]
+        },
+        "/module:solution-patterns/claims/002": {
           "hash": "sha256:3da02663cd2a604c9ca0570a0a4b276826840d2c357350f7ac6948523864e338",
           "objectType": "claims",
           "sourceIds": [
@@ -736,7 +797,7 @@
             "finops-scopes"
           ]
         },
-        "/module:solution-patterns/claims/002": {
+        "/module:solution-patterns/claims/003": {
           "hash": "sha256:5a70d03c9572cf9b945a439e97edcdd7687ceba14326332c0bc0c5e274524b2d",
           "objectType": "claims",
           "sourceIds": [
@@ -746,7 +807,7 @@
           ]
         },
         "/module:solution-patterns/content/deepDives/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -768,6 +829,16 @@
           ]
         },
         "/module:solution-patterns/content/deepDives/002": {
+          "hash": "sha256:637901c5e0e572d6040e807a395c0cdb6e0f292878fd6101bafe1ea0fbc486dc",
+          "objectType": "content",
+          "sourceIds": [
+            "nist-genai-profile",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv",
+            "owasp-prompt-injection"
+          ]
+        },
+        "/module:solution-patterns/content/deepDives/003": {
           "hash": "sha256:150cafeb86fc6fde77d016da44a16666f2acb0459d72888a41ca72d150ce24d1",
           "objectType": "content",
           "sourceIds": [
@@ -776,7 +847,7 @@
             "finops-framework"
           ]
         },
-        "/module:solution-patterns/content/deepDives/003": {
+        "/module:solution-patterns/content/deepDives/004": {
           "hash": "sha256:91939d3064a4c692cd85245334375d82c173efdd3ccceeea2832a3b61c01a356",
           "objectType": "content",
           "sourceIds": [
@@ -861,7 +932,7 @@
           ]
         },
         "/module:solution-patterns/content/qa/$order": {
-          "hash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
+          "hash": "sha256:8f4414bc84fda1428c7c3be502ff0d71cb80e68e8b85fd531f58df3edd3891e8",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -1016,8 +1087,16 @@
             "opentelemetry-genai-semconv"
           ]
         },
+        "/module:solution-patterns/content/qa/019": {
+          "hash": "sha256:c2d73e1f3c7739429006ef3559589ff2f7922b7fd5fedaad96fe4fa4f6944910",
+          "objectType": "content",
+          "sourceIds": [
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
         "/module:solution-patterns/curriculum/chapters/$order": {
-          "hash": "sha256:06eb1b98c3ed3bf9fbe33992ada2391719c0efb0abec7c31191cd36931435611",
+          "hash": "sha256:4a7c48a160ce3d232417ca0b15fa2c7dc3db2ba81fd274c9fe39f77ea91bfeb2",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
@@ -1134,6 +1213,42 @@
           ]
         },
         "/module:solution-patterns/curriculum/chapters/013": {
+          "hash": "sha256:1fb35a583f2000e1a352ef33072585671bd6f099f31e6a1eb4fcc86a2dd17af9",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "finops-unit-economics",
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
+        "/module:solution-patterns/curriculum/chapters/014": {
+          "hash": "sha256:f84aa44c04cb06fab76f70a11074d4ac384f71e4c7b0ae90d99a9d2d1aa1f181",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "anthropic-effective-agents",
+            "finops-unit-economics",
+            "nist-genai-profile"
+          ]
+        },
+        "/module:solution-patterns/curriculum/chapters/015": {
+          "hash": "sha256:a136ed51cb79c01ff93b544b00a8f71f081928a9f997523cfcd74b0988c50a7b",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025",
+            "nist-genai-profile"
+          ]
+        },
+        "/module:solution-patterns/curriculum/chapters/016": {
+          "hash": "sha256:577206d4afed30f533a3b8514a90f560a04c1c1f7c795e7858c5d99bba6d19f3",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "finops-unit-economics",
+            "nist-ai-800-3",
+            "nist-genai-profile"
+          ]
+        },
+        "/module:solution-patterns/curriculum/chapters/017": {
           "hash": "sha256:779a8cd060413df749e184488591a2156acf48121bb3e6efc31eed7d6718ce96",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1142,7 +1257,7 @@
             "finops-scopes"
           ]
         },
-        "/module:solution-patterns/curriculum/chapters/014": {
+        "/module:solution-patterns/curriculum/chapters/018": {
           "hash": "sha256:94ac62f41efc1c814ce06c367ef4c099ad461a94f6f0ad40f92b43bf3caf0185",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1150,7 +1265,7 @@
             "finops-ai-overview"
           ]
         },
-        "/module:solution-patterns/curriculum/chapters/015": {
+        "/module:solution-patterns/curriculum/chapters/019": {
           "hash": "sha256:cc7736cedd2a4d66a17ae8cfd4682f1ade248f8eee39907a16aff2efed99e0f2",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1158,7 +1273,7 @@
             "opentelemetry-genai-semconv"
           ]
         },
-        "/module:solution-patterns/curriculum/chapters/016": {
+        "/module:solution-patterns/curriculum/chapters/020": {
           "hash": "sha256:c689de6904b8544199bc32db26a3297ddf2719bcecf5e28e60b3a7e03871b117",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1166,7 +1281,7 @@
             "finops-framework"
           ]
         },
-        "/module:solution-patterns/curriculum/chapters/017": {
+        "/module:solution-patterns/curriculum/chapters/021": {
           "hash": "sha256:edfe90dc4f8af68ede37c1609f8e1c896c1d3d09b544a1ce151675f087fd38ca",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1174,7 +1289,7 @@
             "finops-scopes"
           ]
         },
-        "/module:solution-patterns/curriculum/chapters/018": {
+        "/module:solution-patterns/curriculum/chapters/022": {
           "hash": "sha256:6fa958a72e13a438499247eb7eaba158d4c85bf86f8beee243733569f8cb9a06",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1182,7 +1297,7 @@
             "finops-framework"
           ]
         },
-        "/module:solution-patterns/curriculum/chapters/019": {
+        "/module:solution-patterns/curriculum/chapters/023": {
           "hash": "sha256:96b13c8845819f7a7d99781270d19fc66d071ee197b004eec44a1e2f8c8b8d34",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1190,7 +1305,7 @@
             "finops-framework"
           ]
         },
-        "/module:solution-patterns/curriculum/chapters/020": {
+        "/module:solution-patterns/curriculum/chapters/024": {
           "hash": "sha256:7dd322de0d361d82fd08f74f3f9e23f19f9946b481f588d2ac6cf396a41ea0fc",
           "objectType": "curriculum",
           "sourceIds": [
@@ -1209,7 +1324,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/learning/labs/$order": {
-          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -1249,6 +1364,33 @@
           ]
         },
         "/module:solution-patterns/learning/labs/004": {
+          "hash": "sha256:df3485b8649e0fbaf7117450aad04a6c01ad2caa7a6d0d392429d71db73c1f08",
+          "objectType": "learning",
+          "sourceIds": [
+            "finops-unit-economics",
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
+        "/module:solution-patterns/learning/labs/005": {
+          "hash": "sha256:026b169f0a00787d078154e136ffd07c022a8f03a80515703ecd6a6b29d43081",
+          "objectType": "learning",
+          "sourceIds": [
+            "china-ai-content-labeling-2026-08-05",
+            "gb-45438-2025",
+            "nist-genai-profile"
+          ]
+        },
+        "/module:solution-patterns/learning/labs/006": {
+          "hash": "sha256:6ddf3aeda31c3f7c0a0d709dfe8d368c6aa1300d3dd7b253bd158a90f9d3c0bd",
+          "objectType": "learning",
+          "sourceIds": [
+            "finops-unit-economics",
+            "nist-ai-800-3",
+            "nist-genai-profile"
+          ]
+        },
+        "/module:solution-patterns/learning/labs/007": {
           "hash": "sha256:70f64d7cfceb4447ce909d7fedf7ffb81ab4c8879d43330dad1228fb195f513d",
           "objectType": "learning",
           "sourceIds": [
@@ -1256,7 +1398,7 @@
             "finops-framework"
           ]
         },
-        "/module:solution-patterns/learning/labs/005": {
+        "/module:solution-patterns/learning/labs/008": {
           "hash": "sha256:f593c0b6e206bb8eb5bfcf306fa0a1ec97d73298d2c919c328bde617bfc58e98",
           "objectType": "learning",
           "sourceIds": [
@@ -1264,7 +1406,7 @@
             "finops-framework"
           ]
         },
-        "/module:solution-patterns/learning/labs/006": {
+        "/module:solution-patterns/learning/labs/009": {
           "hash": "sha256:ace534253c36696012fc7d6feca938a75d08b3c579338090bda821005d72162d",
           "objectType": "learning",
           "sourceIds": [
@@ -1423,7 +1565,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/publication/qaCoverageTags/$order": {
-          "hash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
+          "hash": "sha256:8f4414bc84fda1428c7c3be502ff0d71cb80e68e8b85fd531f58df3edd3891e8",
           "objectType": "publication-order",
           "sourceIds": []
         },
@@ -1522,6 +1664,11 @@
           "objectType": "publication",
           "sourceIds": []
         },
+        "/module:solution-patterns/publication/qaCoverageTags/019": {
+          "hash": "sha256:7023140195af17b779d2ed9be7b598ec8309b8e8461cd4c75fd6d521d2aba2a7",
+          "objectType": "publication",
+          "sourceIds": []
+        },
         "/module:solution-patterns/publication/readingProfile": {
           "hash": "sha256:4263bb71f5c15adcc7b44b39db6cce5faede745ffd31e647bfa4ee87ea6e10d5",
           "objectType": "publication",
@@ -1583,7 +1730,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/publication/updatedAt": {
-          "hash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "hash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -1613,7 +1760,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/referenceModule/sourceIds/$order": {
-          "hash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
+          "hash": "sha256:0b4144e2ce33c6cbe6a6bb18ba14605fb12d13e32e390dacd6121ade27664ae4",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -1683,31 +1830,46 @@
           "sourceIds": []
         },
         "/module:solution-patterns/referenceModule/sourceIds/013": {
-          "hash": "sha256:f87dc7b2c15be4c9790ec46f7259406a0ae4b3ea9afda2b7763d7ab3d7eca042",
+          "hash": "sha256:6d8226447b3bb98405e86ecc1da536d3db2f0fd2ceb754e93955e9efd16b51ca",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:solution-patterns/referenceModule/sourceIds/014": {
-          "hash": "sha256:74283d03243105a728ab0f7b34e34608d325fd6b60617c178946e7d148370025",
+          "hash": "sha256:97e88d61579f5145ca99ccc27ebf2df42ac6615898f25e1f11d38dde949cf6f9",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:solution-patterns/referenceModule/sourceIds/015": {
-          "hash": "sha256:156db9280a1e7d7734a3041728efb6c74701964bc3072db5a485ff2743140d00",
+          "hash": "sha256:21c5e05f4bd10477183b7a00941674b450653ec2453ac5f8af3182640f736833",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:solution-patterns/referenceModule/sourceIds/016": {
-          "hash": "sha256:24866cf456f8e93735aa867d2caf7966525ab0ac41cd955f90ba1d35e66e1c72",
+          "hash": "sha256:f87dc7b2c15be4c9790ec46f7259406a0ae4b3ea9afda2b7763d7ab3d7eca042",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:solution-patterns/referenceModule/sourceIds/017": {
-          "hash": "sha256:0667996ea47e1b0a20753376d98a30bc6f6eb20f2b009cb0770b3ffd5e486f6f",
+          "hash": "sha256:74283d03243105a728ab0f7b34e34608d325fd6b60617c178946e7d148370025",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:solution-patterns/referenceModule/sourceIds/018": {
+          "hash": "sha256:156db9280a1e7d7734a3041728efb6c74701964bc3072db5a485ff2743140d00",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/referenceModule/sourceIds/019": {
+          "hash": "sha256:24866cf456f8e93735aa867d2caf7966525ab0ac41cd955f90ba1d35e66e1c72",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/referenceModule/sourceIds/020": {
+          "hash": "sha256:0667996ea47e1b0a20753376d98a30bc6f6eb20f2b009cb0770b3ffd5e486f6f",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/referenceModule/sourceIds/021": {
           "hash": "sha256:17bc8d38d92efd1606f6ce570d07c81aa0496a9176bbc1131d1bf4e86771d47b",
           "objectType": "referenceModule",
           "sourceIds": []
@@ -1743,7 +1905,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/renderedProjection/questionIds/$order": {
-          "hash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
+          "hash": "sha256:8f4414bc84fda1428c7c3be502ff0d71cb80e68e8b85fd531f58df3edd3891e8",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -1842,6 +2004,11 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:solution-patterns/renderedProjection/questionIds/019": {
+          "hash": "sha256:7a5ea24a6c8684377212fa6e59b26edb219ca19792e2f22f914ee5e21b0411b5",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:solution-patterns/renderedProjection/rendererDependencyFiles/$order": {
           "hash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
           "objectType": "renderedProjection-order",
@@ -1918,7 +2085,7 @@
           "sourceIds": []
         },
         "/module:solution-patterns/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:1db3b88e04ddac3bcf0b5603090882573033c5d44de25910c698f9e9e1c20e74",
+          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -1929,6 +2096,11 @@
         },
         "/module:solution-patterns/sources/anthropic-effective-agents": {
           "hash": "sha256:2dbb4415a6c492d2801fb5e70c991b0de88a2ccd362539f66db9801c85434ab9",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/sources/china-ai-content-labeling-2026-08-05": {
+          "hash": "sha256:839b87b9be0d0b1bcdc21c581a28cc5518dd71c5704ab77cc06f166a35146390",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -1972,8 +2144,18 @@
           "objectType": "sources",
           "sourceIds": []
         },
+        "/module:solution-patterns/sources/gb-45438-2025": {
+          "hash": "sha256:0716b167e8231b27bbda55237f394aefa3575787586712edf73294f50692a5ef",
+          "objectType": "sources",
+          "sourceIds": []
+        },
         "/module:solution-patterns/sources/mcp-architecture": {
           "hash": "sha256:92d2509d1f5ecbc512978910cb653967fd87f2b559f62bb78dfb8531fff1af01",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:solution-patterns/sources/nist-ai-800-3": {
+          "hash": "sha256:399fd0d3153ac3426d0498353abe639765a4b9c48ac54faa743f6e4f8e157970",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -2244,9 +2426,9 @@
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:2a2e99a025d32fc5585f143934aba850903fcd03504c236ffe7819514796b46f",
-      "enEffectiveHash": "sha256:7c7e66799dbcf217132d50d4cce080f532ac6d55171d65657e75f1b5a3a1bdc6",
-      "enReviewHash": "sha256:a27f0cad0ae5dbe99da31e46e4e45360d1e2370e33442705d737d0a027e37091",
+      "enAuthoredHash": "sha256:4437ac5d46628e2d66ef0705d61d7dd68f463b580c34deaca7cc59309cf23b86",
+      "enEffectiveHash": "sha256:6abf21f15736e6a52d0e1530386cc6dfb008a9d3beae968dafa8744e49463327",
+      "enReviewHash": "sha256:066b837f791c8c87a9287812fc6da07173c14586b621b12fe68674df0d3aeecb",
       "enRendererFiles": [
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
@@ -2254,6 +2436,7 @@
         "app/en/modules/[slug]/page.tsx",
         "app/fieldbook-interactions.tsx",
         "app/i18n/document-language.tsx",
+        "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
@@ -2265,8 +2448,32 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-08-01",
+      "englishUpdatedAt": "2026-08-10",
       "reviewFiles": {
+        "br-solution-patterns-2026-08-10-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/solution-patterns.ultra-exception.json",
+          "hash": "sha256:268f66ef4d5537937afa85e7be491ef1755d01d1a3e62e661980c0cfa6b366db",
+          "zhContentHash": "sha256:2d44efea989eb9903121a4b6d51695753001583b46c2a18bae1f2f949879ee43",
+          "enContentHash": "sha256:066b837f791c8c87a9287812fc6da07173c14586b621b12fe68674df0d3aeecb"
+        },
+        "br-solution-patterns-2026-08-10-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/solution-patterns.xhigh-author.json",
+          "hash": "sha256:bde8b9c1b455a23c43d2c5275b6f56f5ad6f7443ef7f92673b458d432055bfa1",
+          "zhContentHash": "sha256:2d44efea989eb9903121a4b6d51695753001583b46c2a18bae1f2f949879ee43",
+          "enContentHash": "sha256:066b837f791c8c87a9287812fc6da07173c14586b621b12fe68674df0d3aeecb"
+        },
+        "br-solution-patterns-2026-08-10-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/solution-patterns.xhigh-language.json",
+          "hash": "sha256:6abac07127c52eb4f1c1196754fab695e03687c90bf9484e24a32f4cf3212462",
+          "zhContentHash": "sha256:2d44efea989eb9903121a4b6d51695753001583b46c2a18bae1f2f949879ee43",
+          "enContentHash": "sha256:066b837f791c8c87a9287812fc6da07173c14586b621b12fe68674df0d3aeecb"
+        },
+        "br-solution-patterns-2026-08-10-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-10/solution-patterns.xhigh-semantic.json",
+          "hash": "sha256:695702cb951d06d820bf0d31e2d07c429d70ec64ccbef9bbfec81fb62b5cef6c",
+          "zhContentHash": "sha256:2d44efea989eb9903121a4b6d51695753001583b46c2a18bae1f2f949879ee43",
+          "enContentHash": "sha256:066b837f791c8c87a9287812fc6da07173c14586b621b12fe68674df0d3aeecb"
+        },
         "br-solution-patterns-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/solution-patterns.ultra-exception.json",
           "hash": "sha256:e944065da94600d4719f260a7bdaa6a658375c8baf288ccc489f033b4ea55fcf",
@@ -36558,7 +36765,7 @@
       "moduleSlug": "solution-patterns",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-05",
       "openedFromCommit": "671072cae7bb3ffcde366713eb421e65c2e9cbc1",
       "decisionId": "D-012",
@@ -37353,7 +37560,16 @@
           "br-solution-patterns-2026-08-10-xhigh-language",
           "br-solution-patterns-2026-08-10-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-08-10",
+      "promotedCommit": "6be33d1c4e0c9189892994613769f12a94c7e2cf",
+      "closureReviewIds": [
+        "br-solution-patterns-2026-08-10-xhigh-author",
+        "br-solution-patterns-2026-08-10-xhigh-semantic",
+        "br-solution-patterns-2026-08-10-xhigh-language",
+        "br-solution-patterns-2026-08-10-ultra-exception"
+      ],
+      "closureReceipt": "receipt-solution-patterns-english-closure-2026-08-10"
     },
     {
       "defermentId": "dfr-model-landscape-2026-08-05-consolidated",
