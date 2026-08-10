@@ -305,7 +305,10 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     if (!baseline || !current) continue;
     const runtimeOverlay = runtimeOverlays.get(slug) ?? null;
     const englishBaseline = runtimeOverlay ? withRuntimeEnglishBaseline(baseline, runtimeOverlay.state) : baseline;
-    const chineseBaseline = runtimeOverlay?.kind === "document-shell"
+    // A later English-only maintenance can legitimately follow a document-shell
+    // maintenance. Its post-state still carries the document-shell Chinese
+    // renderer projection, even though its own kind is english-renderer.
+    const chineseBaseline = runtimeOverlay && !sameChineseRuntimeState(baseline, runtimeOverlay.state)
       ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state)
       : baseline;
 

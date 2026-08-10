@@ -65,8 +65,10 @@ function makeDeferredFixture(slug = "solution-patterns") {
   deferment.status = "deferred";
   deferment.openedFromCommit = baseline.zhBaselineCommit;
   deferment.baselineReviewIds = [...baseline.reviewSetIds];
-  const effectiveZhBaseline = runtimeOverlays.get(slug)?.kind === "document-shell"
-    ? runtimeOverlays.get(slug).state.zhObjects
+  const runtimeOverlay = runtimeOverlays.get(slug);
+  const effectiveZhBaseline = runtimeOverlay
+    && JSON.stringify(runtimeOverlay.state.zhObjects) !== JSON.stringify(baseline.zhObjects)
+    ? runtimeOverlay.state.zhObjects
     : baseline.zhObjects;
   deferment.affectedObjects = diffObjectCatalogs(effectiveZhBaseline, moduleState.zhObjects);
   for (const field of ["englishCandidate", "closedAt", "promotedCommit", "closureReviewIds", "closureReceipt"]) delete deferment[field];
@@ -160,6 +162,16 @@ test("a later runtime maintenance may supersede an earlier overlay for the same 
   });
   const result = validate(chained, currentProject, { runtimeOverlays });
   assert.doesNotMatch(result.failures.join("\n"), /already covered by/);
+});
+
+test("a later English renderer maintenance retains an earlier document-shell Chinese projection", () => {
+  const chainedOverlays = new Map([...runtimeOverlays].map(([slug, overlay]) => [slug, {
+    ...overlay,
+    maintenanceId: "erm-test-english-after-document-shell",
+    kind: "english-renderer",
+  }]));
+  const result = validate(registry, currentProject, { runtimeOverlays: chainedOverlays });
+  assert.doesNotMatch(result.failures.join("\n"), /Chinese content changed without an active deferment/);
 });
 
 test("an effective-hash contract change covers every English module", () => {
