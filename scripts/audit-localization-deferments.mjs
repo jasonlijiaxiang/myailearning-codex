@@ -388,7 +388,22 @@ export async function loadProjectAtCommit(commit, expectedFilesBySlug = {}) {
     const archive = execFileSync("git", ["archive", "--format=tar", commit], { cwd: root, maxBuffer: 64 * 1024 * 1024 });
     execFileSync("tar", ["-xf", "-", "-C", directory], { input: archive, maxBuffer: 64 * 1024 * 1024 });
     const moduleSlugs = Object.keys(expectedFilesBySlug);
-    const project = await loadLocalizationProject(directory, { moduleSlugs: moduleSlugs.length ? moduleSlugs : null });
+    // Load the contract from the archived checkout. Historical baselines must
+    // retain the effective-hash semantics that were in force at their commit;
+    // the current audit implementation may legitimately use a later contract.
+    const archivedContractPath = path.join(directory, "scripts", "lib", "localization-contract.mjs");
+    let loadArchivedLocalizationProject = loadLocalizationProject;
+    try {
+      await readFile(archivedContractPath);
+      const archivedContractUrl = pathToFileURL(archivedContractPath).href;
+      ({ loadLocalizationProject: loadArchivedLocalizationProject } = await import(archivedContractUrl));
+    } catch (error) {
+      // The earliest Chinese-only baseline predates the contract module. Its
+      // English state is never used for that baseline, so the current loader
+      // is sufficient to reconstruct the required Chinese state.
+      if (error?.code !== "ENOENT") throw error;
+    }
+    const project = await loadArchivedLocalizationProject(directory, { moduleSlugs: moduleSlugs.length ? moduleSlugs : null });
     assertCanonicalRendererFileLists(project, expectedFilesBySlug);
     return project;
   } finally {
