@@ -790,7 +790,7 @@ test("English question directory never links beyond the focused module preview",
       assert.match(html, new RegExp(`href="/en/modules/${escapeRegExp(englishModule.slug)}#${escapeRegExp(hash)}"`));
     }
   }
-  assert.match(html, /gives a concise answer for each one/);
+  assert.match(html, /each with a concise answer/);
   assert.equal((scopedHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishModuleRegistry["solution-patterns"].qa.length);
   assert.match(scopedHtml, /all 20 questions for Solution Patterns/);
   assert.match(scopedHtml, /id="question-solution-patterns-/);
@@ -1870,6 +1870,66 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.doesNotMatch(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{[^}]*display:\s*none;/);
   assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);[^}]*overflow:\s*visible;/s);
   assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks a\s*\{[^}]*white-space:\s*normal;/s);
+});
+
+test("public page shells expose one real skip target after navigation without decorative release labels", async () => {
+  const appRoot = new URL("../app/", import.meta.url);
+  const pageFiles = (await readdir(appRoot, { recursive: true }))
+    .filter((relativePath) => relativePath.endsWith("page.tsx"));
+  const pagesWithTopbar = [];
+
+  for (const relativePath of pageFiles) {
+    const source = await readFile(new URL(relativePath, appRoot), "utf8");
+    if (!source.includes('<nav className="topbar"')) continue;
+    pagesWithTopbar.push(relativePath);
+    assert.equal((source.match(/id="main-content"/g) ?? []).length, 1, `${relativePath} 必须只有一个主内容跳转目标`);
+    assert.ok(source.indexOf('id="main-content"') > source.indexOf("</nav>"), `${relativePath} 的跳转目标必须位于导航之后`);
+    assert.doesNotMatch(source, /V2\.0/, `${relativePath} 不得显示装饰性维护版本号`);
+  }
+
+  assert.equal(pagesWithTopbar.length, 19, "全部公开页面壳必须进入 skip-link 回归范围");
+  for (const layoutPath of ["(zh)/layout.tsx", "(en)/layout.tsx"]) {
+    const source = await readFile(new URL(layoutPath, appRoot), "utf8");
+    assert.match(source, /className="skipLink" href="#main-content"/, `${layoutPath} 必须提供本地化 skip link`);
+  }
+});
+
+test("shared responsive interactions preserve explicit state, keyboard safety, and usable mobile controls", async () => {
+  const [interactions, glossary, radar, graph, pilotViews, englishReader, v3Styles, graphStyles] = await Promise.all([
+    readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/glossary-explorer.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/model-radar-explorer.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/knowledge-graph/design-2/knowledge-constellation.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/module-pilot-views.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/knowledge-graph/design-2/knowledge-constellation.module.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.ok((interactions.match(/aria-pressed=/g) ?? []).length >= 10, "共享筛选器必须向辅助技术暴露选中状态");
+  assert.match(glossary, /aria-pressed=\{groupId === group\.id\}/);
+  assert.match(radar, /className="modelPosterBenchmarkTabs" role="group"/);
+  assert.match(radar, /aria-pressed=\{benchmark\.sourceId === benchmarkId\}/);
+  assert.doesNotMatch(radar, /role="tablist"|role="tab"/);
+  assert.doesNotMatch(radar, /<tr[\s\S]{0,180}onClick=/, "Radar 行不得伪装成整行可点击控件");
+
+  assert.match(graph, /aria-hidden=\{mobileRail && !railOpen \? true : undefined\}/);
+  assert.match(graph, /inert=\{mobileRail && !railOpen \? true : undefined\}/);
+  assert.match(graph, /event\.key !== "Escape"/);
+  assert.match(graph, /pickerRef\.current\?\.focus\(\)/);
+  assert.match(graph, /aria-controls=\{deferredQuery \? searchResultsId : undefined\}/);
+
+  assert.match(pilotViews, /role="columnheader"/);
+  assert.match(pilotViews, /role="rowheader"/);
+  assert.match(pilotViews, /role="cell"/);
+  assert.match(englishReader, /replace\(\/\^Ask the customer:/);
+  assert.match(englishReader, /<h3>\{block\.title \?\? "Critical boundary"\}<\/h3>/);
+
+  assert.match(v3Styles, /\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow:\s*auto;/s);
+  assert.match(v3Styles, /@media \(max-width: 980px\)[\s\S]*?\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow-x:\s*auto;[^}]*overflow-y:\s*hidden;/s);
+  assert.doesNotMatch(v3Styles, /\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow:\s*hidden;/s);
+  assert.match(graphStyles, /@media \(max-width: 600px\)[\s\S]*?\.canvas\s*\{\s*bottom:\s*140px;/s);
+  assert.match(graphStyles, /\.canvasControls button\s*\{\s*width:\s*44px;\s*height:\s*44px;/s);
 });
 
 test("source URLs have one code owner and are absent from content and route files", async () => {

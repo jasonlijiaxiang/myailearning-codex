@@ -106,6 +106,7 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-english-language-switch-2026-08-10",
     "erm-english-reader-2026-08-09",
     "erm-english-source-scope-2026-08-10",
+    "erm-full-site-design-voice-2026-08-12",
   ]);
   const reader = maintenances.get("erm-english-reader-2026-08-09");
   assert.equal(reader?.receiptId, "receipt-english-reader-runtime-2026-08-09");
@@ -125,6 +126,12 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(languageSwitch?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
   assert.deepEqual(languageSwitch?.contentProjectionChangeSlugs, []);
   assert.equal(languageSwitch?.metadataScope, "none");
+  const fullSiteReview = maintenances.get("erm-full-site-design-voice-2026-08-12");
+  assert.equal(fullSiteReview?.kind, "document-shell");
+  assert.equal(fullSiteReview?.receiptId, "receipt-full-site-design-voice-2026-08-12");
+  assert.deepEqual(fullSiteReview?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(fullSiteReview?.contentProjectionChangeSlugs, []);
+  assert.equal(fullSiteReview?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   for (const publication of publishedModules) {
@@ -172,11 +179,11 @@ test("a later runtime maintenance may supersede an earlier overlay for the same 
   assert.doesNotMatch(result.failures.join("\n"), /already covered by/);
 });
 
-test("a later English renderer maintenance retains an earlier document-shell Chinese projection", () => {
+test("the latest document-shell maintenance retains the complete prior runtime chain", () => {
   const result = validate(registry, currentProject, { runtimeOverlays });
   assert.deepEqual(result.failures, []);
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "english-renderer"));
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-language-switch-2026-08-10"));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "document-shell"));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-full-site-design-voice-2026-08-12"));
 });
 
 test("an effective-hash contract change covers every English module", () => {
@@ -197,13 +204,24 @@ test("an active deferment records the exact live object delta", () => {
 
 test("runtime-maintenance chain preserves the verified document shell and English reader state", async () => {
   const beforeLanguageSwitch = structuredClone(registry);
-  beforeLanguageSwitch.runtimeMaintenances = beforeLanguageSwitch.runtimeMaintenances.filter((item) => item.maintenanceId !== "erm-english-language-switch-2026-08-10");
+  beforeLanguageSwitch.runtimeMaintenances = beforeLanguageSwitch.runtimeMaintenances.filter((item) => ![
+    "erm-english-language-switch-2026-08-10",
+    "erm-full-site-design-voice-2026-08-12",
+  ].includes(item.maintenanceId));
   const documentShellRuntime = await loadRuntimeMaintenanceOverlays(beforeLanguageSwitch);
   assert.deepEqual(documentShellRuntime.failures, []);
   assert.ok([...documentShellRuntime.overlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-document-shell-2026-08-10"));
   assert.ok([...documentShellRuntime.overlays.values()].every((overlay) => overlay.kind === "document-shell"));
 
+  const beforeFullSiteReview = structuredClone(registry);
+  beforeFullSiteReview.runtimeMaintenances = beforeFullSiteReview.runtimeMaintenances.filter((item) => item.maintenanceId !== "erm-full-site-design-voice-2026-08-12");
+  const languageSwitchRuntime = await loadRuntimeMaintenanceOverlays(beforeFullSiteReview);
+  assert.deepEqual(languageSwitchRuntime.failures, []);
+  assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-language-switch-2026-08-10"));
+  assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.kind === "english-renderer"));
+
   assert.equal(runtimeOverlays.size, publishedModuleSlugs.length);
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-full-site-design-voice-2026-08-12"));
 
   const driftedProject = structuredClone(currentProject);
   driftedProject.modules.rag.enEffectiveHash = fullHashA;
@@ -596,8 +614,8 @@ test("review generator refuses to overwrite PASS records while deferments are ac
 test("localization audit reports chained runtime-maintained alignment", () => {
   const output = execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: projectRoot, encoding: "utf8" });
   const lines = output.trim().split("\n");
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-english-language-switch-2026-08-10"));
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-english-language-switch-2026-08-10"));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-full-site-design-voice-2026-08-12"));
+  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-full-site-design-voice-2026-08-12"));
   assert.ok(lines.includes("Localization contract passed for 21 modules."));
   assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, 0);
   assert.equal(lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length, publishedModuleSlugs.length);
