@@ -661,8 +661,8 @@
 }
 
 @media (max-width: 980px) {
-  .fieldbookHome .topbar .toplinks { max-width: 68%; overflow-x: auto; scrollbar-width: none; }
-  .fieldbookHome .topbar .toplinks::-webkit-scrollbar { display: none; }
+  .fieldbookHome .topbar .toplinks { max-width: 68%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 18px; overflow: visible; }
+  .fieldbookHome .topbar .toplinks a { min-height: 34px; display: flex; align-items: center; white-space: normal; }
   .fieldbookHome .heroDecisionPanel ol { grid-template-columns: 1fr; }
   .fieldbookHome .heroDecisionPanel li { border-right: 0; border-bottom: 1px solid var(--home-line); }
   .fieldbookHome .heroDecisionPanel li:last-child { border-bottom: 0; }

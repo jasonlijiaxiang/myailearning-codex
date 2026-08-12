@@ -21,6 +21,18 @@
   --fb-risk-soft: #fbf3f0;
   --fb-shadow: 0 14px 34px rgba(21, 48, 71, .07);
   --fb-focus: #315f72;
+  --fb-shell: 1360px;
+  --fb-prose: 68ch;
+  --fb-text-body: 17px;
+  --fb-text-body-mobile: 16px;
+  --fb-text-body-small: 14px;
+  --fb-text-control: 13px;
+  --fb-text-meta: 12px;
+  --fb-radius-control: 8px;
+  --fb-radius-panel: 12px;
+  --fb-radius-section: 16px;
+  --fb-radius-pill: 999px;
+  --fb-motion-fast: 160ms;
 
   /* Compatibility names used by the established knowledge components. */
   --ink: var(--fb-ink);
@@ -41,6 +53,7 @@
   --wide: 1480px;
   --shadow: var(--fb-shadow);
   --font-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun";
+  --font-display: var(--font-serif);
 }
 
 * { box-sizing: border-box; }
@@ -53,8 +66,42 @@ body {
   line-height: 1.65;
   text-rendering: optimizeLegibility;
 }
+html[lang="en"] body {
+  --font-display: var(--font-geist-sans), Arial, sans-serif;
+  --font-serif: var(--font-display);
+}
 a { color: inherit; }
 button, a, summary { -webkit-tap-highlight-color: transparent; }
+.calloutTitle h3 { margin: 0; font: inherit; }
+
+.skipLink {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  padding: 10px 14px;
+  transform: translateY(-160%);
+  border: 2px solid var(--fb-surface);
+  border-radius: var(--fb-radius-control);
+  background: var(--fb-ink);
+  color: var(--fb-surface);
+  font-size: var(--fb-text-control);
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform var(--fb-motion-fast) ease;
+}
+.skipLink:focus-visible { transform: none; outline: 3px solid var(--fb-accent); outline-offset: 2px; }
+#main-content:focus { outline: none; }
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 .hero {
   min-height: 92vh;
@@ -172,7 +219,7 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 
 .ragBody { background: var(--white); }
 .decisionBanner { padding: 75px clamp(28px,5vw,82px); background: var(--lime); border-bottom: 1px solid var(--ink); }
-.decisionBanner h3 { font-size: 16px; margin: 0 0 18px; }
+.decisionBanner :is(h2, h3) { font-size: 16px; margin: 0 0 18px; }
 .decisionBanner > p:last-child { margin: 0; max-width: 1050px; font-family: var(--font-serif), "Songti SC", serif; font-size: clamp(28px,3.4vw,52px); line-height: 1.25; letter-spacing: -.025em; }
 .subsection { padding: 76px clamp(28px,5vw,82px); border-bottom: 1px solid var(--line); }
 .subHead { display: grid; grid-template-columns: 50px minmax(0,1fr); gap: 20px; align-items: start; margin-bottom: 40px; }
@@ -306,7 +353,7 @@ tr.highlight { background: #efffd9; }
 .metricCard { grid-column: span var(--evidence-span, 12); min-width: 0; border: 1px solid var(--line); padding: 24px; display: flex; flex-direction: column; min-height: 0; }
 .metricCard.accent { background: var(--lime); border-color: var(--ink); }
 .metric { font-family: var(--font-geist-mono), monospace; font-size: clamp(22px,2vw,30px); line-height: 1.2; letter-spacing: -.025em; margin: 0 0 17px; overflow-wrap: anywhere; }
-.metricCard h4 { margin: 0 0 11px; font-size: 19px; line-height: 1.4; }
+.metricCard :is(h3, h4) { margin: 0 0 11px; font-size: 19px; line-height: 1.4; }
 .metricFinding { flex: 1; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.7; }
 .metricBoundary { margin: 19px 0 0; padding: 15px 0 0; border-top: 1px solid rgba(20,30,35,.16); color: var(--muted); font-size: 14px; line-height: 1.65; }
 .metricBoundary strong { display: block; margin-bottom: 5px; color: var(--ink); font-size: 12px; letter-spacing: .08em; }

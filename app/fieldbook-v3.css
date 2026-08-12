@@ -5,7 +5,15 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 ::selection { background: #dff59f; color: var(--ink); }
 :focus-visible { outline-color: var(--lime); outline-offset: 4px; }
 .readingProgress { height: 3px; background: rgba(11,27,59,.08); }
-.readingProgress span { background: var(--lime); }
+.readingProgress span { width: 0; transform: scaleX(0); transform-origin: left; background: var(--lime); }
+@supports (animation-timeline: scroll()) {
+  .readingProgress span {
+    width: 100%;
+    animation: fieldbookReadingProgress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes fieldbookReadingProgress { to { transform: scaleX(1); } }
 
 /* Quiet, document-like global navigation. */
 .hero .topbar,
@@ -909,6 +917,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 }
 
 @media (max-width: 720px) {
+  .fieldbookTheme .qaToolbar { position: static; }
   body { font-size: 16px; }
   .topbar { height: auto !important; min-height: 64px; padding: 14px 0 10px; flex-wrap: wrap; row-gap: 11px; }
   .topbar .brand > span:last-child small { display: none; }
@@ -2213,6 +2222,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 
 .fieldbookTheme .readingProgress { background: rgba(21, 48, 71, .08); }
 .fieldbookTheme .readingProgress span { background: var(--fb-accent); }
+.skipTarget { width: 0; height: 0; overflow: hidden; }
 
 /* Shared navigation */
 .fieldbookTheme .topbar {
@@ -2349,10 +2359,12 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 
 .fieldbookTheme.modulePage .moduleReadingNav {
   top: 10px;
-  overflow: hidden;
+  overflow: auto;
   border: 1px solid var(--fb-line);
   border-radius: 10px;
   background: var(--fb-mist);
+  scrollbar-color: var(--fb-marker) var(--fb-mist);
+  scrollbar-width: thin;
 }
 
 .fieldbookTheme.modulePage .readingNavHead { background: var(--fb-surface); }
@@ -2383,10 +2395,17 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 
 .fieldbookTheme.modulePage .subsection { border-color: var(--fb-line); }
 .fieldbookTheme.modulePage .subHead > span {
-  border: 1px solid var(--fb-guide);
-  background: var(--fb-mist);
+  width: auto;
+  height: auto;
+  place-items: start;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--fb-link);
+  font: 700 var(--fb-text-meta)/1.4 var(--font-geist-mono), monospace;
 }
+.fieldbookTheme.modulePage .subHead { grid-template-columns: 40px minmax(0, 1fr); gap: 16px; }
+.fieldbookTheme.modulePage .subHead .kicker { display: none; }
 
 .fieldbookTheme.modulePage .sectionLead { color: var(--fb-muted); }
 .fieldbookTheme.modulePage :where(.conceptGrid, .mechanicGrid, .tableWrap, .memoryCompare, .workedExample, .systemLens, .learningRoute, .learningLab) {
@@ -2471,7 +2490,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 }
 
 .fieldbookTheme :where(.questionDirectorySearch, .glossarySearch) { border-color: var(--fb-line); }
-.fieldbookTheme :where(.questionDirectorySearch, .glossarySearch) input::placeholder { color: #72818a; }
+.fieldbookTheme :where(.questionDirectorySearch, .glossarySearch) input::placeholder { color: var(--fb-muted); }
 .fieldbookTheme :where(.glossaryFilters, .referenceGradeFilters) button.active,
 .fieldbookTheme .questionDirectoryToolbar select:focus-visible {
   border-color: var(--fb-guide);
@@ -2485,11 +2504,11 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .questionDirectoryList,
   .questionDirectoryItem,
   .questionDirectoryItem > header,
-  .questionDirectoryItem h3,
+  .questionDirectoryItem :is(h2, h3),
   .questionDirectoryShort,
   .questionDirectoryShort p
 ) { min-width: 0; }
-.fieldbookTheme.questionDirectoryPage :where(.questionDirectoryItem h3, .questionDirectoryTag, .questionDirectoryShort p) { overflow-wrap: anywhere; }
+.fieldbookTheme.questionDirectoryPage :where(.questionDirectoryItem h2, .questionDirectoryItem h3, .questionDirectoryTag, .questionDirectoryShort p) { overflow-wrap: anywhere; }
 .fieldbookTheme.questionDirectoryPage .questionDirectoryTag { max-inline-size: 100%; }
 .fieldbookTheme.questionDirectoryPage .questionDirectoryScope {
   display: flex;
@@ -2649,13 +2668,20 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 
 @media (max-width: 980px) {
   .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks {
-    max-width: 68%;
-    overflow-x: auto;
-    scrollbar-width: none;
+    width: min(66%, 760px);
+    max-width: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 18px;
+    overflow: visible;
   }
-  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks::-webkit-scrollbar { display: none; }
+  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks a { min-height: 34px; display: flex; align-items: center; white-space: normal; }
   .fieldbookTheme.modulePage .moduleArticleLayout { gap: 0; padding: 0; }
   .fieldbookTheme.modulePage :where(.moduleArticleContent, .dedicatedArticleLayout > .section) { border-radius: 0; }
+  .fieldbookTheme.modulePage .moduleReadingNav { overflow-x: auto; overflow-y: hidden; }
+  .fieldbookTheme.modulePage .moduleReadingNav :is(.readingNavHead, li) { min-width: max-content; }
+  .fieldbookTheme.modulePage .moduleReadingNav ol { align-items: stretch; }
+  .fieldbookTheme.modulePage .moduleReadingNav li a { height: 100%; white-space: nowrap; }
 }
 
 @media (max-width: 720px) {
@@ -2669,17 +2695,17 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
     width: 100%;
     max-width: none;
     padding-top: 8px;
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 20px;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 18px;
+    overflow: visible;
     border-top: 1px solid var(--fb-line);
   }
-  .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks::-webkit-scrollbar { display: none; }
   .fieldbookTheme:not(.fieldbookHome) .topbar .toplinks a {
-    flex: 0 0 auto;
-    white-space: nowrap;
+    min-height: 40px;
+    white-space: normal;
   }
+  .fieldbookTheme.modulePage .subsection { scroll-margin-top: 112px; }
 
   /* English labels are materially longer than the Chinese navigation labels.
      Keep every destination visible instead of relying on a hidden horizontal

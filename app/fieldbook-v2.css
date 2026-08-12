@@ -259,7 +259,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .tableWrap th, .tableWrap td { padding: 19px 18px; line-height: 1.65; vertical-align: top; }
 .tableWrap thead th { position: sticky; top: 0; z-index: 1; background: var(--ink); color: var(--white); font-size: 12px; letter-spacing: .03em; }
 .tableWrap tbody th { font-size: 15px; }
-.metricCard, .metricCard h4, .metricCard p, .metricCard a { min-width: 0; overflow-wrap: anywhere; }
+.metricCard, .metricCard :is(h3, h4), .metricCard p, .metricCard a { min-width: 0; overflow-wrap: anywhere; }
 
 /* Interactive system view */
 .systemLens { margin: 42px 0; border: 1px solid var(--ink); background: #f8f7f1; }
@@ -436,7 +436,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .questionDirectoryItem > header > a span { color: var(--muted); font-size: 11px; font-weight: 500; }
 .questionDirectoryTag { padding: 5px 9px; border-radius: 999px; background: var(--paper-2); font-size: 11px; font-weight: 800; }
 .questionDirectoryNo { color: var(--muted); font-family: var(--font-geist-mono),monospace; font-size: 11px; }
-.questionDirectoryItem h3 { max-width: 1050px; margin: 24px 0 16px; font-family: var(--font-serif),"Songti SC",serif; font-size: clamp(24px,2.3vw,34px); font-weight: 500; line-height: 1.38; letter-spacing: -.02em; }
+.questionDirectoryItem :is(h2, h3) { max-width: 1050px; margin: 24px 0 16px; font-family: var(--font-serif),"Songti SC",serif; font-size: clamp(24px,2.3vw,34px); font-weight: 500; line-height: 1.38; letter-spacing: -.02em; }
 .questionDirectoryAddedAt { margin: -6px 0 18px; }
 .questionDirectoryShort { max-width: 1050px; display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 20px; align-items: start; }
 .questionDirectoryShort > span { padding-top: 4px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; }
@@ -643,7 +643,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
   .questionDirectoryItem > header { grid-template-columns: 1fr auto; }
   .questionDirectoryItem > header > a { align-items: flex-start; flex-direction: column; gap: 1px; }
   .questionDirectoryNo { display: none; }
-  .questionDirectoryItem h3 { font-size: 25px; }
+  .questionDirectoryItem :is(h2, h3) { font-size: 25px; }
   .questionDirectoryShort { grid-template-columns: 1fr; gap: 4px; }
   .questionDirectoryDepth { padding-left: 0; }
   .questionDirectoryEvidence ul { grid-template-columns: 1fr; }
@@ -924,7 +924,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
   background: var(--pilot-tint);
 }
 .modulePilot .decisionBanner .kicker { grid-column: 1; margin: 2px 0 7px; }
-.modulePilot .decisionBanner h3 { grid-column: 1; margin: 0; font-size: 17px; }
+.modulePilot .decisionBanner :is(h2, h3) { grid-column: 1; margin: 0; font-size: 17px; }
 .modulePilot .decisionBanner > p:last-child {
   grid-column: 2;
   grid-row: 1 / 3;
@@ -1028,7 +1028,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
     padding: 24px 22px;
   }
   .modulePilot .decisionBanner .kicker,
-  .modulePilot .decisionBanner h3,
+  .modulePilot .decisionBanner :is(h2, h3),
   .modulePilot .decisionBanner > p:last-child { grid-column: 1; grid-row: auto; }
   .modulePilot .decisionBanner > p:last-child { margin-top: 6px; font-size: 23px; }
   .modulePilot .subsection { padding-top: 44px; padding-bottom: 44px; }
