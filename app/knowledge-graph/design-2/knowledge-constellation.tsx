@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import type { GraphLayer, GraphModule, GraphRelationType, GraphTerm } from "../graph-types";
 import styles from "./knowledge-constellation.module.css";
@@ -158,7 +158,31 @@ export function KnowledgeConstellation({
   const [zoom, setZoom] = useState(1);
   const [motionPaused, setMotionPaused] = useState(false);
   const [railOpen, setRailOpen] = useState(false);
+  const [mobileRail, setMobileRail] = useState(false);
+  const pickerRef = useRef<HTMLButtonElement>(null);
+  const railCloseRef = useRef<HTMLButtonElement>(null);
+  const searchResultsId = useId();
   const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase(locale));
+
+  useEffect(() => {
+    const queryList = window.matchMedia("(max-width: 900px)");
+    const sync = () => setMobileRail(queryList.matches);
+    sync();
+    queryList.addEventListener("change", sync);
+    return () => queryList.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!mobileRail || !railOpen) return;
+    railCloseRef.current?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setRailOpen(false);
+      pickerRef.current?.focus();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [mobileRail, railOpen]);
 
   useEffect(() => {
     function syncFocusFromUrl() {
@@ -276,10 +300,10 @@ export function KnowledgeConstellation({
           <label className={styles.search}>
             <span className={styles.srOnly}>{copy.search}</span>
             <Icon name="search" />
-            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={copy.search} />
+            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={copy.search} aria-controls={deferredQuery ? searchResultsId : undefined} />
           </label>
           {deferredQuery ? (
-            <div className={styles.searchResults} aria-label={copy.results}>
+            <div className={styles.searchResults} id={searchResultsId} aria-label={copy.results} aria-live="polite">
               {searchResults.length ? searchResults.map((result) => (
                 <button type="button" key={`${result.kind}:${result.id}`} onClick={() => selectFocus({ kind: result.kind, id: result.id })}>
                   <span>{result.kind === "module" ? copy.module : copy.term}</span><strong>{result.title}</strong><small>{result.subtitle}</small>
@@ -288,20 +312,20 @@ export function KnowledgeConstellation({
             </div>
           ) : null}
         </div>
-        <button type="button" className={styles.modulePicker} aria-expanded={railOpen} onClick={() => setRailOpen((value) => !value)}><Icon name="layers" />{copy.chooseModule}</button>
+        <button ref={pickerRef} type="button" className={styles.modulePicker} aria-controls="knowledge-graph-module-rail" aria-expanded={mobileRail ? railOpen : true} onClick={() => { if (mobileRail) setRailOpen((value) => !value); }}><Icon name="layers" />{copy.chooseModule}</button>
         <p className={styles.scopeNote}>{copy.scopePrefix} {activeEdgeCount} {copy.scopeSuffix}</p>
       </div>
 
       <div className={styles.workspace}>
-        <aside className={`${styles.rail} ${railOpen ? styles.railOpen : ""}`} aria-label={copy.layerRail}>
-          <header><strong>{copy.layerRail}</strong><button type="button" onClick={() => setRailOpen(false)} aria-label={copy.closeRail}>×</button></header>
+        <aside id="knowledge-graph-module-rail" className={`${styles.rail} ${railOpen ? styles.railOpen : ""}`} aria-label={copy.layerRail} aria-hidden={mobileRail && !railOpen ? true : undefined} inert={mobileRail && !railOpen ? true : undefined}>
+          <header><strong>{copy.layerRail}</strong><button ref={railCloseRef} type="button" onClick={() => { setRailOpen(false); pickerRef.current?.focus(); }} aria-label={copy.closeRail}>×</button></header>
           {layers.map((layer, layerIndex) => (
             <section key={layer.no} style={{ "--layer-color": layerColors[layerIndex] } as CSSProperties}>
               <h2><span>{layer.no}</span>{layer.name}</h2>
               {layer.moduleIds.map((id) => {
                 const knowledgeModule = moduleById.get(id);
                 if (!knowledgeModule) return null;
-                return <button type="button" key={id} aria-pressed={focus.kind === "module" && focus.id === id} onClick={() => selectFocus({ kind: "module", id })}><i />{knowledgeModule.zh}<small>{knowledgeModule.en}</small></button>;
+                return <button type="button" key={id} aria-pressed={focus.kind === "module" && focus.id === id} onClick={() => { selectFocus({ kind: "module", id }); if (mobileRail) pickerRef.current?.focus(); }}><i />{knowledgeModule.zh}<small>{knowledgeModule.en}</small></button>;
               })}
             </section>
           ))}

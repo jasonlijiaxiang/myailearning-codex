@@ -272,9 +272,10 @@ export default function AgentModulePage() {
             {agentEnglishPath ? <Link href={agentEnglishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN · V2.0</p>
+            <p className="kicker light">MODULE · APPLICATION PATTERN</p>
             <h1
               className="moduleHeroTitle"
               id="agent-title"
@@ -299,7 +300,7 @@ export default function AgentModulePage() {
         <div className="sectionBody">
           <div className="decisionBanner">
             <p className="kicker">PRESALES POSITION</p>
-            <h3>一句话定位</h3>
+            <h2>一句话定位</h2>
             <p>客户不是为了“拥有 Agent”而采购：先用确定性流程建立业务基线，只把必须依据新证据动态选择下一步的局部交给受控 Agent。</p>
           </div>
 
@@ -584,7 +585,7 @@ export default function AgentModulePage() {
       </section>
       </div>
 
-      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块 V2.0<ModuleUpdatedAt value={agentPublication?.updatedAt ?? undefined} /></p><a href="#agent">返回顶部 ↑</a></footer>
+      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块<ModuleUpdatedAt value={agentPublication?.updatedAt ?? undefined} /></p><a href="#agent">返回顶部 ↑</a></footer>
     </main>
   );
 }

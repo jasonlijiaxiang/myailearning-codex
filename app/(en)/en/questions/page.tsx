@@ -42,8 +42,8 @@ export default async function EnglishQuestionsPage({ searchParams }: { searchPar
     ? englishQuestions.filter((item) => item.moduleSlug === selectedModule.slug).map(directoryItem)
     : allItems;
   const scopeLead = selectedModule
-    ? `This view covers all ${items.length} questions for ${selectedModule.title} and gives a concise answer for each one. The focused module page keeps its reviewed preview scope.`
-    : `This directory covers all ${items.length} questions across the fieldbook and gives a concise answer for each one. Focused module pages keep their reviewed preview scope.`;
+    ? `This view lists all ${items.length} questions for ${selectedModule.title}, each with a concise answer. Focused module pages show a shorter selection.`
+    : `This directory lists all ${items.length} questions in the fieldbook, each with a concise answer. Focused module pages show a shorter selection.`;
 
   return (
     <main lang="en" className="fieldbookTheme questionDirectoryPage">
@@ -51,6 +51,7 @@ export default async function EnglishQuestionsPage({ searchParams }: { searchPar
         <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
         <div className="toplinks"><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/questions" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
       </nav>
+      <div id="main-content" className="skipTarget" tabIndex={-1} />
       <header className="questionDirectoryHero"><p className="kicker">CUSTOMER QUESTION PACK</p><h1>Find the answer you need in a customer conversation</h1><p>{scopeLead}</p></header>
       <EnglishPilotDirectory items={items} label="Search customer questions" placeholder="Try grounding, open weights, EU AI Act…" />
     </main>

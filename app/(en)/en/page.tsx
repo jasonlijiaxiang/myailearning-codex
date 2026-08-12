@@ -220,8 +220,9 @@ export default function EnglishHome() {
             </nav>
           </details>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="heroGrid heroGridV2">
-          <div className="heroCopy"><p className="kicker">EVIDENCE-BACKED FIELD GUIDE</p><h1>Turn complex AI technology<br />into decisions customers can act on</h1><p className="heroLead">A technical fieldbook that connects principles, architecture, failure analysis, cloud capabilities, acceptance evidence, and customer-ready answers—built for focused learning and live presales conversations.</p><KnowledgeSearchLaunch labels={searchLabels} /><div className="heroActions"><a className="textButton" href="#learning-paths">Follow a mission-based path <span>→</span></a><a className="textButton" href="#map">Browse the knowledge map <span>→</span></a></div></div>
+          <div className="heroCopy"><p className="kicker">EVIDENCE-BACKED FIELD GUIDE</p><h1>Turn complex AI technology into decisions customers can act on</h1><p className="heroLead">This technical fieldbook connects system principles and architecture with failure analysis, cloud capabilities, acceptance evidence, and answers for customer conversations. Use it for focused study or during a presales meeting.</p><KnowledgeSearchLaunch labels={searchLabels} /><div className="heroActions"><a className="textButton" href="#learning-paths">Follow a mission-based path <span>→</span></a><a className="textButton" href="#map">Browse the knowledge map <span>→</span></a></div></div>
           <aside className="heroDecisionPanel" aria-label="Ways to use the fieldbook"><h2>Use the same knowledge at three reading depths</h2><ol><li><span>30 sec</span><div><strong>Get the decision first</strong><p>See the definition, use case, critical boundary, and next discovery question immediately.</p></div></li><li><span>10 min</span><div><strong>Understand the system</strong><p>Follow inputs, processing, outputs, failure points, and control responsibilities.</p></div></li><li><span>Meeting</span><div><strong>Search questions and verify</strong><p>Move from a customer question to the short answer, deeper reasoning, and primary evidence.</p></div></li></ol><div className="heroDecisionFoot"><strong>{englishModuleCount}</strong><span>independent modules</span><strong>{layerCount}</strong><span>knowledge layers</span></div></aside>
         </div>
       </header>
@@ -270,7 +271,7 @@ export default function EnglishHome() {
       </section>
 
       <section className="learningPathsV2" id="learning-paths" aria-labelledby="english-learning-paths-title">
-        <header><p className="kicker">MISSION-BASED PATHS</p><h2 id="english-learning-paths-title">Follow the customer task, not the table of contents</h2><p>Each path ends in a customer decision and an evidence-bearing deliverable—not merely a list of modules read.</p></header>
+        <header><p className="kicker">MISSION-BASED PATHS</p><h2 id="english-learning-paths-title">Follow the customer task, not the table of contents</h2><p>Each path ends with a customer decision and a deliverable supported by evidence. Completing a list of modules is not the goal.</p></header>
         <div className="learningPathList">
           {learningPaths.map((path) => (
             <article key={path.no}>

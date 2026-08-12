@@ -40,7 +40,7 @@ export function EnglishPilotDirectory({ items, label, placeholder, actionLabel =
       <div className="questionDirectoryToolbar"><label className="questionDirectorySearch"><span>{label}</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={placeholder} type="search" /></label><p className="questionDirectoryStatus" aria-live="polite"><strong>{results.length}</strong><span>{results.length === 1 ? "result" : "results"}</span></p></div>
       {scope ? <p className="questionDirectoryScope"><span>{scope.label}</span><Link href={scope.clearHref} prefetch={false}>Show all sources</Link></p> : null}
       <div className="questionDirectoryList">{results.map((item) => (
-        <article className="questionDirectoryItem" id={item.id} key={item.id}><header><span className="questionDirectoryTag">{item.subtitle}</span></header><h3>{item.title}</h3><div className="questionDirectoryShort"><span>SUMMARY</span><p>{item.body}</p></div>{item.external ? <a href={item.href} target="_blank" rel="noreferrer">{actionLabel}</a> : <Link href={item.href}>{actionLabel}</Link>}</article>
+        <article className="questionDirectoryItem" id={item.id} key={item.id}><header><span className="questionDirectoryTag">{item.subtitle}</span></header><h2>{item.title}</h2><div className="questionDirectoryShort"><span>SUMMARY</span><p>{item.body}</p></div>{item.external ? <a href={item.href} target="_blank" rel="noreferrer">{actionLabel}</a> : <Link href={item.href}>{actionLabel}</Link>}</article>
       ))}</div>
       {results.length === 0 ? <div className="questionEmptyState"><h2>No matching content</h2><p>Try a technical term, abbreviation, customer concern, or module name.</p></div> : null}
     </div>

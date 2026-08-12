@@ -39,8 +39,9 @@ export default function EnglishCodingAgentsPage() {
           <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
           <div className="toplinks"><Link href="/en" prefetch={false}>Home</Link><Link href="/en/modules/ai-agent#harness" prefetch={false}>Harness design</Link><a href="#products">Product radar</a><Link href="/en/references" prefetch={false}>References</Link><Link href="/coding-agents" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="codingAgentHeroGrid">
-          <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {englishCodingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>Product and Harness Radar</span></h1><p>This is not a permanent “best product” ranking. It keeps <strong>official product facts</strong>, <strong>independent benchmarks</strong>, and <strong>the customer’s own PoC</strong> separate so that the effects of the model, harness, task, and environment can be tested one layer at a time.</p></div>
+          <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {englishCodingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>Product and Harness Radar</span></h1><p>This radar separates <strong>official product facts</strong>, <strong>independent benchmark results</strong>, and <strong>the customer&apos;s own PoC evidence</strong>. Test the model, harness, task, and environment separately. No product is a permanent winner outside a defined task.</p></div>
           <aside><strong>{englishCodingAgentLandscapePolicy.productCount}</strong><span>verified product entry points</span><strong>30 days</strong><span>maximum review window for dynamic facts</span><strong>0</strong><span>permanent winners outside a task</span></aside>
         </div>
       </header>
@@ -62,7 +63,7 @@ export default function EnglishCodingAgentsPage() {
 
       <section className="section codingAgentProducts" id="products" aria-labelledby="products-title">
         <div className="sectionNumber">03</div><div className="sectionBody">
-          <div className="sectionIntro splitIntro"><div><p className="kicker">PRODUCT LANDSCAPE</p><h2 id="products-title">Compare and filter coding-agent products</h2></div><p>Only products with current official material appear here. The list does not try to equalize geography and it does not assign absolute superiority from a single media review. Use the filters to form a candidate shortlist, then run the same task in a PoC.</p></div>
+          <div className="sectionIntro splitIntro"><div><p className="kicker">PRODUCT LANDSCAPE</p><h2 id="products-title">Compare and filter coding-agent products</h2></div><p>Only products with current official material appear here. Geographic coverage is not balanced, and a single media review does not establish superiority. Use the filters to build a shortlist, then run the same PoC task for each candidate.</p></div>
           <CodingAgentExplorer products={englishCodingAgentProducts} labels={englishCodingAgentExplorerLabels} referencesHref="/en/references" />
         </div>
       </section>

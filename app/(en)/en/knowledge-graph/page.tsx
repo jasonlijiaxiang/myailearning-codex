@@ -37,6 +37,7 @@ export default function EnglishKnowledgeGraphPage() {
             <Link href="/knowledge-graph" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
       </header>
 
       <header className={styles.intro}>

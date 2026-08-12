@@ -101,30 +101,7 @@ const defaultModuleExplorerLabels: ModuleExplorerLabels = {
 };
 
 export function ReadingProgress() {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        const distance = document.documentElement.scrollHeight - window.innerHeight;
-        setProgress(distance > 0 ? Math.min(100, Math.max(0, (window.scrollY / distance) * 100)) : 0);
-        frame = 0;
-      });
-    };
-
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  return <div className="readingProgress" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>;
+  return <div className="readingProgress" aria-hidden="true"><span /></div>;
 }
 
 export function KnowledgeSearchLaunch({ labels = defaultSearchLaunchLabels }: { labels?: SearchLaunchLabels }) {
@@ -260,9 +237,9 @@ export function ModuleExplorer({
           <kbd>⌘ K</kbd>
         </label>
         <div className="layerFilters" aria-label={labels.filterAria}>
-          <button type="button" className={layer === "all" ? "active" : ""} onClick={() => setLayer("all")}>{labels.allLayers}</button>
+          <button type="button" aria-pressed={layer === "all"} className={layer === "all" ? "active" : ""} onClick={() => setLayer("all")}>{labels.allLayers}</button>
           {layers.map((item) => (
-            <button type="button" className={layer === item.no ? "active" : ""} onClick={() => setLayer(item.no)} key={item.no}>
+            <button type="button" aria-pressed={layer === item.no} className={layer === item.no ? "active" : ""} onClick={() => setLayer(item.no)} key={item.no}>
               {item.name.replace("层", "")}
             </button>
           ))}
@@ -350,29 +327,15 @@ export function ModuleReadingNav({
       .filter((node): node is HTMLElement => Boolean(node));
     if (nodes.length === 0) return;
 
-    let frame = 0;
-    const update = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        const readingLine = Math.min(240, window.innerHeight * 0.32);
-        let current = nodes[0];
-        for (const node of nodes) {
-          if (node.getBoundingClientRect().top <= readingLine) current = node;
-          else break;
-        }
-        setActive(current.id);
-        frame = 0;
-      });
-    };
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top);
+      if (visible[0]?.target.id) setActive(visible[0].target.id);
+    }, { rootMargin: "-24% 0px -68% 0px", threshold: 0 });
 
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
   }, [sections]);
 
   return (
@@ -503,8 +466,8 @@ export function QaFilterShell({ items, children }: { items: Array<{ tag: string;
       <div className="qaToolbar">
         <label><span>搜索客户问题</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="输入关键词，如：成本、权限、准确率……" /></label>
         <div className="qaTagFilters" aria-label="按问题类型筛选">
-          <button type="button" className={tag === "all" ? "active" : ""} onClick={() => setTag("all")}>全部</button>
-          {uniqueTags.map((item) => <button type="button" className={tag === item ? "active" : ""} onClick={() => setTag(item)} key={item}>{item}</button>)}
+          <button type="button" aria-pressed={tag === "all"} className={tag === "all" ? "active" : ""} onClick={() => setTag("all")}>全部</button>
+          {uniqueTags.map((item) => <button type="button" aria-pressed={tag === item} className={tag === item ? "active" : ""} onClick={() => setTag(item)} key={item}>{item}</button>)}
         </div>
         <p aria-live="polite">当前显示 {visibleCount} 个问题</p>
       </div>
@@ -602,10 +565,10 @@ export function QuestionDirectoryShell({
         <label><span>问题类别</span><select value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">全部类别</option>{availableTags.map((item) => <option value={item} key={item}>{item}</option>)}</select></label>
         <label><span>问题意图</span><select value={intentId} onChange={(event) => setIntentId(event.target.value)}><option value="all">全部意图</option>{intentDefinitions.map((intent) => <option value={intent.id} key={intent.id}>{intent.zh}</option>)}</select></label>
         <div className="questionDirectoryViewTabs" aria-label="现场精选筛选">
-          <button type="button" className={view === "all" ? "active" : ""} onClick={() => setView("all")}>全部 {items.length}</button>
-          <button type="button" className={view === "field-kit" ? "active" : ""} onClick={() => setView("field-kit")}>现场精选 {fieldKitCount}</button>
-          <button type="button" className={view === "core" ? "active" : ""} onClick={() => setView("core")}>核心 {coreCount}</button>
-          <button type="button" className={view === "situational" ? "active" : ""} onClick={() => setView("situational")}>场景 {situationalCount}</button>
+          <button type="button" aria-pressed={view === "all"} className={view === "all" ? "active" : ""} onClick={() => setView("all")}>全部 {items.length}</button>
+          <button type="button" aria-pressed={view === "field-kit"} className={view === "field-kit" ? "active" : ""} onClick={() => setView("field-kit")}>现场精选 {fieldKitCount}</button>
+          <button type="button" aria-pressed={view === "core"} className={view === "core" ? "active" : ""} onClick={() => setView("core")}>核心 {coreCount}</button>
+          <button type="button" aria-pressed={view === "situational"} className={view === "situational" ? "active" : ""} onClick={() => setView("situational")}>场景 {situationalCount}</button>
         </div>
         <div className="questionDirectoryStatus" aria-live="polite"><strong>{visibleItems.length}</strong><span>个问题 · {visibleModules} 个模块</span></div>
         {(query || moduleId !== "all" || tag !== "all" || intentId !== "all" || view !== "all") && <button className="questionDirectoryClear" type="button" onClick={clear}>清除全部筛选</button>}
@@ -655,8 +618,8 @@ export function ReferenceFilterShell({ items, children }: { items: ReferenceFilt
         </div>
         <label><span>检索标题、边界或模块</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="例如：权限、Reranker、Agent 评估……" /></label>
         <div className="referenceGradeFilters" aria-label="按证据类别筛选">
-          <button type="button" className={grade === "all" ? "active" : ""} onClick={() => setGrade("all")}>全部类别</button>
-          {grades.map((item) => <button type="button" className={grade === item ? "active" : ""} onClick={() => setGrade(item)} key={item}>{item} 类证据</button>)}
+          <button type="button" aria-pressed={grade === "all"} className={grade === "all" ? "active" : ""} onClick={() => setGrade("all")}>全部类别</button>
+          {grades.map((item) => <button type="button" aria-pressed={grade === item} className={grade === item ? "active" : ""} onClick={() => setGrade(item)} key={item}>{item} 类证据</button>)}
         </div>
         <p aria-live="polite">当前显示 {visibleItems.length} 条来源，分布在 {visibleModules} 个模块</p>
         {(query || grade !== "all") && <button className="referenceClear" type="button" onClick={() => { setQuery(""); setGrade("all"); }}>清除筛选</button>}

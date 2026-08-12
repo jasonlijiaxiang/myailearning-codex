@@ -51,12 +51,13 @@ export default function GlossaryPage() {
             <Link href="/en/glossary" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="glossaryHeroGrid">
           <div className="heroCopy">
             <p className="eyebrow">FIELD GLOSSARY · 专业术语库</p>
             <h1>把术语讲清楚，<br />再做架构与选型</h1>
-            <p className="heroLead">这里不是缩写清单，而是云与 AI 售前知识的概念入口：中文名、英文名、通行缩写、一句话定义和相关模块保持一致，读者可以从一个词继续进入机制、边界、客户问答与证据。</p>
+            <p className="heroLead">这里统一说明云与 AI 售前术语。每个词条包含中英文名称、简短定义和相关模块；有通行缩写时一并列出，并可继续查看机制、边界、客户问答与证据。</p>
             <div className="heroActions">
               <a className="primaryButton" href="#glossary-directory">搜索全部术语</a>
               <Link className="textButton" href="/#available-modules">从问题开始 <span>↗</span></Link>

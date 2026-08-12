@@ -35,7 +35,7 @@ const filterModules: QuestionDirectoryModule[] = questionDirectoryModules.map((m
 
 const uniqueTagCount = new Set(questionDirectoryItems.map((item) => item.tag)).size;
 const fieldKitCount = questionDirectoryItems.filter((item) => item.tier).length;
-const moduleCountLead = `把 ${questionDirectoryModules.length} 个模块的客户问题集中在一个入口。搜索客户原话、技术概念、风险或方案取舍，先拿到结论短答，再展开机制、售前下一问和题内证据；现场备战可以用 ${fieldKitCount} 道精选题快速入场。`;
+const moduleCountLead = `这里汇总 ${questionDirectoryModules.length} 个模块的客户问题。可按客户原话、技术概念、风险或方案取舍搜索，查看结论短答、机制、售前下一问和题内证据；会前可先看 ${fieldKitCount} 道精选题。`;
 
 type QuestionsSearchParams = { view?: string; module?: string; intent?: string };
 
@@ -63,10 +63,11 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
             <Link href="/en/questions" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="questionHeroGrid">
           <div className="heroCopy">
-            <p className="eyebrow">CUSTOMER QUESTION DIRECTORY · 一站式问题查询</p>
+            <p className="eyebrow">CUSTOMER QUESTION DIRECTORY · 问题查询</p>
             <h1>客户问题查询<br /><span>Question Directory</span></h1>
             <p className="heroLead">{moduleCountLead}</p>
             <div className="heroActions">

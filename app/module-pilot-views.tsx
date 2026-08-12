@@ -227,13 +227,13 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
           </div>
         </div>
         <div className="solutionCapabilityMatrix" role="table" aria-label="八层解决方案责任架构">
-          <div className="solutionCapabilityMatrixHead" role="row"><span>责任层</span><span>什么时候需要</span><span>常见选择</span><span>不可忽略的边界</span></div>
+          <div className="solutionCapabilityMatrixHead" role="row"><span role="columnheader">责任层</span><span role="columnheader">什么时候需要</span><span role="columnheader">常见选择</span><span role="columnheader">不可忽略的边界</span></div>
           {solutionCapabilityChoices.map((item) => (
             <div className="solutionCapabilityMatrixRow" role="row" key={item.en}>
-              <strong><span>{item.verb}</span>{item.title}</strong>
-              <p>{item.when}</p>
-              <p>{item.choice}</p>
-              <p>{item.boundary}</p>
+              <strong role="rowheader"><span>{item.verb}</span>{item.title}</strong>
+              <p role="cell">{item.when}</p>
+              <p role="cell">{item.choice}</p>
+              <p role="cell">{item.boundary}</p>
             </div>
           ))}
         </div>
@@ -242,9 +242,9 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
       {decisionRows.length ? (
         <section className="focusedDecisionLedger" aria-labelledby="solution-decision-ledger-title">
           <header><p className="kicker">PROBLEM CONTRACT</p><h3 id="solution-decision-ledger-title">先把问题写成可验证的方案说明</h3><p>下面不是通用功能表，而是把客户实际情况、建议与失败边界放在同一行。任何一行无法验证，都不应进入采购清单。</p></header>
-          <div className="focusedDecisionRows" role="table" aria-label="问题契约">
+          <div className="focusedDecisionRows" role="list" aria-label="问题契约">
             {decisionRows.map((item, index) => (
-              <article role="row" key={item.question}>
+              <article role="listitem" key={item.question}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div><p className="miniLabel">客户问题</p><h4>{item.question}</h4><p>{item.signal}</p></div>
                 <div><p className="miniLabel">建议与证伪</p><strong>{item.recommendation}</strong><small>{item.boundary}</small></div>
@@ -256,8 +256,8 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
       <div className="primerAtlas" aria-label="七类常见场景的目标、指标和隐藏风险">
         <div className="primerAtlasHeader"><h3>七类场景，七套验收重点</h3><p>复用的是能力积木，不是同一套指标。</p></div>
         <div className="primerAtlasTable" role="table">
-          <div className="primerAtlasRow primerAtlasRow--head" role="row"><span>场景</span><span>要改变的工作</span><span>主要指标</span><span>容易漏掉</span></div>
-          {solutionScenarioAtlas.map(([scene, outcome, metric, risk]) => <div className="primerAtlasRow" role="row" key={scene}><strong>{scene}</strong><span>{outcome}</span><span>{metric}</span><span>{risk}</span></div>)}
+          <div className="primerAtlasRow primerAtlasRow--head" role="row"><span role="columnheader">场景</span><span role="columnheader">要改变的工作</span><span role="columnheader">主要指标</span><span role="columnheader">容易漏掉</span></div>
+          {solutionScenarioAtlas.map(([scene, outcome, metric, risk]) => <div className="primerAtlasRow" role="row" key={scene}><strong role="rowheader">{scene}</strong><span role="cell">{outcome}</span><span role="cell">{metric}</span><span role="cell">{risk}</span></div>)}
         </div>
       </div>
       {brief ? <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside> : null}
@@ -404,8 +404,8 @@ export function FineTuningPrimer() {
       <div className="tuningEvidenceBoard">
         <div><p className="miniLabel">PARAMETER UPDATE</p><h3>三种参数更新方式</h3></div>
         <div className="tuningMethodMatrix" role="table">
-          <div className="tuningMethodRow tuningMethodRow--head" role="row"><span>方法</span><span>更新什么</span><span>更适合</span><span>主要代价</span></div>
-          {tuningMethodMatrix.map(([method, update, fit, cost]) => <div className="tuningMethodRow" role="row" key={method}><strong>{method}</strong><span>{update}</span><span>{fit}</span><span>{cost}</span></div>)}
+          <div className="tuningMethodRow tuningMethodRow--head" role="row"><span role="columnheader">方法</span><span role="columnheader">更新什么</span><span role="columnheader">更适合</span><span role="columnheader">主要代价</span></div>
+          {tuningMethodMatrix.map(([method, update, fit, cost]) => <div className="tuningMethodRow" role="row" key={method}><strong role="rowheader">{method}</strong><span role="cell">{update}</span><span role="cell">{fit}</span><span role="cell">{cost}</span></div>)}
         </div>
         <div className="tuningEvidenceChecks" aria-label="微调发布需要的四层证据">
           <article><span>01</span><h3>数据</h3><p>来源、格式、模板、去重、许可与泄漏</p></article>

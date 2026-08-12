@@ -21,6 +21,11 @@ import {
 } from "./english-section-outline.mjs";
 import { englishModuleSlugs } from "./locale-config.mjs";
 
+function discoveryQuestion(value: string) {
+  const question = value.replace(/^Ask the customer:\s*/i, "");
+  return question.replace(/^[a-z]/, (letter) => letter.toUpperCase());
+}
+
 type SourceRef = { sourceId: string; supports?: string };
 type BlockItem = {
   id: string;
@@ -204,11 +209,12 @@ function SourceLinks({ sourceIds }: { sourceIds?: string[] }) {
   );
 }
 
-function CardItem({ item }: { item: BlockItem }) {
+function CardItem({ item, headingLevel = 3 }: { item: BlockItem; headingLevel?: 3 | 4 }) {
+  const Heading = headingLevel === 3 ? "h3" : "h4";
   return (
     <article id={item.id}>
       {item.subtitle ? <p className="miniLabel">{item.subtitle}</p> : null}
-      <h4>{item.title}</h4>
+      <Heading>{item.title}</Heading>
       {item.body ? <p>{item.body}</p> : null}
       {item.decision ? <strong>{item.decision}</strong> : null}
       {item.boundary ? <small>{item.boundary}</small> : null}
@@ -242,9 +248,9 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
     return (
       <aside className="callout" data-importance="critical">
         {legacyAnchors}
-        <div className="calloutTitle"><span>High-impact limitation</span><strong>{block.title ?? "Critical boundary"}</strong><small>Verify before you commit</small></div>
+        <div className="calloutTitle"><span>High-impact limitation</span><h3>{block.title ?? "Critical boundary"}</h3><small>Verify before you commit</small></div>
         {block.intro ? <p>{block.intro}</p> : null}
-        {block.items.map((item) => <CardItem item={item} key={item.id} />)}
+        {block.items.map((item) => <CardItem item={item} headingLevel={block.title ? 4 : 3} key={item.id} />)}
       </aside>
     );
   }
@@ -258,10 +264,10 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
         {legacyAnchors}
         {block.title ? <h3>{block.title}</h3> : null}
         {block.intro ? <p>{block.intro}</p> : null}
-        <table><thead><tr>{renderedColumns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>
+        <table><caption className="srOnly">{block.title ?? `${sectionId} comparison`}</caption><thead><tr>{renderedColumns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr></thead><tbody>
           {block.items.map((item) => {
             const cells = item.cells ? [item.title, ...item.cells] : [item.title, item.body ?? "—", item.decision ?? "—", item.boundary ?? "—"];
-            return <tr id={item.id} key={item.id}>{cells.map((cell, index) => index === 0 ? <th key={`${item.id}-${index}`}>{cell}</th> : <td key={`${item.id}-${index}`}>{cell}{index === cells.length - 1 ? <SourceLinks sourceIds={item.sourceIds} /> : null}</td>)}</tr>;
+            return <tr id={item.id} key={item.id}>{cells.map((cell, index) => index === 0 ? <th scope="row" key={`${item.id}-${index}`}>{cell}</th> : <td key={`${item.id}-${index}`}>{cell}{index === cells.length - 1 ? <SourceLinks sourceIds={item.sourceIds} /> : null}</td>)}</tr>;
           })}
         </tbody></table>
       </div>
@@ -313,7 +319,7 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
       {block.intro ? <p>{block.intro}</p> : null}
       <div className="balancedGrid deepDiveCards deepDiveCards--scenario" data-count={block.items.length} data-odd={block.items.length % 2 === 1 ? "true" : "false"}>
         {rows.flatMap((row) => row.map((item) => (
-          <div className="balancedGridCell" key={item.id} style={{ "--balanced-span": gridSpan(row.length) } as CSSProperties}><CardItem item={item} /></div>
+          <div className="balancedGridCell" key={item.id} style={{ "--balanced-span": gridSpan(row.length) } as CSSProperties}><CardItem item={item} headingLevel={block.title ? 4 : 3} /></div>
         )))}
       </div>
     </div>
@@ -393,6 +399,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
             <Link href={`/modules/${module.slug}`} hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="moduleBriefHeader">
           {!usesFocusedReadingProfile ? <p className="eyebrow">MODULE {canonicalModule.layerNo} · {canonicalModule.layerEn}</p> : null}
           <h1 className="moduleHeroTitle">{module.title}<span>{module.subtitle}</span></h1>
@@ -420,7 +427,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
               const source = sourceLedger[card.sourceId];
               const localizedSource = englishSourceCopy[card.sourceId];
               if (!source || !localizedSource) throw new Error(`Unknown evidence sourceId: ${card.sourceId}`);
-              return <article className={`metricCard${card.accent ? " accent" : ""}`} id={`evidence-${card.id}`} key={card.id} style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}><p className="metric">{card.metric}</p><h4>{card.title}</h4><p className="metricFinding">{card.finding}</p><p className="metricBoundary"><strong>Evidence limit</strong>{card.boundary}</p><Link href={`/en/references#source-${card.sourceId}`} prefetch={false}>{localizedSource.shortTitle} ↘</Link></article>;
+              return <article className={`metricCard${card.accent ? " accent" : ""}`} id={`evidence-${card.id}`} key={card.id} style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}><p className="metric">{card.metric}</p><h3>{card.title}</h3><p className="metricFinding">{card.finding}</p><p className="metricBoundary"><strong>Evidence limit</strong>{card.boundary}</p><Link href={`/en/references#source-${card.sourceId}`} prefetch={false}>{localizedSource.shortTitle} ↘</Link></article>;
             }))}</div>
             {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/references?module=${module.slug}`} prefetch={false}>Review this module’s source ledger and verification dates →</Link></p> : null}
           </section>
@@ -436,7 +443,7 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
                   <div><p className="answerLabel">SHORT ANSWER</p><p>{item.a}</p></div>
                   <div><p className="answerLabel">TECHNICAL DETAIL</p><p>{item.depth}</p></div>
                   <div className="qaBasis" aria-label="Evidence for this answer"><div className="qaBasisHead"><p className="answerLabel">EVIDENCE AND LIMITS</p><span>{item.basis}</span></div><div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(item.evidence, 3).flatMap((row) => row.map((evidence) => <Link href={`/en/references#source-${evidence.sourceId}`} key={evidence.sourceId} prefetch={false} style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}><span className="qaEvidenceMeta">{sourceLedger[evidence.sourceId]?.grade} · {englishSourceCopy[evidence.sourceId]?.kind}</span><strong>{englishSourceCopy[evidence.sourceId]?.shortTitle ?? evidence.sourceId}</strong><small>{evidence.supports}</small></Link>))}</div></div>
-                  <div className="ask"><p className="answerLabel">RECOMMENDED DISCOVERY QUESTION</p><p>{item.ask}</p></div>
+                  <div className="ask"><p className="answerLabel">RECOMMENDED DISCOVERY QUESTION</p><p>{discoveryQuestion(item.ask)}</p></div>
                 </div>
               </details>
             ))}</div>

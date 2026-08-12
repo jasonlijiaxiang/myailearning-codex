@@ -80,6 +80,7 @@ export default function ReferencesPage() {
             <Link href="/en/references" hrefLang="en" lang="en" prefetch={false}>English</Link>
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="heroGrid referenceHeroGrid">
           <div className="heroCopy">

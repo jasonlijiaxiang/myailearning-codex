@@ -189,11 +189,12 @@ export default function Home() {
             </nav>
           </details>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="heroGrid heroGridV2 heroGridWithArtwork">
           <div className="heroCopy">
             <h1><span>讲清 AI 技术，</span><span>心中有数，丝毫不慌</span></h1>
-            <p className="heroLead">理解方案背后的原理与限制，才能真正赢得客户，从容应对每一次追问。</p>
+            <p className="heroLead">理解方案背后的原理和适用限制，用它们回答客户追问。</p>
             <div className="heroActions">
               <a className="homePrimaryAction" href="#learning-paths">按任务开始 <span>→</span></a>
               <a className="homeSecondaryAction" href="#available-modules">直接找问题 <span>→</span></a>
@@ -226,7 +227,7 @@ export default function Home() {
       </header>
 
       <section className="learningPathsV2" id="learning-paths" aria-labelledby="learning-paths-title">
-        <header><h2 id="learning-paths-title">从场景开始</h2><p>从客户正在面对的场景进入，沿着路径形成下一步判断。</p></header>
+        <header><h2 id="learning-paths-title">从场景开始</h2><p>先选客户正在面对的场景，再沿路径准备下一步判断。</p></header>
         <div className="learningPathList">
           {learningPaths.map((path) => (
             <article key={path.no}>
@@ -304,7 +305,7 @@ export default function Home() {
         <TermHintGroups groups={homepageTermGroups} total={glossaryTermIds.length} />
       </section>
 
-      <footer><span>Cloud × AI Presales Fieldbook</span><span>V2.0 · {moduleCount} 模块阅读版</span></footer>
+      <footer><span>Cloud × AI Presales Fieldbook</span><span>{moduleCount} 模块阅读版</span></footer>
     </main>
   );
 }

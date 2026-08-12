@@ -35,6 +35,7 @@ export default function KnowledgeGraphPage() {
             <Link href="/references">来源与证据 / Reference</Link>
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
       </header>
 
       <header className={styles.intro}>

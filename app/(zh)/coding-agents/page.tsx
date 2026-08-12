@@ -31,6 +31,7 @@ export default function CodingAgentsPage() {
           <Link className="brand" href="/"><span>Cloud × AI / Presales Fieldbook</span></Link>
           <div className="toplinks"><Link href="/">知识库首页</Link><Link href="/modules/ai-agent#harness">Harness 章节</Link><a href="#products">产品雷达</a><Link href="/references">Reference</Link><Link href="/en/coding-agents" hrefLang="en" lang="en">English</Link></div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="codingAgentHeroGrid">
           <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {codingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>产品与 Harness 选型雷达</span></h1><p>这里不发布一个永久的“谁最好”总榜。我们把<strong>官方产品事实</strong>、<strong>独立 Benchmark</strong>和<strong>客户自己的 PoC</strong>分开，让模型、Harness、任务与环境的影响可以被逐层判断。</p></div>
           <aside><strong>{codingAgentLandscapePolicy.productCount}</strong><span>个已核验产品入口</span><strong>30 天</strong><span>动态事实最长复核周期</span><strong>0</strong><span>个脱离任务的永久总冠军</span></aside>

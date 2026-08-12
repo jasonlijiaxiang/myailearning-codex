@@ -53,6 +53,7 @@ export default function ModelRadarPage() {
             <Link href="/en/model-radar" hrefLang="en" lang="en">English</Link>
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="modelPosterHeroInner">
           <h1>AI 大模型 <span>能力指数榜单 TOP 20</span></h1>

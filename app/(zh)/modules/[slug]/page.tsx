@@ -223,8 +223,9 @@ export default async function ModulePage({ params }: ModulePageProps) {
           <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页"><span>Cloud × AI / Presales Fieldbook</span></Link>
           <div className="toplinks"><a href="#principle">核心机制</a><a href="#qa">本模块问答</a><Link href="/glossary">术语库</Link><Link href="/questions">全部问题</Link><Link href="/references">Reference</Link>{englishPath ? <Link href={englishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}</div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="moduleBriefHeader">
-          {!usesFocusedReadingProfile ? <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn} · V2.0</p> : null}
+          {!usesFocusedReadingProfile ? <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn}</p> : null}
           <h1 className="moduleHeroTitle" id={publication.titleId}>{currentModule.zh}<span>{currentModule.en}</span></h1>
           <p className="moduleBriefDefinition">{brief.definition}</p>
           <p className="moduleBriefPosition">{brief.position}</p>
@@ -255,7 +256,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <section className="subsection moduleBriefSection focusedSection" id="evidence" data-quality-section="evidence">
         <div className="subHead"><span>03</span><div><p className="kicker">WHAT THE EVIDENCE PROVES</p><h2>证据与适用边界</h2></div></div>
-        <ModuleEvidenceGrid cards={brief.evidenceCards.slice(0, 4)} sourceLedger={sourceLedger} maxColumns={2} />
+        <ModuleEvidenceGrid cards={brief.evidenceCards.slice(0, 4)} sourceLedger={sourceLedger} maxColumns={2} headingLevel={3} />
         <p className="focusedDirectoryLink"><Link href={`/references#module-${currentModule.canonicalSlug}`}>在 来源与证据资料库查看本模块全部来源与核验日期 →</Link></p>
       </section>
 
@@ -320,8 +321,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <section className="subsection moduleBriefSection" id="decisions">
         <div className="subHead"><span>05</span><div><p className="kicker">DECISION WORKBENCH</p><h2>客户情况与方案选择</h2></div></div>
-        <div className="tableWrap"><table><thead><tr><th>客户问题</th><th>判断线索</th><th>建议方案</th><th>不能越过的边界</th></tr></thead><tbody>
-          {brief.decisions.map((item) => <tr key={item.question}><th>{item.question}</th><td>{item.signal}</td><td>{item.recommendation}</td><td>{item.boundary}</td></tr>)}
+        <div className="tableWrap"><table><caption className="srOnly">客户情况与方案选择</caption><thead><tr><th scope="col">客户问题</th><th scope="col">判断线索</th><th scope="col">建议方案</th><th scope="col">不能越过的边界</th></tr></thead><tbody>
+          {brief.decisions.map((item) => <tr key={item.question}><th scope="row">{item.question}</th><td>{item.signal}</td><td>{item.recommendation}</td><td>{item.boundary}</td></tr>)}
         </tbody></table></div>
         <CriticalBoundary>{brief.criticalBoundary}</CriticalBoundary>
       </section>
@@ -336,14 +337,14 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <section className="subsection moduleBriefSection" id="evidence" data-quality-section="evidence">
         <div className="subHead"><span>{hasDeepDives ? "07" : "06"}</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h2>证据与适用边界</h2></div></div>
-        <ModuleEvidenceGrid cards={brief.evidenceCards} sourceLedger={sourceLedger} maxColumns={3} />
+        <ModuleEvidenceGrid cards={brief.evidenceCards} sourceLedger={sourceLedger} maxColumns={3} headingLevel={3} />
       </section>
 
       <section className="subsection moduleBriefSection cloudSection" id="cloud" data-quality-section="cloud">
         <div className="subHead"><span>{hasDeepDives ? "08" : "07"}</span><div><p className="kicker">CLOUD CONNECTION</p><h2>云服务连接</h2></div></div>
         <p className="sectionLead">先识别需要的能力、客户价值和验收方式，再对应到目标云当前可用的产品；地域、配额、SLA 与价格需要在采购时重新核验。</p>
-        <div className="tableWrap"><table><thead><tr><th>技术环节</th><th>可连接的云能力</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
-          {brief.cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
+        <div className="tableWrap"><table><caption className="srOnly">云服务连接</caption><thead><tr><th scope="col">技术环节</th><th scope="col">可连接的云能力</th><th scope="col">客户价值</th><th scope="col">售前发现问题</th></tr></thead><tbody>
+          {brief.cloudHooks.map((item) => <tr key={item.stage}><th scope="row">{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
         </tbody></table></div>
       </section>
 
@@ -356,7 +357,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
         </div>
       </div>
 
-      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh} · V2.0<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>
+      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>
     </main>
   );
 }

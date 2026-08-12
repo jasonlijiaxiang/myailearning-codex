@@ -370,14 +370,18 @@ export function ModuleEvidenceGrid({
   cards,
   sourceLedger,
   maxColumns = 4,
+  headingLevel = 4,
 }: {
   cards: EvidenceCard[];
   sourceLedger: SourceLedger;
   maxColumns?: number;
+  headingLevel?: 3 | 4;
 }) {
   if (cards.length === 0) return null;
 
   const rows = balanceGridRows(cards, maxColumns);
+
+  const Heading = headingLevel === 3 ? "h3" : "h4";
 
   return (
     <div className="evidenceGrid" data-count={cards.length} data-odd={cards.length % 2 === 1 ? "true" : "false"}>
@@ -392,7 +396,7 @@ export function ModuleEvidenceGrid({
               style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}
             >
               <p className="metric">{card.metric}</p>
-              <h4>{card.title}</h4>
+              <Heading>{card.title}</Heading>
               <p className="metricFinding">{card.finding}</p>
               <p className="metricBoundary"><strong>适用边界</strong>{card.boundary}</p>
               <Link href={`/references#source-${card.sourceId}`}>对应来源 · {source.shortTitle} ↓</Link>

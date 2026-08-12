@@ -164,9 +164,10 @@ export default function PromptEngineeringModulePage() {
             {promptEnglishPath ? <Link href={promptEnglishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="ragHeader">
           <div>
-            <p className="kicker light">MODULE · MODEL &amp; OPTIMIZATION · V2.0</p>
+            <p className="kicker light">MODULE · MODEL &amp; OPTIMIZATION</p>
             <h1
               className="moduleHeroTitle"
               id="prompt-title"
@@ -434,7 +435,7 @@ export default function PromptEngineeringModulePage() {
 
       <footer>
         <div><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>提示词工程独立模块 V2.0<ModuleUpdatedAt value={promptPublication?.updatedAt ?? undefined} /></p>
+        <p>提示词工程独立模块<ModuleUpdatedAt value={promptPublication?.updatedAt ?? undefined} /></p>
         <a href="#prompt-engineering">返回顶部 ↑</a>
       </footer>
     </main>

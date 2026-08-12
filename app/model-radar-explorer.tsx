@@ -297,7 +297,7 @@ export function ModelRadarExplorer({
 
       <section ref={benchmarkSelectorRef} className="modelPosterBenchmarkSelector" aria-labelledby="benchmark-selector-title">
         <div className="modelPosterBenchmarkSelectorIntro">
-          <h3 id="benchmark-selector-title">{copy.selectorTitle}</h3>
+          <h2 id="benchmark-selector-title">{copy.selectorTitle}</h2>
           <div className="modelPosterDateOptions" role="group" aria-label={copy.dateOptionsAria}>
             {snapshots.map((item) => (
               <button
@@ -312,13 +312,12 @@ export function ModelRadarExplorer({
             ))}
           </div>
         </div>
-        <div className="modelPosterBenchmarkTabs" role="tablist" aria-label={copy.benchmarkOptionsAria}>
+        <div className="modelPosterBenchmarkTabs" role="group" aria-label={copy.benchmarkOptionsAria}>
           {benchmarks.map((benchmark) => (
             <button
-              aria-selected={benchmark.sourceId === benchmarkId}
+              aria-pressed={benchmark.sourceId === benchmarkId}
               className={benchmark.sourceId === benchmarkId ? "active" : ""}
               key={benchmark.sourceId}
-              role="tab"
               type="button"
               onClick={() => selectBenchmark(benchmark.sourceId)}
             >
@@ -377,13 +376,12 @@ export function ModelRadarExplorer({
                       <tr
                         className={selected?.id === model.id ? "selected" : ""}
                         key={model.id}
-                        onClick={() => setSelectedId(model.id)}
                       >
                         <td className={`modelPosterRank rank-${index + 1}`}>
                           {index < 3 ? <span className="modelPosterMedal">{index + 1}</span> : index + 1}
                         </td>
                         <th scope="row">
-                          <button type="button" onClick={() => setSelectedId(model.id)}>{model.name}</button>
+                          <button type="button" aria-pressed={selected?.id === model.id} onClick={() => setSelectedId(model.id)}>{model.name}</button>
                           <small>{model.openness}</small>
                         </th>
                         <td className="modelPosterProvider">{providerLabel(model)}</td>

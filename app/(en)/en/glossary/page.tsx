@@ -35,6 +35,7 @@ export default function EnglishGlossaryPage() {
         <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
         <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/glossary" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
       </nav>
+      <div id="main-content" className="skipTarget" tabIndex={-1} />
       <header className="questionDirectoryHero"><p className="kicker">FIELD GLOSSARY</p><h1>Use one stable concept across the fieldbook</h1><p>Names, abbreviations, concept IDs, and module relationships stay consistent so every definition leads back to the relevant technical context.</p></header>
       <EnglishPilotDirectory items={items} label="Search the glossary" placeholder="Try grounding, assurance, open weights…" />
     </main>

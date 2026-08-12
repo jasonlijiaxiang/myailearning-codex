@@ -58,6 +58,7 @@ export default function EnglishModelRadarPage() {
           </div>
         </nav>
 
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="modelPosterHeroInner">
           <h1>AI model <span>capability snapshot: Top 20</span></h1>
           <p className="modelPosterHeroLead">The same public model snapshot can be viewed through Intelligence, Coding, and Agentic indices. Official scores and this fieldbook’s transparent 50/50 indices stay distinct; where authoritative data is unavailable, the page leaves the value blank rather than estimating it.</p>

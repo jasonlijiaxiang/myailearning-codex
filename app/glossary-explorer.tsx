@@ -53,9 +53,9 @@ export function GlossaryExplorer({ groups, terms }: { groups: GlossaryGroupItem[
           <i aria-hidden="true">⌕</i>
         </label>
         <div className="glossaryFilters" aria-label="按术语主题筛选">
-          <button type="button" className={groupId === "all" ? "active" : ""} onClick={() => setGroupId("all")}>全部主题</button>
+          <button type="button" aria-pressed={groupId === "all"} className={groupId === "all" ? "active" : ""} onClick={() => setGroupId("all")}>全部主题</button>
           {groups.map((group) => (
-            <button type="button" className={groupId === group.id ? "active" : ""} onClick={() => setGroupId(group.id)} key={group.id}>{group.zh}</button>
+            <button type="button" aria-pressed={groupId === group.id} className={groupId === group.id ? "active" : ""} onClick={() => setGroupId(group.id)} key={group.id}>{group.zh}</button>
           ))}
         </div>
       </div>

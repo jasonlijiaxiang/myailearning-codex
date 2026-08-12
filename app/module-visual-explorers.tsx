@@ -62,13 +62,13 @@ function StepButton({
 
 function SpectrumCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
   return (
-    <div className="visualSpectrumCanvas" aria-label={locale === "en" ? `${view.title} constraint coordinates` : `${view.title}的约束坐标`}>
+    <div className="visualSpectrumCanvas" role="group" aria-label={locale === "en" ? `${view.title} constraint coordinates` : `${view.title}的约束坐标`}>
       <div className="spectrumAxis spectrumAxis--x" aria-hidden="true"><i /><span>{locale === "en" ? "Delivery constraints" : "交付约束"}</span></div>
       <div className="spectrumAxis spectrumAxis--y" aria-hidden="true"><i /><span>{locale === "en" ? "Quality & risk" : "质量与风险"}</span></div>
       <div className="spectrumDecisionRegion"><span>{locale === "en" ? "Candidate region" : "候选区域"}</span><strong>{locale === "en" ? "Intersection of hard gates" : "硬门槛的交集"}</strong></div>
-      <i className="spectrumCandidate spectrumCandidate--a" aria-label={locale === "en" ? "Candidate A" : "候选 A"} />
-      <i className="spectrumCandidate spectrumCandidate--b" aria-label={locale === "en" ? "Candidate B" : "候选 B"} />
-      <i className="spectrumCandidate spectrumCandidate--c" aria-label={locale === "en" ? "Candidate C" : "候选 C"} />
+      <span className="spectrumCandidate spectrumCandidate--a" role="img" aria-label={locale === "en" ? "Candidate A" : "候选 A"} />
+      <span className="spectrumCandidate spectrumCandidate--b" role="img" aria-label={locale === "en" ? "Candidate B" : "候选 B"} />
+      <span className="spectrumCandidate spectrumCandidate--c" role="img" aria-label={locale === "en" ? "Candidate C" : "候选 C"} />
       {view.steps.map((step, index) => (
         <div className={`spectrumPoint spectrumPoint--${index}`} key={step.code}>
           <StepButton step={step} selected={active === index} onClick={() => onSelect(index)} />
@@ -111,7 +111,7 @@ function LifecycleCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
           </li>
         ))}
       </ol>
-      <div className="lifecycleBranches" aria-label={locale === "en" ? "Exception branches" : "异常分支"}>
+      <div className="lifecycleBranches" role="group" aria-label={locale === "en" ? "Exception branches" : "异常分支"}>
         <span>{branches[0]}</span><i aria-hidden="true">········································</i><span>{branches[1]}</span>
       </div>
     </div>
@@ -120,7 +120,7 @@ function LifecycleCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
 
 function LoopCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
   return (
-    <div className="visualLoopCanvas" aria-label={locale === "en" ? `${view.title} feedback loop` : `${view.title}的闭环`}>
+    <div className="visualLoopCanvas" role="group" aria-label={locale === "en" ? `${view.title} feedback loop` : `${view.title}的闭环`}>
       <div className="loopDecisionGate"><span>DECISION GATE</span><strong>{locale === "en" ? "Is the evidence sufficient for the next cycle?" : "证据是否足以进入下一轮？"}</strong></div>
       {view.steps.map((step, index) => {
         const angle = -90 + (360 / view.steps.length) * index;
@@ -142,7 +142,7 @@ function LoopCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
 function ControlCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
   const policySteps = view.steps.length > 2 ? view.steps.slice(1, -1) : view.steps;
   return (
-    <div className="visualControlCanvas" aria-label={locale === "en" ? `${view.title} control and execution planes` : `${view.title}的控制面与执行面`}>
+    <div className="visualControlCanvas" role="group" aria-label={locale === "en" ? `${view.title} control and execution planes` : `${view.title}的控制面与执行面`}>
       <section className="controlPolicyPlane" style={{ "--control-policy-count": Math.max(policySteps.length, 1) } as CSSProperties}>
         <header><strong>{locale === "en" ? "Policy & control plane" : "策略与控制面"}</strong><span>{locale === "en" ? "Version, quota, identity, priority, and rollback" : "版本、配额、身份、优先级与回滚"}</span></header>
         {policySteps.map((step) => {
@@ -170,7 +170,7 @@ function StackCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
     ? ["High · stable", "High · read-only", "Medium · revocable", "Low · validate"]
     : ["高 · 稳定", "高 · 只读", "中 · 可撤回", "低 · 需校验"];
   return (
-    <div className="visualStackCanvas" aria-label={locale === "en" ? `${view.title} context layers` : `${view.title}的上下文分层`}>
+    <div className="visualStackCanvas" role="group" aria-label={locale === "en" ? `${view.title} context layers` : `${view.title}的上下文分层`}>
       <div className="stackLayers">
         {view.steps.map((step, index) => (
           <div className={active === index ? "isActive" : undefined} key={step.code}>
@@ -190,7 +190,7 @@ function StackCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
 
 function TopologyCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
   return (
-    <div className="visualTopologyCanvas" aria-label={locale === "en" ? `${view.title} end-to-end path` : `${view.title}的端到端路径`}>
+    <div className="visualTopologyCanvas" role="group" aria-label={locale === "en" ? `${view.title} end-to-end path` : `${view.title}的端到端路径`}>
       <ol style={{ "--visual-step-count": view.steps.length } as CSSProperties}>
         {view.steps.map((step, index) => (
           <li className={active === index ? "isActive" : undefined} key={step.code}>

@@ -187,6 +187,7 @@ export default function RagModulePage() {
             {ragEnglishPath ? <Link href={ragEnglishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
           </div>
         </nav>
+        <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="ragHeader">
           <div>
             <p className="kicker light">MODULE · EVIDENCE SYSTEM</p>
@@ -209,7 +210,7 @@ export default function RagModulePage() {
           <div className="sectionBody">
             <div className="decisionBanner">
               <p className="kicker">THE MAIN QUESTION</p>
-              <h3>本模块唯一主问题</h3>
+              <h2>本模块唯一主问题</h2>
               <p>如何让一条回答只使用当前用户有权访问、仍然有效、能够回到原文的证据，并在证据不足时停下来？</p>
             </div>
 
