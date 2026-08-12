@@ -12,20 +12,30 @@
 ## 日常 GitHub + Sites 与按需 Portable
 
 - GitHub 是日常维护的唯一源码、历史与协作入口；GPT Sites 是公开呈现与部署目标。`kb.config.json` 仍保存 portable、私有采集和按需交接契约，Skill 或脚本中不得写入本机绝对路径。
+- `main` 是唯一生产分支，`origin/main` 的精确提交是唯一公开 Sites 的来源；任务分支、任务 worktree 或 `sites-origin` 不得成为生产源。发布门禁可以创建只读的 exact-commit 临时 worktree，用于验证和打包该 `origin/main` 提交。
 - 日常维护、模块打磨与公开发布只运行 `npm run check` 和 Sites 发布门禁；不得因为常规发布自动运行 `kb:doctor`、`kb:validate`、handoff 审计、portable 打包或 `portable-*` 测试。
 - `.agents/skills/curate-portable-knowledge-base` 仅在用户明确要求离线 ZIP、跨机器交接、portable 审计，或明确要求整理私有聊天时使用。需要时先运行完整的 `npm run portable:check`，再按实际对象执行打包与分发审计。
 - `.codex/hooks.json` 的私有 inbox 仍可作为本机可选采集入口；其内容不构成日常发布输入，始终不进入 Git、网页、构建产物或 portable 包。
 - 原始聊天、仅助手内容、部分捕获、敏感内容和未核验断言不得自动晋升。正式内容仍通过现有模块注册表、问答、证据和 Reference 契约进入网站。
 - Portable、采集或维护基础设施变更不得顺带重写现有知识正文、页面组件或视觉样式；只有用户明确要求内容或设计变化时才修改对应公开页面。
 
+## 分支与跨设备协作
+
+- 只有范围清晰、低风险、能在一个短会话内完成、无需独立审查且准备立即公开的小修，才可在同步后的干净 `main` 直接修改。跨模块内容、证据来源与事实、共享注册表、路由、依赖、Schema、设计系统、发布流程、多轮或跨设备任务在开始修改 tracked 正式内容时，使用从最新 `origin/main` 创建的短生命周期 `codex/<topic>` 分支；纯私有研究和未确认候选不进入 Git，也不要求提前创建分支。
+- 分支按任务而不是按设备划分：同一任务换设备时继续同一远端分支；不同任务新建分支。只有已通过隐私复核、允许进入公开 Git 的源码 checkpoint 才能在切换设备前提交并推送，新设备先 `git fetch --prune origin`，再切换同名分支并 `git pull --ff-only`。私有 inbox、私有候选和本机材料不能借任务分支同步；应在原设备完成晋升，或由用户在新设备重新提供材料并重新核验。
+- 非 `main` 分支可以推送，用于跨设备同步、备份或可选审查，但不得触发 Sites 发布。任务分支同样位于公开 GitHub，禁止提交原始聊天、私有候选、秘密、个人信息、本机路径、运行时状态或未核验断言。
+- 同一时刻只允许一个写者修改 `app/module-publication.mjs`、`app/module-content-registry.mjs`、`app/terminology.mjs`、`app/reference-content.mjs` 和其他共享所有者文件；发生并行任务时串行整合，不自动 stash、reset、覆盖或 force-push。
+- 任务分支先吸收最新 `origin/main`，再完成 `npm run check` 和所需人工复核，并以 fast-forward、rebase 或 squash 的线性历史进入 `main`。合并并发布成功后删除该任务分支；不确定是否已吸收的历史分支先保留并审计。
+- 完整操作手册见 `docs/REPOSITORY-WORKFLOW.md`。
+
 ## 推送与公开发布
 
-- 经用户确认的正式知识库内容、配置或维护规则变更，必须在同一次任务中完成 Git 提交与推送；计划、调研、无改动检查和未确认草稿不触发提交发布。
-- Codex 对本项目执行任何 Git 推送后，必须在同一次任务中更新公开站点，不得只停留在 GitHub。
-- 推送前运行 `npm run check`（构建、网站与内容检查、代码检查）；`npm run portable:check` 只在需要 portable 时运行。推送后确认远端分支与本地提交一致，并运行 `npm run sites:release-check` 生成同一提交的发布候选。
-- 公开站点必须使用刚刚推送的精确提交生成 Sites 版本，部署为公开版本，并轮询到发布成功。
+- 经用户确认且已达到发布条件的正式知识库内容、配置或维护规则变更，必须在同一次任务中整合到 `main`，完成 Git 提交、推送和公开发布；计划、调研、无改动检查、未确认草稿和任务分支 checkpoint 不触发公开发布。
+- Codex 对本项目执行非 `main` 分支推送后不得更新公开站点；执行 `main` 推送后，必须在同一次任务中更新公开站点，不得只停留在 GitHub。
+- 推送 `main` 前运行 `npm run check`（构建、网站与内容检查、代码检查）；`npm run portable:check` 只在需要 portable 时运行。推送后确认本地 `main`、实时 `origin/main` 与目标提交一致，再运行 `npm run sites:release-check` 生成同一提交的发布候选；该门禁必须拒绝非 `origin/main`。
+- 公开站点必须使用刚刚推送到 `origin/main` 的精确提交生成 Sites 版本，部署到现有唯一项目，并轮询到发布成功；不要为分支或设备创建第二个正式 Site。
 - 发布成功后打开并交付公开地址：`https://cloud-ai-presales-fieldbook.lijx.chatgpt.site`。
-- 如果 Git 推送成功但公开发布失败，任务不得标记完成；必须说明失败环节和当前可恢复状态。
+- 如果 `main` 推送成功但公开发布失败，旧站保持在线，任务不得标记完成；必须说明失败环节、未对齐的提交和当前可恢复状态。
 
 ## 内容同步
 

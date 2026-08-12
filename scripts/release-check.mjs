@@ -168,6 +168,39 @@ function inspectExactGitState(mode, expected = null) {
   return { sha, branchName, remote, mergeRef, remoteSha };
 }
 
+function requireSitesProductionTarget(config, gitState) {
+  const productionRemote = config?.publishing?.sourceRepository?.productionRemote;
+  const productionBranch = config?.publishing?.sourceRepository?.productionBranch;
+  if (
+    typeof productionRemote !== "string"
+    || !productionRemote.trim()
+    || productionRemote !== productionRemote.trim()
+    || typeof productionBranch !== "string"
+    || !productionBranch.trim()
+    || productionBranch !== productionBranch.trim()
+  ) {
+    throw new Error(
+      "Sites release mode requires publishing.sourceRepository.productionRemote and productionBranch",
+    );
+  }
+
+  const mergeRef = `refs/heads/${productionBranch}`;
+  if (
+    gitState.branchName !== productionBranch
+    || gitState.remote !== productionRemote
+    || gitState.mergeRef !== mergeRef
+  ) {
+    throw new Error(
+      `Sites release mode requires the production target ${productionRemote}/${productionBranch}; `
+      + `current local branch is ${gitState.branchName} with upstream `
+      + `${gitState.remote}/${gitState.mergeRef.replace(/^refs\/heads\//, "")} `
+      + `(${gitState.mergeRef})`,
+    );
+  }
+
+  return { remote: productionRemote, branch: productionBranch, mergeRef };
+}
+
 function readCommittedConfig(sha, mode) {
   const result = git(["show", `${sha}:kb.config.json`]);
   const text = requireGit(
@@ -469,7 +502,13 @@ async function ensureSitesBuild(config, sourceRoot, sha) {
   }
 }
 
-function stageSitesArtifact(config, sourceRoot, gitState, sitesBinding, audience) {
+function stageSitesArtifact(
+  config,
+  sourceRoot,
+  gitState,
+  sitesBinding,
+  audience,
+) {
   const outputsRoot = path.join(PROJECT_ROOT, "outputs");
   if (existsSync(outputsRoot) && !lstatSync(outputsRoot).isDirectory()) {
     throw new Error("Sites release mode requires outputs to be a real directory");
@@ -541,6 +580,9 @@ async function main() {
   const initialGitState = inspectExactGitState(mode);
   const config = readCommittedConfig(initialGitState.sha, mode);
   requireReleaseAudience(config, mode, audience);
+  const productionTarget = mode === "sites"
+    ? requireSitesProductionTarget(config, initialGitState)
+    : null;
   const sitesBinding = mode === "sites" ? readSitesBinding(config, initialGitState.sha) : null;
   let worktree = null;
   let stagedArtifact = null;
@@ -563,7 +605,8 @@ async function main() {
       requireSitesBindingUnchanged(sitesBinding);
     }
 
-    inspectExactGitState(mode, initialGitState);
+    const finalGitState = inspectExactGitState(mode, initialGitState);
+    if (productionTarget) requireSitesProductionTarget(config, finalGitState);
     if (stagedArtifact) {
       const artifactRoot = publishStagedArtifact(stagedArtifact);
       stagedArtifact = null;

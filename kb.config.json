@@ -73,7 +73,9 @@
   "publishing": {
     "defaultMode": "sites",
     "sourceRepository": {
-      "visibility": "public"
+      "visibility": "public",
+      "productionRemote": "origin",
+      "productionBranch": "main"
     },
     "github": {
       "optional": false

@@ -51,7 +51,11 @@ function releaseConfig(command, {
     schemaVersion: 1,
     quality: { commands: [command] },
     publishing: {
-      sourceRepository: { visibility: sourceVisibility },
+      sourceRepository: {
+        visibility: sourceVisibility,
+        productionRemote: "origin",
+        productionBranch: "main",
+      },
       ...(sites ? { sites: { binding: ".openai/hosting.json", visibility: sitesVisibility } } : {}),
     },
     ...(handoff ? { handoff } : {}),
@@ -400,6 +404,122 @@ test("git release rechecks the live upstream after quality validation", async ()
   }
 });
 
+test("Sites release fails closed without a complete production target", async (t) => {
+  for (const missing of ["productionRemote", "productionBranch"]) {
+    await t.test(missing, async () => {
+      const marker = path.join(os.tmpdir(), `release-target-${missing}-${Date.now()}`);
+      const config = releaseConfig("node scripts/quality.mjs", { sites: true });
+      delete config.publishing.sourceRepository[missing];
+      const fixture = await createGitFixture({
+        config,
+        qualityScript: [
+          'import { writeFileSync } from "node:fs";',
+          "writeFileSync(process.env.RELEASE_TEST_MARKER, 'quality ran');",
+          "",
+        ].join("\n"),
+      });
+      try {
+        const result = runRelease(
+          fixture.project,
+          "sites",
+          { RELEASE_TEST_MARKER: marker },
+        );
+        assert.notEqual(result.status, 0);
+        assert.match(
+          result.stderr,
+          /requires publishing\.sourceRepository\.productionRemote and productionBranch/,
+        );
+        await assert.rejects(fs.access(marker), { code: "ENOENT" });
+      } finally {
+        await fs.rm(marker, { force: true });
+        await removeFixture(fixture.root);
+      }
+    });
+  }
+});
+
+test("git release remains available on an exact task branch", async () => {
+  const fixture = await createGitFixture();
+  try {
+    runGit(fixture.project, ["switch", "-c", "codex/checkpoint"]);
+    runGit(fixture.project, ["push", "-u", "origin", "codex/checkpoint"]);
+    const result = runRelease(fixture.project, "git");
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /Release checks passed for git mode/);
+  } finally {
+    await removeFixture(fixture.root);
+  }
+});
+
+test("Sites release rejects non-production branches even when their upstream is exact", async () => {
+  const fixture = await createGitFixture({
+    config: releaseConfig("node scripts/quality.mjs", { sites: true }),
+  });
+  try {
+    runGit(fixture.project, ["switch", "-c", "codex/checkpoint"]);
+    runGit(fixture.project, ["push", "-u", "origin", "codex/checkpoint"]);
+    const result = runRelease(fixture.project, "sites");
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /requires the production target origin\/main/);
+    assert.match(result.stderr, /local branch is codex\/checkpoint/);
+    assert.match(result.stderr, /upstream origin\/codex\/checkpoint/);
+  } finally {
+    await removeFixture(fixture.root);
+  }
+});
+
+test("Sites release rejects a local alias that tracks the production upstream", async () => {
+  const fixture = await createGitFixture({
+    config: releaseConfig("node scripts/quality.mjs", { sites: true }),
+  });
+  try {
+    runGit(fixture.project, ["switch", "-c", "release-alias"]);
+    runGit(fixture.project, ["branch", "--set-upstream-to", "origin/main"]);
+    const result = runRelease(fixture.project, "sites");
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /requires the production target origin\/main/);
+    assert.match(result.stderr, /local branch is release-alias/);
+    assert.match(result.stderr, /upstream origin\/main/);
+  } finally {
+    await removeFixture(fixture.root);
+  }
+});
+
+test("Sites release rejects main when its upstream branch or remote is not production", async (t) => {
+  await t.test("different upstream branch", async () => {
+    const fixture = await createGitFixture({
+      config: releaseConfig("node scripts/quality.mjs", { sites: true }),
+    });
+    try {
+      runGit(fixture.project, ["push", "origin", "HEAD:release"]);
+      runGit(fixture.project, ["branch", "--set-upstream-to", "origin/release", "main"]);
+      const result = runRelease(fixture.project, "sites");
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /local branch is main/);
+      assert.match(result.stderr, /upstream origin\/release/);
+    } finally {
+      await removeFixture(fixture.root);
+    }
+  });
+
+  await t.test("different remote", async () => {
+    const fixture = await createGitFixture({
+      config: releaseConfig("node scripts/quality.mjs", { sites: true }),
+    });
+    try {
+      runGit(fixture.project, ["remote", "add", "mirror", fixture.remote]);
+      runGit(fixture.project, ["fetch", "mirror", "main"]);
+      runGit(fixture.project, ["branch", "--set-upstream-to", "mirror/main", "main"]);
+      const result = runRelease(fixture.project, "sites");
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /local branch is main/);
+      assert.match(result.stderr, /upstream mirror\/main/);
+    } finally {
+      await removeFixture(fixture.root);
+    }
+  });
+});
+
 test("sites release rejects placeholder and malformed project IDs", async () => {
   const fixture = await createGitFixture({
     config: releaseConfig("node scripts/quality.mjs", { sites: true }),
@@ -460,6 +580,8 @@ test("sites release exports an exact-commit build with the verified binding", as
     const metadata = JSON.parse(await fs.readFile(path.join(artifact, "release.json"), "utf8"));
     assert.equal(metadata.commitSha, fixture.sha);
     assert.equal(metadata.upstream.sha, fixture.sha);
+    assert.equal(metadata.upstream.remote, "origin");
+    assert.equal(metadata.upstream.ref, "refs/heads/main");
     assert.equal(metadata.projectId, binding.project_id);
     assert.equal(metadata.bindingSource, "release-environment");
     assert.equal(metadata.attachmentAudit.summary.total, 0);

@@ -14,7 +14,17 @@ npm run check
 npm run dev
 ```
 
-`npm run check` 是日常门禁，覆盖代码检查、内容和网站构建；确认变更后提交并推送 GitHub，再用同一提交保存和部署 GPT Sites 版本。离线 ZIP、跨机器迁移和私有聊天整理不属于日常发布步骤。
+`npm run check` 是日常门禁，覆盖代码检查、内容、发布分支回归和网站构建。`main` 是唯一生产分支；只有推送到 `origin/main` 的正式变更才用同一精确提交保存和部署 GPT Sites 版本。任务分支可以推送做跨设备同步或可选审查，但不发布公开站点。离线 ZIP、跨机器迁移和私有聊天整理不属于日常发布步骤。
+
+## 分支与多设备维护
+
+- 小而明确、一次完成并准备立即公开的低风险修正，可以在同步后的干净 `main` 直接完成。
+- 内容研究、聊天整理和 topic / 链接核验先在私有或只读阶段完成；确认要修改 tracked 正式内容时，跨模块变更、共享文件、依赖、Schema、设计或多轮任务从最新 `origin/main` 创建短生命周期 `codex/<topic>` 分支。
+- 同一任务换设备时继续同一远端分支；不同任务才新建分支。只有已通过隐私复核、允许进入公开 Git 的源码 checkpoint 才能推送，新设备使用 `git fetch --prune origin` 和 `git pull --ff-only` 恢复。
+- 原始聊天、私有候选和本机资料不会随 Git 同步，也不得为了同步而提交到公开任务分支。私有整理未晋升时，应在原设备完成，或由用户在新设备重新提供材料并重新核验。
+- 任务完成后通过 `npm run check`，线性整合到 `main`；只有 `main` 的精确提交可以部署到现有唯一公开 Site。
+
+完整的决策表、聊天 / topic / 链接入口、跨设备命令和异常恢复步骤见 [`docs/REPOSITORY-WORKFLOW.md`](docs/REPOSITORY-WORKFLOW.md)。
 
 只有收到 portable ZIP 或需要离线交接时，才阅读 [`HANDOFF-READ-FIRST.html`](HANDOFF-READ-FIRST.html) 和 [`HANDOFF.md`](HANDOFF.md)，并使用下方按需命令。
 
@@ -74,13 +84,14 @@ npm run handoff:check
 
 ## 主要目录
 
-- `app/page.tsx`：知识库首页与全局知识地图
+- `app/(zh)/page.tsx`：中文知识库首页与全局知识地图
+- `app/(en)/en/`：英文首页、模块、问题、术语、来源与决策工具路由
 - `app/knowledge-map.mjs`：9 层架构、21 个正式模块、历史地址别名与稳定路由的统一注册表
-- `app/modules/rag/page.tsx`：RAG 原理、架构、云服务连接与实战问答
-- `app/modules/ai-agent/page.tsx`：Agent 原理、受控循环、云上运行与实战问答
-- `app/modules/prompt-engineering/page.tsx`：提示词、上下文工程、发布治理与实战问答
-- `app/modules/[slug]/page.tsx`：18 个内容自适应模块及历史地址别名的独立页面入口
-- `app/glossary/page.tsx`：从统一术语注册表派生的可搜索专业术语库
+- `app/(zh)/modules/rag/page.tsx`：RAG 原理、架构、云服务连接与实战问答
+- `app/(zh)/modules/ai-agent/page.tsx`：Agent 原理、受控循环、云上运行与实战问答
+- `app/(zh)/modules/prompt-engineering/page.tsx`：提示词、上下文工程、发布治理与实战问答
+- `app/(zh)/modules/[slug]/page.tsx`：18 个内容自适应模块及历史地址别名的独立页面入口
+- `app/(zh)/glossary/page.tsx`：从统一术语注册表派生的可搜索专业术语库
 - `app/module-briefs-*.mjs`：18 个模块的原理、决策、云连接、问答与证据内容源
 - `app/rag-content.mjs`：RAG 问答与证据卡内容源
 - `app/agent-content.mjs`：Agent 问答与证据卡内容源
@@ -91,7 +102,7 @@ npm run handoff:check
 - `app/fieldbook-v3.css`：模块、目录与共享阅读组件的当前视觉层
 - `app/home-refresh.css`：中英文首页共用的 A / Mist 首页构图
 - `app/reference-content.mjs`：全站来源台账与模块来源分组的唯一内容源
-- `app/references/page.tsx`：所有模块共用的 Reference 页面
+- `app/(zh)/references/page.tsx`：所有中文模块共用的 Reference 页面
 - `app/globals.css`：基础组件视觉系统与历史兼容样式
 - `tests/rendered-html.test.mjs`：内容、导航和构图规则检查
 - `docs/CONTENT-DESIGN-STANDARD.md`：后续模块必须遵守的内容与构图规范
@@ -99,6 +110,7 @@ npm run handoff:check
 - `docs/MODULE-BUILD-STANDARD.md`：由 RAG 提炼的模块建设、证据、云服务与验收标准
 - `docs/MODULE-QUALITY-GATES.md`：历史问题追溯、防复发机制与新模块 Definition of Done
 - `docs/CONTENT-MAINTENANCE.md`：仅供维护者使用的事实台账、复核与发布规则
+- `docs/REPOSITORY-WORKFLOW.md`：分支选择、跨设备同步与唯一生产 Site 操作手册
 - `external_reference/`：仅保留在维护者本机的参考资料投放区，不进入 GitHub
 - `.openai/hosting.json`：公开站点发布配置
 - `kb.config.json`：GitHub + Sites 日常发布与按需 portable 的统一配置
@@ -134,7 +146,7 @@ npm run handoff:check
 
 ## 推送与发布
 
-本项目的 Codex 协作规则要求：每次代码推送后，同一次任务必须把该精确提交发布到公开站点并确认部署成功。详细规则见 `AGENTS.md`。
+本项目的 Codex 协作规则要求：非 `main` 推送只用于协作，不更新公开站点；每次 `main` 推送后，同一次任务必须把 `origin/main` 的精确提交发布到现有唯一公开站点并确认部署成功。详细规则见 `AGENTS.md`。
 
 ## 发布地址
 

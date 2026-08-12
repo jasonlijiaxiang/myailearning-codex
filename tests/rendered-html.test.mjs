@@ -1918,17 +1918,31 @@ test("source URLs have one code owner and are absent from content and route file
   }
 });
 
-test("project docs require independent routes, one reference page, and publish-after-push", async () => {
-  const [standard, moduleStandard, qualityGates, maintenance, agentRules, layout, globalStyles, packageJson] = await Promise.all([
+test("project docs require independent routes, one reference page, and main-only production", async () => {
+  const [
+    standard,
+    moduleStandard,
+    qualityGates,
+    maintenance,
+    repositoryWorkflow,
+    agentRules,
+    layout,
+    globalStyles,
+    packageJson,
+    kbConfigText,
+  ] = await Promise.all([
     readFile(new URL("../docs/CONTENT-DESIGN-STANDARD.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/MODULE-BUILD-STANDARD.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/MODULE-QUALITY-GATES.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/CONTENT-MAINTENANCE.md", import.meta.url), "utf8"),
+    readFile(new URL("../docs/REPOSITORY-WORKFLOW.md", import.meta.url), "utf8"),
     readFile(new URL("../AGENTS.md", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
+    readFile(new URL("../kb.config.json", import.meta.url), "utf8"),
   ]);
+  const kbConfig = JSON.parse(kbConfigText);
 
   assert.match(standard, /每个模块使用独立页面/);
   assert.match(standard, /\/references/);
@@ -1966,21 +1980,30 @@ test("project docs require independent routes, one reference page, and publish-a
   assert.match(qualityGates, /新的系统性问题/);
 
   assert.match(maintenance, /完整来源台账只呈现在 `\/references`/);
-  assert.match(maintenance, /Git 推送后的公开发布/);
-  assert.match(maintenance, /任何 Git 推送后/);
-  assert.match(maintenance, /部署公开版本/);
+  assert.match(maintenance, /`main` 推送后的公开发布/);
+  assert.match(maintenance, /非 `main` 分支.*不得更新公开 Site/);
+  assert.match(maintenance, /实时 `origin\/main`/);
   assert.match(maintenance, /轮询至成功/);
+
+  assert.match(repositoryWorkflow, /`main` 是唯一生产分支/);
+  assert.match(repositoryWorkflow, /同一个任务换设备继续原分支/);
+  assert.match(repositoryWorkflow, /任务分支.*不能生成生产候选/);
+  assert.match(repositoryWorkflow, /最新 Sites source SHA = origin\/main/);
 
   assert.match(agentRules, /每个知识模块使用独立地址 `\/modules\/<slug>`/);
   assert.match(agentRules, /`\/references` 是全站唯一的公开来源台账/);
-  assert.match(agentRules, /任何 Git 推送后/);
-  assert.match(agentRules, /更新公开站点/);
+  assert.match(agentRules, /`main` 是唯一生产分支/);
+  assert.match(agentRules, /非 `main` 分支推送后不得更新公开站点/);
+  assert.match(agentRules, /实时 `origin\/main`/);
   assert.match(agentRules, /轮询到发布成功/);
   assert.match(agentRules, /MODULE-QUALITY-GATES\.md/);
   assert.match(agentRules, /module-publication\.mjs/);
   assert.match(agentRules, /terminology\.mjs/);
   assert.match(agentRules, /默认匿名可读/);
   assert.match(agentRules, /新的系统性问题/);
+
+  assert.equal(kbConfig.publishing.sourceRepository.productionRemote, "origin");
+  assert.equal(kbConfig.publishing.sourceRepository.productionBranch, "main");
 
   assert.match(layout, /lang="zh-CN"/);
   assert.doesNotMatch(layout, /Noto_Serif_SC/, "大字符集中文字体不得由 next\/font 注册并在首屏预加载");
