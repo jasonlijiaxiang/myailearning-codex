@@ -15,8 +15,8 @@ import { ModelRadarExplorer } from "../../../model-radar-explorer";
 import { sourceLedger } from "../../../reference-content.mjs";
 
 export const metadata: Metadata = englishPageMetadata({
-  title: "Model Capability Radar: Top 20 Snapshot",
-  description: "A dated Top 20 capability snapshot that keeps official model scores, transparent project indices, and their benchmark limits separate.",
+  title: "Model Capability Radar: Dated 20-Configuration Snapshot",
+  description: "A dated 20-configuration snapshot from the default Intelligence view that separates the official index from transparent Coding and Agentic composites.",
   path: "/en/model-radar",
   zhPath: "/model-radar",
 });
@@ -60,8 +60,8 @@ export default function EnglishModelRadarPage() {
 
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="modelPosterHeroInner">
-          <h1>AI model <span>capability snapshot: Top 20</span></h1>
-          <p className="modelPosterHeroLead">The same public model snapshot can be viewed through Intelligence, Coding, and Agentic indices. Official scores and this fieldbook’s transparent 50/50 indices stay distinct; where authoritative data is unavailable, the page leaves the value blank rather than estimating it.</p>
+          <h1>AI model <span>capability snapshot: 20 configurations</span></h1>
+          <p className="modelPosterHeroLead">View the same public model snapshot through the official Intelligence Index and this page’s transparent Coding and Agentic composites. The scoring scopes stay distinct; when same-version public data is unavailable, the page leaves the value blank rather than joining versions.</p>
         </div>
       </header>
 
@@ -71,6 +71,7 @@ export default function EnglishModelRadarPage() {
             snapshots={englishModelRadarSnapshots}
             benchmarks={benchmarks}
             retention={englishModelRadarPolicy.retention}
+            candidatePool={englishModelRadarPolicy.candidatePool}
             locale="en"
             referencesHref="/en/references"
             modelLandscapeHref="/en/modules/model-landscape#qa-1"

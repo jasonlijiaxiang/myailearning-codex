@@ -8,6 +8,8 @@ type Snapshot = {
   label: string;
   kind: string;
   asOf: string;
+  capturedAt?: string;
+  methodologyVersion: string;
   models: readonly Model[];
 };
 
@@ -60,7 +62,8 @@ const modelRadarCopy = {
   zh: {
     snapshot: "快照",
     currentOrder: "当前排序",
-    selectorTitle: "按能力指数查看 Top 20",
+    capturedAt: "捕获于",
+    selectorTitle: "按能力分数重排这 20 个已捕获的 Intelligence 模型配置",
     dateOptionsAria: "榜单日期",
     benchmarkOptionsAria: "模型 benchmark 选项",
     evidenceGrade: "证据等级",
@@ -76,13 +79,13 @@ const modelRadarCopy = {
     provider: "公司 / 机构",
     score: "得分",
     strength: "主要优势领域",
-    caption: (benchmark: string, snapshot: string) => `Top 20 大模型在 ${benchmark} 的排名，当前快照为 ${snapshot}`,
-    scoreCoverage: (count: number, total: number) => `当前快照有 ${count}/${total} 个模型的精确公开分数；其余显示为 —。`,
-    noScoreCoverage: "当前快照没有与这些模型版本精确对应的公开分数，暂不填值。",
+    caption: (benchmark: string, snapshot: string) => `已捕获的 20 个 Intelligence 模型配置按 ${benchmark} 重排，当前快照为 ${snapshot}`,
+    scoreCoverage: (count: number, total: number) => `当前快照有 ${count}/${total} 个模型具备计算该项所需的完整同版本公开证据；其余显示为 —。`,
+    noScoreCoverage: "当前快照没有计算该项所需的完整同版本公开证据，暂不填值。",
     modelLandscape: "查看模型格局方法边界 ↗",
     selectedModel: "已选模型",
     currentScore: "当前快照单项得分",
-    indexComponents: "指数构成",
+    indexComponents: "组合分构成",
     evidenceCoverage: "证据覆盖",
     retention: "数据保留规则：",
     retentionSuffix: "。页面不会记录每周完整历史；以后接入动态数据时，优先保存同一模型版本、benchmark 版本和运行配置。",
@@ -90,7 +93,8 @@ const modelRadarCopy = {
   en: {
     snapshot: "Snapshot",
     currentOrder: "Current order",
-    selectorTitle: "View the top 20 by capability index",
+    capturedAt: "captured",
+    selectorTitle: "Re-rank the 20 captured Intelligence configurations by capability",
     dateOptionsAria: "Ranking date",
     benchmarkOptionsAria: "Model benchmark options",
     evidenceGrade: "evidence grade",
@@ -106,16 +110,16 @@ const modelRadarCopy = {
     provider: "Provider",
     score: "score",
     strength: "Primary signal",
-    caption: (benchmark: string, snapshot: string) => `Top 20 models ranked by ${benchmark}; current snapshot: ${snapshot}`,
-    scoreCoverage: (count: number, total: number) => `${count}/${total} models in this snapshot have an exact public score; the rest display —.`,
-    noScoreCoverage: "No exact public score is available for these model versions in this snapshot, so no value is inferred.",
+    caption: (benchmark: string, snapshot: string) => `The 20 captured Intelligence configurations re-ranked by ${benchmark}; current snapshot: ${snapshot}`,
+    scoreCoverage: (count: number, total: number) => `${count}/${total} models in this snapshot have complete same-version public evidence for this calculation; the rest display —.`,
+    noScoreCoverage: "This snapshot lacks complete same-version public evidence for this calculation, so no value is inferred.",
     modelLandscape: "Review the model-landscape method boundary ↗",
     selectedModel: "Selected model",
     currentScore: "score in this snapshot",
-    indexComponents: "Index components",
+    indexComponents: "Composite components",
     evidenceCoverage: "Evidence coverage",
     retention: "Data-retention rule: ",
-    retentionSuffix: ". The page does not preserve every weekly history. When new dynamic data is added, retain the exact model version, benchmark version, and run configuration first.",
+    retentionSuffix: ". The page does not preserve every weekly snapshot. Future updates will keep the exact model version, benchmark version, and run configuration together.",
   },
 } as const;
 
@@ -127,7 +131,7 @@ const benchmarkMarks: Record<string, string> = {
 
 const benchmarkComponents: Record<string, readonly { id: string; label: string }[]> = {
   "coding-index": [
-    { id: "terminal-bench-v21", label: "Terminal-Bench 2.1" },
+    { id: "terminal-bench-v21", label: "Terminal-Bench v2.1" },
     { id: "scicode", label: "SciCode" },
   ],
   "agentic-index": [
@@ -177,6 +181,7 @@ export function ModelRadarExplorer({
   snapshots,
   benchmarks,
   retention,
+  candidatePool,
   locale = "zh",
   referencesHref = "/references",
   modelLandscapeHref = "/modules/model-landscape#qa-1",
@@ -184,6 +189,7 @@ export function ModelRadarExplorer({
   snapshots: readonly Snapshot[];
   benchmarks: readonly Benchmark[];
   retention: string;
+  candidatePool: string;
   locale?: ModelRadarLocale;
   referencesHref?: string;
   modelLandscapeHref?: string;
@@ -291,9 +297,11 @@ export function ModelRadarExplorer({
       } as CSSProperties}
     >
       <div className="modelPosterMetaLine">
-        <span className="modelPosterDemoBadge">Artificial Analysis · v4.1</span>
-        <span>{copy.snapshot} · {snapshot?.label} · {copy.currentOrder} · {activeBenchmark?.shortTitle}</span>
+        <span className="modelPosterDemoBadge">Artificial Analysis · {snapshot?.methodologyVersion ?? "—"}</span>
+        <span>{copy.snapshot} · {snapshot?.label}{snapshot?.capturedAt ? ` · ${copy.capturedAt} ${snapshot.capturedAt.slice(11, 19)} UTC` : ""} · {copy.currentOrder} · {activeBenchmark?.shortTitle}</span>
       </div>
+
+      <div className="modelPosterCandidateNotice"><p>{candidatePool}</p></div>
 
       <section ref={benchmarkSelectorRef} className="modelPosterBenchmarkSelector" aria-labelledby="benchmark-selector-title">
         <div className="modelPosterBenchmarkSelectorIntro">
@@ -409,7 +417,7 @@ export function ModelRadarExplorer({
             <h3>{selected.name}</h3>
             <p className="modelPosterSelectedIdentity">{selected.provider} · {selected.tag}</p>
             <div className="modelPosterSelectedScore"><span>{activeBenchmark.shortTitle}</span><strong>{scoreLabel(selectedBenchmarkScore)}</strong><small>{copy.currentScore}</small></div>
-            <div className="modelPosterSelectedMetrics"><span>Intelligence <b>{scoreLabel(selected.intelligence)}</b></span><span>Coding <b>{scoreLabel(selected.coding)}</b></span><span>Agentic <b>{scoreLabel(selected.agentic)}</b></span></div>
+            <div className="modelPosterSelectedMetrics"><span>Intelligence Index <b>{scoreLabel(selected.intelligence)}</b></span><span>Coding Composite <b>{scoreLabel(selected.coding)}</b></span><span>Agentic Composite <b>{scoreLabel(selected.agentic)}</b></span></div>
             {benchmarkComponents[benchmarkId] && (
               <div className="modelPosterSelectedBreakdown">
                 <span>{copy.indexComponents}</span>
@@ -422,7 +430,7 @@ export function ModelRadarExplorer({
         )}
       </div>
 
-      <div className="modelPosterRetentionNote"><strong>{copy.retention}</strong>{retention}{copy.retentionSuffix}</div>
+      <div className="modelPosterRetentionNote"><p><strong>{copy.retention}</strong>{retention}{copy.retentionSuffix}</p></div>
     </div>
   );
 }

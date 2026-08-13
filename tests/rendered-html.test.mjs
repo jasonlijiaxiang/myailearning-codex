@@ -34,7 +34,12 @@ import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
 import { moduleRepresentationAssessment } from "../app/module-representation-assessment.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { modelRadarBenchmarkSourceIds, modelRadarSnapshots } from "../app/model-radar-data.mjs";
+import {
+  modelRadarBenchmarkSourceIds,
+  modelRadarPolicy,
+  modelRadarSnapshots,
+  modelRadarSources,
+} from "../app/model-radar-data.mjs";
 import { promptQa } from "../app/prompt-content.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
 import { questionDirectoryItems, questionDirectoryModules } from "../app/question-index.mjs";
@@ -332,9 +337,10 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
 });
 
 test("English decision tools preserve canonical facts without exposing Chinese reader copy", async () => {
-  const [codingHtml, radarHtml] = await Promise.all([
+  const [codingHtml, radarHtml, chineseRadarHtml] = await Promise.all([
     renderHtml("/en/coding-agents"),
     renderHtml("/en/model-radar"),
+    renderHtml("/model-radar"),
   ]);
 
   assert.deepEqual(englishCodingAgentProducts.map((item) => item.id), codingAgentProducts.map((item) => item.id));
@@ -372,11 +378,95 @@ test("English decision tools preserve canonical facts without exposing Chinese r
   assert.match(codingHtml, /href="\/en\/references#source-product-codex-docs"/);
   assert.match(codingHtml, /href="\/coding-agents"[^>]*hrefLang="zh-CN"/);
 
-  assert.match(radarHtml, /capability snapshot: Top 20/i);
-  assert.match(radarHtml, /View the top 20 by capability index/);
+  assert.match(radarHtml, /capability snapshot: 20 configurations/i);
+  assert.match(radarHtml, /Re-rank the 20 captured Intelligence configurations by capability/);
+  assert.match(radarHtml, /Artificial Analysis · [\s\S]{0,80}v4\.1\.1/);
+  assert.match(radarHtml, /Coding Composite/);
+  assert.match(radarHtml, /Agentic Composite/);
+  assert.match(radarHtml, /Claude Opus 5 \(Adaptive Reasoning, Max Effort\)/);
+  assert.match(radarHtml, /Grok 4\.6 \(high\)/);
+  assert.match(radarHtml, /not a global top 20 across all 604 available inference configurations in that capture/i);
+  assert.match(radarHtml, /captured[\s\S]{0,80}01:18:07 UTC/i);
+  assert.doesNotMatch(radarHtml, /configuration\.。|snapshot\.\./);
   assert.match(radarHtml, /href="\/en\/references#source-intelligence-index"/);
   assert.match(radarHtml, /href="\/en\/modules\/model-landscape#qa-1"/);
   assert.match(radarHtml, /href="\/model-radar"[^>]*hrefLang="zh-CN"/);
+
+  assert.match(chineseRadarHtml, /Artificial Analysis · [\s\S]{0,80}v4\.1\.1/);
+  assert.match(chineseRadarHtml, /Coding Composite/);
+  assert.match(chineseRadarHtml, /Agentic Composite/);
+  assert.match(chineseRadarHtml, /不是该次抓取全部 604 个可用推理配置的全局 Top 20/);
+});
+
+test("model-radar snapshots keep the candidate pool, formulas, versions, and evidence atomic", () => {
+  const expectedModelIds = [
+    "claude-opus-5", "claude-fable-5", "gpt-5-6-sol", "grok-4-6", "kimi-k3",
+    "qwen3-8-max", "muse-spark-1-2", "gpt-5-6-terra", "glm-5-2", "gpt-5-6-luna",
+    "gemini-3-6-flash", "motif-3", "minimax-m3", "inkling",
+    "nvidia-nemotron-3-ultra-550b-a55b", "gemini-3-5-flash-lite", "solar-open2-250b",
+    "muse-glimmer", "a-x-k2", "k-exaone-2-0-0803",
+  ];
+  const requiredSourceRefs = [
+    "aa-models-2026-08-13", "aa-methodology-v4-1-1", "terminal-bench-v2-1", "scicode",
+    "scicode-verified-2026", "gdpval-aa-v2", "tau3-banking",
+  ];
+  const componentAverage = (left, right) => left === null || right === null ? null : Number(((left + right) / 2).toFixed(2));
+  const assertScoreRange = (value, label) => {
+    if (value !== null) assert.ok(value >= 0 && value <= 100, `${label} 越界`);
+  };
+
+  const snapshot = modelRadarSnapshots.find((item) => item.id === "artificial-analysis-2026-08-13");
+  assert.ok(snapshot, "必须保留当前 2026-08-13 快照");
+  assert.equal(snapshot.id, "artificial-analysis-2026-08-13");
+  assert.equal(snapshot.asOf, modelRadarPolicy.verifiedAt);
+  assert.equal(snapshot.label, snapshot.asOf);
+  assert.ok(snapshot.id.endsWith(snapshot.asOf));
+  assert.equal(snapshot.methodologyVersion, "v4.1.1");
+  assert.equal(snapshot.capturedAt, "2026-08-13T01:18:07Z");
+  assert.deepEqual(snapshot.models.map((model) => model.id), expectedModelIds);
+  assert.equal(new Set(expectedModelIds).size, expectedModelIds.length);
+  assert.match(modelRadarPolicy.candidatePool, /默认 Intelligence Index 视图/);
+  assert.match(modelRadarPolicy.candidatePool, /604/);
+  assert.match(modelRadarPolicy.confidence, /另行发布的同名字段/);
+  assert.equal(snapshot.models.find((model) => model.id === "gemini-3-6-flash")?.name, "Gemini 3.6 Flash (high)");
+  assert.equal(snapshot.models.find((model) => model.id === "gemini-3-6-flash")?.shortName, "Gemini 3.6 Flash");
+  assert.equal(snapshot.models.find((model) => model.id === "inkling")?.name, "Inkling (xhigh)");
+  assert.equal(snapshot.models.find((model) => model.id === "inkling")?.shortName, "Inkling");
+  assert.equal(snapshot.models.find((model) => model.id === "claude-opus-5")?.name, "Claude Opus 5 (Adaptive Reasoning, Max Effort)");
+  assert.equal(snapshot.models.find((model) => model.id === "claude-fable-5")?.name, "Claude Fable 5 (Adaptive Reasoning, Max Effort, Opus 4.8 Fallback)");
+  assert.equal(snapshot.models.find((model) => model.id === "nvidia-nemotron-3-ultra-550b-a55b")?.name, "Nemotron 3 Ultra 550B A55B (Reasoning)");
+  assert.equal(snapshot.models.find((model) => model.id === "kimi-k3")?.openness, "开放权重");
+  assert.equal(snapshot.models.find((model) => model.id === "qwen3-8-max")?.provider, "Alibaba");
+  assert.equal(snapshot.models.find((model) => model.id === "k-exaone-2-0-0803")?.provider, "LG AI Research");
+
+  for (const [index, model] of snapshot.models.entries()) {
+    assertScoreRange(model.intelligence, `${model.id} Intelligence`);
+    if (index > 0) assert.ok(snapshot.models[index - 1].intelligence >= model.intelligence, "快照必须按 Intelligence 降序保存");
+    assert.equal(model.benchmarkScores["intelligence-index"], model.intelligence);
+    assert.equal(
+      model.benchmarkScores["coding-index"],
+      componentAverage(model.componentScores["terminal-bench-v21"], model.componentScores.scicode),
+      `${model.id} Coding Composite 公式漂移`,
+    );
+    assert.equal(
+      model.benchmarkScores["agentic-index"],
+      componentAverage(model.componentScores["gdpval-aa-v2"], model.componentScores["tau3-banking"]),
+      `${model.id} Agentic Composite 公式漂移`,
+    );
+    for (const [sourceId, score] of Object.entries(model.componentScores)) assertScoreRange(score, `${model.id} / ${sourceId}`);
+    for (const [sourceId, score] of Object.entries(model.benchmarkScores)) assertScoreRange(score, `${model.id} / ${sourceId}`);
+    assert.equal(new Set(model.sourceRefs).size, model.sourceRefs.length, `${model.id} 来源重复`);
+    assert.deepEqual(model.sourceRefs, requiredSourceRefs, `${model.id} 必须覆盖完整来源集合`);
+    for (const sourceRef of model.sourceRefs) {
+      assert.ok(modelRadarSources[sourceRef], `${model.id} 来源键不可解析：${sourceRef}`);
+      assert.equal(modelRadarSources[sourceRef].asOf, snapshot.asOf, `${sourceRef} 必须属于同一捕获快照`);
+      assert.ok(sourceLedger[modelRadarSources[sourceRef].sourceId], `${sourceRef} 必须解析到 canonical sourceLedger`);
+    }
+  }
+
+  assert.equal(modelRadarSources["aa-methodology-v4-1-1"].version, `Intelligence Index ${snapshot.methodologyVersion}`);
+  assert.equal(modelRadarSources["aa-models-2026-08-13"].capturedAt, snapshot.capturedAt);
+  assert.match(modelRadarSources["aa-models-2026-08-13"].captureFingerprint, /^HTTP ETag [a-f0-9]{32}$/);
 });
 
 test("v3 reading system keeps discovery functional, compact, and portable", async () => {
@@ -875,7 +965,7 @@ test("English pages publish route-specific English sharing metadata", async () =
     ["/en/references", "/en/references", "/references", "References"],
     ["/en/knowledge-graph", "/en/knowledge-graph", "/knowledge-graph", "Dynamic Knowledge Explorer"],
     ["/en/coding-agents", "/en/coding-agents", "/coding-agents", "Coding Agent and Harness Radar"],
-    ["/en/model-radar", "/en/model-radar", "/model-radar", "Model Capability Radar: Top 20 Snapshot"],
+    ["/en/model-radar", "/en/model-radar", "/model-radar", "Model Capability Radar: Dated 20-Configuration Snapshot"],
     ["/en/modules/rag", "/en/modules/rag", "/modules/rag", englishModuleRegistry.rag.title],
     ["/en/modules/mcp", "/en/modules/mcp", "/modules/mcp", englishModuleRegistry.mcp.title],
   ];
@@ -1505,6 +1595,7 @@ test("every public knowledge route is anonymously readable and directly shareabl
     "/knowledge-graph",
     "/en",
     "/en/coding-agents",
+    "/model-radar",
     "/en/model-radar",
     "/en/glossary",
     "/en/questions",

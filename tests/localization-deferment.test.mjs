@@ -134,11 +134,15 @@ test("localization registry passes its recursive schema and covers every module"
   assert.equal(fullSiteReview?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
+  const activeBySlug = new Map(registry.deferments
+    .filter((item) => item.status !== "closed")
+    .map((item) => [item.moduleSlug, item]));
   for (const publication of publishedModules) {
     const baseline = registry.moduleBaselines[publication.slug];
+    const active = activeBySlug.get(publication.slug);
     assert.match(baseline.zhBaselineCommit, /^[0-9a-f]{40}$/);
     assert.match(baseline.enBaselineCommit, /^[0-9a-f]{40}$/);
-    assert.equal(baseline.englishUpdatedAt, getEnglishUpdatedAt(publication.slug));
+    assert.equal(active?.englishCandidate?.englishUpdatedAt ?? baseline.englishUpdatedAt, getEnglishUpdatedAt(publication.slug));
     assert.ok(!Object.hasOwn(publication, "addedAt"), `${publication.slug} must not use addedAt for module dates`);
   }
 
@@ -197,7 +201,7 @@ test("an active deferment records the exact live object delta", () => {
   assert.equal(new Set(activeSlugs).size, activeSlugs.length);
   const result = validate(candidateRegistry, candidateProject, { runtimeOverlays });
   assert.deepEqual(result.failures, []);
-  assert.equal(result.messages.filter((line) => line.startsWith("DEFERRED/NOT_ALIGNED ")).length, activeSlugs.length);
+  assert.equal(result.messages.filter((line) => /^(?:DEFERRED|READY)\/NOT_ALIGNED /.test(line)).length, activeSlugs.length);
   assert.equal(deferment.affectedObjects.length, 1);
   assert.ok(deferment.affectedObjects[0].objectId.endsWith("/test-deferred-candidate"));
 });
@@ -611,14 +615,16 @@ test("review generator refuses to overwrite PASS records while deferments are ac
   assert.match(`${result.stdout}${result.stderr}`, /Automatic PASS review generation is disabled/);
 });
 
-test("localization audit reports chained runtime-maintained alignment", () => {
+test("localization audit reports chained runtime alignment and reviewed candidates", () => {
   const output = execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: projectRoot, encoding: "utf8" });
   const lines = output.trim().split("\n");
   assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-full-site-design-voice-2026-08-12"));
   assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-full-site-design-voice-2026-08-12"));
   assert.ok(lines.includes("Localization contract passed for 21 modules."));
-  assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, 0);
-  assert.equal(lines.filter((line) => /^ALIGNED\/RUNTIME-MAINTAINED /.test(line)).length, publishedModuleSlugs.length);
+  const active = registry.deferments.filter((item) => item.status !== "closed");
+  assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, active.filter((item) => item.status === "deferred").length);
+  assert.equal(lines.filter((line) => /^READY\/NOT_ALIGNED /.test(line)).length, active.filter((item) => item.status === "ready-for-english-review").length);
+  assert.equal(lines.filter((line) => /^(?:ALIGNED(?:\/RUNTIME-MAINTAINED)?|DEFERRED\/NOT_ALIGNED|READY\/NOT_ALIGNED) /.test(line)).length, publishedModuleSlugs.length);
 });
 
 test("English pages read englishUpdatedAt instead of Chinese updatedAt", async () => {

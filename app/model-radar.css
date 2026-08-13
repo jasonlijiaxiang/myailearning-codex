@@ -140,6 +140,18 @@
   font: 700 var(--fb-text-meta)/1.1 var(--font-geist-mono), monospace;
 }
 
+.modelPosterCandidateNotice {
+  margin-top: 14px;
+  padding: 12px 15px;
+  border-left: 3px solid var(--poster-gold);
+  background: rgba(255, 194, 71, .08);
+  color: var(--poster-muted);
+  font-size: var(--fb-text-control);
+  line-height: 1.65;
+}
+
+.modelPosterCandidateNotice p { margin: 0; }
+
 .modelPosterBenchmarkSelector {
   position: sticky;
   top: 0;
@@ -732,6 +744,8 @@
 }
 
 .modelPosterRetentionNote strong { color: var(--poster-text); }
+.modelPosterRetentionNote p { margin: 0; }
+.modelPosterRetentionNote p + p { margin-top: 8px; }
 
 .modelPosterPage footer {
   border-top-color: var(--poster-line-soft);

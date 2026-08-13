@@ -184,6 +184,20 @@
       "recordedAt": "2026-08-12",
       "decisionId": "full-site-design-voice-2026-08-12",
       "summary": "English renderer maintenance erm-full-site-design-voice-2026-08-12: Refines bilingual document shells, shared readers, accessibility semantics, responsive navigation, and display-only voice without changing authored module facts, evidence, review scope, or dates."
+    },
+    {
+      "receiptId": "receipt-model-ranking-locale-gate-2026-08-13",
+      "kind": "locale-gate",
+      "recordedAt": "2026-08-13",
+      "decisionId": "model-ranking-refresh-2026-08-13",
+      "summary": "Model-ranking refresh records the exact Artificial Analysis capture, updated bilingual benchmark boundaries, canonical sources, and a four-stage review candidate."
+    },
+    {
+      "receiptId": "receipt-model-ranking-english-closure-2026-08-13",
+      "kind": "closure",
+      "recordedAt": "2026-08-13",
+      "decisionId": "model-ranking-refresh-2026-08-13",
+      "summary": "Independent four-stage English review passed for the model-ranking refresh; the reviewed candidate preserves canonical identities, evidence boundaries, and bilingual dates for atomic baseline promotion."
     }
   ],
   "moduleBaselines": {
@@ -43881,6 +43895,367 @@
         "br-ai-infra-compute-2026-08-10-ultra-exception"
       ],
       "closureReceipt": "receipt-ai-infra-compute-english-closure-2026-08-10"
+    },
+    {
+      "defermentId": "dfr-model-landscape-model-ranking-2026-08-13",
+      "moduleSlug": "model-landscape",
+      "sourceLocale": "zh-CN",
+      "targetLocale": "en",
+      "status": "ready-for-english-review",
+      "openedAt": "2026-08-13",
+      "openedFromCommit": "385a00d10fdc1e8d3da65c1dc6df253308fc5a60",
+      "decisionId": "model-ranking-refresh-2026-08-13",
+      "reason": "The dynamic model ranking, methodology patch, benchmark validity boundary, and canonical source ledger changed together; Chinese and English content were independently reviewed as one dated candidate.",
+      "localeRequirements": [
+        "date-decoupling",
+        "semantic-deferment"
+      ],
+      "candidateIds": [],
+      "workItemIds": [
+        "model-ranking-refresh-2026-08-13"
+      ],
+      "englishCandidate": {
+        "zhReviewHash": "sha256:7e478acd26cf3a304cb4f1c00d2bca123d860075c8bd3a9465dc18c71fc0e99a",
+        "zhRendererFiles": [
+          "app/(zh)/layout.tsx",
+          "app/(zh)/modules/[slug]/page.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:c61462973d6f09811fddc6c92963c4677f297cd0e908c694b0cb1aa82ffdd211",
+        "enEffectiveHash": "sha256:8106385a0033659cf0d49b32355897c05ce9374b35cd2012149d2681be1d3454",
+        "enReviewHash": "sha256:d27f707bc6291666782672dc060e6fc1a725f9e16517db8a6a4fcc8c1ee68c67",
+        "enRendererFiles": [
+          "app/(en)/en/modules/[slug]/page.tsx",
+          "app/(en)/layout.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-13",
+        "reviewIds": [
+          "br-model-landscape-2026-08-13-xhigh-author",
+          "br-model-landscape-2026-08-13-xhigh-semantic",
+          "br-model-landscape-2026-08-13-xhigh-language",
+          "br-model-landscape-2026-08-13-ultra-exception"
+        ]
+      },
+      "affectedObjects": [
+        {
+          "objectId": "/module:model-landscape/claims/$order",
+          "objectType": "claims-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3dc892536455f5ac9d5ff18136cb15e5aabf8386532a9b066689829af71ba0c4",
+          "currentHash": "sha256:869002334bb645e851328a2c1351267b327fa79144912bba060a0e0eb31f3237",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/claims/000",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5e388e03ff06f1ecded38d0aefe06c39b6a175b27f5ad29597e8c3dee500d9db",
+          "currentHash": "sha256:77ecd97ec4c063cce822e7e1bc22e5aca831a04e58a176ddaffa4205b194bdf4",
+          "sourceIds": [
+            "artificial-analysis-methodology",
+            "artificial-analysis-models",
+            "opentelemetry-genai-observability-2026",
+            "opentelemetry-genai-semconv",
+            "opentelemetry-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:model-landscape/claims/001",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4f5db9c2ed82e42ab10bf8f8470fd99fb1bb339668fc7905a3f5e7f74860500f",
+          "currentHash": "sha256:4f4c62afec6169a40c55ae3c5b26cd7f9d193a2171552d2641cb51f41d1c9e7a",
+          "sourceIds": [
+            "artificial-analysis-methodology",
+            "artificial-analysis-models",
+            "dify-enterprise-pricing",
+            "dify-open-source-license",
+            "gdpval-aa-v2",
+            "tau3-banking"
+          ]
+        },
+        {
+          "objectId": "/module:model-landscape/claims/002",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5a70d03c9572cf9b945a439e97edcdd7687ceba14326332c0bc0c5e274524b2d",
+          "currentHash": "sha256:9f214e86f971c9753b580abd409444fcbf3a35fade9ca71c465189c39d25e186",
+          "sourceIds": [
+            "finops-ai-overview",
+            "finops-ai-tools-considerations",
+            "finops-unit-economics",
+            "scicode",
+            "scicode-verified-2026"
+          ]
+        },
+        {
+          "objectId": "/module:model-landscape/claims/003",
+          "objectType": "claims",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:5e388e03ff06f1ecded38d0aefe06c39b6a175b27f5ad29597e8c3dee500d9db",
+          "sourceIds": [
+            "opentelemetry-genai-observability-2026",
+            "opentelemetry-genai-semconv",
+            "opentelemetry-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:model-landscape/claims/004",
+          "objectType": "claims",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:4f5db9c2ed82e42ab10bf8f8470fd99fb1bb339668fc7905a3f5e7f74860500f",
+          "sourceIds": [
+            "dify-enterprise-pricing",
+            "dify-open-source-license"
+          ]
+        },
+        {
+          "objectId": "/module:model-landscape/claims/005",
+          "objectType": "claims",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:5a70d03c9572cf9b945a439e97edcdd7687ceba14326332c0bc0c5e274524b2d",
+          "sourceIds": [
+            "finops-ai-overview",
+            "finops-ai-tools-considerations",
+            "finops-unit-economics"
+          ]
+        },
+        {
+          "objectId": "/module:model-landscape/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6e392071622ab807e8679b38b29b570b2e2bdf7f960cd9370c903fbfd7800f29",
+          "currentHash": "sha256:db12b9e5eb0e277ca499221304be7059df7b4d6d7a33cca131e1c6587e5b13d6",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/$order",
+          "objectType": "referenceModule-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:dbb249b5afc3fcb146d132c3bfee4e6debf9ae7d56d46134a88461fe1763bebc",
+          "currentHash": "sha256:ea7ae52a0b8956d19facf9c6c4ad347ea7055ee02aa9951e597b6f6cbeb13e5e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/020",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bb3598d0f86b7fa799b03f75b72ee719406cc6c9e424cec0d13cad2b4699e4d0",
+          "currentHash": "sha256:2dc0612420561d5d46dfc68a101d880e2d655a37177f7f9a502397bb6ebfaf32",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/021",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bef6310e200546c73b4e8f2d3e9f4ef26fe384c1171addc95869a2da49243822",
+          "currentHash": "sha256:bb3598d0f86b7fa799b03f75b72ee719406cc6c9e424cec0d13cad2b4699e4d0",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/022",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e07f164bd9027cfca0632e9c1ec598eddc75723ce590bdb7358970e874b5b813",
+          "currentHash": "sha256:bef6310e200546c73b4e8f2d3e9f4ef26fe384c1171addc95869a2da49243822",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/023",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c568242c0c61669f9454b1630758f555de5beeae9111d1c4b3da8f34e0b80c7b",
+          "currentHash": "sha256:e07f164bd9027cfca0632e9c1ec598eddc75723ce590bdb7358970e874b5b813",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/024",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:99b5f4f59825154824de9f5758b19d8d4c871719070229f192a0e3d8fa393022",
+          "currentHash": "sha256:c568242c0c61669f9454b1630758f555de5beeae9111d1c4b3da8f34e0b80c7b",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/025",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:67162dbc2dadef898ff5792430590eb6a28bd57932ee6500309c7e7c88edeca1",
+          "currentHash": "sha256:99b5f4f59825154824de9f5758b19d8d4c871719070229f192a0e3d8fa393022",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/026",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:464386c88b1a69b533e4d369571468161a822bd5cc9f67334b7c768c47104fac",
+          "currentHash": "sha256:67162dbc2dadef898ff5792430590eb6a28bd57932ee6500309c7e7c88edeca1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/027",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:302be7e6356b1e956d24373e8acfd4c3440bfa2ca1a36af59af72ba6d6bb1554",
+          "currentHash": "sha256:464386c88b1a69b533e4d369571468161a822bd5cc9f67334b7c768c47104fac",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/028",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2802a29f310432dfd3a5a22c146ff8e39bc4e73c440ddef2b3124f39ef7f1c69",
+          "currentHash": "sha256:302be7e6356b1e956d24373e8acfd4c3440bfa2ca1a36af59af72ba6d6bb1554",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/029",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:834c5780f36b3353ad72ec789e929c19480de1e8942537f1c525b6965c360013",
+          "currentHash": "sha256:2802a29f310432dfd3a5a22c146ff8e39bc4e73c440ddef2b3124f39ef7f1c69",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/030",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:ce55f6d5dfe99dda4c3e7ed18ab1beb4fc73f354f88c907def27afe69a0ca264",
+          "currentHash": "sha256:834c5780f36b3353ad72ec789e929c19480de1e8942537f1c525b6965c360013",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/031",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:586b0b44365eaa4162c1dd4f37ae3f468c92932caea52edd5aee8a84e57b6ee9",
+          "currentHash": "sha256:ce55f6d5dfe99dda4c3e7ed18ab1beb4fc73f354f88c907def27afe69a0ca264",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/referenceModule/sourceIds/032",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:586b0b44365eaa4162c1dd4f37ae3f468c92932caea52edd5aee8a84e57b6ee9",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/agentic-index",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:f36c5ff0cd534a9137d96bccf38fd86ffb72b7abb7bfbd5019b770c293fca02c",
+          "currentHash": "sha256:7f507a83dfd7a8de0614febae3a1714716cd35fa9304d78aa2951f8b88ec200e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/artificial-analysis-methodology",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:864e41b5a3d7f3c06f017b9b6ed97843fd2abe9bc4a38ff29546f825de1bc956",
+          "currentHash": "sha256:21c023925895b8c2a0b9e5fe2f6a64244208ef816cffa7e7ad0c28162b9e065e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/artificial-analysis-models",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b3b6a7760bc525dfd1c4f6220aaf2c55df2dfbb603bc95beeaa6a1f59d9b8d22",
+          "currentHash": "sha256:962d436ddba9f402554d53a963884922e304f4fe2dd2c51b8547fc0e4b95d466",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/coding-index",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:760384d1611d29248183a2e4bbed2e845f0913b9a5d208d34efa441485f20786",
+          "currentHash": "sha256:fc50e80f92d4f86ae1e188aa7219a70f1f70a478f43c66763878b581df1d6a7d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/gdpval-aa-v2",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:18678ddd33e8298544bf5423749045b0ea9e1ea94e7aa95b9fb11ef54301599f",
+          "currentHash": "sha256:5fe9df926e7f3d6dfcf19d0ab6b672f1ff71d23de94a75f69c32e52b38c9333f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/intelligence-index",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:cf5cc9bbc6c4272d851eb10669ea0a7c270fd3cb0ff939571219a5341501924e",
+          "currentHash": "sha256:580a957154a31c10a37145027cbcf1f9cb6788ceacf29430f28d7476f079ed78",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/scicode",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:85c03ebb72c842b01f1689a28158bc9df84cab8ede3f59db88c6efeb9fbe974b",
+          "currentHash": "sha256:a7b2ba3911fb282d58e37f1ba91de46c039fe50b36adb773533bcd9578d3ccc5",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/scicode-verified-2026",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:1a3ad965a9202f2cfe1d272027fa47bcdfc31ad29fb69b2d6dd3522e3b8ee0d8",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/tau3-banking",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a2bec3598a43e3eddb6335bc29c08bfbf05c9b6b5f2f25b8682735f504337fd4",
+          "currentHash": "sha256:20c396c90da49fbc1b522a4bb341742ad778d4834c17ac306bd311692c8dda7e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/terminal-bench-v21",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:20c087401229041138a5afa474df5b38f9d5f96ac8724d582e089e9ef10a67bf",
+          "currentHash": "sha256:e7d94278609cb430e4741653388acf21c610e4b2b7a3d20a330090ffad84b037",
+          "sourceIds": []
+        }
+      ],
+      "baselineReviewIds": [
+        "br-model-landscape-2026-08-10-ultra-exception",
+        "br-model-landscape-2026-08-10-xhigh-author",
+        "br-model-landscape-2026-08-10-xhigh-language",
+        "br-model-landscape-2026-08-10-xhigh-semantic"
+      ],
+      "localeGateReceipt": "receipt-model-ranking-locale-gate-2026-08-13",
+      "closureCriteria": "Exact snapshot data, benchmark boundaries, canonical sources, bilingual dates, and the independent four-stage review must match the registered candidate before atomic baseline promotion."
     }
   ]
 }

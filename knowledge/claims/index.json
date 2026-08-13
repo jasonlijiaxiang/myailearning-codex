@@ -2,6 +2,42 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "model-landscape.aa-ranking-snapshot-2026-08-13",
+      "claim": "在 2026-08-13 01:18:07 UTC 捕获的 Artificial Analysis 公开模型页默认 Intelligence Index 视图前 20 个模型配置中，Claude Opus 5 (Adaptive Reasoning, Max Effort) 以 63.0532452071291 位列第一。",
+      "scope": "这是指定捕获时点、默认页面候选池与指定推理配置的快照，不是该次抓取全部 604 个可用推理配置的全球总榜；排名、分数、方法和默认候选池会变化。",
+      "sourceIds": ["artificial-analysis-models", "artificial-analysis-methodology"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-08-13",
+      "reviewBy": "2026-09-12",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "model-landscape.aa-agentic-component-reconciliation-2026-08-13",
+      "claim": "截至 2026-08-13，Artificial Analysis 公开页面的 GDPval-AA v2 与 τ³-Banking 组件字段按 50/50 直接平均，无法复现 Artificial Analysis 另行发布的 Agentic Index 总分。",
+      "scope": "仅记录该捕获时点的公开数据不一致；可能原因尚未得到来源确认，因此不推断哪一侧已更新，也不修改官方总分。本页只把组件均值标为 Agentic Composite。",
+      "sourceIds": ["artificial-analysis-models", "artificial-analysis-methodology", "gdpval-aa-v2", "tau3-banking"],
+      "evidenceGrade": "B",
+      "verifiedAt": "2026-08-13",
+      "reviewBy": "2026-09-12",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "model-landscape.scicode-validity-risk-2026-08-13",
+      "claim": "2026-08-05 发布的 SciCode-Verified 预印本报告：对原版 SciCode 测试问题的领域专家审计发现 263 个缺陷，其中 192 个分布在 91% 的主问题中，会错误拒绝正确且遵循指令的解答。",
+      "scope": "这是独立预印本对原版 benchmark 有效性的重大质疑，不是 SciCode 上游或 Artificial Analysis 已正式采纳的替代序列；现有分数保留但必须提示风险，不与修正版结果直接拼接。",
+      "sourceIds": ["scicode", "scicode-verified-2026"],
+      "evidenceGrade": "B",
+      "verifiedAt": "2026-08-13",
+      "reviewBy": "2026-09-12",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
       "id": "governance.nist-ai-rmf-1-revision",
       "claim": "截至 2026-07-30，NIST 官方页面明确标注 AI RMF 1.0 正在修订，同时继续提供 1.0、Playbook 与 GenAI Profile。",
       "scope": "仅描述 NIST AI RMF 官方发布状态；不表示 1.0 已失效，也不构成认证或法律合规结论。",

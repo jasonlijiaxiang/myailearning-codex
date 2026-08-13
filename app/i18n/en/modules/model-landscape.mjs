@@ -927,17 +927,17 @@ export const englishModule = Object.freeze({
     "intelligence-index": Object.freeze({
       kind: "Benchmark composite index",
       shortTitle: "Artificial Analysis Intelligence Index",
-      note: "Artificial Analysis v4.1 combines agentic tasks, coding, scientific reasoning, and general-knowledge or long-context measures. It is a provider-maintained benchmark composite that must be read with model version and verification date, not an enterprise selection decision.",
+      note: "Artificial Analysis v4.1.1 combines nine evaluations across Agents, Coding, Scientific Reasoning, and General. The patch changed the τ³-Banking implementation and several graders, so scores from earlier methods are not a like-for-like trend line or an enterprise selection decision.",
     }),
     "coding-index": Object.freeze({
       kind: "Project composite index · task-specific research",
-      shortTitle: "Coding Index",
-      note: "This fieldbook's Coding Index gives Terminal-Bench 2.1 and SciCode equal weight to represent terminal work and scientific programming. It is not an Artificial Analysis official index and does not replace evaluation on the customer's repository, tools, and controls.",
+      shortTitle: "Coding Composite",
+      note: "This page gives the displayed Terminal-Bench v2.1 and SciCode components equal weight. It is a transparent recalculation, separate from the Artificial Analysis Coding Index field; an independent 2026 audit materially challenges the original benchmark's test specifications and scoring validity. It does not replace evaluation in the customer's repository, tools, and controls.",
     }),
     "agentic-index": Object.freeze({
       kind: "Project composite index · task-specific research",
-      shortTitle: "Agentic Index",
-      note: "This fieldbook's Agentic Index gives GDPval-AA v2 and τ³-Banking equal weight to represent knowledge-work deliverables and tool- and state-based tasks. It is not an Artificial Analysis official Agentic Index and does not establish production-agent fitness.",
+      shortTitle: "Agentic Composite",
+      note: "This page gives the displayed GDPval-AA v2 and τ³-Banking components equal weight. In the 2026-08-13 v4.1.1 capture, the Artificial Analysis Agentic Index score did not equal that displayed-component average, and the public sources do not explain the discrepancy. The two remain distinct, and neither establishes production-agent fitness.",
     }),
     "artificial-analysis-models": Object.freeze({
       kind: "Model catalog",
@@ -947,17 +947,17 @@ export const englishModule = Object.freeze({
     "artificial-analysis-methodology": Object.freeze({
       kind: "Benchmark methodology",
       shortTitle: "Artificial Analysis Methodology",
-      note: "Documents the Artificial Analysis Intelligence Index v4.1 inputs, capability domains, weights, and version boundary. The fieldbook's Coding and Agentic composites are separate project measures, not official same-named scores.",
+      note: "Documents the Artificial Analysis Intelligence Index v4.1.1 inputs, capability categories, weights, patch changes, and version boundary. The page's Coding and Agentic composites are transparent component recalculations, not substitutes for the separately published Artificial Analysis index fields.",
     }),
     "terminal-bench-v21": Object.freeze({
       kind: "Task-specific research",
-      shortTitle: "Terminal-Bench 2.1",
+      shortTitle: "Terminal-Bench v2.1",
       note: "Evaluates agents completing tasks in a terminal environment through files, commands, and tools. Environment, permissions, timeouts, budget, harness, and benchmark version affect every result.",
     }),
     "scicode": Object.freeze({
       kind: "Task-specific research",
       shortTitle: "SciCode",
-      note: "Evaluates scientific-computing problem solving and code that produces verifiable results. Task set, execution environment, available tools, and scoring protocol determine what is comparable.",
+      note: "Artificial Analysis currently uses the original SciCode evaluation for scientific-computing problem solving. Task set, execution environment, available tools, and scoring protocol determine what is comparable, and an independent 2026 audit materially challenges the original benchmark's test specifications and scoring validity.",
     }),
     "gdpval-aa-v2": Object.freeze({
       kind: "Task-specific research",
@@ -967,7 +967,7 @@ export const englishModule = Object.freeze({
     "tau3-banking": Object.freeze({
       kind: "Task-specific research",
       shortTitle: "τ³-Banking",
-      note: "Evaluates tool use and state transitions in banking-style tasks. It is a slice of financial-agent behavior, not evidence of financial-advice quality, regulatory compliance, or authorization correctness.",
+      note: "Evaluates tool use and state transitions in banking-style tasks. Artificial Analysis Intelligence Index v4.1.1 moved to upstream tau2-bench v1.0.1, so earlier results are not directly comparable; it remains a task slice, not evidence of financial-advice quality, regulatory compliance, or authorization correctness.",
     }),
     "arena-leaderboard": Object.freeze({
       kind: "Task-specific research",

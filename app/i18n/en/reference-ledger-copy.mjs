@@ -1,4 +1,9 @@
 export const englishSupplementalSourceCopy = Object.freeze({
+  "scicode-verified-2026": Object.freeze({
+    kind: "Preprint · task-specific research",
+    shortTitle: "SciCode-Verified",
+    note: "An independent domain-expert audit reports specification and grading defects in the original SciCode test set that reject many correct solutions, and releases a corrected dataset with an audit trail. Neither SciCode nor Artificial Analysis has adopted it as a replacement series, so it marks validity risk rather than silently rewriting the published scores.",
+  }),
   "miracl-2023": Object.freeze({
     kind: "Peer-reviewed benchmark paper",
     shortTitle: "MIRACL",

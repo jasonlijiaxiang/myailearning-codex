@@ -3,74 +3,84 @@
  *
  * The snapshot below is transcribed from Artificial Analysis' public model
  * page. The three displayed indices deliberately keep their provenance
- * separate: Intelligence is the official AA v4.1 score; Coding and Agentic
- * are project indices calculated from the official component values using the
- * 50/50 formulas shown in the page.
+ * separate: Intelligence is the official AA v4.1.1 score; Coding Composite
+ * and Agentic Composite are fieldbook calculations from the official
+ * component values using the 50/50 formulas shown on the page. Artificial
+ * Analysis also publishes Coding Index and Agentic Index fields; those scores
+ * are not substituted for the transparent component recomputations here.
  *
  * Missing values stay null. No model is promoted into an index by copying a
  * neighbour, treating an unavailable result as zero, or joining versions.
  */
 
 const sourceRegistry = Object.freeze({
-  "aa-models-2026-08-02": Object.freeze({
+  "aa-models-2026-08-13": Object.freeze({
     sourceId: "artificial-analysis-models",
     label: "Artificial Analysis · Models",
-    asOf: "2026-08-02",
-    version: "公开模型页 · Intelligence Index v4.1",
+    asOf: "2026-08-13",
+    capturedAt: "2026-08-13T01:18:07Z",
+    captureFingerprint: "HTTP ETag c91242cbbcf7b98fcf73da35386f05a7",
+    version: "公开模型页默认 Intelligence 视图 · Intelligence Index v4.1.1",
   }),
-  "aa-methodology-v4-1": Object.freeze({
+  "aa-methodology-v4-1-1": Object.freeze({
     sourceId: "artificial-analysis-methodology",
     label: "Artificial Analysis · Methodology",
-    asOf: "2026-08-02",
-    version: "Intelligence Index v4.1",
+    asOf: "2026-08-13",
+    version: "Intelligence Index v4.1.1",
   }),
   "terminal-bench-v2-1": Object.freeze({
     sourceId: "terminal-bench-v21",
-    label: "Terminal-Bench 2.1",
-    asOf: "2026-08-02",
+    label: "Terminal-Bench v2.1",
+    asOf: "2026-08-13",
     version: "2.1",
   }),
   scicode: Object.freeze({
     sourceId: "scicode",
     label: "SciCode",
-    asOf: "2026-08-02",
-    version: "官方公开结果 · 当前快照",
+    asOf: "2026-08-13",
+    version: "Artificial Analysis 当前公开结果",
+  }),
+  "scicode-verified-2026": Object.freeze({
+    sourceId: "scicode-verified-2026",
+    label: "SciCode-Verified · Audit",
+    asOf: "2026-08-13",
+    version: "2026-08-05 预印本",
   }),
   "gdpval-aa-v2": Object.freeze({
     sourceId: "gdpval-aa-v2",
     label: "GDPval-AA v2",
-    asOf: "2026-08-02",
+    asOf: "2026-08-13",
     version: "GDPval-AA v2",
   }),
   "tau3-banking": Object.freeze({
     sourceId: "tau3-banking",
     label: "τ³-Banking",
-    asOf: "2026-08-02",
-    version: "τ³-Banking",
+    asOf: "2026-08-13",
+    version: "upstream tau2-bench v1.0.1",
   }),
 });
 
 const modelDefinitions = [
-  { id: "claude-opus-5", name: "Claude Opus 5 (max)", provider: "Anthropic", openness: "专有模型", intelligence: 60.6918740157091, gdpval: 0.6789, tauBanking: 0.303092783505155, terminalBench: 0.891385767790262, sciCode: 0.556712962962963 },
-  { id: "claude-fable-5", name: "Claude Fable 5 (with fallback)", provider: "Anthropic", openness: "专有模型", intelligence: 59.8606463217303, gdpval: 0.622035, tauBanking: 0.268041237113402, terminalBench: 0.846441947565543, sciCode: 0.601851851851852 },
-  { id: "gpt-5-6-sol", name: "GPT-5.6 Sol (max)", provider: "OpenAI", openness: "专有模型", intelligence: 58.889831189723, gdpval: 0.61625, tauBanking: 0.329896907216495, terminalBench: 0.880149812734082, sciCode: 0.561342592592593 },
-  { id: "kimi-k3", name: "Kimi K3 (max)", provider: "Kimi", openness: "专有模型", intelligence: 57.1123394372091, gdpval: 0.593715, tauBanking: 0.334020618556701, terminalBench: 0.850187265917603, sciCode: 0.586805555555556 },
-  { id: "gpt-5-6-terra", name: "GPT-5.6 Terra (max)", provider: "OpenAI", openness: "专有模型", intelligence: 54.9528567569231, gdpval: 0.54135, tauBanking: 0.317525773195876, terminalBench: 0.880149812734082, sciCode: 0.539351851851852 },
-  { id: "grok-4-5", name: "Grok 4.5 (high)", provider: "SpaceXAI", openness: "专有模型", intelligence: 53.8265951657731, gdpval: 0.5139400000000001, tauBanking: 0.325773195876289, terminalBench: 0.816479400749064, sciCode: 0.540509259259259 },
-  { id: "claude-sonnet-5", name: "Claude Sonnet 5 (max)", provider: "Anthropic", openness: "专有模型", intelligence: 53.3500026989169, gdpval: 0.54996, tauBanking: 0.282474226804124, terminalBench: 0.805243445692884, sciCode: 0.53587962962963 },
-  { id: "gpt-5-6-luna", name: "GPT-5.6 Luna (max)", provider: "OpenAI", openness: "专有模型", intelligence: 51.2359331798034, gdpval: 0.5409700000000001, tauBanking: 0.272164948453608, terminalBench: 0.808988764044944, sciCode: 0.525462962962963 },
-  { id: "glm-5-2", name: "GLM-5.2 (max)", provider: "Z AI", openness: "专有模型", intelligence: 51.0858347714416, gdpval: 0.5049750000000001, tauBanking: 0.268041237113402, terminalBench: 0.779026217228464, sciCode: 0.50462962962963 },
-  { id: "muse-spark-1-1", name: "Muse Spark 1.1 (xhigh)", provider: "Meta", openness: "专有模型", intelligence: 50.6229899483333, gdpval: 0.43753, tauBanking: 0.251546391752577, terminalBench: 0.779026217228464, sciCode: 0.582175925925926 },
-  { id: "gemini-3-6-flash", name: "Gemini 3.6 Flash", provider: "Google", openness: "专有模型", intelligence: 50.0675324362393, gdpval: 0.461515, tauBanking: 0.245360824742268, terminalBench: 0.775280898876405, sciCode: 0.52662037037037 },
-  { id: "deepseek-v4-flash", name: "DeepSeek V4 Flash 0731 (max)", provider: "DeepSeek", openness: "开放权重", intelligence: 49.9276679335021, gdpval: 0.5293049999999999, tauBanking: 0.311340206185567, terminalBench: 0.786516853932584, sciCode: 0.498842592592593 },
-  { id: "qwen3-7-max", name: "Qwen3.7 Max", provider: "Alibaba", openness: "专有模型", intelligence: 45.9937184770221, gdpval: 0.38518499999999994, tauBanking: 0.109278350515464, terminalBench: 0.745318352059925, sciCode: 0.488425925925926 },
-  { id: "minimax-m3", name: "MiniMax-M3", provider: "MiniMax", openness: "开放权重", intelligence: 44.4372686326056, gdpval: 0.44503, tauBanking: 0.129896907216495, terminalBench: 0.651685393258427, sciCode: 0.453703703703704 },
-  { id: "deepseek-v4-pro", name: "DeepSeek V4 Pro (max)", provider: "DeepSeek", openness: "开放权重", intelligence: 44.2735554261611, gdpval: 0.402245, tauBanking: 0.257731958762887, terminalBench: 0.640449438202247, sciCode: 0.5 },
-  { id: "mimo-v2-5-pro", name: "MiMo-V2.5-Pro", provider: "Xiaomi", openness: "开放权重", intelligence: 42.2394366693508, gdpval: 0.38223, tauBanking: 0.0865979381443299, terminalBench: 0.651685393258427, sciCode: 0.502314814814815 },
-  { id: "inkling", name: "Inkling (xhigh)", provider: "Thinking Machines", openness: "专有模型", intelligence: 40.736927521956, gdpval: 0.368375, tauBanking: 0.237113402061856, terminalBench: 0.550561797752809, sciCode: 0.460648148148148 },
-  { id: "nemotron-3-ultra", name: "Nemotron 3 Ultra", provider: "NVIDIA", openness: "开放权重", intelligence: 37.7619546243905, gdpval: 0.33098, tauBanking: 0.138144329896907, terminalBench: 0.539325842696629, sciCode: 0.399305555555556 },
-  { id: "gemini-3-5-flash-lite", name: "Gemini 3.5 Flash-Lite", provider: "Google", openness: "专有模型", intelligence: 36.4776366072529, gdpval: 0.319025, tauBanking: 0.164948453608247, terminalBench: 0.535580524344569, sciCode: 0.408564814814815 },
-  { id: "mistral-medium-3-5", name: "Mistral Medium 3.5", provider: "Mistral", openness: "专有模型", intelligence: 29.947307563003, gdpval: 0.21596499999999996, tauBanking: 0.144329896907216, terminalBench: 0.50561797752809, sciCode: 0.395833333333333 },
+  { id: "claude-opus-5", shortName: "Claude Opus 5", name: "Claude Opus 5 (Adaptive Reasoning, Max Effort)", provider: "Anthropic", openness: "专有模型", intelligence: 63.0532452071291, gdpval: 0.674385, tauBanking: 0.420618556701031, terminalBench: 0.891385767790262, sciCode: 0.556712962962963 },
+  { id: "claude-fable-5", shortName: "Claude Fable 5", name: "Claude Fable 5 (Adaptive Reasoning, Max Effort, Opus 4.8 Fallback)", provider: "Anthropic", openness: "专有模型", intelligence: 62.0726622017462, gdpval: 0.620445, tauBanking: 0.381443298969072, terminalBench: 0.846441947565543, sciCode: 0.601851851851852 },
+  { id: "gpt-5-6-sol", name: "GPT-5.6 Sol (max)", provider: "OpenAI", openness: "专有模型", intelligence: 60.9298701329203, gdpval: 0.6138899999999999, tauBanking: 0.443298969072165, terminalBench: 0.880149812734082, sciCode: 0.561342592592593 },
+  { id: "grok-4-6", name: "Grok 4.6 (high)", provider: "SpaceXAI", openness: "专有模型", intelligence: 60.92297113115, gdpval: 0.6246, tauBanking: 0.507216494845361, terminalBench: 0.883895131086142, sciCode: 0.53587962962963 },
+  { id: "kimi-k3", name: "Kimi K3 (max)", provider: "Kimi", openness: "开放权重", intelligence: 59.6994671342592, gdpval: 0.591145, tauBanking: 0.45979381443299, terminalBench: 0.850187265917603, sciCode: 0.586805555555556 },
+  { id: "qwen3-8-max", name: "Qwen3.8 Max", provider: "Alibaba", openness: "专有模型", intelligence: 58.0774404479668, gdpval: 0.6184850000000001, tauBanking: 0.51340206185567, terminalBench: 0.812734082397004, sciCode: 0.528935185185185 },
+  { id: "muse-spark-1-2", name: "Muse Spark 1.2 (xhigh)", provider: "Meta", openness: "专有模型", intelligence: 56.7615911905642, gdpval: 0.564, tauBanking: 0.348453608247423, terminalBench: 0.801498127340824, sciCode: 0.563657407407407 },
+  { id: "gpt-5-6-terra", name: "GPT-5.6 Terra (max)", provider: "OpenAI", openness: "专有模型", intelligence: 56.5755675890213, gdpval: 0.539, tauBanking: 0.402061855670103, terminalBench: 0.880149812734082, sciCode: 0.539351851851852 },
+  { id: "glm-5-2", name: "GLM-5.2 (max)", provider: "Z AI", openness: "开放权重", intelligence: 52.6409563457385, gdpval: 0.5030549999999999, tauBanking: 0.34639175257732, terminalBench: 0.779026217228464, sciCode: 0.50462962962963 },
+  { id: "gpt-5-6-luna", name: "GPT-5.6 Luna (max)", provider: "OpenAI", openness: "专有模型", intelligence: 52.3180827840984, gdpval: 0.540365, tauBanking: 0.311340206185567, terminalBench: 0.808988764044944, sciCode: 0.525462962962963 },
+  { id: "gemini-3-6-flash", shortName: "Gemini 3.6 Flash", name: "Gemini 3.6 Flash (high)", provider: "Google", openness: "专有模型", intelligence: 51.5819376989529, gdpval: 0.461, tauBanking: 0.298969072164948, terminalBench: 0.775280898876405, sciCode: 0.52662037037037 },
+  { id: "motif-3", name: "Motif 3", provider: "Motif Technologies", openness: "专有模型", intelligence: 47.3602493365956, gdpval: 0.38727, tauBanking: 0.352577319587629, terminalBench: 0.749063670411985, sciCode: 0.40625 },
+  { id: "minimax-m3", name: "MiniMax-M3", provider: "MiniMax", openness: "开放权重", intelligence: 45.3968506399702, gdpval: 0.4443099999999999, tauBanking: 0.152577319587629, terminalBench: 0.651685393258427, sciCode: 0.453703703703704 },
+  { id: "inkling", shortName: "Inkling", name: "Inkling (xhigh)", provider: "Thinking Machines", openness: "开放权重", intelligence: 42.2947721285326, gdpval: 0.36979999999999996, tauBanking: 0.290721649484536, terminalBench: 0.550561797752809, sciCode: 0.460648148148148 },
+  { id: "nvidia-nemotron-3-ultra-550b-a55b", shortName: "Nemotron 3 Ultra", name: "Nemotron 3 Ultra 550B A55B (Reasoning)", provider: "NVIDIA", openness: "开放权重", intelligence: 38.3185469149774, gdpval: 0.33152, tauBanking: 0.142268041237113, terminalBench: 0.539325842696629, sciCode: 0.399305555555556 },
+  { id: "gemini-3-5-flash-lite", name: "Gemini 3.5 Flash-Lite", provider: "Google", openness: "专有模型", intelligence: 37.4387063722681, gdpval: 0.31996500000000005, tauBanking: 0.175257731958763, terminalBench: 0.535580524344569, sciCode: 0.408564814814815 },
+  { id: "solar-open2-250b", name: "Solar Open2 250B", provider: "Upstage", openness: "开放权重", intelligence: 37.4265535921632, gdpval: 0.31095000000000006, tauBanking: 0.216494845360825, terminalBench: 0.441947565543071, sciCode: 0.456018518518519 },
+  { id: "muse-glimmer", name: "Muse Glimmer (high)", provider: "Meta", openness: "开放权重", intelligence: 35.0641823105374, gdpval: 0.2265, tauBanking: 0.235051546391753, terminalBench: 0.51685393258427, sciCode: 0.436342592592593 },
+  { id: "a-x-k2", name: "A.X-K2", provider: "SK Telecom", openness: "开放权重", intelligence: 35.0147941618563, gdpval: 0.3047, tauBanking: 0.160824742268041, terminalBench: 0.389513108614232, sciCode: 0.385416666666667 },
+  { id: "k-exaone-2-0-0803", name: "K-EXAONE 2.0 0803", provider: "LG AI Research", openness: "专有模型", intelligence: 30.9845435318094, gdpval: 0.23955, tauBanking: 0.115463917525773, terminalBench: 0.404494382022472, sciCode: 0.409722222222222 },
 ];
 
 function asPercent(value) {
@@ -92,10 +102,10 @@ function makeBenchmarkScores(item) {
 function makeModel(item) {
   const coding = average(asPercent(item.terminalBench), asPercent(item.sciCode));
   const agentic = average(asPercent(item.gdpval), asPercent(item.tauBanking));
-  const sourceRefs = ["aa-models-2026-08-02", "aa-methodology-v4-1", "terminal-bench-v2-1", "scicode", "gdpval-aa-v2", "tau3-banking"];
+  const sourceRefs = ["aa-models-2026-08-13", "aa-methodology-v4-1-1", "terminal-bench-v2-1", "scicode", "scicode-verified-2026", "gdpval-aa-v2", "tau3-banking"];
   return Object.freeze({
     id: item.id,
-    shortName: item.name,
+    shortName: item.shortName ?? item.name,
     name: item.name,
     provider: item.provider,
     family: item.provider,
@@ -106,15 +116,15 @@ function makeModel(item) {
     agentic,
     finance: null,
     efficiency: null,
-    tag: "官方快照",
+    tag: "来源快照",
     strengths: Object.freeze({
-      "intelligence-index": "官方 v4.1",
+      "intelligence-index": "官方 v4.1.1",
       "coding-index": "终端 + 科学编程",
       "agentic-index": "自主执行 + 工具调用",
     }),
     evidence: sourceRefs.map((sourceRef) => sourceRegistry[sourceRef].label),
     sourceRefs,
-    note: "模型版本与组件结果取自同一公开快照；不跨版本拼接，不把缺失值当作零。",
+    note: "Intelligence 与组件结果取自同一公开快照；两个 Composite 按显示组件重算，不等同于 Artificial Analysis 另行发布的同名字段。",
     componentScores: Object.freeze({
       "terminal-bench-v21": asPercent(item.terminalBench),
       scicode: asPercent(item.sciCode),
@@ -141,10 +151,12 @@ const currentModels = Object.freeze(modelDefinitions.map(makeModel));
 
 export const modelRadarSnapshots = Object.freeze([
   Object.freeze({
-    id: "artificial-analysis-2026-08-02",
-    label: "2026-08-02",
+    id: "artificial-analysis-2026-08-13",
+    label: "2026-08-13",
     kind: "source",
-    asOf: "2026-08-02",
+    asOf: "2026-08-13",
+    capturedAt: "2026-08-13T01:18:07Z",
+    methodologyVersion: "v4.1.1",
     models: currentModels,
   }),
 ]);
@@ -153,24 +165,24 @@ export const modelRadarSources = sourceRegistry;
 
 export const modelRadarBenchmarkScales = Object.freeze({
   "intelligence-index": Object.freeze({ min: 0, max: 100, unit: "指数分" }),
-  "coding-index": Object.freeze({ min: 0, max: 100, unit: "50/50 指数分" }),
-  "agentic-index": Object.freeze({ min: 0, max: 100, unit: "50/50 指数分" }),
+  "coding-index": Object.freeze({ min: 0, max: 100, unit: "50/50 组合分" }),
+  "agentic-index": Object.freeze({ min: 0, max: 100, unit: "50/50 组合分" }),
 });
 
 export const modelRadarMetrics = Object.freeze({
   intelligence: Object.freeze({ label: "Intelligence Index", shortLabel: "智能" }),
   overall: Object.freeze({ label: "Intelligence Index", shortLabel: "智能" }),
-  coding: Object.freeze({ label: "Coding Index", shortLabel: "编程" }),
-  agentic: Object.freeze({ label: "Agentic Index", shortLabel: "Agentic" }),
+  coding: Object.freeze({ label: "Coding Composite", shortLabel: "编程" }),
+  agentic: Object.freeze({ label: "Agentic Composite", shortLabel: "Agentic" }),
 });
 
 export const modelRadarPolicy = Object.freeze({
-  verifiedAt: "2026-08-02",
+  verifiedAt: "2026-08-13",
   cadence: "只保留仍能找到原始来源的快照",
-  candidatePool: "当前快照取 Artificial Analysis 公开模型页的 Intelligence Index v4.1 前 20 个模型；三项指数共享候选池，保证横向比较的是同一组模型版本",
-  eligibility: "Intelligence Index 采用 Artificial Analysis v4.1 官方分数；Coding 与 Agentic 仅在两个组成 benchmark 都有同一模型快照结果时计算",
-  score: "Intelligence Index 为官方分数；Coding = (Terminal-Bench 2.1 + SciCode) / 2；Agentic = (GDPval-AA v2 + τ³-Banking) / 2",
-  confidence: "缺失证据显示为 —，不记零、不用同系列或相近版本代替；50/50 两项为本项目指数，不称为 Artificial Analysis 官方同名指数",
+  candidatePool: "本快照冻结 Artificial Analysis 公开模型页默认 Intelligence Index 视图在 2026-08-13 01:18:07 UTC 捕获的前 20 个模型配置；它不是该次抓取全部 604 个可用推理配置的全局 Top 20。",
+  eligibility: "Intelligence Index 采用 Artificial Analysis v4.1.1 官方分数；两个 Composite 仅在两个组成 benchmark 都有同一模型快照结果时计算",
+  score: "Intelligence Index 为官方分数；Coding Composite = (Terminal-Bench v2.1 + SciCode) / 2；Agentic Composite = (GDPval-AA v2 + τ³-Banking) / 2",
+  confidence: "缺失证据显示为 —，不记零、不用同系列或相近版本代替；两个 50/50 Composite 是本页复算值，与 Artificial Analysis 另行发布的同名字段分开阅读",
   retention: "最近两周与最近三个月内能找到的原始快照；找不到就不补",
 });
 

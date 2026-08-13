@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-model-landscape-2026-08-13-ultra-exception",
+  "scope": {
+    "moduleId": "model-landscape",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:7e478acd26cf3a304cb4f1c00d2bca123d860075c8bd3a9465dc18c71fc0e99a",
+    "enContentHash": "sha256:d27f707bc6291666782672dc060e6fc1a725f9e16517db8a6a4fcc8c1ee68c67",
+    "termIds": ["access-spectrum", "capability-matrix", "llm", "model-landscape", "model-lifecycle", "model-routing", "poc", "sla", "tco"],
+    "sourceIds": ["agentic-index", "anthropic-models", "arena-leaderboard", "artificial-analysis-methodology", "artificial-analysis-models", "bfcl", "coding-index", "deepseek-r1-2025", "dify-enterprise-pricing", "dify-open-source-license", "financebench", "finops-unit-economics", "gdpval-aa-v2", "google-models", "gpqa-diamond", "humanity-last-exam", "intelligence-index", "livebench", "lost-middle", "nist-ai-800-3", "nist-genai-profile", "openai-models", "openai-reasoning-guide", "opentelemetry-genai-semconv", "osi-open-source-ai-definition-1-0", "scicode", "scicode-verified-2026", "swe-bench", "swe-rebench", "tau3-banking", "terminal-bench", "terminal-bench-v21", "webarena-2024"]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [{
+    "gateId": "exception-adjudication",
+    "status": "PASS",
+    "evidence": [
+      "Independent Artificial Analysis payload parsing reproduced the exact 20 configurations and raw fields, including Claude Opus 5 in the first position and K-EXAONE 2.0 0803 at the twentieth.",
+      "Methodology and component reconciliation confirmed the v4.1.1 patch, official Intelligence scope, page-level composite formulas, unexplained Agentic field discrepancy, and bounded SciCode validity warning without unsupported inference.",
+      "The rebuilt candidate passed all 53 rendered HTML tests, including the dedicated snapshot contract for timestamp, fingerprint, order, uniqueness, score ranges, formulas, source resolution, version labels, and bilingual output; diff and lint checks also passed."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 5, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

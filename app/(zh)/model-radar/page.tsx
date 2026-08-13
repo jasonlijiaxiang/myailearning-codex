@@ -15,8 +15,8 @@ import {
 } from "../../reference-content.mjs";
 
 export const metadata: Metadata = {
-  title: "大模型能力指数 Top 20 | 云计算 × AI 平台售前知识库",
-  description: "用 Intelligence、Coding、Agentic 三项能力指数比较同一批 Top 20 大模型，并查看每项指数的组成与边界。",
+  title: "大模型能力快照 · 20 个配置 | 云计算 × AI 平台售前知识库",
+  description: "用官方 Intelligence Index 与透明复算的 Coding、Agentic Composite 比较默认视图捕获的 20 个模型配置，并查看每项分数的组成与边界。",
 };
 
 export default function ModelRadarPage() {
@@ -56,14 +56,14 @@ export default function ModelRadarPage() {
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="modelPosterHeroInner">
-          <h1>AI 大模型 <span>能力指数榜单 TOP 20</span></h1>
-          <p className="modelPosterHeroLead">同一批公开模型快照，切换 Intelligence、Coding、Agentic 三项指数；官方分数与本项目 50/50 组合分数分开标注，找不到权威数据就留空，不做推算。</p>
+          <h1>AI 大模型 <span>能力快照 · 20 个配置</span></h1>
+          <p className="modelPosterHeroLead">同一批公开模型快照，切换官方 Intelligence Index 与本页透明复算的 Coding、Agentic Composite；分数口径分开标注，找不到同版本公开数据就留空，不跨版本拼接。</p>
         </div>
       </header>
 
       <section className="modelPosterSection" id="model-poster" aria-label="模型榜单页面">
         <div className="modelPosterShell">
-          <ModelRadarExplorer snapshots={modelRadarSnapshots} benchmarks={benchmarks} retention={modelRadarPolicy.retention} />
+          <ModelRadarExplorer snapshots={modelRadarSnapshots} benchmarks={benchmarks} retention={modelRadarPolicy.retention} candidatePool={modelRadarPolicy.candidatePool} />
         </div>
       </section>
 

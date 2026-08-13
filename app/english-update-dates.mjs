@@ -9,7 +9,7 @@
  */
 export const englishUpdatedDates = Object.freeze({
   "solution-patterns": "2026-08-10",
-  "model-landscape": "2026-08-10",
+  "model-landscape": "2026-08-13",
   rag: "2026-07-29",
   "ai-agent": "2026-08-10",
   multimodal: "2026-08-10",

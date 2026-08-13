@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-model-landscape-2026-08-13-xhigh-semantic",
+  "scope": {
+    "moduleId": "model-landscape",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:7e478acd26cf3a304cb4f1c00d2bca123d860075c8bd3a9465dc18c71fc0e99a",
+    "enContentHash": "sha256:d27f707bc6291666782672dc060e6fc1a725f9e16517db8a6a4fcc8c1ee68c67",
+    "termIds": ["access-spectrum", "capability-matrix", "llm", "model-landscape", "model-lifecycle", "model-routing", "poc", "sla", "tco"],
+    "sourceIds": ["agentic-index", "anthropic-models", "arena-leaderboard", "artificial-analysis-methodology", "artificial-analysis-models", "bfcl", "coding-index", "deepseek-r1-2025", "dify-enterprise-pricing", "dify-open-source-license", "financebench", "finops-unit-economics", "gdpval-aa-v2", "google-models", "gpqa-diamond", "humanity-last-exam", "intelligence-index", "livebench", "lost-middle", "nist-ai-800-3", "nist-genai-profile", "openai-models", "openai-reasoning-guide", "opentelemetry-genai-semconv", "osi-open-source-ai-definition-1-0", "scicode", "scicode-verified-2026", "swe-bench", "swe-rebench", "tau3-banking", "terminal-bench", "terminal-bench-v21", "webarena-2024"]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [{
+    "gateId": "canonical-ranking-alignment",
+    "status": "PASS",
+    "evidence": [
+      "Independent source parsing reproduced all 20 configuration identities, providers, openness values, official Intelligence scores, and four component scores in descending snapshot order.",
+      "The methodology copy matches v4.1.1: nine evaluations, 34/24/24/18 category weights, the upstream tau2-bench v1.0.1 transition for τ³-Banking, and the documented grader patch boundary.",
+      "The page-level Coding and Agentic composites reconcile exactly with the preserved component values, while the separate Artificial Analysis Agentic Index discrepancy remains explicitly unexplained and SciCode-Verified remains a validity warning rather than an adopted replacement."
+    ]
+  }],
+  "rubric": {"semanticFidelity": 5, "mechanismAccuracy": 5, "boundaryPreservation": 5, "evidenceFaithfulness": 5, "technicalEnglish": 4, "presalesUsability": 5},
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}
