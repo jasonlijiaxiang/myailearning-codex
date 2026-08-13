@@ -224,7 +224,14 @@ test("runtime-maintenance chain preserves the verified document shell and Englis
   assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-language-switch-2026-08-10"));
   assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.kind === "english-renderer"));
 
-  assert.equal(runtimeOverlays.size, publishedModuleSlugs.length);
+  const fullSiteReview = registry.runtimeMaintenances.find((item) => item.maintenanceId === "erm-full-site-design-voice-2026-08-12");
+  const expectedLiveOverlaySlugs = publishedModuleSlugs.filter((slug) => spawnSync(
+    "git",
+    ["merge-base", "--is-ancestor", fullSiteReview.implementationCommit, registry.moduleBaselines[slug].enBaselineCommit],
+    { cwd: projectRoot },
+  ).status !== 0).sort();
+  assert.deepEqual([...runtimeOverlays.keys()].sort(), expectedLiveOverlaySlugs);
+  assert.ok(!runtimeOverlays.has("model-landscape"), "the promoted model-landscape baseline already contains the historical runtime maintenance");
   assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-full-site-design-voice-2026-08-12"));
 
   const driftedProject = structuredClone(currentProject);
