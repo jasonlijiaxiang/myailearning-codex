@@ -6,9 +6,7 @@ const datedQa = (value) => freeze({
   ...value,
   evidence: list(value.evidence.map((reference) => ({
     ...reference,
-    supports: reference.supports.includes("支持")
-      ? reference.supports
-      : `该来源支持${reference.supports.replace(/^说明/, "")}`,
+    supports: `该来源支持以下判断：${reference.supports.replace(/^(?:说明|支持)/, "").trim()}`,
   }))),
   addedAt: "2026-08-15",
 });
@@ -84,17 +82,17 @@ const veadkBrief = brief({
     { question: "何时接入 AgentKit？", signal: "本地 Agent 已稳定，需要应用合同、云端 Runtime、资源绑定和发布治理。", recommendation: "冻结 root_agent、入口、依赖和验收集后再进入 AgentKit 构建与部署。", boundary: "适配函数返回应用对象不等于已经上云。" },
   ],
   deepDiveTitle: "会话、记忆与应用适配的生产边界",
-  deepDiveLead: "先沿执行链确认责任，再按症状定位身份、状态、工具、记忆或入口问题。",
+  deepDiveLead: "先沿交付与执行路径确认边界，再按症状定位身份、状态、工具、记忆或入口问题。",
   deepDives: [
     {
-      kind: "sequence", eyebrow: "EXECUTION CONTRACT", title: "一次 VeADK 请求的五步执行边界", intro: "每一步都产生不同证据，不能只看最终回答。",
-      sourceIds: [veadkSources.agent, veadkSources.runner, veadkSources.tools, agentkitSources.memory],
+      kind: "sequence", eyebrow: "DELIVERY & EXECUTION CONTRACT", title: "VeADK 应用从定义到运行的五步验收路径", intro: "开发准备、应用适配和请求执行产生不同证据，不能只看最终回答。",
+      sourceIds: [veadkSources.agent, veadkSources.runner, veadkSources.tools, veadkSources.integration, agentkitSources.memory],
       items: [
         { name: "冻结 Agent 定义", en: "Freeze Definition", mechanism: "绑定模型、指令、工具与状态配置。", decision: "记录候选版本与测试输入。", boundary: "名称一致不代表行为一致。" },
+        { name: "封装应用合同", en: "Adapt Application", mechanism: "把 root_agent 交给 AgentKit 集成入口。", decision: "用 API、错误和版本合同验收。", boundary: "本地 API 不是云部署证据。" },
         { name: "建立会话", en: "Create Session", mechanism: "以应用、用户和会话范围读取事件。", decision: "先验证身份与作用域。", boundary: "会话 ID 不是认证凭据。" },
         { name: "运行模型与工具循环", en: "Run Loop", mechanism: "模型提出动作，应用执行后把结果送回下一轮判断。", decision: "限制调用、时间、Token 和副作用预算。", boundary: "Prompt 不能替代执行授权。" },
         { name: "保存必要状态", en: "Persist State", mechanism: "按后端保存会话事件；长期记忆走独立写入路径。", decision: "为重试、纠错和删除保留来源。", boundary: "事件写入不证明外部业务动作已经成功。" },
-        { name: "封装应用合同", en: "Adapt Application", mechanism: "把 root_agent 交给 AgentKit 集成入口。", decision: "用 API、错误和版本合同验收。", boundary: "本地 API 不是云部署证据。" },
       ],
     },
     {
@@ -208,8 +206,8 @@ export const agentPlatformCurriculum = freeze({
     lead: "VeADK 课程从 Agent 定义与 Runner 循环出发，逐步连接工具、Session、上下文、长期记忆和 AgentKit 应用适配，并始终保留身份、状态与业务权限边界。",
     chapters: [
       { title: "Agent 定义与版本", en: "Agent Definition", explanation: "VeADK Agent 当前在 Google ADK 的 LlmAgent 接口上增加模型、记忆与平台适配配置，这些字段共同形成可运行候选。", decision: "把模型与所有模型外配置绑定到同一评估版本。", boundary: "对象可导入不证明行为、权限或业务结果。", sourceIds: [veadkSources.agent] },
-      { title: "Runner、事件与停止", en: "Runner & Events", explanation: "Runner 接收根 Agent、会话与记忆服务，执行模型—工具—观察循环，并把过程写成可回放事件。", decision: "为调用、时间、Token、失败和停止设置预算。", boundary: "运行结束不等于业务终态成立。", sourceIds: [veadkSources.runner] },
-      { title: "内置与自定义 Tool", en: "Tools", explanation: "内置与自定义 Tool 把联网读取、搜索和业务 API 暴露给 Agent，同时由应用保留参数、权限与副作用控制。", decision: "通用能力复用官方实现，业务动作使用明确合同。", boundary: "模型可见不等于用户授权。", sourceIds: [veadkSources.tools] },
+      { title: "Runner、事件与停止", en: "Runner & Events", explanation: "Runner 接收根 Agent、会话与记忆服务，执行模型—工具—观察循环，并以事件流输出模型与工具处理过程。", decision: "为调用、时间、Token、失败和停止设置预算。", boundary: "运行结束不等于业务终态成立。", sourceIds: [veadkSources.runner] },
+      { title: "Tool 接入与控制", en: "Tools", explanation: "官方内置 Tool 通过明确函数入口提供常用能力，Agent 的 tools 配置再把选定函数暴露给模型调用。", decision: "通用能力复用官方实现，业务动作使用明确合同。", boundary: "模型可见不等于用户授权。", sourceIds: [veadkSources.tools, veadkSources.agent] },
       { title: "Session 与短期记忆", en: "Session & Short-term Memory", explanation: "应用、用户和会话标识共同限定事件历史的读取范围，具体后端决定持久化、实例间共享和恢复能力。", decision: "按实例数、恢复和隔离目标选存储。", boundary: "SQLite 不自动形成多实例生产状态。", sourceIds: [veadkSources.memory] },
       { title: "上下文工程", en: "Context Engineering", explanation: "历史、工具定义和 Tool Result 会进入后续调用并影响质量、时延和成本。", decision: "治理选择、长度、压缩和 Session 切分。", boundary: "更大窗口不保证证据被正确使用。", sourceIds: [veadkSources.runner, veadkSources.tools] },
       { title: "长期记忆与权威事实", en: "Long-term Memory", explanation: "长期记忆通过独立写入与检索支持跨会话召回，召回内容是否真实、当前有效，仍须回到相应权威来源确认。", decision: "写入前定义主体、来源、用途、有效期、纠错和删除。", boundary: "检索相关不等于事实真实。", sourceIds: [agentkitSources.memory] },
