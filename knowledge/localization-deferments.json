@@ -37328,16 +37328,16 @@
       }
     },
     "veadk": {
-      "zhBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
-      "enBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
+      "zhBaselineCommit": "e8662a8fb5be6b68053d7c1cf557b3005efdcec7",
+      "enBaselineCommit": "e8662a8fb5be6b68053d7c1cf557b3005efdcec7",
       "reviewSetIds": [
         "br-veadk-2026-08-15-ultra-exception",
         "br-veadk-2026-08-15-xhigh-author",
         "br-veadk-2026-08-15-xhigh-language",
         "br-veadk-2026-08-15-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
-      "zhStateHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+      "zhReviewHash": "sha256:8306376004f68d101a376926f61d5b71af77a9c33e80fe5f7c05fd991c0a3dba",
+      "zhStateHash": "sha256:8306376004f68d101a376926f61d5b71af77a9c33e80fe5f7c05fd991c0a3dba",
       "zhObjects": {
         "/module:veadk/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -37400,7 +37400,7 @@
           "sourceIds": []
         },
         "/module:veadk/brief/deepDiveLead": {
-          "hash": "sha256:5ab3e0ed7df8f11f5fb5bbb8f76b74aa1ec400d5214c3b96059e6e72fcb19bfb",
+          "hash": "sha256:4122c98b910fc223db7207c2678fcac2d56e74e0066b7d02d526a1bf6c10ae89",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -37410,11 +37410,12 @@
           "sourceIds": []
         },
         "/module:veadk/brief/deepDives/000": {
-          "hash": "sha256:fe4e8d50ebdfc943ffc0aa2ede9227c9b70e6f531a6c935616d80f73cd95608d",
+          "hash": "sha256:8ea9ad9aa9ac5a2d2bad1ff7789d92360d751259782bd09a6b020c48e8c81a43",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
             "veadk-agent-source-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15",
             "veadk-builtin-tools-2026-08-15",
             "veadk-runner-source-2026-08-15"
           ]
@@ -37520,7 +37521,7 @@
           "sourceIds": []
         },
         "/module:veadk/brief/qa/000": {
-          "hash": "sha256:da408a87caad1ef0c1991ad0d5b62f1d0f6df4c9defef240a911531c404dd489",
+          "hash": "sha256:88b191705bd711484c090274e3533e19ab7095ac7e88b2cb6b4f6d4cb18562da",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -37528,7 +37529,7 @@
           ]
         },
         "/module:veadk/brief/qa/001": {
-          "hash": "sha256:71241f4f0392c9b96c6a5b3acf97c06b57ee5c3f4dd8b49919ac257d5f99a855",
+          "hash": "sha256:ce7e700b1cf6fb6fca2e1fcdff29cd23c11645d7a592e94a625b74b935d0ad88",
           "objectType": "brief",
           "sourceIds": [
             "veadk-agent-source-2026-08-15",
@@ -37536,7 +37537,7 @@
           ]
         },
         "/module:veadk/brief/qa/002": {
-          "hash": "sha256:190754d58d06d18cb203a84d6a168cbfc7cb58281fa6bf330227765b75e4eef6",
+          "hash": "sha256:cae8d9274fb08ddde8a45f9a79daa5df1da0ca52fc1c28274844ceaaa01602cc",
           "objectType": "brief",
           "sourceIds": [
             "veadk-runner-source-2026-08-15",
@@ -37544,7 +37545,7 @@
           ]
         },
         "/module:veadk/brief/qa/003": {
-          "hash": "sha256:c5256392f29b6ef74b1371b16cabfc8562662a01a37f9946999a100f5deb57c5",
+          "hash": "sha256:b7225d3a14da437e8a5f8f173081dc24d84a1d868cb251a98c8829400062e5dd",
           "objectType": "brief",
           "sourceIds": [
             "veadk-agent-source-2026-08-15",
@@ -37552,14 +37553,14 @@
           ]
         },
         "/module:veadk/brief/qa/004": {
-          "hash": "sha256:1eb61a330104d48e7723de38c55a5cb57d5c1107be7246ec57437de9cf8a2964",
+          "hash": "sha256:3d40406069bcc5443495690960f9058eb5ec54c86cb92e3e51582761725b11eb",
           "objectType": "brief",
           "sourceIds": [
             "veadk-short-term-memory-2026-08-15"
           ]
         },
         "/module:veadk/brief/qa/005": {
-          "hash": "sha256:71b2ceaa34ac77ebd587271938403eaee5134bb61d5f255f50a9cd4e21840e17",
+          "hash": "sha256:b88c80f405ae4a5d679e0dd8433a6983752eb326bdd2297a5a9e1b35e2ea1a85",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
@@ -37568,7 +37569,7 @@
           ]
         },
         "/module:veadk/brief/qa/006": {
-          "hash": "sha256:cd7b163bea720dd11eea3f8aa35cbc964f4f3a7e48b3f6acc834c8f72c1a3177",
+          "hash": "sha256:ba0576c6669f23cfd1146a9e8431f8341b5e5e7de3949546663182b695611e93",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-cli-overview-2026-08-15",
@@ -37696,11 +37697,12 @@
           "sourceIds": []
         },
         "/module:veadk/content/deepDives/000": {
-          "hash": "sha256:fe4e8d50ebdfc943ffc0aa2ede9227c9b70e6f531a6c935616d80f73cd95608d",
+          "hash": "sha256:8ea9ad9aa9ac5a2d2bad1ff7789d92360d751259782bd09a6b020c48e8c81a43",
           "objectType": "content",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
             "veadk-agent-source-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15",
             "veadk-builtin-tools-2026-08-15",
             "veadk-runner-source-2026-08-15"
           ]
@@ -37746,7 +37748,7 @@
           "sourceIds": []
         },
         "/module:veadk/content/qa/000": {
-          "hash": "sha256:da408a87caad1ef0c1991ad0d5b62f1d0f6df4c9defef240a911531c404dd489",
+          "hash": "sha256:88b191705bd711484c090274e3533e19ab7095ac7e88b2cb6b4f6d4cb18562da",
           "objectType": "content",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -37754,7 +37756,7 @@
           ]
         },
         "/module:veadk/content/qa/001": {
-          "hash": "sha256:71241f4f0392c9b96c6a5b3acf97c06b57ee5c3f4dd8b49919ac257d5f99a855",
+          "hash": "sha256:ce7e700b1cf6fb6fca2e1fcdff29cd23c11645d7a592e94a625b74b935d0ad88",
           "objectType": "content",
           "sourceIds": [
             "veadk-agent-source-2026-08-15",
@@ -37762,7 +37764,7 @@
           ]
         },
         "/module:veadk/content/qa/002": {
-          "hash": "sha256:190754d58d06d18cb203a84d6a168cbfc7cb58281fa6bf330227765b75e4eef6",
+          "hash": "sha256:cae8d9274fb08ddde8a45f9a79daa5df1da0ca52fc1c28274844ceaaa01602cc",
           "objectType": "content",
           "sourceIds": [
             "veadk-runner-source-2026-08-15",
@@ -37770,7 +37772,7 @@
           ]
         },
         "/module:veadk/content/qa/003": {
-          "hash": "sha256:c5256392f29b6ef74b1371b16cabfc8562662a01a37f9946999a100f5deb57c5",
+          "hash": "sha256:b7225d3a14da437e8a5f8f173081dc24d84a1d868cb251a98c8829400062e5dd",
           "objectType": "content",
           "sourceIds": [
             "veadk-agent-source-2026-08-15",
@@ -37778,14 +37780,14 @@
           ]
         },
         "/module:veadk/content/qa/004": {
-          "hash": "sha256:1eb61a330104d48e7723de38c55a5cb57d5c1107be7246ec57437de9cf8a2964",
+          "hash": "sha256:3d40406069bcc5443495690960f9058eb5ec54c86cb92e3e51582761725b11eb",
           "objectType": "content",
           "sourceIds": [
             "veadk-short-term-memory-2026-08-15"
           ]
         },
         "/module:veadk/content/qa/005": {
-          "hash": "sha256:71b2ceaa34ac77ebd587271938403eaee5134bb61d5f255f50a9cd4e21840e17",
+          "hash": "sha256:b88c80f405ae4a5d679e0dd8433a6983752eb326bdd2297a5a9e1b35e2ea1a85",
           "objectType": "content",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
@@ -37794,7 +37796,7 @@
           ]
         },
         "/module:veadk/content/qa/006": {
-          "hash": "sha256:cd7b163bea720dd11eea3f8aa35cbc964f4f3a7e48b3f6acc834c8f72c1a3177",
+          "hash": "sha256:ba0576c6669f23cfd1146a9e8431f8341b5e5e7de3949546663182b695611e93",
           "objectType": "content",
           "sourceIds": [
             "agentkit-cli-overview-2026-08-15",
@@ -37808,28 +37810,29 @@
           "sourceIds": []
         },
         "/module:veadk/curriculum/chapters/000": {
-          "hash": "sha256:9948f4048c8b2ac638677b8d8eac15651d60f9879d4f93d0ba091eb5b9dc0902",
+          "hash": "sha256:9886853de0d1a9e11024969632a9373664b5c77aabe8393b26458fdbce1e4b9b",
           "objectType": "curriculum",
           "sourceIds": [
             "veadk-agent-source-2026-08-15"
           ]
         },
         "/module:veadk/curriculum/chapters/001": {
-          "hash": "sha256:8d63080d6ffb4bc8cfca54f94498f935982d165f54533b0bc2a6845c19143be3",
+          "hash": "sha256:f5d8f7556d1ba9a5e89ba1b46622d4bf2457ca8d5b4dad68401467eeea5cc5c6",
           "objectType": "curriculum",
           "sourceIds": [
             "veadk-runner-source-2026-08-15"
           ]
         },
         "/module:veadk/curriculum/chapters/002": {
-          "hash": "sha256:596a9236d716d28033eb030377a21a41c296f91420e130775d1434ef3d08cabd",
+          "hash": "sha256:1c85bd7c20107f3237d5a13e6b4001538fa847c7fee50ad5b2878d8963b71e6c",
           "objectType": "curriculum",
           "sourceIds": [
+            "veadk-agent-source-2026-08-15",
             "veadk-builtin-tools-2026-08-15"
           ]
         },
         "/module:veadk/curriculum/chapters/003": {
-          "hash": "sha256:d0240aab0f035fd31d72b39c25809c350ba001b8b3c3404269717c22853f56e4",
+          "hash": "sha256:4c352c37993911791a0112b38ac2ffb19b51ef5387cfcf9bfb4600b499b5e014",
           "objectType": "curriculum",
           "sourceIds": [
             "veadk-short-term-memory-2026-08-15"
@@ -37844,14 +37847,14 @@
           ]
         },
         "/module:veadk/curriculum/chapters/005": {
-          "hash": "sha256:413dde8b96e9bf61ce4592e88d4419f4e89ec94a53da733d2e852330db7886a5",
+          "hash": "sha256:a825ae9e1335241b989f89d6c662f1226456c568ea7a19b4d68b13362142aa8e",
           "objectType": "curriculum",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15"
           ]
         },
         "/module:veadk/curriculum/chapters/006": {
-          "hash": "sha256:54da4fdb48e3d8552693163fa019d37e04ceba253bf64d28ea4b04b7b6d058b5",
+          "hash": "sha256:70d017d599bedf1b69eda850ae5e709c2c66c431dd9461092f232cc622243076",
           "objectType": "curriculum",
           "sourceIds": [
             "veadk-agentkit-integration-2026-08-15"
@@ -38139,52 +38142,42 @@
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/$order": {
-          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "publication-order",
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/000": {
-          "hash": "sha256:b4bb9ebba4153068242945b4ccbc6cdc3a6e2961144b6e9cb10fe24625b01bc1",
+          "hash": "sha256:d58290a224ce5e6c7e23103c3bcf6e056e5ec3f868188b601afb43d1d20d3607",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/001": {
-          "hash": "sha256:6041fbb80c30d43c10b656100ac84b0620e428ebca4002b66a00eb7863bc0283",
+          "hash": "sha256:35e2b96e1f54850af6eb3e4b53a2434ee3a4ec0fb98b90a1ad79581ba4326423",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/002": {
-          "hash": "sha256:8fabda489b657ec92c579beb01e4bdd00673982ca961e3d302ca5ce23c291402",
+          "hash": "sha256:ae1eb9f1a0afb73f466c023d2a6f40c8dc53ef7aa4f6cfaea72649d3f06bacec",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/003": {
-          "hash": "sha256:713ffb6b39cc457ca6366ab4ff6112949f785c79567e6122039e64e484ee777d",
+          "hash": "sha256:c628b6ef7459e050d20f959512ddf8f4c7c41cca7a4350d974fcc147dc1457a4",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/004": {
-          "hash": "sha256:a5c49b7a30a5e2e70e595bd717d7e277e31cf5f44e36637ea8d8ec5216241e5e",
+          "hash": "sha256:84a45a83c0c32b237eba8b88e484914cfddc50b0f12683444436109f835051e6",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/005": {
-          "hash": "sha256:659e69c05e8d999da5024c910115d368073cdebc9d8c22242dc061acd7acdc5e",
+          "hash": "sha256:a72ea5afc9ce1f600c85c17bf405b890fcf2c4b3ca6edb2de6afb8c2177f9d13",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:veadk/publication/qaCoverageTags/006": {
           "hash": "sha256:958a6c4a2ecab7b25fdae3d2875fc10c360d97a7d843daaf4d07b7dccfe38c52",
-          "objectType": "publication",
-          "sourceIds": []
-        },
-        "/module:veadk/publication/qaCoverageTags/007": {
-          "hash": "sha256:0b60c3660c46421825656e02ee6217917f26f5032dbf70da26725ed5735fd3f6",
-          "objectType": "publication",
-          "sourceIds": []
-        },
-        "/module:veadk/publication/qaCoverageTags/008": {
-          "hash": "sha256:8c890b3b70aa172fc2fc16b9c5d588ef54ef0ce5151b06cc1e27599055a36807",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -38754,41 +38747,41 @@
       "reviewFiles": {
         "br-veadk-2026-08-15-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.ultra-exception.json",
-          "hash": "sha256:b579d8eb0e9ae485acc1d53cba55e41d4efa08e3afc6a40826620deb1b106b2c",
-          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "hash": "sha256:03ffe2369a6f3a16a3ca4f2c11c8b2811efd65e32b67ab142c3f16f6b8ed591f",
+          "zhContentHash": "sha256:8306376004f68d101a376926f61d5b71af77a9c33e80fe5f7c05fd991c0a3dba",
           "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
         },
         "br-veadk-2026-08-15-xhigh-author": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.xhigh-author.json",
-          "hash": "sha256:3ed425ead99bf795a2cd4d1d20ec75da4866c558239002b6a7814bc0b22a0f68",
-          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "hash": "sha256:057c2b52dd32279b75ff7ad5b4e83662742456c7fd7852def61ab7bfa1150f26",
+          "zhContentHash": "sha256:8306376004f68d101a376926f61d5b71af77a9c33e80fe5f7c05fd991c0a3dba",
           "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
         },
         "br-veadk-2026-08-15-xhigh-language": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.xhigh-language.json",
-          "hash": "sha256:0bbc14b2fc1eba38d48c40d7dc01d558611c51b532700f2f7b8d02da28b2ca2e",
-          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "hash": "sha256:02fb331445a0f6dbed9270e063cc6cceedf23019ea62cd4bddd19a34fe8b3cb7",
+          "zhContentHash": "sha256:8306376004f68d101a376926f61d5b71af77a9c33e80fe5f7c05fd991c0a3dba",
           "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
         },
         "br-veadk-2026-08-15-xhigh-semantic": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.xhigh-semantic.json",
-          "hash": "sha256:9d50e32317a9a35db2e46307a448527971bf0cbfa3977a4f1c43e4f153c5aec6",
-          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "hash": "sha256:233dde70ddbbc08427028e08d41886a4f2bbab17f5b6f77fcd8709e9463e6d3b",
+          "zhContentHash": "sha256:8306376004f68d101a376926f61d5b71af77a9c33e80fe5f7c05fd991c0a3dba",
           "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
         }
       }
     },
     "agentkit": {
-      "zhBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
-      "enBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
+      "zhBaselineCommit": "e8662a8fb5be6b68053d7c1cf557b3005efdcec7",
+      "enBaselineCommit": "e8662a8fb5be6b68053d7c1cf557b3005efdcec7",
       "reviewSetIds": [
         "br-agentkit-2026-08-15-ultra-exception",
         "br-agentkit-2026-08-15-xhigh-author",
         "br-agentkit-2026-08-15-xhigh-language",
         "br-agentkit-2026-08-15-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
-      "zhStateHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+      "zhReviewHash": "sha256:db660fb1273b8d64dbe1be4415cf13ce29e5f8710590efa4c4fbb2581bad3844",
+      "zhStateHash": "sha256:db660fb1273b8d64dbe1be4415cf13ce29e5f8710590efa4c4fbb2581bad3844",
       "zhObjects": {
         "/module:agentkit/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -38971,7 +38964,7 @@
           "sourceIds": []
         },
         "/module:agentkit/brief/qa/000": {
-          "hash": "sha256:c98a17bbeb564da722e727f27e5f85614291c661038402e158b394bbfd95f35f",
+          "hash": "sha256:6ffd2906a07b062565027cfec7588ced9eafa574ba3f2f81bb8a45d47917109c",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -38979,7 +38972,7 @@
           ]
         },
         "/module:agentkit/brief/qa/001": {
-          "hash": "sha256:b39ba6663ad05478e5d67402e4e8ce292f96161e9ca6482d273720577a8e4dc3",
+          "hash": "sha256:84e1ad0a357ced1fbdc4785832279cc5b7d8a7d2628e87b6d3c47a33802d14c3",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-config-reference-2026-08-15",
@@ -38987,7 +38980,7 @@
           ]
         },
         "/module:agentkit/brief/qa/002": {
-          "hash": "sha256:e3ad7ca687a50d82f50cd1ca5a37f676b7dbe80f8ff1b3ec1ac1b4cffc861706",
+          "hash": "sha256:dcff561c4eedb104fca86950cf685d1ffd73e43415b17504fc7fe99af1ac39ee",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-cli-commands-2026-08-15",
@@ -38995,7 +38988,7 @@
           ]
         },
         "/module:agentkit/brief/qa/003": {
-          "hash": "sha256:dfe81811780d5920e31edd666a4391f2e85a74348ef3bd775920650d2710998a",
+          "hash": "sha256:dcdc37a0488628793b05583d264b4383d3334f2d08b020c2d0d7bd7d989a2884",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -39003,7 +38996,7 @@
           ]
         },
         "/module:agentkit/brief/qa/004": {
-          "hash": "sha256:8c6fe2d15619bf564843633ee64d73daef5bf4d20ed8224eb91c3bb87a0a44d3",
+          "hash": "sha256:15e5f03bb492c9cd04b091f35ad90f8ab0e4139d21b9f1a4677f5b9756b5ab85",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
@@ -39012,7 +39005,7 @@
           ]
         },
         "/module:agentkit/brief/qa/005": {
-          "hash": "sha256:848e5a1db29a7653fe5ae946f376133fe187fcb6939f76cc414981841e18255b",
+          "hash": "sha256:0a6264ef2901236fb1871614bfb99627159589184a264ea3c279f278797af563",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
@@ -39021,7 +39014,7 @@
           ]
         },
         "/module:agentkit/brief/qa/006": {
-          "hash": "sha256:a21eabedafbe77e0ad96590415eeb030db4cbebeb3a2e679d42ddcacf8bcf18e",
+          "hash": "sha256:e550200cb11e0c7900c6f1e92ad68db3d34410ea4cb6ea0d4a12da87ab9bec43",
           "objectType": "brief",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -39200,7 +39193,7 @@
           "sourceIds": []
         },
         "/module:agentkit/content/qa/000": {
-          "hash": "sha256:c98a17bbeb564da722e727f27e5f85614291c661038402e158b394bbfd95f35f",
+          "hash": "sha256:6ffd2906a07b062565027cfec7588ced9eafa574ba3f2f81bb8a45d47917109c",
           "objectType": "content",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -39208,7 +39201,7 @@
           ]
         },
         "/module:agentkit/content/qa/001": {
-          "hash": "sha256:b39ba6663ad05478e5d67402e4e8ce292f96161e9ca6482d273720577a8e4dc3",
+          "hash": "sha256:84e1ad0a357ced1fbdc4785832279cc5b7d8a7d2628e87b6d3c47a33802d14c3",
           "objectType": "content",
           "sourceIds": [
             "agentkit-config-reference-2026-08-15",
@@ -39216,7 +39209,7 @@
           ]
         },
         "/module:agentkit/content/qa/002": {
-          "hash": "sha256:e3ad7ca687a50d82f50cd1ca5a37f676b7dbe80f8ff1b3ec1ac1b4cffc861706",
+          "hash": "sha256:dcff561c4eedb104fca86950cf685d1ffd73e43415b17504fc7fe99af1ac39ee",
           "objectType": "content",
           "sourceIds": [
             "agentkit-cli-commands-2026-08-15",
@@ -39224,7 +39217,7 @@
           ]
         },
         "/module:agentkit/content/qa/003": {
-          "hash": "sha256:dfe81811780d5920e31edd666a4391f2e85a74348ef3bd775920650d2710998a",
+          "hash": "sha256:dcdc37a0488628793b05583d264b4383d3334f2d08b020c2d0d7bd7d989a2884",
           "objectType": "content",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -39232,7 +39225,7 @@
           ]
         },
         "/module:agentkit/content/qa/004": {
-          "hash": "sha256:8c6fe2d15619bf564843633ee64d73daef5bf4d20ed8224eb91c3bb87a0a44d3",
+          "hash": "sha256:15e5f03bb492c9cd04b091f35ad90f8ab0e4139d21b9f1a4677f5b9756b5ab85",
           "objectType": "content",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
@@ -39241,7 +39234,7 @@
           ]
         },
         "/module:agentkit/content/qa/005": {
-          "hash": "sha256:848e5a1db29a7653fe5ae946f376133fe187fcb6939f76cc414981841e18255b",
+          "hash": "sha256:0a6264ef2901236fb1871614bfb99627159589184a264ea3c279f278797af563",
           "objectType": "content",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15",
@@ -39250,7 +39243,7 @@
           ]
         },
         "/module:agentkit/content/qa/006": {
-          "hash": "sha256:a21eabedafbe77e0ad96590415eeb030db4cbebeb3a2e679d42ddcacf8bcf18e",
+          "hash": "sha256:e550200cb11e0c7900c6f1e92ad68db3d34410ea4cb6ea0d4a12da87ab9bec43",
           "objectType": "content",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -39271,7 +39264,7 @@
           ]
         },
         "/module:agentkit/curriculum/chapters/001": {
-          "hash": "sha256:590f3e21e28018bfcc41912879fa709e3bf168b6cc355d0619b377fab5f7afc6",
+          "hash": "sha256:6048a3dfb8a0054a3b091efb65fb4a999aec7b11e879c743063639148294fe4e",
           "objectType": "curriculum",
           "sourceIds": [
             "agentkit-cli-commands-2026-08-15",
@@ -39279,21 +39272,21 @@
           ]
         },
         "/module:agentkit/curriculum/chapters/002": {
-          "hash": "sha256:dec0db61b174046c65234d46bf1d6c7ab76dd95661faca5f6546362a35965d6d",
+          "hash": "sha256:4da9dace3627433007f989b9a270db6c595ccd55a6171e3d152978b52fe5e548",
           "objectType": "curriculum",
           "sourceIds": [
             "agentkit-config-reference-2026-08-15"
           ]
         },
         "/module:agentkit/curriculum/chapters/003": {
-          "hash": "sha256:76d7e476731a82875e5243f5df03e56ba124244233bf9d2a54a24bcc7f127843",
+          "hash": "sha256:ede772aa05dbb27928ef65bbf206ea8e0581e5b3a7b1c737976054c706fea88d",
           "objectType": "curriculum",
           "sourceIds": [
             "agentkit-runtime-quickstart-2026-08-15"
           ]
         },
         "/module:agentkit/curriculum/chapters/004": {
-          "hash": "sha256:dbb71a3d70219ee88ab43fd33b4712f8d111dcb88ef6a62af5daf1e8f3a2a0ff",
+          "hash": "sha256:3f6b1064b5e8a8d9fd92bbe4ad8e6649653c525b6ba69441794271aaae06aaa1",
           "objectType": "curriculum",
           "sourceIds": [
             "agentkit-memory-quickstart-2026-08-15"
@@ -39308,7 +39301,7 @@
           ]
         },
         "/module:agentkit/curriculum/chapters/006": {
-          "hash": "sha256:5297daa14d6f90c170144a8ee91e79b531cdfa70909906c890693cc57199648a",
+          "hash": "sha256:388dee9069ed0af2eb5eaa5b309365cef07bf3ee560b762a337330bd9cc7df3b",
           "objectType": "curriculum",
           "sourceIds": [
             "agentkit-platform-overview-2026-08-15",
@@ -39599,12 +39592,12 @@
           "sourceIds": []
         },
         "/module:agentkit/publication/qaCoverageTags/$order": {
-          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
           "objectType": "publication-order",
           "sourceIds": []
         },
         "/module:agentkit/publication/qaCoverageTags/000": {
-          "hash": "sha256:8d9d2d15c87138d19222a88fe85e76d4804ab2f0ee1f8a8816a74b10b70585dd",
+          "hash": "sha256:d58290a224ce5e6c7e23103c3bcf6e056e5ec3f868188b601afb43d1d20d3607",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -39614,42 +39607,27 @@
           "sourceIds": []
         },
         "/module:agentkit/publication/qaCoverageTags/002": {
-          "hash": "sha256:f0422369ae3b5ba6f15a935857238e4ecf28f198d96bda17ee494d86fb291fa7",
+          "hash": "sha256:17438d3908ce51fd82503cf5650a712221448c16a2a6afd05184d904d13fb6ff",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:agentkit/publication/qaCoverageTags/003": {
-          "hash": "sha256:726ad2deb03f1047325fb703692365f1831262d782237cf2b24d36d3b90858ea",
+          "hash": "sha256:11862f9efdc447234c5bfc4781a2c64b1076a10d2137d65628c142729a2baba3",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:agentkit/publication/qaCoverageTags/004": {
-          "hash": "sha256:a460da26eba6bf9f54f1bb22e352347b8fc51e54c5f7e4f10f7fd29556e05653",
+          "hash": "sha256:e14c9f35115a5661970644308849689434c585112b5374fe8bbefa6f6ade3949",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:agentkit/publication/qaCoverageTags/005": {
-          "hash": "sha256:b8e64abdd780553e955fa903ef478c782acfda428a78da220ca2dbacdb8e5a6b",
+          "hash": "sha256:e11ff8075abfbf50996acdbb9ac39e275f2cc69386c42b4e2bbf5fc0ec54567c",
           "objectType": "publication",
           "sourceIds": []
         },
         "/module:agentkit/publication/qaCoverageTags/006": {
-          "hash": "sha256:1d3f5a3cf555a030bd1aeac1bfd6b77bad6bd04666568bb883d4f0a2806b4043",
-          "objectType": "publication",
-          "sourceIds": []
-        },
-        "/module:agentkit/publication/qaCoverageTags/007": {
-          "hash": "sha256:32274472a005bb41ec03bbcb6a933f3b78a80cbb4ebe63b2984522fd23c51ac2",
-          "objectType": "publication",
-          "sourceIds": []
-        },
-        "/module:agentkit/publication/qaCoverageTags/008": {
-          "hash": "sha256:2191be20baffdcecb35e9479199744448f3b20f78f293475643f27196a278d45",
-          "objectType": "publication",
-          "sourceIds": []
-        },
-        "/module:agentkit/publication/qaCoverageTags/009": {
-          "hash": "sha256:60bfe4afbc8fc3524606f24d98445f6d34da10428c022b60c3df54f550bde8a0",
+          "hash": "sha256:3202a0087f83f04e20fbfbe9047f8ff46bbe6a8c53fac28a0c2c4cfe28875b82",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -40234,26 +40212,26 @@
       "reviewFiles": {
         "br-agentkit-2026-08-15-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.ultra-exception.json",
-          "hash": "sha256:5b2314fb6731b6e6f465453824250575e4b45e5a03098996376b35ef1a2663ba",
-          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "hash": "sha256:eaec4df875f4f4a0da160496aea1bd0ae811b6d888c1e691f2cf44f3ffa0ed1a",
+          "zhContentHash": "sha256:db660fb1273b8d64dbe1be4415cf13ce29e5f8710590efa4c4fbb2581bad3844",
           "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
         },
         "br-agentkit-2026-08-15-xhigh-author": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.xhigh-author.json",
-          "hash": "sha256:099af5ebebea377aef9d53097e3e0c743b14c9fc3bd7363ca68f7dc9b80154bc",
-          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "hash": "sha256:30cd2d557b2115aa8e35d71a421c1211a7dfc214ceb26574d28e0fb3994c5fd4",
+          "zhContentHash": "sha256:db660fb1273b8d64dbe1be4415cf13ce29e5f8710590efa4c4fbb2581bad3844",
           "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
         },
         "br-agentkit-2026-08-15-xhigh-language": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.xhigh-language.json",
-          "hash": "sha256:dbc39128820e9ab44cad6152b20ca71f40015bb1e72940a5458000341793744d",
-          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "hash": "sha256:c14ae46f4ef13d8414de986f630646fe15a7e11f124533b4ed5f87fbd4e5df19",
+          "zhContentHash": "sha256:db660fb1273b8d64dbe1be4415cf13ce29e5f8710590efa4c4fbb2581bad3844",
           "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
         },
         "br-agentkit-2026-08-15-xhigh-semantic": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.xhigh-semantic.json",
-          "hash": "sha256:1eb9b97f4d2b1b4ab5588dcbbfaefcccf680d455091dfb44267393fd43b3f076",
-          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "hash": "sha256:ed931da4e18bbd69d53f2f453094cc0abc91f0d04d2683604d153d2c43199b7f",
+          "zhContentHash": "sha256:db660fb1273b8d64dbe1be4415cf13ce29e5f8710590efa4c4fbb2581bad3844",
           "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
         }
       }
