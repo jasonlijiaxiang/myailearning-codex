@@ -715,7 +715,7 @@ test("focused pilots use relationship-driven reading paths instead of standalone
 
 test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {
   const remainingSlugs = Object.keys(moduleExtensionViews);
-  assert.equal(remainingSlugs.length, 15, "剩余模块清单必须完整且显式");
+  assert.equal(remainingSlugs.length, 17, "剩余模块清单必须完整且显式");
   assert.equal(new Set(Object.values(moduleExtensionViews).map((view) => view.id)).size, remainingSlugs.length, "剩余模块知识视图 ID 不得复用");
 
   for (const slug of remainingSlugs) {

@@ -177,6 +177,23 @@
           "note": "Bilingual decision chain, adoption gates, evidence, focused rendering, and independent reviews passed."
         }
       ]
+    },
+    {
+      "id": "batch-10-agent-framework-runtime",
+      "status": "complete",
+      "note": "便携知识、官方来源、双语内容、生产边界与独立审校均已完成；云端实测保留为待执行实验。",
+      "modules": [
+        {
+          "slug": "veadk",
+          "status": "complete",
+          "note": "框架机制、Session、Tool、记忆与应用适配内容及双语审校已完成。"
+        },
+        {
+          "slug": "agentkit",
+          "status": "complete",
+          "note": "Runtime 生命周期、状态资源与上云验收清单及双语审校已完成。"
+        }
+      ]
     }
   ]
 }

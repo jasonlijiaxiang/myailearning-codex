@@ -9,6 +9,7 @@ import {
 import { fineTuning, llm, llmTraining, modelLandscape } from "./module-briefs-foundations.mjs";
 import { aiApplicationEngineeringContribution, aiFinopsContribution } from "./module-briefs-application-finops.mjs";
 import { aiGovernanceBrief, predictiveAiMlopsBrief } from "./module-briefs-governance-mlops.mjs";
+import { agentPlatformBriefs } from "./module-content-agent-platforms.mjs";
 import {
   aiGatewayBrief,
   aiInfraComputeBrief,
@@ -113,6 +114,8 @@ export const moduleBriefs = Object.freeze({
   [multimodalBrief.slug]: withExpandedQa(multimodalBrief),
   [mcpBrief.slug]: withExpandedQa(mcpBrief),
   [a2aBrief.slug]: withExpandedQa(a2aBrief),
+  [agentPlatformBriefs.veadk.slug]: withExpandedQa(agentPlatformBriefs.veadk),
+  [agentPlatformBriefs.agentkit.slug]: withExpandedQa(agentPlatformBriefs.agentkit),
   [evaluationBrief.slug]: withExpandedQa(evaluationBrief),
   [aiGovernanceBrief.slug]: withExpandedQa(aiGovernanceBrief),
   [securityBrief.slug]: withExpandedQa(securityBrief),

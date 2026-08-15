@@ -1,3 +1,5 @@
+import { agentPlatformQaExpansion } from "./module-content-agent-platforms.mjs";
+
 const qa = (q, a, depth, ask, tag, basis, evidence, addedAt) => Object.freeze({
   q,
   a,
@@ -42,6 +44,7 @@ const finopsSettlementQa = qa(
     );
 
 export const moduleQaExpansion = Object.freeze({
+  ...agentPlatformQaExpansion,
   "predictive-ai-mlops": Object.freeze([
     qa(
       "预测模型上线后，多久重训一次才合理？",

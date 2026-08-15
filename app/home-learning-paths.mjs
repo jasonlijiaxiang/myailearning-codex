@@ -50,7 +50,7 @@ export const timeBudgetPaths = Object.freeze([
     id: "time-system",
     label: "系统学习",
     duration: "按个人节奏",
-    focus: "理解 21 个模块关系，完成至少一个端到端场景蓝图。",
+    focus: "理解 23 个模块关系，完成至少一个端到端场景蓝图。",
     href: "/knowledge-graph",
     steps: Object.freeze([
       Object.freeze({ type: "module", label: "建立模块关系", slug: "solution-patterns" }),

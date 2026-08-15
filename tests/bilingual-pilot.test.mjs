@@ -67,7 +67,7 @@ function assertUniqueIds(items, label) {
 }
 
 test("English edition registers every published module", () => {
-  assert.equal(englishModuleSlugs.length, 21);
+  assert.equal(englishModuleSlugs.length, 23);
   assert.deepEqual([...englishModuleSlugs], [...publishedModuleSlugs]);
   assert.deepEqual(Object.keys(englishModuleRegistry).sort(), [...publishedModuleSlugs].sort());
   const expectedEnglishTotal = publishedModuleSlugs.reduce((total, slug) => {

@@ -1,0 +1,272 @@
+import { agentPlatformSourceCopy } from "../agent-platform-source-copy.mjs";
+
+export const englishModule = Object.freeze({
+  slug: "veadk",
+  title: "Volcengine Agent Development Kit",
+  subtitle: "Define agent behavior in code, run it through explicit state and tool boundaries, and adapt it for a production application",
+  definition: "In the current pinned source, Volcengine Agent Development Kit (VeADK) is a Python agent-development framework whose Agent and default Runner path extend Google Agent Development Kit abstractions. It also provides tool and memory integrations and an application adapter that can expose a root agent through AgentKit-compatible routes. Optional execution modes may use different backends and require separate verification.",
+  position: "VeADK belongs to the application-definition and execution layer. It helps a team express agent logic and run it against model, tool, session, and memory services. It does not by itself provision a cloud runtime, establish end-user identity, authorize business actions, make local state safe across replicas, or prove that a deployed application meets a customer SLO.",
+  relatedSlugs: Object.freeze(["agentkit", "ai-agent", "prompt-engineering", "mcp", "rag", "evaluation", "ai-ops"]),
+  sections: Object.freeze([
+    Object.freeze({
+      id: "study-guide",
+      eyebrow: "LEARN, RUN, PROVE",
+      title: "Trace one agent from definition to a production application boundary",
+      lead: "Use one small root agent to separate framework behavior, tool authority, session continuity, memory retrieval, and cloud delivery evidence.",
+      blocks: Object.freeze([
+        Object.freeze({
+          type: "cards",
+          title: "Learning outcomes",
+          items: Object.freeze([
+            Object.freeze({ id: "outcome-framework-lineage", title: "Explain the upstream relationship", body: "Read the current Agent and Runner inheritance in source, then treat the Google ADK dependency as a compatibility boundary that needs regression tests." }),
+            Object.freeze({ id: "outcome-execution-state", title: "Follow an execution", body: "Trace how a Runner uses session state, emits events, requests tools, and returns control without confusing framework completion with business completion." }),
+            Object.freeze({ id: "outcome-memory-layers", title: "Separate state and memory", body: "Distinguish the active conversation, retrieved long-term memory, and authoritative business records by owner, storage, and validation rule." }),
+            Object.freeze({ id: "outcome-application-adapter", title: "Cross the application boundary", body: "Use the AgentKit application adapter deliberately and identify every production responsibility that remains outside the factory call." }),
+          ]),
+        }),
+        Object.freeze({
+          type: "steps",
+          title: "Recommended learning route",
+          items: Object.freeze([
+            Object.freeze({ id: "route-read-inheritance", title: "Inspect the current framework lineage", body: "Confirm the concrete VeADK Agent and Runner bases in the pinned source snapshot, then record the dependency combination used by the application.", decision: "Checkpoint: an upstream upgrade cannot enter production without import, session, tool, streaming, and error-path regression tests." }),
+            Object.freeze({ id: "route-run-event-trace", title: "Run one event trace", body: "Create a root agent, invoke it through the Runner, and retain session, model, tool-request, tool-result, error, and final-response events.", decision: "Checkpoint: the trace identifies the component that owns every state transition and side effect." }),
+            Object.freeze({ id: "route-test-tool-authority", title: "Test a read tool and a controlled write tool", body: "Keep the built-in web tools on their documented import paths. Put identity, authorization, parameter validation, idempotency, and result verification around any business write.", decision: "Checkpoint: a model request never serves as proof of permission or completion." }),
+            Object.freeze({ id: "route-test-state-boundaries", title: "Test session and memory separately", body: "Replay a conversation across processes, then test long-term memory ingestion and retrieval without using either store as the source of truth for business state.", decision: "Checkpoint: replica changes preserve session continuity, while authoritative facts still come from the owning system." }),
+            Object.freeze({ id: "route-adapt-and-verify", title: "Adapt the root agent and verify the deployed path", body: "Wrap the same root agent with create_agentkit_app, then test health, invocation, identity propagation, shared state, traces, failure recovery, and load in the target runtime.", decision: "Checkpoint: local route success and cloud release evidence are recorded as different milestones." }),
+          ]),
+        }),
+        Object.freeze({
+          type: "cards",
+          title: "Practice labs",
+          items: Object.freeze([
+            Object.freeze({ id: "lab-replica-session", title: "Break an in-memory session across replicas", subtitle: "A second request reaches a different process", body: "Run the same session against more than one process, observe the continuity failure, replace local state with a shared database-backed session service, and repeat the trace.", decision: "Deliverable: a reproducible failure and a shared-session acceptance test.", boundary: "Acceptance: continuity is demonstrated after process changes and restarts; a successful request on one process is not enough.", sourceIds: Object.freeze(["veadk-short-term-memory-2026-08-15"]) }),
+            Object.freeze({ id: "lab-tool-authorization", title: "Put a business authorization boundary around a tool", subtitle: "The model proposes an account-changing action", body: "Resolve the authenticated subject outside the prompt, enforce resource and action policy, validate the request, use an idempotency key, execute the change, and read back the authoritative result.", decision: "Deliverable: a tool contract and denied, duplicate, partial-failure, and successful traces.", boundary: "Acceptance: neither the tool schema nor model-selected arguments can grant access.", sourceIds: Object.freeze(["veadk-builtin-tools-2026-08-15", "veadk-agent-source-2026-08-15"]) }),
+            Object.freeze({ id: "lab-adapter-cloud-gap", title: "Record the adapter-to-cloud gap", subtitle: "The AgentKit-compatible application runs locally", body: "List what the application factory supplies, then test the target Runtime, configuration bindings, shared session backend, trusted identity, memory connection, telemetry, and recovery as separate checkpoints.", decision: "Deliverable: an application contract and a cloud-readiness evidence matrix.", boundary: "Acceptance: every untested production dependency remains explicitly pending.", sourceIds: Object.freeze(["veadk-agentkit-integration-2026-08-15", "agentkit-runtime-quickstart-2026-08-15"]) }),
+          ]),
+        }),
+      ]),
+    }),
+    Object.freeze({
+      id: "curriculum",
+      eyebrow: "CURRICULUM ATLAS",
+      title: "From a Google ADK extension to an operable agent application",
+      lead: "The useful mental model is a chain of contracts: framework lineage, agent definition, Runner execution, tool authority, state, memory, application adaptation, and runtime verification.",
+      blocks: Object.freeze([
+        Object.freeze({
+          type: "cards",
+          items: Object.freeze([
+            Object.freeze({ id: "curriculum-upstream-lineage", title: "Google ADK lineage and version boundary", subtitle: "Framework Lineage", body: "The current VeADK Agent extends Google ADK's LlmAgent, and the current default VeADK Runner path extends the Google ADK Runner. VeADK adds integrations and defaults around that path; optional execution modes may retain a different backend loop.", decision: "Pin the tested dependency set and run behavioral regression tests before changing either framework.", boundary: "Current class inheritance describes the pinned ADK-backed path, not every optional runtime mode or future compatibility.", sourceIds: Object.freeze(["veadk-agent-source-2026-08-15", "veadk-runner-source-2026-08-15"]) }),
+            Object.freeze({ id: "curriculum-agent-runner", title: "Root Agent and Runner responsibilities", subtitle: "Definition & Execution", body: "The root agent declares model behavior, instructions, tools, and related components. The Runner coordinates an invocation with session services and the event stream that records model and tool interactions.", decision: "Keep the root agent versionable and make Runner, session, and event behavior observable in tests.", boundary: "A completed Runner invocation does not prove that an external system accepted the business result.", sourceIds: Object.freeze(["veadk-agent-source-2026-08-15", "veadk-runner-source-2026-08-15"]) }),
+            Object.freeze({ id: "curriculum-tool-contract", title: "Tool import and authority contract", subtitle: "Tools", body: "VeADK documents built-in web_search and web_fetch functions at their concrete module import paths. Availability gives the agent a callable capability; application policy still decides whether a call is allowed and whether its output is safe to use.", decision: "Import the documented symbol exactly and wrap consequential tools with deterministic controls.", boundary: "A tool description is model context, not an authorization policy or a guarantee that the model will call the tool.", sourceIds: Object.freeze(["veadk-builtin-tools-2026-08-15"]) }),
+            Object.freeze({ id: "curriculum-session-continuity", title: "Session continuity across processes", subtitle: "Short-Term State", body: "Short-term session state carries the active interaction. In-memory and local-file choices can work for development but do not give independent replicas a shared view of a session.", decision: "Use a supported shared database-backed session service before horizontal scaling and test process handoff explicitly.", boundary: "Storage configuration alone does not prove correct tenant isolation, retention, or recovery.", sourceIds: Object.freeze(["veadk-short-term-memory-2026-08-15"]) }),
+            Object.freeze({ id: "curriculum-memory-truth", title: "Long-term memory is retrieved context, not truth", subtitle: "Memory Layers", body: "Long-term memory can extract and retrieve useful information across conversations. Authoritative facts such as account status, entitlement, or transaction state still belong to their source systems and require current read-back.", decision: "Attach provenance, scope, update, deletion, and retrieval tests to memory while resolving business truth from its owner.", boundary: "Retrieval relevance does not establish factual correctness, current validity, or permission to disclose a memory.", sourceIds: Object.freeze(["agentkit-memory-quickstart-2026-08-15", "mem0-platform-vs-oss-2026-08-15"]) }),
+            Object.freeze({ id: "curriculum-agentkit-adapter", title: "create_agentkit_app as an application adapter", subtitle: "Application Surface", body: "The factory wraps a root agent in an AgentKit-compatible application and configures supported application routes and integrations. It can use configured short-term memory or a local fallback for development.", decision: "Use the factory when the target is the AgentKit application contract; keep a smaller local runner or debug entry point for focused framework tests.", boundary: "Creating the application object does not provision a Runtime, shared database, trusted identity, network path, or production telemetry.", sourceIds: Object.freeze(["veadk-agentkit-integration-2026-08-15"]) }),
+            Object.freeze({ id: "curriculum-production-gates", title: "Production gates beyond framework execution", subtitle: "Delivery Boundary", body: "A production release requires evidence across the application artifact, Runtime, configuration and resource bindings, identity, shared state, memory, model and tool dependencies, observability, evaluation, load, and recovery.", decision: "Record evidence for each gate against the same release identity before increasing traffic.", boundary: "Local correctness is necessary development evidence, but it is not cloud deployment or customer SLO evidence.", sourceIds: Object.freeze(["agentkit-platform-overview-2026-08-15", "agentkit-runtime-quickstart-2026-08-15"]) }),
+          ]),
+        }),
+      ]),
+    }),
+    Object.freeze({
+      id: "principles",
+      eyebrow: "FRAMEWORK PRINCIPLES",
+      title: "Keep framework convenience inside explicit execution, authority, and state boundaries",
+      blocks: Object.freeze([
+        Object.freeze({
+          type: "cards",
+          items: Object.freeze([
+            Object.freeze({ id: "principle-upstream-contract", title: "Treat inheritance as a live compatibility contract", body: "VeADK benefits from Google ADK abstractions and also inherits change risk. Source inspection, dependency pinning, and regression tests belong to the release process.", boundary: "A package installation that resolves successfully does not establish behavioral compatibility.", sourceIds: Object.freeze(["veadk-agent-source-2026-08-15", "veadk-runner-source-2026-08-15"]) }),
+            Object.freeze({ id: "principle-tool-proposal", title: "A model proposes; policy authorizes", body: "The agent may choose a tool and arguments. A deterministic application boundary resolves the subject, enforces policy, validates parameters, controls side effects, and confirms the result.", boundary: "Prompt instructions and tool schemas cannot replace business authorization.", sourceIds: Object.freeze(["veadk-builtin-tools-2026-08-15"]) }),
+            Object.freeze({ id: "principle-state-separation", title: "Separate conversation, memory, and truth", body: "Short-term state preserves an active interaction, long-term memory supplies retrieved context, and authoritative systems establish current business facts.", boundary: "Combining the stores into one label called memory hides ownership, retention, consistency, and access-control differences.", sourceIds: Object.freeze(["veadk-short-term-memory-2026-08-15", "agentkit-memory-quickstart-2026-08-15"]) }),
+            Object.freeze({ id: "principle-adapter-boundary", title: "An adapter is not a deployment", body: "create_agentkit_app creates the application surface expected by AgentKit. Cloud build, deployment, bindings, scaling, telemetry, and operational acceptance happen in later layers.", boundary: "Do not report an application factory call or local server as a successful cloud release.", sourceIds: Object.freeze(["veadk-agentkit-integration-2026-08-15", "agentkit-cli-overview-2026-08-15"]) }),
+          ]),
+        }),
+      ]),
+    }),
+    Object.freeze({
+      id: "decisions",
+      eyebrow: "ARCHITECTURE DECISIONS",
+      title: "Choose the smallest execution and state path that still proves the target behavior",
+      blocks: Object.freeze([
+        Object.freeze({
+          type: "cards",
+          items: Object.freeze([
+            Object.freeze({ id: "decision-veadk-or-google-adk", title: "VeADK or direct Google ADK", body: "Choose VeADK when its Volcengine-oriented framework integrations and AgentKit application adapter reduce application work. Use Google ADK directly when those extensions are unnecessary and the team wants to own the integration boundary.", decision: "Compare required integrations, compatibility testing, operating ownership, and exit cost against a representative application.", boundary: "Shared base classes do not make the frameworks interchangeable in every version or deployment.", sourceIds: Object.freeze(["veadk-agent-source-2026-08-15", "veadk-agentkit-integration-2026-08-15"]) }),
+            Object.freeze({ id: "decision-runner-or-app", title: "Runner entry point or AgentKit application", body: "Use the Runner for focused local execution, event inspection, and framework tests. Use create_agentkit_app when testing or delivering the AgentKit application contract and its routes.", decision: "Keep both paths on the same versioned root agent and give each path its own acceptance criteria.", boundary: "Neither path alone proves target-runtime networking, shared state, or production load behavior.", sourceIds: Object.freeze(["veadk-runner-source-2026-08-15", "veadk-agentkit-integration-2026-08-15"]) }),
+            Object.freeze({ id: "decision-local-or-shared-session", title: "Local or shared session backend", body: "Use in-memory or local storage only for a development scope that does not require replica handoff or durable continuity. Use a supported shared database backend for a replicated service.", decision: "Base the choice on process topology, continuity, recovery, retention, isolation, and operational ownership.", boundary: "A database URL is configuration evidence, not proof of failover or tenant isolation.", sourceIds: Object.freeze(["veadk-short-term-memory-2026-08-15"]) }),
+            Object.freeze({ id: "decision-builtin-or-custom-tool", title: "Built-in or application-specific tool", body: "Use a built-in tool when its documented behavior, data boundary, and failure semantics match the task. Build an application-specific tool when identity, domain validation, transactions, or authoritative read-back are required.", decision: "Prefer a narrow contract whose side effects, errors, and audit fields can be tested deterministically.", boundary: "Convenient discovery is not a reason to expose a high-impact action directly to a model.", sourceIds: Object.freeze(["veadk-builtin-tools-2026-08-15"]) }),
+          ]),
+        }),
+      ]),
+    }),
+    Object.freeze({
+      id: "deep-dive",
+      eyebrow: "EXECUTION DEEP DIVE",
+      title: "Debug by boundary: import, invocation, state, memory, tool effect, and business result",
+      blocks: Object.freeze([
+        Object.freeze({
+          type: "steps",
+          items: Object.freeze([
+            Object.freeze({ id: "deep-import-contract", title: "Import and construction", body: "Verify the installed VeADK and upstream dependency set, exact built-in tool import, root-agent construction, and application configuration.", decision: "Failure here belongs to dependency and application packaging, before runtime diagnosis." }),
+            Object.freeze({ id: "deep-invocation-events", title: "Invocation and events", body: "Correlate the request, session, model turn, tool request, tool result, error, and final response with a release identity.", decision: "A missing or malformed event should be assigned to the framework, adapter, or dependency that owns it." }),
+            Object.freeze({ id: "deep-state-and-memory", title: "Session and memory", body: "Test replica handoff for active sessions and separately test memory ingestion, retrieval visibility, access scope, correction, and deletion.", decision: "Do not use a retrieved memory to settle a current business fact without authoritative confirmation." }),
+            Object.freeze({ id: "deep-tool-and-terminal-state", title: "Tool effect and terminal state", body: "Record the authenticated subject, policy decision, validated parameters, idempotency key, downstream response, and authoritative read-back.", decision: "Framework success, tool transport success, and accepted business outcome are separate states." }),
+          ]),
+        }),
+        Object.freeze({
+          type: "boundary",
+          title: "Frequent failure patterns",
+          items: Object.freeze([
+            Object.freeze({ id: "failure-version-drift", title: "Version drift", body: "Imports resolve but event, session, tool, or streaming behavior changes after an upstream upgrade.", boundary: "Pin the tested set and run representative success and failure regressions." }),
+            Object.freeze({ id: "failure-replica-session", title: "Replica-local session", body: "A later request reaches a process that cannot see the earlier session.", boundary: "Move session state to a shared supported backend and test handoff and restart." }),
+            Object.freeze({ id: "failure-memory-overclaim", title: "Memory treated as truth", body: "A relevant retrieved statement is stale, mis-scoped, or inconsistent with the source system.", boundary: "Retain provenance and resolve current facts from the authoritative owner." }),
+            Object.freeze({ id: "failure-local-cloud-equivalence", title: "Local and cloud paths treated as equivalent", body: "The root agent works locally while a binding, identity, network, state, or telemetry dependency fails in the target Runtime.", boundary: "Require an end-to-end trace and recovery test in the deployed environment." }),
+          ]),
+        }),
+      ]),
+    }),
+    Object.freeze({
+      id: "cloud-connections",
+      eyebrow: "CLOUD CONNECTIONS",
+      title: "Carry one root agent through application, Runtime, state, identity, and operational gates",
+      lead: "The framework-to-cloud handoff is complete only when the target deployment can reproduce the intended behavior under replica changes, dependency failures, and representative load.",
+      blocks: Object.freeze([
+        Object.freeze({
+          type: "steps",
+          items: Object.freeze([
+            Object.freeze({ id: "cloud-freeze-root-agent", title: "Freeze the root-agent release", body: "Record code, instructions, tools, dependency set, configuration schema, and evaluation baseline.", decision: "The same release identity must appear in local and deployed evidence." }),
+            Object.freeze({ id: "cloud-create-app-surface", title: "Create the application surface", body: "Wrap the root agent with create_agentkit_app and verify the intended health, invocation, session, and diagnostic routes.", decision: "Record which features are enabled and which dependencies are still local fallbacks." }),
+            Object.freeze({ id: "cloud-bind-production-services", title: "Bind production services", body: "Connect the Runtime to the model, shared session backend, memory, identity, secrets, network, tools, and telemetry services.", decision: "Validate control-plane bindings and data-plane connectivity separately." }),
+            Object.freeze({ id: "cloud-prove-and-release", title: "Prove behavior before release", body: "Run identity, session-handoff, tool-effect, memory, failure-recovery, evaluation, and external load tests against the deployed version.", decision: "Keep cloud deployment, observability, and capacity items pending until the target evidence exists." }),
+          ]),
+        }),
+      ]),
+    }),
+  ]),
+  qa: Object.freeze([
+    Object.freeze({
+      id: "veadk-agentkit-responsibility",
+      q: "How do VeADK and AgentKit divide responsibility?",
+      a: "VeADK defines and executes agent behavior in the application layer. AgentKit packages, configures, deploys, and operates the application through its platform, CLI, SDK, and Runtime surfaces.",
+      depth: "VeADK owns the root-agent code, Runner-facing behavior, tool wiring, and framework integrations. The AgentKit application adapter makes that code consumable by AgentKit, but Runtime provisioning, resource bindings, cloud identity and network, deployment lifecycle, and operational verification remain AgentKit or application responsibilities.",
+      ask: "Which responsibility is currently missing: agent behavior, an application contract, a deployed Runtime, or production evidence?",
+      tag: "Framework and platform boundary",
+      basis: "Application adapter plus platform lifecycle",
+      evidence: Object.freeze([
+        Object.freeze({ sourceId: "veadk-agentkit-integration-2026-08-15", supports: "Shows the VeADK factory that wraps a root agent in an AgentKit-compatible application." }),
+        Object.freeze({ sourceId: "agentkit-platform-overview-2026-08-15", supports: "Describes AgentKit's platform role around agent application development and delivery; it does not transfer application correctness to the platform." }),
+      ]),
+      addedAt: "2026-08-15",
+    }),
+    Object.freeze({
+      id: "veadk-google-adk-lineage",
+      q: "Why does Google ADK appear in a VeADK application?",
+      a: "Because the current VeADK Agent and default Runner path extend Google ADK classes. VeADK adds an integration layer around that ADK-backed path.",
+      depth: "This lineage gives VeADK access to Google ADK abstractions and also creates a compatibility boundary. Optional execution modes can retain different backend behavior. Freeze the tested dependency set and rerun construction, session, tool, event, streaming, and error-path tests before an upgrade. Do not assume that present inheritance or behavior is permanent.",
+      ask: "Which VeADK and Google ADK versions were tested together, and which regression paths protect an upgrade?",
+      tag: "Upstream dependency",
+      basis: "Current source inheritance plus version discipline",
+      evidence: Object.freeze([
+        Object.freeze({ sourceId: "veadk-agent-source-2026-08-15", supports: "Shows the current VeADK Agent inheriting from the Google ADK LlmAgent class." }),
+        Object.freeze({ sourceId: "veadk-runner-source-2026-08-15", supports: "Shows the current VeADK Runner inheriting from the Google ADK Runner class." }),
+      ]),
+      addedAt: "2026-08-15",
+    }),
+    Object.freeze({
+      id: "veadk-runner-session-role",
+      q: "What do the Runner and Session do during execution?",
+      a: "The Runner coordinates an agent invocation and its event flow; the session service preserves the active interaction state that the invocation reads and updates.",
+      depth: "Trace request identity, session lookup or creation, model turns, tool requests and results, errors, and final response as related but distinct events. Session continuity is an application property that depends on the configured backend. Neither a final response nor persisted history proves the correctness of an external business result.",
+      ask: "Can the team trace one invocation across Runner events, session reads and writes, tool effects, and the authoritative terminal state?",
+      tag: "Agent execution",
+      basis: "Runner event flow plus session persistence",
+      evidence: Object.freeze([
+        Object.freeze({ sourceId: "veadk-runner-source-2026-08-15", supports: "Shows the Runner's current relationship to Google ADK execution and session services." }),
+        Object.freeze({ sourceId: "veadk-short-term-memory-2026-08-15", supports: "Documents short-term session backends and the multi-instance continuity boundary." }),
+      ]),
+      addedAt: "2026-08-15",
+    }),
+    Object.freeze({
+      id: "veadk-tool-authority",
+      q: "If a tool is available to the agent, is it authorized and guaranteed to run?",
+      a: "No. Availability only places a callable capability in the agent's context. The model may or may not select it, and deterministic application controls must authorize any real action.",
+      depth: "Keep exact import and schema behavior separate from identity and policy. For a consequential call, resolve the authenticated subject, enforce resource and action authorization, validate parameters, control duplicates and retries, record the downstream response, and read back the authoritative result. A model-generated answer is not execution evidence.",
+      ask: "Where are subject identity, resource policy, parameter validation, idempotency, audit, and result confirmation enforced?",
+      tag: "Tool control",
+      basis: "Callable tool contract plus deterministic authorization",
+      evidence: Object.freeze([
+        Object.freeze({ sourceId: "veadk-builtin-tools-2026-08-15", supports: "Documents the concrete web_search and web_fetch functions and their import paths; it does not grant business authorization." }),
+        Object.freeze({ sourceId: "veadk-agent-source-2026-08-15", supports: "Shows how tools participate in the Agent definition; selection remains model behavior rather than an execution guarantee." }),
+      ]),
+      addedAt: "2026-08-15",
+    }),
+    Object.freeze({
+      id: "veadk-shared-session-backend",
+      q: "Why does a multi-instance VeADK service need a shared session backend?",
+      a: "Because consecutive requests can reach different processes. Process-local memory or a local database does not give every replica the same session state.",
+      depth: "Use a supported shared database-backed session service for a replicated application, then test handoff, restart, concurrent updates, retention, tenant isolation, and recovery. The configuration is only the starting point; continuity must be demonstrated in the deployed topology.",
+      ask: "What happens when the next request for the same session reaches another replica or the original process restarts?",
+      tag: "Session state",
+      basis: "Shared-state requirement under horizontal scaling",
+      evidence: Object.freeze([
+        Object.freeze({ sourceId: "veadk-short-term-memory-2026-08-15", supports: "Recommends a shared database-backed short-term memory path for multi-instance deployment and warns about replica-local state." }),
+      ]),
+      addedAt: "2026-08-15",
+    }),
+    Object.freeze({
+      id: "veadk-memory-truth-layers",
+      q: "How should short-term state, long-term memory, and authoritative facts be separated?",
+      a: "Short-term state preserves the active interaction, long-term memory retrieves useful context across interactions, and authoritative systems establish current business facts.",
+      depth: "Give each layer its own identity scope, provenance, retention, correction, deletion, and consistency contract. Memory retrieval is probabilistic context selection, so a relevant result may still be stale, incorrectly scoped, or false. Resolve high-impact current facts from the source system and record the read-back used for the decision.",
+      ask: "Which store owns conversation continuity, which supplies remembered context, and which system can authoritatively confirm the current fact?",
+      tag: "Memory boundary",
+      basis: "State layering plus source-of-truth ownership",
+      evidence: Object.freeze([
+        Object.freeze({ sourceId: "veadk-short-term-memory-2026-08-15", supports: "Documents VeADK short-term session-memory options and their deployment boundary." }),
+        Object.freeze({ sourceId: "agentkit-memory-quickstart-2026-08-15", supports: "Documents the AgentKit memory integration path; retrieval capability does not establish source-of-truth status." }),
+        Object.freeze({ sourceId: "mem0-platform-vs-oss-2026-08-15", supports: "Distinguishes managed and self-managed memory delivery choices; neither option makes retrieved content authoritative." }),
+      ]),
+      addedAt: "2026-08-15",
+    }),
+    Object.freeze({
+      id: "veadk-application-entry-choice",
+      q: "When should a team use create_agentkit_app instead of a local debug entry point?",
+      a: "Use the local Runner path for focused agent and event debugging. Use create_agentkit_app when the team needs the AgentKit-compatible application surface around the same root agent.",
+      depth: "The factory creates an application and can configure supported routes and integrations. It does not build an image, provision a Runtime, replace local session fallback with production shared state, establish trusted user identity, connect every data plane, or prove observability and capacity. Those are separate cloud acceptance steps.",
+      ask: "Is the current milestone framework debugging, application-contract testing, or verified deployment in the target Runtime?",
+      tag: "Application adapter",
+      basis: "Application factory plus deployment lifecycle",
+      evidence: Object.freeze([
+        Object.freeze({ sourceId: "veadk-agentkit-integration-2026-08-15", supports: "Shows what create_agentkit_app wraps and configures at the application layer." }),
+        Object.freeze({ sourceId: "agentkit-cli-overview-2026-08-15", supports: "Separates application build and deployment lifecycle commands from application construction." }),
+        Object.freeze({ sourceId: "agentkit-runtime-quickstart-2026-08-15", supports: "Documents Runtime delivery steps that remain after a local application object exists." }),
+      ]),
+      addedAt: "2026-08-15",
+    }),
+  ]),
+  evidenceCards: Object.freeze([
+    Object.freeze({ id: "veadk-current-inheritance", metric: "Current source snapshot", title: "VeADK extends the Google ADK agent abstraction", finding: "The pinned VeADK Agent source currently inherits from Google ADK's LlmAgent, making upstream behavior part of the compatibility surface.", boundary: "The snapshot does not guarantee future inheritance, version compatibility, or application behavior without regression tests.", sourceId: "veadk-agent-source-2026-08-15", accent: true }),
+    Object.freeze({ id: "veadk-multi-instance-session", metric: "Replica boundary", title: "Distributed persistence is distinct from process-local state", finding: "VeADK's short-term memory documentation lists MySQL and PostgreSQL as distributed persistence backends, unlike in-memory or local-file options.", boundary: "Selecting a distributed backend does not by itself prove failover, concurrency behavior, tenant isolation, retention, or recovery in a particular deployment.", sourceId: "veadk-short-term-memory-2026-08-15" }),
+    Object.freeze({ id: "veadk-application-adapter-gap", metric: "Application adapter", title: "create_agentkit_app creates an application surface, not a cloud release", finding: "The integration wraps a root agent in an AgentKit-compatible application and configures supported routes and services.", boundary: "Runtime provisioning, trusted identity, shared production state, network connectivity, telemetry, capacity, and recovery still require deployment evidence.", sourceId: "veadk-agentkit-integration-2026-08-15" }),
+  ]),
+  terms: Object.freeze({
+    veadk: Object.freeze({ name: "VeADK", definition: "A Python agent-development framework that extends Google ADK abstractions with Volcengine-oriented integrations and an AgentKit application adapter." }),
+    "google-adk": Object.freeze({ name: "Google Agent Development Kit", abbr: "Google ADK", definition: "The upstream agent-development framework whose LlmAgent and Runner classes are extended by the current VeADK implementation." }),
+    "agent-runner": Object.freeze({ name: "Agent Runner", definition: "The execution component that coordinates an agent invocation with session services and an inspectable event flow." }),
+    "short-term-memory": Object.freeze({ name: "Short-term Memory", definition: "State for the active interaction, typically organized by application, user, and session scope and backed by a service appropriate to the deployment topology." }),
+    "root-agent": Object.freeze({ name: "Root Agent", definition: "The application entry agent that anchors model behavior, instructions, tools, and subordinate agent relationships for an invocation." }),
+    "agentkit-app-adapter": Object.freeze({ name: "AgentKit App Adapter", definition: "The application-layer wrapper that exposes a root agent through the interface expected by AgentKit without provisioning the target Runtime." }),
+    "tool-loop": Object.freeze({ name: "Tool Loop", definition: "The repeated model, tool-request, tool-result, and observation cycle controlled by an agent application until it stops, fails, or returns control." }),
+  }),
+  sources: Object.freeze({
+    "veadk-agent-source-2026-08-15": agentPlatformSourceCopy["veadk-agent-source-2026-08-15"],
+    "veadk-runner-source-2026-08-15": agentPlatformSourceCopy["veadk-runner-source-2026-08-15"],
+    "veadk-agentkit-integration-2026-08-15": agentPlatformSourceCopy["veadk-agentkit-integration-2026-08-15"],
+    "veadk-short-term-memory-2026-08-15": agentPlatformSourceCopy["veadk-short-term-memory-2026-08-15"],
+    "veadk-builtin-tools-2026-08-15": agentPlatformSourceCopy["veadk-builtin-tools-2026-08-15"],
+    "agentkit-platform-overview-2026-08-15": agentPlatformSourceCopy["agentkit-platform-overview-2026-08-15"],
+    "agentkit-cli-overview-2026-08-15": agentPlatformSourceCopy["agentkit-cli-overview-2026-08-15"],
+    "agentkit-runtime-quickstart-2026-08-15": agentPlatformSourceCopy["agentkit-runtime-quickstart-2026-08-15"],
+    "agentkit-memory-quickstart-2026-08-15": agentPlatformSourceCopy["agentkit-memory-quickstart-2026-08-15"],
+    "mem0-platform-vs-oss-2026-08-15": agentPlatformSourceCopy["mem0-platform-vs-oss-2026-08-15"],
+  }),
+});

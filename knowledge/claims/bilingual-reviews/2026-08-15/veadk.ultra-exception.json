@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-veadk-2026-08-15-ultra-exception",
+  "scope": {
+    "moduleId": "veadk",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+    "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35",
+    "termIds": [
+      "agent-runner",
+      "agentkit-app-adapter",
+      "google-adk",
+      "root-agent",
+      "short-term-memory",
+      "tool-loop",
+      "veadk"
+    ],
+    "sourceIds": [
+      "agentkit-cli-commands-2026-08-15",
+      "agentkit-cli-overview-2026-08-15",
+      "agentkit-memory-quickstart-2026-08-15",
+      "agentkit-platform-overview-2026-08-15",
+      "agentkit-runtime-quickstart-2026-08-15",
+      "mem0-oss-overview-2026-08-15",
+      "mem0-platform-vs-oss-2026-08-15",
+      "veadk-agent-source-2026-08-15",
+      "veadk-agentkit-integration-2026-08-15",
+      "veadk-builtin-tools-2026-08-15",
+      "veadk-runner-source-2026-08-15",
+      "veadk-short-term-memory-2026-08-15"
+    ]
+  },
+  "stage": "ultra-exception",
+  "deterministic": [
+    {
+      "gateId": "exception-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "Final adjudication found no EVIDENCE, DYNAMIC_FACT, EDITORIAL_DISPUTE, or ENGINEERING blocker.",
+        "Stable IDs, source bindings, dates, question and evidence-card order, terminology, and the fixed official source ledger were independently verified.",
+        "The candidate passed import, build, portable-knowledge, desktop interaction, mobile overflow, and console checks before baseline promotion."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

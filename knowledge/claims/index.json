@@ -2,6 +2,42 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "agent-framework.veadk-core-inheritance-2026-08-15",
+      "claim": "截至 2026-08-15 的固定源码版本，VeADK Python 的 Agent 继承 Google ADK LlmAgent，Runner 继承 Google ADK Runner，并在上游类型之上补充模型配置、Session、Memory、Tracing 与便捷执行能力。",
+      "scope": "只描述 commit 3be05c48a0360b86003f6f67808c943b5a33c4d3 的类关系；不表示每一种可选运行模式的内部循环都由 Google ADK 执行，也不保证未来依赖组合兼容。",
+      "sourceIds": ["veadk-agent-source-2026-08-15", "veadk-runner-source-2026-08-15"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-08-15",
+      "reviewBy": "2026-11-13",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "agent-platform.agentkit-cli-lifecycle-2026-08-15",
+      "claim": "截至 2026-08-15 的 AgentKit SDK 文档，普通 CLI 生命周期中 build 负责构建镜像，deploy 负责部署已构建镜像，launch 按 build 后 deploy 的顺序组合两步。",
+      "scope": "只描述固定 commit f39d363ea9a3fd6d1cd79f8dea14342ba846194a 的普通 agentkit.yaml 工作流；Harness 等复合命令有单独语义，命令成功也不证明应用达到生产 SLO、质量或恢复要求。",
+      "sourceIds": ["agentkit-cli-overview-2026-08-15", "agentkit-cli-commands-2026-08-15"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-08-15",
+      "reviewBy": "2026-11-13",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "agent-memory.mem0-delivery-models-2026-08-15",
+      "claim": "截至 2026-08-15，Mem0 官方把 Open Source 定位为可自行部署和配置的开源项目，把 Platform 定位为由 Mem0 管理的托管服务。",
+      "scope": "自建 Mem0 OSS 并连接托管模型或数据库属于部署组合，不是第三个独立产品；隐私边界还取决于模型、Embedding、向量库、图数据库、日志、遥测与网络出口。价格、地域、功能与 SLA 需在采购时复核。",
+      "sourceIds": ["mem0-oss-overview-2026-08-15", "mem0-platform-vs-oss-2026-08-15"],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-08-15",
+      "reviewBy": "2026-11-13",
+      "reviewCadenceDays": 90,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
       "id": "model-landscape.aa-ranking-snapshot-2026-08-13",
       "claim": "在 2026-08-13 01:18:07 UTC 捕获的 Artificial Analysis 公开模型页默认 Intelligence Index 视图前 20 个模型配置中，Claude Opus 5 (Adaptive Reasoning, Max Effort) 以 63.0532452071291 位列第一。",
       "scope": "这是指定捕获时点、默认页面候选池与指定推理配置的快照，不是该次抓取全部 604 个可用推理配置的全球总榜；排名、分数、方法和默认候选池会变化。",

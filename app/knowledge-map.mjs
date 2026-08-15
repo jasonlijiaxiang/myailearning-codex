@@ -1,5 +1,5 @@
 /**
- * 面向读者的 21 模块知识地图。
+ * 面向读者的 23 模块知识地图。
  *
  * 初始主题与 external_reference/CC-20260717 建立归档映射，新增模块来自全局知识复核。
  * PPT 不定义模块的知识边界、章节顺序或内容上限；正文按售前判断链独立研究，
@@ -43,6 +43,8 @@ export const layers = [
     en: "AI Application Delivery & Operations",
     purpose: "把生成式应用的版本、流量、观测、成本与事故组织成持续工程闭环。",
     modules: [
+      { zh: "VeADK", en: "Volcengine Agent Development Kit", slug: "veadk", href: "/modules/veadk" },
+      { zh: "AgentKit", en: "AgentKit", slug: "agentkit", href: "/modules/agentkit" },
       { zh: "AI 应用工程与运营", en: "AI Application Engineering & GenAIOps", slug: "ai-ops", href: "/modules/ai-ops" },
       { zh: "AI 网关", en: "AI Gateway", slug: "ai-gateway", href: "/modules/ai-gateway" },
     ],

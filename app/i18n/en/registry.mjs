@@ -6,6 +6,8 @@ import { englishModule as aiAgent } from "./modules/ai-agent.mjs";
 import { englishModule as multimodal } from "./modules/multimodal.mjs";
 import { englishModule as mcp } from "./modules/mcp.mjs";
 import { englishModule as a2a } from "./modules/a2a.mjs";
+import { englishModule as veadk } from "./modules/veadk.mjs";
+import { englishModule as agentkit } from "./modules/agentkit.mjs";
 import { englishModule as evaluation } from "./modules/evaluation.mjs";
 import { englishModule as security } from "./modules/security.mjs";
 import { englishModule as aiGateway } from "./modules/ai-gateway.mjs";
@@ -31,6 +33,8 @@ const localizedModules = [
   multimodal,
   mcp,
   a2a,
+  veadk,
+  agentkit,
   evaluation,
   aiGovernance,
   security,

@@ -15,6 +15,8 @@ export const englishUpdatedDates = Object.freeze({
   multimodal: "2026-08-10",
   mcp: "2026-08-10",
   a2a: "2026-08-10",
+  veadk: "2026-08-15",
+  agentkit: "2026-08-15",
   evaluation: "2026-08-10",
   "ai-governance": "2026-08-10",
   security: "2026-08-10",

@@ -32,6 +32,7 @@ const promotedProjectsByCommit = await loadPromotedProjects(registry);
 const fullHashA = `sha256:${"a".repeat(64)}`;
 const fullHashB = `sha256:${"b".repeat(64)}`;
 const fullHashC = `sha256:${"c".repeat(64)}`;
+const preAgentPlatformModuleSlugs = publishedModuleSlugs.filter((slug) => !["veadk", "agentkit"].includes(slug)).sort();
 
 function validate(candidateRegistry = registry, candidateProject = currentProject, options = {}) {
   return validateLocalizationRegistry(candidateRegistry, candidateProject, {
@@ -110,26 +111,26 @@ test("localization registry passes its recursive schema and covers every module"
   ]);
   const reader = maintenances.get("erm-english-reader-2026-08-09");
   assert.equal(reader?.receiptId, "receipt-english-reader-runtime-2026-08-09");
-  assert.deepEqual(reader?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(reader?.affectedModuleSlugs, preAgentPlatformModuleSlugs);
   assert.deepEqual(reader?.contentProjectionChangeSlugs, ["rag"]);
   assert.equal(reader?.metadataScope, "all-en-routes");
   const documentShell = maintenances.get("erm-english-document-shell-2026-08-10");
   assert.equal(documentShell?.kind, "document-shell");
   assert.equal(documentShell?.receiptId, "receipt-english-document-shell-2026-08-10");
-  assert.deepEqual(documentShell?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(documentShell?.affectedModuleSlugs, preAgentPlatformModuleSlugs);
   assert.deepEqual(documentShell?.contentProjectionChangeSlugs, []);
   assert.equal(documentShell?.metadataScope, "all-en-routes");
   const languageSwitch = maintenances.get("erm-english-language-switch-2026-08-10");
   assert.equal(languageSwitch?.kind, "english-renderer");
   assert.equal(languageSwitch?.receiptId, "receipt-erm-english-language-switch-2026-08-10");
   assert.deepEqual(languageSwitch?.changedRendererFiles, ["app/i18n/english-pilot-module-page.tsx"]);
-  assert.deepEqual(languageSwitch?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(languageSwitch?.affectedModuleSlugs, preAgentPlatformModuleSlugs);
   assert.deepEqual(languageSwitch?.contentProjectionChangeSlugs, []);
   assert.equal(languageSwitch?.metadataScope, "none");
   const fullSiteReview = maintenances.get("erm-full-site-design-voice-2026-08-12");
   assert.equal(fullSiteReview?.kind, "document-shell");
   assert.equal(fullSiteReview?.receiptId, "receipt-full-site-design-voice-2026-08-12");
-  assert.deepEqual(fullSiteReview?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(fullSiteReview?.affectedModuleSlugs, preAgentPlatformModuleSlugs);
   assert.deepEqual(fullSiteReview?.contentProjectionChangeSlugs, []);
   assert.equal(fullSiteReview?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
@@ -627,7 +628,7 @@ test("localization audit reports chained runtime alignment and reviewed candidat
   const lines = output.trim().split("\n");
   assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-full-site-design-voice-2026-08-12"));
   assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-full-site-design-voice-2026-08-12"));
-  assert.ok(lines.includes("Localization contract passed for 21 modules."));
+  assert.ok(lines.includes("Localization contract passed for 23 modules."));
   const active = registry.deferments.filter((item) => item.status !== "closed");
   assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, active.filter((item) => item.status === "deferred").length);
   assert.equal(lines.filter((line) => /^READY\/NOT_ALIGNED /.test(line)).length, active.filter((item) => item.status === "ready-for-english-review").length);

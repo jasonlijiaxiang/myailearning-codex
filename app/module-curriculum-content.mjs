@@ -1,6 +1,7 @@
 import { completionCurriculum } from "./module-completion-content.mjs";
 import { applicationFinopsCurriculum } from "./module-briefs-application-finops.mjs";
 import { governanceMlopsCurriculum } from "./module-briefs-governance-mlops.mjs";
+import { agentPlatformCurriculum } from "./module-content-agent-platforms.mjs";
 
 /**
  * 共享模块的课程地图。
@@ -11,6 +12,7 @@ import { governanceMlopsCurriculum } from "./module-briefs-governance-mlops.mjs"
  */
 const baseModuleCurriculumContent = Object.freeze({
   ...governanceMlopsCurriculum,
+  ...agentPlatformCurriculum,
   "solution-patterns": {
     lead: "场景方案不是通用架构图，而是从业务结果与当前基线出发，用可测约束选择最小充分闭环，再把责任、证据、运营、完整成本与退出连成一条可决策路径。",
     chapters: [

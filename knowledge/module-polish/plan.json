@@ -121,6 +121,18 @@
         "ai-infra-platform",
         "solution-patterns"
       ]
+    },
+    {
+      "id": "batch-10-agent-framework-runtime",
+      "order": 10,
+      "title": "Agent 开发框架与运行平台",
+      "dependsOn": [
+        "batch-09-platform-solutions"
+      ],
+      "modules": [
+        "veadk",
+        "agentkit"
+      ]
     }
   ]
 }

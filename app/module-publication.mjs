@@ -1,5 +1,5 @@
 /**
- * 21 个正式模块的发布注册表。
+ * 23 个正式模块的发布注册表。
  *
  * dedicated 模块保留深度定制页面；brief 模块共享导航、证据与问答能力，
  * 但正文根据内容选择流程、循环、分层、光谱或决策矩阵，不强迫同一版式。
@@ -12,6 +12,8 @@ const moduleSpecs = [
   ["multimodal", "multimodal-title", ["multimodal", "vision-transformer", "ocr", "asr", "document-intelligence"], "brief", "2026-08-05", "2026-07-17"],
   ["mcp", "mcp-title", ["mcp", "tool-discovery", "identity-authorization", "mcp-protocol-roles", "mcp-primitives"], "brief", "2026-08-05", "2026-07-17"],
   ["a2a", "a2a-title", ["a2a", "agent-card", "a2a-message", "a2a-task", "artifact", "agent-collaboration", "identity-authorization"], "brief", "2026-08-01", "2026-07-17"],
+  ["veadk", "veadk-title", ["veadk", "google-adk", "agent-runner", "short-term-memory", "root-agent", "agentkit-app-adapter", "tool-loop"], "brief", "2026-08-15", "2026-08-15"],
+  ["agentkit", "agentkit-title", ["agentkit", "agentkit-runtime", "agent-application", "runtime-binding", "deployment-mode", "build-deploy-lifecycle", "managed-agent-memory", "agentkit-app-adapter"], "brief", "2026-08-15", "2026-08-15"],
   ["evaluation", "evaluation-title", ["evaluation", "evaluation-contract", "golden-set", "observability", "evaluation-layers", "llm-as-judge"], "brief", "2026-08-05", "2026-07-17"],
   ["ai-governance", "ai-governance-title", ["ai-governance", "ai-inventory", "ai-risk-tiering", "impact-assessment", "human-oversight", "governance-evidence", "continuous-assurance"], "brief", "2026-08-05", "2026-07-21"],
   ["security", "security-title", ["security", "guardrails", "identity-authorization", "prompt-injection"], "brief", "2026-08-05", "2026-07-17"],
@@ -38,6 +40,8 @@ const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
   multimodal: "4df913dc37dccd7d10f4a83be80665e47ddb83998ab61acc5cf2b558b768dc38",
   mcp: "0e77279a34c57ab3814cf800dd0f9f9874955adbcf0e1097d88d6999c267cc61",
   a2a: "7f302462d608a14f80957008e03ff4dfcdcb1c136d71eb6b4957998223a253b0",
+  veadk: "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  agentkit: "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   evaluation: "6b7c274ad07e8010308e249563e65c4acf67df854498668b620de9c4a251636a",
   "ai-governance": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   security: "07ddfd01632072126a875cbe9d52acee36cb149354af43c44510b68d4e8196db",
@@ -62,6 +66,8 @@ const moduleKnowledgeViews = Object.freeze({
   multimodal: "multimodal-evidence-pipeline",
   mcp: "mcp-host-server-boundary",
   a2a: "delegated-task-lifecycle",
+  veadk: "agent-definition-runtime-bridge",
+  agentkit: "application-runtime-lifecycle",
   evaluation: "evaluation-flywheel",
   "ai-governance": "governance-assurance-loop",
   security: "threat-path",
@@ -111,6 +117,14 @@ const moduleQaCoverageTags = Object.freeze({
   a2a: Object.freeze([
     "协议边界", "架构选择", "可靠性", "审计与可观测", "采用判断", "故障恢复", "取消语义", "协作拓扑",
     "发现信任", "跨域委托", "产物验收",
+  ]),
+  veadk: Object.freeze([
+    "框架定位", "上游依赖", "Agent 执行", "Tool 控制", "Session 状态", "Memory 边界",
+    "应用适配", "生产门禁", "版本治理",
+  ]),
+  agentkit: Object.freeze([
+    "平台定位", "应用合同", "构建部署", "运行时", "共享状态", "Memory 治理",
+    "身份网络", "可观测性", "容量验证", "发布回退",
   ]),
   evaluation: Object.freeze([
     "模型选型", "评估方法", "RAG 诊断", "Agent 评估", "评审方法", "持续评估", "黄金集治理",

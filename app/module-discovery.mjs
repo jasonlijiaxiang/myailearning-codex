@@ -9,6 +9,8 @@ export const moduleDiscovery = Object.freeze({
   multimodal: Object.freeze({ summary: "让文本、图像、语音、视频与版面信息共同参与理解。", cue: "关键信息藏在表格、图纸、扫描件、录音或视频中" }),
   mcp: Object.freeze({ summary: "标准化模型与工具、数据资源及提示能力之间的连接。", cue: "团队要复用工具接入，并控制远程调用与授权边界" }),
   a2a: Object.freeze({ summary: "让独立 Agent 发现、委托、协作并跟踪持久任务。", cue: "多个团队或系统拥有各自 Agent，需要跨边界协作" }),
+  veadk: Object.freeze({ summary: "用 Python 定义 Agent、Tool、Session 与 Memory，并把本地执行连接到正式应用入口。", cue: "团队需要从可运行 Demo 走向可测试、可封装的 Agent 代码" }),
+  agentkit: Object.freeze({ summary: "管理 Agent 应用的构建、部署、Runtime、状态资源与运行治理。", cue: "Agent 已能本地运行，但云端入口、共享状态、身份和发布证据尚未闭环" }),
   evaluation: Object.freeze({ summary: "把好不好用变成任务集、指标、回归和发布门禁。", cue: "PoC 看起来不错，但没人能说明是否达到上线标准" }),
   "ai-governance": Object.freeze({ summary: "用系统清单、风险分级、责任与证据持续治理 AI 生命周期。", cue: "组织正在扩大 AI 使用，却无法回答谁负责、为何允许和怎样证明" }),
   security: Object.freeze({ summary: "控制不可信输入、模型行为、敏感数据和高影响动作。", cue: "客户担心提示注入、越权、泄漏或不可逆业务动作" }),

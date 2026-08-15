@@ -1,9 +1,10 @@
 import { completionLearning } from "./module-completion-content.mjs";
 import { applicationFinopsLearning } from "./module-briefs-application-finops.mjs";
 import { governanceMlopsLearning } from "./module-briefs-governance-mlops.mjs";
+import { agentPlatformLearning } from "./module-content-agent-platforms.mjs";
 
 /**
- * 18 个共享模块的网页原生学习路线与实战任务。
+ * 20 个共享模块的网页原生学习路线与实战任务。
  *
  * external_reference 中的讲义只用于发现覆盖面与学习难点；这里重新按
  * “建立心智模型 -> 做出方案判断 -> 用证据验收”组织，不复刻 PPT 页序。
@@ -11,6 +12,7 @@ import { governanceMlopsLearning } from "./module-briefs-governance-mlops.mjs";
  */
 const baseModuleLearningContent = Object.freeze({
   ...governanceMlopsLearning,
+  ...agentPlatformLearning,
   "solution-patterns": {
     outcomes: ["把业务目标、当前基线、权威终态和约束写成可验收契约", "用需求门选择最小充分闭环并分配八层责任", "设计能输出 Go、Hold、No-Go 或 Exit 的阶段证据", "用完整成本、单位达标结果、运营责任和退出条件共同决定投资", ...applicationFinopsLearning["ai-finops"].outcomes],
     route: [
