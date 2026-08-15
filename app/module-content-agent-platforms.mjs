@@ -4,7 +4,12 @@ const list = (values) => freeze(values.map((value) => freeze(value)));
 const strings = (values) => freeze([...values]);
 const datedQa = (value) => freeze({
   ...value,
-  evidence: list(value.evidence),
+  evidence: list(value.evidence.map((reference) => ({
+    ...reference,
+    supports: reference.supports.includes("支持")
+      ? reference.supports
+      : `该来源支持${reference.supports.replace(/^说明/, "")}`,
+  }))),
   addedAt: "2026-08-15",
 });
 const dive = (value) => freeze({
@@ -82,7 +87,7 @@ const veadkBrief = brief({
   deepDiveLead: "先沿执行链确认责任，再按症状定位身份、状态、工具、记忆或入口问题。",
   deepDives: [
     {
-      kind: "sequence", eyebrow: "EXECUTION CONTRACT", title: "一次 VeADK 请求的五步责任链", intro: "每一步都产生不同证据，不能只看最终回答。",
+      kind: "sequence", eyebrow: "EXECUTION CONTRACT", title: "一次 VeADK 请求的五步执行边界", intro: "每一步都产生不同证据，不能只看最终回答。",
       sourceIds: [veadkSources.agent, veadkSources.runner, veadkSources.tools, agentkitSources.memory],
       items: [
         { name: "冻结 Agent 定义", en: "Freeze Definition", mechanism: "绑定模型、指令、工具与状态配置。", decision: "记录候选版本与测试输入。", boundary: "名称一致不代表行为一致。" },
@@ -202,25 +207,25 @@ export const agentPlatformCurriculum = freeze({
   veadk: curriculum({
     lead: "VeADK 课程从 Agent 定义与 Runner 循环出发，逐步连接工具、Session、上下文、长期记忆和 AgentKit 应用适配，并始终保留身份、状态与业务权限边界。",
     chapters: [
-      { title: "Agent 定义与版本", en: "Agent Definition", explanation: "模型、指令、工具和记忆配置共同形成可运行候选。", decision: "把模型与所有模型外配置绑定到同一评估版本。", boundary: "对象可导入不证明行为、权限或业务结果。", sourceIds: [veadkSources.agent] },
-      { title: "Runner、事件与停止", en: "Runner & Events", explanation: "Runner 执行模型—工具—观察循环并写入事件。", decision: "为调用、时间、Token、失败和停止设置预算。", boundary: "运行结束不等于业务终态成立。", sourceIds: [veadkSources.runner] },
-      { title: "内置与自定义 Tool", en: "Tools", explanation: "Tool 将联网读取、搜索和业务 API 暴露给 Agent。", decision: "通用能力复用官方实现，业务动作使用明确合同。", boundary: "模型可见不等于用户授权。", sourceIds: [veadkSources.tools] },
-      { title: "Session 与短期记忆", en: "Session & Short-term Memory", explanation: "应用、用户和会话标识限定事件历史，后端决定持久化与共享能力。", decision: "按实例数、恢复和隔离目标选存储。", boundary: "SQLite 不自动形成多实例生产状态。", sourceIds: [veadkSources.memory] },
+      { title: "Agent 定义与版本", en: "Agent Definition", explanation: "VeADK Agent 当前在 Google ADK 的 LlmAgent 接口上增加模型、记忆与平台适配配置，这些字段共同形成可运行候选。", decision: "把模型与所有模型外配置绑定到同一评估版本。", boundary: "对象可导入不证明行为、权限或业务结果。", sourceIds: [veadkSources.agent] },
+      { title: "Runner、事件与停止", en: "Runner & Events", explanation: "Runner 接收根 Agent、会话与记忆服务，执行模型—工具—观察循环，并把过程写成可回放事件。", decision: "为调用、时间、Token、失败和停止设置预算。", boundary: "运行结束不等于业务终态成立。", sourceIds: [veadkSources.runner] },
+      { title: "内置与自定义 Tool", en: "Tools", explanation: "内置与自定义 Tool 把联网读取、搜索和业务 API 暴露给 Agent，同时由应用保留参数、权限与副作用控制。", decision: "通用能力复用官方实现，业务动作使用明确合同。", boundary: "模型可见不等于用户授权。", sourceIds: [veadkSources.tools] },
+      { title: "Session 与短期记忆", en: "Session & Short-term Memory", explanation: "应用、用户和会话标识共同限定事件历史的读取范围，具体后端决定持久化、实例间共享和恢复能力。", decision: "按实例数、恢复和隔离目标选存储。", boundary: "SQLite 不自动形成多实例生产状态。", sourceIds: [veadkSources.memory] },
       { title: "上下文工程", en: "Context Engineering", explanation: "历史、工具定义和 Tool Result 会进入后续调用并影响质量、时延和成本。", decision: "治理选择、长度、压缩和 Session 切分。", boundary: "更大窗口不保证证据被正确使用。", sourceIds: [veadkSources.runner, veadkSources.tools] },
-      { title: "长期记忆与权威事实", en: "Long-term Memory", explanation: "长期记忆支持跨会话召回，当前事实仍由相应的权威来源确认。", decision: "写入前定义主体、来源、用途、有效期、纠错和删除。", boundary: "检索相关不等于事实真实。", sourceIds: [agentkitSources.memory] },
-      { title: "AgentKit 应用适配", en: "AgentKit Integration", explanation: "集成入口把 root_agent 封装为 AgentKit App。", decision: "分别验收本地应用合同与云端 Runtime。", boundary: "适配成功不等于上云和生产就绪。", sourceIds: [veadkSources.integration] },
+      { title: "长期记忆与权威事实", en: "Long-term Memory", explanation: "长期记忆通过独立写入与检索支持跨会话召回，召回内容是否真实、当前有效，仍须回到相应权威来源确认。", decision: "写入前定义主体、来源、用途、有效期、纠错和删除。", boundary: "检索相关不等于事实真实。", sourceIds: [agentkitSources.memory] },
+      { title: "AgentKit 应用适配", en: "AgentKit Integration", explanation: "集成入口把 root_agent 封装成 AgentKit 可接收的 App，并形成后续构建与 Runtime 调用所需的应用边界。", decision: "分别验收本地应用合同与云端 Runtime。", boundary: "适配成功不等于上云和生产就绪。", sourceIds: [veadkSources.integration] },
     ],
   }),
   agentkit: curriculum({
     lead: "AgentKit 课程围绕应用合同、CLI、Runtime、目标配置、Memory、身份网络与运行证据展开，把快捷部署还原为可配置、可回归和可回退的完整生命周期。",
     chapters: [
       { title: "平台定位与应用合同", en: "Platform & App Contract", explanation: "AgentKit 管理应用和云端运行资源，应用入口连接框架代码与 Runtime。", decision: "先冻结可重复的本地应用候选。", boundary: "平台不替代业务逻辑与授权。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
-      { title: "CLI 生命周期", en: "CLI Lifecycle", explanation: "CLI 提供初始化、配置、构建、部署和快捷发布命令。", decision: "按团队发布控制选择单步或 launch。", boundary: "快捷命令不消除阶段证据。", sourceIds: [agentkitSources.cli, agentkitSources.commands] },
-      { title: "配置与部署目标", en: "Configuration & Target", explanation: "配置声明入口、依赖、环境、目标标识、Region 与资源引用。", decision: "在目标环境分别验证资源访问、网络和数据边界。", boundary: "控制面字段不证明隔离、连通或数据驻留。", sourceIds: [agentkitSources.config] },
-      { title: "Runtime 与版本", en: "Runtime Lifecycle", explanation: "Runtime 承载应用版本并提供状态与调用入口。", decision: "把 Ready、可调用、任务成功、恢复和回退分层验收。", boundary: "平台状态不等于业务上线。", sourceIds: [agentkitSources.runtime] },
-      { title: "Memory 控制面与数据面", en: "Memory Control & Data Planes", explanation: "资源关联、连接鉴权、用户作用域和实际读写属于不同配置面。", decision: "部署脚本分别校验绑定、端点、凭据和网络。", boundary: "列出资源不等于可读写或召回正确。", sourceIds: [agentkitSources.memory] },
+      { title: "CLI 生命周期", en: "CLI Lifecycle", explanation: "CLI 把项目初始化、配置校验、构建、部署和快捷发布串成明确命令，但每一步生成的对象和失败含义不同。", decision: "按团队发布控制选择单步或 launch。", boundary: "快捷命令不消除阶段证据。", sourceIds: [agentkitSources.cli, agentkitSources.commands] },
+      { title: "配置与部署目标", en: "Configuration & Target", explanation: "配置声明应用入口、依赖、环境、目标标识、Region 与外部资源引用，并作为构建和部署的显式输入。", decision: "在目标环境分别验证资源访问、网络和数据边界。", boundary: "控制面字段不证明隔离、连通或数据驻留。", sourceIds: [agentkitSources.config] },
+      { title: "Runtime 与版本", en: "Runtime Lifecycle", explanation: "Runtime 承载可识别的应用版本，提供资源状态与调用入口，但 Ready 只说明平台资源状态。", decision: "把 Ready、可调用、任务成功、恢复和回退分层验收。", boundary: "平台状态不等于业务上线。", sourceIds: [agentkitSources.runtime] },
+      { title: "Memory 控制面与数据面", en: "Memory Control & Data Planes", explanation: "Memory 的资源关联、连接鉴权、用户作用域和实际读写分属控制面与数据面，需要分别验证。", decision: "部署脚本分别校验绑定、端点、凭据和网络。", boundary: "列出资源不等于可读写或召回正确。", sourceIds: [agentkitSources.memory] },
       { title: "Mem0 托管与 OSS", en: "Managed & OSS Memory", explanation: "单独评估 Mem0 时，它的托管 Platform 与 OSS 在功能、数据边界、定制和运维责任上不同。", decision: "用同一隔离、质量、延迟、删除和 TCO 合同比较。", boundary: "这些文档不证明 AgentKit Memory 使用或由 Mem0 运营；自建 Mem0 也不代表整条模型与向量链都不出域。", sourceIds: [agentkitSources.mem0Oss, agentkitSources.mem0Compare] },
-      { title: "观测、评测与发布", en: "Operate & Release", explanation: "日志、Trace、指标、评测和外部负载共同形成放量证据。", decision: "定义任务成功与尾延迟指标及目标，由 SLO 推导错误预算；把恢复和单位成本作为独立运营约束。", boundary: "观测不制造压力，评测不等于容量测试。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
+      { title: "观测、评测与发布", en: "Operate & Release", explanation: "日志、Trace、指标、质量评测和外部负载测试共同形成放量证据，并分别回答故障、质量、容量与恢复问题。", decision: "定义任务成功与尾延迟指标及目标，由 SLO 推导错误预算；把恢复和单位成本作为独立运营约束。", boundary: "观测不制造压力，评测不等于容量测试。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
     ],
   }),
 });
