@@ -37326,6 +37326,2937 @@
           "enContentHash": "sha256:ea2bc71c0072929048e7fda6c19620283941d1c691a24a08afb467478774632f"
         }
       }
+    },
+    "veadk": {
+      "zhBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
+      "enBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
+      "reviewSetIds": [
+        "br-veadk-2026-08-15-ultra-exception",
+        "br-veadk-2026-08-15-xhigh-author",
+        "br-veadk-2026-08-15-xhigh-language",
+        "br-veadk-2026-08-15-xhigh-semantic"
+      ],
+      "zhReviewHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+      "zhStateHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+      "zhObjects": {
+        "/module:veadk/brief/cloudHooks/$order": {
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/cloudHooks/000": {
+          "hash": "sha256:b11fae1c4b9a8c284d287e378822a65234c873359cc19f3cafa193f6b522ba1c",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/cloudHooks/001": {
+          "hash": "sha256:caccbd0c62b1cba3606154c8b154efa71423bc6fce69317cff0773b7b694db17",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/cloudHooks/002": {
+          "hash": "sha256:d5aa35973be9020c68bbbe1c7ff3df219eef2ee3ff97cbce97e25e7d6b183bb4",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/cloudHooks/003": {
+          "hash": "sha256:7e66a4c3bed6c289d82e3dbb95561eacb48c0c1f8f67dfc54d953bffa6644e7d",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/criticalBoundary": {
+          "hash": "sha256:3fbb9a851ec1b8b88650a0f9113a745c903687c5a367d24171a2a490cd20a6be",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/decisions/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/decisions/000": {
+          "hash": "sha256:5d361f43ad54474b24fb3561ffa9c089aacd1d85d07e8301e0ad13af9c6c1d39",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/decisions/001": {
+          "hash": "sha256:0ac00405c99d65db95d0c540a1462b47629dc312d5288e9dcc36bbf4781ccc39",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/decisions/002": {
+          "hash": "sha256:eb57f50f8e31bbc9fa24564fd3fcd1a2081ed9b3d205b751f87c415a2916c239",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/decisions/003": {
+          "hash": "sha256:8885891c7a5d2d119885237ef9ea3e108863e3b0b759d4af00e2f112a89baba1",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/decisions/004": {
+          "hash": "sha256:c026b127fc14e157c4074bc4b83c266abf6c6a3bd930e7ca4e22c074c7aa84b1",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/deepDiveLead": {
+          "hash": "sha256:5ab3e0ed7df8f11f5fb5bbb8f76b74aa1ec400d5214c3b96059e6e72fcb19bfb",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/deepDives/$order": {
+          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/deepDives/000": {
+          "hash": "sha256:fe4e8d50ebdfc943ffc0aa2ede9227c9b70e6f531a6c935616d80f73cd95608d",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "veadk-agent-source-2026-08-15",
+            "veadk-builtin-tools-2026-08-15",
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/deepDives/001": {
+          "hash": "sha256:37094d3d8a55eca9896cabfa25588158bbddebf761d784dbf56af2eb45030b8b",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-agentkit-integration-2026-08-15",
+            "veadk-runner-source-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/deepDiveTitle": {
+          "hash": "sha256:363b106c2512daef0a42be8f627521ddcd25a570153f59530484d04787ffb1bd",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/definition": {
+          "hash": "sha256:c203c829d95509a81eb4626059bdaeb11d0853561a0472c10701f045083803e7",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/evidenceCards/$order": {
+          "hash": "sha256:416fc4d58705cdaff330d7709074389f7673fcb00af0e8bc8d98be15c3fa1a90",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/evidenceCards/000": {
+          "hash": "sha256:cf5dc7f07e1e1d12808993714004a3bc0377ceb0f3a8fe3e93f2d5529952dd4e",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/evidenceCards/001": {
+          "hash": "sha256:268d7ab4c878e18bc0f4368f20c2f5f0326b55c6d2385d3a1154372cfbb36dbe",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/evidenceCards/002": {
+          "hash": "sha256:eb9519cf5860fee2d7cac5c5b8a105544d5450b687fdf574b08f8b844af48662",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/position": {
+          "hash": "sha256:4217736cb380f6459b9a10838c0d41d532d8b020836718e49c260e35af0cbd07",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/presentation": {
+          "hash": "sha256:889c19fd926bc4ca61c0b4d95ef47af60f6f84fbd85e1e15ed7c611041915c56",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principles/$order": {
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principles/000": {
+          "hash": "sha256:0e78baada5687737346b1b0b9cce45e28cc3fbe91b279c2ae0ad4f9d61405b6e",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principles/001": {
+          "hash": "sha256:6d3bcdb5b1004bd7f967e0ed50d064b482f82f6fa55c7f90f2fa38fbfcbd593a",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principles/002": {
+          "hash": "sha256:7bd1dbf5e9863044cefa08711e93704e361cc0709eb81d5083de29dbdc56ad2f",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principles/003": {
+          "hash": "sha256:5b78922cc88fe6bc04de006dc6b9663086ec57794340db26712de7322eb0d920",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principles/004": {
+          "hash": "sha256:dd722136b215b5e9582d7c14557b393dd9e619e83e1d8aa1c0d606a4877ea67c",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principles/005": {
+          "hash": "sha256:0d86b5fdad635a01ae0508b04d90e9d98a5765f804bdb88c85717fc7a955170f",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/principleTitle": {
+          "hash": "sha256:5fb0d7d0c180291948698b4d2b592793e44df32d779566a514776a450e99877b",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/qa/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/qa/000": {
+          "hash": "sha256:da408a87caad1ef0c1991ad0d5b62f1d0f6df4c9defef240a911531c404dd489",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/qa/001": {
+          "hash": "sha256:71241f4f0392c9b96c6a5b3acf97c06b57ee5c3f4dd8b49919ac257d5f99a855",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15",
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/qa/002": {
+          "hash": "sha256:190754d58d06d18cb203a84d6a168cbfc7cb58281fa6bf330227765b75e4eef6",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-runner-source-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/qa/003": {
+          "hash": "sha256:c5256392f29b6ef74b1371b16cabfc8562662a01a37f9946999a100f5deb57c5",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15",
+            "veadk-builtin-tools-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/qa/004": {
+          "hash": "sha256:1eb61a330104d48e7723de38c55a5cb57d5c1107be7246ec57437de9cf8a2964",
+          "objectType": "brief",
+          "sourceIds": [
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/qa/005": {
+          "hash": "sha256:71b2ceaa34ac77ebd587271938403eaee5134bb61d5f255f50a9cd4e21840e17",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "mem0-platform-vs-oss-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/qa/006": {
+          "hash": "sha256:cd7b163bea720dd11eea3f8aa35cbc964f4f3a7e48b3f6acc834c8f72c1a3177",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-cli-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:veadk/brief/relatedSlugs/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/relatedSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/relatedSlugs/001": {
+          "hash": "sha256:d8ec6074d4844a0d2a13eb096d51037da7450c1ce4c16bd1819827e27e710d01",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/relatedSlugs/002": {
+          "hash": "sha256:49051dd3950d2cdb93d0b8dab185db099314bae170915cd611aa4c3836be54f5",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/relatedSlugs/003": {
+          "hash": "sha256:7c5c4ba60297f1adc7a83b8b86eeb7c355f6846ca0b2a04f88f94e98a978a21e",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/relatedSlugs/004": {
+          "hash": "sha256:2f3db7691887bb3c3b5637bfcfba7490c17a7cda08f8ccdafc53556f0d043a74",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/relatedSlugs/005": {
+          "hash": "sha256:825cff9607c815f556865135b4bd35491d8509f05a986a6faba376dec4ab503e",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/relatedSlugs/006": {
+          "hash": "sha256:cfccae389b5a23f3467724aff964491241ff549e25bfc031d24b5b5bfee45843",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/brief/slug": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/agentkit": {
+          "hash": "sha256:8435bb792e9ea288a4de91a18e15481eae0651953ce8ab32d58de435b20c97dd",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/ai-agent": {
+          "hash": "sha256:08c50c3d9a8598813946159cb064e8da74d4a3e786330a12b7520510cc42aecb",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/ai-ops": {
+          "hash": "sha256:d5bc5356314c065f9e4b2aca95a3808e93af051b9c44e0f77c2f1e05601d8b78",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/evaluation": {
+          "hash": "sha256:19795ac69744715309b5bad7ff34e4ba778085583ed47e9bb594a9c6547781c1",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/mcp": {
+          "hash": "sha256:b23416726be09530f7ad9817dd4cffe92ced8007c41654a1fe476692d94d2ae8",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/prompt-engineering": {
+          "hash": "sha256:f8bfc5cc63ed6f1f4642a3429caa935d303cf142b5ca65d2d97a6312c0c6c48e",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/rag": {
+          "hash": "sha256:3a81a651f2fb3d4929220bfe454c48a8504ec058d04a0a6f01f5963dc74b4e0c",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/canonicalModules/veadk": {
+          "hash": "sha256:574cce034e57b96966db46513dcf400ad6a56b49b32065c7c85456f502fda289",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:veadk/claims/$order": {
+          "hash": "sha256:9f05490ad65e2106a976e6297f30f4610f88cc1af717ee3c5cc1620199780f14",
+          "objectType": "claims-order",
+          "sourceIds": []
+        },
+        "/module:veadk/claims/000": {
+          "hash": "sha256:bdb94ba6a0dcd0acd1304ce3cf2062ebef18f44907ed7bee20ad05ccbcff4290",
+          "objectType": "claims",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15",
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/claims/001": {
+          "hash": "sha256:2d3ef4957ca3d5843ceb5fd34e1e55894520b7e8784b85d2835618ab43b44f00",
+          "objectType": "claims",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-cli-overview-2026-08-15"
+          ]
+        },
+        "/module:veadk/claims/002": {
+          "hash": "sha256:991d9fdd0aeaca491d60ebc963d343dc565e667a04a81e40ee01d80250fc88f4",
+          "objectType": "claims",
+          "sourceIds": [
+            "mem0-oss-overview-2026-08-15",
+            "mem0-platform-vs-oss-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/deepDives/$order": {
+          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "objectType": "content-order",
+          "sourceIds": []
+        },
+        "/module:veadk/content/deepDives/000": {
+          "hash": "sha256:fe4e8d50ebdfc943ffc0aa2ede9227c9b70e6f531a6c935616d80f73cd95608d",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "veadk-agent-source-2026-08-15",
+            "veadk-builtin-tools-2026-08-15",
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/deepDives/001": {
+          "hash": "sha256:37094d3d8a55eca9896cabfa25588158bbddebf761d784dbf56af2eb45030b8b",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-agentkit-integration-2026-08-15",
+            "veadk-runner-source-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/evidenceCards/$order": {
+          "hash": "sha256:416fc4d58705cdaff330d7709074389f7673fcb00af0e8bc8d98be15c3fa1a90",
+          "objectType": "content-order",
+          "sourceIds": []
+        },
+        "/module:veadk/content/evidenceCards/000": {
+          "hash": "sha256:cf5dc7f07e1e1d12808993714004a3bc0377ceb0f3a8fe3e93f2d5529952dd4e",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/evidenceCards/001": {
+          "hash": "sha256:268d7ab4c878e18bc0f4368f20c2f5f0326b55c6d2385d3a1154372cfbb36dbe",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/evidenceCards/002": {
+          "hash": "sha256:eb9519cf5860fee2d7cac5c5b8a105544d5450b687fdf574b08f8b844af48662",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/qa/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "content-order",
+          "sourceIds": []
+        },
+        "/module:veadk/content/qa/000": {
+          "hash": "sha256:da408a87caad1ef0c1991ad0d5b62f1d0f6df4c9defef240a911531c404dd489",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/qa/001": {
+          "hash": "sha256:71241f4f0392c9b96c6a5b3acf97c06b57ee5c3f4dd8b49919ac257d5f99a855",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15",
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/qa/002": {
+          "hash": "sha256:190754d58d06d18cb203a84d6a168cbfc7cb58281fa6bf330227765b75e4eef6",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-runner-source-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/qa/003": {
+          "hash": "sha256:c5256392f29b6ef74b1371b16cabfc8562662a01a37f9946999a100f5deb57c5",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15",
+            "veadk-builtin-tools-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/qa/004": {
+          "hash": "sha256:1eb61a330104d48e7723de38c55a5cb57d5c1107be7246ec57437de9cf8a2964",
+          "objectType": "content",
+          "sourceIds": [
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/qa/005": {
+          "hash": "sha256:71b2ceaa34ac77ebd587271938403eaee5134bb61d5f255f50a9cd4e21840e17",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "mem0-platform-vs-oss-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/content/qa/006": {
+          "hash": "sha256:cd7b163bea720dd11eea3f8aa35cbc964f4f3a7e48b3f6acc834c8f72c1a3177",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-cli-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/chapters/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "curriculum-order",
+          "sourceIds": []
+        },
+        "/module:veadk/curriculum/chapters/000": {
+          "hash": "sha256:9948f4048c8b2ac638677b8d8eac15651d60f9879d4f93d0ba091eb5b9dc0902",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "veadk-agent-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/chapters/001": {
+          "hash": "sha256:8d63080d6ffb4bc8cfca54f94498f935982d165f54533b0bc2a6845c19143be3",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/chapters/002": {
+          "hash": "sha256:596a9236d716d28033eb030377a21a41c296f91420e130775d1434ef3d08cabd",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "veadk-builtin-tools-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/chapters/003": {
+          "hash": "sha256:d0240aab0f035fd31d72b39c25809c350ba001b8b3c3404269717c22853f56e4",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/chapters/004": {
+          "hash": "sha256:b9a58319eca44144ef570d0bc2be46ad2cc8ad5d7fc65a59df70d686ebd0bb41",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "veadk-builtin-tools-2026-08-15",
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/chapters/005": {
+          "hash": "sha256:413dde8b96e9bf61ce4592e88d4419f4e89ec94a53da733d2e852330db7886a5",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/chapters/006": {
+          "hash": "sha256:54da4fdb48e3d8552693163fa019d37e04ceba253bf64d28ea4b04b7b6d058b5",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:veadk/curriculum/lead": {
+          "hash": "sha256:5172b031601f8099e4ca09fb414e357847718bcd39cce57322fc216c4ddad533",
+          "objectType": "curriculum",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/application": {
+          "hash": "sha256:b93b956808b18bc1909ddc03ca19251f7f35c7e09ddf53e7b82712fc1d61f204",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/checks/$order": {
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/checks/000": {
+          "hash": "sha256:aab2ab51c63421a775bcd3baa55fa4c4092d38f27ab8812ab682b9819aa6be13",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/checks/001": {
+          "hash": "sha256:c0ff0b7d0d2bd1d4661179abe5602f8f57836d5138b22d999461bcf48efa36b9",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/checks/002": {
+          "hash": "sha256:41c335910018a851e2edcfd8659b2883c66ae952c22d1710047a2e19684cbf0e",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/eyebrow": {
+          "hash": "sha256:89138d78978cbac7e5baac8aa361e9970404bb8cd1bc164436654b81af5a6d41",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/id": {
+          "hash": "sha256:03146055100198ecc6000d46b83e5152c9acf13bc4a0aa18f5350cbd46b3654d",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/intro": {
+          "hash": "sha256:cea8a528fde8205415588a6f5058ed916aaeb2ba4300974ffffeb0c94f288573",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/layout": {
+          "hash": "sha256:f742fed25bc8d85e927de8662099dbba47bac3fb5773f73b80a6561ad9601ef9",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/links/$order": {
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/links/000": {
+          "hash": "sha256:0dc5921c19ccc806fa64159c20de16181f8f1e02e384308c8f2881f1de7350a6",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/links/001": {
+          "hash": "sha256:1d1bfd7b8fab3784720c871d770a71f2ed523a65e2ed84414b58f9fac7443231",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/links/002": {
+          "hash": "sha256:1ff2b54131a007b6a6f29681af4c7b4c96afaab84ee5e452c6d9642f0b859ef1",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/steps/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/steps/000": {
+          "hash": "sha256:3a7e284670b4136b016c0daaf9e3722ea93debec7b1c918feaf5e8f9361d0dbf",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/steps/001": {
+          "hash": "sha256:1bfa437590b3b7e6bbf631e4cd6d309808bd745bab491f4d1f6e9731aee151ac",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/steps/002": {
+          "hash": "sha256:7d872377c87e720ab35f9d375f876aba7a15519a35a2f94f0b9bac524f743de6",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/steps/003": {
+          "hash": "sha256:bf4429162c9f1869647f723eeefb70b37d164fc32b20799bad6139a6438e416f",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/steps/004": {
+          "hash": "sha256:3de2a9585614a6cacc6c930375e75cb5357a53d348739a1b878665ea54217d0a",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/termIds/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/termIds/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/termIds/001": {
+          "hash": "sha256:33923bd297975e75b39fb2acea234340cab3871a6bba8a5b70856578d2a15123",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/termIds/002": {
+          "hash": "sha256:c29e3a7f7734661091c2407d2a4d947b3a5a6de942f4eed39f9bbbcd1fcc9414",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/termIds/003": {
+          "hash": "sha256:5d8ca2f90234b0b57de03c826b00364a67393daa2c9260309929a4c2cb939de5",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/termIds/004": {
+          "hash": "sha256:d18439dd047043f832e82bb6c42f42fd375dadb2dd6200d4e963f4552f58f418",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/extensionView/title": {
+          "hash": "sha256:fab9349674c738866ec8710d19c171571819c4c30cd5ca65d74240bf3c5ee030",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/labs/$order": {
+          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "objectType": "learning-order",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/labs/000": {
+          "hash": "sha256:d0fe02ca65e1bdf80d6cb55190ef7fb1b81e420dcd68be1290d1d9743df145ba",
+          "objectType": "learning",
+          "sourceIds": [
+            "veadk-runner-source-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:veadk/learning/labs/001": {
+          "hash": "sha256:aa53d27ada17c0f3bef7f620f83381dc6bbf37d294c06b945686a7d21e4a2388",
+          "objectType": "learning",
+          "sourceIds": [
+            "veadk-builtin-tools-2026-08-15",
+            "veadk-runner-source-2026-08-15"
+          ]
+        },
+        "/module:veadk/learning/outcomes/$order": {
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "objectType": "learning-order",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/outcomes/000": {
+          "hash": "sha256:7103fb193950018af19fc71f7675da45513dd86a3aaffab56d0b5d2a2eeaab39",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/outcomes/001": {
+          "hash": "sha256:d192ab6a59af0f5da86b42e271b14706f78aecb545f2f83f15172ab50d0f48ab",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/outcomes/002": {
+          "hash": "sha256:d5b0ae828cda60dd648b283b30c2825373d56fea228e7e704395ae253690bf53",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/outcomes/003": {
+          "hash": "sha256:539bb43fd776497f7b1411f34f6c0cee9c305a1c7b5ed2a25631c3e8529b2347",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/route/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "learning-order",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/route/000": {
+          "hash": "sha256:5b11fbde280445a0514679bb6653cb7288a6123bec07d7e1cb3ae1b809db6a3a",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/route/001": {
+          "hash": "sha256:2c57b10d1b622fcc9d655376b7a1f56a1111b8b62920aa901b16c77072e195fd",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/route/002": {
+          "hash": "sha256:e787a6a3754b3d32d5f542a9b1193ff940dcdca9d87ca7c490ee65d9322cc1cb",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/route/003": {
+          "hash": "sha256:d3dbc49be94aabd55ef3c168ccc87b0b0a20c6f2a3a7fdc0e71b6f0de7472142",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/learning/route/004": {
+          "hash": "sha256:0d042ee23f37960a081a0fe7d433701777c1c30b792866bd6faf9cbcce6a3554",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/boundary/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/boundary/000": {
+          "hash": "sha256:97dd1b1c3f027764fc11c9273d498025eeb2b0537dd147d2286998f83f826874",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/cloud/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/cloud/000": {
+          "hash": "sha256:8763f9c13eee0b189da1b3ec3076f221b22884a6376c47de08193647edec8dd6",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/customer/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/customer/000": {
+          "hash": "sha256:538ac162b2333b08136a9de61ee04d4c37855364ad3133d22837cca5dbc0ec42",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/mechanism/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/mechanism/000": {
+          "hash": "sha256:0cd6375a37bb434b73a77383ebe440ba2c3116954567f4eabd3f18c2fd0b70f2",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/principle/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/contentContract/principle/000": {
+          "hash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/introducedAt": {
+          "hash": "sha256:0f51a5c292f3ec742d866da608deab270ce0e0dd4626b2302658c9412132132b",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/knowledgeView": {
+          "hash": "sha256:03146055100198ecc6000d46b83e5152c9acf13bc4a0aa18f5350cbd46b3654d",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/legacyUndatedQuestionSetSha256": {
+          "hash": "sha256:db470048f61d206b683b2c2a1129947e5fce18489caa0c53f96950d45bcf1fc4",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/path": {
+          "hash": "sha256:c1f73c2b787fa3ea65b5f32451b7daa0dd48f8d2d68b0e76102cf04a2c9d6e62",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/$order": {
+          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/000": {
+          "hash": "sha256:b4bb9ebba4153068242945b4ccbc6cdc3a6e2961144b6e9cb10fe24625b01bc1",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/001": {
+          "hash": "sha256:6041fbb80c30d43c10b656100ac84b0620e428ebca4002b66a00eb7863bc0283",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/002": {
+          "hash": "sha256:8fabda489b657ec92c579beb01e4bdd00673982ca961e3d302ca5ce23c291402",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/003": {
+          "hash": "sha256:713ffb6b39cc457ca6366ab4ff6112949f785c79567e6122039e64e484ee777d",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/004": {
+          "hash": "sha256:a5c49b7a30a5e2e70e595bd717d7e277e31cf5f44e36637ea8d8ec5216241e5e",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/005": {
+          "hash": "sha256:659e69c05e8d999da5024c910115d368073cdebc9d8c22242dc061acd7acdc5e",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/006": {
+          "hash": "sha256:958a6c4a2ecab7b25fdae3d2875fc10c360d97a7d843daaf4d07b7dccfe38c52",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/007": {
+          "hash": "sha256:0b60c3660c46421825656e02ee6217917f26f5032dbf70da26725ed5735fd3f6",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/qaCoverageTags/008": {
+          "hash": "sha256:8c890b3b70aa172fc2fc16b9c5d588ef54ef0ce5151b06cc1e27599055a36807",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/001": {
+          "hash": "sha256:5d0b07e21fa69f7d4681c23735c9a42076c95d3580a5c36feb589afb139816fa",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/002": {
+          "hash": "sha256:c29e3a7f7734661091c2407d2a4d947b3a5a6de942f4eed39f9bbbcd1fcc9414",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/003": {
+          "hash": "sha256:f0120fb9b4314632fa2ae3a754d2275fa9923cb9cfbd795c4eb0ab3d14e26e1c",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/004": {
+          "hash": "sha256:33923bd297975e75b39fb2acea234340cab3871a6bba8a5b70856578d2a15123",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/005": {
+          "hash": "sha256:d18439dd047043f832e82bb6c42f42fd375dadb2dd6200d4e963f4552f58f418",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/requiredTerms/006": {
+          "hash": "sha256:5d8ca2f90234b0b57de03c826b00364a67393daa2c9260309929a4c2cb939de5",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/routeKind": {
+          "hash": "sha256:37a297ecfb35935822a15b288aadae25678b20958d929e9c7df8e7a39c3453ea",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/slug": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/titleId": {
+          "hash": "sha256:9eddb7950714d09cea3087ba9d9619774362693bd7f7894b70ccbbf6045020f2",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/updatedAt": {
+          "hash": "sha256:0f51a5c292f3ec742d866da608deab270ce0e0dd4626b2302658c9412132132b",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/publication/visualProfile": {
+          "hash": "sha256:33d50a71720d4bb7984599b887352c59658b3ef1de69771f9e1795c70fc96282",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/en": {
+          "hash": "sha256:7f1aec663de3be41281b4f3160aa36f70f4faa59b5499503999702c406772c21",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/href": {
+          "hash": "sha256:c1f73c2b787fa3ea65b5f32451b7daa0dd48f8d2d68b0e76102cf04a2c9d6e62",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/id": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/shortTitle": {
+          "hash": "sha256:7116458658450bfd5b8d280600061a7c822d743cdcea8a99a0269b3d53ae7750",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/$order": {
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "objectType": "referenceModule-order",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/000": {
+          "hash": "sha256:6dfdf1ec69d2048ab7b5c0eb6482c97445281a262fcda53957b4a849042d7b67",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/001": {
+          "hash": "sha256:e23b2da991600bb30e0a06c91195940c50eabf827438642143bd19da8da63f0e",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/002": {
+          "hash": "sha256:665d572b618eeffd307e38d7b7a597eb3592dd4f07cc85a78c9389c3e1f42833",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/003": {
+          "hash": "sha256:5b81f6f03fd9b559e2af0564227d2be22a1f65d77cdb52e672902259db0dd8e4",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/004": {
+          "hash": "sha256:a8bc29a4ca23ea44fb355a9b082492c0047afadb9030b63982497ffb2185f1c8",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/005": {
+          "hash": "sha256:6e37a544efced220dc08bb7c144690376606f9c3e1080b6785c1c7c2a50d4fa9",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/006": {
+          "hash": "sha256:2b19fe0d4d6c48e9b5ed8ec15034a1dddff330fbc141fe24c24214d900e2afd1",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/007": {
+          "hash": "sha256:b04b8ba7dccfca1d1a1194da6c3c343bb99f044dee34d622476f5e8d33b458a0",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/008": {
+          "hash": "sha256:824c0bcd7280fde4be79756b6f4b60f52a090780ee16cecf90882e2b5e21902b",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/sourceIds/009": {
+          "hash": "sha256:650a28c9c0974022f4bb58f7533e01c84a29a9db117d6b1e949ab76ff0b85c9a",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/referenceModule/zh": {
+          "hash": "sha256:7116458658450bfd5b8d280600061a7c822d743cdcea8a99a0269b3d53ae7750",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/evidenceCardIds/$order": {
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "objectType": "renderedProjection-order",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/evidenceCardIds/000": {
+          "hash": "sha256:a09a2dc3e5d65349b1f75434377ca2ad57174dc9e9c662515817e9a16c308530",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/evidenceCardIds/001": {
+          "hash": "sha256:2b35a390e7f6f175e708eec49a20f90dca168304b46a39bb09f4352c03dc205b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/evidenceCardIds/002": {
+          "hash": "sha256:f28163ca5fdd2afee52a9e082c5cc169bab5174a944719ec3c5fdbf4956d5a6b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "renderedProjection-order",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/000": {
+          "hash": "sha256:60252b8784d62a1ae6d4cd6ba4b341f04cfa5e3f486709183d04613739da8a75",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/001": {
+          "hash": "sha256:daeb46e6e34d787bb67aaad60d1ce2bb2ba74d58a6f6e187593b90094715ade7",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/002": {
+          "hash": "sha256:40ceea39c54852577bf9c34afdf6696cdaf3f7adf965e8bc0534e9aefa5994eb",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/003": {
+          "hash": "sha256:54b3b961d9671cd89752ee6f8c173b00d98c365474144bb8d28a067ef83cd66b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/004": {
+          "hash": "sha256:d4d0d41364dfd8b9406ab9944cede715d876928d8f74238de4fa78dc3757da0b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/005": {
+          "hash": "sha256:0635c7e052e9e18aa74e826351d9b1b89d2d92835c1df3045de3c03606ed4d97",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/questionIds/006": {
+          "hash": "sha256:23ba6fc835b9a2bb5006076d7e5a1abe247cfea08643055108f1c5339eb8bff3",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/$order": {
+          "hash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
+          "objectType": "renderedProjection-order",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/000": {
+          "hash": "sha256:a146992c98933451c8c2bfdb0243f60a7b9da2167d6fa915197532f94018685e",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/001": {
+          "hash": "sha256:ab75a165083a233893f0ad73875d3bd5a36f82808b160c0f047d49f2863b36f7",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/002": {
+          "hash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/003": {
+          "hash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/004": {
+          "hash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/005": {
+          "hash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/006": {
+          "hash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/007": {
+          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/008": {
+          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/009": {
+          "hash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/010": {
+          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/011": {
+          "hash": "sha256:d227808869b1fc8b0373dbf8a6ff006fbac55a9b1b8349e2cf935474b7deb093",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/012": {
+          "hash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/rendererDependencyFiles/013": {
+          "hash": "sha256:ea5a8e0fa921f951c9dd093928846157bc129eda92f33cc6ad8b8666340eaf15",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/renderedProjection/sharedRendererHash": {
+          "hash": "sha256:fbdd44aed683001009326b8c0f7f925c5e2ee5c79a9ed13e7a90957f7e1464fe",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/agentkit-cli-commands-2026-08-15": {
+          "hash": "sha256:f89e98e45b59ebdd8b2ea8af0ea2b55a19135f146c67a1f077d0f5ebfcc3237c",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/agentkit-cli-overview-2026-08-15": {
+          "hash": "sha256:e26d81d5cb0a398b24b87d610ff2b4df3f966afea6d007117f33aa4850b228ed",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/agentkit-memory-quickstart-2026-08-15": {
+          "hash": "sha256:a143cb20cfbe75ee976977ea36e9186600f2be98b05b41498e538258ae50e455",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/agentkit-platform-overview-2026-08-15": {
+          "hash": "sha256:dce8c9bb78f535d30343b99592cc0359a8933b96fcf1157ff3f7461f3c284fa4",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/agentkit-runtime-quickstart-2026-08-15": {
+          "hash": "sha256:b9d01607779f6bf58eb436fb29019b32351a652967e913e70ca65e0965424af4",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/mem0-oss-overview-2026-08-15": {
+          "hash": "sha256:7436f2404d251562112bb7e30ab3a0b760bf3ac823de1f2848820d7e52bc2b12",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/mem0-platform-vs-oss-2026-08-15": {
+          "hash": "sha256:ec8d8b1d38b287b1d7944ab8187b5d130768aca4a5c7e6be74b2c6cdfad1bdc7",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/veadk-agent-source-2026-08-15": {
+          "hash": "sha256:0ea08119749fc30133b67e01c3624eecfd84c553235f25fc7c33b59f0a8befc3",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/veadk-agentkit-integration-2026-08-15": {
+          "hash": "sha256:9a1d113f4c6d5d7a0f3604e2d7f63670e8eabff815bcdb66f442e53712038724",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/veadk-builtin-tools-2026-08-15": {
+          "hash": "sha256:977d49243dd77909d3a6f38d39a0058bfd3917d23e8057cb9029b2bfc26d35e9",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/veadk-runner-source-2026-08-15": {
+          "hash": "sha256:fa7a946b08c27967b81f0e54822464c68764c9e47dc0a1283b382fc11c193c30",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/sources/veadk-short-term-memory-2026-08-15": {
+          "hash": "sha256:cc242e34e4b429092a74330617ccfccecf1af5805017f859e4429811e2ce86cb",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agent-runner/description": {
+          "hash": "sha256:45463b2a191f1bd57b47c8dcf18728dcac4dca42a6707a370aa38458f0704c09",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agent-runner/en": {
+          "hash": "sha256:b11580ccfca61803496649c6c0dfd1d07e0899a5491f21946ce10c445cb3fa33",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agent-runner/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agent-runner/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agent-runner/zh": {
+          "hash": "sha256:b11580ccfca61803496649c6c0dfd1d07e0899a5491f21946ce10c445cb3fa33",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agentkit-app-adapter/description": {
+          "hash": "sha256:f709c60c92603682fc32ec2539d2755cc7a19295fec11a32544b6f21ecd6c1a8",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agentkit-app-adapter/en": {
+          "hash": "sha256:755d722754e2873a0d802d8779eae884de7f1323c287ad4feb82d54db96b464d",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agentkit-app-adapter/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agentkit-app-adapter/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/agentkit-app-adapter/zh": {
+          "hash": "sha256:7c0537276f36135af33f3e938ea68ff32e6d2191b7cd521ba80796f40eadbb6f",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/google-adk/abbr": {
+          "hash": "sha256:2e46ae8bebabeb0adcd5ff07918c93b11438382ad4b63c6693571aaf4a9d838c",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/google-adk/description": {
+          "hash": "sha256:89f6c278400a8d79efe11a2a0778bef0a1dcfc7b9d1bc8b4f3b253afa1103265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/google-adk/en": {
+          "hash": "sha256:44e93cf74c5c2738ba37cc391f4a9a1bbdbb5aa396f806c0650adc3b821fbdc3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/google-adk/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/google-adk/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/google-adk/zh": {
+          "hash": "sha256:2e46ae8bebabeb0adcd5ff07918c93b11438382ad4b63c6693571aaf4a9d838c",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/root-agent/description": {
+          "hash": "sha256:3a15a6ec65770949754e3d478cc362ff84d070e0917fb867d1a7c8aa22b6c417",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/root-agent/en": {
+          "hash": "sha256:02bd6e0b671b5873dfcb9587718bae3824423e482174aed29f712c97be1417a6",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/root-agent/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/root-agent/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/root-agent/zh": {
+          "hash": "sha256:3df671146cfc026275178d909764b762e47795c2e8a66d7b388c53e646bd22f2",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/short-term-memory/description": {
+          "hash": "sha256:b09f31d2d361b72dc9e5f4ab097f7b28a8cfbff00947216d94ddb1d92d17b327",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/short-term-memory/en": {
+          "hash": "sha256:32c14f3683c2a2596101d0f8cf280c7166f57847ed7522b5b111b399f5f5d890",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/short-term-memory/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/short-term-memory/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/short-term-memory/zh": {
+          "hash": "sha256:4e4afeccc5495452fd795f09900a11a788724629c1262e65fd9c0547f54e63c1",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/tool-loop/description": {
+          "hash": "sha256:64cbcb009c5ec4d3b8b55fe44d0cc303f6c498907f864a74307c1f400fc2e139",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/tool-loop/en": {
+          "hash": "sha256:2e1ffb91b927e2059476f5c5e4220463a1ed9fca2f38661a30d14bf2946bed26",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/tool-loop/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/tool-loop/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/tool-loop/zh": {
+          "hash": "sha256:39daedb844d4ce4254f5d4b901a7fda22960ca513ec8e2bcf8d9dcb492e85d97",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/veadk/description": {
+          "hash": "sha256:3cb32514b358d319a962f8cb64ffbbec6adbf1d0f8e32316be0be1b3d3d72ab5",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/veadk/en": {
+          "hash": "sha256:7116458658450bfd5b8d280600061a7c822d743cdcea8a99a0269b3d53ae7750",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/veadk/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/veadk/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:veadk/terms/veadk/zh": {
+          "hash": "sha256:7116458658450bfd5b8d280600061a7c822d743cdcea8a99a0269b3d53ae7750",
+          "objectType": "terms",
+          "sourceIds": []
+        }
+      },
+      "zhRendererFiles": [
+        "app/(zh)/layout.tsx",
+        "app/(zh)/modules/[slug]/page.tsx",
+        "app/content-update-metadata.mjs",
+        "app/deep-dive-relation-view.tsx",
+        "app/fieldbook-interactions.tsx",
+        "app/focused-visual-explainers.tsx",
+        "app/i18n/locale-config.mjs",
+        "app/layout-utils.mjs",
+        "app/module-content-components.tsx",
+        "app/module-pilot-views.tsx",
+        "app/module-representation-assessment.mjs",
+        "app/module-visual-explorers.tsx",
+        "app/question-filter.mjs",
+        "app/term-hint.tsx"
+      ],
+      "enAuthoredHash": "sha256:6c3f47f5fb42eed70e8c7ffea1a2d08c6f7aa0b6cd89d917e59bde6488357301",
+      "enEffectiveHash": "sha256:9261ea8deae4088245ff6f671349ce9265ea79df13e7f5026e365fffd0c47c05",
+      "enReviewHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35",
+      "enRendererFiles": [
+        "app/(en)/en/modules/[slug]/page.tsx",
+        "app/(en)/layout.tsx",
+        "app/content-update-metadata.mjs",
+        "app/deep-dive-relation-view.tsx",
+        "app/fieldbook-interactions.tsx",
+        "app/i18n/english-page-metadata.ts",
+        "app/i18n/english-pilot-module-page.tsx",
+        "app/i18n/english-representation-assessment.mjs",
+        "app/i18n/english-section-outline.mjs",
+        "app/i18n/locale-config.mjs",
+        "app/layout-utils.mjs",
+        "app/module-content-components.tsx",
+        "app/module-representation-assessment.mjs",
+        "app/module-visual-explorers.tsx",
+        "app/question-filter.mjs"
+      ],
+      "englishUpdatedAt": "2026-08-15",
+      "reviewFiles": {
+        "br-veadk-2026-08-15-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.ultra-exception.json",
+          "hash": "sha256:b579d8eb0e9ae485acc1d53cba55e41d4efa08e3afc6a40826620deb1b106b2c",
+          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
+        },
+        "br-veadk-2026-08-15-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.xhigh-author.json",
+          "hash": "sha256:3ed425ead99bf795a2cd4d1d20ec75da4866c558239002b6a7814bc0b22a0f68",
+          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
+        },
+        "br-veadk-2026-08-15-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.xhigh-language.json",
+          "hash": "sha256:0bbc14b2fc1eba38d48c40d7dc01d558611c51b532700f2f7b8d02da28b2ca2e",
+          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
+        },
+        "br-veadk-2026-08-15-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/veadk.xhigh-semantic.json",
+          "hash": "sha256:9d50e32317a9a35db2e46307a448527971bf0cbfa3977a4f1c43e4f153c5aec6",
+          "zhContentHash": "sha256:7cc133d39353ac7a6065da0b79b59d70be0d012bb21e51b412f34fd7e08609fd",
+          "enContentHash": "sha256:4acf5b63d33fa168fbcf091d0b21e46a8c2cb705184392ff6925e26737e26f35"
+        }
+      }
+    },
+    "agentkit": {
+      "zhBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
+      "enBaselineCommit": "b72ea94b2b906c0f65cc00c7562f2811a99c0364",
+      "reviewSetIds": [
+        "br-agentkit-2026-08-15-ultra-exception",
+        "br-agentkit-2026-08-15-xhigh-author",
+        "br-agentkit-2026-08-15-xhigh-language",
+        "br-agentkit-2026-08-15-xhigh-semantic"
+      ],
+      "zhReviewHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+      "zhStateHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+      "zhObjects": {
+        "/module:agentkit/brief/cloudHooks/$order": {
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/cloudHooks/000": {
+          "hash": "sha256:a49ad881fa18c2a1d3981c2e67076cb9b0e47efc1b1704bb1026ae07cc09f118",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/cloudHooks/001": {
+          "hash": "sha256:b5826132f8e5a94301dbdeb3041b630fc39ccce3c56d1e4b390404b9e0eedaed",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/cloudHooks/002": {
+          "hash": "sha256:a8edf42f37e5126df803434ba9261e7bbb419bf1750b61efee049cbb165c9afe",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/cloudHooks/003": {
+          "hash": "sha256:8d10ceab094840a0b905a8c3dfc387fa756d36ac69f555e4e60a7c7477e39717",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/criticalBoundary": {
+          "hash": "sha256:f9436ffef3ce1acdb6b3934620eb58d18aeb3820f7700a072bf1f9b6b4efa449",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/decisions/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/decisions/000": {
+          "hash": "sha256:ce860b8e34d4e7846913b1e812c802c615b36ef29d2d613e2afcf6d9534be4b7",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/decisions/001": {
+          "hash": "sha256:b2cc70648b0381168f08ada2a45069d01a03fcd54b0a9816f05f25c23a5ffc16",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/decisions/002": {
+          "hash": "sha256:d9d65f11402bf7ac78ddbb9ce1ac731bd8391308c7b13d3cce95e62de92726c5",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/decisions/003": {
+          "hash": "sha256:84bfe39570a6eb0ff8c01bf7ec33679349efe37dfd783bc7e1655e10a129a328",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/decisions/004": {
+          "hash": "sha256:5627fc2697f90ed588be19a2a4460e3b409e9f5027dd8d81f2f1c359fbb745df",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/deepDiveLead": {
+          "hash": "sha256:d5cbc5aa0daca1cf4114c53a7ceafff0b15770cab66f741773aa8bd085e09349",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/deepDives/$order": {
+          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/deepDives/000": {
+          "hash": "sha256:c9c5315da2eb1f96f1444d8ea3490a3e5f1577da4a3838592935c719060c9c06",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-cli-overview-2026-08-15",
+            "agentkit-config-reference-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/deepDives/001": {
+          "hash": "sha256:24568555c6d22b36ed69bda96f8121f1f887490fc1e06bab5c992876a441db8e",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-config-reference-2026-08-15",
+            "agentkit-memory-quickstart-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/deepDiveTitle": {
+          "hash": "sha256:a87103b248dd35af65aabedcb1c33bf8a51b5f774e8b8540440c63b0466c50cd",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/definition": {
+          "hash": "sha256:566f96796dda10452155d9249c18aec6b708b712ed1110677d7902adbe11a53a",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/evidenceCards/$order": {
+          "hash": "sha256:fc8420b8fee5217e7e81ce4e757617bcf16b857f822f9c9a2f475e76c24d7b97",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/evidenceCards/000": {
+          "hash": "sha256:d440896e945f7e8a61d2ee1eac2957399ab9350e05d975090aaedbd099e45a10",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-cli-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/evidenceCards/001": {
+          "hash": "sha256:67c551078296b0eed22985744f1dfc040405cf147be2f191b59c0526462f0f8d",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/evidenceCards/002": {
+          "hash": "sha256:f26af98f88e0b106f1827c0d7b39062baa63e5e179348ba753c44aa9df3ec5d5",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/position": {
+          "hash": "sha256:9424d4580e7b0d27e5d4754bc2ef9761146590953e6e1933c96f4bfd3b9f610c",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/presentation": {
+          "hash": "sha256:f742fed25bc8d85e927de8662099dbba47bac3fb5773f73b80a6561ad9601ef9",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principles/$order": {
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principles/000": {
+          "hash": "sha256:ab69ae97b5ed9fc0384cf5277642972c53dd2565ba7336d908c4e77149dbd2e6",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principles/001": {
+          "hash": "sha256:e14e20e9951780b4ec862366a89bda96791038880c9b282ff204cd40988f9a49",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principles/002": {
+          "hash": "sha256:080c82f08eb46405959ad2fe4d34d0124a07bfca69235e6959ddd94cf56e2122",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principles/003": {
+          "hash": "sha256:86f1ae3a8ca61599f8423e3ea401860fb622ca4c0082dacf06ce070b6e80b425",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principles/004": {
+          "hash": "sha256:52500b37a8ab4f96c67159794c7622ac2b754e3cef09602d183139f58231bd18",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principles/005": {
+          "hash": "sha256:446a3462926ffa1b70238eca35abf10804e54b872793589d7a7914aacb6b9599",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/principleTitle": {
+          "hash": "sha256:55d915f514756c9d94db8dfc88ab8f9f7ae9e19b6013a21685a40da58c3f84b8",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/qa/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/qa/000": {
+          "hash": "sha256:c98a17bbeb564da722e727f27e5f85614291c661038402e158b394bbfd95f35f",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/qa/001": {
+          "hash": "sha256:b39ba6663ad05478e5d67402e4e8ce292f96161e9ca6482d273720577a8e4dc3",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-config-reference-2026-08-15",
+            "agentkit-platform-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/qa/002": {
+          "hash": "sha256:e3ad7ca687a50d82f50cd1ca5a37f676b7dbe80f8ff1b3ec1ac1b4cffc861706",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-cli-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/qa/003": {
+          "hash": "sha256:dfe81811780d5920e31edd666a4391f2e85a74348ef3bd775920650d2710998a",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/qa/004": {
+          "hash": "sha256:8c6fe2d15619bf564843633ee64d73daef5bf4d20ed8224eb91c3bb87a0a44d3",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/qa/005": {
+          "hash": "sha256:848e5a1db29a7653fe5ae946f376133fe187fcb6939f76cc414981841e18255b",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "mem0-oss-overview-2026-08-15",
+            "mem0-platform-vs-oss-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/qa/006": {
+          "hash": "sha256:a21eabedafbe77e0ad96590415eeb030db4cbebeb3a2e679d42ddcacf8bcf18e",
+          "objectType": "brief",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/brief/relatedSlugs/$order": {
+          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "objectType": "brief-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/001": {
+          "hash": "sha256:d8ec6074d4844a0d2a13eb096d51037da7450c1ce4c16bd1819827e27e710d01",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/002": {
+          "hash": "sha256:6f6fd05519592052dd3d9cac6532910518d867592df3a0a6bbeb5f15f530f0e5",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/003": {
+          "hash": "sha256:cfccae389b5a23f3467724aff964491241ff549e25bfc031d24b5b5bfee45843",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/004": {
+          "hash": "sha256:825cff9607c815f556865135b4bd35491d8509f05a986a6faba376dec4ab503e",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/005": {
+          "hash": "sha256:361e7b1acb6d80d7ef7f8e0aa4204fcebe6a047e57167c83979fbcdb9d37833c",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/006": {
+          "hash": "sha256:48341aed05dc78039129c0f178ad032d15b48a21332268d0e50eb5fa1102c984",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/relatedSlugs/007": {
+          "hash": "sha256:2233881eb6f9898a9e1dd275cab5cf73dee9a981dad7d8ebd9b7302342e07ba3",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/brief/slug": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/agentkit": {
+          "hash": "sha256:8435bb792e9ea288a4de91a18e15481eae0651953ce8ab32d58de435b20c97dd",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/ai-agent": {
+          "hash": "sha256:08c50c3d9a8598813946159cb064e8da74d4a3e786330a12b7520510cc42aecb",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/ai-gateway": {
+          "hash": "sha256:41c0b42eab35bcbf9ff780847696193ba57a69500b3b8b2248d33b6e8d1a00a9",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/ai-infra-platform": {
+          "hash": "sha256:ba99067d5cd454743ecd5c33380884e5913a6bec1946340d218fff7435b39f6e",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/ai-ops": {
+          "hash": "sha256:d5bc5356314c065f9e4b2aca95a3808e93af051b9c44e0f77c2f1e05601d8b78",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/evaluation": {
+          "hash": "sha256:19795ac69744715309b5bad7ff34e4ba778085583ed47e9bb594a9c6547781c1",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/security": {
+          "hash": "sha256:47a4a86516d5a1ef962ad9193f4b2f5e85b270f6fdda4a4f24abb5df0f05c5ff",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/solution-patterns": {
+          "hash": "sha256:64830df15151220963278196ff011ac10641f596949c97fea2ba2c7107f88458",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/canonicalModules/veadk": {
+          "hash": "sha256:574cce034e57b96966db46513dcf400ad6a56b49b32065c7c85456f502fda289",
+          "objectType": "canonicalModules",
+          "sourceIds": []
+        },
+        "/module:agentkit/claims/$order": {
+          "hash": "sha256:791e6257ab86260c107d8dffda7ba81f64c3b4fcd811e25330d2c8b3ca3e8b80",
+          "objectType": "claims-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/claims/000": {
+          "hash": "sha256:2d3ef4957ca3d5843ceb5fd34e1e55894520b7e8784b85d2835618ab43b44f00",
+          "objectType": "claims",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-cli-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/claims/001": {
+          "hash": "sha256:991d9fdd0aeaca491d60ebc963d343dc565e667a04a81e40ee01d80250fc88f4",
+          "objectType": "claims",
+          "sourceIds": [
+            "mem0-oss-overview-2026-08-15",
+            "mem0-platform-vs-oss-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/deepDives/$order": {
+          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "objectType": "content-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/content/deepDives/000": {
+          "hash": "sha256:c9c5315da2eb1f96f1444d8ea3490a3e5f1577da4a3838592935c719060c9c06",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-cli-overview-2026-08-15",
+            "agentkit-config-reference-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/deepDives/001": {
+          "hash": "sha256:24568555c6d22b36ed69bda96f8121f1f887490fc1e06bab5c992876a441db8e",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-config-reference-2026-08-15",
+            "agentkit-memory-quickstart-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/evidenceCards/$order": {
+          "hash": "sha256:fc8420b8fee5217e7e81ce4e757617bcf16b857f822f9c9a2f475e76c24d7b97",
+          "objectType": "content-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/content/evidenceCards/000": {
+          "hash": "sha256:d440896e945f7e8a61d2ee1eac2957399ab9350e05d975090aaedbd099e45a10",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-cli-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/evidenceCards/001": {
+          "hash": "sha256:67c551078296b0eed22985744f1dfc040405cf147be2f191b59c0526462f0f8d",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/evidenceCards/002": {
+          "hash": "sha256:f26af98f88e0b106f1827c0d7b39062baa63e5e179348ba753c44aa9df3ec5d5",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/qa/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "content-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/content/qa/000": {
+          "hash": "sha256:c98a17bbeb564da722e727f27e5f85614291c661038402e158b394bbfd95f35f",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/qa/001": {
+          "hash": "sha256:b39ba6663ad05478e5d67402e4e8ce292f96161e9ca6482d273720577a8e4dc3",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-config-reference-2026-08-15",
+            "agentkit-platform-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/qa/002": {
+          "hash": "sha256:e3ad7ca687a50d82f50cd1ca5a37f676b7dbe80f8ff1b3ec1ac1b4cffc861706",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-cli-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/qa/003": {
+          "hash": "sha256:dfe81811780d5920e31edd666a4391f2e85a74348ef3bd775920650d2710998a",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/qa/004": {
+          "hash": "sha256:8c6fe2d15619bf564843633ee64d73daef5bf4d20ed8224eb91c3bb87a0a44d3",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15",
+            "veadk-short-term-memory-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/qa/005": {
+          "hash": "sha256:848e5a1db29a7653fe5ae946f376133fe187fcb6939f76cc414981841e18255b",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15",
+            "mem0-oss-overview-2026-08-15",
+            "mem0-platform-vs-oss-2026-08-15"
+          ]
+        },
+        "/module:agentkit/content/qa/006": {
+          "hash": "sha256:a21eabedafbe77e0ad96590415eeb030db4cbebeb3a2e679d42ddcacf8bcf18e",
+          "objectType": "content",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/chapters/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "curriculum-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/curriculum/chapters/000": {
+          "hash": "sha256:d0c7b3529c20b54adae0d15a34edf3360e91741b412d578ce2bd94607fd13469",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/chapters/001": {
+          "hash": "sha256:590f3e21e28018bfcc41912879fa709e3bf168b6cc355d0619b377fab5f7afc6",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-cli-overview-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/chapters/002": {
+          "hash": "sha256:dec0db61b174046c65234d46bf1d6c7ab76dd95661faca5f6546362a35965d6d",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "agentkit-config-reference-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/chapters/003": {
+          "hash": "sha256:76d7e476731a82875e5243f5df03e56ba124244233bf9d2a54a24bcc7f127843",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/chapters/004": {
+          "hash": "sha256:dbb71a3d70219ee88ab43fd33b4712f8d111dcb88ef6a62af5daf1e8f3a2a0ff",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "agentkit-memory-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/chapters/005": {
+          "hash": "sha256:37dd0bf267df7f87864f2ae01720320d071823397247ce3a46f9e763bdc7e643",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "mem0-oss-overview-2026-08-15",
+            "mem0-platform-vs-oss-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/chapters/006": {
+          "hash": "sha256:5297daa14d6f90c170144a8ee91e79b531cdfa70909906c890693cc57199648a",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "agentkit-platform-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/curriculum/lead": {
+          "hash": "sha256:ba8147840e4de9a36d5411ce0c1b934531bd2f9382da799e839a79904d87fbd2",
+          "objectType": "curriculum",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/application": {
+          "hash": "sha256:44bc1ecafc2b288ded71b74506ce7e9b446de765baf8334598c3c77a31c294ea",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/checks/$order": {
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/checks/000": {
+          "hash": "sha256:f63a9ba085faf88b9e6134baf359321306f03feb052cc2f60a887572da7cc4df",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/checks/001": {
+          "hash": "sha256:fe10177ec7be2768abececf43e6afd3706f5f28edc2bc2a472b3726f5f8d3e2f",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/checks/002": {
+          "hash": "sha256:7b0264a8613524a42d76f343aea19261e10527b0618a260a7d53bd1597364b36",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/eyebrow": {
+          "hash": "sha256:dcf4f9756486edf8cf1256b8fed279486fa8dc0bbe0c1c78f2066fbd1a53df41",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/id": {
+          "hash": "sha256:1908f7efc4b52664cea254a5e48f12f43ec854210bc1cac2403886b2e3e756fa",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/intro": {
+          "hash": "sha256:0c64a3746539a2c3ca3c1deabede686ec0c9b95960bf3fa4a253df4fe601c7f3",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/layout": {
+          "hash": "sha256:1bd5e9ccee0c1fdf999763d0adefec70a2c2dee97a02f93ed67beb92a9578f56",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/links/$order": {
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/links/000": {
+          "hash": "sha256:527b646ca3ea70936e800721b0347b8980a4a641aacd4ff7fbbc69832cacfcb6",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/links/001": {
+          "hash": "sha256:0592eb7b0fbdd867f24ae91fc9106bd0c52d814a3e2269db3b89d69b7336ccec",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/links/002": {
+          "hash": "sha256:099337ba65262e60c3b40b80e9cadb051570f541b23b7f5154523b3f4d5fa959",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/steps/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/steps/000": {
+          "hash": "sha256:49cec5a314ada07cee6195897e30a3359283c3d06f5220143bdda974ab28f7cc",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/steps/001": {
+          "hash": "sha256:b46dda469140882841a3fde436a8f0ce9a27e5fe0a4119d52bf1a75839c75238",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/steps/002": {
+          "hash": "sha256:9f9fdfae92abdae6714c210caf7fa119e25592314b48ffc6f0bb3626aaa82924",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/steps/003": {
+          "hash": "sha256:9ab9721b161ee2f968e8a1a80c37e9c4a3e0b5b20bbab22e8d7722783f10b533",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/steps/004": {
+          "hash": "sha256:e3b5e9e434f16f432434a7c56c0c50eb8b07b3ed2948e02a5cfa48605a68f083",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/termIds/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "extensionView-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/termIds/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/termIds/001": {
+          "hash": "sha256:9de9833d9d2429a7bb40b2a8c256f127de29750df3084c096584d50052fb5baf",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/termIds/002": {
+          "hash": "sha256:f489349738cdf6fdabbee11e2646b305e9eb91dfbdc1197e644702b7d24cee5f",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/termIds/003": {
+          "hash": "sha256:4ba883f95b2811f4383bdd6d1080483efccbd463f48164b8dfed80c1098d10bf",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/termIds/004": {
+          "hash": "sha256:d086dea113ebd268a48cb3962e982450e185f2432d60f6b75f406ddc2db2279c",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/extensionView/title": {
+          "hash": "sha256:ec635d45fb2024a71e49eeaf4a90f2fd9cc236f0d4b6a3f34ef615047936465f",
+          "objectType": "extensionView",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/labs/$order": {
+          "hash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "objectType": "learning-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/labs/000": {
+          "hash": "sha256:ed65f3f800fbbd2a509cc1ec2f21bf6670578a8899140434e0e0172631622cd4",
+          "objectType": "learning",
+          "sourceIds": [
+            "agentkit-config-reference-2026-08-15",
+            "agentkit-memory-quickstart-2026-08-15",
+            "veadk-agentkit-integration-2026-08-15"
+          ]
+        },
+        "/module:agentkit/learning/labs/001": {
+          "hash": "sha256:1efb356d4dbcd3a1c730e601efc6a35f1f2d01fe36edd8d49b8ec8fc4e910dc0",
+          "objectType": "learning",
+          "sourceIds": [
+            "agentkit-cli-commands-2026-08-15",
+            "agentkit-platform-overview-2026-08-15",
+            "agentkit-runtime-quickstart-2026-08-15"
+          ]
+        },
+        "/module:agentkit/learning/outcomes/$order": {
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "objectType": "learning-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/outcomes/000": {
+          "hash": "sha256:70d8d6d76cb4cc0554777030fa07808b9d9091498366a7d68613a7d3c7c4ce2a",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/outcomes/001": {
+          "hash": "sha256:a64492c00ec49618cd1d3ddc32089e17e1b4fa345c556d4fc3737150503a4b64",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/outcomes/002": {
+          "hash": "sha256:c4520c9d4c3490a4b902a18dd0205ae7303808e8394a1a611441cfde15a34afa",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/outcomes/003": {
+          "hash": "sha256:d90bfda1fb3a90b62da623a12502a9dd505f448abbdd0aa9b897f68b4838eb1e",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/route/$order": {
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "objectType": "learning-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/route/000": {
+          "hash": "sha256:165892ae30b1dfa48274e2ad7d7eb18a4848ffa6ab9c0ee0a425a30d8e6b2016",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/route/001": {
+          "hash": "sha256:586a3c35f437c4118fe7381f62457b82825c8e697e12f241a475f1b4cfb81db1",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/route/002": {
+          "hash": "sha256:c19c973847eeb4e4e5f24abb4285e17143f0ae7df4e003fa4d5454ed779fe2dd",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/route/003": {
+          "hash": "sha256:642c8d99bfcabe6fabdbe40a7892e4c9b54cf2a6870ebae7d7ee4e07da3d878d",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/learning/route/004": {
+          "hash": "sha256:fcc20f9f36d20ed1b582250471feab01ccc96b336d638748c3f30d809a3cb1b4",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/boundary/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/boundary/000": {
+          "hash": "sha256:97dd1b1c3f027764fc11c9273d498025eeb2b0537dd147d2286998f83f826874",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/cloud/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/cloud/000": {
+          "hash": "sha256:8763f9c13eee0b189da1b3ec3076f221b22884a6376c47de08193647edec8dd6",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/customer/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/customer/000": {
+          "hash": "sha256:538ac162b2333b08136a9de61ee04d4c37855364ad3133d22837cca5dbc0ec42",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/mechanism/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/mechanism/000": {
+          "hash": "sha256:0cd6375a37bb434b73a77383ebe440ba2c3116954567f4eabd3f18c2fd0b70f2",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/principle/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/contentContract/principle/000": {
+          "hash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/introducedAt": {
+          "hash": "sha256:0f51a5c292f3ec742d866da608deab270ce0e0dd4626b2302658c9412132132b",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/knowledgeView": {
+          "hash": "sha256:1908f7efc4b52664cea254a5e48f12f43ec854210bc1cac2403886b2e3e756fa",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/legacyUndatedQuestionSetSha256": {
+          "hash": "sha256:db470048f61d206b683b2c2a1129947e5fce18489caa0c53f96950d45bcf1fc4",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/path": {
+          "hash": "sha256:067e51fa2639f026a2a39b38c2fb81ca3258bce6dca7acb9bc9da7c2dc33f845",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/$order": {
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/000": {
+          "hash": "sha256:8d9d2d15c87138d19222a88fe85e76d4804ab2f0ee1f8a8816a74b10b70585dd",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/001": {
+          "hash": "sha256:1f376a4f5d7f7b1c5a64c37c0f71c3156fe72d9a0eb53913a3ab1057bed5bba6",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/002": {
+          "hash": "sha256:f0422369ae3b5ba6f15a935857238e4ecf28f198d96bda17ee494d86fb291fa7",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/003": {
+          "hash": "sha256:726ad2deb03f1047325fb703692365f1831262d782237cf2b24d36d3b90858ea",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/004": {
+          "hash": "sha256:a460da26eba6bf9f54f1bb22e352347b8fc51e54c5f7e4f10f7fd29556e05653",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/005": {
+          "hash": "sha256:b8e64abdd780553e955fa903ef478c782acfda428a78da220ca2dbacdb8e5a6b",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/006": {
+          "hash": "sha256:1d3f5a3cf555a030bd1aeac1bfd6b77bad6bd04666568bb883d4f0a2806b4043",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/007": {
+          "hash": "sha256:32274472a005bb41ec03bbcb6a933f3b78a80cbb4ebe63b2984522fd23c51ac2",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/008": {
+          "hash": "sha256:2191be20baffdcecb35e9479199744448f3b20f78f293475643f27196a278d45",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/qaCoverageTags/009": {
+          "hash": "sha256:60bfe4afbc8fc3524606f24d98445f6d34da10428c022b60c3df54f550bde8a0",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/$order": {
+          "hash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "objectType": "publication-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/001": {
+          "hash": "sha256:4ba883f95b2811f4383bdd6d1080483efccbd463f48164b8dfed80c1098d10bf",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/002": {
+          "hash": "sha256:9de9833d9d2429a7bb40b2a8c256f127de29750df3084c096584d50052fb5baf",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/003": {
+          "hash": "sha256:d086dea113ebd268a48cb3962e982450e185f2432d60f6b75f406ddc2db2279c",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/004": {
+          "hash": "sha256:4008e42d14aec0eef249eef1595b9fb967b3f26f12dfe4377103bcb1b360370d",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/005": {
+          "hash": "sha256:f489349738cdf6fdabbee11e2646b305e9eb91dfbdc1197e644702b7d24cee5f",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/006": {
+          "hash": "sha256:a9bc064ec9f7def68880b620322368e80656cef35a30d25fb7fa3060508c7888",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/requiredTerms/007": {
+          "hash": "sha256:d18439dd047043f832e82bb6c42f42fd375dadb2dd6200d4e963f4552f58f418",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/routeKind": {
+          "hash": "sha256:37a297ecfb35935822a15b288aadae25678b20958d929e9c7df8e7a39c3453ea",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/slug": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/titleId": {
+          "hash": "sha256:017db40b7e9e96e87ca71b0bb05704c8a1eb579b4165a1eef3af56e8196574b5",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/updatedAt": {
+          "hash": "sha256:0f51a5c292f3ec742d866da608deab270ce0e0dd4626b2302658c9412132132b",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/publication/visualProfile": {
+          "hash": "sha256:33d50a71720d4bb7984599b887352c59658b3ef1de69771f9e1795c70fc96282",
+          "objectType": "publication",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/en": {
+          "hash": "sha256:9ad5c3625c9552a45d42131c0f183f2aca74d1e3329e7350bbf587ed844cf0e0",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/href": {
+          "hash": "sha256:067e51fa2639f026a2a39b38c2fb81ca3258bce6dca7acb9bc9da7c2dc33f845",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/id": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/shortTitle": {
+          "hash": "sha256:9ad5c3625c9552a45d42131c0f183f2aca74d1e3329e7350bbf587ed844cf0e0",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/$order": {
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "objectType": "referenceModule-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/000": {
+          "hash": "sha256:824c0bcd7280fde4be79756b6f4b60f52a090780ee16cecf90882e2b5e21902b",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/001": {
+          "hash": "sha256:2b19fe0d4d6c48e9b5ed8ec15034a1dddff330fbc141fe24c24214d900e2afd1",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/002": {
+          "hash": "sha256:650a28c9c0974022f4bb58f7533e01c84a29a9db117d6b1e949ab76ff0b85c9a",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/003": {
+          "hash": "sha256:5b81f6f03fd9b559e2af0564227d2be22a1f65d77cdb52e672902259db0dd8e4",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/004": {
+          "hash": "sha256:665d572b618eeffd307e38d7b7a597eb3592dd4f07cc85a78c9389c3e1f42833",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/005": {
+          "hash": "sha256:038175b81eb98b5e32d55ce1ab68f897c8f05f8eede5078eb1746217de844a05",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/006": {
+          "hash": "sha256:4af84048f5083c14f4a385cbc4807db1ceed56936fca55b80e0533e0c1cf6e75",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/007": {
+          "hash": "sha256:e23b2da991600bb30e0a06c91195940c50eabf827438642143bd19da8da63f0e",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/008": {
+          "hash": "sha256:977a3a09713f6c47e0416e48380c1f9581760741d1eff50853347fd3443dbd47",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/sourceIds/009": {
+          "hash": "sha256:b04b8ba7dccfca1d1a1194da6c3c343bb99f044dee34d622476f5e8d33b458a0",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/referenceModule/zh": {
+          "hash": "sha256:9ad5c3625c9552a45d42131c0f183f2aca74d1e3329e7350bbf587ed844cf0e0",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/evidenceCardIds/$order": {
+          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "objectType": "renderedProjection-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/evidenceCardIds/000": {
+          "hash": "sha256:a09a2dc3e5d65349b1f75434377ca2ad57174dc9e9c662515817e9a16c308530",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/evidenceCardIds/001": {
+          "hash": "sha256:2b35a390e7f6f175e708eec49a20f90dca168304b46a39bb09f4352c03dc205b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/evidenceCardIds/002": {
+          "hash": "sha256:f28163ca5fdd2afee52a9e082c5cc169bab5174a944719ec3c5fdbf4956d5a6b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/$order": {
+          "hash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "objectType": "renderedProjection-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/000": {
+          "hash": "sha256:60252b8784d62a1ae6d4cd6ba4b341f04cfa5e3f486709183d04613739da8a75",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/001": {
+          "hash": "sha256:daeb46e6e34d787bb67aaad60d1ce2bb2ba74d58a6f6e187593b90094715ade7",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/002": {
+          "hash": "sha256:40ceea39c54852577bf9c34afdf6696cdaf3f7adf965e8bc0534e9aefa5994eb",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/003": {
+          "hash": "sha256:54b3b961d9671cd89752ee6f8c173b00d98c365474144bb8d28a067ef83cd66b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/004": {
+          "hash": "sha256:d4d0d41364dfd8b9406ab9944cede715d876928d8f74238de4fa78dc3757da0b",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/005": {
+          "hash": "sha256:0635c7e052e9e18aa74e826351d9b1b89d2d92835c1df3045de3c03606ed4d97",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/questionIds/006": {
+          "hash": "sha256:23ba6fc835b9a2bb5006076d7e5a1abe247cfea08643055108f1c5339eb8bff3",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/$order": {
+          "hash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
+          "objectType": "renderedProjection-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/000": {
+          "hash": "sha256:a146992c98933451c8c2bfdb0243f60a7b9da2167d6fa915197532f94018685e",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/001": {
+          "hash": "sha256:ab75a165083a233893f0ad73875d3bd5a36f82808b160c0f047d49f2863b36f7",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/002": {
+          "hash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/003": {
+          "hash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/004": {
+          "hash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/005": {
+          "hash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/006": {
+          "hash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/007": {
+          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/008": {
+          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/009": {
+          "hash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/010": {
+          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/011": {
+          "hash": "sha256:d227808869b1fc8b0373dbf8a6ff006fbac55a9b1b8349e2cf935474b7deb093",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/012": {
+          "hash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/rendererDependencyFiles/013": {
+          "hash": "sha256:ea5a8e0fa921f951c9dd093928846157bc129eda92f33cc6ad8b8666340eaf15",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/renderedProjection/sharedRendererHash": {
+          "hash": "sha256:fbdd44aed683001009326b8c0f7f925c5e2ee5c79a9ed13e7a90957f7e1464fe",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/agentkit-cli-commands-2026-08-15": {
+          "hash": "sha256:f89e98e45b59ebdd8b2ea8af0ea2b55a19135f146c67a1f077d0f5ebfcc3237c",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/agentkit-cli-overview-2026-08-15": {
+          "hash": "sha256:e26d81d5cb0a398b24b87d610ff2b4df3f966afea6d007117f33aa4850b228ed",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/agentkit-config-reference-2026-08-15": {
+          "hash": "sha256:106417e76ff74ac37b14002b7d003d1906446bfad75c50e0d2fa1a0d78d5f100",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/agentkit-memory-quickstart-2026-08-15": {
+          "hash": "sha256:a143cb20cfbe75ee976977ea36e9186600f2be98b05b41498e538258ae50e455",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/agentkit-platform-overview-2026-08-15": {
+          "hash": "sha256:dce8c9bb78f535d30343b99592cc0359a8933b96fcf1157ff3f7461f3c284fa4",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/agentkit-runtime-quickstart-2026-08-15": {
+          "hash": "sha256:b9d01607779f6bf58eb436fb29019b32351a652967e913e70ca65e0965424af4",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/mem0-oss-overview-2026-08-15": {
+          "hash": "sha256:7436f2404d251562112bb7e30ab3a0b760bf3ac823de1f2848820d7e52bc2b12",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/mem0-platform-vs-oss-2026-08-15": {
+          "hash": "sha256:ec8d8b1d38b287b1d7944ab8187b5d130768aca4a5c7e6be74b2c6cdfad1bdc7",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/veadk-agentkit-integration-2026-08-15": {
+          "hash": "sha256:9a1d113f4c6d5d7a0f3604e2d7f63670e8eabff815bcdb66f442e53712038724",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/sources/veadk-short-term-memory-2026-08-15": {
+          "hash": "sha256:cc242e34e4b429092a74330617ccfccecf1af5805017f859e4429811e2ce86cb",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agent-application/description": {
+          "hash": "sha256:13043ec00e95c38b2ed8e95964afc25517539142251fb1b62e5c7bdb701b5784",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agent-application/en": {
+          "hash": "sha256:ad2d9c784879c0658514f764837f8dbfd09006a06a1b45feba1e6c697c12dab6",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agent-application/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agent-application/moduleSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agent-application/zh": {
+          "hash": "sha256:c55de42f9e31fff351706c0b6146d9b5801c1368c72545d27fef422b95340a55",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-app-adapter/description": {
+          "hash": "sha256:f709c60c92603682fc32ec2539d2755cc7a19295fec11a32544b6f21ecd6c1a8",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-app-adapter/en": {
+          "hash": "sha256:755d722754e2873a0d802d8779eae884de7f1323c287ad4feb82d54db96b464d",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-app-adapter/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-app-adapter/moduleSlugs/000": {
+          "hash": "sha256:a44ec3717b2d8af5620c63d34613e62c5620c5ec4b488f61e6889dcd9514f265",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-app-adapter/zh": {
+          "hash": "sha256:7c0537276f36135af33f3e938ea68ff32e6d2191b7cd521ba80796f40eadbb6f",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-runtime/description": {
+          "hash": "sha256:d398fa23614b7b24c34b24226c3487acea3870517be7645d90321cd1899b400a",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-runtime/en": {
+          "hash": "sha256:dce4c5f99d695667423cbbc68fcdfaa0caedb83b6d8754eff43496439c03ee3c",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-runtime/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-runtime/moduleSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit-runtime/zh": {
+          "hash": "sha256:dce4c5f99d695667423cbbc68fcdfaa0caedb83b6d8754eff43496439c03ee3c",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit/description": {
+          "hash": "sha256:d005e3cbb8b95e187863f0b6f4c82f4ed1a42b190ec4817e2fd8515ef94ce223",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit/en": {
+          "hash": "sha256:ee55672e25ea9b625940b9b40a2cc06ee22c703dad9c3db1d37ef68fdf74cf30",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit/moduleSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/agentkit/zh": {
+          "hash": "sha256:9ad5c3625c9552a45d42131c0f183f2aca74d1e3329e7350bbf587ed844cf0e0",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/build-deploy-lifecycle/description": {
+          "hash": "sha256:ae4729008f0f329162f1300c2f9264985e13e7c4e084949927e56291cab563fb",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/build-deploy-lifecycle/en": {
+          "hash": "sha256:c710928d3726f90cb1ab5b9e0778d1645b0fca92bae1a1d98fd8635159f01857",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/build-deploy-lifecycle/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/build-deploy-lifecycle/moduleSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/build-deploy-lifecycle/zh": {
+          "hash": "sha256:cc6909da6a2e23053f5a0fecc6520bd1c40aa2670778f3a6515cc7a91abba9c6",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/deployment-mode/description": {
+          "hash": "sha256:2d279a5feefb486a6d7760422482c882ac5ca54a72eef0a95c97438f9bce2e76",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/deployment-mode/en": {
+          "hash": "sha256:ac1a8c3df5988e67e3647ff2d469f73ce0eafeeecaae7293315b64ae20cc85f3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/deployment-mode/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/deployment-mode/moduleSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/deployment-mode/zh": {
+          "hash": "sha256:1e0761fcb78b0bb69b6bee9c29e32447fb140958eb001ea27ae5137cc5ac154a",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/managed-agent-memory/description": {
+          "hash": "sha256:8f869d16b3b3bc058f2dee91ab6ec45a0f8bf42fca865b2d4de81b970a92651d",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/managed-agent-memory/en": {
+          "hash": "sha256:72fef5c6e063861356125c8b74947d9cdbecf62217ce2355d824b12a9a7def16",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/managed-agent-memory/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/managed-agent-memory/moduleSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/managed-agent-memory/zh": {
+          "hash": "sha256:836a763029e17b2fc2b7b6779b619b2d2d673f73efcacf46e923986510dc6902",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/runtime-binding/description": {
+          "hash": "sha256:a4a2771a8790f88505f904ac6046bff0d1c610bfa2b88adb5d4cf98f69099cf6",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/runtime-binding/en": {
+          "hash": "sha256:663121717c5f5d72d2bb9c9af4d55b7206d4c95d8aba7602b997aa95be4c689d",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/runtime-binding/moduleSlugs/$order": {
+          "hash": "sha256:2e2f4c0deb8299463e90ab9604f98ffd60b50ee2ed9d2e68ad7bf55ba17ba270",
+          "objectType": "terms-order",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/runtime-binding/moduleSlugs/000": {
+          "hash": "sha256:1589e2632f2f71e5678bb45fe1a73aff9ef8d95731b3ec6984044378fe8e01c3",
+          "objectType": "terms",
+          "sourceIds": []
+        },
+        "/module:agentkit/terms/runtime-binding/zh": {
+          "hash": "sha256:5a9e4fec96b2e6183c2ea5f8df5b1e2fc13a74609c00dd03d7d214604b066993",
+          "objectType": "terms",
+          "sourceIds": []
+        }
+      },
+      "zhRendererFiles": [
+        "app/(zh)/layout.tsx",
+        "app/(zh)/modules/[slug]/page.tsx",
+        "app/content-update-metadata.mjs",
+        "app/deep-dive-relation-view.tsx",
+        "app/fieldbook-interactions.tsx",
+        "app/focused-visual-explainers.tsx",
+        "app/i18n/locale-config.mjs",
+        "app/layout-utils.mjs",
+        "app/module-content-components.tsx",
+        "app/module-pilot-views.tsx",
+        "app/module-representation-assessment.mjs",
+        "app/module-visual-explorers.tsx",
+        "app/question-filter.mjs",
+        "app/term-hint.tsx"
+      ],
+      "enAuthoredHash": "sha256:07304833eb1fb0a59b672624b4f4b78422c0fa679834b1d894b658782d91542b",
+      "enEffectiveHash": "sha256:2ee3b617a4ff865d4a480e60ca036cc2498a6ca16231966e157120539f0335ec",
+      "enReviewHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee",
+      "enRendererFiles": [
+        "app/(en)/en/modules/[slug]/page.tsx",
+        "app/(en)/layout.tsx",
+        "app/content-update-metadata.mjs",
+        "app/deep-dive-relation-view.tsx",
+        "app/fieldbook-interactions.tsx",
+        "app/i18n/english-page-metadata.ts",
+        "app/i18n/english-pilot-module-page.tsx",
+        "app/i18n/english-representation-assessment.mjs",
+        "app/i18n/english-section-outline.mjs",
+        "app/i18n/locale-config.mjs",
+        "app/layout-utils.mjs",
+        "app/module-content-components.tsx",
+        "app/module-representation-assessment.mjs",
+        "app/module-visual-explorers.tsx",
+        "app/question-filter.mjs"
+      ],
+      "englishUpdatedAt": "2026-08-15",
+      "reviewFiles": {
+        "br-agentkit-2026-08-15-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.ultra-exception.json",
+          "hash": "sha256:5b2314fb6731b6e6f465453824250575e4b45e5a03098996376b35ef1a2663ba",
+          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
+        },
+        "br-agentkit-2026-08-15-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.xhigh-author.json",
+          "hash": "sha256:099af5ebebea377aef9d53097e3e0c743b14c9fc3bd7363ca68f7dc9b80154bc",
+          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
+        },
+        "br-agentkit-2026-08-15-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.xhigh-language.json",
+          "hash": "sha256:dbc39128820e9ab44cad6152b20ca71f40015bb1e72940a5458000341793744d",
+          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
+        },
+        "br-agentkit-2026-08-15-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-15/agentkit.xhigh-semantic.json",
+          "hash": "sha256:1eb9b97f4d2b1b4ab5588dcbbfaefcccf680d455091dfb44267393fd43b3f076",
+          "zhContentHash": "sha256:aa117976dff0197facacf5d86c5b9698e75da1c1c1c2cd604873e6a84c519a82",
+          "enContentHash": "sha256:9f4ecaf67ac33ad4ab097c9dd939bc6289bd480a01c2faba0ab98c3180e0d5ee"
+        }
+      }
     }
   },
   "runtimeMaintenances": [
