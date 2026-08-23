@@ -329,7 +329,7 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
   assert.match(html, /Coding Agent 产品对比与筛选/);
   assert.match(html, /不追求中美数量相等/);
   assert.match(html, /搜索产品、厂商或 Harness 能力/);
-  assert.match(html, /下次复核不晚于[\s\S]*2026-08-22/);
+  assert.match(html, /下次复核不晚于[\s\S]*2026-09-22/);
   assert.match(html, /Codex/);
   assert.match(html, /Claude Code/);
   assert.match(html, /Qwen Code/);

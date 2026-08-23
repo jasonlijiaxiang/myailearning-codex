@@ -64,7 +64,7 @@ export default function CodingAgentsPage() {
         <div className="sectionNumber">04</div><div className="sectionBody">
           <div className="sectionIntro splitIntro"><div><p className="kicker">FRESHNESS CONTRACT</p><h2 id="freshness-title">怎样让这张雷达不过期</h2></div><p>产品、价格、规格、模型与 Benchmark 条目最长 30 天复核一次；稳定平台文档 90 天，方法论 180 天。发布、弃用、迁移或安全事件出现时立即复核。</p></div>
           <div className="codingFreshnessFlow"><article><span>01</span><h3>官方事实</h3><p>产品形态、模型策略、部署、权限和生命周期只由官方资料确认。</p></article><article><span>02</span><h3>独立证据</h3><p>榜单与研究记录具体配置、日期、任务和不可外推边界。</p></article><article><span>03</span><h3>状态管理</h3><p>每条动态事实保留核验日、下次复核日和 active / watch / replaced 状态。</p></article><article><span>04</span><h3>客户复测</h3><p>候选产品用同一真实仓库、权限、任务和验收门槛重新运行。</p></article></div>
-          <p className="paperBoundary"><strong>当前重点复核：</strong>Google 已公告 Gemini CLI 向 Antigravity CLI 迁移，因此相关条目标记为 watch。查看<Link href="/references#source-product-antigravity-migration">官方迁移公告与适用边界 ↗</Link></p>
+          <p className="paperBoundary"><strong>当前重点复核：</strong>Gemini CLI 的个人账户请求已迁到 Antigravity CLI，但企业许可证、Google Cloud 与付费 API key 路径仍继续支持，因此相关条目标记为 watch。查看<Link href="/references#source-product-gemini-cli-individual-transition">官方状态说明与适用边界 ↗</Link></p>
         </div>
       </section>
 

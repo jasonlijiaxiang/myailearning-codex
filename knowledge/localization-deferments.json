@@ -198,6 +198,13 @@
       "recordedAt": "2026-08-13",
       "decisionId": "model-ranking-refresh-2026-08-13",
       "summary": "Independent four-stage English review passed for the model-ranking refresh; the reviewed candidate preserves canonical identities, evidence boundaries, and bilingual dates for atomic baseline promotion."
+    },
+    {
+      "receiptId": "receipt-coding-agent-refresh-locale-gate-2026-08-23",
+      "kind": "locale-gate",
+      "recordedAt": "2026-08-23",
+      "decisionId": "coding-agent-claims-refresh-2026-08-23",
+      "summary": "Records the refreshed Coding Agent product claims, lifecycle replacements, canonical sources, and the boundary between the bilingual standalone radar and the AI Agent module localization baseline."
     }
   ],
   "moduleBaselines": {
@@ -47232,6 +47239,506 @@
         "br-model-landscape-2026-08-13-ultra-exception"
       ],
       "closureReceipt": "receipt-model-ranking-english-closure-2026-08-13"
+    },
+    {
+      "defermentId": "dfr-ai-agent-coding-agent-refresh-2026-08-23",
+      "moduleSlug": "ai-agent",
+      "sourceLocale": "zh-CN",
+      "targetLocale": "en",
+      "status": "deferred",
+      "openedAt": "2026-08-23",
+      "openedFromCommit": "055d6994e6de0a87daf7f9f100d9cd087401b5bf",
+      "decisionId": "coding-agent-claims-refresh-2026-08-23",
+      "reason": "Coding Agent 动态事实、产品生命周期与官方来源已刷新；英文 Coding Agent 雷达和全局来源说明同步更新，但 AI Agent 模块正文未改变，新增来源关系按模块本地化契约登记后续独立英文审校。",
+      "localeRequirements": [
+        "semantic-deferment",
+        "structural-deferment"
+      ],
+      "candidateIds": [],
+      "workItemIds": [
+        "coding-agent-claims-refresh-2026-08-23"
+      ],
+      "affectedObjects": [
+        {
+          "objectId": "/module:ai-agent/claims/$order",
+          "objectType": "claims-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8bdc4729397d59e69eb95d276497cf3119c196de13de89cfa770b7b74ae52a3e",
+          "currentHash": "sha256:d78b3e94bc548d20182fc24ac17ea514120d1a19b4d91ad55fd9e063de6c49ea",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/claims/004",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6d87bf7100bd900b617df35b550b66ec87819451465f6b7a40c6a3a68944d62d",
+          "currentHash": "sha256:7cf61a8ef736a18717835f4bccedfb793ae69192603500606305e17cd2901f63",
+          "sourceIds": [
+            "product-codex-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/005",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0a66eadb51e38eb428e71824ffbb932e2870cc56cf57db3fa83baac68e668924",
+          "currentHash": "sha256:a33a7cb13ca4b84035edeb0367ebd0b7a1746ee6e90590ee19d56558496651d6",
+          "sourceIds": [
+            "product-claude-code-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/006",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:ddaf9773d8a666bf167bb1aec02b0f84333df6fa4ead1f7125be34bf76ef60ab",
+          "currentHash": "sha256:2ceea8a70166cdb00c17bfe8875aa548b760ece4ab891132378c4eb7f3d5025b",
+          "sourceIds": [
+            "product-github-copilot-coding-agent"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/007",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b9a664be15763cf5359744eb8f5128cc3093f1862272ef46bbe1c9f121097079",
+          "currentHash": "sha256:de4f2d47cf45c421ff9c9c89f88839dab93058429ab0bf97a442f46d69fadb5c",
+          "sourceIds": [
+            "product-cursor-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/008",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:93d20375877164e8b6b4bf86b0aeffb10728efd0ed307e95eb493daf39594ba5",
+          "currentHash": "sha256:dc90e92d102e0ad902a4374c2570835132bf60931110c1cd36577b49ddb23274",
+          "sourceIds": [
+            "product-kiro-cli"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/009",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:061d5317fc4083f859f5879fbde0f6c68a22907febe93f7add6639f0128fcbe9",
+          "currentHash": "sha256:0cb603f0236e8c86930f110bc95353dd072f3197eb4c31df4520b70efb345fac",
+          "sourceIds": [
+            "product-devin-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/010",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:44da5279d01e71857cb8f5bb6772978affd82fe8ec4f906799da3a8d600f31c9",
+          "currentHash": "sha256:1e5df1213ed6834d9049f3909e6dac6262c560dd2429d5fe392f480a1c1785b0",
+          "sourceIds": [
+            "product-openhands-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/011",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9c7fd29c036e7686e2601f8bc436fd9dfe520ec4f67afb3de6e172beba5f18a4",
+          "currentHash": "sha256:e5fddf70dd901ca924fe2f3e77ce36e74ac7028cb726b11178ccf892ac2a4d07",
+          "sourceIds": [
+            "product-cline-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/012",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1d5d31f473e01585810cf3fd7aeeaf5589adffd975d262ecda909c9d3b11c78a",
+          "currentHash": "sha256:cece35d9b1e20426b56a95ecad2ea642cf6d475579fe207721255bd6f6327f83",
+          "sourceIds": [
+            "product-aider-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/013",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c408bff94b2c3aa049a7f6eae4eefb91deeeb66c3fc065900ba1977f36508fe2",
+          "currentHash": "sha256:4b40f68cd96e8318a02f187db545e513ac3d4c2349c5c687ae8078e5f0259c18",
+          "sourceIds": [
+            "product-opencode-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/014",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1731cf91fccc1657ba30ef903e226134888c9a5539e72d833380957999748ed4",
+          "currentHash": "sha256:2fea2a543d465e93e866c090ae4e318d96ee56579f21c0ff3cc81b87e6fd3d13",
+          "sourceIds": [
+            "product-antigravity-migration",
+            "product-gemini-cli-individual-transition"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/015",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:10e92b2f5844d1e4c41fbd6e79ab0efe99905e014fb25c240f369b8e6caec206",
+          "currentHash": "sha256:39e0147d57fa0646998a850b7737d47056e7d1229dbe89657e480d6b3a0aed54",
+          "sourceIds": [
+            "product-antigravity-cli-migration",
+            "product-gemini-cli-individual-transition",
+            "product-gemini-cli-releases",
+            "product-qwen-code-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/016",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:646d811e266d8059be6da24131693542146be39bb27f6cda2ae34355e7a6a11b",
+          "currentHash": "sha256:c9b83578e0d91c00ac511bc91ae4bdf4eae69d01871b228a3bb279d6b44d53c4",
+          "sourceIds": [
+            "product-kimi-code-docs",
+            "product-qwen-code-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/017",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4edcfd3cea3204a7cc7f7ce8f459637e42cc2a4130bbcdd0e35c158721527014",
+          "currentHash": "sha256:0b4088ac073a4e14624097eeeb40f18732adb00fac11086297536a5949e8c4d4",
+          "sourceIds": [
+            "product-codebuddy-docs",
+            "product-kimi-code-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/018",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:612384c86095c7bab0280a8f3578362dc5c634a5449dabff0d60c0cba904ddd2",
+          "currentHash": "sha256:6a953e15ab38b2b95ba6a96c25d3ec29e9af34816413a7873df5af4808e6f2e6",
+          "sourceIds": [
+            "product-codebuddy-docs",
+            "product-comate-agent-docs"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/019",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1d9c887effa9543836637857322277b22d39da43b3da41a5e171121511a0f9ff",
+          "currentHash": "sha256:ef1a90df925ff5525f3efe39df346f1bede6e2a94ba378b6a652b5fb036f2541",
+          "sourceIds": [
+            "product-comate-agent-docs",
+            "product-tongyi-lingma"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/020",
+          "objectType": "claims",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:aab8138bfd5c12c25b16d97e254dba77bf09fd26babab935deaacac322259a75",
+          "sourceIds": [
+            "product-qoder-cn-series",
+            "product-tongyi-lingma"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/claims/021",
+          "objectType": "claims",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:5344e0ade0e241b0a7777392f1eba3be2a23dedafbf285d93b75b316cfcee726",
+          "sourceIds": [
+            "product-qoder-cn-ide",
+            "product-qoder-cn-ide-changelog",
+            "product-qoder-cn-series"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/$order",
+          "objectType": "referenceModule-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9d974e5ba0ecaa9e494362a6bcc0d8651a7b80f68fec541a1ff3b5d1323437e0",
+          "currentHash": "sha256:326522748f75dbef4b6170f2919d39c0cf0cfa2ed704d3760612044a765d8338",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/046",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3b6cb04ae0925dcfc9e461c4458c8207a4b26283912b2836e9394408f5e78ddc",
+          "currentHash": "sha256:5000e311a0795d492a0c3fe3a64e4e91c00358ce5095d9332a303686f3fd7794",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/047",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:215e841ff55c176986853950591db48e1edf01bfab8f75e1929434678a4f74b2",
+          "currentHash": "sha256:b4e08f2c477f3aa7d4ec1d0d39de1e5aba2c921fad6b64009dd8e57b8a05d2b1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/048",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:662a6163ecde3b1c3405ab94aee0beb1e322f9aca10c42b4918c16c0dd6717b3",
+          "currentHash": "sha256:327f7bd32e2d1a6a8c97af19f5542fc564fc5b9a8faebc50d14c602d7a7cf5c3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/049",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c4591add507312c16657cc536e14e6ab99a24dce9d60572f8478aab8eea9ca1e",
+          "currentHash": "sha256:3b6cb04ae0925dcfc9e461c4458c8207a4b26283912b2836e9394408f5e78ddc",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/050",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:ccd9f442a58525865c11531e855ea312cc285f78b99bc28c0c7810a888dad93c",
+          "currentHash": "sha256:215e841ff55c176986853950591db48e1edf01bfab8f75e1929434678a4f74b2",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/051",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:662a6163ecde3b1c3405ab94aee0beb1e322f9aca10c42b4918c16c0dd6717b3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/052",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:c4591add507312c16657cc536e14e6ab99a24dce9d60572f8478aab8eea9ca1e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/053",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:ccd9f442a58525865c11531e855ea312cc285f78b99bc28c0c7810a888dad93c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/054",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:3e3c989192cc642ecac30e07b9376064edd5d18cd7e93114e1e21eaa8199a823",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/055",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:57167a746151334dfc64b95ed0fc9b5c7ff57f2d2518c4b428f5e582f6c442c7",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/056",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:f2a9ac6e1b9839d8a593eb1fb6f85c34c3a6ee9112868a160c1b36deaf7db13d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-aider-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c5b476ea14b3caf30096a9d0e26f8606dc50490619af1e976f374ac175ebfc43",
+          "currentHash": "sha256:a9e75b66fdc1a545c8318b67cd3214e40a72e34b12e06a0b1b3fbc84bb305215",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-antigravity-cli-migration",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:77e70eab0a84b8f8cdee783c290197fbaad543426354a1f89ca8421a6991c277",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-antigravity-migration",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:86d7067ebea3984b75bc38cbe5f68c5890f49547f74d8cc5464ea84910f5b206",
+          "currentHash": "sha256:9e7fc76267bf0d40e7639cbf4f996c1c42aa34222a034ee502ad3c49d0e6b49c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-claude-code-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:26cd62adb2440366afa20a7c8fc196906a4bd21662d322822bc5306d4b8b62aa",
+          "currentHash": "sha256:e39e988203ac6d5238fdf80038d133d05d352154ced26b6ec8c753b48f00277b",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-cline-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:870135c276eb8f72d0c1476ce2a3cd80aac17a193713e4aa6df670cf3e8032b5",
+          "currentHash": "sha256:cdf4f402448ce5b338ed2324aa2de9b932758f28219386abdca6676c9aacdbd3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-codebuddy-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9cd24c88e0c1bc1938d2f8fe8a5daf2bcf1f2333a944af1c45265d282a483ae3",
+          "currentHash": "sha256:e76a1139500632f6636b27edd0a1ca6d1187e57fd5b8937850fb338d48999071",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-codex-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c0437004f1d7c6e409e9d779632623b8b30d58e7d00b2098a808f28e98c17311",
+          "currentHash": "sha256:87e5f14392077d0e3ab04128f428d5e5ab71f98098a43f14748173c2675d8fda",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-comate-agent-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c99f06b29ed75f0ed78c6d67a5ec71485cb828fdb24c1925f17f5b8ca11b4cae",
+          "currentHash": "sha256:b807e503c1b5d6bcda60d5ea96b120281db2d8e8c764b0d4e3e4cf1956782fc8",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-cursor-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:39fd331c3259da90eb461b4dbf37375c14478d2f98814b469b3faaf48816d436",
+          "currentHash": "sha256:2011cfcf52bbf763a4dbb90c3fea00c111f3e3316476e74118935449da9884e1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-devin-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:46737aa35efcadc64f5ec430e1d375669fdef746b8355baaa64f3015d688bdcc",
+          "currentHash": "sha256:fe7b3245ff80ec9ed2e3d68784a630fab9608acceba731dfee733ed2daf9d388",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-gemini-cli-individual-transition",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:d973a58fc6e7485592c0648751731abf04f7b9b574a2097c4040fda10ac7c83a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-gemini-cli-releases",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:26d63ad96be4e9057bfeab44a24c91ee6078841359380394de0731eed70349d3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-github-copilot-coding-agent",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:774211bcc8e6c11ab69d59169141603678a413f0e41d3f83cc4ad703cd66b4e2",
+          "currentHash": "sha256:31c1aa1800a88e9806da1251903cc8ba1920ee1cd6360939e6a75910b4dd7822",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-kimi-code-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7906bfd2e63f44cbd99d8deaf17e0a3be3b675274ef2d3114dc9b764a7b6cc52",
+          "currentHash": "sha256:e9709a3f45079daec63fd8e47360b5ceadb84f4cad2756135ce8ba88826e77bb",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-kiro-cli",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:80e3053ae2af373a7e8c17becee0b8371266dd313a13b16ee7b2d00d032ad7b7",
+          "currentHash": "sha256:41d3faccf149a88bdeade254ccaac7023c85e8605a23e059fc2c0129e78098d7",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-opencode-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c833298edb98e34fe4b26a19c46b9cbde6529d5a22b3e879b9d9b3b686856fc3",
+          "currentHash": "sha256:5619894810dc1c30067a00feb52e9f9fe254572b6a61f43b79bd77475ad651d4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-openhands-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e2d58bfbba210611ce91573dbcbbfa69dd84f3575c931f1f15b86b7dfe80f501",
+          "currentHash": "sha256:e264cdce3899d64a435ee4e996515c3c3831ed52e043d615e0a93d6f2cda11f3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-qoder-cn-ide",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:ec660729bb7b5b1b63b3a2a8d5a5c1446fb9c15f32b50cc2b295704f58226d55",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-qoder-cn-ide-changelog",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:fecbb0d8b907db9d4747840073b06906d42b04d643a44d436bb52f6c2b07c54c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-qoder-cn-series",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:3c6bb42397692b35bfdc254399f5c4b98eec4d305b5bdcb5af8c5772354987ee",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-qwen-code-docs",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8ab15c77a1fd9363006eebd5e9951b7a4dbcaa7bf4fcb24bdb800e10df3394b1",
+          "currentHash": "sha256:33f5684b9987cc0a5de73b1a8e071b920ff4e2b06d8e6d050ee47b577aafa2a7",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/product-tongyi-lingma",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8ffddec8116f4b20c42b0e65da8b8c3a658be22977e10a6c21ff932f1d3f3e90",
+          "currentHash": "sha256:911b9c290b595fc55044cfd2995e90b5d39a0f812b7cab6ed07cc8c3ee5eca81",
+          "sourceIds": []
+        }
+      ],
+      "baselineReviewIds": [
+        "br-ai-agent-2026-08-10-ultra-exception",
+        "br-ai-agent-2026-08-10-xhigh-author",
+        "br-ai-agent-2026-08-10-xhigh-language",
+        "br-ai-agent-2026-08-10-xhigh-semantic"
+      ],
+      "localeGateReceipt": "receipt-coding-agent-refresh-locale-gate-2026-08-23",
+      "closureCriteria": "AI Agent 模块若显式采用本轮新增 Coding Agent 来源或 Claim，须完成独立英文撰写与四阶段审校，登记候选哈希后再原子提升双语基线；独立 Coding Agent 雷达与全局来源页不冒充模块正文已同步。"
     }
   ]
 }
