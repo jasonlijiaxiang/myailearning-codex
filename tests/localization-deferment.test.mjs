@@ -48,10 +48,20 @@ function runtimeOverlaysExcept(...slugs) {
   return new Map([...runtimeOverlays].filter(([slug]) => !slugs.includes(slug)));
 }
 
+function registryThroughRuntimeMaintenance(maintenanceId) {
+  const candidateRegistry = structuredClone(registry);
+  const maintenanceIndex = candidateRegistry.runtimeMaintenances.findIndex((item) => item.maintenanceId === maintenanceId);
+  assert.notEqual(maintenanceIndex, -1, `runtime maintenance ${maintenanceId} must exist`);
+  candidateRegistry.runtimeMaintenances = candidateRegistry.runtimeMaintenances.slice(0, maintenanceIndex + 1);
+  return candidateRegistry;
+}
+
 function makeDeferredFixture(slug = "solution-patterns") {
   const candidateRegistry = structuredClone(registry);
   const candidateProject = structuredClone(currentProject);
-  const deferment = candidateRegistry.deferments.find((item) => item.moduleSlug === slug);
+  const deferment = candidateRegistry.deferments.find((item) => item.moduleSlug === slug && item.status !== "closed");
+  assert.ok(deferment, `${slug} must have an active deferment for this fixture`);
+  const priorAffectedObjectCount = deferment.affectedObjects.length;
   const baseline = candidateRegistry.moduleBaselines[slug];
   const moduleState = candidateProject.modules[slug];
   const syntheticObjectId = `/module:${slug}/test-deferred-candidate`;
@@ -73,7 +83,7 @@ function makeDeferredFixture(slug = "solution-patterns") {
   deferment.affectedObjects = diffObjectCatalogs(effectiveZhBaseline, moduleState.zhObjects);
   for (const field of ["englishCandidate", "closedAt", "promotedCommit", "closureReviewIds", "closureReceipt"]) delete deferment[field];
 
-  return { candidateRegistry, candidateProject, deferment, moduleState, baseline };
+  return { candidateRegistry, candidateProject, deferment, moduleState, baseline, priorAffectedObjectCount };
 }
 
 function makeIsolatedDeferredFixture(slug = "solution-patterns") {
@@ -163,13 +173,15 @@ test("localization registry passes its recursive schema and covers every module"
   assert.doesNotThrow(() => assertJsonSchema(registry, schema, "localization registry"));
   assert.equal(registry.schemaVersion, "localization-deferment/v3");
   const maintenances = new Map(registry.runtimeMaintenances.map((item) => [item.maintenanceId, item]));
-  assert.deepEqual([...maintenances.keys()].sort(), [
+  for (const maintenanceId of [
     "erm-english-document-shell-2026-08-10",
     "erm-english-language-switch-2026-08-10",
     "erm-english-reader-2026-08-09",
     "erm-english-source-scope-2026-08-10",
     "erm-full-site-design-voice-2026-08-12",
-  ]);
+    "erm-module-reading-modes-2026-08-24",
+  ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
+  assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
   assert.equal(reader?.receiptId, "receipt-english-reader-runtime-2026-08-09");
   assert.deepEqual(reader?.affectedModuleSlugs, preAgentPlatformModuleSlugs);
@@ -247,9 +259,11 @@ test("a later runtime maintenance may supersede an earlier overlay for the same 
 
 test("the latest document-shell maintenance retains the complete prior runtime chain", () => {
   const result = validate(registry, currentProject, { runtimeOverlays });
+  const latestDocumentShell = registry.runtimeMaintenances.filter((item) => item.kind === "document-shell").at(-1);
+  assert.ok(latestDocumentShell, "the registry must contain a document-shell maintenance");
   assert.deepEqual(result.failures, []);
   assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "document-shell"));
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-full-site-design-voice-2026-08-12"));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === latestDocumentShell.maintenanceId));
 });
 
 test("a document-shell overlay preserves an active deferment's exact authored-content delta", () => {
@@ -319,56 +333,55 @@ test("an effective-hash contract change covers every English module", () => {
 });
 
 test("an active deferment records the exact live object delta", () => {
-  const { candidateRegistry, candidateProject, deferment } = makeDeferredFixture();
+  const { candidateRegistry, candidateProject, deferment, priorAffectedObjectCount } = makeDeferredFixture();
   const activeSlugs = candidateRegistry.deferments.filter((item) => item.status !== "closed").map((item) => item.moduleSlug);
   assert.equal(new Set(activeSlugs).size, activeSlugs.length);
   const result = validate(candidateRegistry, candidateProject, { runtimeOverlays });
   assert.deepEqual(result.failures, []);
   assert.equal(result.messages.filter((line) => /^(?:DEFERRED|READY)\/NOT_ALIGNED /.test(line)).length, activeSlugs.length);
-  assert.equal(deferment.affectedObjects.length, 1);
-  assert.ok(deferment.affectedObjects[0].objectId.endsWith("/test-deferred-candidate"));
+  assert.equal(deferment.affectedObjects.length, priorAffectedObjectCount + 1);
+  assert.ok(deferment.affectedObjects.some((item) => item.objectId.endsWith("/test-deferred-candidate")));
 });
 
 test("runtime-maintenance chain preserves the verified document shell and English reader state", async () => {
-  const beforeLanguageSwitch = structuredClone(registry);
-  beforeLanguageSwitch.runtimeMaintenances = beforeLanguageSwitch.runtimeMaintenances.filter((item) => ![
-    "erm-english-language-switch-2026-08-10",
-    "erm-full-site-design-voice-2026-08-12",
-  ].includes(item.maintenanceId));
+  const beforeLanguageSwitch = registryThroughRuntimeMaintenance("erm-english-document-shell-2026-08-10");
   const documentShellRuntime = await loadRuntimeMaintenanceOverlays(beforeLanguageSwitch);
   assert.deepEqual(documentShellRuntime.failures, []);
   assert.ok([...documentShellRuntime.overlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-document-shell-2026-08-10"));
   assert.ok([...documentShellRuntime.overlays.values()].every((overlay) => overlay.kind === "document-shell"));
 
-  const beforeFullSiteReview = structuredClone(registry);
-  beforeFullSiteReview.runtimeMaintenances = beforeFullSiteReview.runtimeMaintenances.filter((item) => item.maintenanceId !== "erm-full-site-design-voice-2026-08-12");
+  const beforeFullSiteReview = registryThroughRuntimeMaintenance("erm-english-language-switch-2026-08-10");
   const languageSwitchRuntime = await loadRuntimeMaintenanceOverlays(beforeFullSiteReview);
   assert.deepEqual(languageSwitchRuntime.failures, []);
   assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-language-switch-2026-08-10"));
   assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.kind === "english-renderer"));
 
-  const fullSiteReview = registry.runtimeMaintenances.find((item) => item.maintenanceId === "erm-full-site-design-voice-2026-08-12");
+  const latestRuntimeMaintenance = registry.runtimeMaintenances.at(-1);
   const expectedLiveOverlaySlugs = publishedModuleSlugs.filter((slug) => spawnSync(
     "git",
-    ["merge-base", "--is-ancestor", fullSiteReview.implementationCommit, registry.moduleBaselines[slug].enBaselineCommit],
+    ["merge-base", "--is-ancestor", latestRuntimeMaintenance.implementationCommit, registry.moduleBaselines[slug].enBaselineCommit],
     { cwd: projectRoot },
   ).status !== 0).sort();
   assert.deepEqual([...runtimeOverlays.keys()].sort(), expectedLiveOverlaySlugs);
-  assert.ok(!runtimeOverlays.has("model-landscape"), "the promoted model-landscape baseline already contains the historical runtime maintenance");
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-full-site-design-voice-2026-08-12"));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === latestRuntimeMaintenance.maintenanceId));
 
   const driftedProject = structuredClone(currentProject);
   driftedProject.modules.rag.enEffectiveHash = fullHashA;
   assert.match(
     validate(registry, driftedProject, { runtimeOverlays }).failures.join("\n"),
-    /rag: English content or date changed outside the localization workflow/,
+    /dfr-rag-.*: deferred work changed English content or englishUpdatedAt/,
   );
 
   driftedProject.modules.rag.enEffectiveHash = currentProject.modules.rag.enEffectiveHash;
+  driftedProject.modules.rag.zhObjects["/module:rag/test-unregistered-runtime-drift"] = {
+    hash: fullHashA,
+    objectType: "test-content",
+    sourceIds: [],
+  };
   driftedProject.modules.rag.zhStateHash = fullHashB;
   assert.match(
     validate(registry, driftedProject, { runtimeOverlays }).failures.join("\n"),
-    /rag: Chinese content changed without an active deferment/,
+    /dfr-rag-.*: affectedObjects do not exactly match the live delta/,
   );
 });
 
@@ -586,7 +599,8 @@ test("closed state cannot hide an unpromoted Chinese delta", () => {
 test("reviewed ready state can close only through an exact promoted baseline", () => {
   const closedRegistry = structuredClone(registry);
   const closedProject = structuredClone(currentProject);
-  const deferment = closedRegistry.deferments[0];
+  const deferment = closedRegistry.deferments.find((item) => item.moduleSlug === "solution-patterns" && item.status !== "closed");
+  assert.ok(deferment, "solution-patterns must have an active deferment for this fixture");
   const moduleState = closedProject.modules[deferment.moduleSlug];
   const reviewIds = addPassingCandidateReviews(moduleState, deferment.moduleSlug, moduleState.zhReviewHash, fullHashC);
   moduleState.enAuthoredHash = fullHashA;
@@ -636,7 +650,8 @@ test("reviewed ready state can close only through an exact promoted baseline", (
 test("historical closures remain valid after a later baseline promotion", () => {
   const latestRegistry = structuredClone(registry);
   const latestProject = structuredClone(currentProject);
-  const latest = latestRegistry.deferments[0];
+  const latest = latestRegistry.deferments.find((item) => item.moduleSlug === "solution-patterns" && item.status !== "closed");
+  assert.ok(latest, "solution-patterns must have an active deferment for this fixture");
   const latestModule = latestProject.modules[latest.moduleSlug];
   const latestReviewIds = addPassingCandidateReviews(latestModule, latest.moduleSlug, latestModule.zhReviewHash, fullHashC);
   latestModule.enAuthoredHash = fullHashA;
@@ -748,8 +763,13 @@ test("review generator refuses to overwrite PASS records while deferments are ac
 test("localization audit reports chained runtime alignment and reviewed candidates", () => {
   const output = execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: projectRoot, encoding: "utf8" });
   const lines = output.trim().split("\n");
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED rag: erm-full-site-design-voice-2026-08-12"));
-  assert.ok(lines.includes("ALIGNED/RUNTIME-MAINTAINED prompt-engineering: erm-full-site-design-voice-2026-08-12"));
+  for (const slug of ["rag", "prompt-engineering"]) {
+    const activeDeferment = registry.deferments.find((item) => item.moduleSlug === slug && item.status !== "closed");
+    const runtimeOverlay = runtimeOverlays.get(slug);
+    assert.ok(activeDeferment, `${slug} must have an active deferment`);
+    assert.ok(runtimeOverlay, `${slug} must have a runtime overlay`);
+    assert.ok(lines.includes(`DEFERRED/NOT_ALIGNED ${slug}: ${activeDeferment.defermentId} (runtime ${runtimeOverlay.maintenanceId})`));
+  }
   assert.ok(lines.includes("Localization contract passed for 23 modules."));
   const active = registry.deferments.filter((item) => item.status !== "closed");
   assert.equal(lines.filter((line) => /^DEFERRED\/NOT_ALIGNED /.test(line)).length, active.filter((item) => item.status === "deferred").length);
