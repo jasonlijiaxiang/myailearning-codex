@@ -57,6 +57,26 @@ export type ModuleLearningContent = {
   }>;
 };
 
+export function ModuleSectionHeader({
+  code,
+  title,
+  eyebrow,
+}: {
+  code: string;
+  title: string;
+  eyebrow?: string;
+}) {
+  return (
+    <div className="subHead">
+      <span>{code}</span>
+      <div>
+        {eyebrow ? <p className="miniLabel">{eyebrow}</p> : null}
+        <h2>{title}</h2>
+      </div>
+    </div>
+  );
+}
+
 export function ModuleHeroMetrics({
   sectionCount,
   questionCount,

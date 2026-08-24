@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../../knowledge-map.mjs";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { requireModuleBrief } from "../../../module-brief-content.mjs";
-import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleLearningStudio, ModuleQaList, ModuleUpdatedAt } from "../../../module-content-components";
+import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleLearningStudio, ModuleQaList, ModuleSectionHeader, ModuleUpdatedAt } from "../../../module-content-components";
 import type { DeepDiveBlock, ModuleCurriculumContent, ModuleLearningContent } from "../../../module-content-components";
 import { requireModuleCurriculum } from "../../../module-curriculum-content.mjs";
 import { requireModuleLearning } from "../../../module-learning-content.mjs";
@@ -173,6 +173,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const englishPath = englishModulePath(currentModule.canonicalSlug);
   const extensionView = getChineseModuleExtensionView(currentModule.canonicalSlug) ?? undefined;
   const primerOwnsPrincipleId = ["decision-blueprint", "mcp-host-server-boundary", "latency-capacity-map"].includes(publication.knowledgeView ?? "");
+  const primerDecisionCount = primerOwnsPrincipleId ? 4 : 0;
+  const remainingDecisions = brief.decisions.slice(primerDecisionCount);
   return (
     <main className={`fieldbookTheme modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
       <ReadingProgress />
@@ -198,40 +200,42 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <ModuleReadingModes
         moduleName={currentModule.zh}
+        hashGroups={primerOwnsPrincipleId
+          ? { quick: ["principle", "decisions"], learn: ["mechanism-summary"] }
+          : { quick: ["decisions"], learn: ["principle"] }}
         quick={(
           <>
             <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} />
-            <section className="subsection moduleBriefSection" id={primerOwnsPrincipleId ? "mechanism-summary" : "principle"} data-quality-section="principle">
-              <div className="subHead"><span>Q1</span><div><h2>机制速览</h2></div></div>
-              <div className="moduleBriefIntro"><p className="miniLabel">工作方式与失败信号</p><h3>{brief.principleTitle}</h3></div>
-              <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
-              <PrincipleView brief={brief} />
-            </section>
-
-            <section className="subsection moduleBriefSection" id="decisions" data-quality-section="decisions">
-              <div className="subHead"><span>Q2</span><div><h2>方案判断</h2></div></div>
-              <ModuleDecisionWorkbench decisions={brief.decisions} moduleName={currentModule.zh} />
+            {remainingDecisions.length ? <section className="subsection moduleBriefSection" id="decisions" data-quality-section="decisions">
+              <ModuleSectionHeader code="Q1" title="方案判断" />
+              <ModuleDecisionWorkbench decisions={remainingDecisions} moduleName={currentModule.zh} />
               {!usesFocusedReadingProfile ? <CriticalBoundary>{brief.criticalBoundary}</CriticalBoundary> : null}
-            </section>
+            </section> : null}
           </>
         )}
         learn={(
           <>
+            <section className="subsection moduleBriefSection" id={primerOwnsPrincipleId ? "mechanism-summary" : "principle"} data-quality-section="principle">
+              <ModuleSectionHeader code="L1" eyebrow="机制速览 · 工作方式与失败信号" title={brief.principleTitle} />
+              <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
+              <PrincipleView brief={brief} />
+            </section>
+
             <section className="subsection moduleBriefSection learningStudioSection" id="study-guide" data-quality-section="study-guide">
-              <div className="subHead"><span>L1</span><div><h2>学习路线与实战</h2></div></div>
+              <div className="subHead"><span>L2</span><div><h2>学习路线与实战</h2></div></div>
               <p className="sectionLead">从心智模型进入方案练习，每一步都有检查点和可交付产物。</p>
               <ModuleLearningStudio content={learningContent} sourceLedger={sourceLedger} />
             </section>
 
             <section className="subsection moduleBriefSection curriculumSection" id="curriculum" data-quality-section="curriculum">
-              <div className="subHead"><span>L2</span><div><h2>知识地图</h2></div></div>
+              <div className="subHead"><span>L3</span><div><h2>知识地图</h2></div></div>
               <p className="sectionLead">章节按实际判断展开：为什么重要、会改变什么决定、适用范围在哪里。</p>
               <ModuleCurriculumAtlas content={curriculumContent} sourceLedger={sourceLedger} />
             </section>
 
             {hasDeepDives ? (
               <section className="subsection moduleBriefSection" id="deep-dive" data-quality-section="deep-dive">
-                <div className="subHead"><span>L3</span><div><h2>{brief.deepDiveTitle ?? "工程深挖"}</h2></div></div>
+                <div className="subHead"><span>L4</span><div><h2>{brief.deepDiveTitle ?? "工程深挖"}</h2></div></div>
                 {brief.deepDiveLead ? <p className="sectionLead">{brief.deepDiveLead}</p> : null}
                 <ModuleDeepDiveBlocks blocks={brief.deepDives ?? []} sourceLedger={sourceLedger} />
               </section>
