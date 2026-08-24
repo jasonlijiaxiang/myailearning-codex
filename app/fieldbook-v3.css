@@ -1186,8 +1186,6 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   outline-style: solid;
   outline-width: 3px;
 }
-.fieldbookTheme.modulePage .moduleModePanel > .subsection { content-visibility: auto; contain-intrinsic-size: 620px; }
-
 .fieldbookTheme.modulePage .moduleReadingHost {
   width: 100%;
   max-width: none;
