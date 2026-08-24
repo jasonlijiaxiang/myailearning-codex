@@ -1,0 +1,658 @@
+.inferenceStudio {
+  --if-ink: #102c49;
+  --if-muted: #607284;
+  --if-line: #d7e0e5;
+  --if-line-strong: #b9c8d1;
+  --if-lime: #a8d84f;
+  --if-lime-soft: #f2f8dd;
+  --if-blue: #339fe3;
+  --if-purple: #aa91e5;
+  --if-teal: #58c7b4;
+  --if-orange: #f49a28;
+  --if-risk: #ef5b50;
+  min-height: 100vh;
+  overflow: clip;
+  background: #fff;
+  color: var(--if-ink);
+  font-variant-numeric: tabular-nums;
+}
+.inferenceStudio button,
+.inferenceStudio select,
+.inferenceStudio input { font: inherit; }
+.inferenceStudio [hidden] { display: none !important; }
+.inferenceStudio a { text-underline-offset: 3px; }
+.inferenceStudio footer { min-height: 0; }
+.inferenceTopbar {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  height: 56px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: minmax(260px,1fr) auto;
+  align-items: center;
+  border-bottom: 1px solid var(--if-line);
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(12px);
+}
+.inferenceBrand { color: var(--if-ink); font-size: 18px; font-weight: 800; letter-spacing: -.02em; text-decoration: none; }
+.brandMobile { display: none; }
+.inferenceGlobalNav { height: 100%; display: flex; align-items: center; gap: 2px; }
+.inferenceGlobalNav a,
+.inferenceGlobalNav button {
+  height: 100%;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--if-ink);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+.inferenceGlobalNav a:hover,
+.inferenceGlobalNav button:hover,
+.inferenceGlobalNav .isActive { border-bottom-color: var(--if-lime); }
+.inferenceGlobalNav a:focus-visible,
+.inferenceGlobalNav button:focus-visible { border-bottom-color: var(--if-lime); outline: 2px solid var(--if-ink); outline-offset: -4px; }
+.inferenceGlobalNav > span { width: 1px; height: 22px; margin: 0 10px; background: var(--if-line); }
+.mobileMenuButton { display: none; }
+
+.inferenceChapterRail {
+  position: fixed;
+  z-index: 55;
+  top: 56px;
+  bottom: 0;
+  left: 0;
+  width: 244px;
+  padding: 20px 22px 16px;
+  display: grid;
+  grid-template-rows: auto minmax(0,1fr) auto;
+  border-right: 1px solid var(--if-line);
+  background: #fff;
+}
+.inferenceChapterRail header { padding-bottom: 14px; border-bottom: 1px solid var(--if-line); }
+.inferenceChapterRail header strong { font-family: var(--font-serif); font-size: 15px; }
+.inferenceChapterRail header button { display: none; }
+.inferenceChapterRail nav { margin: 10px -10px 0; overflow-y: auto; scrollbar-width: thin; }
+.inferenceChapterRail nav a {
+  position: relative;
+  min-height: 30px;
+  padding: 6px 8px 6px 28px;
+  display: block;
+  color: #536a7e;
+  font-size: 12px;
+  line-height: 1.45;
+  text-decoration: none;
+}
+.inferenceChapterRail nav a::before { content: ""; position: absolute; top: 6px; bottom: 6px; left: 0; width: 2px; background: transparent; }
+.inferenceChapterRail nav a span { position: absolute; left: 8px; color: #718397; font-size: 11px; }
+.inferenceChapterRail nav a:hover,
+.inferenceChapterRail nav a.isActive { color: #526f0b; }
+.inferenceChapterRail nav a:focus-visible { color: var(--if-ink); outline: 2px solid var(--if-ink); outline-offset: -2px; background: #f4f8ea; }
+.inferenceChapterRail nav a.isActive::before { background: var(--if-lime); }
+.inferenceChapterRail footer { padding: 14px 0 0; display: grid; align-items: initial; justify-content: initial; gap: 5px; border-top: 1px solid var(--if-line); background: #fff; }
+.inferenceChapterRail footer a { font-size: 12px; font-weight: 750; text-decoration: none; }
+.inferenceChapterRail footer a:last-child { color: var(--if-muted); font-size: 10px; }
+
+.inferenceMain { min-width: 0; margin-left: 244px; padding: 22px 30px 0 52px; }
+#principle,
+#latency-heatmap,
+#request-timeline,
+#selected-metric,
+#oom-case,
+#study-guide,
+#curriculum,
+#capacity-experiment,
+#practice,
+#field-guide { scroll-margin-top: 70px; }
+.inferenceHero { position: relative; min-height: 137px; }
+.inferenceHero h1 { margin: 0; font-family: var(--font-serif); font-size: clamp(50px,4vw,62px); font-weight: 500; letter-spacing: -.04em; line-height: 1.05; }
+.inferenceHeroEn { margin: 3px 0 0; color: #7e8c9e; font-size: 18px; font-weight: 650; line-height: 1.25; }
+.inferenceHeroLead { margin: 10px 0 0; font-size: 16px; line-height: 1.5; }
+.inferenceHero > .moduleHeroMetrics {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.fieldbookTheme.modulePage.inferenceStudio .moduleReadingExperience { width: 100%; max-width: none; margin: 0; padding: 0; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.inferenceModeTabs { width: min(880px,calc(100% - 248px)); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid var(--if-line-strong); }
+.inferenceMain.inspectorClosed .inferenceModeTabs { width: min(1128px,100%); }
+.inferenceModeTabs button {
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-right: 1px solid var(--if-line-strong);
+  background: #fff;
+  color: #496078;
+  cursor: pointer;
+}
+.inferenceModeTabs button:last-child { border-right: 0; }
+.inferenceModeTabs button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.inferenceModeTabs button strong { font-size: 14px; font-weight: 700; }
+.inferenceModeTabs button:hover,
+.inferenceModeTabs button:focus-visible { background: var(--if-lime-soft); outline: 2px solid var(--if-ink); outline-offset: -2px; }
+.inferenceModeTabs button[aria-selected="true"] { background: linear-gradient(110deg,#b8dc57,var(--if-lime)); color: var(--if-ink); }
+
+.fieldbookTheme.modulePage.inferenceStudio .inferenceQuick.focusedNarrative { margin: 0; padding: 2px 0 0; border: 0; background: #fff; }
+.inferenceSectionTitle { grid-area: title; width: 100%; padding-top: 18px; display: flex; gap: 13px; align-items: start; }
+.inferenceSectionTitle > span { width: 3px; height: 22px; margin-top: 2px; background: var(--if-lime); }
+.inferenceSectionTitle h2 { margin: 0; font-family: var(--font-serif); font-size: 24px; font-weight: 600; line-height: 1.15; }
+.inferenceSectionTitle p { display: none; }
+.inferenceQuickGrid { display: grid; grid-template-columns: minmax(0,1fr) 220px; grid-template-areas: "title inspector" "explorer inspector" "case inspector"; column-gap: 28px; row-gap: 6px; align-items: start; }
+.inferenceStudio .inferenceExplorer { min-width: 0; margin: 0; grid-area: explorer; border: 0; }
+.inferenceQuickGrid > .focusedDecisionLedger { grid-area: case; }
+.metricInspectorSlot { min-width: 0; grid-area: inspector; scroll-margin-top: 70px; }
+.inferenceMetricStrip { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); border: 1px solid var(--if-line); }
+.inferenceMetricStrip button { min-width: 0; min-height: 37px; padding: 6px 10px; display: flex; align-items: center; justify-content: center; gap: 9px; border: 0; background: #fff; color: #435a70; font-size: 12px; cursor: pointer; }
+.inferenceMetricStrip button i,
+.inspectorMetric > i { width: 11px; height: 11px; flex: 0 0 11px; border-radius: 50%; background: var(--metric-color); }
+.inferenceMetricStrip button:hover,
+.inferenceMetricStrip button[aria-pressed="true"] { background: #f6f9fa; color: var(--if-ink); box-shadow: inset 0 -2px 0 var(--metric-color,var(--if-ink)); }
+.inferenceMetricStrip button:focus-visible { z-index: 1; background: #f6f9fa; color: var(--if-ink); outline: 2px solid var(--if-ink); outline-offset: -2px; box-shadow: inset 0 -2px 0 var(--metric-color,var(--if-ink)); }
+.inferenceDashboard { display: grid; grid-template-columns: minmax(410px,.95fr) minmax(450px,1.05fr); border: 1px solid var(--if-line); border-top: 0; }
+.inferenceHeatmapPanel,
+.requestTimeline { min-width: 0; padding: 18px 16px 14px; }
+.inferenceHeatmapPanel { border-right: 1px solid var(--if-line); }
+.inferenceHeatmapPanel > header h3,
+.requestTimeline > header h3 { margin: 0; font-size: 13px; line-height: 1.35; }
+.inferenceHeatmapPanel > header h3 small { color: var(--if-muted); font-size: 11px; font-weight: 500; }
+.inferenceHeatmapPanel > header > p { margin: 9px 0 4px; color: var(--if-muted); font-size: 10px; }
+.heatmapWithLegend { display: grid; grid-template-columns: minmax(0,1fr) 35px; gap: 9px; }
+.heatmapMatrix { position: relative; min-width: 0; }
+.heatmapRow { display: grid; grid-template-columns: 37px repeat(7,minmax(0,1fr)); gap: 2px; }
+.heatmapRow + .heatmapRow { margin-top: 2px; }
+.heatmapRow > span { display: flex; align-items: center; justify-content: end; padding-right: 8px; color: #60758a; font-size: 10px; }
+.heatmapRow > span.isActive { justify-self: end; width: 25px; height: 25px; padding: 0; justify-content: center; border-radius: 50%; background: var(--if-ink); color: #fff; font-weight: 800; }
+.heatmapCell { position: relative; min-width: 0; height: 27px; padding: 0; border: 0; color: var(--if-ink); font-size: 10px; font-weight: 850; cursor: pointer; }
+.heatmapCell:hover,
+.heatmapCell:focus-visible { z-index: 3; outline: 2px solid var(--if-ink); outline-offset: -1px; }
+.heatmapCell.isSelected { z-index: 4; outline: 2px solid var(--if-ink); outline-offset: -2px; background: #fff2b5; font-size: 11px; }
+.heatmapCell.isRisk { background-image: repeating-linear-gradient(135deg,rgba(239,91,80,.16) 0,rgba(239,91,80,.16) 3px,rgba(255,255,255,.62) 3px,rgba(255,255,255,.62) 6px),linear-gradient(#ffd2ca,#ffb4a4); }
+.heatLevel--0 { background: #c5f0d2; }
+.heatLevel--1 { background: #ddf2c4; }
+.heatLevel--2 { background: #f3efb3; }
+.heatLevel--3 { background: #ffe0a0; }
+.heatLevel--4 { background: #ffc17f; }
+.heatLevel--5 { background: #fb8d77; }
+.heatmapXAxis { display: grid; grid-template-columns: 37px repeat(7,minmax(0,1fr)); gap: 2px; margin-top: 4px; }
+.heatmapXAxis strong { min-height: 25px; display: grid; place-items: center; color: #596f84; font-size: 10px; font-weight: 500; text-align: center; }
+.heatmapXAxis strong.isActive { width: 25px; justify-self: center; border-radius: 50%; background: var(--if-ink); color: #fff; }
+.heatmapAxisTitle { margin: 6px 0 0 37px; color: var(--if-muted); font-size: 10px; text-align: center; }
+.heatmapRiskLabel { position: absolute; top: 12px; right: 13px; transform: rotate(18deg); color: #9e302b; font-size: 10px; font-weight: 850; pointer-events: none; }
+.heatmapLegend { display: grid; grid-template-columns: 8px 1fr; grid-template-rows: auto repeat(7,1fr); gap: 0 5px; color: #53697f; font-size: 9px; }
+.heatmapLegend > span { grid-column: 1 / -1; margin-bottom: 5px; white-space: nowrap; }
+.heatmapLegend > div { grid-row: 2 / 9; border-radius: 1px; background: linear-gradient(to bottom,#ef5b50,#f7a354,#ffe69e,#c9efca,#58c7b4); }
+.heatmapLegend small { align-self: center; font-size: 9px; }
+.inferenceFigureNote { margin: 9px 0 0; color: #6a7e8d; font-size: 9px; line-height: 1.45; }
+
+.requestTimeline > header { display: flex; justify-content: space-between; gap: 12px; }
+.requestTimeline > header p { margin: 3px 0 0; color: var(--if-muted); font-size: 10px; }
+.requestTimeline > header output { min-width: 162px; padding: 7px 9px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid var(--if-line); font-size: 10px; }
+.requestTimeline > header output strong { font-size: 12px; }
+.timelineScale { position: relative; height: 30px; margin: 14px 0 0 98px; border-bottom: 1px solid var(--if-line); }
+.timelineScale span { position: absolute; bottom: 4px; transform: translateX(-50%); color: #60758a; font-size: 9px; }
+.timelineRows { margin-top: 6px; }
+.timelineRow { display: grid; grid-template-columns: 98px minmax(0,1fr); min-height: 38px; }
+.timelineRow > span { align-self: center; display: grid; }
+.timelineRow > span strong { font-size: 10px; }
+.timelineRow > span small { color: var(--if-muted); font-size: 9px; }
+.timelineRow > div { position: relative; border-bottom: 1px solid #e9eef1; background-image: linear-gradient(to right,transparent calc(25% - 1px),#edf1f3 25%,transparent calc(25% + 1px)); background-size: 25% 100%; }
+.timelineRow i { position: absolute; top: 6px; left: var(--bar-left); width: var(--bar-width); min-width: 34px; height: 27px; padding: 4px 7px; background: var(--bar-color); color: var(--if-ink); font-size: 10px; font-style: normal; white-space: nowrap; }
+.timelineTotal { margin: 8px 0 0 98px; display: flex; justify-content: flex-end; gap: 16px; align-items: center; }
+.timelineTotal span { font-size: 10px; font-weight: 750; }
+.timelineTotal strong { padding: 4px 10px; background: var(--if-ink); color: #fff; font-size: 11px; }
+.mobileCapacityLink { display: none; }
+
+.metricInspector { position: sticky; top: 78px; padding: 0 18px 16px; border: 1px solid var(--if-line); background: #fff; }
+.metricInspector > header { height: 42px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--if-line); }
+.metricInspector > header h3 { margin: 0; font-size: 13px; }
+.metricInspector > header button { width: 28px; height: 28px; border: 0; background: transparent; color: var(--if-muted); font-size: 18px; cursor: pointer; }
+.inspectorMetric { padding: 15px 0 14px; display: grid; grid-template-columns: 12px 1fr; gap: 7px 8px; border-bottom: 1px solid var(--if-line); }
+.inspectorMetric > i { margin-top: 4px; }
+.inspectorMetric > strong { font-size: 12px; }
+.inspectorMetric > p { grid-column: 1 / -1; margin: 0; color: var(--if-muted); font-size: 10px; line-height: 1.55; }
+.metricInspector section { padding: 13px 0 0; }
+.metricInspector h4 { margin: 0 0 7px; font-size: 10px; }
+.metricInspector dl { margin: 0; }
+.metricInspector dl > div { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; }
+.metricInspector dt,
+.metricInspector dd { margin: 0; font-size: 10px; }
+.metricInspector dt { color: var(--if-muted); }
+.metricInspector dd { text-align: right; }
+.metricInspector dd.isSafe { color: #64a61f; }
+.metricInspector dd.isDanger { color: var(--if-risk); }
+.memoryGauge > div { height: 7px; overflow: hidden; background: #e8ecee; }
+.memoryGauge > div i { display: block; height: 100%; background: #87bd31; }
+.memoryGauge > p { margin: 5px 0 0; display: flex; align-items: baseline; gap: 4px; color: var(--if-muted); font-size: 9px; }
+.memoryGauge > p strong { color: var(--if-ink); font-size: 11px; }
+.memoryGauge > p span { margin-left: auto; }
+.capacityLink { width: 100%; min-height: 39px; margin-top: 14px; display: flex; justify-content: center; align-items: center; gap: 12px; border: 1px solid #88ad2e; background: #fff; color: var(--if-ink); font-size: 11px; font-weight: 750; cursor: pointer; }
+.capacityLink:hover,
+.capacityLink:focus-visible { background: var(--if-lime); outline: none; }
+.capacityLink span { font-size: 16px; }
+.metricInspector footer { margin-top: 13px; padding: 12px 0 0; display: grid; align-items: initial; justify-content: initial; gap: 3px; border-top: 1px solid var(--if-line); background: #fff; }
+.metricInspector footer strong,
+.metricInspector footer a,
+.metricInspector footer small { font-size: 9px; }
+.metricInspector footer a { color: #477491; }
+.metricInspector footer small { color: var(--if-muted); }
+.openInspector { width: 100%; min-height: 42px; border: 1px solid var(--if-line); background: #fff; font-size: 11px; font-weight: 750; cursor: pointer; }
+
+.inferenceStudio .focusedDecisionLedger { margin: 0; border: 0; }
+.inferenceCaseReview { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--if-line); }
+.inferenceCaseReview > header { display: flex; align-items: center; gap: 12px; }
+.inferenceCaseReview > header > span { width: 3px; height: 24px; background: var(--if-risk); }
+.inferenceCaseReview > header h2 { margin: 0; font-family: var(--font-serif); font-size: 23px; font-weight: 600; }
+.inferenceCaseReview > header small { padding: 2px 7px; background: #fff2ee; color: #ae473d; font-size: 9px; }
+.caseReviewGrid { margin-top: 18px; display: grid; grid-template-columns: minmax(190px,.8fr) minmax(430px,1.7fr) minmax(220px,.9fr); border-top: 1px solid var(--if-line); border-bottom: 1px solid var(--if-line); }
+.caseReviewGrid > * { min-width: 0; padding: 16px 18px; }
+.caseReviewGrid > * + * { border-left: 1px solid var(--if-line); }
+.caseNarrative h3,
+.caseAction h3 { margin: 0 0 6px; font-size: 11px; }
+.caseNarrative h3:not(:first-child),
+.caseAction h3:not(:first-child) { margin-top: 15px; }
+.caseNarrative p,
+.caseNarrative li,
+.caseAction li { color: #536a7e; font-size: 10px; line-height: 1.55; }
+.caseNarrative p { margin: 0; }
+.caseNarrative ul,
+.caseAction ol { margin: 0; padding-left: 16px; }
+.memoryTrendFigure { margin: 0; }
+.memoryTrendFigure figcaption,
+.capacityTrend figcaption { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; }
+.memoryTrendFigure figcaption span,
+.capacityTrend figcaption span { color: var(--if-muted); }
+.memoryTrendFigure svg { width: 100%; height: auto; margin-top: 8px; }
+.chartGrid path { fill: none; stroke: #e7edef; stroke-width: 1; }
+.memoryTrendFigure text { fill: #8c4e4a; font-size: 10px; }
+.chartThreshold { fill: none; stroke: var(--if-risk); stroke-width: 1.5; stroke-dasharray: 7 5; }
+.chartLine { fill: none; stroke: var(--if-blue); stroke-width: 2.4; }
+.memoryTrendFigure circle { fill: #fff; stroke: var(--if-risk); stroke-width: 4; }
+.caseAction { background: #fff7f4; }
+.caseAcceptance { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid #efd8d0; color: #7a463f; font-size: 10px; line-height: 1.55; }
+
+.inferenceLearning { padding-top: 18px; }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute { max-width: 1000px; padding: 0; border: 0; background: #fff; }
+.learningRoute h2 { margin: 0 0 13px; font-family: var(--font-serif); font-size: 17px; }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); list-style: none; }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li { position: relative; min-width: 0; padding: 0; display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 10px; align-items: start; border: 0; background: #fff; }
+.inferenceStudio .learningRoute li::after { content: ""; position: absolute; top: 15px; right: 16px; left: 42px; width: auto; height: 1px; border: 0; border-radius: 0; background: var(--if-line-strong); }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li:not(:last-child)::after { content: ""; top: 15px; right: 16px; bottom: auto; left: 42px; width: auto; height: 1px; border: 0; border-radius: 0; background: var(--if-line-strong); }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute li:last-child::after { display: none; }
+.learningRoute li > span { position: relative; z-index: 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--if-line-strong); border-radius: 50%; background: #fff; font-size: 11px; font-weight: 800; }
+.learningRoute li.isActive > span { border-color: var(--if-lime); background: var(--if-lime); }
+.learningRoute li div { position: relative; z-index: 2; width: fit-content; padding: 1px 14px 0 0; display: grid; background: #fff; }
+.learningRoute li strong { font-size: 11px; }
+.learningRoute li small { max-width: 200px; color: var(--if-muted); font-size: 9px; }
+.learningChapters { max-width: 1220px; margin-top: 18px; border-top: 3px solid var(--if-lime); }
+.learningChapters > article { border: 1px solid var(--if-line); border-top: 0; scroll-margin-top: 70px; }
+.learningChapters > article > button { width: 100%; min-height: 49px; padding: 10px 14px; display: grid; grid-template-columns: 58px auto minmax(0,1fr) 20px; gap: 12px; align-items: center; border: 0; background: #fff; color: var(--if-ink); text-align: left; cursor: pointer; }
+.learningChapters > article > button:hover,
+.learningChapters > article > button:focus-visible { background: #f8faf5; outline: 2px solid var(--if-ink); outline-offset: -2px; }
+.learningChapters > article > button > span { color: #6b7f8f; font-size: 10px; }
+.learningChapters > article > button > strong { font-family: var(--font-serif); font-size: 14px; }
+.learningChapters > article > button > small { color: var(--if-muted); font-size: 9px; }
+.learningChapters > article > button > i { font-size: 18px; font-style: normal; transition: transform .18s ease; }
+.learningChapters > article.isOpen > button > i { transform: rotate(180deg); }
+.learningChapters > article > div { padding: 0 14px 14px; }
+.singleRequestDiagram { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border: 1px solid var(--if-line); }
+.requestStage { position: relative; min-width: 0; padding: 14px 14px 12px; }
+.requestStage + .requestStage { border-left: 1px solid var(--if-line); }
+.requestStage header { display: flex; justify-content: space-between; gap: 8px; }
+.requestStage header strong { font-size: 11px; }
+.requestStage header small { color: var(--if-muted); font-size: 9px; }
+.requestStage > div { min-height: 40px; margin-top: 10px; padding: 7px; display: flex; gap: 5px; border: 1px solid #bad7b4; background: #eff8e8; }
+.requestStage--2 > div { border-color: #c4b6ee; background: #f1edff; }
+.requestStage > div i { flex: 1; border: 1px solid #a9c99e; background: #dcefd1; }
+.requestStage--0 > div span { align-self: center; overflow: hidden; color: #496078; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.requestStage--2 > div i { border-color: #aa96e6; background: #cfc3f4; }
+.requestStage p { margin: 7px 0 0; color: var(--if-muted); font-size: 9px; }
+.requestStage > span { position: absolute; z-index: 3; top: 47px; right: -8px; color: #5c7082; }
+.singleRequestDiagram footer { grid-column: 1 / -1; padding: 9px 14px; display: flex; gap: 22px; border-top: 1px solid var(--if-line); font-size: 9px; }
+.singleRequestDiagram footer strong { color: var(--if-ink); }
+.singleRequestDiagram footer span { color: var(--if-muted); }
+
+.capacityExperiment { display: grid; grid-template-columns: minmax(220px,26%) minmax(420px,1fr) 230px; border: 1px solid var(--if-line); }
+.capacityExperiment > * { min-width: 0; padding: 13px; }
+.capacityExperiment > * + * { border-left: 1px solid var(--if-line); }
+.capacityExperiment h4 { margin: 0 0 9px; font-size: 11px; }
+.capacityExperiment form > label { display: grid; gap: 4px; margin-bottom: 10px; color: #536a7e; font-size: 9px; }
+.capacityExperiment select { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--if-line); background: #fff; color: var(--if-ink); font-size: 9px; }
+.capacityExperiment fieldset { margin: 0 0 10px; padding: 0; border: 0; }
+.capacityExperiment legend { margin-bottom: 5px; color: #536a7e; font-size: 9px; }
+.capacityExperiment fieldset > div { display: flex; flex-wrap: wrap; gap: 4px; }
+.capacityExperiment fieldset button { min-width: 37px; min-height: 25px; padding: 3px 7px; border: 1px solid var(--if-line); background: #f7f9fa; color: var(--if-ink); font-size: 9px; cursor: pointer; }
+.capacityExperiment fieldset button[aria-pressed="true"] { border-color: var(--if-ink); background: var(--if-ink); color: #fff; }
+.capacityRange { position: relative; }
+.capacityRange output { position: absolute; right: 0; color: var(--if-ink); font-weight: 800; }
+.capacityRange input { width: 100%; accent-color: var(--if-ink); }
+.capacityRange > span { display: flex; justify-content: space-between; color: var(--if-muted); }
+.runExperiment { min-width: 90px; min-height: 31px; border: 0; background: linear-gradient(110deg,#b7d951,var(--if-lime)); color: var(--if-ink); font-size: 10px; font-weight: 800; cursor: pointer; }
+.runExperiment:hover,
+.runExperiment:focus-visible { outline: 2px solid var(--if-ink); outline-offset: 2px; }
+.capacityExperiment form > p { margin: 9px 0 0; color: var(--if-muted); font-size: 8px; line-height: 1.5; }
+.capacityResults > header { display: flex; justify-content: space-between; gap: 10px; }
+.capacityResults > header span { color: var(--if-muted); font-size: 9px; }
+.capacityMetricCards { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border: 1px solid var(--if-line); }
+.capacityMetricCards article { min-width: 0; padding: 9px; }
+.capacityMetricCards article + article { border-left: 1px solid var(--if-line); }
+.capacityMetricCards span { display: block; color: var(--if-muted); font-size: 8px; }
+.capacityMetricCards strong { display: block; margin-top: 3px; font-size: 20px; line-height: 1.1; }
+.capacityMetricCards strong small { margin-left: 3px; color: #445c71; font-size: 8px; }
+.capacityMetricCards p { margin: 3px 0 0; color: var(--if-muted); font-size: 8px; }
+.capacityTrend { margin: 12px 0 0; }
+.capacityTrend svg { width: 100%; height: 150px; }
+.capacityTrend svg > path { fill: none; stroke-width: 2.4; }
+.trendTtft { stroke: var(--if-purple); }
+.trendTpot { stroke: #7db64a; }
+.trendThroughput { stroke: var(--if-blue); }
+.trendCurrent { stroke: #8c9ba7; stroke-width: 1; stroke-dasharray: 5 4; }
+.trendCurrentPoint { stroke-width: 2; }
+.trendCurrentPoint--ttft { fill: #fff; stroke: var(--if-purple); }
+.trendCurrentPoint--tpot { fill: #fff; stroke: #6f9f3e; }
+.trendCurrentPoint--throughput { fill: #fff; stroke: var(--if-blue); }
+.trendCurrentLabel { fill: #536a7e; font-size: 9px; }
+.trendAxisLabels { fill: #718397; font-size: 8px; }
+.capacityTrend > div { display: flex; justify-content: center; gap: 18px; }
+.capacityTrend > div span { font-size: 8px; }
+.capacityTrend > div span::before { content: ""; width: 7px; height: 7px; margin-right: 5px; display: inline-block; border-radius: 50%; }
+.legendTtft::before { background: var(--if-purple); }
+.legendTpot::before { background: #7db64a; }
+.legendThroughput::before { background: var(--if-blue); }
+.capacityConclusion header { display: flex; gap: 7px; align-items: center; color: #548b1c; }
+.capacityConclusion header > span { width: 20px; height: 20px; display: grid; place-items: center; border: 1px solid var(--if-lime); border-radius: 50%; }
+.capacityConclusion.isUnsafe header { color: var(--if-risk); }
+.capacityConclusion p,
+.capacityConclusion li { color: #536a7e; font-size: 9px; line-height: 1.55; }
+.capacityConclusion h5 { margin: 12px 0 3px; font-size: 9px; }
+.capacityConclusion ul { margin: 0; padding-left: 15px; }
+.capacityConclusion > a { min-height: 31px; margin-top: 12px; display: grid; place-items: center; border: 1px solid #8bad3b; font-size: 9px; font-weight: 750; text-decoration: none; }
+.capacityConclusion > small { display: block; margin-top: 8px; color: var(--if-muted); font-size: 8px; text-align: center; }
+.chapterBrief { padding: 18px 12px !important; display: grid; grid-template-columns: minmax(0,1fr) minmax(360px,1.2fr); gap: 16px 28px; }
+.chapterBrief > p { margin: 0; color: #435c70; font-size: 12px; line-height: 1.7; }
+.chapterBrief dl { margin: 0; }
+.chapterBrief dl > div { padding: 0 0 8px 13px; border-left: 2px solid var(--if-line); }
+.chapterBrief dl > div + div { margin-top: 10px; border-left-color: var(--if-lime); }
+.chapterBrief dt { color: var(--if-muted); font-size: 9px; font-weight: 800; }
+.chapterBrief dd { margin: 3px 0 0; font-size: 10px; line-height: 1.55; }
+.chapterBrief > a { color: #477491; font-size: 10px; }
+.learningSourceLinks { min-height: 0 !important; margin-top: 10px; padding: 9px 0 0 !important; display: flex !important; flex-wrap: wrap; gap: 6px 14px; border-top: 1px solid var(--if-line); background: transparent !important; }
+.learningSourceLinks a { color: #477491; font-size: 8px; text-decoration: none; }
+.chapterBrief .learningSourceLinks { grid-column: 1 / -1; }
+.inferenceLearningPractice { max-width: 1220px; margin-top: 34px; padding-top: 28px; border-top: 2px solid var(--if-ink); }
+.inferenceLearningPractice > header > p { margin: 0; color: #789a1d; font-size: 9px; font-weight: 850; letter-spacing: .12em; }
+.inferenceLearningPractice h2 { margin: 6px 0 0; font-family: var(--font-serif); font-size: 23px; }
+.learningOutcomeList { margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid var(--if-line); list-style: none; counter-reset: outcome; }
+.learningOutcomeList li { position: relative; min-height: 54px; padding: 13px 14px 13px 45px; border-bottom: 1px solid var(--if-line); color: #435c70; font-size: 11px; line-height: 1.55; counter-increment: outcome; }
+.learningOutcomeList li:nth-child(odd) { border-right: 1px solid var(--if-line); }
+.learningOutcomeList li::before { content: counter(outcome,decimal-leading-zero); position: absolute; top: 14px; left: 12px; color: #789a1d; font-size: 9px; font-weight: 850; }
+.learningStart { margin-top: 22px; padding: 17px 20px; display: flex; gap: 28px; align-items: baseline; border-left: 3px solid var(--if-lime); background: #f6f9eb; }
+.learningStart h2 { flex: 0 0 auto; margin: 0; font-size: 18px; }
+.learningStart p { margin: 0; color: #536a7e; font-size: 11px; line-height: 1.6; }
+.learningFullRoute { margin: 0; padding: 0 0 0 20px; border-left: 1px solid var(--if-line); list-style: none; }
+.learningFullRoute li { position: relative; padding: 16px 0 16px 34px; border-bottom: 1px solid var(--if-line); }
+.learningFullRoute li > span { position: absolute; top: 17px; left: -12px; width: 24px; height: 24px; display: grid; place-items: center; border: 1px solid var(--if-line-strong); border-radius: 50%; background: #fff; color: #789a1d; font-size: 8px; font-weight: 850; }
+.learningFullRoute h3 { margin: 0; font-family: var(--font-serif); font-size: 14px; }
+.learningFullRoute p { margin: 4px 0 0; color: #536a7e; font-size: 10px; line-height: 1.55; }
+.learningFullRoute strong { display: block; margin-top: 5px; color: #718397; font-size: 9px; }
+.learningLabList { margin-top: 26px; }
+.learningLabList > h2 { margin-bottom: 14px; }
+.learningLabList article { display: grid; grid-template-columns: 42px minmax(0,1fr); border-top: 1px solid var(--if-line); }
+.learningLabList article:last-child { border-bottom: 1px solid var(--if-line); }
+.learningLabList article > span { padding-top: 17px; color: #789a1d; font-size: 10px; font-weight: 850; }
+.learningLabList article > div { padding: 15px 0 17px; }
+.learningLabList h3 { margin: 0; font-family: var(--font-serif); font-size: 16px; }
+.learningLabList p,
+.learningLabList li,
+.learningLabList dd { color: #536a7e; font-size: 10px; line-height: 1.55; }
+.learningLabList p { margin: 5px 0 9px; }
+.learningLabList ol { margin: 0; padding-left: 17px; }
+.learningLabList dl { margin: 12px 0 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.learningLabList dl > div { padding-left: 10px; border-left: 2px solid var(--if-line); }
+.learningLabList dt { color: #718397; font-size: 8px; font-weight: 850; }
+.learningLabList dd { margin: 3px 0 0; }
+.learningLabList .learningSourceLinks { margin-top: 12px; }
+.inferenceLearningPractice > a { display: inline-block; margin-top: 16px; color: #477491; font-size: 10px; font-weight: 750; }
+
+.inferenceFieldPanel { padding-top: 26px; }
+.inferenceFieldContent { max-width: 1130px; }
+.inferenceFieldIntro { padding: 0 0 24px; border-bottom: 2px solid var(--if-ink); }
+.inferenceFieldIntro > p { margin: 0; color: #789a1d; font-size: 10px; font-weight: 850; letter-spacing: .12em; }
+.inferenceFieldIntro h2 { max-width: 800px; margin: 7px 0 0; font-family: var(--font-serif); font-size: 28px; font-weight: 600; line-height: 1.25; }
+.inferenceFieldIntro span { display: block; margin-top: 9px; color: var(--if-muted); font-size: 12px; }
+.inferenceFieldOverview { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-bottom: 1px solid var(--if-line); }
+.inferenceFieldOverview article { min-width: 0; padding: 19px 0; display: grid; grid-template-columns: 46px minmax(0,1fr); gap: 12px; }
+.inferenceFieldOverview article + article { padding-left: 22px; border-left: 1px solid var(--if-line); }
+.inferenceFieldOverview article > span { color: #789a1d; font-size: 9px; font-weight: 850; }
+.inferenceFieldOverview p { margin: 0; color: #435c70; font-size: 11px; line-height: 1.7; }
+.inferenceFieldSection { padding: 30px 0; border-bottom: 1px solid var(--if-line); scroll-margin-top: 70px; }
+.inferenceFieldSection > header { margin-bottom: 18px; display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; }
+.inferenceFieldSection > header > span { color: #6e8899; font-size: 10px; font-weight: 850; }
+.inferenceFieldSection > header h2 { margin: 0; font-family: var(--font-serif); font-size: 23px; }
+.inferenceFieldSection > header p { max-width: 760px; margin: 5px 0 0; color: var(--if-muted); font-size: 12px; line-height: 1.6; }
+.inferenceMechanismIndex > div { border-top: 1px solid var(--if-line); }
+.inferenceMechanismIndex article { display: grid; grid-template-columns: 40px minmax(0,1fr); border-bottom: 1px solid var(--if-line); }
+.inferenceMechanismIndex article > span { padding-top: 15px; color: #789a1d; font-size: 9px; font-weight: 850; }
+.inferenceMechanismIndex article > div { padding: 13px 0 15px; display: grid; grid-template-columns: minmax(180px,.7fr) minmax(0,1fr) minmax(0,1.1fr); gap: 18px; align-items: start; }
+.inferenceMechanismIndex h3 { margin: 0; font-family: var(--font-serif); font-size: 14px; }
+.inferenceMechanismIndex h3 small { display: block; margin-top: 3px; color: #718397; font-family: var(--font-sans); font-size: 8px; font-weight: 600; }
+.inferenceMechanismIndex p,
+.inferenceMechanismIndex strong { margin: 0; color: #536a7e; font-size: 10px; line-height: 1.6; }
+.inferenceMechanismIndex strong { padding-left: 12px; border-left: 2px solid var(--if-lime); color: #314d62; font-weight: 650; }
+.inferenceDecisionGuide > div { border-top: 1px solid var(--if-line); }
+.inferenceDecisionGuide details { border-bottom: 1px solid var(--if-line); }
+.inferenceDecisionGuide summary { min-height: 48px; padding: 11px 8px; display: grid; grid-template-columns: 38px minmax(0,1fr); align-items: center; cursor: pointer; list-style: none; }
+.inferenceDecisionGuide summary::-webkit-details-marker { display: none; }
+.inferenceDecisionGuide summary > span { color: #789a1d; font-size: 9px; }
+.inferenceDecisionGuide summary strong { font-family: var(--font-serif); font-size: 14px; }
+.inferenceDecisionGuide details > div { padding: 0 8px 15px 46px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.inferenceDecisionGuide details p { margin: 0; color: #536a7e; font-size: 10px; line-height: 1.6; }
+.inferenceDecisionGuide details b { display: block; margin-bottom: 3px; color: #718397; font-size: 8px; }
+.inferenceSourceLink { text-align: right; }
+.inferenceSourceLink a { color: #477491; font-size: 11px; font-weight: 750; }
+.inferenceBoundarySection blockquote { margin: 0; padding: 19px 22px; border: 0; border-left: 4px solid var(--if-lime); background: #f6f9eb; }
+.inferenceBoundarySection blockquote strong { font-size: 12px; }
+.inferenceBoundarySection blockquote p { margin: 7px 0 0; color: #435c70; font-size: 12px; line-height: 1.7; }
+.inferenceFieldContent .focusedCloudRows { margin-top: 0; }
+.inferenceFieldContent .focusedCloudRows article { padding: 17px 0; }
+.inferenceFieldContent .focusedCloudRows h3 { font-size: 14px; }
+.inferenceFieldContent .focusedCloudRows p { font-size: 12px; }
+.inferenceFieldContent .focusedCloudRows small { font-size: 10px; }
+.inferenceFooter { margin: 60px -30px 0 -52px; padding: 20px 30px 20px 52px; display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--if-line); color: var(--if-muted); font-size: 10px; }
+.inferenceFooter strong { color: var(--if-ink); }
+.inferenceMenuScrim { display: none; }
+
+@media (max-width: 1440px) {
+  .inferenceGlobalNav a,
+  .inferenceGlobalNav button { padding-inline: 10px; }
+  .inferenceDashboard { grid-template-columns: minmax(360px,.9fr) minmax(400px,1.1fr); }
+  .inferenceQuickGrid { grid-template-columns: minmax(0,1fr); grid-template-areas: "title" "explorer" "inspector" "case"; row-gap: 14px; }
+  .inferenceModeTabs,
+  .inferenceSectionTitle { width: 100%; }
+  .metricInspector { position: static; display: grid; grid-template-columns: 1.2fr repeat(3,minmax(120px,1fr)); gap: 0 20px; }
+  .metricInspector > header { grid-column: 1 / -1; }
+  .metricInspector footer { align-self: end; }
+  .capacityExperiment { grid-template-columns: 230px minmax(400px,1fr); }
+  .capacityConclusion { grid-column: 1 / -1; border-top: 1px solid var(--if-line); border-left: 0 !important; }
+}
+
+@media (max-width: 1080px) {
+  .inferenceTopbar { grid-template-columns: 240px minmax(0,1fr); padding-inline: 18px; }
+  .inferenceBrand { font-size: 15px; }
+  .inferenceGlobalNav a:nth-child(5),
+  .inferenceGlobalNav a:nth-child(6),
+  .inferenceGlobalNav a:last-child { display: none; }
+  .inferenceChapterRail { width: 220px; padding-inline: 17px; }
+  .inferenceMain { margin-left: 220px; padding-left: 32px; }
+  .inferenceDashboard { grid-template-columns: 1fr; }
+  .inferenceHeatmapPanel { border-right: 0; border-bottom: 1px solid var(--if-line); }
+  .metricInspector { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .caseReviewGrid { grid-template-columns: minmax(0,.7fr) minmax(0,1.3fr); }
+  .caseAction { grid-column: 1 / -1; border-top: 1px solid var(--if-line); border-left: 0 !important; }
+  .capacityExperiment { grid-template-columns: 1fr; }
+  .capacityExperiment > * + * { border-top: 1px solid var(--if-line); border-left: 0; }
+  .chapterBrief { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .inferenceStudio { overflow: clip; }
+  .inferenceTopbar { position: sticky; height: 64px; padding: 0 19px; grid-template-columns: minmax(0,1fr) 44px; }
+  .brandDesktop,
+  .inferenceGlobalNav { display: none; }
+  .brandMobile { display: inline; }
+  .inferenceBrand { font-size: 18px; }
+  .mobileMenuButton { width: 44px; height: 44px; padding: 8px; display: grid; place-items: center; border: 0; background: #fff; color: var(--if-ink); }
+  .mobileMenuButton svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .inferenceChapterRail { z-index: 100; top: 0; width: min(320px,86vw); padding: 18px 20px; visibility: hidden; pointer-events: none; transform: translateX(-105%); transition: transform .2s ease,visibility 0s linear .2s; box-shadow: 18px 0 38px rgba(16,44,73,.14); }
+  .inferenceChapterRail.isOpen { visibility: visible; pointer-events: auto; transform: none; transition-delay: 0s; }
+  .inferenceChapterRail header { min-height: 46px; display: flex; justify-content: space-between; align-items: center; }
+  .inferenceChapterRail header button { width: 36px; height: 36px; display: grid; place-items: center; border: 0; background: transparent; font-size: 22px; }
+  .inferenceChapterRail nav a { min-height: 38px; padding-top: 9px; padding-bottom: 9px; font-size: 13px; }
+  .inferenceChapterRail nav a::before { top: 9px; bottom: 9px; }
+  .inferenceChapterRail footer a { min-height: 44px; display: flex; align-items: center; }
+  .inferenceMenuScrim { position: fixed; z-index: 90; inset: 0; display: block; border: 0; background: rgba(10,30,48,.35); }
+  .inferenceMain { margin-left: 0; padding: 34px 18px 0; }
+  #principle,
+  #latency-heatmap,
+  #request-timeline,
+  #selected-metric,
+  #oom-case,
+  #study-guide,
+  #curriculum,
+  #capacity-experiment,
+  #practice,
+  #field-guide { scroll-margin-top: 78px; }
+  .inferenceHero { min-height: 150px; }
+  .inferenceHero h1 { font-size: clamp(40px,12vw,46px); }
+  .inferenceHeroEn { display: none; }
+  .inferenceHeroLead { max-width: 310px; margin-top: 11px; font-size: 17px; line-height: 1.55; }
+  .inferenceModeTabs { width: 100%; }
+  .inferenceModeTabs button { min-width: 0; min-height: 62px; padding: 7px 4px; gap: 7px; }
+  .inferenceModeTabs button svg { width: 20px; height: 20px; }
+  .inferenceModeTabs button strong { font-size: 12px; white-space: nowrap; }
+  .fieldbookTheme.modulePage.inferenceStudio .inferenceQuick.focusedNarrative { padding-top: 30px; }
+  .inferenceQuickGrid { grid-template-areas: "title" "explorer" "inspector" "case"; row-gap: 12px; }
+  .inferenceSectionTitle { padding-top: 0; gap: 12px; }
+  .inferenceSectionTitle > span { height: 30px; }
+  .inferenceSectionTitle h2 { font-size: 25px; }
+  .inferenceSectionTitle p { display: none; }
+  .inferenceQuickGrid { margin-top: 17px; gap: 12px; }
+  .inferenceMetricStrip { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .inferenceMetricStrip button:nth-child(n+5) { display: none; }
+  .inferenceMetricStrip button { min-height: 44px; font-size: 12px; }
+  .inferenceDashboard { border-top: 0; }
+  .inferenceHeatmapPanel,
+  .requestTimeline { padding: 16px 10px; }
+  .inferenceHeatmapPanel > header h3,
+  .requestTimeline > header h3 { font-size: 15px; }
+  .inferenceHeatmapPanel > header h3 small { font-size: 10px; }
+  .heatmapWithLegend { grid-template-columns: minmax(0,1fr) 34px; gap: 7px; }
+  .heatmapRow { grid-template-columns: 29px repeat(7,minmax(0,1fr)); gap: 2px; }
+  .heatmapCell { height: 24px; }
+  .heatmapXAxis { grid-template-columns: 29px repeat(7,minmax(0,1fr)); }
+  .heatmapAxisTitle { margin-left: 29px; }
+  .heatmapLegend { grid-template-columns: 8px 1fr; grid-template-rows: auto repeat(7,1fr); gap: 0 4px; margin-left: 0; }
+  .heatmapLegend > span { grid-column: 1 / -1; }
+  .heatmapLegend > div { grid-row: 2 / 9; grid-column: 1; background: linear-gradient(to bottom,#ef5b50,#f7a354,#ffe69e,#c9efca,#58c7b4); }
+  .heatmapLegend small { grid-row: auto; text-align: left; }
+  .heatmapRiskLabel { top: 20px; right: 18px; font-size: 9px; }
+  .inferenceFigureNote { font-size: 10px; }
+  .requestTimeline > header { display: grid; }
+  .requestTimeline > header output { min-height: 44px; }
+  .timelineScale { margin-left: 104px; }
+  .timelineRow { grid-template-columns: 104px minmax(0,1fr); min-height: 52px; }
+  .timelineRow > span strong { font-size: 12px; }
+  .timelineRow > span small { font-size: 10px; }
+  .timelineRow i { top: 10px; height: 31px; padding-top: 6px; font-size: 11px; }
+  .timelineTotal { margin-left: 104px; }
+  .mobileCapacityLink { width: 100%; min-height: 51px; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 20px; border: 0; background: linear-gradient(110deg,#b7d951,var(--if-lime)); color: var(--if-ink); font-size: 15px; font-weight: 800; }
+  .mobileCapacityLink span { font-size: 24px; }
+  .metricInspectorSlot { display: block; }
+  .metricInspector { position: static; display: block; padding: 0 12px; }
+  .metricInspector > header { height: 38px; }
+  .metricInspector > header button { width: 38px; height: 38px; }
+  .metricInspector .inspectorMetric { padding: 10px 0; border-bottom: 0; }
+  .metricInspector > section,
+  .metricInspector > .capacityLink,
+  .metricInspector > footer { display: none; }
+  .openInspector { display: block; min-height: 44px; }
+  .metricInspector > header { min-height: 48px; }
+  .metricInspector > header button { width: 44px; height: 44px; }
+  .inspectorMetric > p,
+  .metricInspector dt,
+  .metricInspector dd,
+  .metricInspector footer a,
+  .metricInspector footer small { font-size: 11px; }
+  .capacityLink { min-height: 44px; }
+  .inferenceCaseReview { margin-top: 26px; padding-top: 25px; }
+  .inferenceCaseReview > header { align-items: start; flex-wrap: wrap; }
+  .inferenceCaseReview > header h2 { flex: 1; font-size: 24px; line-height: 1.25; }
+  .caseReviewGrid { grid-template-columns: 1fr; }
+  .caseReviewGrid > * + * { border-top: 1px solid var(--if-line); border-left: 0; }
+  .caseNarrative h3,
+  .caseAction h3 { font-size: 13px; }
+  .caseNarrative p,
+  .caseNarrative li,
+  .caseAction li { font-size: 12px; }
+  .memoryTrendFigure { grid-row: 2; }
+  .learningRoute { overflow: hidden; }
+  .learningRoute h2 { font-size: 20px; }
+  .learningRoute ol { grid-template-columns: 1fr; gap: 12px; }
+  .fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li:not(:last-child)::after { top: 30px; right: auto; bottom: -12px; left: 15px; width: 1px; height: auto; }
+  .learningRoute li div { width: auto; }
+  .learningRoute li strong { font-size: 13px; }
+  .learningRoute li small { font-size: 10px; }
+  .learningChapters { margin-top: 22px; }
+  .learningChapters > article > button { min-height: 62px; padding: 10px; grid-template-columns: 50px minmax(0,1fr) 18px; gap: 8px; }
+  .learningChapters > article > button > strong { font-size: 13px; }
+  .learningChapters > article > button > small { display: none; }
+  .learningChapters > article > div { padding: 0 9px 9px; }
+  .singleRequestDiagram { grid-template-columns: 1fr; }
+  .requestStage + .requestStage { border-top: 1px solid var(--if-line); border-left: 0; }
+  .requestStage > span { top: auto; right: 50%; bottom: -10px; transform: rotate(90deg); }
+  .singleRequestDiagram footer { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+  .capacityExperiment { grid-template-columns: 1fr; }
+  .capacityExperiment > * { padding: 12px 9px; }
+  .capacityExperiment fieldset button { min-height: 38px; }
+  .runExperiment { width: 100%; min-height: 44px; }
+  .capacityMetricCards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .capacityMetricCards article:nth-child(3) { border-left: 0; border-top: 1px solid var(--if-line); }
+  .capacityMetricCards article:nth-child(4) { border-top: 1px solid var(--if-line); }
+  .capacityMetricCards strong { font-size: 18px; }
+  .chapterBrief { padding: 14px 5px !important; }
+  .learningOutcomeList { grid-template-columns: 1fr; }
+  .learningOutcomeList li:nth-child(odd) { border-right: 0; }
+  .learningStart { display: block; }
+  .learningStart p { margin-top: 7px; }
+  .learningLabList dl { grid-template-columns: 1fr; }
+  .inferenceFieldIntro h2 { font-size: 25px; }
+  .inferenceFieldOverview { grid-template-columns: 1fr; }
+  .inferenceFieldOverview article + article { padding-left: 0; border-top: 1px solid var(--if-line); border-left: 0; }
+  .inferenceMechanismIndex article > div { grid-template-columns: 1fr; gap: 8px; }
+  .inferenceMechanismIndex strong { padding: 8px 0 0; border-top: 1px solid var(--if-line); border-left: 0; }
+  .inferenceDecisionGuide details > div { padding-left: 8px; grid-template-columns: 1fr; }
+  .inferenceFieldSection > header { grid-template-columns: 26px minmax(0,1fr); gap: 8px; }
+  .inferenceFieldSection > header h2 { font-size: 21px; }
+  .inferenceFieldContent .focusedCloudRows article { display: block; }
+  .inferenceFieldContent .focusedCloudRows article > * + * { margin-top: 8px; }
+  .inferenceFieldContent .focusedCloudRows small { display: block; }
+  .inferenceFooter { margin: 45px -18px 0; padding: 18px; display: grid; gap: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inferenceStudio *,
+  .inferenceStudio *::before,
+  .inferenceStudio *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

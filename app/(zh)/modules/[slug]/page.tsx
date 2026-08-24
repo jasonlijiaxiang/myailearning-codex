@@ -154,7 +154,12 @@ function PrincipleView({ brief }: { brief: ModuleBrief }) {
 export default async function ModulePage({ params }: ModulePageProps) {
   const { slug } = await params;
   const currentModule = getModuleBySlug(slug);
-  if (!currentModule || hasDedicatedModule(currentModule.canonicalSlug)) notFound();
+  if (!currentModule) notFound();
+  if (currentModule.canonicalSlug === "llm-inference") {
+    const { InferenceModulePage } = await import("../../../inference-module-page");
+    return <InferenceModulePage />;
+  }
+  if (hasDedicatedModule(currentModule.canonicalSlug)) notFound();
 
   const brief = requireModuleBrief(currentModule.canonicalSlug) as ModuleBrief;
   const curriculumContent = requireModuleCurriculum(currentModule.canonicalSlug) as ModuleCurriculumContent;

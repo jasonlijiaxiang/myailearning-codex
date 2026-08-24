@@ -718,6 +718,35 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.doesNotMatch(inference, /class="inferenceBudgetLedger"/);
 });
 
+test("inference reader renders the accepted heatmap, capacity lab, and evidence boundaries", async () => {
+  const html = await renderHtml("/modules/llm-inference");
+  assert.equal((html.match(/role="gridcell"/g) ?? []).length, 56, "推理热力图必须覆盖 7 个输入长度 × 8 个并发档位");
+  assert.equal((html.match(/<button[^>]*aria-selected="true"[^>]*role="gridcell"/g) ?? []).length, 1, "服务端首屏只能有一个默认选中的热力图单元格");
+  assert.match(html, /data-memory-gb="18\.0"/, "低负载显存估算不能低于示例 BF16 模型的常驻基线");
+  assert.match(html, /输入长度 × 并发热力图/);
+  assert.match(html, /固定输出 32 Token/);
+  assert.match(html, /所选单元格：输入/);
+  assert.match(html, /排队等待/);
+  assert.match(html, /首 Token 处理/);
+  assert.match(html, /TTFT 从服务收到请求算到模型产生首 Token，等于排队 \+ Prefill/);
+  assert.match(html, /TPOT（平均）/);
+  assert.match(html, /ms\/token/);
+  assert.match(html, /<dt>TTFT<\/dt><dd>1\.20<!-- --> s<\/dd>/);
+  assert.match(html, /有效吞吐（Goodput）<\/dt><dd>849<!-- --> token\/s <small>≤ 原始吞吐 <!-- -->997<\/small>/);
+  assert.match(html, /吞吐（平均）<\/span><strong>685<small>token\/s<\/small>/);
+  assert.equal((html.match(/trendCurrentPoint trendCurrentPoint--/g) ?? []).length, 3, "容量曲线的三个当前点必须分别落在 TTFT、TPOT 与吞吐曲线上");
+  assert.match(html, /href="#metric-concurrency"/);
+  assert.match(html, /href="#metric-ttft"/);
+  assert.match(html, /href="#metric-tpot"/);
+  assert.match(html, /示例估算，不构成容量承诺/);
+  assert.match(html, /案例复盘：长输入 \+ 高并发导致 OOM/);
+  assert.match(html, /id="mechanism-index"/);
+  assert.match(html, /id="decision-guide"/);
+  assert.match(html, /aria-label="重要边界" data-importance="critical"/);
+  assert.match(html, /href="\/en\/modules\/llm-inference" hrefLang="en" lang="en"/);
+  assert.doesNotMatch(html, /真实案例/);
+});
+
 test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {
   const remainingSlugs = Object.keys(moduleExtensionViews);
   assert.equal(remainingSlugs.length, 17, "剩余模块清单必须完整且显式");
