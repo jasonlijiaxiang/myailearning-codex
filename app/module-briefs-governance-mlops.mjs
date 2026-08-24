@@ -2,16 +2,16 @@ const evidence = (sourceId, supports) => ({ sourceId, supports: supports.include
 
 export const predictiveAiMlopsBrief = {
   slug: "predictive-ai-mlops",
-  definition: "预测式 AI（Predictive AI）用历史数据学习分类、回归、排序、预测或异常检测关系；MLOps 把数据、特征、训练、评估、注册、部署、监控和再训练连接成可重复、可审计的生产生命周期。",
-  position: "位于数据工程、业务应用与 AI 平台之间，覆盖传统机器学习和深度学习预测系统；它与生成式 AI 可共用数据、评估、发布和观测能力，但不把 Prompt、RAG 或 Agent 的运行机制混同为模型训练流水线。",
+  definition: "预测式 AI（Predictive AI）用历史数据学习分类、回归、排序、预测或异常检测关系；MLOps 连接训练、评估、注册、部署、监控与更新，并为预测时点、标签窗口、数据快照、特征定义、代码与环境、模型包、发布状态、预测结果和成熟真值保存一条可重放的版本链。",
+  position: "位于数据工程、业务应用与 AI 平台之间，覆盖传统机器学习和深度学习预测系统；它与生成式 AI 共用数据、评估、发布和观测底座，Prompt、RAG 与 Agent 则保留各自的运行对象和质量证据。",
   presentation: "lifecycle",
-  principleTitle: "预测模型的持续运营",
+  principleTitle: "预测记录怎样对上成熟真值",
   principles: [
-    { zh: "目标与标签", en: "Objective & Label", explanation: "先把业务决策写成预测时点、目标变量、观察窗口和可采取动作，避免标签泄漏和无法干预的漂亮分数。", decision: "用预测结果将改变的动作定义成功，而不是先选择算法。" },
-    { zh: "特征一致性", en: "Feature Consistency", explanation: "训练与服务必须使用一致的特征定义、时间语义和转换逻辑；离线历史与在线最新值承担不同访问模式。", decision: "只有跨团队复用、低延迟或一致性问题成立时才引入 Feature Store。" },
+    { zh: "目标与标签合同", en: "Objective & Label", explanation: "业务决策写成预测时点、目标变量、观察窗口和可采取动作，用这些字段检查标签泄漏与分数是否可干预。", decision: "成功条件描述预测结果改变了哪项动作、相对哪个基线改善了什么结果；算法是合同确定后的候选实现。" },
+    { zh: "特征定义与时间一致", en: "Feature Consistency", explanation: "训练回放与在线服务引用同一特征定义、时间语义和转换版本；离线历史与在线最新值承担不同访问模式。", decision: "跨团队复用、低延迟或训练—服务偏差达到项目问题清单时评估 Feature Store；单模型也要保留 point-in-time 回放。" },
     { zh: "可复现实验", en: "Reproducible Experiment", explanation: "代码、数据快照、特征、参数、环境和随机种子共同决定模型结果，单独保存权重不足以复现。", decision: "每个候选模型都应能回到一次完整运行及其数据血缘。" },
     { zh: "注册与发布门", en: "Registry & Release Gate", explanation: "模型注册表保存版本、指标、血缘、审批和阶段，发布流水线再执行验证、灰度、回滚与端点配置。", decision: "注册表示形成候选资产，不表示自动适合生产。" },
-    { zh: "信号、真值与更新", en: "Signals, Truth & Update", explanation: "数据质量、训练—服务偏差、输入与预测漂移、成熟真值上的性能下降、概念漂移和反馈偏差是不同信号；监控必须把它们与策略版本和业务影响关联。", decision: "漂移先触发调查，证据再决定修数据、改策略、生成候选、回滚或接受合理变化；自动训练不等于自动发布。" },
+    { zh: "信号、真值与更新事件", en: "Signals, Truth & Update", explanation: "数据质量、训练—服务偏差、输入与预测漂移、成熟真值上的性能下降、概念漂移和反馈偏差是七类不同信号；监控事件关联参考窗口、策略版本和业务影响。", decision: "信号事件创建调查并记录修数据、改策略、生成候选、回滚或接受变化的决定；再训练产出候选版本，不直接替换生产。" },
   ],
   decisions: [
     { question: "这个场景该用预测模型还是生成式模型？", signal: "输出是结构化分数、类别、排序或未来数值，并存在可验证历史标签。", recommendation: "优先建立规则或预测模型基线；只有任务确实需要开放式语言、内容或推理时再加入生成式能力。", boundary: "两类模型可以组合，但必须分别验收预测正确性、生成可靠性和最终业务结果。" },
@@ -20,8 +20,8 @@ export const predictiveAiMlopsBrief = {
     { question: "实时推理还是批量预测？", signal: "决策是否必须在单次请求内完成，以及特征是否能在该时限内取得。", recommendation: "能提前计算的优先批量；需要会话或事件上下文的才做在线，并为缺失特征设计降级。", boundary: "低延迟端点不会让上游特征自动新鲜或正确。" },
     { question: "托管 MLOps 平台还是自建？", signal: "团队在交付速度、数据边界、框架自由度、多云与长期运营能力之间取舍。", recommendation: "用一条代表性流水线比较身份、血缘、注册、部署、监控、成本和退出路径。", boundary: "产品功能与区域会变化，采购时必须按当期官方文档核验。" },
   ],
-  deepDiveTitle: "让可训练模型稳定运行并可恢复",
-  deepDiveLead: "MLOps 要解决的是：数据、代码、模型和业务结果变化后，仍能追溯、比较和回滚。",
+  deepDiveTitle: "四个生产控制点与七类线上信号",
+  deepDiveLead: "最小发布包绑定数据快照、特征定义、代码与环境、模型制品、阈值、策略、审批和回滚配置；运行记录再把 prediction ID 连到成熟真值与业务动作。四个生产控制点负责交付，七类信号负责定位变化。",
   deepDives: [
     { kind: "sequence", eyebrow: "MODEL SUPPLY CHAIN", title: "预测模型生产链的四个控制点", intro: "任何一个控制点失去版本或时间语义，离线分数与线上行为就可能无法解释。", sourceIds: ["google-mlops-predictive-ai", "ml-test-score-2017", "aws-sagemaker-model-registry"], items: [
       { name: "定义问题与标签", en: "Frame", mechanism: "固定预测时点、标签窗口、业务动作和误判成本。", decision: "先建立不使用模型的基线。", boundary: "训练标签不能包含预测时点之后的信息。" },
@@ -29,7 +29,7 @@ export const predictiveAiMlopsBrief = {
       { name: "训练与比较", en: "Train", mechanism: "绑定代码、数据快照、环境、参数和评估切片。", decision: "比较业务代价而不只比较总体分数。", boundary: "交叉验证不能替代未来时间窗口验证。" },
       { name: "注册、发布与运营", en: "Release", mechanism: "把模型、特征定义与 Schema、预处理、镜像、端点或批量配置、阈值、策略、审批和观测绑定为发布包，再关联预测、成熟真值和业务结果。", decision: "自动训练与自动上线使用不同授权，发布前演练完整回滚包。", boundary: "技术回滚不能撤销已发生的业务动作，仍需补救、对账和责任流程。" },
     ] },
-    { kind: "diagnostic", eyebrow: "PRODUCTION SIGNALS", title: "上线后变化的七类信号", intro: "先按时间、版本和成熟真值分类，再决定修复对象；不要把所有告警统称为模型漂移。", sourceIds: ["azure-ml-model-monitoring", "google-rules-of-ml", "aws-sagemaker-feature-store"], items: [
+    { kind: "diagnostic", eyebrow: "PRODUCTION SIGNALS", title: "上线后变化的七类信号", intro: "每条告警携带时间窗口、数据与服务版本、成熟真值状态和策略版本；分类结果决定修复对象，‘模型漂移’只是一种可能归因。", sourceIds: ["azure-ml-model-monitoring", "google-rules-of-ml", "aws-sagemaker-feature-store"], items: [
       { name: "数据质量故障", en: "Data Quality", mechanism: "Schema、类型、缺失、范围、新鲜度或上游可用性偏离合同。", decision: "先阻断或降级受影响数据，定位上游变更。", boundary: "重训会把坏数据固化，不能替代数据修复。" },
       { name: "训练—服务偏差", en: "Training-serving Skew", mechanism: "训练与服务使用不同特征代码、时间窗口、默认值或数据源。", decision: "对同一实体与预测时点逐字段回放比较。", boundary: "共享代码仍可能读取不同时间的数据。" },
       { name: "输入或数据漂移", en: "Input Drift", mechanism: "当前输入或特征分布偏离参考窗口。", decision: "检查季节、客群、采集和策略变化，再评估影响。", boundary: "输入变化既不证明模型失效，也不必然要求重训。" },
@@ -39,7 +39,7 @@ export const predictiveAiMlopsBrief = {
       { name: "反馈与选择偏差", en: "Feedback & Selection Bias", mechanism: "模型动作改变谁被观察、处理或标注，使后续样本越来越反映旧策略。", decision: "保留策略版本、可解释对照或合规的探索机制。", boundary: "直接用已选择样本重训可能放大盲区与不公平。" },
     ] },
   ],
-  criticalBoundary: "MLOps 不是某个产品，也不是把 Notebook 自动运行。它必须同时治理数据和特征时间语义、可复现实验、完整发布包、预测到成熟真值的证据链与更新决定。漂移只触发调查，不能直接授权训练或发布；技术回滚也不能撤销已发生的业务动作。生成式 AI 的 Prompt、RAG、Agent 和人工复核仍需各自的应用工程控制。",
+  criticalBoundary: "MLOps 管理数据与特征时间语义、可复现实验、完整发布包、预测到成熟真值的证据链和更新决定。漂移事件创建调查，训练任务生成候选，发布门决定生产替换；技术回滚后的既有业务动作另行对账和补救。Prompt、RAG、Agent 与人工复核保留专用应用控制。",
   cloudHooks: [
     { stage: "数据与特征（Data & Feature）", services: "对象存储、数据仓库、流处理、Feature Store、数据质量与血缘", value: "统一训练、批量和在线特征的定义与时间语义。", discover: "哪些特征必须实时？训练与服务现在是否使用同一转换和时间点？" },
     { stage: "训练与流水线（Train & Pipeline）", services: "托管训练、流水线、实验跟踪、镜像与密钥管理", value: "把代码、数据、参数、环境和运行记录绑定为可复现实验。", discover: "一次模型结果能否准确复现？数据和代码由谁批准进入训练？" },
@@ -49,9 +49,9 @@ export const predictiveAiMlopsBrief = {
   relatedSlugs: ["data-engineering", "evaluation", "ai-ops", "ai-infra-platform", "ai-governance", "solution-patterns"],
   qa: [
     { q: "传统机器学习是不是已经被大模型替代？", a: "没有。结构化分类、预测、排序和异常检测仍常由规则、统计学习或专用模型更直接地完成。", depth: "应比较任务成功、延迟、成本、可解释与维护，不按技术新旧选型。生成式模型可帮助处理非结构化输入或解释结果，但不应无证据替换稳定基线。", ask: "最终输出是一个可校准分数，还是开放式内容与行动？", tag: "路线选择", basis: "任务契约 + MLOps 架构", evidence: [evidence("google-mlops-predictive-ai", "该官方架构明确以 predictive AI 为主要适用范围，并描述其持续交付生命周期。")] },
-    { q: "Feature Store 是否是 MLOps 的必选组件？", a: "不是。它在特征复用、低延迟访问或训练—服务一致性形成真实问题时才有价值。", depth: "先治理实体、事件时间、负责人和转换定义；否则只是集中保存不可靠特征。PoC 要同时验证离线历史回放、在线新鲜度、访问控制和删除。", ask: "目前最严重的是重复开发、在线延迟，还是训练—服务偏差？", tag: "特征治理", basis: "官方架构 + 产品文档", evidence: [evidence("google-mlops-predictive-ai", "把 Feature Store 描述为流水线自动化的可选组件。"), evidence("aws-sagemaker-feature-store", "说明在线与离线存储及训练—服务偏差边界。")] },
+    { q: "Feature Store 是否是 MLOps 的必选组件？", a: "Feature Store 是可选组件。特征复用、低延迟访问或训练—服务一致性成为实际瓶颈时再评估引入。", depth: "PoC 从实体、事件时间、负责人和转换定义开始，同时验证离线历史回放、在线新鲜度、访问控制和删除；集中存储本身不会修正不可靠特征。", ask: "目前最严重的是重复开发、在线延迟，还是训练—服务偏差？", tag: "特征治理", basis: "官方架构 + 产品文档", evidence: [evidence("google-mlops-predictive-ai", "把 Feature Store 描述为流水线自动化的可选组件。"), evidence("aws-sagemaker-feature-store", "说明在线与离线存储及训练—服务偏差边界。")] },
     { q: "模型注册表与代码仓库有什么区别？", a: "代码仓库管理源代码；模型注册表管理可部署模型版本及其指标、血缘、审批和生命周期阶段。", depth: "生产发布需要把代码提交、数据快照、环境、模型制品、评估和端点配置关联起来。注册完成只是候选资产形成，不是上线批准。", ask: "当前能否从生产预测追到模型、数据、代码和审批？", tag: "模型注册", basis: "官方产品文档", evidence: [evidence("aws-sagemaker-model-registry", "列出模型版本、指标、血缘、审批、阶段和部署职责。"), evidence("azure-ml-registries", "说明跨工作区共享模型、环境、组件和数据资产。")] },
-    { q: "监测到数据漂移就应该自动再训练吗？", a: "不应该。先确认这是数据质量、训练—服务偏差、输入漂移、预测漂移、成熟真值上的性能下降、概念漂移，还是反馈与选择偏差。", depth: "自动化可以生成候选，但不能让一个分布告警直接替换生产。数据故障应先修管道，季节变化可能无需动作，真实性能下降才需要结合损失门槛决定回滚或训练；概念变化还可能在输入分布稳定时发生。所有候选都要重新通过时间、人群、稳定性、成本和授权门。", ask: "真实标签何时到达？每类信号对应调查、降级、回滚、训练还是接受变化中的哪一个动作？", tag: "漂移再训练", basis: "信号分类 + 独立发布门", evidence: [evidence("azure-ml-model-monitoring", "支持分别监测数据质量、输入与预测漂移，以及在真值可用时监测模型表现；部分能力仍有 Preview 边界。"), evidence("google-mlops-predictive-ai", "支持以新数据、触发器、数据验证和模型验证组成持续训练流水线。")] },
+    { q: "监测到数据漂移就应该自动再训练吗？", a: "一个漂移告警创建调查事件；分类为数据质量、训练—服务偏差、输入或预测漂移、性能下降、概念漂移、反馈与选择偏差后，才选择后续动作。", depth: "自动化可以生成候选版本，分布告警没有生产替换权限。数据故障修管道，季节变化可能接受，成熟真值上的性能下降结合损失门槛决定回滚或训练；概念变化也可能发生在输入分布稳定时。所有候选重新通过时间、人群、稳定性、成本和授权门。", ask: "真实标签何时到达？每类信号对应调查、降级、回滚、训练还是接受变化中的哪一个动作？", tag: "漂移再训练", basis: "信号分类 + 独立发布门", evidence: [evidence("azure-ml-model-monitoring", "支持分别监测数据质量、输入与预测漂移，以及在真值可用时监测模型表现；部分能力仍有 Preview 边界。"), evidence("google-mlops-predictive-ai", "支持以新数据、触发器、数据验证和模型验证组成持续训练流水线。")] },
     { q: "离线 AUC 很高，为什么线上业务没有改善？", a: "离线指标可能与业务动作、阈值、时间切分、校准或真实误判成本不一致，也可能存在泄漏、偏差和无效反馈闭环。", depth: "先从业务决定反推预测时点、动作、受影响人群、标签成熟时间与错判成本，再与规则或人工基线比较。按时间、人群、校准、稳定性和业务漏斗逐层定位，并检查线上特征、阈值与干预是否真的按实验合同执行；单一 AUC 不能覆盖生产就绪度。", ask: "模型输出后具体改变了哪一步决策，现有基线是什么，哪个成熟业务结果会证明投入有效？", tag: "效果验收", basis: "生产就绪度 + 时间验证", evidence: [evidence("ml-test-score-2017", "支持用数据、模型、基础设施和监控测试共同评估生产就绪度，而不是依赖单一离线指标。"), evidence("google-rules-of-ml", "支持先建立可测量基线、验证完整流水线并让指标连接真实系统目标。")] },
     { q: "在线和批量预测应该怎样选择？", a: "由决策时限、特征新鲜度和调用规模决定；能提前计算的任务不必承担在线端点复杂度。", depth: "批量适合周期评分和大规模排序，在线适合会话或事件驱动决策。两者都要管理模型、特征和结果版本，并准备缺失数据与端点故障的降级。", ask: "最晚在何时得到分数仍能改变业务动作？", tag: "服务形态", basis: "特征访问与推理时限", evidence: [evidence("aws-sagemaker-feature-store", "区分低延迟在线特征与训练、批量使用的离线历史存储。")] },
     { q: "MLOps 平台建成后，数据科学家就能直接自动上线吗？", a: "不应默认如此。平台可以自动生成、验证和交付候选，但生产替换权限必须匹配用途风险、职责和完整回滚能力。", depth: "低影响模型可在预先授权的硬门下提高自动化，高影响模型需要模型、业务和风险责任共同决定。发布记录要绑定模型、特征、预处理、镜像、端点或批量配置、阈值、策略和观察窗；金丝雀自动回滚只能覆盖其明确支持的部署形态，不能代替组织批准或业务补救。", ask: "哪些模型影响资格、价格、资源或安全？谁批准完整发布包，哪些失败会自动止损？", tag: "发布治理", basis: "模型生命周期 + 部署保护 + 组织责任", evidence: [evidence("aws-sagemaker-model-registry", "支持审批状态和生命周期阶段，但具体组织授权仍需自行定义。"), evidence("aws-sagemaker-deployment-guardrails", "支持部分 SageMaker 实时与异步端点的金丝雀、线性流量迁移和自动回滚；适用范围不能外推到所有发布形态。")] },
@@ -67,22 +67,22 @@ export const predictiveAiMlopsBrief = {
 
 export const aiGovernanceBrief = {
   slug: "ai-governance",
-  definition: "AI 治理、风险与合规（AI Governance, Risk & Compliance）是一套关于决策权、责任和证据的运行系统：它定义某个具体 AI 用途由谁依据什么证据作出批准、限制、暂停或退役决定，以及什么变化必须触发重新决定。",
+  definition: "AI 治理、风险与合规（AI Governance, Risk & Compliance）把每个 AI 用途保存为一项可撤销决定：记录 owner、证据版本、批准范围、运行条件、到期日，以及投诉、事件或重大变更触发的复审。",
   position: "横跨方案、数据、模型、应用、安全、评估、运营与采购层；本模块负责用途清单、组织风险分层、影响评估要求、批准与例外机制、复审和退役。获授权的业务责任人作出用途决定并接受权限范围内的残余业务风险；Security 负责技术威胁控制，Evaluation 负责测量证据，AI Ops 负责发布和恢复，法务或隐私专业人员负责具体法律适用性结论。",
   presentation: "control",
-  principleTitle: "同一模型写职位描述与筛选候选人，为什么不能共用一个治理结论",
+  principleTitle: "职位描述写作与候选人排序需要两份用途记录和两条批准链",
   principles: [
-    { zh: "按用途登记", en: "Use-case Inventory", explanation: "登记的不只是第三方模型，还包括招聘用途、影响人群、业务决定、数据、供应商、地区和生产边界。", decision: "写作辅助与候选人排序必须是两个独立用途记录。" },
-    { zh: "分开风险分层与法律分类", en: "Tiering vs Legal Classification", explanation: "组织可以先把影响候选人资格的用途纳入高影响治理层级；是否构成某项法律分类仍需按 intended purpose、角色和正式法源判断。", decision: "用组织门禁先控制风险，不把内部 tier 冒充法律结论。" },
-    { zh: "先做影响评估", en: "Impact Assessment", explanation: "在架构、数据和流程冻结前识别受影响群体、不可接受结果、偏差、申诉和补救需求。", decision: "影响评估解释可能伤害什么，风险分层决定需要多强的门禁。" },
+    { zh: "用途记录作为治理主键", en: "Use-case Inventory", explanation: "一条记录连接招聘用途、影响人群、业务决定、数据、供应商、地区和生产边界，第三方模型只是其中一个资产字段。", decision: "职位描述写作与候选人排序使用独立用途 ID，各自关联评估、批准和运行事件。" },
+    { zh: "组织分层与法律分类分栏", en: "Tiering vs Legal Classification", explanation: "组织可以把影响候选人资格的用途纳入高影响治理层级；具体法律分类仍按 intended purpose、角色和正式法源判断。", decision: "治理状态表分别保存组织 tier、法律复核状态、reviewer 和来源，不用一列代替另一列。" },
+    { zh: "影响评估形成控制输入", en: "Impact Assessment", explanation: "在架构、数据和流程冻结前识别受影响群体、不可接受结果、偏差、申诉和补救需求。", decision: "影响评估记录伤害机制和未知项，风险分层据此选择门禁与独立验证要求。" },
     { zh: "批准绑定证据与条件", en: "Conditional Approval", explanation: "条件批准只授权证据已支持的限域运行；例外则是对一项明确控制或政策的有权、留痕、限时偏离，两者都要绑定负责人、版本、补偿控制和失效日期。", decision: "证据不足时可以 Hold、No-Go 或限域条件批准；核心控制或未决法律前提不能靠例外绕过。" },
-    { zh: "变化触发重新决定", en: "Continuous Assurance", explanation: "用途、模型、Prompt、数据、供应商、地区或人工流程变化都可能使原证据与批准范围失效。", decision: "先暂停受影响范围，补齐证据后重新决定恢复、限域或退役。" },
-    { zh: "先冻结场景再谈适用", en: "Freeze the Scenario First", explanation: "中国交付分诊以服务对象与所在区域、责任主体、部署方式、模型来源、数据流和输出用途为前提；同一模型对内辅助与公众服务、自有部署与第三方 MaaS 不能共用一个结论。", decision: "先填场景卡再讨论备案、标识或出境；任何“适用或不适用”都要回到核验日期与官方来源。" },
+    { zh: "重大变化生成复审事件", en: "Continuous Assurance", explanation: "用途、模型、Prompt、数据、供应商、地区或人工流程变化都可能使原证据与批准范围失效。", decision: "复审事件标出受影响的用途 ID 与批准范围，暂停对应运行条件；补证后记录恢复、限域或退役的新决定。" },
+    { zh: "中国交付使用场景卡", en: "Freeze the Scenario First", explanation: "中国交付分诊以服务对象与所在区域、责任主体、部署方式、模型来源、数据流和输出用途为前提；同一模型对内辅助与公众服务、自有部署与第三方 MaaS 不能共用一个结论。", decision: "场景卡完成后再核对备案、标识或出境义务；结论记录核验日期、官方来源和专业 reviewer。" },
     { zh: "法规结论与工程控制分开", en: "Separate Legal Conclusions from Controls", explanation: "法规义务（如训练数据来源、内容标识、违法内容处置、出境申报）要分别映射到工程控制、留存证据和责任人；不能因为实施了某个控制就宣称已经合规，也不能用产品能力反推法定义务。", decision: "每条拟写结论都绑定 conclusionId → sourceId → 条款 → 主体/触发/例外/时间 → reviewer；未核验或需专业确认的保持 hold。" },
-    { zh: "动态事实进记录", en: "Dynamic Facts to Records", explanation: "生效日期、申报门槛、备案触发条件等事实变化快且责任重，只写成带核验日期和复核日期的独立事实记录；正文不写死“当前需要/不需要备案”类结论。", decision: "法规状态类结论只在核验日期内有效，临近生效或待替代的规则要更频繁地重新核验。" },
+    { zh: "动态事实独立版本化", en: "Dynamic Facts to Records", explanation: "生效日期、申报门槛、备案触发条件等事实写成带核验日期和复核日期的独立记录，正文引用该记录 ID。", decision: "法规状态记录到达 reviewBy、临近生效或出现替代规则时进入复核队列，过期结论从确定性正文撤下。" },
   ],
   decisions: [
-    { question: "先治理模型还是招聘用途？", signal: "同一第三方 LLM 先写职位描述，后来又被要求筛选、评分和排序候选人。", recommendation: "以“用途—人群—决定—数据—供应商—地区”为清单单位，分别分层和批准。", boundary: "供应商模型卡或统一模型风险等级不能替代具体招聘工作流判断。" },
+    { question: "治理清单以模型还是招聘用途为主键？", signal: "同一第三方 LLM 先写职位描述，后来又被要求筛选、评分和排序候选人。", recommendation: "以“用途—人群—决定—数据—供应商—地区”为清单单位，分别分层和批准。", boundary: "供应商模型卡或统一模型风险等级不能替代具体招聘工作流判断。" },
     { question: "筛选候选人应该进入哪个组织风险层级？", signal: "输出会实质影响谁进入下一轮，错误可能影响个人机会且难以及时发现。", recommendation: "纳入组织高影响层级，增加影响评估、独立验证、人工监督、申诉、事件和更高批准。", boundary: "组织 tier 不等于 EU 或其他司法辖区的法律分类；法务需结合完整事实确认。" },
     { question: "谁能接受残余风险并批准上线？", signal: "委员会能提意见，却没有人对错误淘汰、申诉或暂停系统拥有最终决定权。", recommendation: "指定有权批准、限制和停止该用途的 accountable owner，并保留安全、评估、法务和受影响业务的独立挑战。", boundary: "治理团队定义门禁，不替业务接受风险，也不替法务作法律结论。" },
     { question: "证据不完整时能否条件批准？", signal: "低风险写作功能证据已齐，但候选人排序的切片评估、申诉流程或供应商通知仍有缺口。", recommendation: "只对证据支持的用途和范围限时批准，登记缺口、补偿控制、负责人、到期日和自动撤销条件。", boundary: "条件批准不是把关键伤害或法律疑问推到生产后再处理。" },
@@ -91,9 +91,9 @@ export const aiGovernanceBrief = {
     { question: "调用第三方 MaaS 和自己运营完整服务，责任边界一样吗？", signal: "客户可能只是调用 API 做内部辅助，也可能用模型自建面向公众的应用，还可能是模型提供方。", recommendation: "分别确认三方角色：模型提供方、生成式 AI 服务提供者、使用者和部署者。调用方仍要管理自身用途、数据、输出和业务责任；面向公众提供服务时的备案、标识与处置义务按当期法规与官方口径核验，不能因“模型是别人的”就免除自身义务。", boundary: "供应商的模型卡、认证或合同材料只能证明其承诺范围，不能覆盖采用方的用途、数据流与发布责任。" },
   ],
   deepDiveTitle: "用招聘筛选与面试辅助 AI 走完一条治理决策链",
-  deepDiveLead: "治理交付物不是一张合规表，而是当前状态、责任人、批准条件、残余风险、申诉与事件机制，以及哪些变化会暂停批准并触发补证与重新决定。",
+  deepDiveLead: "一份治理状态记录包含用途 ID、owner、当前决定、证据包版本、批准条件、残余风险、例外、到期日和复审触发器。投诉、错误淘汰、模型或 ATS 变更、供应商通知和法规变化都生成可追踪事件。",
   deepDives: [
-    { kind: "sequence", eyebrow: "RECRUITMENT GOVERNANCE CHAIN", title: "招聘 AI 的治理决策步骤", intro: "每一步都产生下一项决定需要的证据，也定义什么情况下必须退回上一步。", sourceIds: ["nist-ai-rmf", "iso-iec-42001", "iso-iec-42005", "eu-ai-act-implementation-2026-08-05"], items: [
+    { kind: "sequence", eyebrow: "RECRUITMENT GOVERNANCE CHAIN", title: "招聘 AI 的登记、复审与退役记录", intro: "每个状态事件都产生证据、owner 和下一项决定；失败阈值或重大变化把对应用途送回复审状态。", sourceIds: ["nist-ai-rmf", "iso-iec-42001", "iso-iec-42005", "eu-ai-act-implementation-2026-08-05"], items: [
       { name: "登记用途与系统边界", en: "Register", mechanism: "分别登记职位描述写作、邮件辅助、面试摘要、简历筛选、评分和排序，连接人群、决定、数据、模型、ATS、供应商与地区。", decision: "把会影响资格的完整系统作为治理对象。", boundary: "只登记模型或 API 看不见真实影响与责任。" },
       { name: "建立组织风险层级", en: "Tier", mechanism: "按受影响对象、决定类型、自动化、可逆性、规模、敏感数据和地区设定公共底线与增强门禁。", decision: "候选人排序进入高影响层级。", boundary: "内部 tier 不是法律分类。" },
       { name: "完成影响评估", en: "Assess", mechanism: "识别错误淘汰、偏差、隐私、可解释性、告知、人工监督、申诉和补救需求。", decision: "先定义不可接受结果和仍未知的影响。", boundary: "人工参与不自动消除系统影响。" },
@@ -109,7 +109,7 @@ export const aiGovernanceBrief = {
       { name: "影响评估标准", en: "Impact Assessment", mechanism: "指导全生命周期识别和记录对个人、群体与社会的影响。", decision: "用于设计影响评估过程与交付物。", boundary: "标准不替组织决定风险层级或可接受残余风险。" },
       { name: "法规与正式修法", en: "Regulation", mechanism: "按地区、角色、intended purpose 和风险类别规定法定义务与时间。", decision: "由专业人员确认适用性并转成控制。", boundary: "招聘是高风险用途示例不等于每个面试助手都自动构成高风险系统。" },
     ] },
-    { kind: "sequence", eyebrow: "CHINA DELIVERY TRIAGE", title: "中国交付适用性分诊：先填场景卡，再判断义务", intro: "分诊不是背法规清单，而是先冻结服务对象、主体角色、部署与数据流，再把每项义务定位到条款、控制、证据和责任人；无法确认现行状态或主体的结论保持 hold。", sourceIds: ["china-ai-service-management", "china-ai-content-labeling-2026-08-05", "china-data-cross-border-2024"], items: [
+    { kind: "sequence", eyebrow: "CHINA DELIVERY TRIAGE", title: "中国交付场景卡与义务映射", intro: "场景卡固定服务对象、主体角色、部署与数据流；义务记录再连接条款、触发条件、控制、证据和责任人。无法确认现行状态或主体的结论保持 hold。", sourceIds: ["china-ai-service-management", "china-ai-content-labeling-2026-08-05", "china-data-cross-border-2024"], items: [
       { name: "冻结受众与用途", en: "Audience & Purpose", mechanism: "记录服务对象、所在区域、内部辅助还是公众服务、输出是建议还是自动行动，并确认是否可能构成“向境内公众提供生成式人工智能服务”。", decision: "第二条适用范围是分诊入口，但受众不是唯一变量。", boundary: "未冻结场景不得形成“适用或不适用”的公开结论。" },
       { name: "确认主体角色", en: "Actor Role", mechanism: "区分模型提供方、生成式 AI 服务提供者、使用者与部署者，并识别是否同时承担网络信息内容生产者或个人信息处理者责任。", decision: "每个角色对应不同义务集合与证据要求。", boundary: "角色可以叠加，不能只登记“甲方/乙方”了事。" },
       { name: "确认部署与模型来源", en: "Deployment & Model Source", mechanism: "标记公网、企业内、专有部署还是第三方 MaaS，以及模型、检索、工具和数据各自的位置。", decision: "画出数据与调用链路，区分境内境外处理位置。", boundary: "私有化不自动等于豁免，模型来源也不决定采用方义务。" },
@@ -125,7 +125,7 @@ export const aiGovernanceBrief = {
       { name: "数据出境", en: "Cross-border Data", mechanism: "数据跨境规定第三至十条：安全评估、个人信息出境标准合同与认证的申报门槛、免申报情形，以及告知、单独同意与个人信息保护影响评估义务。", decision: "数据流图、分类与量级统计、通道核验、删除传播证据。", boundary: "通道判断按当期监管口径与专业意见，不能由知识库代答。" },
     ] },
   ],
-  criticalBoundary: "AI Governance 定义用途决策权、责任、证据、批准条件、例外和复审机制；获授权的业务责任人作出用途决定并接受权限范围内的残余业务风险。治理不替 Security 完成攻击测试，不替 Evaluation 生成测量结果，不替 AI Ops 发布或恢复，也不替法务判断某个招聘系统是否依法属于高风险系统。NIST AI RMF、ISO/IEC 42001、ISO/IEC 42005 与 EU 法规是不同性质的依据，不能互相替代。",
+  criticalBoundary: "AI Governance 维护用途决策权、责任、证据、批准条件、例外和复审状态；获授权的业务责任人决定用途并接受权限范围内的残余业务风险。Security 交付攻击测试，Evaluation 交付测量，AI Ops 执行发布与恢复，法务确认具体法律适用性。NIST AI RMF、ISO/IEC 42001、ISO/IEC 42005 与 EU 法规分别保留来源性质和适用边界。",
   cloudHooks: [
     { stage: "清单与身份（Inventory & Identity）", services: "服务目录、CMDB、模型目录、IAM、标签与资产发现", value: "把系统、模型、数据、所有者和运行环境关联起来。", discover: "组织是否知道哪些团队在生产使用哪些模型、数据和外部 AI 服务？" },
     { stage: "风险与控制（Risk & Controls）", services: "GRC、策略引擎、DLP、内容安全、审批工作流", value: "按用途和风险层级执行共同底线与增强控制。", discover: "哪些用途影响资格、权益、价格、安全或公共信息？" },
@@ -134,7 +134,7 @@ export const aiGovernanceBrief = {
   ],
   relatedSlugs: ["security", "evaluation", "ai-ops", "solution-patterns", "ai-agent", "data-engineering", "model-landscape", "predictive-ai-mlops"],
   qa: [
-    { q: "AI 治理和 AI 安全是不是同一件事？", a: "不是。Security 负责攻击、泄漏、越权和技术控制；Governance 定义具体用途的批准门禁、证据、例外与复审机制，获授权的业务责任人作出运行决定并接受权限范围内的残余风险。", depth: "招聘案例中，Security 要证明恶意简历不能扩大权限或直接改变 ATS；Governance 要规定筛选用途需要哪些证据、人工监督和申诉机制，以及由谁批准。两者共享证据但不能互相代替。", ask: "当前缺口是技术控制失效，还是缺少有权批准、限制和停止这个用途的人与机制？", tag: "职责边界", basis: "风险框架 + 管理体系", evidence: [evidence("nist-ai-rmf", "框架面向个人、组织与社会风险，不限于网络安全。"), evidence("iso-iec-42001", "标准面向组织级 AI 管理体系的建立与持续改进。")] },
+    { q: "AI 治理和 AI 安全是不是同一件事？", a: "两者交付物不同。Security 负责攻击路径、泄漏、越权和技术控制；Governance 维护具体用途的批准门禁、证据、例外与复审状态，获授权的业务责任人作出运行决定。", depth: "招聘案例中，Security 证明恶意简历的影响止于有据提案和限域动作；Governance 规定筛选用途所需证据、人工监督、申诉机制和批准人。双方通过同一用途 ID 共享测试与事件记录。", ask: "当前缺口是技术控制失效，还是缺少有权批准、限制和停止这个用途的人与机制？", tag: "职责边界", basis: "风险框架 + 管理体系", evidence: [evidence("nist-ai-rmf", "框架面向个人、组织与社会风险，不限于网络安全。"), evidence("iso-iec-42001", "标准面向组织级 AI 管理体系的建立与持续改进。")] },
     { q: "NIST AI RMF、ISO/IEC 42001 和法规分别能证明什么？", a: "AI RMF 提供自愿风险方法，ISO/IEC 42001 规定组织管理体系要求，法规规定特定司法辖区的法定义务；三者都不能单独证明某个招聘系统安全、公平或已经合规。", depth: "可以把不同依据映射到内部控制，但必须保留来源范围和证据性质。AI RMF 1.0 仍在修订，管理体系证据不等于产品技术保证，具体法律适用性由合格专业人员判断。", ask: "当前需要的是内部风险方法、体系审核证据，还是某项具体法律结论？", tag: "框架边界", basis: "NIST 与 ISO 官方说明", evidence: [evidence("nist-ai-rmf", "说明 AI RMF 自愿采用、用于风险管理，且 1.0 正在修订。"), evidence("iso-iec-42001", "明确对象是组织的 AI management system，而非单个模型或应用认证。")] },
     { q: "AI 清单至少应该登记什么？", a: "用途、所有者、用户、受影响对象、业务决定、模型与版本、数据、自动化程度、地区、供应商、生产状态和风险层级。", depth: "同一模型的职位描述写作与候选人排序要分别登记，再连接到 ATS、评估、安全控制和批准记录。只扫描 API 调用无法发现真实用途、影子 AI 或谁被决定影响。", ask: "供应商变化或候选人申诉时，多久能列出受影响用途、版本和责任人？", tag: "系统清单", basis: "治理可追溯性", evidence: [evidence("iso-iec-42001", "支持通过组织政策、目标和过程管理 AI 系统。"), evidence("nist-ai-rmf", "支持把风险管理纳入 AI 的设计、开发、使用和评估。")] },
     { q: "如何给招聘 AI 做风险分级？", a: "按具体用途和影响分级，不按模型名称。写作辅助与候选人筛选、评分、排序不能共用同一层级。", depth: "候选人排序会影响个人机会，应在组织内进入高影响层级并增加影响评估、独立验证、人工监督、申诉、事件和更高批准。欧盟委员会把就业和简历筛选列为高风险用途示例，但案例系统的具体法律分类仍需结合 intended purpose、角色和完整法源判断。", ask: "系统只是整理信息，还是会建议、排序、淘汰或实质影响进入下一轮？", tag: "风险分级", basis: "情境风险 + 有边界的法规线索", evidence: [evidence("nist-ai-rmf", "强调将风险管理纳入具体 AI 产品、服务和系统的生命周期。"), evidence("eu-ai-act-implementation-2026-08-05", "官方页面把就业与候选人筛选列为高风险用途示例；不替代具体法律分类。")] },
@@ -154,12 +154,12 @@ export const aiGovernanceBrief = {
 
 export const governanceMlopsCurriculum = {
   "predictive-ai-mlops": {
-    lead: "预测式 AI 的学习重点不是算法目录，而是把业务目标、时间正确的数据、可复现实验、受控发布和真实结果连接起来。",
+    lead: "学习主线是一条可重放证据链：业务目标、时间正确的数据、可复现实验、受控发布、生产预测和成熟真值。",
     chapters: [
       { title: "预测问题与业务动作", en: "Problem Framing", explanation: "分类、回归、排序、预测与异常检测都要定义预测时点、标签窗口、决策动作和误判成本。", decision: "从可改变的业务决策反推标签与指标。", boundary: "相关性和离线分数不能自动证明干预有效。", sourceIds: ["google-mlops-predictive-ai"] },
       { title: "时间切分与数据泄漏", en: "Temporal Validation", explanation: "训练样本只能使用预测时点可获得的信息，验证应模拟未来数据和真实标签延迟，并保留当时可见的数据快照。", decision: "按时间、群体和场景切片，并保留不使用模型的基线。", boundary: "随机切分可能把未来信息泄漏到训练和验证。", sourceIds: ["google-mlops-predictive-ai"] },
       { title: "特征工程与 Feature Store", en: "Feature Engineering", explanation: "特征需要实体、事件时间、转换、版本、负责人和在线离线访问语义，还要定义缺失、回填与删除如何传播。", decision: "由复用、一致性与服务时限决定是否建设 Feature Store。", boundary: "集中存储不能自动保证 point-in-time 正确。", sourceIds: ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"] },
-      { title: "实验与流水线", en: "Experiment & Pipeline", explanation: "数据验证、特征生成、训练、评估和制品生成应模块化，并记录每次运行元数据，使失败和差异能够逐步重放。", decision: "先让一条代表性流水线可重复，再扩大自动化。", boundary: "Notebook 可用于探索，不应成为唯一生产记录。", sourceIds: ["google-mlops-predictive-ai"] },
+      { title: "实验与流水线", en: "Experiment & Pipeline", explanation: "数据验证、特征生成、训练、评估和制品生成应模块化，并记录每次运行元数据，使失败和差异能够逐步重放。", decision: "以一条代表性流水线的可重复运行作为扩大自动化的入口条件。", boundary: "Notebook 可用于探索，不应成为唯一生产记录。", sourceIds: ["google-mlops-predictive-ai"] },
       { title: "注册、审批与晋升", en: "Registry & Promotion", explanation: "模型、环境、组件和数据资产需要稳定版本、血缘、指标和批准状态，并在跨环境晋升时保留同一资产身份。", decision: "把注册候选与生产批准分开。", boundary: "模型文件相同不表示端点、特征和配置相同。", sourceIds: ["aws-sagemaker-model-registry", "azure-ml-registries"] },
       { title: "批量与在线服务", en: "Serving Modes", explanation: "批量预测提前计算大规模结果，在线预测在请求时组合最新特征，两者对时限、容量、降级和结果版本的要求不同。", decision: "由业务时限和特征可用性选择服务方式。", boundary: "实时端点不会自动提供实时正确的特征。", sourceIds: ["aws-sagemaker-feature-store"] },
       { title: "监控、漂移与真值", en: "Monitoring", explanation: "分别监测数据质量、训练—服务偏差、输入与预测漂移、成熟真值上的模型表现、概念变化和反馈偏差，再连接延迟、成本、策略版本和业务结果。", decision: "把调查、修数据、生成候选、回滚和接受变化设为不同动作。", boundary: "漂移检测不是模型失效证明，也不是发布授权。", sourceIds: ["azure-ml-model-monitoring", "google-mlops-predictive-ai"] },
@@ -167,17 +167,17 @@ export const governanceMlopsCurriculum = {
     ],
   },
   "ai-governance": {
-    lead: "以跨国招聘筛选与面试辅助 AI 为主线，把用途登记、影响评估、批准条件、人工监督、申诉、事件和退役连成一条治理决策链。",
+    lead: "以跨国招聘筛选与面试辅助 AI 为主线，产出用途记录、影响评估、版本化证据包、批准状态、人工监督与申诉事件、复审和退役证明。",
     chapters: [
-      { title: "用途清单与系统边界", en: "Use-case Inventory", explanation: "分别登记职位描述写作、面试摘要、简历筛选、候选人评分和排序，连接使用者、受影响人群、业务决定、模型、数据、ATS、供应商、地区与生产状态。", decision: "从完整业务用途登记，再关联技术资产。", boundary: "API 或模型清单看不见谁被影响和真实决策权。", sourceIds: ["nist-ai-rmf", "iso-iec-42001"] },
-      { title: "组织风险分层与法律分类", en: "Tiering & Classification", explanation: "组织层级按影响、自动化、可逆性、规模和敏感数据配置门禁；法律分类还要结合 intended purpose、角色、地区与完整法源。", decision: "先把候选人排序纳入高影响组织层级，再由专业人员确认法律分类。", boundary: "内部 tier 不是法律结论，招聘用途示例也不等于所有面试助手都自动高风险。", sourceIds: ["nist-ai-rmf", "eu-ai-act-implementation-2026-08-05"] },
-      { title: "影响评估与不可接受结果", en: "Impact Assessment", explanation: "在架构冻结前识别错误淘汰、偏差、隐私、告知、人工监督、申诉、补救及对个人、群体和社会的影响。", decision: "先定义不可接受结果、受影响群体与未知项，再选择控制。", boundary: "风险分值不能替代影响机制和专业判断。", sourceIds: ["iso-iec-42005", "nist-ai-rmf"] },
+      { title: "用途清单与系统边界", en: "Use-case Inventory", explanation: "分别登记职位描述写作、面试摘要、简历筛选、候选人评分和排序，连接使用者、受影响人群、业务决定、模型、数据、ATS、供应商、地区与生产状态。", decision: "用途 ID 作为主键，技术资产、评估、批准和事件都回链到对应业务记录。", boundary: "API 或模型清单看不见谁被影响和真实决策权。", sourceIds: ["nist-ai-rmf", "iso-iec-42001"] },
+      { title: "组织风险分层与法律分类", en: "Tiering & Classification", explanation: "组织层级按影响、自动化、可逆性、规模和敏感数据配置门禁；法律分类还要结合 intended purpose、角色、地区与完整法源。", decision: "候选人排序进入高影响组织层级；专业人员另行确认法律分类并记录 reviewer 与依据。", boundary: "内部 tier 不是法律结论，招聘用途示例也不等于所有面试助手都自动高风险。", sourceIds: ["nist-ai-rmf", "eu-ai-act-implementation-2026-08-05"] },
+      { title: "影响评估与不可接受结果", en: "Impact Assessment", explanation: "在架构冻结前识别错误淘汰、偏差、隐私、告知、人工监督、申诉、补救及对个人、群体和社会的影响。", decision: "用受影响群体、不可接受结果和未知项选择控制、评估切片与人工监督。", boundary: "风险分值不能替代影响机制和专业判断。", sourceIds: ["iso-iec-42005", "nist-ai-rmf"] },
       { title: "责任、控制与独立挑战", en: "Accountability & Controls", explanation: "业务接受用途残余风险，Governance 定义门禁，Security 测试技术控制，Evaluation 测量结果，AI Ops 执行发布、停止与恢复。", decision: "每项关键控制指定 owner、失败阈值和升级路径。", boundary: "成立委员会不等于责任已落实，评估团队也不批准例外。", sourceIds: ["iso-iec-42001", "nist-ai-rmf"] },
       { title: "版本化治理证据包", en: "Evidence Package", explanation: "把用途、数据、模型、Prompt、配置、供应商、评估切片、安全测试、人工流程、审批与限制绑定到同一版本。", decision: "每份证据声明能证明什么、不能证明什么。", boundary: "文档齐全不证明生产控制有效，供应商材料不覆盖客户集成。", sourceIds: ["iso-iec-42001", "nist-ai-rmf"] },
       { title: "批准、条件批准与例外", en: "Approval & Exceptions", explanation: "条件批准只授权证据已支持的限域运行；例外是对一项明确控制或政策的有权、留痕、限时偏离。两者都要记录范围、残余风险、补偿控制、负责人、到期日和自动撤销条件。", decision: "证据不足时缩小用途、Hold 或 No-Go。", boundary: "条件批准不能推迟关键伤害或未决法律问题，例外也不能绕过核心控制或强制要求。", sourceIds: ["nist-ai-rmf", "iso-iec-42001"] },
       { title: "人工监督、申诉与治理事件", en: "Oversight & Redress", explanation: "高影响用途需要可理解的人工复核、覆盖、停止、告知、挑战、申诉和补救；治理事件还包括错误淘汰、投诉与不公平结果。", decision: "人工角色必须拥有信息、权限、时限和明确责任。", boundary: "HITL 的单次点击不等于完整人工监督，也不自动消除系统影响。", sourceIds: ["iso-iec-42005", "eu-ai-act-implementation-2026-08-05"] },
       { title: "持续保证、变更复审与退役", en: "Continuous Assurance", explanation: "模型、Prompt、数据、ATS、供应商、地区、用途或法规重大变化先暂停受影响范围，刷新清单、影响、控制与证据，再由有权责任人决定恢复、限域或退役。", decision: "批准只覆盖记录的版本与条件，触发复审后不能自动延续。", boundary: "一次评审不是永久状态，停止端点也不等于业务和数据处置完成。", sourceIds: ["nist-ai-rmf", "iso-iec-42001", "eu-ai-act-2026-1744"] },
-      { title: "中国交付适用性分诊", en: "China Delivery Triage", explanation: "面向中国交付先按服务受众、主体角色、部署方式、模型来源和数据流分诊，再区分内容生成、推荐、决策支持和自动执行的不同责任面，以及个人信息、重要数据、敏感行业数据和跨境触发点。", decision: "把法规问题转成场景卡和证据收集任务，明确哪些结论必须由法律、安全和业务责任人复核。", boundary: "本模块提供工程与治理分诊，不提供法律意见；任何“必须、禁止、已合规、无需备案”的确定性措辞都要先回到官方法源和专业复核。", sourceIds: ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-genai-profile"] },
+      { title: "中国交付适用性分诊", en: "China Delivery Triage", explanation: "场景卡记录服务受众、主体角色、部署方式、模型来源和数据流，并分别标出内容生成、推荐、决策支持、自动执行、个人信息、重要数据、敏感行业数据和跨境触发点。", decision: "法规问题转成场景卡、证据收集任务和 reviewer 队列；法律、安全与业务分别确认自己的结论。", boundary: "本模块提供工程与治理分诊，不提供法律意见；“必须、禁止、已合规、无需备案”等确定性结论需回到官方法源和专业复核。", sourceIds: ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-genai-profile"] },
       { title: "义务—控制—证据映射", en: "Obligation Evidence Map", explanation: "把法规义务、工程控制、运营证据和责任人映射成同一张表：内容标识、备案与登记、日志、申诉、人工复核、事件处理、撤回与更正都应有对应控制、证据产物和复核周期。", decision: "用一张映射表回答“哪个义务由什么控制承载、留下什么证据、谁负责复核”。", boundary: "控制存在不等于证据有效；证据有效也不等于法律适用性已经终审。", sourceIds: ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-ai-rmf"] },
     ],
   },
@@ -187,9 +187,9 @@ export const governanceMlopsLearning = {
   "predictive-ai-mlops": {
     outcomes: ["把业务决策写成可验证预测任务", "识别标签泄漏和训练—服务偏差", "设计完整发布包、灰度、技术回滚与业务补救链", "用成熟真值区分漂移信号并决定更新"],
     route: [
-      { title: "先定义预测时点", learn: "固定谁、在何时、预测什么、用于哪项动作。", checkpoint: "能指出标签泄漏和不可行动指标。" },
-      { title: "再建立可复现流水线", learn: "绑定数据、特征、代码、环境、模型与评估。", checkpoint: "任一生产结果能回到完整运行。" },
-      { title: "最后运营真实效果", learn: "关联线上输入、预测、成熟真值、策略版本、业务动作和结果。", checkpoint: "能区分数据质量、训练—服务偏差、输入与预测漂移、性能下降、概念漂移和反馈偏差。" },
+      { title: "预测时点与标签合同", learn: "固定谁、在何时、预测什么、用于哪项动作。", checkpoint: "能指出标签泄漏和不可行动指标。" },
+      { title: "可复现流水线", learn: "绑定数据、特征、代码、环境、模型与评估。", checkpoint: "任一生产结果能回到完整运行。" },
+      { title: "成熟真值运营", learn: "关联线上输入、预测、成熟真值、策略版本、业务动作和结果。", checkpoint: "能区分数据质量、训练—服务偏差、输入与预测漂移、性能下降、概念漂移和反馈偏差。" },
     ],
     labs: [
       { title: "审计一次流失预测", scenario: "团队报告随机切分 AUC 很高，但上线后转化没有改善。", tasks: ["重建预测时点与标签窗口", "检查未来信息和人群切分", "把分数阈值连接到触达动作和成本"], deliverable: "时间正确的评估设计与业务动作表", acceptance: "所有特征在预测时可获得，指标能支持是否采取行动。", sourceIds: ["google-mlops-predictive-ai"] },
@@ -200,9 +200,9 @@ export const governanceMlopsLearning = {
   "ai-governance": {
     outcomes: ["为具体招聘用途建立可追溯清单和风险层级", "区分影响评估、组织分层与法律分类", "组装能支持批准决定的版本化证据包", "设计条件批准、人工监督、申诉、变更复审与退役"],
     route: [
-      { title: "先拆开用途与影响", learn: "把同一模型的写作辅助、面试摘要、筛选、评分和排序分别登记。", checkpoint: "能指出谁被影响、什么决定发生变化、组织 tier 与法律分类有何不同。" },
-      { title: "再组装控制与证据", learn: "把影响评估、评估切片、安全测试、供应商材料、人工监督和申诉交给明确 owner。", checkpoint: "每项关键声明都能回到当前版本与运行证据。" },
-      { title: "最后作出可撤销决定", learn: "用批准、条件批准、Hold 或 No-Go 记录条件、残余风险、例外和复审触发器。", checkpoint: "重大变化能自动找出并暂停受影响批准，补证后再明确恢复、限域或退役。" },
+      { title: "用途记录与影响评估", learn: "把同一模型的写作辅助、面试摘要、筛选、评分和排序分别登记。", checkpoint: "能指出谁被影响、什么决定发生变化、组织 tier 与法律分类有何不同。" },
+      { title: "控制与版本化证据包", learn: "把影响评估、评估切片、安全测试、供应商材料、人工监督和申诉交给明确 owner。", checkpoint: "每项关键声明都能回到当前版本与运行证据。" },
+      { title: "可撤销治理状态", learn: "用批准、条件批准、Hold 或 No-Go 记录条件、残余风险、例外和复审触发器。", checkpoint: "重大变化能自动找出并暂停受影响批准，补证后再明确恢复、限域或退役。" },
     ],
     labs: [
       { title: "组装招聘 AI 治理决策包", scenario: "第三方 LLM 已用于写职位描述，业务希望追加简历筛选、评分和候选人排序。", tasks: ["拆分用途并登记人群、决定、数据、模型、ATS、供应商和地区", "完成影响评估与组织风险分层，列出需法务确认的分类问题", "分配业务、治理、安全、评估、AI Ops 与人工监督责任", "形成批准、条件批准、Hold 或 No-Go 建议"], deliverable: "版本化治理状态、证据包、批准条件与复审触发器", acceptance: "写作与筛选不共用一个风险结论；任何未决法律分类都明确交给专业人员。", sourceIds: ["nist-ai-rmf", "iso-iec-42001", "iso-iec-42005", "eu-ai-act-implementation-2026-08-05"] },

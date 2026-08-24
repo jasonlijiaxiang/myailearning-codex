@@ -8,7 +8,7 @@ export const ragDeepDives = [
   {
     kind: "sequence",
     eyebrow: "OFFLINE EVIDENCE CONTRACT",
-    title: "资料进入 RAG 前，先确认能检索、核对和撤回",
+    title: "一份文档什么时候才算 RAG 可用",
     intro: "数据工程负责接入、解析、清洗、去重和变更传播；RAG 不复制这条资料处理流程，而是在交接处验收：每个证据单元是否能被找到、回到原文、判断有效范围，并在删除或撤权后退出回答。",
     items: [
       { name: "接收权威资料快照", en: "Receive an Authoritative Snapshot", mechanism: "从资料处理流程接收稳定来源 ID、原始版本、生效范围、负责人、许可状态和访问规则，并记录加工版本。", decision: "缺少权威来源、版本或使用边界的资料不进入正式回答索引。", boundary: "RAG 的证据交接检查不能替代源系统的数据治理和内容审批。" },
@@ -36,7 +36,7 @@ export const ragDeepDives = [
   {
     kind: "sequence",
     eyebrow: "ONLINE ANSWER POLICY",
-    title: "在线请求先决定回答动作，再决定检索复杂度",
+    title: "这次请求应该回答、追问还是停下",
     intro: "在线链的起点不是把一句话直接向量化。系统要恢复当前问题、确认必要条件、执行有预算的检索，并在追问、继续检索、限定回答和拒答之间做出可解释选择。",
     items: [
       { name: "恢复当前问题", en: "Resolve the Current Turn", mechanism: "保留用户原话，并把必要的会话指代改写成可独立检索的问题；身份、时间和业务约束每轮重新取得。", decision: "只有指代或关键条件不清时追问，不让历史回答替用户补造事实。", boundary: "会话摘要不是权威证据，也不能继承上一轮的授权结论。" },
@@ -50,7 +50,7 @@ export const ragDeepDives = [
   {
     kind: "matrix",
     eyebrow: "ONLINE EVIDENCE COMPILER",
-    title: "把候选片段编排成主张级证据，而不是把 Top-K 直接塞给模型",
+    title: "把 Top-K 整理成可以逐条核对的回答",
     intro: "RAG 的在线责任是把当前用户可访问、当前有效的候选证据组装成有限上下文，并让每项重要主张都能回到原始证据。",
     columnLabels: { name: "编排对象", mechanism: "工作机制", decision: "验收问题", boundary: "失效方式" },
     items: [

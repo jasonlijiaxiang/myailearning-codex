@@ -1079,6 +1079,265 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .codingAgentItem > footer { align-items: flex-start; flex-direction: column; }
 }
 
+/* Task-led module reader: quick orientation, systematic study, and field lookup. */
+.fieldbookTheme.modulePage .moduleReadingExperience {
+  width: calc(100% - 36px);
+  max-width: 1480px;
+  margin: 18px auto;
+  overflow: clip;
+  border: 1px solid var(--fb-line);
+  border-radius: 12px;
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme.modulePage .moduleModeHeader {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  border-bottom: 1px solid var(--fb-line);
+  background: var(--fb-surface);
+}
+
+.fieldbookTheme.modulePage .moduleModeHeader > div:first-child {
+  min-width: 0;
+  padding: 20px 24px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  border-right: 1px solid var(--fb-line);
+}
+.fieldbookTheme.modulePage .moduleModeHeader > div:first-child span,
+.fieldbookTheme.modulePage .moduleModeGuide > span,
+.fieldbookTheme.modulePage .moduleDecisionWorkbench > header span {
+  color: var(--fb-meta);
+  font: 700 11px/1.3 var(--font-geist-mono), monospace;
+  letter-spacing: .08em;
+}
+.fieldbookTheme.modulePage .moduleModeHeader > div:first-child strong { color: var(--fb-ink); font-size: 17px; line-height: 1.4; }
+
+.fieldbookTheme.modulePage .moduleModeTabs {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.fieldbookTheme.modulePage .moduleModeTabs button {
+  min-width: 0;
+  min-height: 82px;
+  padding: 15px 20px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 4px 10px;
+  align-content: center;
+  border: 0;
+  border-right: 1px solid var(--fb-line);
+  background: #fff;
+  color: var(--fb-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.fieldbookTheme.modulePage .moduleModeTabs button:last-child { border-right: 0; }
+.fieldbookTheme.modulePage .moduleModeTabs button:hover { background: var(--fb-mist); }
+.fieldbookTheme.modulePage .moduleModeTabs button[aria-selected="true"] {
+  background: var(--fb-mint);
+  box-shadow: inset 0 -4px 0 var(--fb-accent);
+}
+.fieldbookTheme.modulePage .moduleModeTabs button:focus-visible { position: relative; z-index: 2; outline: 2px solid var(--fb-link); outline-offset: -3px; }
+.fieldbookTheme.modulePage .moduleModeTabs button > span {
+  grid-row: 1 / 3;
+  padding-top: 2px;
+  color: var(--fb-meta);
+  font: 700 11px/1.4 var(--font-geist-mono), monospace;
+}
+.fieldbookTheme.modulePage .moduleModeTabs button strong { font-size: 15px; line-height: 1.35; }
+.fieldbookTheme.modulePage .moduleModeTabs button small { color: var(--fb-muted); font-size: 11px; line-height: 1.35; }
+
+.fieldbookTheme.modulePage .moduleModeWorkspace {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  align-items: start;
+  background: linear-gradient(to right, var(--fb-mist) 0 250px, #fff 250px);
+}
+.fieldbookTheme.modulePage .moduleModeGuide {
+  position: sticky;
+  top: 12px;
+  min-width: 0;
+  padding: 30px 24px;
+  border-right: 1px solid var(--fb-line);
+}
+.fieldbookTheme.modulePage .moduleModeGuide h2 {
+  margin: 13px 0 12px;
+  color: var(--fb-ink);
+  font-family: var(--font-serif), "Songti SC", serif;
+  font-size: 29px;
+  font-weight: 500;
+  line-height: 1.16;
+}
+.fieldbookTheme.modulePage .moduleModeGuide > p { margin: 0; color: var(--fb-muted); font-size: 14px; line-height: 1.72; }
+.fieldbookTheme.modulePage .moduleModeGuide dl { margin: 26px 0 0; }
+.fieldbookTheme.modulePage .moduleModeGuide dl > div { padding: 13px 0; border-top: 1px solid var(--fb-line); }
+.fieldbookTheme.modulePage .moduleModeGuide dt { color: var(--fb-meta); font-size: 11px; font-weight: 800; }
+.fieldbookTheme.modulePage .moduleModeGuide dd { margin: 6px 0 0; color: var(--fb-ink); font-size: 13px; line-height: 1.62; }
+.fieldbookTheme.modulePage .moduleModePanels,
+.fieldbookTheme.modulePage .moduleModePanel { min-width: 0; }
+.fieldbookTheme.modulePage .moduleModePanel[hidden] { display: none; }
+.fieldbookTheme.modulePage .moduleModePanel:focus-visible {
+  outline-color: var(--fb-ink);
+  outline-offset: -3px;
+  outline-style: solid;
+  outline-width: 3px;
+}
+.fieldbookTheme.modulePage .moduleModePanel > .subsection { content-visibility: auto; contain-intrinsic-size: 620px; }
+
+.fieldbookTheme.modulePage .moduleReadingHost {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.fieldbookTheme.modulePage .moduleReadingHost > .section {
+  display: block;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+.fieldbookTheme.modulePage .moduleReadingHost .sectionNumber { display: none; }
+.fieldbookTheme.modulePage .moduleReadingHost .sectionBody { min-width: 0; }
+.fieldbookTheme.modulePage .moduleReadingHost .moduleReadingExperience { margin-top: 18px; }
+
+/* A selectable meeting artifact replaces the repeated four-column decision table. */
+.fieldbookTheme.modulePage .moduleDecisionWorkbench {
+  overflow: hidden;
+  border: 1px solid var(--fb-line);
+  border-radius: 10px;
+  background: #fff;
+}
+.fieldbookTheme.modulePage .moduleDecisionWorkbench > header {
+  padding: 24px 26px;
+  display: grid;
+  grid-template-columns: minmax(220px, .75fr) minmax(280px, 1.25fr);
+  gap: 32px;
+  align-items: end;
+  border-bottom: 1px solid var(--fb-line);
+  background: var(--fb-mist);
+}
+.fieldbookTheme.modulePage .moduleDecisionWorkbench > header h3 { margin: 8px 0 0; font-size: 25px; line-height: 1.25; }
+.fieldbookTheme.modulePage .moduleDecisionWorkbench > header p { margin: 0; color: var(--fb-muted); font-size: 14px; line-height: 1.68; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas { min-width: 0; display: grid; grid-template-columns: minmax(240px, .82fr) minmax(360px, 1.18fr); }
+.fieldbookTheme.modulePage .moduleDecisionCanvas nav { min-width: 0; display: grid; align-content: start; border-right: 1px solid var(--fb-line); }
+.fieldbookTheme.modulePage .moduleDecisionCanvas nav button {
+  min-width: 0;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  border: 0;
+  border-bottom: 1px solid var(--fb-line);
+  background: #fff;
+  color: var(--fb-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.fieldbookTheme.modulePage .moduleDecisionCanvas nav button:last-child { border-bottom: 0; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas nav button:hover { background: var(--fb-mist); }
+.fieldbookTheme.modulePage .moduleDecisionCanvas nav button[aria-pressed="true"] { background: var(--fb-mint); box-shadow: inset 5px 0 0 var(--fb-accent); }
+.fieldbookTheme.modulePage .moduleDecisionCanvas nav button span { color: var(--fb-meta); font: 700 10px/1.5 var(--font-geist-mono), monospace; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas nav button strong { font-size: 14px; line-height: 1.55; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas > article { min-width: 0; padding: 26px; }
+.fieldbookTheme.modulePage .moduleDecisionPrompt { margin: 0 0 22px; color: var(--fb-ink); font-family: var(--font-serif), "Songti SC", serif; font-size: 24px; line-height: 1.42; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas dl { margin: 0; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas dl > div { padding: 16px 0; display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--fb-line); }
+.fieldbookTheme.modulePage .moduleDecisionCanvas dt { color: var(--fb-meta); font-size: 11px; font-weight: 800; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas dd { margin: 0; color: var(--fb-muted); font-size: 15px; line-height: 1.68; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas .isRecommendation dd { color: var(--fb-ink); font-weight: 750; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas .isConstraint { margin: 0 -10px; padding-inline: 10px; border-left: 4px solid var(--fb-risk); background: var(--fb-risk-soft); }
+
+/* Compact answer anatomy: answer, context, optional evidence, and the next useful question. */
+.fieldbookTheme.modulePage .qaAnswer {
+  margin-left: 74px;
+  padding: 24px;
+  display: block;
+  border-top: 1px solid var(--fb-line);
+  background: #fff;
+}
+.fieldbookTheme.modulePage .qaAnswerLead { margin: 0; color: var(--fb-ink); font-size: 18px; font-weight: 720; line-height: 1.72; }
+.fieldbookTheme.modulePage .qaAnswerContext { margin: 16px 0 0; color: var(--fb-muted); font-size: 16px; line-height: 1.78; }
+.fieldbookTheme.modulePage .qaList .qaEvidenceDisclosure {
+  margin-top: 20px;
+  border: 1px solid var(--fb-line);
+  border-radius: 8px;
+  background: var(--fb-mist);
+}
+.fieldbookTheme.modulePage .qaList .qaEvidenceDisclosure > summary {
+  min-height: 0;
+  padding: 13px 15px;
+  display: flex;
+  grid-template-columns: none;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--fb-link);
+  font-size: 13px;
+  font-weight: 800;
+}
+.fieldbookTheme.modulePage .qaList .qaEvidenceDisclosure > summary span { color: var(--fb-meta); }
+.fieldbookTheme.modulePage .qaList .qaEvidenceDisclosure[open] > summary span { transform: rotate(45deg); }
+.fieldbookTheme.modulePage .qaEvidenceDisclosure .qaBasis { padding: 18px; border-top: 1px solid var(--fb-line); background: #fff; }
+.fieldbookTheme.modulePage .qaBasisNote { margin: 0 0 14px; color: var(--fb-muted); font-size: 13px; line-height: 1.65; }
+.fieldbookTheme.modulePage .qaNextQuestion { margin: 20px 0 0; padding: 14px 16px; display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; background: var(--fb-mint); color: var(--fb-ink); font-size: 15px; line-height: 1.62; }
+.fieldbookTheme.modulePage .qaNextQuestion span { color: var(--fb-meta); font-size: 11px; font-weight: 800; }
+.fieldbookTheme.modulePage .qaCollectionActions { padding: 18px 0 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 22px; }
+.fieldbookTheme.modulePage .qaCollectionActions button,
+.fieldbookTheme.modulePage .qaCollectionActions a {
+  min-height: 40px;
+  padding: 10px 14px;
+  border: 1px solid var(--fb-line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--fb-link);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+.fieldbookTheme.modulePage .qaCollectionActions button:hover,
+.fieldbookTheme.modulePage .qaCollectionActions a:hover { border-color: var(--fb-link); background: var(--fb-mint); }
+.fieldbookTheme.modulePage .metricBoundary span { display: block; margin-bottom: 5px; color: var(--fb-meta); font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+
+@media (max-width: 980px) {
+  .fieldbookTheme.modulePage .moduleModeHeader { grid-template-columns: 1fr; }
+  .fieldbookTheme.modulePage .moduleModeHeader > div:first-child { padding: 14px 18px; display: flex; justify-content: space-between; gap: 20px; border-right: 0; border-bottom: 1px solid var(--fb-line); }
+  .fieldbookTheme.modulePage .moduleModeWorkspace { grid-template-columns: 1fr; background: #fff; }
+  .fieldbookTheme.modulePage .moduleModeGuide { position: static; padding: 20px 24px; display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 4px 28px; border-right: 0; border-bottom: 1px solid var(--fb-line); background: var(--fb-mist); }
+  .fieldbookTheme.modulePage .moduleModeGuide > span { grid-column: 1; }
+  .fieldbookTheme.modulePage .moduleModeGuide h2 { grid-column: 1; margin: 8px 0 0; }
+  .fieldbookTheme.modulePage .moduleModeGuide > p { grid-column: 2; grid-row: 1 / 3; }
+  .fieldbookTheme.modulePage .moduleModeGuide dl { grid-column: 1 / -1; margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+
+@media (max-width: 720px) {
+  .fieldbookTheme.modulePage .moduleReadingExperience { width: 100%; margin: 12px 0 0; border-inline: 0; border-radius: 0; }
+  .fieldbookTheme.modulePage .moduleModeTabs { grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: hidden; }
+  .fieldbookTheme.modulePage .moduleModeTabs button { min-height: 70px; padding: 12px 10px; grid-template-columns: 22px minmax(0, 1fr); gap: 2px 5px; }
+  .fieldbookTheme.modulePage .moduleModeTabs button strong { font-size: 12px; }
+  .fieldbookTheme.modulePage .moduleModeTabs button small { display: none; }
+  .fieldbookTheme.modulePage .moduleModeGuide { padding: 18px 20px; grid-template-columns: 1fr; }
+  .fieldbookTheme.modulePage .moduleModeGuide h2,
+  .fieldbookTheme.modulePage .moduleModeGuide > p,
+  .fieldbookTheme.modulePage .moduleModeGuide dl { grid-column: 1; grid-row: auto; }
+  .fieldbookTheme.modulePage .moduleModeGuide dl { grid-template-columns: 1fr; gap: 0; }
+  .fieldbookTheme.modulePage .moduleDecisionWorkbench > header { padding: 20px; grid-template-columns: 1fr; gap: 12px; }
+  .fieldbookTheme.modulePage .moduleDecisionCanvas { grid-template-columns: 1fr; }
+  .fieldbookTheme.modulePage .moduleDecisionCanvas nav { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--fb-line); scroll-snap-type: x proximity; }
+  .fieldbookTheme.modulePage .moduleDecisionCanvas nav button { flex: 0 0 min(76vw, 240px); border-right: 1px solid var(--fb-line); border-bottom: 0; scroll-snap-align: start; }
+  .fieldbookTheme.modulePage .moduleDecisionCanvas > article { padding: 22px 18px; }
+  .fieldbookTheme.modulePage .moduleDecisionPrompt { font-size: 21px; }
+  .fieldbookTheme.modulePage .qaAnswer { margin-left: 0; padding: 20px 0; }
+  .fieldbookTheme.modulePage .qaNextQuestion { grid-template-columns: 1fr; gap: 4px; }
+  .fieldbookTheme.modulePage .qaCollectionActions { display: grid; }
+  .fieldbookTheme.modulePage .qaCollectionActions :is(button, a) { width: 100%; text-align: center; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .readingNavHead > i > span,
   .moduleResult { transition: none; }

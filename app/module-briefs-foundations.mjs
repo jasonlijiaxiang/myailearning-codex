@@ -1,32 +1,32 @@
 export const modelLandscape = {
   slug: "model-landscape",
-  definition: "模型格局与选型（Model Landscape）把业务任务、错误损失、交付硬约束和生命周期条件转成模型可行域、完整候选身份与替换策略；目标不是追逐单一榜首，而是选出经过同条件试点、可运营且可退出的最简模型组合。",
+  definition: "模型格局与选型（Model Landscape）用候选登记表连接业务任务、不可接受错误、交付约束、模型版本和退出方案。交付物包括候选短名单、淘汰理由、同条件试点结果与备用路线。",
   position: "解决方案层：负责模型候选与路线资格；Evaluation 负责量尺和测量，AI Gateway 负责运行时路由，AI FinOps 负责完整投资判断。",
   presentation: "spectrum",
-  principleTitle: "按约束选择模型",
+  principleTitle: "候选模型怎样进入同条件试点",
   principles: [
     {
-      zh: "不存在无条件最强",
+      zh: "强弱取决于任务和约束",
       en: "No Context-Free Best Model",
       explanation: "模型能力必须放在具体任务、语言、模态、时延、数据边界和错误代价中比较；消费端声量、通用榜单与企业场景结论不能互相替代。",
-      decision: "客户问“谁最强”时，先补齐任务与约束，再进入候选模型评测。",
+      decision: "把任务、语言、模态、数据路径、P95 和严重错误写进一页试点合同。练习表可先用同一批 200 条理赔样本比较 3 个候选，正式样本量和阈值仍按客户风险确认。",
     },
     {
       zh: "产品形态是能力的一部分",
       en: "Delivery Model Is Part of Capability",
       explanation: "一个可比较候选至少要绑定提供方、端点、地域、精确版本、交付形态和运行配置。同一模型家族通过公共 API、专属端点或开放权重交付时，责任与能力边界都可能不同。",
-      decision: "不要只登记模型名称；先冻结完整候选元组，再用同一 Prompt、上下文、工具、Schema 和预算比较。",
+      decision: "候选登记表记录提供方、端点、地域、精确版本、交付形态和运行配置，并在同一 Prompt、上下文、工具、Schema 与预算下比较。",
     },
     {
-      zh: "开放权重不等于开源",
+      zh: "开放权重还要核对许可证",
       en: "Open Weights Is Not Necessarily Open Source",
-      explanation: "能够下载权重，不代表已经获得使用、研究、修改和分享整个 AI 系统所需的自由，也不代表训练数据说明、代码与许可证条件满足开放源代码 AI 定义。",
+      explanation: "下载权重只说明取得了模型文件。使用、研究、修改和分发权限，以及训练数据说明、代码和许可证条件，需要逐项阅读原文。",
       decision: "任何开放权重方案都应读取许可证原文，并让法务确认商用、改造、分发与下游使用边界。",
     },
     {
-      zh: "单价不等于总成本",
+      zh: "成本按合格结果计算",
       en: "Unit Price Is Not Total Cost",
-      explanation: "模型费用还受输入输出结构、缓存、重试、路由、托管运维、GPU 利用率和失败返工影响。便宜但低成功率的模型，单位业务结果可能更贵。",
+      explanation: "输入输出结构、缓存、重试、路由、托管运维、GPU 利用率和失败返工都会进入成本。报价表同时记录调用费用与通过业务验收的结果数。",
       decision: "报价以“每个合格结果成本（Cost per Accepted Outcome）”为主线，不只比较 Token 单价。",
     },
     {
@@ -36,9 +36,9 @@ export const modelLandscape = {
       decision: "把评估集、网关抽象、主备模型与退出条款当成选型交付件。",
     },
     {
-      zh: "先核验区域与交付硬约束",
+      zh: "区域与交付约束放在候选表首列",
       en: "Region & Delivery Hard Constraints",
-      explanation: "国内交付先核对目标区域、数据驻留、网络、采购渠道与模型服务可用范围，再比较能力；API、托管、专属实例与私有化是不同的交付面，责任边界和数据路径可能不同。",
+      explanation: "国内交付要记录目标区域、数据驻留、网络、采购渠道与模型服务可用范围。API、托管、专属实例与私有化对应不同的数据路径和运营责任。",
       decision: "官方产品文档只作为当期能力声明，不能外推为合规、SLA 或数据处理承诺。",
     },
     {
@@ -86,16 +86,16 @@ export const modelLandscape = {
       boundary: "每个决策面都要按当期官方文档与合同核验，不能由平台能力外推客户义务或长期承诺。",
     },
   ],
-  deepDiveTitle: "用一条理赔初审链把排行榜问题变成组合工程",
+  deepDiveTitle: "理赔初审选型：候选表、淘汰门与组合证明",
   deepDiveLead:
-    "本批用跨地区理赔材料初审助手贯穿选型：系统读取多语言表单、扫描件与照片，抽取事实并生成带证据坐标的初审建议；最终赔付资格、金额与批准仍由确定性规则和授权人员决定。模型组合只有在同条件试点证明任务分层有价值时才成立。",
+    "用 200 份跨地区理赔材料、其中 30 份单列为高风险样本，可以演示怎样分层记录多语言表单、扫描件和照片。200/30 只是抽样结构，不是推荐规模；候选模型仍须使用同一 Prompt、工具、Schema 与预算，正式门槛由客户确认。赔付资格、金额与批准由确定性规则和授权人员处理。",
   deepDives: [
     {
       kind: "matrix",
       eyebrow: "DECISION GEOMETRY",
-      title: "先划可行域，再比较帕累托前沿",
+      title: "可行域与帕累托前沿的记录方法",
       intro:
-        "一个候选若违反数据驻留、许可证或接口硬约束，就不应靠更高的平均分“补回来”；只有进入可行域的模型，才值得比较彼此不能同时最优的质量、时延、成本和退出代价。",
+        "数据驻留、许可证或接口硬约束未通过时，候选表直接记录淘汰理由。其余候选按质量、时延、成本和退出代价绘制帕累托前沿，保留每个取舍对应的业务条件。",
       sourceIds: ["nist-genai-profile", "finops-unit-economics", "osi-open-source-ai-definition-1-0", "openai-models", "google-models", "anthropic-models"],
       columnLabels: {
         name: "决策面",
@@ -115,14 +115,14 @@ export const modelLandscape = {
           name: "关键切片质量",
           en: "Slice-level Quality",
           mechanism: "冻结客户样本，按语言、任务难度、风险等级和长尾类型分别计算通过率与严重错误，而不是只看一个平均总分。",
-          decision: "在云评估服务中保留数据集、裁决规则和模型版本；先设置淘汰门槛，再讨论候选之间的细微分差。",
+          decision: "云评估记录保留数据集、裁决规则、模型版本和淘汰门槛；通过门槛的候选再比较细微分差。",
           boundary: "自动裁判需要用人工样本校准；平均提升不能掩盖高风险切片退化。",
         },
         {
           name: "运行包络",
           en: "Operating Envelope",
           mechanism: "在目标请求长度、并发、结构化输出和工具调用条件下测量首字延迟、输出速度、限额、失败恢复与降级行为。",
-          decision: "在候选云端点和 AI 网关上执行同口径压测，记录可持续容量，而不是引用单次演示延迟。",
+          decision: "候选云端点和 AI 网关执行同口径压测，记录可持续容量；单次演示延迟作为补充观察。",
           boundary: "测试环境的峰值数据不能直接等同于合同 SLA，也不能外推到不同地域与配额。",
         },
         {
@@ -147,7 +147,7 @@ export const modelLandscape = {
           name: "冻结任务与损失",
           en: "Task and Loss Contract",
           mechanism: "把材料分类、字段抽取、证据定位与说明草稿拆成任务切片；分别记录人工耗时、严重漏检、误升级和必须转人工的情形。",
-          decision: "先取得权威样本、裁决人和不可接受错误，再定义候选门槛。",
+          decision: "候选门槛绑定权威样本、裁决人和不可接受错误清单。",
           boundary: "没有人工基线和争议裁决规则时，Demo 不能支持模型采购结论。",
         },
         {
@@ -190,7 +190,7 @@ export const modelLandscape = {
         {
           name: "区域与交付硬约束",
           mechanism: "目标区域、数据驻留、网络与采购渠道，以及服务可用范围。",
-          decision: "先按硬约束收敛可行候选，再投入评测预算。",
+          decision: "硬约束筛出可行候选，评测预算只分配给这份短名单。",
           boundary: "厂商区域清单只证明当期声明，不证明客户工作负载上的质量或 SLA。",
         },
         {
@@ -214,7 +214,7 @@ export const modelLandscape = {
         {
           name: "模型目录、版本、弃用与迁移",
           mechanism: "模型标识、精确版本、弃用时间线与迁移兼容性。",
-          decision: "每个变化面单独核验并记录核验日期，版本迁移必须演练。",
+          decision: "每个变化面单独核验并记录日期，版本迁移演练写入发布计划。",
           boundary: "同一模型家族不同版本行为不兼容；公开版本信息变化快，不能当长期卖点。",
         },
         {
@@ -321,7 +321,7 @@ export const modelLandscape = {
   evidenceCards: [
     {
       metric: "任务 × 约束",
-      title: "模型选择必须带上下文",
+      title: "模型选择记录任务上下文",
       finding: "OpenAI 官方目录按模型家族、能力与使用定位组织产品，说明仅凭一个通用“模型名称”不足以完成企业选型。",
       boundary: "官方目录是厂商自述，不是公平横评；最终结论必须由客户评估集产生。",
       sourceId: "openai-models",
@@ -329,14 +329,14 @@ export const modelLandscape = {
     },
     {
       metric: "持续测量",
-      title: "选型不是一次性采购",
+      title: "选型覆盖版本迁移与退出",
       finding: "NIST 生成式 AI 风险管理框架强调在设计、部署和运行阶段持续识别、测量与管理风险。",
       boundary: "它是自愿采用的风险框架，不提供具体模型排名或采购结论。",
       sourceId: "nist-genai-profile",
     },
     {
       metric: "Cost / accepted outcome",
-      title: "单位经济必须绑定合格结果",
+      title: "单位经济按合格结果计价",
       finding: "FinOps Unit Economics 区分资源效率单位与业务结果单位，模型成本应与被接受的初审结果、人工复核和失败返工一起观察。",
       boundary: "单位经济只建立比较口径；没有客户基线、真实结果和完整成本时，不能宣称 ROI。",
       sourceId: "finops-unit-economics",
@@ -353,10 +353,10 @@ export const modelLandscape = {
 
 export const llm = {
   slug: "llm",
-  definition: "大语言模型原理（Large Language Model Foundations）解释文本如何变成 Token、Transformer 如何利用当前上下文形成下一 Token 分布，以及这些机制为什么产生能力、可靠性、时延与控制边界。",
+  definition: "大语言模型原理（Large Language Model Foundations）沿一次生成请求解释 Token、位置、注意力、Transformer 块、logits 与采样。学习产物是一份可回放的请求记录：实际输入、分词结果、上下文、生成配置和分阶段时延都能对应到模型机理。",
   position: "模型基础层：为 Model Landscape、Prompt、RAG、Agent、训练和推理平台提供共同的机理语言，并帮助把应用症状转交给正确责任层。",
   presentation: "stack",
-  principleTitle: "模型怎样从 Token 生成结果",
+  principleTitle: "沿一条请求看 Token、上下文与生成",
   principles: [
     {
       zh: "Token 是模型处理单位",
@@ -380,7 +380,7 @@ export const llm = {
       zh: "生成是自回归循环",
       en: "Generation Is Autoregressive",
       explanation: "模型通常一次生成一个新 Token，并把它加入后续上下文。输入预填充和逐 Token 解码的计算形态不同，因此首字延迟、输出速度和并发瓶颈也不同。",
-      decision: "性能方案应分别测量预填充、解码和完整请求，而不是只报平均延迟。",
+      decision: "性能报告分别列出排队、Prefill、Decode 和端到端时间，并附输入、输出 Token 分布。",
     },
     {
       zh: "上下文是有限预算",
@@ -421,16 +421,16 @@ export const llm = {
       boundary: "架构是解释和诊断工具，不是采购目标本身。",
     },
   ],
-  deepDiveTitle: "用模型机理定位应用失败，而不是把所有问题都归给模型",
+  deepDiveTitle: "沿请求 Trace 定位知识助手故障",
   deepDiveLead:
-    "企业知识助手的一次失败可以来自模型权重、当前上下文、解码配置、推理服务或模型外系统。LLM 基础模块负责解释现象并形成可证伪的转交，不在这里重复 RAG、Prompt、推理平台或 Agent 的实施方法。",
+    "一条故障 Trace 可以记录 1,200 个输入 Token、180 个输出 Token、temperature 0.2，以及排队、Prefill、Decode 和工具调用时间。这些值只属于该次复现，不是调优建议；每次替换一项变量，团队才能把故障归到模型权重、当前上下文、生成配置、推理服务或外部系统。",
   deepDives: [
     {
       kind: "diagnostic",
       eyebrow: "APPLICATION TRIAGE",
       title: "从知识助手症状判断下一步交给哪一层",
       intro:
-        "先固定用户问题、实际输入、模型与生成配置、运行指标和外部调用，再改变一个变量。下面每种症状都对应不同的下一步负责人和验收证据。",
+        "故障包固定用户问题、实际输入、模型与生成配置、运行指标和外部调用。每次实验改动一个变量，并记录负责人、预期信号和证伪结果。",
       sourceIds: ["transformer-2017", "lost-middle", "nist-genai-profile"],
       items: [
         {
@@ -444,7 +444,7 @@ export const llm = {
           name: "答案缺事实、用错版本或忽略关键证据",
           en: "Context & Evidence Gap",
           mechanism: "参数化知识不保证包含当前企业事实；即使资料进入窗口，位置、冲突和无关内容也会改变模型使用证据的可靠性。",
-          decision: "先检查模型实际收到的上下文，再把权威来源、更新、权限和候选证据问题交给 Data Engineering 与 RAG。",
+          decision: "检查模型实际收到的上下文；权威来源、更新、权限和候选证据问题交给 Data Engineering 与 RAG。",
           boundary: "扩大窗口只能增加可输入容量，不能自动建立权威性、授权、引用或可靠利用。",
         },
         {
@@ -611,7 +611,7 @@ export const llm = {
     },
     {
       metric: "非唯一",
-      title: "注意力权重不是完整解释",
+      title: "注意力权重的解释范围",
       finding: "论文实验中，不同注意力分布可以产生等价预测，权重也常与梯度特征重要性不相关。",
       boundary: "结论来自论文评估的模型与任务；不能扩大成注意力分析在任何场景都没有价值。",
       sourceId: "attention-not-explanation-2019",
@@ -628,28 +628,28 @@ export const llm = {
 
 export const llmTraining = {
   slug: "llm-training",
-  definition: "大模型训练（LLM Training）把基础权重、Tokenizer、数据与目标合同、优化、分布式执行、Checkpoint、评估和停止规则连接成可追溯的长期实验，交付的是通过阶段门的候选模型制品，而不是一次 Loss 下降。",
+  definition: "大模型训练（LLM Training）把基础权重、Tokenizer、数据、目标函数、优化器、分布式拓扑、Checkpoint 和评估绑定到一份 Run manifest。一次训练交付候选模型、恢复验证和阶段评估记录，供后续推理发布使用。",
   position: "模型基础层与算力底座层的连接模块：负责训练路线、完整 Run 合同、分布式执行与恢复证据；Fine-tuning 负责适配方法，Evaluation 负责独立量尺，AI Ops 负责候选模型之后的跨组件发布与线上运营。",
   presentation: "pipeline",
-  principleTitle: "训练模型：从数据准备到发布",
+  principleTitle: "一份训练 Run 如何形成候选模型",
   principles: [
     {
       zh: "数据准备决定可学内容",
       en: "Data Preparation Defines What Can Be Learned",
       explanation: "来源、许可、清洗、去重、配比、分词和切分共同决定训练语料；数量无法补偿系统性污染与错误。",
-      decision: "训练立项先交付 Data Card、权利清单、清洗规则和冻结验证切分。",
+      decision: "训练立项包包含 Data Card、权利清单、清洗规则、数据配比和冻结验证切分。",
     },
     {
       zh: "预训练学习通用模式",
       en: "Pre-training Learns General Patterns",
       explanation: "模型通过大规模下一 Token 预测学习语言、知识与能力基础；模型规模、训练数据和计算预算需要协调。",
-      decision: "除非客户具备大规模差异化数据与长期训练能力，否则优先复用现有底座。",
+      decision: "大规模差异化数据、长期训练能力和现有底座的系统性缺口共同构成立项证据；证据不足时复用现有底座。",
     },
     {
       zh: "监督微调教会按示范工作",
       en: "SFT Teaches Demonstrated Behavior",
       explanation: "监督微调（Supervised Fine-Tuning, SFT）用指令与理想回答把基础模型塑造成助手，重点是行为、格式与任务适配。",
-      decision: "先确认目标行为可由高质量示范表达，再决定是否进入 SFT。",
+      decision: "用少量已裁决示范检查目标行为能否被清楚表达；可表达的行为再进入 SFT 方案。",
     },
     {
       zh: "偏好优化处理好坏选择",
@@ -661,14 +661,14 @@ export const llmTraining = {
       zh: "评估贯穿而非收尾",
       en: "Evaluation Runs Through the Pipeline",
       explanation: "数据、训练、对齐和发布都需要冻结基线、未见样本、关键切片和安全回归；最终还要通过真实业务端点验证。",
-      decision: "先定义考卷和停止规则，再开始训练；不能拿训练数据证明训练成功。",
+      decision: "Run manifest 在开跑前绑定评估集、停止规则和允许退化范围；发布结论使用独立样本。",
     },
   ],
   decisions: [
     {
       question: "客户真的需要从头预训练吗？",
       signal: "拥有大规模合法差异化语料、长期算力和模型研发团队，且现有底座在核心能力上系统性不足。",
-      recommendation: "只有这些条件同时满足才评估预训练或持续预训练；否则从 Prompt、RAG 或 Fine-tuning 起步。",
+      recommendation: "把差异化语料、现有底座缺口、算力周期和团队能力写成立项表。四项都有可核验证据时评估预训练或持续预训练，其余场景比较 Prompt、RAG 与 Fine-tuning。",
       boundary: "训练出模型不等于拥有可用产品，后训练、评估、推理和治理仍是完整投入。",
     },
     {
@@ -680,7 +680,7 @@ export const llmTraining = {
     {
       question: "一次训练 Run 的合同是否完整？",
       signal: "团队能提交训练任务，却无法还原基础权重、Tokenizer、数据快照与配比、目标、优化器、精度、并行拓扑、环境、停止规则和评估版本。",
-      recommendation: "先把这些对象绑定为版本化训练运行配置记录（Run manifest），再允许长作业消耗正式容量；任何恢复点都必须指向同一合同。",
+      recommendation: "训练运行配置记录（Run manifest）绑定这些对象，并为每个恢复点写入 manifest 摘要。小规模对照与恢复演练通过后，长作业进入正式容量。",
       boundary: "记录字段齐全不证明运行可复现，仍需小规模对照、恢复演练和目标环境验证。",
     },
     {
@@ -696,16 +696,16 @@ export const llmTraining = {
       boundary: "公开 Benchmark 与训练集结果都不能替代客户的 Go / No-Go 门槛。",
     },
   ],
-  deepDiveTitle: "把训练看成可恢复、可验收的长期实验",
+  deepDiveTitle: "训练 Run 的有效进度与恢复证据",
   deepDiveLead:
-    "训练预算不能只用 GPU 数量解释。完整 Run 合同先冻结输入与停止规则，分布式执行再把计算、通信、数据供给和恢复转化为可比较的有效进度。",
+    "容量记录要同时写明资源形状、运行时长和恢复目标。练习中可填“64 张 GPU、计划运行 72 小时”，把 step time 拆为计算、通信、数据等待和 Checkpoint，再附故障次数、丢失进度、RPO 30 分钟与 RTO 60 分钟；生产目标必须换成客户训练计划。",
   deepDives: [
     {
       kind: "matrix",
       eyebrow: "EFFECTIVE TRAINING TIME",
-      title: "GPU 清单之外，哪些路径决定有效训练时间",
+      title: "把账面卡时拆成有效训练时间",
       intro:
-        "账面卡时只有在模型计算、集群通信、数据供给和恢复链同时顺畅时才转化为有效训练 Token。售前容量设计应围绕最慢路径和故障损失，而不是孤立比较单卡峰值。",
+        "有效训练时间扣除通信等待、数据空窗、Checkpoint 停顿和故障重跑。容量设计以 step-time 分解、扩展效率和恢复损失为依据，并保留单卡峰值作为硬件参考。",
       sourceIds: ["chinchilla-2022", "megatron-3d-parallelism-2021", "nccl-collectives", "pytorch-distributed-checkpoint", "pytorch-reproducibility"],
       columnLabels: {
         name: "系统路径",
@@ -718,7 +718,7 @@ export const llmTraining = {
           name: "模型计算",
           en: "Model Compute",
           mechanism: "权重、梯度、优化器状态、激活与通信缓冲共同占用内存；精度、序列长度、批量和并行切分决定每步成本与 OOM 风险。",
-          decision: "先用小规模运行测步时、显存构成、数值稳定和收敛趋势，再选择精度、激活重计算与并行策略。",
+          decision: "小规模运行测量步时、显存构成、数值稳定和收敛趋势，这组结果用于选择精度、激活重计算与并行策略。",
           boundary: "理论 FLOPS、权重能装入显存或短时利用率都不能直接换算训练完成时间。",
         },
         {
@@ -732,7 +732,7 @@ export const llmTraining = {
           name: "数据供给",
           en: "Input Pipeline",
           mechanism: "对象存储、分片、解压、Token 化和数据加载若跟不上训练循环，GPU 会在等待数据时表现为周期性空转。",
-          decision: "监控数据等待时间与读取吞吐，比较预处理、缓存、分片和并行文件系统，而不是把低利用率直接归因于 GPU。",
+          decision: "监控数据等待时间与读取吞吐，比较预处理、缓存、分片和并行文件系统；GPU 利用率与这些等待指标一起解释。",
           boundary: "提高读取速度不能修复数据许可、重复、污染和样本配比问题。",
         },
         {
@@ -747,7 +747,7 @@ export const llmTraining = {
     {
       kind: "diagnostic",
       eyebrow: "TRAINING TRIAGE",
-      title: "训练曲线异常时，不要先追加算力",
+      title: "训练曲线异常的四条排查线",
       intro:
         "质量异常和系统异常常会互相伪装。先把样本、优化、基础设施和恢复状态关联起来，才能判断问题需要修数据、调训练还是修集群。",
       sourceIds: ["chinchilla-2022", "deduplicating-training-data-2022", "megatron-3d-parallelism-2021", "nccl-collectives", "pytorch-distributed-checkpoint", "pytorch-reproducibility"],
@@ -756,7 +756,7 @@ export const llmTraining = {
           name: "Loss 突然尖峰或出现 NaN",
           en: "Loss Spike / NaN",
           mechanism: "异常批次、数值溢出、学习率过高或恢复后的状态不一致都可能破坏梯度，而不是单纯算力不足。",
-          decision: "将 step、样本分片、梯度范数、学习率和节点事件写入同一实验 Trace，先回放故障前后的最小区间。",
+          decision: "将 step、样本分片、梯度范数、学习率和节点事件写入同一实验 Trace，回放故障前后的最小区间。",
           boundary: "跳过异常批次可能掩盖系统性数据问题，不能作为默认长期修复。",
         },
         {
@@ -886,7 +886,7 @@ export const llmTraining = {
     },
     {
       metric: "格式决定训练输入",
-      title: "对话数据必须匹配基座模板",
+      title: "对话数据与基座模板对齐",
       finding: "文本、对话、提示—补全和偏好数据需要不同结构，角色与特殊 Token 也要匹配目标模型。",
       boundary: "格式正确只代表训练器能正确读取，不能证明样本质量、许可或目标行为正确。",
       sourceId: "hf-trl-data-formats",
@@ -903,13 +903,13 @@ export const llmTraining = {
 
 export const fineTuning = {
   slug: "fine-tuning",
-  definition: "微调工程（Fine-tuning）只在 Prompt/Schema、RAG、Tool/规则和更换模型等对照之后，对仍然稳定、可重复、可标注的行为缺口继续训练，并把数据、模型或 Adapter、评估、发布和停止条件组织成可回滚实验。",
+  definition: "微调工程（Fine-tuning）处理稳定、可重复、可标注的行为缺口。实验包记录轻量方案基线、训练数据、基座与 Adapter、评估切片、目标端点、回滚点和停止条件。",
   position: "模型定制层：负责训练是否值得、数据与方法合同、微调专属验收和制品兼容清单；不负责实时知识、执行授权、完整 ROI 或最终风险批准。",
   presentation: "loop",
-  principleTitle: "微调方案选择、发布和回滚",
+  principleTitle: "问题分流、训练与 Adapter 发布",
   principles: [
     {
-      zh: "先区分知识、行为与能力",
+      zh: "按知识、行为与能力分流",
       en: "Separate Knowledge, Behavior and Capability",
       explanation: "格式与指令问题走 Prompt/Schema，当前且需引用的事实走 RAG，权威状态与动作走 Tool/API，确定性规则写成代码，基础能力不足则换模型；只有剩余稳定行为缺口才进入微调。",
       decision: "按失败类型分流，不把 Prompt → RAG → Fine-tuning 误解成线性升级阶梯。",
@@ -924,12 +924,12 @@ export const fineTuning = {
       zh: "数据质量先于训练代码",
       en: "Data Quality Precedes Training Code",
       explanation: "聊天模板、角色、目标回答、边界样本、许可、PII、去重和测试隔离决定训练信号；框架无法修复错误示范。",
-      decision: "先完成数据卡、样本规范和冻结测试集，再选择框架与超参数。",
+      decision: "数据卡、样本规范和冻结测试集共同定义训练输入；框架与超参数写入同一实验记录。",
     },
     {
-      zh: "训练前先固定考卷",
+      zh: "评测集在实验启动前冻结",
       en: "Define the Exam Before Training",
-      explanation: "微调必须同时验证目标任务提升、通用能力回归、安全与成本；训练损失下降不等于业务成功。",
+      explanation: "微调验收同时查看目标任务、通用能力、安全与成本。训练损失用于诊断收敛，业务样本决定候选是否可发布。",
       decision: "项目启动前约定通过 / 暂停指标、关键切片与允许退化范围。",
     },
     {
@@ -943,42 +943,42 @@ export const fineTuning = {
     {
       question: "客户的问题是否真的是稳定行为问题？",
       signal: "Prompt 与示例已经优化，但格式、语气、分类或窄任务行为仍反复漂移。",
-      recommendation: "先记录 Prompt / RAG 的现有表现，再用高质量示范做小规模 SFT 或 LoRA 试验。",
+      recommendation: "记录 Prompt、RAG、Tool/规则和换模型的现有表现；剩余行为缺口用高质量示范做小规模 SFT 或 LoRA 试验。",
       boundary: "知识更新和实时业务事实不应主要写进权重。",
     },
     {
       question: "LoRA、QLoRA 还是全参？",
       signal: "资源有限、多任务共存、需要快速回滚，或深度能力迁移需求不同。",
-      recommendation: "开放权重、运行时兼容且需要参数高效适配时评估 LoRA；训练显存受限时再比较 QLoRA；只有证据证明更轻路线达不到目标时才评估全参。",
+      recommendation: "开放权重且运行时兼容时评估 LoRA；显存预算紧张时加入 QLoRA 对照；全参路线需要一份轻量方法未达标的实验记录。",
       boundary: "PEFT 与 LoRA 不是同义词；方法名称也不保证质量、推理成本或跨底座兼容。",
     },
     {
       question: "客户数据够不够？",
       signal: "只有少量高质量样本，或大量未经清洗的历史记录。",
-      recommendation: "优先构建覆盖主要与边界场景的小型高质量集，先看学习信号，再按误差补数据。",
+      recommendation: "从覆盖主要场景与困难切片的小型已裁决样本集开跑，根据误差分布补充数据，并记录每轮新增样本解决了什么失败。",
       boundary: "不存在适用于所有任务的固定条数；样本复杂度、覆盖和一致性比数量更重要。",
     },
     {
       question: "SFT 之后是否需要 DPO 或强化微调？",
       signal: "模型已会完成任务，但相对偏好、拒答分寸或可验证结果仍不达标。",
       recommendation: "能提供好坏对时评估 DPO；能构造可靠评分器且结果可判定时再评估强化路线。",
-      boundary: "评分器会被利用，偏好数据也可能放大标注偏见；必须配人工校准。",
+      boundary: "评分器可能被利用，偏好数据也可能放大标注偏见；发布记录保留人工校准样本与分歧处理。",
     },
     {
       question: "选择托管微调还是自建？",
       signal: "数据能否出域、模型是否开放、训练方法是否受平台支持、团队是否具备 GPU 与运维能力。",
       recommendation: "标准 SFT/偏好任务且满足数据边界时优先托管；需要开放权重、深度训练或自定义运行时再自建。",
-      boundary: "托管产品支持的模型、方法、地域和产物所有权会变化，必须查当期官方条款。",
+      boundary: "托管产品支持的模型、方法、地域和产物所有权会变化，采购记录应附当期官方条款与核验日期。",
     },
   ],
-  deepDiveTitle: "何时为理赔初审做可回滚微调",
+  deepDiveTitle: "理赔初审微调：数据合同、Adapter 与回滚",
   deepDiveLead:
-    "在理赔初审案例中，保单事实与证据继续由 RAG 提供，案件状态和批准由应用控制。只有字段分类、缺件表达或说明结构在轻量路线后仍稳定漂移，才建立训练数据合同；离线提升还必须在完整运行元组、真实端点与人工初审基线下成立。",
+    "用 300 条已裁决训练样本和 100 条冻结测试样本可以把四个切片的实验表格跑通；该规模不构成数据量建议。保单事实由 RAG 提供，案件状态和批准由应用控制。候选 Adapter 要在真实端点与人工初审基线下比较，并保留完整运行元组和回滚点。",
   deepDives: [
     {
       kind: "matrix",
       eyebrow: "ADAPTER SERVING",
-    title: "微调模型上线时怎样取舍",
+    title: "Adapter 的四种服务形态",
       intro:
         "LoRA 等参数高效方法把任务增量与底座分开保存，但生产系统仍要在隔离、利用率、切换速度和平台约束之间选择服务形态。",
       sourceIds: ["lora-2021", "qlora-2023", "hf-trl-peft", "nist-genai-profile"],
@@ -1007,7 +1007,7 @@ export const fineTuning = {
           name: "合并 Adapter 后部署",
           en: "Merged Adapter",
           mechanism: "将适配增量合并进基础权重，运行时无需动态选择 Adapter，服务链更接近普通模型端点。",
-          decision: "适合版本稳定、任务单一且运行时不支持动态 Adapter 的环境；合并前后必须重新评估与签名。",
+          decision: "适合版本稳定、任务单一且运行时不支持动态 Adapter 的环境；合并前后分别评估并签名。",
           boundary: "合并会弱化快速切换和共享底座优势，回滚需要完整保留原始底座与 Adapter。",
         },
         {

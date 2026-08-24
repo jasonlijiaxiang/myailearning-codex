@@ -29,6 +29,7 @@ import { completionCurriculum, completionLearning, completionQa } from "../app/m
 import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
 import { moduleDiscovery } from "../app/module-discovery.mjs";
 import { moduleExtensionViews } from "../app/module-extension-views.mjs";
+import { getChineseModuleExtensionView } from "../app/module-extension-views-zh.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
 import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
@@ -470,11 +471,12 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
 });
 
 test("v3 reading system keeps discovery functional, compact, and portable", async () => {
-  const [html, moduleHtml, layoutSource, interactionSource, styles, globalStyles] = await Promise.all([
+  const [html, moduleHtml, layoutSource, interactionSource, readingModeSource, styles, globalStyles] = await Promise.all([
     renderHtml("/"),
     renderHtml("/modules/evaluation"),
     readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/module-reading-modes.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
@@ -484,8 +486,13 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   assert.match(html, /class="moduleSearch"/);
   assert.match(html, /输入客户问题、技术或风险/);
   assert.match(interactionSource, /export function KnowledgeSearchLaunch/);
-  assert.match(moduleHtml, /<div class="readingNavHead"><span>正在阅读 ·/);
-  assert.match(interactionSource, /String\(activeIndex \+ 1\)\.padStart\(2, "0"\)/);
+  assert.match(moduleHtml, /class="moduleReadingExperience"/);
+  assert.match(moduleHtml, /role="tablist" aria-label="阅读方式"/);
+  assert.match(moduleHtml, /10 分钟速查/);
+  assert.match(moduleHtml, /系统学习/);
+  assert.match(moduleHtml, /现场查证/);
+  assert.match(readingModeSource, /String\(index \+ 1\)\.padStart\(2, "0"\)/);
+  assert.match(readingModeSource, /ArrowLeft.*ArrowRight.*Home.*End/s);
   assert.match(globalStyles, /--readable:\s*820px/);
   assert.match(styles, /\.moduleResult\s*\{[^}]*display:\s*grid[^}]*grid-template-areas:/s);
   assert.match(styles, /\.moduleSearch\s*\{[^}]*grid-template-columns:/s);
@@ -651,15 +658,11 @@ test("dense-reading modules derive a scannable content overview from the publica
   for (const publishedModule of denseReadingModules) {
     const html = await renderHtml(publishedModule.path);
     assert.match(html, /class="[^"]*\bmodulePilot\b[^"]*"/, `${publishedModule.slug} 未启用共享高密度阅读壳`);
-    if (publishedModule.readingProfile === "focused") {
-      assert.match(html, /class="[^"]*\bmoduleFocused\b[^"]*"/, `${publishedModule.slug} 未启用聚焦阅读结构`);
-      assert.doesNotMatch(html, /<dl class="moduleHeroMetrics"/, `${publishedModule.slug} 不应在首屏展示内容计数`);
-    } else {
-      assert.match(html, /<dl class="moduleHeroMetrics" aria-label="模块内容概览">/);
-      assert.match(html, /<dt>阅读章节<\/dt>/);
-      assert.match(html, /<dt>客户问题<\/dt>/);
-      assert.match(html, /<dt>证据卡<\/dt>/);
-    }
+    if (publishedModule.readingProfile === "focused") assert.match(html, /class="[^"]*\bmoduleFocused\b[^"]*"/, `${publishedModule.slug} 未启用聚焦阅读结构`);
+    assert.match(html, /<dl class="moduleHeroMetrics" aria-label="模块内容概览">/);
+    assert.match(html, /<dt>阅读方式<\/dt>/);
+    assert.match(html, /<dt>问题库<\/dt>/);
+    assert.match(html, /<dt>证据卡<\/dt>/);
     assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
   }
 });
@@ -670,8 +673,10 @@ test("focused pilots use relationship-driven reading paths instead of standalone
 
   for (const publishedModule of focusedModules) {
     const html = await renderHtml(publishedModule.path);
-    assert.doesNotMatch(html, /id="study-guide"/);
-    assert.doesNotMatch(html, /id="curriculum"/);
+    assert.match(html, /class="moduleReadingExperience"/);
+    assert.match(html, /10 分钟速查/);
+    assert.match(html, /系统学习/);
+    assert.match(html, /现场查证/);
     if (publishedModule.slug === "rag") {
       assert.match(html, /id="fit"/);
       assert.match(html, /id="evidence-contract"/);
@@ -695,16 +700,16 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.match(solution, /class="solutionCapabilityMatrix"/);
   assert.doesNotMatch(solution, /class="solutionDecisionRail"/);
   assert.match(rag, /class="ragDualChainExplorer"/);
-  assert.match(rag, /先证明需要外部证据，再设计两条生命周期/);
+  assert.match(rag, /RAG 的采用条件与两条生命周期/);
   assert.match(rag, /class="focusedDecisionLedger"/);
   assert.match(mcp, /class="mcpArchitectureExplorer"/);
   assert.match(mcp, /MCP 协议边界/);
   assert.match(mcp, /一次工具调用的典型路径/);
-  assert.match(mcp, /先证明复用价值，再画清四方责任/);
+  assert.match(mcp, /MCP 的复用价值与四方责任/);
   assert.match(mcp, /Tool 由模型控制调用，Resource 由应用选择装配，Prompt 由用户主动选择/);
   assert.match(mcp, /Tool 也可以是只读查询/);
   assert.match(mcp, /版本、能力元数据与结构化消息/);
-  assert.doesNotMatch(mcp, /维护协议会话|会话、能力协商与结构化消息|状态变更用 Tool|只读内容优先 Resource|无状态 Host/);
+  assert.doesNotMatch(mcp, /会话、能力协商与结构化消息|状态变更用 Tool|只读内容优先 Resource/);
   assert.doesNotMatch(mcp, /class="mcpResponsibilityMap"/);
   assert.match(inference, /class="inferenceExplorer"/);
   assert.match(inference, /TTFT · 首 token 时间/);
@@ -727,7 +732,8 @@ test("remaining modules complete their own knowledge views, learning expansions,
       assert.match(html, /class="[^"]*\bfocusedNarrative\b[^"]*"/);
       assert.match(html, /class="focusedDecisionLedger"/);
     } else {
-      assert.match(html, new RegExp(escapeRegExp(view.title)));
+      const chineseView = getChineseModuleExtensionView(slug) ?? view;
+      assert.match(html, new RegExp(escapeRegExp(chineseView.title)));
       assert.match(html, /data-knowledge-explorer="interactive"/);
       assert.match(html, new RegExp(`moduleKnowledgeExplorer--${escapeRegExp(view.layout)}`));
       assert.doesNotMatch(html, /class="extensionPrimerMap"/);
@@ -1016,21 +1022,22 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(solution, /TCO/);
   assert.match(solution, /七类场景，七套验收重点/);
   assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
-  assert.match(solution, /继续查询本模块全部客户问题/);
-  assert.doesNotMatch(solution, /需求决策契约|三本账|能力组合/);
+  assert.match(solution, /到问题库继续筛选/);
+  assert.doesNotMatch(solution, /需求决策契约/);
 
   assert.match(security, /data-knowledge-view="threat-path"/);
   assert.match(security, /沿一条攻击路径看清每道防线/);
   assert.match(security, /不可信内容进入.*进入模型上下文.*应用决定是否执行.*外部系统状态变化/s);
   assert.match(security, /IAM.*ACL.*DLP/s);
   assert.match(security, /指令.*数据.*模型与组件.*工具与 Agent.*输出与运营/s);
-  assert.match(security, /一份恶意简历.*ATS.*权限/s);
+  assert.match(security, /恶意简历进入招聘 Agent 后，如何限制权限/);
+  assert.match(security, /ATS 动作由确定性门控制/);
   assert.match(security, /OWASP LLM Top 10 能不能直接当作安全验收清单/);
   assert.match(security, /发生候选人数据泄露或招聘 Agent 越权后，第一步应该做什么/);
   assert.doesNotMatch(security, /四道外部控制门/);
 
   assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
-  assert.match(tuning, /先判断该不该训练，再管理完整发布过程/);
+  assert.match(tuning, /微调适用性与完整发布过程/);
   assert.match(tuning, /理赔材料初审/);
   assert.match(tuning, /Prompt \/ Schema.*RAG.*Tool \/ 规则.*Fine-tuning.*换基础模型/s);
   assert.match(tuning, /权威状态、规则或动作/);
@@ -1067,34 +1074,34 @@ test("RAG route follows one evidence decision from adoption through production",
 
   assert.match(html, /检索增强生成 · Retrieval-Augmented Generation/);
   assert.match(html, /把外部资料整理成当前用户可使用、能核对且可撤回的依据/);
-  assert.match(html, /本模块唯一主问题/);
+  assert.match(html, /核心问题/);
   assert.match(html, /只使用当前用户有权访问、仍然有效、能够回到原文的证据/);
-  assert.match(html, /先证明需要外部证据，再设计两条生命周期/);
-  assert.match(html, /RAG 必须先证明自己优于更简单的路线/);
-  assert.match(html, /先定义什么可以成为回答证据/);
+  assert.match(html, /知识应放在模型权重还是外部证据中/);
+  assert.match(html, /RAG 与更简单路线的采用比较/);
+  assert.match(html, /回答证据的成立条件/);
   assert.match(html, /检索 · Retrieval/);
   assert.match(html, /增强 · Augmentation/);
   assert.match(html, /生成 · Generation/);
   assert.match(html, /检索到不等于回答正确/);
-  assert.match(html, /离线链生产证据，在线链决定怎样使用证据/);
+  assert.match(html, /离线证据与在线回答生命周期/);
   assert.match(html, /切片只是其中一步/);
-  assert.match(html, /RAG 选型不是只选一个生成模型/);
+  assert.match(html, /RAG 组件选型/);
   assert.match(html, /Candidate Recall@K/);
-  assert.match(html, /沿证据链测量，才能知道应该修哪里/);
-  assert.match(html, /把安全、Trace、云服务和经济性放进同一上线决定/);
-  assert.match(html, /先写能力、验收与责任，再对应具体云产品/);
-  assert.match(html, /成本只是分母，ROI 还需要价值、采用率和风险/);
-  assert.match(html, /复杂度由真实失败样本触发，不是统一升级阶梯/);
-  assert.match(html, /它们都不是普通 RAG 的默认组成/);
+  assert.match(html, /证据链测量与失效定位/);
+  assert.match(html, /生产控制、Trace 与经济性/);
+  assert.match(html, /云能力、验收与责任映射/);
+  assert.match(html, /风险调整后的 ROI/);
+  assert.match(html, /RAG 扩展模式与采用条件/);
+  assert.match(html, /它们可以组合，但不是一条从低到高的成熟度阶梯/);
   assert.match(html, /Agent 可以调用 RAG；MCP 可以暴露检索能力；A2A 可以委派完整任务/);
-  assert.match(html, /用可评审产物证明真正掌握 RAG/);
-  assert.match(html, /学完后，你应该能独立完成/);
-  assert.match(html, /用真实产物证明掌握/);
+  assert.match(html, /RAG 实战产物与通过标准/);
+  assert.match(html, /做完这组内容，你可以/);
+  assert.match(html, /动手做一遍/);
   assert.match(html, /客户高频问题与深度回答/);
   assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);
   assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
   assert.match(html, /一个企业 RAG 是否还需要 Agent、MCP 或 A2A/);
-  assert.match(html, /本题依据 \/ Evidence/);
+  assert.match(html, /查看依据与适用范围/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
   assert.equal(ragLearningContent.outcomes.length, 5);
   assert.equal(ragLearningContent.route.length, 6);
@@ -1105,7 +1112,7 @@ test("RAG route follows one evidence decision from adoption through production",
   assert.match(html, /RAG 检索链实验/);
   assert.match(html, /关键词检索 BM25/);
   assert.match(html, /href="\/references"/);
-  assert.doesNotMatch(html, /<dl class="moduleHeroMetrics"/);
+  assert.match(html, /<dt>阅读方式<\/dt>/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("rag"))) {
     assert.match(
@@ -1126,8 +1133,8 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   const html = await renderHtml("/modules/ai-agent");
 
   assert.match(html, /智能体 · AI Agent/);
-  assert.match(html, /先证明必须动态决策，再设计 Agent Run/);
-  assert.match(html, /四道门决定是 Workflow、LLM 步骤还是 Agent/);
+  assert.match(html, /Agent 的采购价值来自受控的动态决策/);
+  assert.match(html, /Agent 的采用条件/);
   assert.match(html, /跨区域保险理赔材料补件与初审/);
   assert.match(html, /最终赔付资格、金额与案件状态永不由 Agent 自行决定/);
   assert.match(html, /没有确定性基线，就无法证明 Agent 带来的增益与 ROI/);
@@ -1188,7 +1195,7 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /结构正确不等于事实正确|保证结构不等于保证字段值真实/);
   assert.match(html, /模型差异、提示版本与发布控制/);
   assert.match(html, /提示词工程与云服务机会/);
-  assert.match(html, /理赔材料初审：先路由失败，再决定改哪一层/);
+  assert.match(html, /失败症状与处理层/);
   assert.match(html, /冻结基线.*控制变更.*离线回归.*灰度观察.*回滚与运营/s);
   assert.match(html, /观察到的失败.*优先路线.*主要责任模块/s);
   assert.match(html, /资格、限额或状态转换.*确定性规则与授权.*应用工作流/s);
@@ -1237,13 +1244,13 @@ test("Model landscape route uses the claim-intake case to prove selection and ex
   ]);
 
   assert.match(html, /data-knowledge-view="selection-coordinate"/);
-  assert.match(html, /模型选型从业务损失开始，不从排行榜开始/);
+  assert.match(html, /模型选型的业务损失坐标/);
   assert.match(html, /任务与损失.*硬门与身份.*同条件试点.*组合、发布与退出/s);
   assert.match(html, /模型始终不拥有赔付批准权/);
   assert.match(html, /建立理赔初审候选可行域/);
   assert.match(html, /完成一次同条件模型 PoC/);
   assert.match(html, /演练模型升级与供应商退出/);
-  assert.match(html, /开放权重不等于开源/);
+  assert.match(html, /开放权重 ≠ 开源/);
   assert.match(html, /可下载不代表可任意商用/);
   assert.match(html, /硬能力或交付硬门失败时回到模型选型并重新验收/);
   assert.match(html, /采集、解析、跨模态对齐和证据坐标归 Multimodal/);
@@ -1435,13 +1442,14 @@ test("every published module passes the shared reader, terminology, and depth co
       assert.match(html, new RegExp(`data-quality-section="${section}"`), `${publishedModule.slug} 缺少 ${section} 质量区块`);
     }
 
-    assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
-    assert.match(html, /客户高频问题与深度回答/);
+    assert.match(html, /aria-label="(?:重要边界|需要单独验证的约束)"[^>]*data-importance="critical"/);
+    assert.match(html, /客户(?:高频问题与深度回答|问题)/);
     assert.match(html, /class="readingProgress"/, `${publishedModule.slug} 缺少阅读进度`);
-    assert.match(html, /class="moduleReadingNav"/, `${publishedModule.slug} 缺少章节导航`);
-    assert.match(html, /INTERACTIVE SYSTEM VIEW/, `${publishedModule.slug} 缺少机制或决策视图`);
+    assert.match(html, /class="moduleReadingExperience"/, `${publishedModule.slug} 缺少任务阅读器`);
+    assert.match(html, /role="tablist" aria-label="阅读方式"/, `${publishedModule.slug} 缺少可访问的阅读方式选择`);
+    assert.match(html, /INTERACTIVE SYSTEM VIEW|data-knowledge-explorer="interactive"/, `${publishedModule.slug} 缺少机制或决策视图`);
     assert.match(html, /搜索客户问题/, `${publishedModule.slug} 缺少可检索实战包`);
-    assert.match(html, /href="\/questions"/, `${publishedModule.slug} 缺少全站问题查询入口`);
+    assert.match(html, /href="\/questions(?:\?[^\"]*)?"/, `${publishedModule.slug} 缺少全站问题查询入口`);
     assert.match(html, /href="\/references(?:#[^"]+)?"/);
 
     for (const termId of publishedModule.requiredTerms) {
@@ -1581,7 +1589,7 @@ test("legacy module addresses resolve to the current published knowledge base", 
     const html = await renderHtml(`/modules/${legacySlug}`);
     const canonicalModule = getPublishedModule(canonicalSlug);
     assert.match(html, new RegExp(`<h1[^>]*id="${escapeRegExp(canonicalModule.titleId)}"`));
-    assert.match(html, /客户高频问题与深度回答/);
+    assert.match(html, /客户(?:高频问题与深度回答|问题)/);
     assert.doesNotMatch(html, /正文建设中|CONTENT STATUS|后续版本将补齐|模块依赖/);
   }
 });
@@ -1827,19 +1835,13 @@ test("every shared module has a source-backed learning route and practical labs"
     }
 
     const html = await renderHtml(publishedModuleEntry.path);
-    if (publishedModuleEntry.readingProfile === "focused") {
-      assert.doesNotMatch(html, /id="study-guide"/);
-      assert.doesNotMatch(html, /id="curriculum"/);
-      assert.match(html, /核心机制与售前判断/);
-    } else {
-      assert.match(html, /id="study-guide"/);
-      assert.match(html, /id="curriculum"/);
-      assert.match(html, /学完后，你应该能独立完成/);
-      assert.match(html, /建议学习顺序/);
-      assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
-      assert.match(html, /用真实产物证明掌握/);
-      assert.match(html, /课程地图与知识展开/);
-    }
+    assert.match(html, /id="study-guide"/);
+    assert.match(html, /id="curriculum"/);
+    assert.match(html, /做完这组内容，你可以/);
+    assert.match(html, /从这里开始/);
+    assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
+    assert.match(html, /动手做一遍/);
+    assert.match(html, /知识地图/);
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
   }
 });

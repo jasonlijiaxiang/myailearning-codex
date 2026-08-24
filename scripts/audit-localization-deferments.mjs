@@ -86,29 +86,47 @@ function sameEnglishAuthoredReviewAndDate(left, right) {
     && left.englishUpdatedAt === right.englishUpdatedAt;
 }
 
-function chineseRuntimeState(state) {
-  return {
-    zhStateHash: state.zhStateHash,
-    zhObjects: state.zhObjects,
-    zhRendererFiles: state.zhRendererFiles,
-  };
-}
-
 function sameChineseRuntimeState(left, right) {
   return left.zhStateHash === right.zhStateHash
     && same(left.zhObjects, right.zhObjects)
     && same(left.zhRendererFiles, right.zhRendererFiles);
 }
 
-function withRuntimeChineseBaseline(baseline, runtimeState) {
-  return { ...baseline, ...chineseRuntimeState(runtimeState) };
+function isChineseRendererProjectionObjectId(objectId) {
+  return objectId.startsWith("/module:")
+    && (objectId.includes("/renderedProjection/rendererDependencyFiles/")
+      || objectId.endsWith("/renderedProjection/sharedRendererHash"));
 }
 
-function hasOnlyChineseRendererProjectionDelta(before, after) {
+function chineseRendererProjectionState(state) {
+  return {
+    zhObjects: Object.fromEntries(Object.entries(state.zhObjects)
+      .filter(([objectId]) => isChineseRendererProjectionObjectId(objectId))
+      .sort(([left], [right]) => left.localeCompare(right))),
+    zhRendererFiles: [...state.zhRendererFiles],
+  };
+}
+
+export function sameChineseRendererProjectionState(left, right) {
+  return same(chineseRendererProjectionState(left), chineseRendererProjectionState(right));
+}
+
+export function withRuntimeChineseBaseline(baseline, runtimeState) {
+  const baselineObjects = Object.entries(baseline.zhObjects)
+    .filter(([objectId]) => !isChineseRendererProjectionObjectId(objectId));
+  const runtimeProjectionObjects = Object.entries(runtimeState.zhObjects)
+    .filter(([objectId]) => isChineseRendererProjectionObjectId(objectId));
+  return {
+    ...baseline,
+    zhObjects: Object.fromEntries([...baselineObjects, ...runtimeProjectionObjects]
+      .sort(([left], [right]) => left.localeCompare(right))),
+    zhRendererFiles: [...runtimeState.zhRendererFiles],
+  };
+}
+
+export function hasOnlyChineseRendererProjectionDelta(before, after) {
   const delta = diffObjectCatalogs(before.zhObjects, after.zhObjects);
-  return delta.length > 0 && delta.every(({ objectId }) => objectId.startsWith("/module:")
-    && (objectId.includes("/renderedProjection/rendererDependencyFiles/")
-      || objectId.endsWith("/renderedProjection/sharedRendererHash")));
+  return delta.length > 0 && delta.every(({ objectId }) => isChineseRendererProjectionObjectId(objectId));
 }
 
 function withRuntimeEnglishBaseline(baseline, runtimeState) {
@@ -308,7 +326,7 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     // A later English-only maintenance can legitimately follow a document-shell
     // maintenance. Its post-state still carries the document-shell Chinese
     // renderer projection, even though its own kind is english-renderer.
-    const chineseBaseline = runtimeOverlay && !sameChineseRuntimeState(baseline, runtimeOverlay.state)
+    const chineseBaseline = runtimeOverlay
       ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state)
       : baseline;
 
@@ -330,8 +348,11 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
 
     const active = activeBySlug.get(slug)?.[0] ?? null;
     const actualDiff = diffObjectCatalogs(chineseBaseline.zhObjects, current.zhObjects);
+    const expectedZhStateHash = runtimeOverlay?.state.zhStateHash ?? chineseBaseline.zhStateHash;
+    const hasChineseStateDelta = actualDiff.length > 0
+      || current.zhStateHash !== expectedZhStateHash;
     if (!active) {
-      if (current.zhStateHash !== chineseBaseline.zhStateHash || actualDiff.length) fail(`${slug}: Chinese content changed without an active deferment`);
+      if (hasChineseStateDelta) fail(`${slug}: Chinese content changed without an active deferment`);
       if (!unchangedEnglish(current, englishBaseline)) fail(`${slug}: English content or date changed outside the localization workflow`);
       messages.push(runtimeOverlay
         ? `ALIGNED/RUNTIME-MAINTAINED ${slug}: ${runtimeOverlay.maintenanceId}`
@@ -347,7 +368,7 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     if (!same(sorted(active.baselineReviewIds), expectedReviewIds)) {
       fail(`${active.defermentId}: baselineReviewIds do not match the immutable review set`);
     }
-    if (current.zhStateHash === chineseBaseline.zhStateHash || actualDiff.length === 0) {
+    if (!hasChineseStateDelta) {
       fail(`${active.defermentId}: active deferment has no Chinese state delta`);
     }
     if (!compareAffectedObjects(actualDiff, active.affectedObjects)) {
@@ -595,11 +616,11 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           failures.push(`${label}: ${slug} base commit does not match the registered English baseline or prior runtime maintenance`);
           continue;
         }
+        if (!sameChineseRendererProjectionState(before, expectedBefore)) {
+          failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer projection`);
+          continue;
+        }
         if (documentShell) {
-          if (!sameChineseRuntimeState(before, expectedBefore)) {
-            failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer state`);
-            continue;
-          }
           if (!hasOnlyChineseRendererProjectionDelta(before, after)) {
             failures.push(`${label}: ${slug} changes Chinese reader content outside its renderer projection`);
             continue;

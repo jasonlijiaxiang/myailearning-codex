@@ -11,9 +11,9 @@ export const solutionPatternsBrief = {
       zh: "业务结果与当前基线",
       en: "Outcome & Baseline",
       explanation:
-        "在讨论架构前先确认使用者、触发、当前流程、权威完成状态、期望变化、责任人和不可接受损失。模型输出只是中间产物，除非它本身就是获准交付物。",
+        "需求记录包含使用者、触发、当前流程、权威完成状态、期望变化、责任人和不可接受损失。模型输出通常是中间产物；获准直接交付时应在契约中明示。",
       decision:
-        "没有现状基线、权威终态或责任人时，先补需求发现，不能用 Demo 印象解释价值。",
+        "缺少现状基线、权威终态或责任人时，项目保留在 Discovery，并把缺口列为下一轮访谈与数据任务。",
     },
     {
       zh: "可测约束包络",
@@ -27,7 +27,7 @@ export const solutionPatternsBrief = {
       zh: "最小充分闭环",
       en: "Minimum Sufficient Loop",
       explanation:
-        "先比较无 AI、确定性规则和单次模型调用；只有当前知识、外部动作、动态路径、重复互操作或共享治理确实需要时，才逐步加入 RAG、工作流、Agent、MCP、A2A、Gateway 或平台。",
+        "候选基线依次包括无 AI、确定性规则和单次模型调用；当前知识、外部动作、动态路径、重复互操作或共享治理形成明确需求时，才增加 RAG、工作流、Agent、MCP、A2A、Gateway 或平台。",
       decision:
         "每个组件都要写明必要条件、责任人、失败响应和移除条件；技术名称不是成熟度阶梯。",
     },
@@ -166,7 +166,7 @@ export const solutionPatternsBrief = {
   ],
     deepDiveTitle: "把方案落到可验收的业务系统",
   deepDiveLead:
-    "售前方案的深度不取决于组件数量，而取决于能否解释业务变化由什么机制产生、系统在哪些条件下失效，以及上线后由谁持续承担责任。",
+    "一份可验收方案说明业务变化的机制、权威终态、失效条件、阶段证据、运行成本和上线后的责任人。组件清单只用来承载这些责任。",
   deepDives: [
     {
       kind: "scenario",
@@ -489,9 +489,9 @@ export const solutionPatternsBrief = {
   evidenceCards: [
     {
       metric: "场景 × 能力",
-      title: "方案不是单一模型",
+      title: "完整方案覆盖模型以外的业务责任",
       finding: "客户场景需要把模型、数据、流程、身份、工具和工程保障组合为可运行系统。",
-      boundary: "能力越多并不必然更好，每一层都必须对应明确需求和责任。",
+      boundary: "每一层对应明确需求、owner、验收证据和移除条件。",
       sourceId: "anthropic-effective-agents",
       accent: true,
     },
@@ -540,7 +540,7 @@ export const multimodalBrief = {
   position:
     "位于应用模式层，主责模态特有的采集质量、表示、对齐、证据坐标与降级；检索和引用归 RAG，行动授权与业务终态归 Agent 和业务系统，通用数据生命周期、评估方法、安全控制与运行发布分别由相邻模块负责。",
   presentation: "pipeline",
-  principleTitle: "先保护业务证据，再决定模型与管线",
+  principleTitle: "业务证据链如何决定模型、管线与降级路线",
   principles: [
     {
       zh: "理解与生成分离",
@@ -654,14 +654,14 @@ export const multimodalBrief = {
         "生成完成不等于可以发布；人物肖像、品牌、版权和深度合成要求必须单独审查。",
     },
   ],
-    deepDiveTitle: "让媒体输入成为可核对的业务信息",
+    deepDiveTitle: "照片、视频、语音和巡检表怎样回到原始坐标",
   deepDiveLead:
-    "以一次设备现场巡检为主线：工程师上传设备照片、铭牌、短视频、语音说明和巡检表，系统要生成可回跳原始证据的异常结论，而不是只证明模型能看图。",
+    "设备巡检包包含照片区域、铭牌字段、视频时间段、语音片段和表单单元格；每条异常结论保存对应坐标、转换版本、模型结果与降级状态，工程师可以直接回跳核对。",
   deepDives: [
     {
       kind: "sequence",
       eyebrow: "BARGE-IN STATE MACHINE",
-      title: "打断不是停播，而是一次状态恢复",
+      title: "一次语音打断需要保存播放时间、取消信号和上下文版本",
       intro:
         "实时语音 Agent 被用户打断时，错误处理是继续播放过期内容、让旧生成任务继续写状态。正确做法是把打断当作一次需要恢复上下文并丢弃失效输出的状态迁移。",
       items: [
@@ -916,7 +916,7 @@ export const multimodalBrief = {
     },
   ],
   criticalBoundary:
-    "多模态不等于把所有媒体交给一个大模型：转写不等于理解，语义相似不等于事实正确，生成不等于可发布。",
+    "多模态管线分别记录转写、理解、事实核验、内容审核、标识和业务批准状态；任何一个状态都不能替代下一道门。",
   cloudHooks: [
     {
       stage: "媒体接入与解析（Ingestion & Parsing）",
@@ -1093,11 +1093,11 @@ export const multimodalBrief = {
 export const mcpBrief = {
   slug: "mcp",
   definition:
-    "模型上下文协议（Model Context Protocol, MCP）定义 AI 应用发现、读取和调用外部工具与数据的通用交互方式，减少客户端与服务端逐对定制。",
+    "模型上下文协议（Model Context Protocol, MCP）规定 Host 中的 Client 如何发现一个 Server，并以 Tool、Resource 和 Prompt 交换调用或上下文。它统一协议消息，现有 API、身份、授权和业务事务继续作为执行依据。",
   position:
-    "位于协议与互操作层，连接 AI 应用或 Agent 与工具、资源和提示模板；它复用而不取代现有 API、身份、安全和网关体系。",
+    "位于协议与互操作层，连接 AI 应用或 Agent 与工具、资源和提示模板；现有 API、身份、安全和网关体系继续负责业务执行与控制。",
   presentation: "stack",
-  principleTitle: "协议统一交互，应用仍然负责信任与执行",
+  principleTitle: "一条 tools/call 请求怎样找到 Server、取得授权并留下执行证据",
   principles: [
     {
       zh: "主机、客户端与服务端",
@@ -1105,7 +1105,7 @@ export const mcpBrief = {
       explanation:
         "Host 管理用户体验、权限和多个连接；在当前正式版 2026-07-28 中，Client 以自包含请求和一个 Server 交换能力；只有兼容 2025-11-25 等旧版时才使用协议会话；Server 暴露受控能力。",
       decision:
-        "设计时明确哪一层持有身份、呈现确认、执行策略并记录审计，不能把责任交给协议名称。",
+        "架构图标出持有身份、呈现确认、执行策略和记录审计的具体组件，并让每条调用日志都能回到这些责任主体。",
     },
     {
       zh: "三类服务端原语",
@@ -1113,15 +1113,15 @@ export const mcpBrief = {
       explanation:
         "Tools 是模型控制的可调用操作，Resources 是应用控制的可寻址上下文，Prompts 是用户控制的可选择模板；Tool 可以只读，三类原语都可能承载敏感或不可信内容。",
       decision:
-        "先按谁决定使用来选择原语，再独立标注数据范围、敏感性、副作用、授权、幂等与审计。",
+        "按控制主体选择原语，并在能力清单中另列数据范围、敏感性、副作用、授权、幂等与审计字段。",
     },
     {
       zh: "能力协商与生命周期",
       en: "Capability Negotiation & Lifecycle",
       explanation:
-        "当前正式版 2026-07-28 已移除 initialize 与协议级 session，改用自包含请求、按请求版本与能力元数据，并以 server/discover 支持预先发现；2025-11-25 及更早版本仍使用初始化握手。",
+        "当前正式版 2026-07-28 已删除 initialize/initialized 与 Mcp-Session-Id；每个请求携带协议版本、客户端身份和能力元数据，server/discover 只在需要预取能力时调用。锁定 2025-11-25 的实现仍走初始化握手与协议会话。",
       decision:
-        "客户端必须固定协议基线，并分别测试当前正式版与旧版兼容路径中的能力缺失、版本差异、调用失败、取消和断线。",
+        "兼容矩阵至少保存一条 2026-07-28 自包含请求和一条 2025-11-25 initialize 轨迹，并覆盖能力缺失、调用失败、取消、断线与降级。",
     },
     {
       zh: "传输决定信任边界",
@@ -1129,7 +1129,7 @@ export const mcpBrief = {
       explanation:
         "stdio 常用于本机受控子进程；Streamable HTTP 面向远程服务，会引入网络、身份、租户和回调风险。",
       decision:
-        "从本地迁移远程时重新完成威胁建模、认证授权、限流和审计，不把它视为只改 URL。",
+        "本地转远程的上线单应包含新的威胁模型、认证授权、租户隔离、限流和审计方案。",
     },
     {
       zh: "MCP 与函数调用互补",
@@ -1137,7 +1137,7 @@ export const mcpBrief = {
       explanation:
         "Function Calling 定义模型如何表达一次工具选择和参数；MCP 统一工具如何被发现、描述与调用。",
       decision:
-        "单应用、少量稳定工具可直接函数调用；多个客户端或工具提供方需要复用时再引入 MCP。",
+        "单应用、少量稳定工具使用直接函数调用；出现多个客户端或工具提供方时，用重复适配数量和运营成本决定是否引入 MCP。",
     },
   ],
   decisions: [
@@ -1191,7 +1191,7 @@ export const mcpBrief = {
       signal:
         "团队准备把锁定 2025-11-25 的实现直接切换到 2026-07-28，或把正式规范发布等同于所用 SDK、Client、Server 与网关已经兼容。",
       recommendation:
-        "以 2026-07-28 作为当前协议基线，在隔离兼容轨中验证无状态请求、server/discover、Tasks 扩展、授权变化及双版本互操作；确认生态支持后再决定切换和回滚窗口。",
+        "建立双版本兼容矩阵，记录 2026-07-28 请求头与 _meta、2025-11-25 initialize 与 Mcp-Session-Id、Tasks 扩展、授权、SDK 模式、网关结果和回滚条件。",
       boundary:
         "正式规范已经发布，但不证明具体 SDK、Client、Server、网关或私有扩展已经兼容。",
     },
@@ -1200,21 +1200,21 @@ export const mcpBrief = {
       signal:
         "单一应用直连少量固定 API、没有跨客户端复用需求、安全边界简单、团队没有 Server 运维与升级能力。",
       recommendation:
-        "先用直接函数调用或 API 网关；只有协议标准化带来的复用与治理收益明确时再引入 MCP。",
+        "使用直接函数调用或 API 网关，并把重复适配次数、Server 运维成本和治理收益写入选型记录；收益达到团队约定阈值时再评估 MCP。",
       boundary:
-        "MCP 是工具标准化协议，不是银弹；协议引入的成本（版本、授权、排错、供应链）必须纳入选型。",
+        "选型总成本应计入协议版本、授权、排错、Server 运营和供应链管理。",
     },
   ],
-    deepDiveTitle: "采用 MCP 前，核对主体、资源、权限和版本",
+    deepDiveTitle: "远程 MCP 调用的主体、协议版本、授权和执行记录",
   deepDiveLead:
-    "企业采用 MCP 的核心工程问题不是能否列出并调用 Tool，而是复用收益能否覆盖协议成本，以及一次发现、授权和执行是否始终绑定正确主体、正确能力、正确资源与可追溯版本。",
+    "最小运行包包括 Server 端点与发布者、协议版本、Tool Schema、调用身份、授权决策、执行终态和 Trace。它既用于核算复用收益，也用于追查一次发现、授权或执行落到了哪个主体、资源和版本。",
   deepDives: [
     {
       kind: "sequence",
       eyebrow: "REMOTE MCP TRUST CHAIN",
       title: "远程 Tool 调用穿过哪些信任边界",
       intro:
-        "每一段都应由确定性系统验证；模型负责表达意图，但不能替代服务身份、用户授权和资源端校验。",
+        "模型表达调用意图；目录、身份服务、策略引擎、业务 API 和审计系统分别验证服务、主体、参数、资源与执行结果。",
       items: [
         {
           name: "发现并验证 Server",
@@ -1227,12 +1227,12 @@ export const mcpBrief = {
             "能解析端点或读取工具描述不等于服务可信。",
         },
         {
-          name: "先固定版本再协商能力",
+          name: "用双版本契约测试固定协议路径",
           en: "Version Before Capability",
           mechanism:
-            "当前正式版 2026-07-28 以按请求元数据声明版本和能力，并可用 server/discover 预先发现；2025-11-25 等旧版则通过 initialize/initialized 与协议会话协商。",
+            "2026-07-28 的每个请求携带版本、客户端身份和能力元数据，可选用 server/discover 预取能力；2025-11-25 等旧版通过 initialize/initialized 与 Mcp-Session-Id 建立协议会话。",
           decision:
-            "固定兼容范围，为现代与旧版两条协议路径建立契约测试；通过网关记录请求使用的协议、Server、扩展与 Tool Schema 版本。",
+            "为两条协议路径各保留请求轨迹和契约测试；网关记录协议、SDK 模式、Server、扩展与 Tool Schema 版本。",
           boundary:
             "2026-07-28 已是正式规范，但客户端不能据此假设具体实现已支持，也不能根据上一次请求无限期假设能力不变。",
         },
@@ -1274,7 +1274,7 @@ export const mcpBrief = {
       eyebrow: "PRIMITIVE CONTROL MODEL",
       title: "三类原语按控制主体区分，读写风险另行分级",
       intro:
-        "原语回答“谁决定何时使用”，风险控制回答“它能看到什么、改变什么以及谁有权批准”。两条轴必须同时存在。",
+        "原语清单记录谁决定何时使用；风险清单记录它能看到什么、改变什么、由谁批准。两份记录用同一个能力 ID 关联。",
       items: [
         {
           name: "Tool · 模型控制",
@@ -1318,9 +1318,9 @@ export const mcpBrief = {
     {
       kind: "matrix",
       eyebrow: "DEPLOYMENT TRUST MODES",
-      title: "同一个 MCP Server，在不同部署形态下不是同一种风险",
+      title: "部署形态决定 MCP Server 的信任与运营成本",
       intro:
-        "部署位置、用户数量、工具影响和运营主体共同决定网关、安全与审计投入，不能只按 stdio 或 HTTP 二分。",
+        "部署位置、用户数量、工具影响和运营主体共同决定网关、安全与审计投入；stdio 或 HTTP 只是其中一个字段。",
       items: [
         {
           name: "本机开发工具",
@@ -1373,7 +1373,7 @@ export const mcpBrief = {
     },
   ],
   criticalBoundary:
-    "MCP 标准化的是发现与调用，不会自动授予信任、权限或安全保证；协议可互操作不等于服务可安全使用。",
+    "MCP 覆盖发现与调用的协议消息。服务准入、主体授权、参数策略、资源校验和安全保证由 Host、网关与业务系统执行。",
   cloudHooks: [
     {
       stage: "服务运行（Server Runtime）",
@@ -1480,9 +1480,9 @@ export const mcpBrief = {
     },
     {
       q: "MCP 2026-07-28 已成为正式规范，生产系统应该立即切换吗？",
-      a: "不应该只因正式规范发布就立即切换。2026-07-28 已是当前协议基线，但生产迁移仍取决于所用 SDK、Client、Server、网关和扩展是否通过兼容验证。",
+      a: "把 2026-07-28 作为目标协议，把切换作为一次破坏性版本迁移。生产日期由 SDK、Client、Server、网关和扩展的兼容测试决定。",
       depth:
-        "迁移测试要覆盖 initialize/initialized 与协议 session 的移除、按请求版本和能力元数据、server/discover、Tasks 从旧版实验性核心能力迁到扩展后的生命周期，以及授权强化。核对 SDK、Client、Server、网关和私有扩展支持后，再设置并行兼容、灰度和回滚；不要把规范层生效写成产品层已兼容。",
+        "迁移测试分别保存现代自包含请求和旧版 initialize/initialized、Mcp-Session-Id 轨迹，并覆盖 server/discover、Tasks 扩展、授权、并行兼容、灰度与回滚。规范层已经生效；产品层兼容由这些测试结果证明。",
       ask: "当前实现固定了哪个协议版本？哪些 SDK、Server、网关和自建扩展会受破坏性变化影响？",
       tag: "契约版本",
       basis: "当前正式版 + 旧版迁移边界",
@@ -1525,16 +1525,16 @@ export const mcpBrief = {
     },
     {
       metric: "2025-11-25 → 2026-07-28",
-      title: "当前正式版与旧版兼容路径必须分开",
-      finding: "截至 2026-08-01，2026-07-28 是当前正式规范；initialize、协议级 Session 与旧版核心 Tasks 只用于锁定旧版的实现与迁移对照。",
+      title: "双版本测试保留两套协议证据",
+      finding: "2026-07-28 是当前正式规范，采用自包含请求且没有 initialize/initialized 与 Mcp-Session-Id；这些握手和会话机制只出现在锁定旧版的实现与迁移对照中。",
       boundary: "正式规范发布不等于生态兼容；SDK、Client、Server、网关和私有扩展仍需逐项验证。",
       sourceId: "mcp-changelog-2026-07-28",
     },
     {
-      metric: "互操作 ≠ 可信",
-      title: "成功连接不代表安全可用",
+      metric: "连接成功 / 服务准入",
+      title: "协议成功与安全准入是两项检查",
       finding: "工具描述、外部内容、凭据和自动执行范围仍可能造成投毒与越权。",
-      boundary: "必须由网关、身份、Allowlist、审批与审计补足协议之外的控制。",
+      boundary: "网关、身份、Allowlist、审批与审计负责协议之外的服务准入与执行控制。",
       sourceId: "mcp-security",
     },
     {
@@ -1550,11 +1550,11 @@ export const mcpBrief = {
 export const a2aBrief = {
   slug: "a2a",
   definition:
-    "智能体间协议（Agent2Agent Protocol, A2A）让应用、服务或 Agent 与独立远端 Agent 发现能力并交互；远端既可直接返回 Message，也可创建有状态 Task，并通过状态与可选 Artifact 交付结果。",
+    "智能体间协议（Agent2Agent Protocol, A2A）用 Agent Card 发布能力；一次 Send Message 调用可直接返回 Message，也可创建带服务端 ID 的 Task，并以状态事件和可选 Artifact 交付结果。",
   position:
-    "位于协议与互操作层，解决独立 Agent 的水平协作；它不替代本地编排、消息队列、业务工作流，工具和数据接入通常仍由 MCP 或 API 负责。",
+    "位于协议与互操作层，处理独立 Agent 的水平协作；本地编排、消息队列和业务工作流继续维护内部执行，工具与数据接入通常由 MCP 或 API 负责。",
   presentation: "loop",
-  principleTitle: "以可追踪任务协作，而不是共享内部推理",
+  principleTitle: "一次跨团队委派留下 Agent Card、Task 状态事件和 Artifact 验收记录",
   principles: [
     {
       zh: "能力发现",
@@ -1562,7 +1562,7 @@ export const a2aBrief = {
       explanation:
         "Agent Card 描述身份、地址、技能、输入输出和安全要求，让调用方在委派前判断能力与接入方式。",
       decision:
-        "生产环境需要验证 Card 的来源、域名、签名和有效期，不能把自声明能力当认证结果。",
+        "准入记录保存 Card 来源、域名、签名、有效期和验证结果；自声明技能只进入候选能力清单。",
     },
     {
       zh: "有状态任务",
@@ -1570,7 +1570,7 @@ export const a2aBrief = {
       explanation:
         "需要跟踪、等待或恢复时，服务端创建 Task 并维护明确状态；即时、自包含交互可以直接返回 Message，不必强制建 Task。",
       decision:
-        "客户端必须同时处理 Message 与 Task；Task 实现还要为状态恢复、取消、重试和超时建立可审计规则。",
+        "客户端契约测试覆盖 Message 与 Task 两种响应；Task 日志保存 Task ID、八个非 UNSPECIFIED 操作状态、取消、重试和超时事件。",
     },
     {
       zh: "消息与产物分离",
@@ -1594,16 +1594,16 @@ export const a2aBrief = {
       explanation:
         "Agent 可以只暴露能力、输入、状态和产物，不必共享内部 Prompt、工具和推理过程。",
       decision:
-        "跨组织协作以契约、状态和产物验收为主，不以暴露内部实现换取可调试性。",
+        "跨组织审计包记录契约、身份、状态和产物验收；提供方在自己的信任域保存内部执行证据。",
     },
   ],
   decisions: [
     {
-      question: "是否需要 A2A，而不是单个 Agent？",
+      question: "这项委派是否跨越部署、所有权或信任域？",
       signal:
-        "任务必须委派给独立部署、独立所有者、不同框架或不同云上的专业 Agent。",
+        "任务交给独立部署、独立所有者、不同框架或不同云上的专业 Agent。",
       recommendation:
-        "只有跨系统边界确实存在时采用 A2A；同一应用内的子任务先用本地编排。",
+        "跨系统边界采用 A2A 的稳定任务契约；同一应用内共享状态和发布周期的子任务保留在本地编排。",
       boundary:
         "把一个应用人为拆成多个 Agent 不会自动提高质量，只会增加交接与评估成本。",
     },
@@ -1646,14 +1646,14 @@ export const a2aBrief = {
   ],
   deepDiveTitle: "把跨 Agent 协作设计成可恢复的分布式任务",
   deepDiveLead:
-    "A2A 的售前价值不在于让更多 Agent 对话，而在于即时交互与状态化委派都能跨团队、跨系统和跨信任域形成明确契约、恢复与验收责任。",
+    "最小运行包包含 Agent Card 快照、调用身份、Task ID、TaskState 时间线、幂等键、可选 Artifact 校验值和业务验收记录。即时 Message 路径也要保留身份、输入和响应证据。",
   deepDives: [
     {
       kind: "sequence",
       eyebrow: "TASK LIFECYCLE",
-      title: "先选择 Message 或 Task，再让状态化工作跨断线恢复",
+      title: "Message 直接响应与 Task 状态化委派的两条运行轨迹",
       intro:
-        "远端可以直接返回 Message，也可以创建 Task；一旦选择 Task，连接只是更新通道，状态、授权和恢复语义必须由实现明确保存。",
+        "远端对即时交互返回 Message，对需要跟踪的工作创建 Task。Task 存储保存状态、授权和恢复语义，网络连接只负责传递更新。",
       items: [
         {
           name: "发送 Message 并选择响应对象",
@@ -1661,7 +1661,7 @@ export const a2aBrief = {
           mechanism:
             "调用方依据已验证的 Agent Card 发送 Message；远端对即时交互直接返回 Message，对需跟踪工作创建服务端 Task ID。",
           decision:
-            "契约测试必须覆盖 Message 与 Task 两条路径；需要恢复的实现要持久化 Task 契约与状态。",
+            "契约测试覆盖 Message 与 Task 两条路径；需要恢复的实现持久化 Task 契约、状态和最后一次事件游标。",
           boundary:
             "接收请求不等于接受无限范围目标；Task 的持久化方案是实现责任，不是协议指定数据库。",
         },
@@ -1713,7 +1713,7 @@ export const a2aBrief = {
       eyebrow: "COLLABORATION TOPOLOGIES",
       title: "什么时候用本地编排，什么时候建立 A2A 边界",
       intro:
-        "是否采用协议应由所有权、部署、信任和生命周期边界决定，而不是由系统里有几个 Agent 决定。",
+        "选型记录比较所有权、部署、信任域和生命周期；Agent 数量只描述拓扑，不决定协议。",
       items: [
         {
           name: "同一应用内的专业节点",
@@ -1761,7 +1761,7 @@ export const a2aBrief = {
     },
   ],
   criticalBoundary:
-    "A2A 解决独立 Agent 的 Message 或 Task 协作，MCP 解决应用与工具或数据的调用；发现、互操作、技术 COMPLETED 和能力自声明都不等于身份可信、业务授权或结果验收成立。",
+    "A2A 的协议终态描述远端执行状态，MCP 描述应用与工具或数据的调用。调用方仍需验证身份与授权，并把技术 COMPLETED、产物校验和业务验收记录为三个独立事件。",
   cloudHooks: [
     {
       stage: "Agent 运行与目录（Runtime & Directory）",
@@ -1849,10 +1849,10 @@ export const a2aBrief = {
     },
     {
       q: "A2A Agent 不公开内部工具和 Prompt，怎么审计？",
-      a: "跨系统审计应围绕身份、任务契约、状态变化、输入输出、策略决策和 Artifact 验收，而不是索取完整内部思维链。",
+      a: "跨系统审计记录身份、任务契约、状态变化、输入输出、策略决策和 Artifact 验收；完整内部思维链不属于跨组织协议契约。",
       depth:
         "调用方记录谁在何时委派了什么、依据哪个 Agent Card、使用何种授权、收到哪些状态和产物；提供方记录内部执行与策略。双方用 Task ID 和 Trace Context 关联，敏感内部实现仍可隔离。",
-      ask: "争议发生时，双方必须共同证明哪些事实，哪些内部信息不能跨组织共享？",
+      ask: "争议发生时，双方共同证明哪些事实，各自保留哪些内部执行证据？",
       tag: "审计与可观测",
       basis: "任务契约 + 分布式追踪",
       evidence: [
@@ -1895,10 +1895,10 @@ export const a2aBrief = {
       sourceId: "a2a-mcp-boundary",
     },
     {
-      metric: "契约而非思维链",
-      title: "不透明 Agent 也可以被治理",
-      finding: "通过身份、Task、状态、消息和 Artifact 建立可观察协作，不要求公开内部推理。",
-      boundary: "不公开内部实现不代表免除提供方的内部审计和质量责任。",
+      metric: "Task ID + Trace Context",
+      title: "任务审计围绕契约与状态事件",
+      finding: "身份、Task、状态、Message 和 Artifact 形成跨组织可核对的协作记录；内部执行证据由提供方留存。",
+      boundary: "协议审计范围不免除提供方的内部质量与安全责任。",
       sourceId: "a2a-concepts",
     },
   ],
@@ -1911,15 +1911,15 @@ export const evaluationBrief = {
   position:
     "位于质量与风险决策层，横跨模型、Prompt、RAG、Agent、微调和应用；它负责定义量尺、测量与发布建议，AI Ops 负责执行流水线、灰度、监控、停止和回滚，Governance 负责风险接受与例外批准。",
   presentation: "loop",
-  principleTitle: "先冻结评估契约，再运行分数",
+  principleTitle: "一份评估契约应固定哪些变量，结果会触发什么动作",
   principles: [
     {
-      zh: "决策与目标量先行",
+      zh: "明确决策与目标量",
       en: "Decision & Estimand First",
       explanation:
         "同一组结果可以回答“这份固定考卷表现如何”，也可能被误读为“相似任务总体表现如何”；初筛、验收、发布和诊断需要不同证据。",
       decision:
-        "先写清要支持的决定、被测对象、目标人群、基线、目标量和结果的后续动作。",
+        "评估契约列出要支持的决定、被测对象、目标人群、基线、目标量，以及 Pass、Fail、Uncertain 各自触发的动作。",
     },
     {
       zh: "对象与生命周期二维分层",
@@ -2027,9 +2027,9 @@ export const evaluationBrief = {
         "部署后监测仍是方法不完全成熟的独立领域；低投诉、点赞率或自动评分不能证明系统持续有效。",
     },
   ],
-    deepDiveTitle: "评分怎样支持诊断和决策",
+    deepDiveTitle: "版本元组、样本切片与 Go、Hold、No-Go",
   deepDiveLead:
-    "评估系统不仅计算结果，还要说明被测对象、量尺、样本和环境是否一致，变化影响哪些任务与风险切片，以及证据足以支持发布、补做还是停止。",
+    "一次可复查的评估保存完整版本元组、样本与切片、评分器版本、逐次试验分布、硬门结果和决定记录。任何变化都能落到具体任务、风险切片或量尺上。",
   deepDives: [
     {
       kind: "matrix",
@@ -2081,7 +2081,7 @@ export const evaluationBrief = {
     {
       kind: "diagnostic",
       eyebrow: "SCORE CHANGE DIAGNOSTICS",
-      title: "总分变化时，先判断系统变了还是量尺变了",
+      title: "总分变化的两条排查线：系统版本与评分量尺",
       intro:
         "模型、数据、流量和评分器都会漂移；只看聚合分数容易把评估问题误当成模型问题。",
       items: [
@@ -2202,7 +2202,7 @@ export const evaluationBrief = {
     },
   ],
   criticalBoundary:
-    "分数只有连同被测版本、目标量、样本、评分器、重复试验和决策规则才有意义；平均分不能覆盖硬风险，Evaluation 也不能替代 AI Ops 的发布执行或 Governance 的风险接受。",
+    "评估结论随被测版本、目标量、样本、评分器、重复试验和决策规则一起交付；不可补偿风险单列硬门。Evaluation 输出测量建议，AI Ops 执行发布动作，Governance 决定风险接受与例外。",
   cloudHooks: [
     {
       stage: "数据集与实验（Datasets & Experiments）",
@@ -2310,7 +2310,7 @@ export const evaluationBrief = {
   evidenceCards: [
     {
       metric: "对象 × 阶段",
-      title: "先声明测谁，以及证据来自哪个阶段",
+      title: "对象与证据阶段共同限定结论",
       finding: "模型、组件、应用和业务终态是不同对象；Benchmark、离线验收与部署后监测回答不同问题。",
       boundary: "局部分数不能替代端到端终态，部署前结果也不能证明真实运行不会出现新失败。",
       sourceId: "nist-genai-profile",
@@ -2325,7 +2325,7 @@ export const evaluationBrief = {
     },
     {
       metric: "固定题集 ≠ 相似任务总体",
-      title: "先定义目标量，才能解释不确定性",
+      title: "目标量决定不确定性的解释方式",
       finding: "固定 Benchmark 上的表现与对相似任务总体的外推是不同目标，需要不同假设和不确定性解释。",
       boundary: "统计方法不能修复错误样本、选择偏差，也不能替客户设定通过线。",
       sourceId: "nist-ai-800-3",
@@ -2343,19 +2343,19 @@ export const evaluationBrief = {
 export const securityBrief = {
   slug: "security",
   definition:
-    "AI 安全（AI Security）通过威胁模型、信任边界、确定性授权、控制验证与事件恢复，保护模型、数据、应用、Agent、工具和供应链，使不可信内容即使影响模型，也不能自动扩大权限、跨越数据边界或改变高影响业务状态。",
+    "AI 安全（AI Security）记录不可信 Source 到高影响 Sink 的攻击路径，并用信任标签、检索 ACL、确定性授权、控制验证与恢复事件限制模型、数据、Agent、工具和供应链的影响范围。",
   position:
     "位于工程保障层，负责攻击路径、技术控制、对抗性验证、遏制和取证；AI Governance 定义用途门禁、证据与残余风险决策权，获授权的招聘业务负责人决定用途和候选人高影响状态，Evaluation 负责测量结果，AI Ops 负责发布、停止与恢复。ATS 只执行限域权限并保存权威状态，不承担业务责任。",
   presentation: "stack",
-  principleTitle: "一份恶意简历如何被限制在“可疑证据”，而不是变成 ATS 权限",
+  principleTitle: "恶意简历进入 ATS 时的控制证据",
   principles: [
     {
-      zh: "先定义不可接受损失",
+      zh: "记录不可接受损失",
       en: "Unacceptable Loss",
       explanation:
         "招聘辅助系统最严重的失败不是答错一句话，而是跨候选人泄露资料、错误淘汰、篡改 ATS 或让攻击者影响其他人的决定。",
       decision:
-        "先列出受保护资产、攻击者能力和不可接受业务后果，再画 Source—Sink 路径。",
+        "交付资产清单、攻击者能力表和 Source—Sink 图，并为每项不可接受后果指定控制 owner。",
     },
     {
       zh: "简历始终是不可信内容",
@@ -2366,7 +2366,7 @@ export const securityBrief = {
         "记录来源、版本和完整性，隔离解析，最小化上下文，并让外部内容只能成为候选证据。",
     },
     {
-      zh: "检索必须服从当前权限",
+      zh: "检索使用当前身份与 ACL",
       en: "Authorized Retrieval",
       explanation:
         "职位政策、候选人材料、切块、Embedding、缓存和日志仍有访问与删除边界，不能因进入向量库而混用。",
@@ -2400,11 +2400,11 @@ export const securityBrief = {
   ],
   decisions: [
     {
-      question: "先保护什么、最怕失去什么？",
+      question: "哪些资产和 ATS 状态需要保护？",
       signal:
         "系统会解析候选人材料、检索招聘政策、读取其他候选人数据，或向 ATS 写入字段和状态。",
       recommendation:
-        "把候选人隐私、职位边界、招聘决定、ATS 完整性和可追责性列为资产，再沿简历到业务终态画攻击路径。",
+        "把候选人隐私、职位边界、招聘决定、ATS 完整性和可追责性列为资产，并沿简历到业务终态标注 Source、信任边界、Sink 与 owner。",
       boundary:
         "从 OWASP 目录开始可以防漏项，但不能替代本系统的损失和信任边界分析。",
     },
@@ -2445,16 +2445,16 @@ export const securityBrief = {
         "检测命中率、HTTP 恢复或 Prompt 修复都不能单独证明业务状态已经安全恢复。",
     },
   ],
-    deepDiveTitle: "限制不可信内容触发真实动作",
+    deepDiveTitle: "恶意简历进入 ATS 前的控制记录",
   deepDiveLead:
-    "AI 安全应围绕数据怎样进入上下文、模型怎样提出动作、应用怎样授权执行以及事件怎样被还原设计，而不是把所有风险交给一个内容过滤器。",
+    "最小安全包包括源文件哈希与信任标签、检索 ACL 决策、模型提案、ATS 授权决策、写入后的权威状态和补偿事件。这些记录用同一候选人、职位、请求与 Trace 标识关联。",
   deepDives: [
     {
       kind: "sequence",
       eyebrow: "MALICIOUS RESUME TO ATS",
     title: "恶意简历进入招聘 Agent 后，如何限制权限",
       intro:
-        "目标不是证明模型永远不受恶意简历影响，而是即使模型被影响，简历也不能扩大权限、读取其他候选人资料或直接改变 ATS 的高影响状态。",
+        "这条五段路径把简历限制为不可信证据：内容可影响模型提案，读取其他候选人资料和改变 ATS 高影响状态仍由模型外的身份、ACL 与审批决定。",
       items: [
         {
           name: "定义资产与不可接受损失",
@@ -2514,7 +2514,7 @@ export const securityBrief = {
       eyebrow: "AI INCIDENT TRIAGE",
       title: "招聘 Agent 出现异常时，怎样从症状定位失效边界",
       intro:
-        "先停止 ATS 高影响写入并保留证据，再沿简历来源、解析、检索、模型、身份、策略、动作、业务终态与补偿定位失效点。",
+        "事件时间线从停止 ATS 高影响写入开始，串联简历来源、解析、检索、模型、身份、策略、动作、业务终态与补偿证据。",
       items: [
         {
           name: "招聘人员看到其他职位或候选人资料",
@@ -2572,7 +2572,7 @@ export const securityBrief = {
     },
   ],
   criticalBoundary:
-    "安全模型不等于安全应用，系统提示不等于安全策略，向量化不等于匿名化。Security 负责证明攻击路径被限制并可遏制恢复；它不决定招聘用途是否值得上线、不接受业务残余风险，也不作具体法律分类。凡是身份、授权、凭据、数据访问和高影响 ATS 动作，都必须由模型外的确定性控制执行。",
+    "Security 证明攻击路径受到限制且系统能够遏制、取证和恢复；Governance 决定招聘用途、残余风险与法律升级，获授权的业务负责人决定候选人高影响状态。身份、授权、凭据、数据访问和 ATS 写入由模型外的确定性控制执行。",
   cloudHooks: [
     {
       stage: "身份与凭据（Identity & Credentials）",

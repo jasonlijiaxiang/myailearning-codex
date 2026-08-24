@@ -12,6 +12,7 @@ export const MODULE_RENDERER_LOGIC_FILES = Object.freeze([
   "app/i18n/english-section-outline.mjs",
   "app/i18n/locale-config.mjs",
   "app/layout-utils.mjs",
+  "app/module-extension-views-zh.mjs",
   "app/module-representation-assessment.mjs",
   "app/question-filter.mjs",
 ]);
@@ -375,7 +376,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
   if (!["module", "directory"].includes(englishReferenceScope)) {
     throw new Error(`englishReferenceScope must be "module" or "directory"; received ${englishReferenceScope}`);
   }
-  const [publicationModule, contentModule, briefModule, curriculumModule, learningModule, terminologyModule, referenceModule, englishModule, englishDatesModule, englishOutlineModule, extensionModule, knowledgeMapModule] = await Promise.all([
+  const [publicationModule, contentModule, briefModule, curriculumModule, learningModule, terminologyModule, referenceModule, englishModule, englishDatesModule, englishOutlineModule, extensionModule, chineseExtensionModule, knowledgeMapModule] = await Promise.all([
     importFrom(projectRoot, "app/module-publication.mjs"),
     importFrom(projectRoot, "app/module-content-registry.mjs"),
     importFrom(projectRoot, "app/module-brief-content.mjs"),
@@ -387,6 +388,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
     importOptionalFrom(projectRoot, "app/english-update-dates.mjs"),
     importFrom(projectRoot, "app/i18n/english-section-outline.mjs"),
     importFrom(projectRoot, "app/module-extension-views.mjs"),
+    importOptionalFrom(projectRoot, "app/module-extension-views-zh.mjs"),
     importFrom(projectRoot, "app/knowledge-map.mjs"),
   ]);
   const claims = JSON.parse(await readFile(path.join(projectRoot, "knowledge", "claims", "index.json"), "utf8"));
@@ -425,6 +427,8 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
       resolvedRendererHash(enRendererFiles),
     ]);
     const relatedModuleSlugs = [...new Set([slug, ...(brief?.relatedSlugs ?? [])])];
+    const sharedExtensionView = extensionModule.moduleExtensionViews[slug] ?? null;
+    const chineseExtensionView = chineseExtensionModule?.getChineseModuleExtensionView?.(slug) ?? sharedExtensionView;
     const core = {
       publication,
       content,
@@ -433,7 +437,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
       learning,
       terms,
       referenceModule: referenceModuleView,
-      extensionView: extensionModule.moduleExtensionViews[slug] ?? null,
+      extensionView: chineseExtensionView,
       canonicalModules: Object.fromEntries(relatedModuleSlugs.map((moduleSlug) => [moduleSlug, knowledgeMapModule.getModuleBySlug(moduleSlug)])),
     };
     const focused = publication.readingProfile === "focused";
@@ -484,7 +488,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
       ...(sharedEnglishReferenceHash ? { sharedReferenceDirectoryHash: sharedEnglishReferenceHash } : {}),
       sharedRendererHash: englishRendererHash,
       rendererDependencyFiles: enRendererFiles,
-      extensionView: extensionModule.moduleExtensionViews[slug] ?? null,
+      extensionView: sharedExtensionView,
       canonicalModules: Object.fromEntries(canonicalModuleSlugs.map((moduleSlug) => [moduleSlug, knowledgeMapModule.getModuleBySlug(moduleSlug)])),
       visibleProjection: {
         sectionGroupIds: visibleSectionGroups.map((group) => group.id),

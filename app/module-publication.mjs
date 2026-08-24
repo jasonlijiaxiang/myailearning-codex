@@ -201,12 +201,12 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
   contentContract: Object.freeze(routeKind === "dedicated"
     ? {
         principle: Object.freeze(slug === "rag"
-          ? ["先定义什么可以成为回答证据"]
+          ? ["回答证据的成立条件"]
           : slug === "ai-agent"
             ? ["Agent 的基础概念与工作循环"]
             : ["Prompt 是什么，以及 Context Engineering 的边界"]),
         mechanism: Object.freeze(slug === "rag"
-          ? ["离线链生产证据，在线链决定怎样使用证据", "RAG 选型不是只选一个生成模型"]
+          ? ["离线证据与在线回答生命周期", "RAG 组件选型"]
           : slug === "ai-agent"
             ? ["感知—思考—行动—观察", "规划、记忆与工具"]
             : ["明确且稳定的指令", "动态上下文", "能力接口"]),
@@ -215,15 +215,15 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
           : slug === "ai-agent"
             ? ["模型会调用 API，不等于模型拥有 API 权限"]
             : ["必须执行的规则应落在模型外"]),
-        cloud: Object.freeze([slug === "rag" ? "把安全、Trace、云服务和经济性放进同一上线决定" : slug === "ai-agent" ? "Agent 技术环节与云服务机会" : "提示词工程与云服务机会"]),
+        cloud: Object.freeze([slug === "rag" ? "云能力、验收与责任映射" : slug === "ai-agent" ? "Agent 技术环节与云服务机会" : "提示词工程与云服务机会"]),
         customer: Object.freeze(["客户高频问题与深度回答"]),
       }
     : {
-        principle: Object.freeze(["核心机制与售前判断"]),
-        mechanism: Object.freeze(["机制、失败与控制"]),
-        boundary: Object.freeze(["重要边界"]),
-        cloud: Object.freeze(["云服务连接"]),
-        customer: Object.freeze(["客户高频问题与深度回答"]),
+        principle: Object.freeze(["机制速览"]),
+        mechanism: Object.freeze(["方案判断"]),
+        boundary: Object.freeze([focusedReadingModules.has(slug) ? "重要边界" : "需要单独验证"]),
+        cloud: Object.freeze(["云能力与责任"]),
+        customer: Object.freeze(["客户问题"]),
       }),
 })));
 

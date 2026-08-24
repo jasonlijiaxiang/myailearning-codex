@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { getPublishedModule, publishedModules, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
+import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, hasOnlyChineseRendererProjectionDelta, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, sameChineseRendererProjectionState, validateLocalizationRegistry, withRuntimeChineseBaseline } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
@@ -68,13 +68,74 @@ function makeDeferredFixture(slug = "solution-patterns") {
   deferment.baselineReviewIds = [...baseline.reviewSetIds];
   const runtimeOverlay = runtimeOverlays.get(slug);
   const effectiveZhBaseline = runtimeOverlay
-    && JSON.stringify(runtimeOverlay.state.zhObjects) !== JSON.stringify(baseline.zhObjects)
-    ? runtimeOverlay.state.zhObjects
+    ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state).zhObjects
     : baseline.zhObjects;
   deferment.affectedObjects = diffObjectCatalogs(effectiveZhBaseline, moduleState.zhObjects);
   for (const field of ["englishCandidate", "closedAt", "promotedCommit", "closureReviewIds", "closureReceipt"]) delete deferment[field];
 
   return { candidateRegistry, candidateProject, deferment, moduleState, baseline };
+}
+
+function makeIsolatedDeferredFixture(slug = "solution-patterns") {
+  const baseline = structuredClone(registry.moduleBaselines[slug]);
+  const sourceModuleState = currentProject.modules[slug];
+  const moduleState = structuredClone(sourceModuleState);
+  Object.assign(moduleState, {
+    zhReviewHash: baseline.zhReviewHash,
+    zhStateHash: baseline.zhStateHash,
+    zhObjects: structuredClone(baseline.zhObjects),
+    zhRendererFiles: [...baseline.zhRendererFiles],
+    enAuthoredHash: baseline.enAuthoredHash,
+    enEffectiveHash: baseline.enEffectiveHash,
+    enReviewHash: baseline.enReviewHash,
+    enRendererFiles: [...baseline.enRendererFiles],
+    englishUpdatedAt: baseline.englishUpdatedAt,
+    reviewFiles: structuredClone(baseline.reviewFiles),
+  });
+
+  const historical = registry.deferments.find((item) => item.moduleSlug === slug);
+  const localeGateReceipt = registry.receipts.find((item) => item.receiptId === historical.localeGateReceipt);
+  const contentObjectId = `/module:${slug}/test-active-deferment-content`;
+  moduleState.zhObjects[contentObjectId] = {
+    hash: fullHashA,
+    objectType: "test-content",
+    sourceIds: [],
+  };
+  moduleState.zhStateHash = fullHashB;
+  moduleState.zhReviewHash = fullHashC;
+
+  const deferment = {
+    defermentId: `dfr-${slug}-runtime-overlay-test`,
+    moduleSlug: slug,
+    sourceLocale: "zh-CN",
+    targetLocale: "en",
+    status: "deferred",
+    openedAt: "2026-08-24",
+    openedFromCommit: baseline.zhBaselineCommit,
+    decisionId: localeGateReceipt.decisionId,
+    reason: "Synthetic active deferment used to verify renderer-only runtime overlays.",
+    localeRequirements: ["semantic-deferment", "shared-runtime-decoupling"],
+    candidateIds: [],
+    workItemIds: ["runtime-overlay-test"],
+    affectedObjects: diffObjectCatalogs(baseline.zhObjects, moduleState.zhObjects),
+    baselineReviewIds: [...baseline.reviewSetIds],
+    localeGateReceipt: localeGateReceipt.receiptId,
+    closureCriteria: "Complete an independent English review before promotion.",
+  };
+  const candidateRegistry = {
+    ...structuredClone(registry),
+    receipts: [structuredClone(localeGateReceipt)],
+    moduleBaselines: { [slug]: baseline },
+    runtimeMaintenances: [],
+    deferments: [deferment],
+  };
+  const candidateProject = {
+    ...currentProject,
+    publishedModuleSlugs: [slug],
+    modules: { [slug]: moduleState },
+  };
+
+  return { baseline, candidateProject, candidateRegistry, contentObjectId, deferment, moduleState };
 }
 
 function addPassingCandidateReviews(moduleState, slug, zhHash, enHash, suffix = "candidate-test") {
@@ -189,6 +250,67 @@ test("the latest document-shell maintenance retains the complete prior runtime c
   assert.deepEqual(result.failures, []);
   assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "document-shell"));
   assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === "erm-full-site-design-voice-2026-08-12"));
+});
+
+test("a document-shell overlay preserves an active deferment's exact authored-content delta", () => {
+  const fixture = makeIsolatedDeferredFixture();
+  const slug = fixture.deferment.moduleSlug;
+  const projectionObjectId = Object.keys(fixture.baseline.zhObjects)
+    .find((objectId) => objectId.endsWith("/renderedProjection/sharedRendererHash"));
+  assert.ok(projectionObjectId, "the baseline must contain a renderer projection hash");
+
+  const overlayState = structuredClone(fixture.moduleState);
+  overlayState.zhObjects[projectionObjectId].hash = fullHashC;
+  overlayState.zhStateHash = fullHashA;
+  overlayState.enEffectiveHash = fullHashB;
+  Object.assign(fixture.moduleState, structuredClone(overlayState));
+  const overlay = {
+    maintenanceId: "erm-active-deferment-overlay-test",
+    kind: "document-shell",
+    state: overlayState,
+  };
+
+  const mergedBaseline = withRuntimeChineseBaseline(fixture.baseline, overlayState);
+  assert.equal(Object.hasOwn(mergedBaseline.zhObjects, fixture.contentObjectId), false, "runtime overlay must not promote authored content into the baseline");
+  assert.equal(mergedBaseline.zhObjects[projectionObjectId].hash, fullHashC, "runtime overlay must advance the renderer projection");
+  assert.deepEqual(fixture.deferment.affectedObjects, diffObjectCatalogs(mergedBaseline.zhObjects, fixture.moduleState.zhObjects));
+
+  const result = validateLocalizationRegistry(fixture.candidateRegistry, fixture.candidateProject, {
+    candidateIds,
+    reviewSchema,
+    promotedProjectsByCommit: new Map(),
+    runtimeOverlays: new Map([[slug, overlay]]),
+  });
+  assert.deepEqual(result.failures, []);
+  assert.ok(result.messages.includes(`DEFERRED/NOT_ALIGNED ${slug}: ${fixture.deferment.defermentId} (runtime ${overlay.maintenanceId})`));
+});
+
+test("document-shell projection checks reject non-renderer Chinese changes", () => {
+  const fixture = makeIsolatedDeferredFixture();
+  const projectionObjectId = Object.keys(fixture.baseline.zhObjects)
+    .find((objectId) => objectId.endsWith("/renderedProjection/sharedRendererHash"));
+  assert.ok(projectionObjectId);
+
+  const activeContentBeforeMaintenance = structuredClone(fixture.baseline);
+  activeContentBeforeMaintenance.zhObjects[fixture.contentObjectId] = fixture.moduleState.zhObjects[fixture.contentObjectId];
+  activeContentBeforeMaintenance.zhStateHash = fullHashB;
+  assert.equal(sameChineseRendererProjectionState(fixture.baseline, activeContentBeforeMaintenance), true, "authored content delta must not invalidate the registered renderer base");
+
+  const rendererOnly = structuredClone(fixture.baseline);
+  rendererOnly.zhObjects[projectionObjectId].hash = fullHashA;
+  assert.equal(sameChineseRendererProjectionState(fixture.baseline, rendererOnly), false, "unregistered renderer drift must invalidate the maintenance base");
+  assert.equal(hasOnlyChineseRendererProjectionDelta(fixture.baseline, rendererOnly), true);
+
+  const smuggledContent = structuredClone(rendererOnly);
+  smuggledContent.zhObjects[`/module:${fixture.deferment.moduleSlug}/brief/runtime-smuggled-content`] = {
+    hash: fullHashB,
+    objectType: "brief",
+    sourceIds: [],
+  };
+  assert.equal(hasOnlyChineseRendererProjectionDelta(fixture.baseline, smuggledContent), false);
+
+  const mergedBaseline = withRuntimeChineseBaseline(fixture.baseline, smuggledContent);
+  assert.equal(Object.hasOwn(mergedBaseline.zhObjects, `/module:${fixture.deferment.moduleSlug}/brief/runtime-smuggled-content`), false);
 });
 
 test("an effective-hash contract change covers every English module", () => {

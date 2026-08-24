@@ -2,7 +2,7 @@ export const agentDeepDives = [
   {
     kind: "sequence",
     eyebrow: "RUN LIFECYCLE",
-    title: "生产 Agent 的核心对象不是一段对话，而是可恢复的 Run",
+    title: "一次 Agent Run 怎样留下可恢复状态",
     intro: "模型的一次输出、框架的一次运行和业务任务完成是三个层次。Run 必须有显式状态、转换条件、责任主体和不可变终态。",
     items: [
       { name: "创建运行实例", en: "Created", mechanism: "绑定任务目标、调用者身份、输入快照、预算、策略与版本，生成唯一 Run ID。", decision: "能否在数小时后准确恢复当时的权限、工具和模型配置？", boundary: "Conversation ID 只代表会话，不必然代表一次业务任务。" },
@@ -17,7 +17,7 @@ export const agentDeepDives = [
   {
     kind: "matrix",
     eyebrow: "ACTION CONTRACT",
-    title: "工具 Schema 只描述形状，动作契约才决定能否安全执行",
+    title: "Schema 通过了，工具就能安全执行吗",
     intro: "把 API 包成工具只是完成发现和参数生成。生产动作还要定义权限、副作用、幂等、错误和后置验证。",
     columnLabels: { name: "契约面", mechanism: "必须声明", decision: "售前验收", boundary: "常见误区" },
     items: [
@@ -32,7 +32,7 @@ export const agentDeepDives = [
   {
     kind: "scenario",
     eyebrow: "FAILURE RECOVERY",
-    title: "用故障时间线验证 Agent，而不是只跑成功路径",
+    title: "在工具超时后重建那次 Run",
     intro: "同一次理赔补件通知在调用前、调用中和调用后崩溃，恢复策略完全不同。PoC 应主动制造这些不确定状态。",
     maxColumns: 2,
     items: [
@@ -46,7 +46,7 @@ export const agentDeepDives = [
   {
     kind: "checklist",
     eyebrow: "MEMORY & DELEGATION",
-    title: "长期记忆和多 Agent 委托都必须显式缩小信任",
+    title: "只把必要状态交给下一个 Agent",
     intro: "跨会话保存信息或把任务交给子 Agent，会扩大数据和权限边界。正确做法不是共享全部上下文，而是传递最小、可验证的状态。",
     maxColumns: 3,
     items: [
@@ -61,7 +61,7 @@ export const agentDeepDives = [
   {
     kind: "sequence",
     eyebrow: "MEMORY POISONING",
-    title: "记忆被「教坏」：写入、持久化与影响未来运行",
+    title: "一条错误记忆如何影响下一次运行",
     intro: "记忆攻击的成立条件是恶意或错误内容跨会话持久化并影响后续决策。控制写入源和信任边界，比事后清洗更有效。",
     items: [
       { name: "写入源与信任边界", en: "Write Source & Trust", mechanism: "区分用户显式写入、对话归纳、工具结果、文档注入和系统内部状态；每个写入源声明可信度与可覆盖范围。", decision: "不可信来源写入前是否需要审批、隔离或降权？", boundary: "只要支持任意写入，就有被植入的可能；「内部记忆」不等于可信。" },
@@ -102,14 +102,14 @@ export const agentEvidenceCards = [
   },
   {
     metric: "final_output ≠ 完成",
-    title: "运行器终止不等于业务成功",
+    title: "final_output 出来了，业务可能仍没完成",
     finding: "OpenAI Agents SDK 以 final_output、Handoff、工具调用与 max_turns 驱动循环；业务后置条件仍需应用另外验证。",
     boundary: "这是一个 SDK 的运行语义，不是所有框架统一状态机，也不替客户定义成功。",
     sourceId: "openai-agents-run-loop",
   },
   {
     metric: "Model × Harness",
-    title: "同一模型不等于固定的 Agent 能力",
+    title: "换一套 Harness，同一模型会表现不同",
     finding: "Harness-Bench 把模型与 Harness 作为组合进行比较，显示工具、上下文、执行循环和验证机制会改变端到端任务表现。",
     boundary: "该研究仍是预印本，且结论依赖任务、模型快照、Harness 版本、预算和运行环境；不能据此生成永久产品总榜。",
     sourceId: "harness-bench-2026",

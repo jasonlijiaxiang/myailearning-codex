@@ -5,12 +5,12 @@
  * app/reference-content.mjs；此文件仅保存稳定 sourceId。
  */
 export const promptDecisionCase = Object.freeze({
-  title: "理赔材料初审：先路由失败，再决定改哪一层",
+  title: "理赔初审失败时，先查哪一层",
   intro: "跨地区理赔助手读取申请表、扫描件与事故照片，结合当前保单条款和案件状态，输出结构化事实、缺件清单、证据坐标与初审说明草稿。它不判断最终赔付资格或金额，也不能自行写入赔付状态。",
   stages: Object.freeze([
-    Object.freeze({ code: "01", title: "先确认业务基线", detail: "记录人工初审耗时、补件率、升级率、严重漏检和每个被接受初审的完整成本。", gate: "没有权威样本、裁决人和不可接受错误时，不进入 Prompt 优化。" }),
+    Object.freeze({ code: "01", title: "业务基线", detail: "记录人工初审耗时、补件率、升级率、严重漏检和每个被接受初审的完整成本。", gate: "没有权威样本、裁决人和不可接受错误时，不进入 Prompt 优化。" }),
     Object.freeze({ code: "02", title: "建立最小调用", detail: "先用候选模型、清晰任务、输入字段和输出 Schema 建立可测基线，不预先加入 Agent 或写工具。", gate: "结构正确、事实正确、业务有效和获得授权必须分开验收。" }),
-    Object.freeze({ code: "03", title: "装配受控 Context", detail: "把明确且稳定的指令、可信案件状态、带 ACL 与时效的保单证据、用户材料、工具和预算记录成 上下文装配记录（Context Manifest）。", gate: "上下文装配记录（Context Manifest） 是本知识库推荐的控制模式，不是跨厂商标准。" }),
+    Object.freeze({ code: "03", title: "装配受控 Context", detail: "把明确且稳定的指令、可信案件状态、带 ACL 与时效的保单证据、用户材料、工具和预算记录成上下文装配记录（Context Manifest）。", gate: "上下文装配记录（Context Manifest）是本知识库推荐的控制模式，不是跨厂商标准。" }),
     Object.freeze({ code: "04", title: "验证与授权", detail: "依次执行语法、Schema、证据、业务规则与权限校验；模型只提出候选结果或工具意图。", gate: "赔付资格、金额、状态变更和最终批准始终由确定性系统与授权人员负责。" }),
     Object.freeze({ code: "05", title: "冻结发布包", detail: "绑定模型快照、Prompt、上下文装配器、Retriever、工具与输出 Schema、安全策略和评估集。", gate: "Release Bundle 是本知识库为可归因、可复现与可回滚而推荐的控制模式，不是跨厂商标准或固定字段规范。" }),
   ]),
@@ -28,7 +28,7 @@ export const promptDeepDives = [
   {
     kind: "matrix",
     eyebrow: "INSTRUCTION AUTHORITY",
-    title: "先解决指令冲突，再优化措辞",
+    title: "冲突的指令，谁说了算",
     intro: "生产输入同时包含平台规则、应用目标、用户请求、检索内容和工具结果。必须记录来源与信任级别，不能把所有自然语言都当成同等指令。",
     columnLabels: { name: "输入来源", mechanism: "处理机制", decision: "工程判断", boundary: "不能替代" },
     items: [
@@ -42,7 +42,7 @@ export const promptDeepDives = [
   {
     kind: "sequence",
     eyebrow: "CONTEXT ASSEMBLY PLAN",
-    title: "Context 不是一段拼接字符串，而是一份可审计装配计划",
+    title: "给每次调用列一张 Context 装配单",
     intro: "上下文工程应在每次调用前决定放什么、为何放、占多少 token、何时淘汰，并保留能够复盘的 Manifest。",
     items: [
       { name: "登记上下文块", en: "Register Blocks", mechanism: "每块携带 block_id、来源、ACL、有效期、信任级别、优先级和 token 估算。", decision: "能否解释某段内容为何进入本次模型调用？", boundary: "只有最终 Prompt 文本会丢失来源、权限和生命周期。" },
@@ -56,7 +56,7 @@ export const promptDeepDives = [
   {
     kind: "matrix",
     eyebrow: "OUTPUT & TOOL CONTRACT",
-    title: "结构化输出之后，还有业务有效性和动作安全",
+    title: "JSON 合法不等于业务可以执行",
     intro: "Schema 只解决语法和字段形状。真正可交付的调用还要通过业务规则、权限、工具执行和事务后置条件。",
     columnLabels: { name: "验证层", mechanism: "验证什么", decision: "失败如何处理", boundary: "典型误判" },
     items: [
@@ -73,7 +73,7 @@ export const promptDeepDives = [
   {
     kind: "checklist",
     eyebrow: "RELEASE & SECURITY",
-    title: "把提示发布包和 Source–Sink 风险一起验收",
+    title: "一次 Prompt 发布要能整包回滚",
     intro: "提示上线不是替换一段文字。模型、上下文组装、工具、Schema、安全策略和评估集共同决定行为，也共同构成回滚单位。Release Bundle 是本知识库推荐的控制模式，不是跨厂商标准或固定字段规范。",
     maxColumns: 3,
     items: [
@@ -126,7 +126,7 @@ export const promptEvidenceCards = [
   },
   {
     metric: "非零风险",
-    title: "系统提示不是安全边界",
+    title: "System Prompt 挡不住权限越界",
     finding: "OWASP 安全指南强调：提示注入无法只靠模型内部约束彻底消除，需要结合最小权限、输入输出过滤与高风险动作审批。",
     boundary: "提示加固可降低风险，但不能替代身份鉴别、最小权限、输出验证、隔离和高风险动作审批。",
     sourceId: "owasp-prompt-injection",
@@ -140,7 +140,7 @@ export const promptEvidenceCards = [
   },
   {
     metric: "持续评估",
-    title: "发布不是一次性打分",
+    title: "每次改动都要重跑评估",
     finding: "官方评估指南建议任务特定评估、生产分布样本、每次变化持续运行，并用人工反馈校准自动评分。",
     boundary: "指南中的示例任务与阈值不是跨业务标准；上线门槛必须按客户错误成本定义。",
     sourceId: "openai-eval-best-practices",

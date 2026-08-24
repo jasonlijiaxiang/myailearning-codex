@@ -62,15 +62,15 @@ const agentkitSources = {
 
 const veadkBrief = brief({
   slug: "veadk",
-  definition: "VeADK 是面向 Agent 应用的开源 Python 开发套件，用代码组合模型、指令、工具、会话与记忆，并把一次请求交给 Runner 执行。",
+  definition: "VeADK 是面向 Agent 应用的开源 Python 开发套件，用代码组合模型、指令、工具、会话与记忆，并把请求交给 Runner。一次可复查的交付包含版本化 root_agent、Runner 配置、事件 Trace 和 Session 作用域测试。",
   position: "它位于模型与业务服务之上、AgentKit 应用和云端 Runtime 之下，负责 Agent 逻辑与开发期执行，不替代企业身份、业务授权、共享状态、发布治理或权威业务系统。",
   presentation: "loop",
-  principleTitle: "从 Agent 定义到可恢复执行的六个责任点",
+  principleTitle: "一次 VeADK Run 会留下哪些对象和事件",
   principles: [
     { zh: "版本化 Agent 定义", en: "Versioned Agent Definition", explanation: "Agent 把名称、模型、指令、工具和记忆配置形成可测试的代码对象。", decision: "把代码、模型、Prompt、工具 Schema 和运行配置作为同一候选版本验收。" },
-    { zh: "Runner 执行循环", en: "Runner Execution Loop", explanation: "Runner 组织模型调用、工具请求、观察结果、事件与停止条件，使一次请求成为有状态执行。", decision: "区分模型输出、运行结束和业务终态，不用最终文本代替业务验收。" },
+    { zh: "Runner 执行循环", en: "Runner Execution Loop", explanation: "Runner 组织模型调用、工具请求、观察结果、事件与停止条件，使一次请求成为有状态执行。", decision: "Run 报告分别记录模型输出、结束原因和业务系统回读的终态。" },
     { zh: "工具合同", en: "Tool Contract", explanation: "工具以明确用途、类型、错误和副作用合同连接外部能力，模型只提出调用。", decision: "应用在执行时重新校验身份、权限、参数、超时和幂等。" },
-    { zh: "会话作用域", en: "Session Scope", explanation: "应用、用户和会话标识共同限定一段短期上下文与事件历史。", decision: "生产身份由可信服务端提供，不能直接采用可伪造的客户端声明。" },
+    { zh: "会话作用域", en: "Session Scope", explanation: "应用、用户和会话标识共同限定一段短期上下文与事件历史。", decision: "生产身份由可信服务端验证并绑定，Session 测试覆盖同会话、换会话、换用户和重启。" },
     { zh: "分层状态", en: "Layered State", explanation: "短期会话、长期记忆和权威业务事实具有不同生命周期、隔离与纠错责任。", decision: "跨会话偏好进入受治理记忆；余额、订单和权限仍实时读取权威系统。" },
     { zh: "显式应用适配", en: "Explicit App Integration", explanation: "既有 root_agent 可通过集成入口封装为 AgentKit App，使开发定义进入应用合同。", decision: "分别验收本地应用适配和云端部署，不能把二者写成同一结果。" },
   ],
@@ -81,22 +81,22 @@ const veadkBrief = brief({
     { question: "何时需要长期记忆？", signal: "确有跨会话偏好或任务连续性，且有主体、用途、纠错和删除规则。", recommendation: "先保留 Session 边界，再把少量合格候选写入持久化记忆后端。", boundary: "相似检索只能找相关内容，不能裁决真实性和当前有效性。" },
     { question: "何时接入 AgentKit？", signal: "本地 Agent 已稳定，需要应用合同、云端 Runtime、资源绑定和发布治理。", recommendation: "冻结 root_agent、入口、依赖和验收集后再进入 AgentKit 构建与部署。", boundary: "适配函数返回应用对象不等于已经上云。" },
   ],
-  deepDiveTitle: "会话、记忆与应用适配的生产边界",
-  deepDiveLead: "先沿交付与执行路径确认边界，再按症状定位身份、状态、工具、记忆或入口问题。",
+  deepDiveTitle: "用事件、Session 和应用入口定位一次 Run",
+  deepDiveLead: "为了把事件表走通，可以先跑一组截止 20 秒、最多 2 次 Tool 调用、8k Token 预算的小型 Run，并记录 run_id、app/user/session 三元组、Tool Call/Result、结束原因与业务回读。这里的数值不是生产默认值；召回或适配失败时，按这些字段定位身份、状态、工具、记忆后端或应用入口。",
   deepDives: [
     {
-      kind: "sequence", eyebrow: "DELIVERY & EXECUTION CONTRACT", title: "VeADK 应用从定义到运行的五步验收路径", intro: "开发准备、应用适配和请求执行产生不同证据，不能只看最终回答。",
+      kind: "sequence", eyebrow: "DELIVERY & EXECUTION CONTRACT", title: "一次 VeADK 请求的五个可检查对象", intro: "开发准备、应用适配和请求执行分别留下版本、接口、Session、事件与状态证据。最终回答只是其中一项。",
       sourceIds: [veadkSources.agent, veadkSources.runner, veadkSources.tools, veadkSources.integration, agentkitSources.memory],
       items: [
         { name: "冻结 Agent 定义", en: "Freeze Definition", mechanism: "绑定模型、指令、工具与状态配置。", decision: "记录候选版本与测试输入。", boundary: "名称一致不代表行为一致。" },
-        { name: "封装应用合同", en: "Adapt Application", mechanism: "把 root_agent 交给 AgentKit 集成入口。", decision: "用 API、错误和版本合同验收。", boundary: "本地 API 不是云部署证据。" },
-        { name: "建立会话", en: "Create Session", mechanism: "以应用、用户和会话范围读取事件。", decision: "先验证身份与作用域。", boundary: "会话 ID 不是认证凭据。" },
+        { name: "封装应用合同", en: "Adapt Application", mechanism: "把 root_agent 交给 AgentKit 集成入口。", decision: "用 API、错误和版本合同验收。", boundary: "本地 API 覆盖应用合同；云部署另有 Runtime 与目标环境记录。" },
+        { name: "建立会话", en: "Create Session", mechanism: "以应用、用户和会话范围读取事件。", decision: "执行同会话、换会话和换用户的正反例。", boundary: "会话 ID 只用于作用域定位，认证由可信身份链完成。" },
         { name: "运行模型与工具循环", en: "Run Loop", mechanism: "模型提出动作，应用执行后把结果送回下一轮判断。", decision: "限制调用、时间、Token 和副作用预算。", boundary: "Prompt 不能替代执行授权。" },
         { name: "保存必要状态", en: "Persist State", mechanism: "按后端保存会话事件；长期记忆走独立写入路径。", decision: "为重试、纠错和删除保留来源。", boundary: "事件写入不证明外部业务动作已经成功。" },
       ],
     },
     {
-      kind: "diagnostic", eyebrow: "MEMORY TRIAGE", title: "无法召回时先区分五类机制", intro: "按作用域、后端、写入、调用和入口逐层排查。",
+      kind: "diagnostic", eyebrow: "MEMORY TRIAGE", title: "记忆召回失败的五个检查点", intro: "检查表记录实际作用域、后端、写入确认、工具调用和应用入口，每项附观察结果。",
       sourceIds: [veadkSources.memory, veadkSources.runner, veadkSources.integration],
       items: [
         { name: "作用域不一致", en: "Scope Mismatch", mechanism: "应用、用户或会话标识变化。", decision: "记录实际三元组并做正反例。", boundary: "修正 ID 不能解决身份伪造。" },
@@ -131,12 +131,12 @@ const veadkBrief = brief({
 
 const agentkitBrief = brief({
   slug: "agentkit",
-  definition: "AgentKit 是面向 Agent 应用的开发与运行平台，通过 SDK、CLI 和控制面管理应用配置、构建、部署、Runtime 与 Memory 等资源的云端生命周期。",
+  definition: "AgentKit 是面向 Agent 应用的开发与运行平台，通过 SDK、CLI 和控制面管理应用配置、镜像构建、Runtime 与 Memory。发布记录绑定源码、依赖、配置摘要、镜像、Runtime 版本、资源引用、云端回归和回退结果。",
   position: "它上接 VeADK 等框架产出的 Agent 应用，下接模型、Memory、网络、身份和云基础设施，负责应用及资源生命周期，不替代 Agent 逻辑、业务授权、权威数据、外部压测或客户自己的上线决定。",
   presentation: "pipeline",
-  principleTitle: "从应用合同到云端运行治理的六个环节",
+  principleTitle: "App 制品与 Runtime 运行记录",
   principles: [
-    { zh: "应用合同", en: "Application Contract", explanation: "入口、依赖、配置和调用接口共同定义 AgentKit 能构建和运行的应用。", decision: "本地先验证启动、错误语义和核心调用，再进入云端构建。" },
+    { zh: "应用合同", en: "Application Contract", explanation: "入口、依赖、配置和调用接口共同定义 AgentKit 能构建和运行的应用。", decision: "干净环境中的启动、错误语义和核心调用结果写入构建输入清单。" },
     { zh: "配置与构建", en: "Configuration & Build", explanation: "CLI 和配置文件把代码、依赖、Region、环境变量与资源引用组合为部署输入。", decision: "把本地隐式状态转成可审计、可重复的构建材料。" },
     { zh: "Runtime 生命周期", en: "Runtime Lifecycle", explanation: "Runtime 承载部署后的应用版本并提供运行状态与调用入口。", decision: "分别验收 Ready、可调用、业务后置条件、恢复和回退。" },
     { zh: "部署目标", en: "Deployment Target", explanation: "目标标识、Region 与资源引用共同说明部署去向；实际资源访问、网络和数据边界还要在目标环境验证。", decision: "把目标配置、访问权限、网络隔离和数据地域分开确认。" },
@@ -150,34 +150,34 @@ const agentkitBrief = brief({
     { question: "何时允许 launch？", signal: "入口、依赖、配置、密钥、资源绑定和回退方案已冻结。", recommendation: "先运行配置检查和本地调用，再构建、部署并在云端执行相同回归。", boundary: "一条命令简化编排，不消除上线批准与生产验证。" },
     { question: "怎样建立可观测与容量基线？", signal: "需要定位慢请求、验证质量或确定并发上限。", recommendation: "平台遥测用于还原调用链，评测衡量任务质量，k6、Locust 等外部工具产生固定负载。", boundary: "有观测数据不等于已经定义 SLO，评测也不等于压力测试。" },
   ],
-  deepDiveTitle: "Runtime 发布、Memory 绑定与验收分层",
-  deepDiveLead: "把 CLI 生命周期、外置状态和运行证据放进一条可回退发布链。",
+  deepDiveTitle: "一条 AgentKit 发布记录包含什么",
+  deepDiveLead: "发布证据包可以先用 app v0.3、镜像摘要、目标 Region、Runtime 版本、Memory 资源 ID、50 条云端回归、并发 10 和一次恢复演练把字段走通。它定义的是要记录什么，不代表云端验证已经完成；当前模块仍把 Trace、负载与恢复结果标为待执行。",
   deepDives: [
     {
-      kind: "sequence", eyebrow: "RELEASE PATH", title: "从本地 App 到 Runtime 的六步发布链", intro: "每一步都要产生可复核材料，而不是只保留一次成功截图。",
+      kind: "sequence", eyebrow: "RELEASE PATH", title: "App、镜像、Runtime 与回退的六项记录", intro: "每一步保存对象摘要、执行结果和失败原因。成功截图可以作为附件，发布结论依赖完整记录。",
       sourceIds: [agentkitSources.cli, agentkitSources.commands, agentkitSources.config, agentkitSources.runtime],
       items: [
         { name: "冻结应用入口", en: "Freeze Entry", mechanism: "确认启动对象、接口和错误合同。", decision: "在干净、可复现的环境中运行。", boundary: "本地运行依赖不能隐式进入构建。" },
-        { name: "冻结配置", en: "Freeze Config", mechanism: "登记目标标识、Region、环境变量和资源引用。", decision: "敏感值只保留安全引用。", boundary: "配置文件不是凭据仓库。" },
+        { name: "冻结配置", en: "Freeze Config", mechanism: "登记目标标识、Region、环境变量和资源引用。", decision: "敏感值只保留安全引用。", boundary: "配置文件保存凭据引用，秘密由安全存储注入。" },
         { name: "构建候选", en: "Build Candidate", mechanism: "解析依赖并生成可部署制品。", decision: "绑定源码、依赖与构建结果。", boundary: "构建成功不证明运行成功。" },
-        { name: "部署 Runtime", en: "Deploy Runtime", mechanism: "创建或更新云端运行版本。", decision: "观察状态、日志和失败原因。", boundary: "Ready 不等于业务可用。" },
+        { name: "部署 Runtime", en: "Deploy Runtime", mechanism: "创建或更新云端运行版本。", decision: "记录状态、日志、失败原因和实际版本。", boundary: "Ready 覆盖平台资源状态，业务可用性由云端回归与 SLO 验收。" },
         { name: "执行云端回归", en: "Cloud Regression", mechanism: "验证模型、工具、Session、Memory、身份和网络。", decision: "使用与本地同源的任务集。", boundary: "一次调用不能形成 SLO。" },
         { name: "放量或回退", en: "Release or Roll Back", mechanism: "按质量、P95、错误、恢复和成本决定。", decision: "保留上一验证版本与状态兼容方案。", boundary: "回退应用不能撤销已产生的业务副作用。" },
       ],
     },
     {
-      kind: "diagnostic", eyebrow: "RUNTIME TRIAGE", title: "Runtime Ready 之后仍可能失败的五个层面", intro: "状态正常只排除一部分控制面问题。",
+      kind: "diagnostic", eyebrow: "RUNTIME TRIAGE", title: "Runtime Ready 后的五个故障面", intro: "Ready 排除一部分控制面问题；应用入口、配置、数据面连接、身份和验收合同仍要逐项检查。",
       sourceIds: [agentkitSources.runtime, agentkitSources.memory, agentkitSources.config],
       items: [
         { name: "应用入口错误", en: "Entry Failure", mechanism: "构建对象与实际启动对象不一致。", decision: "在构建前执行相同入口。", boundary: "修正路径不保证依赖完整。" },
         { name: "环境与密钥缺失", en: "Config Failure", mechanism: "本地变量没有安全注入 Runtime。", decision: "启动时只验证变量存在性与权限。", boundary: "不得在日志打印秘密。" },
         { name: "资源只绑定一层", en: "Binding Failure", mechanism: "控制面关联与数据面连接未同时满足。", decision: "分别检查资源 ID、端点、凭据和网络。", boundary: "能列出资源不等于能读写数据。" },
-        { name: "身份作用域错误", en: "Identity Failure", mechanism: "客户端声明被误当可信 user_id 或工作负载身份。", decision: "由认证系统验证并绑定主体，应用再传播用户、租户与审计上下文。", boundary: "Header 本身不是身份证明。" },
+        { name: "身份作用域错误", en: "Identity Failure", mechanism: "客户端声明被误当可信 user_id 或工作负载身份。", decision: "由认证系统验证并绑定主体，应用再传播用户、租户与审计上下文。", boundary: "Header 只承载身份上下文，可信度来自认证与签发链。" },
         { name: "观测没有验收合同", en: "Evidence Gap", mechanism: "有日志和指标，却没有任务成功、SLO 和回退阈值。", decision: "让 Trace、评测和压测结果都关联同一发布版本。", boundary: "平均延迟不能代表尾部体验。" },
       ],
     },
   ],
-  criticalBoundary: "AgentKit 管理应用交付、Runtime 和资源关联；Agent 逻辑、可信身份、共享状态、业务授权与上线决定仍由应用团队负责。Runtime Ready 只是开始目标环境验收：部署记录、遥测完整性、外部负载与恢复测试提供证据，客户 SLO 提供验收门槛。",
+  criticalBoundary: "AgentKit 管理应用交付、Runtime 和资源关联；应用团队负责 Agent 逻辑、可信身份、共享状态、业务授权与上线决定。Runtime Ready 记录平台资源状态，目标环境验收还需要部署记录、遥测完整性、外部负载、恢复测试和客户 SLO。",
   cloudHooks: [
     { stage: "应用构建与 Runtime", services: "AgentKit SDK/CLI、构建、制品与 Runtime", value: "把可运行 Agent 交付成版本化云端应用。", discover: "入口、依赖、启动、版本和恢复目标是否明确？" },
     { stage: "Memory 与 Knowledge", services: "AgentKit Memory、知识库、共享 Session；另行评估的 Mem0 OSS 或 Platform", value: "让长期状态独立于 Runtime 容器，并明确每种方案的运营责任。", discover: "谁负责隔离、纠错、删除、备份和跨版本兼容？" },
@@ -203,7 +203,7 @@ export const agentPlatformBriefs = freeze({ veadk: veadkBrief, agentkit: agentki
 
 export const agentPlatformCurriculum = freeze({
   veadk: curriculum({
-    lead: "VeADK 课程从 Agent 定义与 Runner 循环出发，逐步连接工具、Session、上下文、长期记忆和 AgentKit 应用适配，并始终保留身份、状态与业务权限边界。",
+    lead: "VeADK 课程围绕一份可回放 Run 展开：root_agent 版本、Runner 事件、Tool 合同、Session 三元组、长期记忆写入和 AgentKit App 入口共同进入记录。",
     chapters: [
       { title: "Agent 定义与版本", en: "Agent Definition", explanation: "VeADK Agent 当前在 Google ADK 的 LlmAgent 接口上增加模型、记忆与平台适配配置，这些字段共同形成可运行候选。", decision: "把模型与所有模型外配置绑定到同一评估版本。", boundary: "对象可导入不证明行为、权限或业务结果。", sourceIds: [veadkSources.agent] },
       { title: "Runner、事件与停止", en: "Runner & Events", explanation: "Runner 接收根 Agent、会话与记忆服务，执行模型—工具—观察循环，并以事件流输出模型与工具处理过程。", decision: "为调用、时间、Token、失败和停止设置预算。", boundary: "运行结束不等于业务终态成立。", sourceIds: [veadkSources.runner] },
@@ -215,9 +215,9 @@ export const agentPlatformCurriculum = freeze({
     ],
   }),
   agentkit: curriculum({
-    lead: "AgentKit 课程围绕应用合同、CLI、Runtime、目标配置、Memory、身份网络与运行证据展开，把快捷部署还原为可配置、可回归和可回退的完整生命周期。",
+    lead: "AgentKit 课程以一份发布记录为主线，检查 App 合同、CLI 输出、镜像摘要、Runtime 版本、目标配置、Memory 绑定、身份网络、云端回归和回退结果。",
     chapters: [
-      { title: "平台定位与应用合同", en: "Platform & App Contract", explanation: "AgentKit 管理应用和云端运行资源，应用入口连接框架代码与 Runtime。", decision: "先冻结可重复的本地应用候选。", boundary: "平台不替代业务逻辑与授权。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
+      { title: "平台定位与应用合同", en: "Platform & App Contract", explanation: "AgentKit 管理应用和云端运行资源，应用入口连接框架代码与 Runtime。", decision: "在干净环境中重建本地应用候选，并保存入口、依赖和调用结果。", boundary: "平台不替代业务逻辑与授权。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
       { title: "CLI 生命周期", en: "CLI Lifecycle", explanation: "CLI 把项目初始化、配置校验、构建、部署和快捷发布串成明确命令，但每一步生成的对象和失败含义不同。", decision: "按团队发布控制选择单步或 launch。", boundary: "快捷命令不消除阶段证据。", sourceIds: [agentkitSources.cli, agentkitSources.commands] },
       { title: "配置与部署目标", en: "Configuration & Target", explanation: "配置声明应用入口、依赖、环境、目标标识、Region 与外部资源引用，并作为构建和部署的显式输入。", decision: "在目标环境分别验证资源访问、网络和数据边界。", boundary: "控制面字段不证明隔离、连通或数据驻留。", sourceIds: [agentkitSources.config] },
       { title: "Runtime 与版本", en: "Runtime Lifecycle", explanation: "Runtime 承载可识别的应用版本，提供资源状态与调用入口，但 Ready 只说明平台资源状态。", decision: "把 Ready、可调用、任务成功、恢复和回退分层验收。", boundary: "平台状态不等于业务上线。", sourceIds: [agentkitSources.runtime] },
@@ -239,7 +239,7 @@ export const agentPlatformLearning = freeze({
       { title: "适配 AgentKit App", learn: "冻结入口和依赖，并设计本地与云端两套验收。", checkpoint: "不会把应用适配写成已完成云部署。" },
     ],
     labs: [
-      { title: "建立 Session 持久化与隔离实验", scenario: "一个 Agent 需要在进程重启后恢复会话，同时阻止不同用户和 Session 串话。", tasks: ["配置 SQLite 短期记忆并生成无个人含义的随机标记", "验证同会话、换会话、换用户和重启", "查询事件并记录作用域与后端"], deliverable: "Session 隔离矩阵、事件查询和生产后端差距清单", acceptance: "所有正反例符合声明作用域，并明确单机结果不能外推多实例。", sourceIds: [veadkSources.memory, veadkSources.runner] },
+      { title: "建立 Session 持久化与隔离实验", scenario: "用 3 个用户、每人 2 个 Session 构造隔离矩阵，并在进程重启前后写入随机标记。这个规模只为让正反例清楚，不用于容量估算。", tasks: ["配置 SQLite 短期记忆并生成无个人含义的随机标记", "验证同会话、换会话、换用户和重启", "查询事件并记录 app/user/session 三元组、后端与时间"], deliverable: "Session 隔离矩阵、事件查询和生产后端差距清单", acceptance: "所有正反例符合声明作用域，并明确单机结果不能外推多实例。", sourceIds: [veadkSources.memory, veadkSources.runner] },
       { title: "分析 Tool Event 与上下文预算", scenario: "一次任务可能多次调用搜索或业务 Tool，历史和结果持续进入上下文。", tasks: ["触发至少一次 Tool Call 与 Tool Result", "比较调用前后上下文、时延和事件", "设计结果截断、最大调用数、压缩和切分策略"], deliverable: "执行序列、上下文预算和治理决策记录", acceptance: "能区分已观察的事件与尚待实现的生产策略。", sourceIds: [veadkSources.runner, veadkSources.tools] },
     ],
   }),
@@ -254,7 +254,7 @@ export const agentPlatformLearning = freeze({
     ],
     labs: [
       { title: "建立 AgentKit App 与 Memory 本地验收", scenario: "一个可运行 Agent 需要形成稳定应用入口并连接独立 Memory。", tasks: ["冻结入口、依赖和非敏感配置合同", "分别检查健康、Agent 调用和直接 Memory 查询", "设计同用户跨 Session 与不同用户负例"], deliverable: "应用接口合同、Memory 分层检查表和云端待办", acceptance: "本地结论只覆盖 App 合同，不宣称 Runtime 已上线。", sourceIds: [veadkSources.integration, agentkitSources.memory, agentkitSources.config] },
-      { title: "执行 Runtime 与可观测验收（待执行）", scenario: "本地 App 尚未形成云端部署、Trace、负载和恢复证据。", tasks: ["运行 build/deploy 或 launch 并记录 Runtime 版本", "执行云端模型、Tool、Session、Memory、身份和网络回归", "收集平台遥测和质量评测，用外部压力工具生成负载，再演练故障、恢复与回退并对照 SLO"], deliverable: "云端回归、Trace、负载曲线、恢复记录与 Go/Hold/No-Go 建议", acceptance: "任务成功与 P95 达到目标，权限负例正确，错误预算消耗在策略范围内，恢复满足 RTO，且回退可用后才允许放量。", sourceIds: [agentkitSources.commands, agentkitSources.runtime, agentkitSources.overview] },
+      { title: "设计 Runtime 发布验收", scenario: "本地 App 尚未形成云端部署、Trace、负载和恢复证据。演示方案可准备 50 条云端回归、并发 1/10 两个负载档和一次 Runtime 故障演练；数字由正式 SLO 替换。", tasks: ["运行 build/deploy 或 launch 并记录镜像摘要与 Runtime 版本", "执行云端模型、Tool、Session、Memory、身份和网络回归", "收集平台遥测和质量评测，用外部压力工具生成负载，演练故障、恢复与回退并对照 SLO"], deliverable: "云端回归、Trace、负载曲线、恢复记录与 Go/Hold/No-Go 建议", acceptance: "任务成功与 P95 达到目标，权限负例正确，错误预算消耗在策略范围内，恢复满足 RTO，且回退可用后才允许放量。", sourceIds: [agentkitSources.commands, agentkitSources.runtime, agentkitSources.overview] },
     ],
   }),
 });
