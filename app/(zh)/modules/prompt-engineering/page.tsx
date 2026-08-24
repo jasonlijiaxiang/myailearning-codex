@@ -3,14 +3,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt } from "../../../module-content-components";
-import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../../fieldbook-interactions";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt, type DeepDiveBlock } from "../../../module-content-components";
+import { ReadingProgress, SystemLens, type LensPanel } from "../../../fieldbook-interactions";
 import { PromptAssemblyLab } from "../../../flagship-labs";
 import { ModuleExtensionPrimer } from "../../../module-pilot-views";
+import { getChineseModuleExtensionView } from "../../../module-extension-views-zh.mjs";
 import { promptDecisionCase, promptDeepDives, promptEvidenceCards, promptQa } from "../../../prompt-content.mjs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { getPublishedModule } from "../../../module-publication.mjs";
 import { englishModulePath } from "../../../i18n/locale-config.mjs";
+import { ModuleReadingModes } from "../../../module-reading-modes";
 
 export const metadata: Metadata = {
   title: "提示词工程 · Prompt Engineering | 云计算 × AI 平台售前知识库",
@@ -19,6 +21,7 @@ export const metadata: Metadata = {
 
 const promptPublication = getPublishedModule("prompt-engineering");
 const promptEnglishPath = englishModulePath("prompt-engineering");
+const promptExtensionView = getChineseModuleExtensionView("prompt-engineering") ?? undefined;
 
 const conceptLinks = [
   { concept: "模型原理与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解 token、上下文容量、指令遵循与生成不确定性。" },
@@ -85,22 +88,6 @@ const cloudHooks = [
   { stage: "观测运营", services: "Tracing、APM、日志、告警、成本分析、提示缓存（Prompt Cache）", value: "定位退化并核算每个成功任务成本", discover: "需要保存哪些输入输出？保留期和脱敏要求是什么？" },
 ];
 
-const promptReadingSections: ReadingSection[] = [
-  { id: "concept-map", label: "知识连接", eyebrow: "相关模块" },
-  { id: "prompt-foundation", label: "基础机制", eyebrow: "Prompt 与 Context" },
-  { id: "message-hierarchy", label: "消息与信任", eyebrow: "谁能下什么指令" },
-  { id: "patterns", label: "核心模式", eyebrow: "从基线逐步增强" },
-  { id: "prompt-diagnostics", label: "技术诊断", eyebrow: "症状到解决路线" },
-  { id: "templates", label: "可复用模板", eyebrow: "现场快速起步" },
-  { id: "fit-check", label: "方案边界", eyebrow: "何时不是 Prompt 问题" },
-  { id: "version-governance", label: "版本治理", eyebrow: "作为发布资产" },
-  { id: "prompt-independent-depth", label: "生产级扩展", eyebrow: "权威、契约与安全" },
-  { id: "evidence", label: "数据与证据", eyebrow: "知道适用边界" },
-  { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
-  { id: "poc", label: "PoC 剧本", eyebrow: "从基线到灰度" },
-  { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
-];
-
 const promptSystemLens: LensPanel[] = [
   {
     id: "prompt-call",
@@ -133,7 +120,7 @@ const promptSystemLens: LensPanel[] = [
   {
     id: "prompt-release",
     label: "一次发布",
-    title: "上线单位不是 Prompt 文件，而是一套行为版本",
+    title: "Prompt 行为版本的发布单位",
     description: "同一段提示在不同模型、上下文供给和工具契约下会表现不同；这些变化必须一起进入发布证据。",
     takeaway: "把 Prompt、模型、上下文策略、工具 Schema、评估结果和回滚开关绑定为同一发布包。",
     nodes: [
@@ -176,42 +163,53 @@ export default function PromptEngineeringModulePage() {
           </div>
           <div className="ragDefinition">
             <p>把业务目标、上下文、约束与输出契约翻译成模型可执行的输入，并通过版本、评估和安全控制持续验证；它是系统工程的一部分，不是寻找一句“万能咒语”。</p>
-            <ModuleHeroMetrics sectionCount={promptReadingSections.length} questionCount={promptQa.length} evidenceCount={promptEvidenceCards.length} />
+            <ModuleHeroMetrics sectionCount={3} questionCount={promptQa.length} evidenceCount={promptEvidenceCards.length} labels={{ ariaLabel: "模块内容概览", sections: "阅读方式", sectionUnit: "种", questions: "问题库", questionUnit: "题", evidence: "证据卡", evidenceUnit: "张" }} />
           </div>
         </div>
       </section>
 
-      <div className="moduleArticleLayout dedicatedArticleLayout">
-        <ModuleReadingNav moduleName="提示词工程" sections={promptReadingSections} quickLinks={[
-          { href: "#prompt-foundation", label: "先懂原理" },
-          { href: "#cloud-opportunities", label: "找云机会" },
-          { href: "#qa", label: "准备客户问答" },
-        ]} />
+      <div className="dedicatedArticleLayout moduleReadingHost">
       <section className="section ragBody" aria-label="提示词工程核心内容">
         <div className="sectionNumber">05</div>
         <div className="sectionBody">
-          <ModuleExtensionPrimer slug="prompt-engineering" />
+          <ModuleReadingModes
+            moduleName="提示词工程"
+            hashGroups={{
+              quick: ["context-assembly", "quick-triage"],
+              learn: ["learn-input", "prompt-foundation", "message-hierarchy", "learn-diagnose", "patterns", "prompt-diagnostics", "templates", "fit-check", "learn-release", "version-governance", "prompt-independent-depth", "poc", "concept-map"],
+              field: ["evidence", "cloud-opportunities", "qa"],
+            }}
+            quick={(
+              <>
+          <ModuleExtensionPrimer slug="prompt-engineering" view={promptExtensionView} />
           <div className="decisionBanner">
             <p className="kicker">PRESALES POSITION</p>
-            <h3>一句话定位</h3>
-            <p>客户需要的不是“更会写 Prompt 的个人”，而是一套能把提示、模型、上下文和工具作为同一发布单元进行测试、审计、回滚和运营的能力。</p>
+            <h3>Prompt 的发布范围</h3>
+            <p>生产级提示工程把提示、模型、上下文和工具作为同一发布单元，持续完成测试、审计、回滚和运营。</p>
           </div>
 
-          <div className="subsection" id="concept-map" data-quality-section="related-modules">
-            <div className="subHead"><span>5.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>提示词工程在知识地图中的位置与相关模块</h3></div></div>
-            <p className="sectionLead">本模块聚焦“如何表达任务并治理模型输入”。知识检索、Agent 规划、API 授权、模型推理和评估各有独立主模块；这里给出必要连接，避免把整个 AI 应用都误称为 Prompt Engineering。</p>
-            <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
-              {conceptRows.flatMap((row) => row.map((item) => (
-                <article key={item.concept} style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}>
-                  <div className="conceptCard">
-                    <div className="conceptMeta"><span>{item.relation}</span><Link href={item.href}>{item.owner} ↗</Link></div>
-                    <h4>{item.concept}</h4>
-                    <p>{item.local}</p>
-                  </div>
-                </article>
-              )))}
+          <div className="subsection" id="quick-triage" data-quality-section="decisions">
+            <div className="subHead"><span>Q1</span><div><p className="kicker">FAILURE ROUTING</p><h3>失败症状与处理层</h3></div></div>
+            <p className="sectionLead">按症状选择处理层；知识、权限、工具或基础模型的问题不应继续堆叠提示文字。</p>
+            <div className="tableWrap">
+              <table>
+                <thead><tr><th>观察到的失败</th><th>优先路线</th><th>主要责任模块</th></tr></thead>
+                <tbody>
+                  {promptDecisionCase.failureRoutes.map((route) => (
+                    <tr key={route.symptom}><th>{route.symptom}</th><td>{route.route}</td><td>{route.owner}</td></tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
+
+              </>
+            )}
+            learn={(
+              <>
+
+          <section className="learningStage" id="learn-input" aria-labelledby="prompt-learn-input-title">
+            <div className="subHead"><span>L1</span><div><p className="kicker">INPUT CONTRACT</p><h2 id="prompt-learn-input-title">调用输入与责任边界</h2><p className="sectionLead">拆开 Prompt、动态上下文、工具接口和应用控制，形成一次可验证调用的输入合同。</p></div></div>
 
           <div className="subsection foundationSection" id="prompt-foundation" data-quality-section="principle">
             <div className="subHead"><span>5.2</span><div><p className="kicker">FOUNDATION &amp; BOUNDARY</p><h3>Prompt 是什么，以及 Context Engineering 的边界</h3></div></div>
@@ -266,16 +264,6 @@ export default function PromptEngineeringModulePage() {
                     </article>
                   ))}
                 </BalancedGrid>
-                <div className="tableWrap" style={{ marginTop: 18 }}>
-                  <table>
-                    <thead><tr><th>观察到的失败</th><th>优先路线</th><th>主要责任模块</th></tr></thead>
-                    <tbody>
-                      {promptDecisionCase.failureRoutes.map((route) => (
-                        <tr key={route.symptom}><th>{route.symptom}</th><td>{route.route}</td><td>{route.owner}</td></tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
                 <CriticalBoundary>该案例只自动化材料初审与说明草稿。结构化输出正确不等于事实正确、业务有效或已获授权；赔付资格、金额、状态变化和最终批准始终留在模型外。</CriticalBoundary>
               </section>
             </div>
@@ -292,6 +280,12 @@ export default function PromptEngineeringModulePage() {
             </div>
           </div>
 
+            <div className="architectureNotes"><p><strong>阶段产物：</strong>调用输入清单，标明每段内容的来源、信任级别、版本和执行责任。</p></div>
+          </section>
+
+          <section className="learningStage" id="learn-diagnose" aria-labelledby="prompt-learn-diagnose-title">
+            <div className="subHead"><span>L2</span><div><p className="kicker">DIAGNOSIS &amp; TEMPLATE</p><h2 id="prompt-learn-diagnose-title">失败诊断与模板设计</h2><p className="sectionLead">按失败症状选择模式，控制上下文预算，并把稳定方案写成可维护模板。</p></div></div>
+
           <div className="subsection" id="patterns">
             <div className="subHead"><span>5.4</span><div><p className="kicker">CORE PATTERNS</p><h3>五种常用模式及适用边界</h3></div></div>
             <div className="variantList">
@@ -306,7 +300,7 @@ export default function PromptEngineeringModulePage() {
           </div>
 
           <div className="subsection" id="prompt-diagnostics">
-            <div className="subHead"><span>5.5</span><div><p className="kicker">TECHNIQUE DIAGNOSTICS</p><h3>按失败症状选择技巧，而不是堆叠技巧</h3></div></div>
+            <div className="subHead"><span>5.5</span><div><p className="kicker">TECHNIQUE DIAGNOSTICS</p><h3>失败症状与技术路线</h3></div></div>
             <div className="tableWrap">
               <table>
                 <thead><tr><th>失败症状</th><th>优先技术</th><th>实际改变什么</th><th>选择边界</th></tr></thead>
@@ -344,7 +338,7 @@ export default function PromptEngineeringModulePage() {
             </div>
             <BalancedGrid className="technicalNotes" maxColumns={3}>
               <article><p className="miniLabel">SEPARATION</p><h4>指令与数据分离</h4><p>使用清晰字段、标签或消息边界标记指令、示例和外部数据；分隔有助理解，但本身不能阻止提示注入。</p></article>
-              <article><p className="miniLabel">TYPED INPUT</p><h4>变量先校验再注入</h4><p>动态值应经过类型、长度、权限和敏感级别校验；不要让模板字符串拼接成为隐蔽的数据入口。</p></article>
+              <article><p className="miniLabel">TYPED INPUT</p><h4>变量校验与注入</h4><p>动态值应经过类型、长度、权限和敏感级别校验；模板字符串拼接需要作为潜在数据入口治理。</p></article>
               <article><p className="miniLabel">REUSABLE PREFIX</p><h4>稳定前缀便于缓存</h4><p>把明确且稳定的指令和常用示例放在前部、动态数据放在后部，既便于维护，也可能利用模型服务的提示缓存（Prompt Caching）。</p></article>
             </BalancedGrid>
           </div>
@@ -362,6 +356,12 @@ export default function PromptEngineeringModulePage() {
               </article>
             </div>
           </div>
+
+            <div className="architectureNotes"><p><strong>阶段产物：</strong>失败路由表和可维护模板，包含变量校验、上下文预算与模型外控制项。</p></div>
+          </section>
+
+          <section className="learningStage" id="learn-release" aria-labelledby="prompt-learn-release-title">
+            <div className="subHead"><span>L3</span><div><p className="kicker">RELEASE &amp; VALIDATION</p><h2 id="prompt-learn-release-title">版本发布与验证</h2><p className="sectionLead">把完整调用配置纳入版本、回归、灰度和 PoC，并明确需要转交的责任模块。</p></div></div>
 
           <div className="subsection" id="version-governance">
             <div className="subHead"><span>5.8</span><div><p className="kicker">MODEL &amp; VERSION GOVERNANCE</p><h3>模型差异、提示版本与发布控制</h3></div></div>
@@ -383,16 +383,55 @@ export default function PromptEngineeringModulePage() {
           <div className="subsection" id="prompt-independent-depth" data-quality-section="deep-dive">
             <div className="subHead"><span>5.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>提示词如何融入输入、发布与安全工程</h3></div></div>
             <p className="sectionLead">本节不按技巧名单展开，而是回答生产系统更难的问题：冲突指令如何处理、Context 如何装配、输出何时可执行，以及提示注入成功时如何仍然限制真实影响。</p>
-            <ModuleDeepDiveBlocks blocks={promptDeepDives} sourceLedger={sourceLedger} />
+            <ModuleDeepDiveBlocks blocks={promptDeepDives as unknown as readonly DeepDiveBlock[]} sourceLedger={sourceLedger} />
           </div>
 
+          <div className="subsection" id="poc">
+            <div className="subHead"><span>L3.3</span><div><p className="kicker">POC PLAYBOOK</p><h3>按发布风险组织 Prompt PoC</h3></div></div>
+            <div className="pocGrid">
+              <article><span>OBJECTIVE</span><h4>任务与基线</h4><p>按业务分布冻结真实输入、期望输出、错误成本、边界和现有流程表现；先判断问题是否应由 Prompt 改善。</p></article>
+              <article><span>CONTROLLED CHANGE</span><h4>单变量迭代</h4><p>从最小提示开始；按失败加入示例、Grounding、Schema 或工具定义，一次只改变一个主要因素并保留归因。</p></article>
+              <article><span>RELEASE BUNDLE</span><h4>完整配置比较</h4><p>把模型、Prompt、Context 组装、工具、Schema 与安全策略作为发布包，比较任务质量、P95、token 和成功成本。</p></article>
+              <article><span>CANARY</span><h4>安全与灰度</h4><p>测试冲突指令、Source–Sink 注入、敏感数据、错误工具参数和回滚；达到当前门禁后再放量，周期由风险决定。</p></article>
+            </div>
+            <div className="gates">
+              <h4>建议的 Go / No-Go 门槛结构</h4>
+              <div className="gateList"><span>任务成功率</span><span>关键字段正确率</span><span>Schema 通过率</span><span>拒答正确率</span><span>工具选择 / 参数</span><span>注入与越权</span><span>P95 / token</span><span>单次成功成本</span></div>
+              <p>具体阈值由客户风险、现有基线和候选云服务实测共同确定；平均分不能掩盖高风险场景失败。</p>
+            </div>
+          </div>
+
+          <div className="subsection" id="concept-map" data-quality-section="related-modules">
+            <div className="subHead"><span>L3.4</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>提示词工程在知识地图中的位置与相关模块</h3></div></div>
+            <p className="sectionLead">本模块聚焦“如何表达任务并治理模型输入”。知识检索、Agent 规划、API 授权、模型推理和评估各有独立主模块；这里给出必要连接，避免把整个 AI 应用都误称为 Prompt Engineering。</p>
+            <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
+              {conceptRows.flatMap((row) => row.map((item) => (
+                <article key={item.concept} style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}>
+                  <div className="conceptCard">
+                    <div className="conceptMeta"><span>{item.relation}</span><Link href={item.href}>{item.owner} ↗</Link></div>
+                    <h4>{item.concept}</h4>
+                    <p>{item.local}</p>
+                  </div>
+                </article>
+              )))}
+            </div>
+          </div>
+
+            <div className="architectureNotes"><p><strong>阶段产物：</strong>版本化发布包、PoC 门槛和责任转交清单，可直接进入灰度评审。</p></div>
+          </section>
+
+              </>
+            )}
+            field={(
+              <>
+
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>5.10</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div>
+            <div className="subHead"><span>F1</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={promptEvidenceCards} sourceLedger={sourceLedger} maxColumns={3} />
           </div>
 
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>5.11</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
+            <div className="subHead"><span>F2</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
             <div className="cloudIntro">
               <p>Prompt 是整体方案中的一个配置面。真正可销售、可验收的能力来自模型接入、上下文供给、工具编排、安全、发布和持续运营的组合。</p>
               <span>能力先于产品名</span><span>模型与提示共同验收</span><span>当期规格单独核验</span>
@@ -410,25 +449,13 @@ export default function PromptEngineeringModulePage() {
             </BalancedGrid>
           </div>
 
-          <div className="subsection" id="poc">
-            <div className="subHead"><span>5.12</span><div><p className="kicker">POC PLAYBOOK</p><h3>按发布风险组织 Prompt PoC</h3></div></div>
-            <div className="pocGrid">
-              <article><span>OBJECTIVE</span><h4>任务与基线</h4><p>按业务分布冻结真实输入、期望输出、错误成本、边界和现有流程表现；先判断问题是否应由 Prompt 改善。</p></article>
-              <article><span>CONTROLLED CHANGE</span><h4>单变量迭代</h4><p>从最小提示开始；按失败加入示例、Grounding、Schema 或工具定义，一次只改变一个主要因素并保留归因。</p></article>
-              <article><span>RELEASE BUNDLE</span><h4>完整配置比较</h4><p>把模型、Prompt、Context 组装、工具、Schema 与安全策略作为发布包，比较任务质量、P95、token 和成功成本。</p></article>
-              <article><span>CANARY</span><h4>安全与灰度</h4><p>测试冲突指令、Source–Sink 注入、敏感数据、错误工具参数和回滚；达到当前门禁后再放量，周期由风险决定。</p></article>
-            </div>
-            <div className="gates">
-              <h4>建议的 Go / No-Go 门槛结构</h4>
-              <div className="gateList"><span>任务成功率</span><span>关键字段正确率</span><span>Schema 通过率</span><span>拒答正确率</span><span>工具选择 / 参数</span><span>注入与越权</span><span>P95 / token</span><span>单次成功成本</span></div>
-              <p>具体阈值由客户风险、现有基线和候选云服务实测共同确定；平均分不能掩盖高风险场景失败。</p>
-            </div>
-          </div>
-
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>5.13</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-            <ModuleQaList items={promptQa} sourceLedger={sourceLedger} />
+            <div className="subHead"><span>F3</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+            <ModuleQaList items={promptQa} sourceLedger={sourceLedger} directoryHref="/questions?module=prompt-engineering" />
           </div>
+              </>
+            )}
+          />
         </div>
       </section>
       </div>

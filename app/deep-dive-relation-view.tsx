@@ -14,7 +14,7 @@ type RelationItem = {
 type RelationBlock = {
   kind: "sequence" | "matrix" | "diagnostic" | "scenario" | "checklist";
   title: string;
-  items: RelationItem[];
+  items: readonly RelationItem[];
   columnLabels?: {
     name: string;
     mechanism: string;

@@ -4,13 +4,14 @@ import Link from "next/link";
 
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../../agent-content.mjs";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt } from "../../../module-content-components";
-import { ModuleReadingNav, ReadingProgress, SystemLens, type LensPanel, type ReadingSection } from "../../../fieldbook-interactions";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt, type DeepDiveBlock } from "../../../module-content-components";
+import { ReadingProgress, SystemLens, type LensPanel } from "../../../fieldbook-interactions";
 import { AgentRunLab } from "../../../flagship-labs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { AgentControlPrimer } from "../../../module-pilot-views";
 import { getPublishedModule } from "../../../module-publication.mjs";
 import { englishModulePath } from "../../../i18n/locale-config.mjs";
+import { ModuleReadingModes } from "../../../module-reading-modes";
 
 export const metadata: Metadata = {
   title: "Agent · 智能体 | 云计算 × AI 平台售前知识库",
@@ -192,22 +193,6 @@ const cloudHooks = [
   { stage: "运营与 FinOps", services: "预算、配额、成本分析、缓存、容量与发布平台", value: "控制轮次、工具消耗和每个成功任务成本", discover: "P95、并发、任务预算和回滚要求是什么？" },
 ];
 
-const agentReadingSections: ReadingSection[] = [
-  { id: "concept-map", label: "知识连接", eyebrow: "相关模块" },
-  { id: "agent-principle", label: "工作循环", eyebrow: "四个关键动作" },
-  { id: "harness", label: "Harness", eyebrow: "运行、验证与恢复" },
-  { id: "boundaries", label: "模式边界", eyebrow: "不要滥用 Agent" },
-  { id: "capabilities", label: "关键组件", eyebrow: "规划、记忆与工具" },
-  { id: "memory-interaction", label: "状态与互操作", eyebrow: "事实、记忆与协议" },
-  { id: "patterns", label: "架构模式", eyebrow: "自治怎样增加" },
-  { id: "architecture", label: "参考架构", eyebrow: "模型与控制规则" },
-  { id: "agent-independent-depth", label: "生产级扩展", eyebrow: "状态机与恢复" },
-  { id: "cloud-opportunities", label: "云服务机会", eyebrow: "能力到产品" },
-  { id: "poc", label: "PoC 剧本", eyebrow: "按动作风险推进" },
-  { id: "evidence", label: "数据与证据", eyebrow: "知道适用边界" },
-  { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
-];
-
 const agentSystemLens: LensPanel[] = [
   {
     id: "agent-run",
@@ -226,7 +211,7 @@ const agentSystemLens: LensPanel[] = [
   {
     id: "agent-controls",
     label: "控制规则",
-    title: "自治能力越强，模型外控制必须越明确",
+    title: "自治能力与模型外控制强度",
     description: "规划、记忆和工具让 Agent 能持续运行；身份、策略、检查点与人工接管让它可被企业接受。",
     takeaway: "不要把 Prompt 写成权限系统；授权、金额、审批、补偿与审计必须落在确定性系统。",
     nodes: [
@@ -284,27 +269,41 @@ export default function AgentModulePage() {
           </div>
           <div className="ragDefinition">
             <p>一个受应用控制的 Run：模型可根据当前状态选择下一步、请求工具并吸收环境结果；身份、授权、真实动作、业务成功与停止权仍属于确定性控制层。</p>
-            <ModuleHeroMetrics sectionCount={agentReadingSections.length} questionCount={agentQa.length} evidenceCount={agentEvidenceCards.length} />
+            <ModuleHeroMetrics sectionCount={3} questionCount={agentQa.length} evidenceCount={agentEvidenceCards.length} labels={{ ariaLabel: "模块内容概览", sections: "阅读方式", sectionUnit: "种", questions: "问题库", questionUnit: "题", evidence: "证据卡", evidenceUnit: "张" }} />
           </div>
         </div>
       </section>
 
-      <div className="moduleArticleLayout dedicatedArticleLayout">
-        <ModuleReadingNav moduleName="Agent · 智能体" sections={agentReadingSections} quickLinks={[
-          { href: "#agent-principle", label: "先懂原理" },
-          { href: "#cloud-opportunities", label: "找云机会" },
-          { href: "#qa", label: "准备客户问答" },
-        ]} />
+      <div className="dedicatedArticleLayout moduleReadingHost">
       <section className="section ragBody" aria-label="Agent 核心内容">
         <div className="sectionNumber">02</div>
         <div className="sectionBody">
+          <ModuleReadingModes
+            moduleName="Agent · 智能体"
+            hashGroups={{
+              quick: ["agent-principle"],
+              learn: ["learn-run", "concept-map", "agent-loop", "learn-harness", "harness", "boundaries", "capabilities", "memory-interaction", "learn-release", "patterns", "architecture", "agent-independent-depth", "poc"],
+              field: ["cloud-opportunities", "evidence", "qa"],
+            }}
+            quick={(
+              <>
           <div className="decisionBanner">
             <p className="kicker">PRESALES POSITION</p>
-            <h2>一句话定位</h2>
-            <p>客户不是为了“拥有 Agent”而采购：先用确定性流程建立业务基线，只把必须依据新证据动态选择下一步的局部交给受控 Agent。</p>
+            <h2>Agent 的采用条件</h2>
+            <p>Agent 的采购价值来自受控的动态决策：确定性流程承载业务基线，只有确实依赖新证据选择下一步的局部才交给 Agent。</p>
           </div>
 
-          <AgentControlPrimer />
+          <div id="agent-principle">
+            <AgentControlPrimer />
+          </div>
+
+              </>
+            )}
+            learn={(
+              <>
+
+          <section className="learningStage" id="learn-run" aria-labelledby="agent-learn-run-title">
+            <div className="subHead"><span>L1</span><div><p className="kicker">RUN MODEL</p><h2 id="agent-learn-run-title">任务运行与责任边界</h2><p className="sectionLead">建立 Agent 的工作循环，标出模型决策、应用控制和相关知识模块各自负责的部分。</p></div></div>
 
           <div className="subsection" id="concept-map" data-quality-section="related-modules">
             <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>Agent 在知识地图中的位置与相关模块</h3></div></div>
@@ -321,7 +320,7 @@ export default function AgentModulePage() {
             </div>
           </div>
 
-          <div className="subsection foundationSection" id="agent-principle" data-quality-section="principle">
+          <div className="subsection foundationSection" id="agent-loop" data-quality-section="principle">
             <div className="subHead"><span>2.2</span><div><p className="kicker">FOUNDATION &amp; LOOP</p><h3>Agent 的基础概念与工作循环</h3></div></div>
             <div className="memoryCompare">
               <article>
@@ -386,6 +385,12 @@ export default function AgentModulePage() {
             <SystemLens title="从运行、控制与恢复理解 Agent" lead="三个视角共同回答：Agent 如何推进任务、企业怎样限制它，以及失败后如何知道真实世界发生了什么。" panels={agentSystemLens} />
             <AgentRunLab />
           </div>
+
+            <div className="architectureNotes"><p><strong>阶段产物：</strong>一张 Run 状态图，写明输入、动作、权威反馈、停止状态和责任系统。</p></div>
+          </section>
+
+          <section className="learningStage" id="learn-harness" aria-labelledby="agent-learn-harness-title">
+            <div className="subHead"><span>L2</span><div><p className="kicker">RUNTIME CONTROL</p><h2 id="agent-learn-harness-title">Harness、能力与交互控制</h2><p className="sectionLead">把工具、状态、记忆、协议和恢复机制放进同一套运行合同。</p></div></div>
 
           <div className="subsection" id="harness" data-quality-section="principle">
             <div className="subHead"><span>2.3</span><div><p className="kicker">AGENT RUNTIME &amp; CONTROL</p><h3>Harness：把模型能力变成可运行、可验证的任务系统</h3></div></div>
@@ -504,6 +509,12 @@ export default function AgentModulePage() {
             <CriticalBoundary>RAG 主要提供组织知识，Memory 主要保存任务与主体相关状态，权威业务事实仍应回到事实源读取。连接协议能降低集成成本，却不会自动赋予身份、权限或生产可靠性。</CriticalBoundary>
           </div>
 
+            <div className="architectureNotes"><p><strong>阶段产物：</strong>Harness 清单与动作、记忆合同，写清身份、工具、检查点和恢复方式。</p></div>
+          </section>
+
+          <section className="learningStage" id="learn-release" aria-labelledby="agent-learn-release-title">
+            <div className="subHead"><span>L3</span><div><p className="kicker">ARCHITECTURE &amp; RELEASE</p><h2 id="agent-learn-release-title">架构选择与上线验证</h2><p className="sectionLead">比较架构模式，补齐生产托管条件，并用同一任务集验证自治范围。</p></div></div>
+
           <div className="subsection" id="patterns">
             <div className="subHead"><span>2.7</span><div><p className="kicker">ARCHITECTURE PATTERNS</p><h3>从固定流程到动态决策的四种模式</h3></div></div>
             <div className="variantList">
@@ -536,28 +547,13 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="agent-independent-depth" data-quality-section="deep-dive">
-            <div className="subHead"><span>2.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>让 Agent 成为可托管的生产执行系统</h3></div></div>
+            <div className="subHead"><span>2.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>Agent 的生产托管条件</h3></div></div>
             <p className="sectionLead">本节围绕一次真实任务的生命周期展开：Run 如何结束、工具怎样安全执行、崩溃后怎样恢复、记忆与委托怎样缩小信任。重点是客户长期托管能力，而不是框架功能清单。</p>
-            <ModuleDeepDiveBlocks blocks={agentDeepDives} sourceLedger={sourceLedger} />
-          </div>
-
-          <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
-            <div className="subHead"><span>2.10</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
-            <div className="cloudIntro"><p>Agent 会把模型服务延伸到运行时、API、身份、数据、安全和运维。售前应先用厂商中立的能力描述拆解需求，再对应到当前云产品、地域、配额和计费。</p><span>模型只是其中一部分</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
-            <div className="cloudTable tableWrap">
-              <table><thead><tr><th>Agent 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
-                {cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
-              </tbody></table>
-            </div>
-            <BalancedGrid className="solutionBundles" maxColumns={3}>
-              <article><p className="miniLabel">BUNDLE A</p><h4>企业服务 Agent</h4><p>模型服务 + RAG / 搜索 + CRM / 工单工具 + API 网关 + 用户身份 + 审批流 + Trace。</p><small>价值：从回答问题延伸到受控地完成服务流程</small></article>
-              <article><p className="miniLabel">BUNDLE B</p><h4>Agent 工具与身份平台</h4><p>托管 Runtime + MCP / API Gateway + 工作负载身份 + 密钥 + 策略引擎 + 沙箱。</p><small>价值：把零散 API 整理成可发现、可授权、可审计的工具入口</small></article>
-              <article><p className="miniLabel">BUNDLE C</p><h4>AgentOps 管理与监控</h4><p>Tracing / APM + 评估平台 + 日志 / SIEM + 发布回滚 + 配额预算 + FinOps。</p><small>价值：把长轨迹失败、风险和成本变成持续运营指标</small></article>
-            </BalancedGrid>
+            <ModuleDeepDiveBlocks blocks={agentDeepDives as unknown as readonly DeepDiveBlock[]} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>按自治风险逐级验证 Agent</h3></div></div>
+            <div className="subHead"><span>2.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>Agent PoC 的自治风险阶梯</h3></div></div>
             <p className="sectionLead">在同一理赔任务集、相同工具、相同身份与相同终态下，依次比较确定性 Workflow、Workflow 中的 LLM 步骤与单 Agent；多 Agent 只有在独立并行或隔离收益被数据证明后才进入候选。</p>
             <div className="pocGrid">
               <article><span>SHADOW</span><h4>任务与最终状态</h4><p>先以观察或建议模式运行，固定真实任务、可验证的最终状态、风险等级和现有人工 / 工作流表现。</p></article>
@@ -572,15 +568,41 @@ export default function AgentModulePage() {
             </div>
           </div>
 
+            <div className="architectureNotes"><p><strong>阶段产物：</strong>候选架构、PoC 风险阶梯和带阈值的 Go / Hold / No-Go 记录。</p></div>
+          </section>
+
+              </>
+            )}
+            field={(
+              <>
+
+          <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
+            <div className="subHead"><span>F1</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
+            <div className="cloudIntro"><p>Agent 会把模型服务延伸到运行时、API、身份、数据、安全和运维。售前应先用厂商中立的能力描述拆解需求，再对应到当前云产品、地域、配额和计费。</p><span>模型只是其中一部分</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
+            <div className="cloudTable tableWrap">
+              <table><thead><tr><th>Agent 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
+                {cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
+              </tbody></table>
+            </div>
+            <BalancedGrid className="solutionBundles" maxColumns={3}>
+              <article><p className="miniLabel">BUNDLE A</p><h4>企业服务 Agent</h4><p>模型服务 + RAG / 搜索 + CRM / 工单工具 + API 网关 + 用户身份 + 审批流 + Trace。</p><small>价值：从回答问题延伸到受控地完成服务流程</small></article>
+              <article><p className="miniLabel">BUNDLE B</p><h4>Agent 工具与身份平台</h4><p>托管 Runtime + MCP / API Gateway + 工作负载身份 + 密钥 + 策略引擎 + 沙箱。</p><small>价值：把零散 API 整理成可发现、可授权、可审计的工具入口</small></article>
+              <article><p className="miniLabel">BUNDLE C</p><h4>AgentOps 管理与监控</h4><p>Tracing / APM + 评估平台 + 日志 / SIEM + 发布回滚 + 配额预算 + FinOps。</p><small>价值：把长轨迹失败、风险和成本变成持续运营指标</small></article>
+            </BalancedGrid>
+          </div>
+
           <div className="subsection" id="evidence" data-quality-section="evidence">
-            <div className="subHead"><span>2.12</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
+            <div className="subHead"><span>F2</span><div><p className="kicker">DATA WITH CAVEATS</p><h3>可引用事实及适用边界</h3></div></div>
             <ModuleEvidenceGrid cards={agentEvidenceCards} sourceLedger={sourceLedger} />
           </div>
 
           <div className="subsection qaSection" id="qa" data-quality-section="qa">
-            <div className="subHead"><span>2.13</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-            <ModuleQaList items={agentQa} sourceLedger={sourceLedger} />
+            <div className="subHead"><span>F3</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+            <ModuleQaList items={agentQa} sourceLedger={sourceLedger} directoryHref="/questions?module=ai-agent" />
           </div>
+              </>
+            )}
+          />
         </div>
       </section>
       </div>

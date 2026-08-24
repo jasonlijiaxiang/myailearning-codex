@@ -62,7 +62,7 @@ export function RagArchitecturePrimer() {
   return (
     <section className="pilotPrimer pilotPrimer--rag focusedNarrative focusedNarrative--decision" id="fit" data-knowledge-view="application-architecture" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="rag-architecture-primer-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">ADOPTION &amp; EVIDENCE ARCHITECTURE</p><h2 id="rag-architecture-primer-title">先证明需要外部证据，再设计两条生命周期</h2></div>
+        <div><p className="kicker">ADOPTION &amp; EVIDENCE ARCHITECTURE</p><h2 id="rag-architecture-primer-title">RAG 的采用条件与两条生命周期</h2></div>
         <p>RAG 的采用理由不是“有一个向量库”，而是业务回答需要当前、授权、可追溯并能撤回的外部证据；离线链负责生产证据，在线链负责决定怎样使用证据。</p>
       </header>
       <section className="focusedDecisionLedger" aria-labelledby="rag-adoption-title">
@@ -123,7 +123,7 @@ export function AgentControlPrimer() {
   return (
     <section className="pilotPrimer pilotPrimer--agent focusedNarrative focusedNarrative--decision" data-knowledge-view="control-architecture" data-quality-section="principle" aria-labelledby="agent-control-primer-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">ADOPTION &amp; CONTROL ARCHITECTURE</p><h2 id="agent-control-primer-title">先证明必须动态决策，再设计 Agent Run</h2></div>
+        <div><p className="kicker">ADOPTION &amp; CONTROL ARCHITECTURE</p><h2 id="agent-control-primer-title">Agent 的采用条件与 Run 生命周期</h2></div>
         <p>以跨区域理赔材料补件与初审为主案例：确定性流程是骨架，Agent 只处理会随新证据改变路径的局部；身份、授权、真实动作与最终赔付责任始终留在模型外。</p>
       </header>
       <section className="focusedDecisionLedger" aria-labelledby="agent-adoption-title">
@@ -266,12 +266,11 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
   );
 }
 
-function McpFocusedPrimer({ brief }: { brief: FocusedBrief }) {
-  const view = requireModuleExtensionView("mcp") as ExtensionView;
+function McpFocusedPrimer({ brief, view = requireModuleExtensionView("mcp") as ExtensionView }: { brief: FocusedBrief; view?: ExtensionView }) {
   return (
     <section className="pilotPrimer focusedNarrative focusedNarrative--protocol" id="principle" data-knowledge-view={view.id} data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="mcp-focused-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">REUSE DECISION &amp; RESPONSIBILITY MAP</p><h2 id="mcp-focused-title">先证明复用价值，再画清四方责任</h2></div>
+        <div><p className="kicker">REUSE DECISION &amp; RESPONSIBILITY MAP</p><h2 id="mcp-focused-title">MCP 的复用价值与四方责任</h2></div>
         <p>以企业工单能力服务客服 Agent、员工助手和运维助手为案例：MCP 只在重复适配已经形成成本时提供标准化价值；身份、业务授权、执行结果与长期维护仍由协议外系统负责。</p>
       </header>
       <McpResponsibilityExplorer
@@ -311,8 +310,7 @@ function McpFocusedPrimer({ brief }: { brief: FocusedBrief }) {
   );
 }
 
-function InferenceFocusedPrimer({ brief }: { brief: FocusedBrief }) {
-  const view = requireModuleExtensionView("llm-inference") as ExtensionView;
+function InferenceFocusedPrimer({ brief, view = requireModuleExtensionView("llm-inference") as ExtensionView }: { brief: FocusedBrief; view?: ExtensionView }) {
   const diagnosticRows = brief.decisions.slice(0, 4);
   return (
     <section className="pilotPrimer focusedNarrative focusedNarrative--diagnostic" id="principle" data-knowledge-view={view.id} data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="inference-focused-title">
@@ -396,7 +394,7 @@ export function FineTuningPrimer() {
   return (
     <section className="pilotPrimer pilotPrimer--tuning" data-knowledge-view="tuning-lifecycle" aria-labelledby="fine-tuning-primer-title">
       <header className="pilotPrimerHeader">
-        <div><p className="kicker">METHOD TRIAGE &amp; RELEASE</p><h2 id="fine-tuning-primer-title">先判断该不该训练，再管理完整发布过程</h2></div>
+        <div><p className="kicker">METHOD TRIAGE &amp; RELEASE</p><h2 id="fine-tuning-primer-title">微调适用性与完整发布过程</h2></div>
         <p>以理赔材料初审为例：条款证据归 RAG、案件状态与动作归 Tool/规则、最终批准归授权人员；只有轻量路线后仍稳定存在的行为缺口才进入训练。</p>
       </header>
       <TuningRouteExplorer methods={tuningMethodChoices} lifecycle={tuningLifecycle} />
@@ -419,8 +417,7 @@ export function FineTuningPrimer() {
   );
 }
 
-export function ModuleExtensionPrimer({ slug }: { slug: string }) {
-  const view = requireModuleExtensionView(slug) as ExtensionView;
+export function ModuleExtensionPrimer({ slug, view = requireModuleExtensionView(slug) as ExtensionView }: { slug: string; view?: ExtensionView }) {
 
   return (
     <section
@@ -435,7 +432,7 @@ export function ModuleExtensionPrimer({ slug }: { slug: string }) {
       <ModuleKnowledgeExplorer view={view} />
       <TermHintRow label="本模块常用缩写" termIds={view.termIds} />
       <footer className="pilotPrimerActions">
-        <strong>技术售前用法</strong>
+        <strong>会议用法</strong>
         <p>{view.application}</p>
         <nav aria-label={`${view.title}深入阅读`}>{view.links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}</nav>
       </footer>
@@ -443,13 +440,13 @@ export function ModuleExtensionPrimer({ slug }: { slug: string }) {
   );
 }
 
-export function SharedModulePrimer({ slug, knowledgeView, brief }: { slug: string; knowledgeView: string | null; brief?: FocusedBrief }) {
+export function SharedModulePrimer({ slug, knowledgeView, brief, extensionView }: { slug: string; knowledgeView: string | null; brief?: FocusedBrief; extensionView?: ExtensionView }) {
   if (!knowledgeView) return null;
   if (knowledgeView === "theory-atlas") return <LlmTheoryPrimer />;
   if (knowledgeView === "decision-blueprint") return <SolutionPatternPrimer brief={brief} />;
-  if (knowledgeView === "mcp-host-server-boundary" && brief) return <McpFocusedPrimer brief={brief} />;
-  if (knowledgeView === "latency-capacity-map" && brief) return <InferenceFocusedPrimer brief={brief} />;
+  if (knowledgeView === "mcp-host-server-boundary" && brief) return <McpFocusedPrimer brief={brief} view={extensionView} />;
+  if (knowledgeView === "latency-capacity-map" && brief) return <InferenceFocusedPrimer brief={brief} view={extensionView} />;
   if (knowledgeView === "threat-path") return <SecurityThreatPrimer />;
   if (knowledgeView === "tuning-lifecycle") return <FineTuningPrimer />;
-  return <ModuleExtensionPrimer slug={slug} />;
+  return <ModuleExtensionPrimer slug={slug} view={extensionView} />;
 }

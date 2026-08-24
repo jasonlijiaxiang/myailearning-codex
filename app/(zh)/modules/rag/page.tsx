@@ -8,17 +8,20 @@ import {
   CriticalBoundary,
   ModuleDeepDiveBlocks,
   ModuleEvidenceGrid,
+  ModuleHeroMetrics,
   ModuleLearningStudio,
   ModuleQaList,
   ModuleUpdatedAt,
+  type DeepDiveBlock,
 } from "../../../module-content-components";
-import { ModuleReadingNav, ReadingProgress, type ReadingSection } from "../../../fieldbook-interactions";
+import { ReadingProgress } from "../../../fieldbook-interactions";
 import { RagRetrievalLab } from "../../../flagship-labs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { evidenceCards, ragDeepDives, ragLearningContent, ragQa } from "../../../rag-content.mjs";
 import { RagArchitecturePrimer } from "../../../module-pilot-views";
 import { getPublishedModule } from "../../../module-publication.mjs";
 import { englishModulePath } from "../../../i18n/locale-config.mjs";
+import { ModuleReadingModes } from "../../../module-reading-modes";
 
 export const metadata: Metadata = {
   title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
@@ -142,26 +145,12 @@ const protocolBoundaries = [
   { name: "A2A", need: "独立 Agent 之间需要委派完整任务并交付 Artifact", notNeed: "一个 Agent 调用一次搜索或 RAG 工具", responsibility: "跨 Agent 任务状态、身份、产物和失败语义" },
 ];
 
-const ragReadingSections: ReadingSection[] = [
-  { id: "fit", label: "采用判断", eyebrow: "先判断是否值得做" },
-  { id: "evidence-contract", label: "证据契约", eyebrow: "定义什么可以回答" },
-  { id: "evidence-lifecycle", label: "证据双链", eyebrow: "离线与在线如何衔接" },
-  { id: "model-selection", label: "模型与组件", eyebrow: "按任务实验选型" },
-  { id: "measurement", label: "测量与诊断", eyebrow: "沿证据链定位失败" },
-  { id: "production", label: "生产与经济性", eyebrow: "控制、云服务与 ROI" },
-  { id: "extensions", label: "扩展边界", eyebrow: "复杂度由真实失败触发" },
-  { id: "practice", label: "实战产物", eyebrow: "用交付证明掌握" },
-  { id: "evidence", label: "证据与边界", eyebrow: "知道来源能证明什么" },
-  { id: "qa", label: "客户问答", eyebrow: "现场快速使用" },
-  { id: "related-modules", label: "相关模块", eyebrow: "回到责任主模块" },
-];
-
-function SourceLinks({ sourceIds, label }: { sourceIds: string[]; label: string }) {
+function SourceLinks({ sourceIds, label }: { sourceIds: readonly string[]; label: string }) {
   return (
     <div className="deepDiveSources" aria-label={label}>
       <span>来源</span>
       {sourceIds.map((sourceId) => {
-        const source = sourceLedger[sourceId];
+        const source = sourceLedger[sourceId as keyof typeof sourceLedger];
         if (!source) throw new Error(`RAG 页面引用未知来源：${sourceId}`);
         return <Link href={`/references#source-${sourceId}`} key={sourceId}>{source.shortTitle} ↗</Link>;
       })}
@@ -195,41 +184,34 @@ export default function RagModulePage() {
           </div>
           <div className="ragDefinition">
             <p>把外部资料整理成当前用户可使用、能核对且可撤回的依据；向量检索只是候选发现手段之一。</p>
+            <ModuleHeroMetrics sectionCount={3} questionCount={ragQa.length} evidenceCount={evidenceCards.length} labels={{ ariaLabel: "模块内容概览", sections: "阅读方式", sectionUnit: "种", questions: "问题库", questionUnit: "题", evidence: "证据卡", evidenceUnit: "张" }} />
           </div>
         </div>
       </section>
 
-      <div className="moduleArticleLayout dedicatedArticleLayout">
-        <ModuleReadingNav moduleName="RAG · 检索增强生成" sections={ragReadingSections} quickLinks={[
-          { href: "#fit", label: "判断是否采用" },
-          { href: "#model-selection", label: "准备选型" },
-          { href: "#practice", label: "完成实战" },
-        ]} />
+      <div className="dedicatedArticleLayout moduleReadingHost">
         <section className="section ragBody" aria-label="RAG 核心内容">
           <div className="sectionNumber">02</div>
           <div className="sectionBody">
+            <ModuleReadingModes
+              moduleName="RAG · 检索增强生成"
+              hashGroups={{
+                quick: ["fit", "knowledge-location"],
+                learn: ["evidence-contract", "evidence-lifecycle", "model-selection", "measurement", "production", "extensions", "practice"],
+                field: ["cloud", "evidence", "qa", "related-modules"],
+              }}
+              quick={(
+                <>
             <div className="decisionBanner">
               <p className="kicker">THE MAIN QUESTION</p>
-              <h2>本模块唯一主问题</h2>
+              <h2>核心问题</h2>
               <p>如何让一条回答只使用当前用户有权访问、仍然有效、能够回到原文的证据，并在证据不足时停下来？</p>
             </div>
 
             <RagArchitecturePrimer />
 
-            <div className="subsection foundationSection" id="evidence-contract" data-quality-section="principle">
-              <div className="subHead"><span>01</span><div><p className="kicker">EVIDENCE CONTRACT</p><h3>先定义什么可以成为回答证据</h3></div></div>
-              <p className="sectionLead">RAG 改变的是本次回答可使用的外部上下文，不会把资料永久写入模型权重。真正的起点不是向量库，而是来源、版本、权限、引用和停止条件共同组成的证据契约。</p>
-
-              <section className="focusedDecisionLedger" aria-labelledby="route-baseline-title">
-                <header><p className="kicker">SIMPLEST VIABLE ROUTE</p><h3 id="route-baseline-title">RAG 必须先证明自己优于更简单的路线</h3><p>同一个需求可能需要搜索、长上下文、RAG、SQL / API、微调或人工流程，也可能组合使用。先冻结业务问题和基线，再比较必要能力。</p></header>
-                <div className="tableWrap">
-                  <table>
-                    <thead><tr><th>路线</th><th>最适合</th><th>变化怎样生效</th><th>证据形态</th><th>不能忽略</th></tr></thead>
-                    <tbody>{adoptionChoices.map((item) => <tr key={item.route}><th>{item.route}</th><td>{item.fit}</td><td>{item.change}</td><td>{item.evidence}</td><td>{item.limit}</td></tr>)}</tbody>
-                  </table>
-                </div>
-              </section>
-
+            <div className="subsection foundationSection" id="knowledge-location" data-quality-section="principle">
+              <div className="subHead"><span>Q1</span><div><p className="kicker">KNOWLEDGE LOCATION</p><h3>知识应放在模型权重还是外部证据中</h3></div></div>
               <div className="memoryCompare">
                 <article>
                   <p className="miniLabel">PARAMETRIC MEMORY</p>
@@ -242,6 +224,26 @@ export default function RagModulePage() {
                   <p>文档、数据库、搜索索引或知识图谱中的当前资料。它们可以独立更新、授权、撤回和审计，RAG 在请求发生时只取回与当前问题相关的部分。</p>
                 </article>
               </div>
+            </div>
+
+                </>
+              )}
+              learn={(
+                <>
+
+            <div className="subsection foundationSection" id="evidence-contract" data-quality-section="principle">
+              <div className="subHead"><span>01</span><div><p className="kicker">EVIDENCE CONTRACT</p><h3>回答证据的成立条件</h3></div></div>
+              <p className="sectionLead">RAG 改变的是本次回答可使用的外部上下文，不会把资料永久写入模型权重。起点是由来源、版本、权限、引用和停止条件组成的证据契约。</p>
+
+              <section className="focusedDecisionLedger" aria-labelledby="route-baseline-title">
+                <header><p className="kicker">SIMPLEST VIABLE ROUTE</p><h3 id="route-baseline-title">RAG 与更简单路线的采用比较</h3><p>同一个需求可能需要搜索、长上下文、RAG、SQL / API、微调或人工流程，也可能组合使用。业务问题与基线确定后，再比较必要能力。</p></header>
+                <div className="tableWrap">
+                  <table>
+                    <thead><tr><th>路线</th><th>最适合</th><th>变化怎样生效</th><th>证据形态</th><th>不能忽略</th></tr></thead>
+                    <tbody>{adoptionChoices.map((item) => <tr key={item.route}><th>{item.route}</th><td>{item.fit}</td><td>{item.change}</td><td>{item.evidence}</td><td>{item.limit}</td></tr>)}</tbody>
+                  </table>
+                </div>
+              </section>
 
               <div className="ragMechanism" aria-label="RAG 三步工作机制">
                 <article><span>01</span><h5>检索 · Retrieval</h5><p>从当前用户有权访问的知识源中找候选证据。相关性分数只能说明“与问题像不像”，不能证明来源真实、权威或仍然有效。</p></article>
@@ -261,11 +263,11 @@ export default function RagModulePage() {
             </div>
 
             <div className="subsection" id="evidence-lifecycle">
-              <div className="subHead"><span>02</span><div><p className="kicker">TWO EVIDENCE LIFECYCLES</p><h3>离线链生产证据，在线链决定怎样使用证据</h3></div></div>
+              <div className="subHead"><span>02</span><div><p className="kicker">TWO EVIDENCE LIFECYCLES</p><h3>离线证据与在线回答生命周期</h3></div></div>
               <p className="sectionLead">两条链通过同一套稳定 ID、版本和权限语义衔接。Data Engineering 负责生产可靠的知识产物；RAG 负责证明这些产物能被正确召回、编排和用于回答。</p>
 
               <section className="focusedDecisionLedger" aria-labelledby="offline-lifecycle-title">
-                <header><p className="kicker">OFFLINE EVIDENCE LIFECYCLE</p><h3 id="offline-lifecycle-title">资料进入索引前，每一步都要有明确的验收结果</h3><p>切片只是其中一步。没有权威源、版本裁决和负向变化传播，再精细的向量检索也会返回错误证据。</p></header>
+                <header><p className="kicker">OFFLINE EVIDENCE LIFECYCLE</p><h3 id="offline-lifecycle-title">索引前的资料验收</h3><p>切片只是其中一步。没有权威源、版本裁决和负向变化传播，再精细的向量检索也会返回错误证据。</p></header>
                 <div className="tableWrap">
                   <table>
                     <thead><tr><th>阶段</th><th>输出</th><th>典型失败</th><th>RAG 所需验收</th></tr></thead>
@@ -275,7 +277,7 @@ export default function RagModulePage() {
               </section>
 
               <section className="focusedDecisionLedger" aria-labelledby="online-lifecycle-title">
-                <header><p className="kicker">ONLINE ANSWER LIFECYCLE</p><h3 id="online-lifecycle-title">一次请求不只有“检索”与“生成”两个动作</h3><p>问题含糊、条件缺失或证据冲突时，正确结果可能是追问、限定回答或转人工，而不是继续增加 Token。</p></header>
+                <header><p className="kicker">ONLINE ANSWER LIFECYCLE</p><h3 id="online-lifecycle-title">在线回答的完整动作链</h3><p>问题含糊、条件缺失或证据冲突时，正确结果可能是追问、限定回答或转人工，而不是继续增加 Token。</p></header>
                 <div className="tableWrap">
                   <table>
                     <thead><tr><th>阶段</th><th>输出</th><th>典型失败</th><th>可观察信号</th></tr></thead>
@@ -288,7 +290,7 @@ export default function RagModulePage() {
             </div>
 
             <div className="subsection" id="model-selection">
-              <div className="subHead"><span>03</span><div><p className="kicker">MODEL &amp; COMPONENT SELECTION</p><h3>RAG 选型不是只选一个生成模型</h3></div></div>
+              <div className="subHead"><span>03</span><div><p className="kicker">MODEL &amp; COMPONENT SELECTION</p><h3>RAG 组件选型</h3></div></div>
               <p className="sectionLead">解析、Embedding、搜索、向量索引、Reranker、生成模型和可选 Judge 是不同采购与发布对象。每一项都应使用同一套“任务—约束—候选—实验—通过条件”方法，而不是用开源 / 商业二分法替代工程判断。</p>
               <div className="tableWrap">
                 <table>
@@ -302,7 +304,7 @@ export default function RagModulePage() {
             </div>
 
             <div className="subsection" id="measurement" data-quality-section="deep-dive">
-              <div className="subHead"><span>04</span><div><p className="kicker">MEASUREMENT &amp; DIAGNOSIS</p><h3>沿证据链测量，才能知道应该修哪里</h3></div></div>
+              <div className="subHead"><span>04</span><div><p className="kicker">MEASUREMENT &amp; DIAGNOSIS</p><h3>证据链测量与失效定位</h3></div></div>
               <p className="sectionLead">最终答案只是结果。诊断需要同时保存候选集、过滤结果、排序、最终证据包和回答主张；换更大模型只可能修复最后一段中的部分问题。</p>
               <div className="tableWrap">
                 <table>
@@ -311,11 +313,11 @@ export default function RagModulePage() {
                 </table>
               </div>
               <CriticalBoundary>平均分提高不能掩盖越权、错误承诺、关键证据缺失或高风险拒答失败。候选召回、最终上下文、引用和业务结果必须分别观察，并按风险切片。</CriticalBoundary>
-              <ModuleDeepDiveBlocks blocks={ragDeepDives} sourceLedger={sourceLedger} />
+              <ModuleDeepDiveBlocks blocks={ragDeepDives as unknown as readonly DeepDiveBlock[]} sourceLedger={sourceLedger} />
             </div>
 
-            <div className="subsection cloudSection" id="production" data-quality-section="cloud">
-              <div className="subHead"><span>05</span><div><p className="kicker">PRODUCTION CONTROL &amp; ECONOMICS</p><h3>把安全、Trace、云服务和经济性放进同一上线决定</h3></div></div>
+            <div className="subsection" id="production" data-quality-section="learning">
+              <div className="subHead"><span>05</span><div><p className="kicker">PRODUCTION CONTROL &amp; ECONOMICS</p><h3>生产控制、Trace 与经济性</h3></div></div>
               <p className="sectionLead">生产控制不是问答列表的附录。每个控制都要落到证据链的输入、输出、版本、负责人和恢复动作；云服务只提供部分能力，不能转移客户的数据、授权和业务责任。</p>
 
               <div className="tableWrap">
@@ -325,18 +327,8 @@ export default function RagModulePage() {
                 </table>
               </div>
 
-              <section className="focusedDecisionLedger" aria-labelledby="cloud-capability-title">
-                <header><p className="kicker">CLOUD CAPABILITY CONTRACT</p><h3 id="cloud-capability-title">先写能力、验收与责任，再对应具体云产品</h3><p>具体产品还要按实施当天的地域、生命周期状态、配额、SLA、网络和计费单位复核。</p></header>
-                <div className="tableWrap cloudTable">
-                  <table>
-                    <thead><tr><th>技术环节</th><th>可连接的云能力</th><th>客户价值</th><th>发现问题</th><th>验收</th><th>责任边界</th></tr></thead>
-                    <tbody>{cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.capability}</td><td>{item.value}</td><td>{item.discover}</td><td>{item.acceptance}</td><td>{item.responsibility}</td></tr>)}</tbody>
-                  </table>
-                </div>
-              </section>
-
               <section className="focusedDecisionLedger" aria-labelledby="economics-title">
-                <header><p className="kicker">RISK-ADJUSTED ROI</p><h3 id="economics-title">成本只是分母，ROI 还需要价值、采用率和风险</h3><p>PoC 从现状基线开始，并用生产数据逐步替换假设。模型分数不能直接变成采购回报。</p></header>
+                <header><p className="kicker">RISK-ADJUSTED ROI</p><h3 id="economics-title">风险调整后的 ROI</h3><p>PoC 从现状基线开始，并用生产数据逐步替换假设。模型分数不能直接变成采购回报。</p></header>
                 <div className="focusedDecisionRows">
                   {economicsStages.map((item, index) => (
                     <article key={item.title}>
@@ -357,7 +349,7 @@ export default function RagModulePage() {
             </div>
 
             <div className="subsection" id="extensions">
-              <div className="subHead"><span>06</span><div><p className="kicker">OPTIONAL PATTERNS &amp; PROTOCOL BOUNDARIES</p><h3>复杂度由真实失败样本触发，不是统一升级阶梯</h3></div></div>
+              <div className="subHead"><span>06</span><div><p className="kicker">OPTIONAL PATTERNS &amp; PROTOCOL BOUNDARIES</p><h3>RAG 扩展模式与采用条件</h3></div></div>
               <p className="sectionLead">Naive / Advanced 描述检索管线复杂度，Graph 描述知识表示，Multimodal 描述输入与证据形态，Structured 描述事实源，Agentic 描述运行时控制。它们可以组合，但不是一条从低到高的成熟度阶梯。</p>
               <div className="tableWrap">
                 <table>
@@ -367,7 +359,7 @@ export default function RagModulePage() {
               </div>
 
               <section className="focusedDecisionLedger" aria-labelledby="protocol-boundary-title">
-                <header><p className="kicker">AGENT · MCP · A2A</p><h3 id="protocol-boundary-title">它们都不是普通 RAG 的默认组成</h3><p>判断标准不是技术是否流行，而是系统是否出现了动态控制、标准能力连接或跨 Agent 任务委派的真实需要。</p></header>
+                <header><p className="kicker">AGENT · MCP · A2A</p><h3 id="protocol-boundary-title">Agent、MCP 与 A2A 的适用边界</h3><p>采用依据是系统是否出现动态控制、标准能力连接或跨 Agent 任务委派的真实需要，而非技术热度。</p></header>
                 <div className="tableWrap">
                   <table>
                     <thead><tr><th>能力</th><th>什么时候需要</th><th>什么时候不需要</th><th>它真正负责什么</th></tr></thead>
@@ -379,22 +371,38 @@ export default function RagModulePage() {
             </div>
 
             <div className="subsection" id="practice" data-quality-section="learning">
-              <div className="subHead"><span>07</span><div><p className="kicker">LEARNING BY DELIVERABLE</p><h3>用可评审产物证明真正掌握 RAG</h3></div></div>
+              <div className="subHead"><span>07</span><div><p className="kicker">LEARNING BY DELIVERABLE</p><h3>RAG 实战产物与通过标准</h3></div></div>
               <ModuleLearningStudio content={ragLearningContent} sourceLedger={sourceLedger} />
             </div>
 
+                </>
+              )}
+              field={(
+                <>
+
+            <div className="subsection cloudSection" id="cloud" data-quality-section="cloud">
+              <div className="subHead"><span>F1</span><div><p className="kicker">CLOUD CAPABILITY CONTRACT</p><h3 id="cloud-capability-title">云能力、验收与责任映射</h3></div></div>
+              <p className="sectionLead">具体产品按实施当天的地域、生命周期状态、配额、SLA、网络和计费单位复核。</p>
+              <div className="tableWrap cloudTable">
+                <table>
+                  <thead><tr><th>技术环节</th><th>可连接的云能力</th><th>客户价值</th><th>发现问题</th><th>验收</th><th>责任边界</th></tr></thead>
+                  <tbody>{cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.capability}</td><td>{item.value}</td><td>{item.discover}</td><td>{item.acceptance}</td><td>{item.responsibility}</td></tr>)}</tbody>
+                </table>
+              </div>
+            </div>
+
             <div className="subsection" id="evidence" data-quality-section="evidence">
-              <div className="subHead"><span>08</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h3>数据、论文与产品文档分别能证明什么</h3></div></div>
+              <div className="subHead"><span>F2</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h3>证据类型与适用范围</h3></div></div>
               <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
             </div>
 
             <div className="subsection qaSection" id="qa" data-quality-section="qa">
-              <div className="subHead"><span>09</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
-              <ModuleQaList items={ragQa} sourceLedger={sourceLedger} />
+              <div className="subHead"><span>F3</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+              <ModuleQaList items={ragQa} sourceLedger={sourceLedger} directoryHref="/questions?module=rag" />
             </div>
 
             <div className="subsection focusedRelated" id="related-modules" data-quality-section="related-modules">
-              <div className="subHead"><span>10</span><div><p className="kicker">RELATED MODULES</p><h3>把局部判断交回责任主模块</h3></div></div>
+              <div className="subHead"><span>F4</span><div><p className="kicker">RELATED MODULES</p><h3>相关模块与责任归属</h3></div></div>
               <p className="sectionLead">RAG 保留完成当前方案判断所需的局部解释；完整机制、治理与运营方法仍由以下模块负责，避免在一个页面复制整套知识库。</p>
               <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
                 {conceptRows.flatMap((row) => row.map((item) => (
@@ -408,6 +416,9 @@ export default function RagModulePage() {
                 )))}
               </div>
             </div>
+                </>
+              )}
+            />
           </div>
         </section>
       </div>

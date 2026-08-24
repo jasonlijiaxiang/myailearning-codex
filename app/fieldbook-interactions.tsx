@@ -425,36 +425,54 @@ export function SystemLens({ title, lead, panels }: { title: string; lead: strin
             </li>
           ))}
         </ol>
-        <p className="lensTakeaway"><span>售前结论</span>{panel.takeaway}</p>
+        <p className="lensTakeaway"><span>这一视角提醒</span>{panel.takeaway}</p>
       </div>
     </section>
   );
 }
 
-export function QaFilterShell({ items, children }: { items: Array<{ tag: string; text: string }>; children: ReactNode }) {
+export function QaFilterShell({
+  items,
+  children,
+  initialLimit = 8,
+  directoryHref,
+}: {
+  items: ReadonlyArray<{ tag: string; text: string }>;
+  children: ReactNode;
+  initialLimit?: number;
+  directoryHref?: string;
+}) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("all");
+  const [showAll, setShowAll] = useState(false);
   const uniqueTags = useMemo(() => [...new Set(items.map((item) => item.tag))], [items]);
-  const visibleCount = useMemo(() => {
+  const matchingCount = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase("zh-CN");
     return items.filter((item) => (tag === "all" || item.tag === tag) && (!normalized || item.text.toLocaleLowerCase("zh-CN").includes(normalized))).length;
   }, [items, query, tag]);
+  const isBrowsingAll = tag === "all" && query.trim() === "";
+  const isLimited = isBrowsingAll && !showAll && matchingCount > initialLimit;
+  const displayedCount = isLimited ? initialLimit : matchingCount;
 
   useEffect(() => {
     const details = [...(rootRef.current?.querySelectorAll<HTMLDetailsElement>("details[data-qa-tag]") ?? [])];
     const normalized = query.trim().toLocaleLowerCase("zh-CN");
-    details.forEach((item) => {
+    details.forEach((item, index) => {
       const text = item.textContent?.toLocaleLowerCase("zh-CN") ?? "";
       const matches = (tag === "all" || item.dataset.qaTag === tag) && (!normalized || text.includes(normalized));
-      item.hidden = !matches;
+      const withinInitialSet = !isBrowsingAll || showAll || index < initialLimit;
+      item.hidden = !matches || !withinInitialSet;
     });
-  }, [query, tag]);
+  }, [initialLimit, isBrowsingAll, query, showAll, tag]);
 
   useEffect(() => {
     const revealTarget = () => {
       const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
-      if (target instanceof HTMLDetailsElement && target.dataset.qaTag) target.open = true;
+      if (!(target instanceof HTMLDetailsElement) || !target.dataset.qaTag) return;
+      setShowAll(true);
+      target.open = true;
+      window.requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
     };
     revealTarget();
     window.addEventListener("hashchange", revealTarget);
@@ -462,17 +480,25 @@ export function QaFilterShell({ items, children }: { items: Array<{ tag: string;
   }, []);
 
   return (
-    <div className="qaExplorer" ref={rootRef}>
+    <div className="qaExplorer" data-expanded={showAll ? "true" : "false"} ref={rootRef}>
       <div className="qaToolbar">
         <label><span>搜索客户问题</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="输入关键词，如：成本、权限、准确率……" /></label>
         <div className="qaTagFilters" aria-label="按问题类型筛选">
           <button type="button" aria-pressed={tag === "all"} className={tag === "all" ? "active" : ""} onClick={() => setTag("all")}>全部</button>
           {uniqueTags.map((item) => <button type="button" aria-pressed={tag === item} className={tag === item ? "active" : ""} onClick={() => setTag(item)} key={item}>{item}</button>)}
         </div>
-        <p aria-live="polite">当前显示 {visibleCount} 个问题</p>
+        <p aria-live="polite">当前显示 {displayedCount} / {matchingCount} 个问题</p>
       </div>
       {children}
-      {visibleCount === 0 && <div className="emptySearch"><strong>没有匹配的问题</strong><p>清除筛选，或换一个更短的关键词。</p></div>}
+      {matchingCount === 0 && <div className="emptySearch"><strong>没有匹配的问题</strong><p>清除筛选，或换一个更短的关键词。</p></div>}
+      {(items.length > initialLimit || directoryHref) ? (
+        <div className="qaCollectionActions">
+          {items.length > initialLimit && isBrowsingAll ? (
+            <button type="button" onClick={() => setShowAll((value) => !value)}>{showAll ? "收起完整题库" : `展开本模块全部 ${items.length} 题`}</button>
+          ) : null}
+          {directoryHref ? <Link href={directoryHref}>到问题库继续筛选 <span>↗</span></Link> : null}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -502,9 +528,9 @@ export function QuestionDirectoryShell({
   initialModuleId = "all",
   children,
 }: {
-  items: QuestionDirectoryFilterItem[];
-  modules: QuestionDirectoryModule[];
-  intentDefinitions?: Array<{ id: string; zh: string; scope?: string }>;
+  items: readonly QuestionDirectoryFilterItem[];
+  modules: readonly QuestionDirectoryModule[];
+  intentDefinitions?: ReadonlyArray<{ id: string; zh: string; scope?: string }>;
   initialView?: string;
   initialIntentId?: string;
   initialModuleId?: string;
@@ -518,7 +544,10 @@ export function QuestionDirectoryShell({
   const [intentId, setIntentId] = useState(initialIntentId);
   const [view, setView] = useState(initialView === "field-kit" ? "field-kit" : initialView === "core" || initialView === "situational" ? initialView : "all");
   const availableTags = useMemo(() => [...new Set(items.filter((item) => moduleId === "all" || item.moduleId === moduleId).map((item) => item.tag))].sort((a, b) => a.localeCompare(b, "zh-CN")), [items, moduleId]);
-  const visibleItems = useMemo(() => filterQuestionDirectoryItems(items, { query, moduleId, tag, intentId, view }), [items, intentId, moduleId, query, tag, view]);
+  const visibleItems = useMemo(
+    () => filterQuestionDirectoryItems(items, { query, moduleId, tag, intentId, view }) as QuestionDirectoryFilterItem[],
+    [items, intentId, moduleId, query, tag, view],
+  );
   const visibleKeys = useMemo(() => new Set(visibleItems.map((item) => item.key)), [visibleItems]);
   const visibleModules = useMemo(() => new Set(visibleItems.map((item) => item.moduleId)).size, [visibleItems]);
   const allModulesLabel = `全部 ${modules.length} 个模块`;

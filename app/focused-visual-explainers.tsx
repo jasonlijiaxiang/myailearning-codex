@@ -120,7 +120,7 @@ export function McpResponsibilityExplorer({
         <section className="mcpArchitectureBand mcpArchitectureBand--protocol" aria-label="MCP 协议边界">
           <header><strong>MCP 协议边界</strong><span>版本、能力元数据与结构化消息</span></header>
           <button type="button" className="mcpRoleNode mcpRoleNode--client" aria-pressed={activeRole === "client"} onClick={() => setActiveRole("client")}>
-            <span>CLIENT</span><strong>一条到特定 Server 的隔离连接</strong>
+            <span>CLIENT</span><strong>面向特定 Server 的请求交换边界</strong>
           </button>
           <div className="mcpProtocolLink" aria-hidden="true"><span>JSON-RPC / MCP</span><i>↔</i></div>
           <button type="button" className="mcpRoleNode mcpRoleNode--server" aria-pressed={activeRole === "server"} onClick={() => setActiveRole("server")}>

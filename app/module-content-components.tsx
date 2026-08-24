@@ -36,24 +36,24 @@ type QaItem = {
   ask: string;
   tag: string;
   basis: string;
-  evidence: QaEvidence[];
+  evidence: readonly QaEvidence[];
   addedAt?: string;
 };
 
 export type ModuleLearningContent = {
-  outcomes: string[];
-  route: Array<{
+  outcomes: readonly string[];
+  route: ReadonlyArray<{
     title: string;
     learn: string;
     checkpoint: string;
   }>;
-  labs: Array<{
+  labs: ReadonlyArray<{
     title: string;
     scenario: string;
-    tasks: string[];
+    tasks: readonly string[];
     deliverable: string;
     acceptance: string;
-    sourceIds: string[];
+    sourceIds: readonly string[];
   }>;
 };
 
@@ -95,13 +95,13 @@ export function ModuleHeroMetrics({
 
 export type ModuleCurriculumContent = {
   lead: string;
-  chapters: Array<{
+  chapters: ReadonlyArray<{
     title: string;
     en: string;
     explanation: string;
     decision: string;
     boundary: string;
-    sourceIds: string[];
+    sourceIds: readonly string[];
   }>;
 };
 
@@ -118,8 +118,8 @@ export type DeepDiveBlock = {
   eyebrow: string;
   title: string;
   intro: string;
-  items: DeepDiveItem[];
-  sourceIds: string[];
+  items: readonly DeepDiveItem[];
+  sourceIds: readonly string[];
   maxColumns?: number;
   columnLabels?: {
     name: string;
@@ -129,12 +129,13 @@ export type DeepDiveBlock = {
   };
 };
 
-export function ModuleUpdatedAt({ value, locale = "zh-CN" }: { value?: string; locale?: "zh-CN" | "en" }) {
-  const canonicalLabel = formatModuleUpdatedAt(value);
-  if (!canonicalLabel || !value) return null;
-  const label = locale === "en" ? `Last updated ${value}` : canonicalLabel;
+export function ModuleUpdatedAt({ value, locale = "zh-CN" }: { value?: string | readonly string[]; locale?: "zh-CN" | "en" }) {
+  const dateValue = Array.isArray(value) ? value.at(-1) : value;
+  const canonicalLabel = formatModuleUpdatedAt(dateValue);
+  if (!canonicalLabel || !dateValue) return null;
+  const label = locale === "en" ? `Last updated ${dateValue}` : canonicalLabel;
 
-  return <span className="moduleUpdatedAt"> · <time dateTime={value}>{label}</time></span>;
+  return <span className="moduleUpdatedAt"> · <time dateTime={dateValue}>{label}</time></span>;
 }
 
 export function QuestionAddedAt({ value, className }: { value?: string; className?: string }) {
@@ -191,18 +192,18 @@ export function BalancedGrid({
 
 export function CriticalBoundary({ children }: { children: ReactNode }) {
   return (
-    <aside className="callout" aria-label="重要边界" data-importance="critical">
+    <aside className="callout" aria-label="需要单独验证的约束" data-importance="critical">
       <div className="calloutTitle">
-        <span>高影响限制</span>
-        <strong>重要边界</strong>
-        <small>Critical Boundary</small>
+        <span>约束</span>
+        <strong>需要单独验证</strong>
+        <small>Verify separately</small>
       </div>
       <p>{children}</p>
     </aside>
   );
 }
 
-function DeepDiveSourceLinks({ sourceIds, sourceLedger }: { sourceIds: string[]; sourceLedger: SourceLedger }) {
+function DeepDiveSourceLinks({ sourceIds, sourceLedger }: { sourceIds: readonly string[]; sourceLedger: SourceLedger }) {
   if (sourceIds.length === 0) return null;
 
   return (
@@ -220,7 +221,7 @@ export function ModuleDeepDiveBlocks({
   blocks,
   sourceLedger,
 }: {
-  blocks: DeepDiveBlock[];
+  blocks: readonly DeepDiveBlock[];
   sourceLedger: SourceLedger;
 }) {
   if (blocks.length === 0) return null;
@@ -231,7 +232,7 @@ export function ModuleDeepDiveBlocks({
         const labels = block.columnLabels ?? {
           name: block.kind === "diagnostic" ? "现象 / 检查点" : "对象",
           mechanism: block.kind === "diagnostic" ? "可能机制" : "工作机制",
-          decision: block.kind === "diagnostic" ? "验证与处理" : "售前判断",
+          decision: block.kind === "diagnostic" ? "验证与处理" : "方案判断",
           boundary: "适用边界",
         };
 
@@ -292,8 +293,7 @@ export function ModuleCurriculumAtlas({
             <div className="curriculumChapterBody">
               <p className="curriculumExplanation">{chapter.explanation}</p>
               <dl>
-                <div><dt>售前判断</dt><dd>{chapter.decision}</dd></div>
-                <div><dt>关键边界</dt><dd>{chapter.boundary}</dd></div>
+                <div><dt>适用范围</dt><dd>{chapter.boundary}</dd></div>
               </dl>
               <DeepDiveSourceLinks sourceIds={chapter.sourceIds} sourceLedger={sourceLedger} />
             </div>
@@ -316,7 +316,7 @@ export function ModuleLearningStudio({
       <div className="learningOutcomes" aria-labelledby="learning-outcomes-title">
         <div className="learningStudioHeading">
           <p className="miniLabel">LEARNING OUTCOMES</p>
-          <h3 id="learning-outcomes-title">学完后，你应该能独立完成</h3>
+          <h3 id="learning-outcomes-title">做完这组内容，你可以</h3>
         </div>
         <ol>
           {content.outcomes.map((outcome, index) => (
@@ -328,8 +328,8 @@ export function ModuleLearningStudio({
       <div className="learningRoute" aria-labelledby="learning-route-title">
         <div className="learningStudioHeading">
           <p className="miniLabel">RECOMMENDED ROUTE</p>
-          <h3 id="learning-route-title">建议学习顺序</h3>
-          <p>每一步都以“能做出什么判断”作为检查点，而不是以读完多少内容作为完成标准。</p>
+          <h3 id="learning-route-title">从这里开始</h3>
+          <p>检查点看的是能否做出判断，而不是读到了第几章。</p>
         </div>
         <ol>
           {content.route.map((step, index) => (
@@ -344,8 +344,8 @@ export function ModuleLearningStudio({
       <div className="learningLabs" aria-labelledby="learning-labs-title">
         <div className="learningStudioHeading">
           <p className="miniLabel">PRACTICE LABS</p>
-          <h3 id="learning-labs-title">用真实产物证明掌握</h3>
-          <p>练习围绕真实生产问题组织，实验结果可以直接进入方案评审、PoC 或复盘。</p>
+          <h3 id="learning-labs-title">动手做一遍</h3>
+          <p>练习围绕生产问题组织，结果可以直接进入方案评审、PoC 或复盘。</p>
         </div>
         <BalancedGrid className="learningLabGrid" maxColumns={2}>
           {content.labs.map((lab, index) => (
@@ -398,7 +398,7 @@ export function ModuleEvidenceGrid({
               <p className="metric">{card.metric}</p>
               <Heading>{card.title}</Heading>
               <p className="metricFinding">{card.finding}</p>
-              <p className="metricBoundary"><strong>适用边界</strong>{card.boundary}</p>
+              <p className="metricBoundary"><span>范围</span>{card.boundary}</p>
               <Link href={`/references#source-${card.sourceId}`}>对应来源 · {source.shortTitle} ↓</Link>
             </article>
           );
@@ -408,11 +408,25 @@ export function ModuleEvidenceGrid({
   );
 }
 
-export function ModuleQaList({ items, sourceLedger }: { items: QaItem[]; sourceLedger: SourceLedger }) {
+export function ModuleQaList({
+  items,
+  sourceLedger,
+  initialLimit = 8,
+  directoryHref,
+}: {
+  items: readonly QaItem[];
+  sourceLedger: SourceLedger;
+  initialLimit?: number;
+  directoryHref?: string;
+}) {
   if (items.length === 0) return null;
 
   return (
-    <QaFilterShell items={items.map((item) => ({ tag: item.tag, text: `${item.q} ${item.a} ${item.depth} ${item.ask}` }))}>
+    <QaFilterShell
+      directoryHref={directoryHref}
+      initialLimit={initialLimit}
+      items={items.map((item) => ({ tag: item.tag, text: `${item.q} ${item.a} ${item.depth} ${item.ask}` }))}
+    >
       <div className="qaList">
         {items.map((item, index) => (
         <details id={`qa-${index + 1}`} key={item.q} open={index === 0} data-qa-tag={item.tag}>
@@ -423,34 +437,34 @@ export function ModuleQaList({ items, sourceLedger }: { items: QaItem[]; sourceL
             <span className="plus">＋</span>
           </summary>
           <div className="qaAnswer">
-            <div><p className="answerLabel">结论短答</p><p>{item.a}</p></div>
-            <div><p className="answerLabel">深一层</p><p>{item.depth}</p></div>
-            <div className="qaBasis" aria-label="本题依据">
-              <div className="qaBasisHead">
-                <p className="answerLabel">本题依据 / Evidence</p>
-                <span>{item.basis}</span>
-              </div>
-              <div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>
-                {balanceGridRows(item.evidence, 3).flatMap((row) =>
-                  row.map((reference) => {
-                    const source = requireSource(sourceLedger, reference.sourceId);
+            <p className="qaAnswerLead">{item.a}</p>
+            <p className="qaAnswerContext">{item.depth}</p>
+            <details className="qaEvidenceDisclosure">
+              <summary>查看依据与适用范围 <span>＋</span></summary>
+              <div className="qaBasis" aria-label="本题依据">
+                <p className="qaBasisNote">{item.basis}</p>
+                <div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>
+                  {balanceGridRows(item.evidence, 3).flatMap((row) =>
+                    row.map((reference) => {
+                      const source = requireSource(sourceLedger, reference.sourceId);
 
-                    return (
-                      <Link
-                        href={`/references#source-${reference.sourceId}`}
-                        key={reference.sourceId}
-                        style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}
-                      >
-                        <span className="qaEvidenceMeta">{source.grade} · {source.kind}</span>
-                        <strong>{source.shortTitle}</strong>
-                        <small>{reference.supports}</small>
-                      </Link>
-                    );
-                  }),
-                )}
+                      return (
+                        <Link
+                          href={`/references#source-${reference.sourceId}`}
+                          key={reference.sourceId}
+                          style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}
+                        >
+                          <span className="qaEvidenceMeta">{source.grade} · {source.kind}</span>
+                          <strong>{source.shortTitle}</strong>
+                          <small>{reference.supports}</small>
+                        </Link>
+                      );
+                    }),
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="ask"><p className="answerLabel">售前下一问</p><p>{item.ask}</p></div>
+            </details>
+            <p className="qaNextQuestion"><span>可以接着问</span>{item.ask}</p>
           </div>
           </details>
         ))}
