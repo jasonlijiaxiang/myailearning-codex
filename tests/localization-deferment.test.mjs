@@ -410,6 +410,8 @@ test("module renderer manifests cover indirect visible dependencies", async () =
   const ragFiles = await resolveRendererDependencyFiles(projectRoot, chineseRendererEntryFiles(getPublishedModule("rag")));
   const agentFiles = await resolveRendererDependencyFiles(projectRoot, chineseRendererEntryFiles(getPublishedModule("ai-agent")));
   const promptFiles = await resolveRendererDependencyFiles(projectRoot, chineseRendererEntryFiles(getPublishedModule("prompt-engineering")));
+  const mcpFiles = await resolveRendererDependencyFiles(projectRoot, chineseRendererEntryFiles(getPublishedModule("mcp")));
+  const a2aFiles = await resolveRendererDependencyFiles(projectRoot, chineseRendererEntryFiles(getPublishedModule("a2a")));
   const englishSharedFiles = await resolveRendererDependencyFiles(projectRoot, englishRendererEntryFiles("solution-patterns"));
   const englishRagFiles = await resolveRendererDependencyFiles(projectRoot, englishRendererEntryFiles("rag"));
 
@@ -427,6 +429,14 @@ test("module renderer manifests cover indirect visible dependencies", async () =
   ]) {
     assert.ok(files.includes(route), `${route} must be the module's real Chinese entry`);
     assert.ok(files.includes("app/flagship-labs.tsx"), `${route} must close over its interactive lab`);
+    assert.ok(!files.includes("app/(zh)/modules/[slug]/page.tsx"), `${route} must not inherit the unused brief route`);
+  }
+  for (const [files, route, renderer] of [
+    [mcpFiles, "app/(zh)/modules/mcp/page.tsx", "app/mcp-module-experience.tsx"],
+    [a2aFiles, "app/(zh)/modules/a2a/page.tsx", "app/a2a-module-experience.tsx"],
+  ]) {
+    assert.ok(files.includes(route), `${route} must be the module's real Chinese entry`);
+    assert.ok(files.includes(renderer), `${route} must close over its specialized reader`);
     assert.ok(!files.includes("app/(zh)/modules/[slug]/page.tsx"), `${route} must not inherit the unused brief route`);
   }
   assert.ok(englishSharedFiles.includes("app/(en)/en/modules/[slug]/page.tsx"));

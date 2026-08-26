@@ -11,7 +11,8 @@ import { sourceLedger } from "../../../reference-content.mjs";
 import { AgentControlPrimer } from "../../../module-pilot-views";
 import { getPublishedModule } from "../../../module-publication.mjs";
 import { englishModulePath } from "../../../i18n/locale-config.mjs";
-import { ModuleReadingModes } from "../../../module-reading-modes";
+import { DenseModuleReadingModes } from "../../../dense-module-reading-modes";
+import agentStyles from "../../../agent-dense-reader.module.css";
 
 export const metadata: Metadata = {
   title: "Agent · 智能体 | 云计算 × AI 平台售前知识库",
@@ -89,13 +90,11 @@ const agentActions = [
   },
 ];
 
-const agentActionRows = balanceGridRows(agentActions, 2);
-
 const engineeringScopes = [
-  { scope: "一次交互", name: "Prompt Engineering", question: "这一轮应该怎样告诉模型？", owns: "任务说明、示例、约束与输出契约。" },
-  { scope: "每次调用", name: "Context Engineering", question: "每一步应该让模型看到什么？", owns: "身份、历史、证据、工具定义与当前状态的选择和装配。" },
-  { scope: "完整任务", name: "Harness Engineering", question: "整个任务如何运行、行动、验证、恢复和受控？", owns: "运行循环、工具执行、状态、权限、预算、验证、恢复和观测。" },
-  { scope: "完整产品", name: "Agent 工程 · Agent Engineering", question: "如何把模型、Harness 与业务系统做成可运营产品？", owns: "业务流程、体验、组织责任、发布、治理与长期运营。" },
+  { scope: "一次交互", name: "Prompt Engineering", question: "这一轮应该怎样告诉模型？", input: "任务说明、示例与约束", owner: "Prompt 负责人", owns: "任务说明、示例、约束与输出契约。", boundary: "不决定上下文选择，也不执行工具或业务规则。" },
+  { scope: "每次调用", name: "Context Engineering", question: "每一步应该让模型看到什么？", input: "身份、历史、证据与工具定义", owner: "应用 / 数据团队", owns: "身份、历史、证据、工具定义与当前状态的选择和装配。", boundary: "不负责任务循环、授权与故障恢复。" },
+  { scope: "完整任务", name: "Harness Engineering", question: "整个任务如何运行、行动、验证、恢复和受控？", input: "动作意图、工具契约、状态与策略", owner: "Agent 平台 / 应用团队", owns: "运行循环、工具执行、状态、权限、预算、验证、恢复和观测。", boundary: "不定义业务成功，也不代替业务 Owner 验收。" },
+  { scope: "完整产品", name: "Agent 工程 · Agent Engineering", question: "如何把模型、Harness 与业务系统做成可运营产品？", input: "业务流程、体验、风险与 SLO", owner: "业务 Owner + 产品 + 工程", owns: "业务流程、体验、组织责任、发布、治理与长期运营。", boundary: "各责任团队仍需分别签字并完成运营交接。" },
 ];
 
 const harnessLayers = [
@@ -167,8 +166,6 @@ const coreCapabilities = [
   },
 ];
 
-const coreCapabilityRows = balanceGridRows(coreCapabilities, 4);
-
 const memoryLayers = [
   { layer: "当前任务状态", en: "Work State", stores: "目标、当前步骤、工具结果、预算、停止原因", read: "每一轮", write: "运行时在检查点更新", boundary: "任务结束后按审计与恢复要求保留；不能冒充业务事实源。" },
   { layer: "会话状态", en: "Session State", stores: "本次会话历史、临时偏好、未完成事项", read: "当前会话", write: "对话或事件触发", boundary: "应有 TTL、用户与租户隔离，避免无限累积。" },
@@ -238,9 +235,56 @@ const agentSystemLens: LensPanel[] = [
   },
 ];
 
+const agentChapters = [
+  { id: "agent-principle", label: "是否需要 Agent", eyebrow: "采用边界" },
+  { id: "agent-loop", label: "一次 Agent Run", eyebrow: "任务循环" },
+  { id: "harness", label: "Harness 与工程边界", eyebrow: "运行控制" },
+  { id: "capabilities", label: "规划、工具与核心能力", eyebrow: "动作契约" },
+  { id: "memory-interaction", label: "状态、记忆与互操作", eyebrow: "恢复边界" },
+  { id: "architecture", label: "架构与生产托管", eyebrow: "上线设计" },
+  { id: "poc", label: "PoC、评估与上线门", eyebrow: "验收证据" },
+  { id: "evidence", label: "现场证据与问答", eyebrow: "客户查证" },
+] as const;
+
+const releaseAcceptanceGates = [
+  { name: "端到端任务成功率", check: "由权威业务终态判定，阈值由业务 Owner 签字。" },
+  { name: "关键步骤完成率", check: "关键动作单独设门，不能被总体平均掩盖。" },
+  { name: "策略违规 = 0", check: "命中策略就暂停，不用总体成功率抵消。" },
+  { name: "高风险误执行 = 0", check: "资金、生产变更和对外发送单独计数。" },
+  { name: "人工接管率", check: "同时检查接管是否及时、是否真正解决问题。" },
+  { name: "P95 / 完成时长", check: "按任务类型和风险分层，不用平均响应时间代替。" },
+  { name: "每个成功任务成本", check: "计入失败重试、工具调用和人工处理。" },
+  { name: "可恢复 / 可回滚", check: "演练检查点恢复、补偿、人工接管和发布回退。" },
+] as const;
+
+type AgentMechanicItem = (typeof agentActions)[number] | (typeof coreCapabilities)[number];
+
+function AgentKnowledgeRows({ items, label }: { items: readonly AgentMechanicItem[]; label: string }) {
+  return (
+    <div className={agentStyles.knowledgeRows} aria-label={label}>
+      {items.map((item, index) => (
+        <details key={item.code} open={index === 0}>
+          <summary>
+            <span className={agentStyles.knowledgeIdentity}><b>{item.code}</b><strong>{item.title}</strong></span>
+            <span className={agentStyles.knowledgeDigest}><b>定义</b>{item.definition}</span>
+            <span className={agentStyles.knowledgeDigest}><b>机制</b>{item.mechanism}</span>
+          </summary>
+          <dl className={agentStyles.knowledgeInspector}>
+            <div><dt>输入 → 输出</dt><dd>{item.io}</dd></div>
+            <div><dt>常见失败</dt><dd>{item.failure}</dd></div>
+            <div><dt>工程控制</dt><dd>{item.control}</dd></div>
+            <div><dt>云服务连接</dt><dd>{item.cloud}</dd></div>
+            <div><dt>售前判断</dt><dd>{item.presales}</dd></div>
+          </dl>
+        </details>
+      ))}
+    </div>
+  );
+}
+
 export default function AgentModulePage() {
   return (
-    <main className="fieldbookTheme modulePage modulePilot modulePilot--dedicated">
+    <main className={`fieldbookTheme modulePage modulePilot modulePilot--dedicated ${agentStyles.reader}`}>
       <ReadingProgress />
       <section className="ragHero" id="agent" aria-labelledby="agent-title">
         <nav className="topbar" aria-label="模块导航">
@@ -264,7 +308,7 @@ export default function AgentModulePage() {
             <h1
               className="moduleHeroTitle"
               id="agent-title"
-              style={{ "--module-title-size": "clamp(76px,10vw,148px)", "--module-title-mobile-size": "clamp(68px,22vw,88px)" } as CSSProperties}
+              style={{ "--module-title-size": "clamp(58px,7vw,92px)", "--module-title-mobile-size": "clamp(46px,14vw,66px)" } as CSSProperties}
             >Agent<br /><span>智能体 · AI Agent</span></h1>
           </div>
           <div className="ragDefinition">
@@ -272,14 +316,21 @@ export default function AgentModulePage() {
             <ModuleHeroMetrics sectionCount={3} questionCount={agentQa.length} evidenceCount={agentEvidenceCards.length} labels={{ ariaLabel: "模块内容概览", sections: "阅读方式", sectionUnit: "种", questions: "问题库", questionUnit: "题", evidence: "证据卡", evidenceUnit: "张" }} />
           </div>
         </div>
+        <dl className={agentStyles.heroLedger} aria-label="Agent 核心判断">
+          <div><dt>采用条件</dt><dd>新证据会改变下一步</dd></div>
+          <div><dt>模型责任</dt><dd>提出结构化动作意图</dd></div>
+          <div><dt>应用责任</dt><dd>身份、策略、执行与停止</dd></div>
+          <div><dt>完成证据</dt><dd>权威系统后置条件</dd></div>
+        </dl>
       </section>
 
       <div className="dedicatedArticleLayout moduleReadingHost">
       <section className="section ragBody" aria-label="Agent 核心内容">
         <div className="sectionNumber">02</div>
         <div className="sectionBody">
-          <ModuleReadingModes
+          <DenseModuleReadingModes
             moduleName="Agent · 智能体"
+            chapters={agentChapters}
             hashGroups={{
               quick: ["agent-principle"],
               learn: ["learn-run", "concept-map", "agent-loop", "learn-harness", "harness", "boundaries", "capabilities", "memory-interaction", "learn-release", "patterns", "architecture", "agent-independent-depth", "poc"],
@@ -307,7 +358,7 @@ export default function AgentModulePage() {
 
           <div className="subsection" id="concept-map" data-quality-section="related-modules">
             <div className="subHead"><span>2.1</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>Agent 在知识地图中的位置与相关模块</h3></div></div>
-            <p className="sectionLead">Agent 聚焦“由模型动态管理任务执行”。模型、Prompt、RAG、协议、身份与评估各有独立主模块；这里解释它们如何在一个可执行系统中协作。</p>
+            <p className="sectionLead">Agent 的责任从模型选择下一步开始，到应用校验执行、读取权威状态并结束 Run。模型、Prompt、RAG、MCP / A2A、身份与评估分别提供推理、行为约束、证据、互操作、权限与验收。</p>
             <div className="conceptGrid" data-count={conceptLinks.length} data-odd={conceptLinks.length % 2 === 1 ? "true" : "false"}>
               {conceptRows.flatMap((row) => row.map((item) => (
                 <article key={item.concept} style={{ "--concept-span": gridSpan(row.length) } as CSSProperties}>
@@ -339,7 +390,7 @@ export default function AgentModulePage() {
               <header className="principleDepthIntro">
                 <p className="miniLabel">PRESALES MECHANISM</p>
                 <h4>Agent 的四个关键动作：感知—思考—行动—观察</h4>
-                <p>Agent 会反复执行一组动作：把输入整理成当前任务状态，选择并执行动作，再读取真实环境结果。传统抽象常写作“观察—决策—行动—反馈”；这里进一步区分感知与行动后的观察。每次观察都会成为下一轮感知与思考的新依据，直到<strong>完成、失败、超时、超预算或交还人工</strong>。</p>
+                <p>工程上可拆为感知—思考—行动—观察：感知建立本轮任务状态，观察核对动作后的权威状态；观察结果进入下一轮，直到<strong>完成、失败、超时、超预算或转人工</strong>。</p>
               </header>
               <div className="chainWrap">
                 <div className="chainLabel"><strong>单次任务运行 · Run</strong><span>Controlled agent loop</span></div>
@@ -349,22 +400,9 @@ export default function AgentModulePage() {
                   ))}
                 </div>
               </div>
-              <p className="paperBoundary"><strong>术语边界：</strong>为了教学，这里把<strong>感知（Perceive）</strong>定义为“把用户、事件和多模态输入标准化为当前任务状态”，把<strong>观察（Observe）</strong>定义为“读取工具与环境返回的 ground truth，更新状态并判断继续或终止”。不同框架可能把两者统称为 observation、context 或 state update，评估产品时应看实际数据流，不只看名称。</p>
-              <div className="mechanicGrid" data-count={agentActions.length} data-odd={agentActions.length % 2 === 1 ? "true" : "false"}>
-                {agentActionRows.flatMap((row) => row.map((item, index) => (
-                  <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": gridSpan(row.length) } as CSSProperties}>
-                    <span className="mechanicNo">{item.code}</span>
-                    <h4>{item.title}</h4>
-                    <p><strong>定义：</strong>{item.definition}</p>
-                    <p><strong>机制：</strong>{item.mechanism}</p>
-                    <p><strong>输入 → 输出：</strong>{item.io}</p>
-                    <p><strong>常见失败：</strong>{item.failure}</p>
-                    <p><strong>工程控制：</strong>{item.control}</p>
-                    <small><strong>云服务连接：</strong>{item.cloud}<br /><strong>售前判断：</strong>{item.presales}</small>
-                  </article>
-                )))}
-              </div>
-              <p className="paperBoundary"><strong>生产可观测边界：</strong>“思考（Reason）”不等于要求模型公开隐藏的思维链（Chain-of-Thought）。系统应记录可审计的<strong>计划、决策摘要、工具调用、环境结果、策略判断与停止原因</strong>；这些足以复盘行为，同时避免把冗长推理文字误当成真实依据。<strong>模型会调用 API，不等于模型拥有 API 权限。</strong></p>
+              <p className="paperBoundary"><strong>术语边界：</strong>本页的<strong>感知（Perceive）</strong>指请求、事件和多模态输入标准化；<strong>观察（Observe）</strong>指读取工具与环境的 ground truth、更新状态并决定继续或终止。框架可能把两者统称为 observation、context 或 state update，评估时以实际数据流为准。</p>
+              <AgentKnowledgeRows items={agentActions} label="Agent 四个关键动作的定义、机制与工程检查" />
+              <p className="paperBoundary"><strong>生产可观测边界：</strong>“思考（Reason）”不等于要求模型公开隐藏的思维链（Chain-of-Thought）。运行证据应按<strong>观察—决策—行动—反馈</strong>串联，并记录可审计的<strong>计划、决策摘要、工具调用、环境结果、策略判断与停止原因</strong>；这些足以复盘行为，同时避免把冗长推理文字误当成真实依据。<strong>模型会调用 API，不等于模型拥有 API 权限。</strong></p>
               <div className="principleLimits">
                 <article><span>A</span><h5>真实反馈优先于模型描述</h5><p>工具返回、权威数据库状态和执行错误决定下一步；“模型说成功”不等于业务已经成功。</p></article>
                 <article><span>B</span><h5>循环必须有明确的最终状态</h5><p>完成、失败、超时、超预算、最大轮次和人工接管都要能被系统识别与审计。</p></article>
@@ -394,36 +432,30 @@ export default function AgentModulePage() {
 
           <div className="subsection" id="harness" data-quality-section="principle">
             <div className="subHead"><span>2.3</span><div><p className="kicker">AGENT RUNTIME &amp; CONTROL</p><h3>Harness：把模型能力变成可运行、可验证的任务系统</h3></div></div>
-            <p className="sectionLead">这里保留英文 Harness，不强行指定单一中文译名。它不是又一个模型，也不只是 Agent Framework：它是围绕模型与环境建立的<strong>执行、反馈和控制系统</strong>。可以先用一个工作公式理解：<strong>Agent System = Model + Harness + Environment + Domain Rules</strong>。</p>
+            <p className="sectionLead">Harness 是围绕模型与环境的<strong>执行、反馈和控制系统</strong>，范围大于单一 Agent Framework。工作公式：<strong>Agent System = Model + Harness + Environment + Domain Rules</strong>。</p>
 
-            <div className="tableWrap">
+            <div className={`tableWrap ${agentStyles.stackTable}`}>
               <table>
-                <thead><tr><th>工程范围</th><th>名称</th><th>主要问题</th><th>主要责任</th></tr></thead>
+                <thead><tr><th>工程范围</th><th>名称与主要问题</th><th>输入</th><th>责任人</th><th>主要责任</th><th>不能替代</th></tr></thead>
                 <tbody>
-                  {engineeringScopes.map((item) => <tr className={item.name === "Harness Engineering" ? "highlight" : undefined} key={item.name}><th>{item.scope}</th><td>{item.name}</td><td>{item.question}</td><td>{item.owns}</td></tr>)}
+                  {engineeringScopes.map((item) => <tr className={item.name === "Harness Engineering" ? "highlight" : undefined} key={item.name}><th>{item.scope}</th><td data-label="名称与问题"><strong>{item.name}</strong><small>{item.question}</small></td><td data-label="输入">{item.input}</td><td data-label="责任人">{item.owner}</td><td data-label="主要责任">{item.owns}</td><td data-label="不能替代">{item.boundary}</td></tr>)}
                 </tbody>
               </table>
             </div>
 
-            <div className="memoryCompare retrievalCompare">
-              {harnessLayers.map((item, index) => (
-                <article className={index === 1 ? "externalMemory" : undefined} key={item.en}>
-                  <p className="miniLabel">{item.en.toLocaleUpperCase("en-US")}</p>
-                  <h4>{item.title} · {item.en}</h4>
-                  <p>{item.body}</p>
-                </article>
-              ))}
-            </div>
+            <dl className={agentStyles.harnessLayerLedger} aria-label="Harness 内外两层">
+              {harnessLayers.map((item) => <div key={item.en}><dt><span>{item.en}</span><strong>{item.title}</strong></dt><dd>{item.body}</dd></div>)}
+            </dl>
 
             <CriticalBoundary>用户感受到的效果不是“模型能力”的单变量结果，而是<strong>Model × Harness × Task × Environment</strong>。同一个模型放进不同 Coding Agent，可能因为上下文策略、工具、补丁方式、命令沙箱、验证循环和恢复机制不同而得到完全不同的结果。</CriticalBoundary>
 
-            <BalancedGrid className="technicalNotes" maxColumns={4}>
-              {harnessNeighbors.map((item) => <article key={item.name}><p className="miniLabel">NEIGHBORING CONCEPT</p><h4>{item.name}</h4><p>{item.role}</p><small>{item.boundary}</small></article>)}
-            </BalancedGrid>
+            <div className={agentStyles.neighborLedger} role="list" aria-label="Harness 邻接概念边界">
+              {harnessNeighbors.map((item) => <div key={item.name} role="listitem"><strong>{item.name}</strong><span>{item.role}</span><small>{item.boundary}</small></div>)}
+            </div>
 
             <div className="gates">
               <h4>怎样判断一套 Harness 更好</h4>
-              <div className="gateList">{harnessEvaluationDimensions.map((item) => <span key={item}>{item}</span>)}</div>
+              <ol className={agentStyles.evaluationLedger}>{harnessEvaluationDimensions.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>)}</ol>
               <p>先固定任务、模型快照、代码或数据、网络、权限和预算，再进行多次运行与失败注入。SWE-bench、Terminal-Bench、SWE-ReBench 等只能回答特定任务；Harness-Bench 正尝试分离 Harness 效应，NIST 也在推进 Agent 标准工作，但目前没有覆盖所有 Agent 的统一总分。</p>
             </div>
 
@@ -441,14 +473,14 @@ export default function AgentModulePage() {
 
           <div className="subsection" id="boundaries">
             <div className="subHead"><span>2.4</span><div><p className="kicker">BOUNDARY MAP</p><h3>智能体、工作流、RAG 与聊天机器人的边界</h3></div></div>
-            <div className="tableWrap">
+            <div className={`tableWrap ${agentStyles.stackTable}`}>
               <table>
                 <thead><tr><th>模式</th><th>谁决定下一步</th><th>主要作用</th><th>是否改变外部状态</th><th>售前判断</th></tr></thead>
                 <tbody>
-                  <tr><th>聊天机器人 · Chatbot</th><td>通常由用户对话推进</td><td>自然语言交互与回答</td><td>不一定</td><td>“能聊天”不是 Agent 证明</td></tr>
-                  <tr><th>RAG</th><td>检索链或应用预设</td><td>给模型提供外部证据</td><td>通常不改变</td><td>是 Agent 可使用的数据工具</td></tr>
-                  <tr><th>工作流 · Workflow</th><td>代码、规则或流程图</td><td>稳定执行已知步骤</td><td>可以</td><td>高确定性路径优先</td></tr>
-                  <tr className="highlight"><th>Agent</th><td>模型基于状态动态选择</td><td>处理开放、多步与例外任务</td><td>可以，但必须授权</td><td>只把必要决策交给模型</td></tr>
+                  <tr><th>聊天机器人 · Chatbot</th><td data-label="谁决定下一步">通常由用户对话推进</td><td data-label="主要作用">自然语言交互与回答</td><td data-label="外部状态">不一定</td><td data-label="售前判断">“能聊天”不是 Agent 证明</td></tr>
+                  <tr><th>RAG</th><td data-label="谁决定下一步">检索链或应用预设</td><td data-label="主要作用">给模型提供外部证据</td><td data-label="外部状态">通常不改变</td><td data-label="售前判断">是 Agent 可使用的数据工具</td></tr>
+                  <tr><th>工作流 · Workflow</th><td data-label="谁决定下一步">代码、规则或流程图</td><td data-label="主要作用">稳定执行已知步骤</td><td data-label="外部状态">可以</td><td data-label="售前判断">高确定性路径优先</td></tr>
+                  <tr className="highlight"><th>Agent</th><td data-label="谁决定下一步">模型基于状态动态选择</td><td data-label="主要作用">处理开放、多步与例外任务</td><td data-label="外部状态">可以，但必须授权</td><td data-label="售前判断">只把必要决策交给模型</td></tr>
                 </tbody>
               </table>
             </div>
@@ -458,20 +490,7 @@ export default function AgentModulePage() {
           <div className="subsection" id="capabilities">
             <div className="subHead"><span>2.5</span><div><p className="kicker">CORE COMPONENTS</p><h3>规划、记忆与工具：让四个动作持续运转</h3></div></div>
             <p className="sectionLead">四个动作描述 Agent 每一轮“做什么”，三类组件说明它“靠什么持续完成多步任务”。规划决定路径，记忆保留必要信息，工具连接外部世界；三者共享一个可恢复、可审计的运行状态（Run State）。</p>
-            <div className="mechanicGrid" data-count={coreCapabilities.length} data-odd={coreCapabilities.length % 2 === 1 ? "true" : "false"}>
-              {coreCapabilityRows.flatMap((row) => row.map((item, index) => (
-                <article className={index === row.length - 1 ? "mechanicRowEnd" : undefined} key={item.code} style={{ "--mechanic-span": gridSpan(row.length) } as CSSProperties}>
-                  <span className="mechanicNo">{item.code}</span>
-                  <h4>{item.title}</h4>
-                  <p><strong>定义：</strong>{item.definition}</p>
-                  <p><strong>机制：</strong>{item.mechanism}</p>
-                  <p><strong>输入 → 输出：</strong>{item.io}</p>
-                  <p><strong>常见失败：</strong>{item.failure}</p>
-                  <p><strong>工程控制：</strong>{item.control}</p>
-                  <small><strong>云服务连接：</strong>{item.cloud}<br /><strong>售前判断：</strong>{item.presales}</small>
-                </article>
-              )))}
-            </div>
+            <AgentKnowledgeRows items={coreCapabilities} label="规划、记忆与工具的定义、机制与工程检查" />
             <div className="memoryCompare retrievalCompare">
               <article>
                 <p className="miniLabel">RUN STATE ≠ MEMORY</p>
@@ -494,16 +513,16 @@ export default function AgentModulePage() {
           <div className="subsection" id="memory-interaction">
             <div className="subHead"><span>2.6</span><div><p className="kicker">MEMORY &amp; INTERACTION</p><h3>记忆分层与外部交互边界</h3></div></div>
             <p className="sectionLead">Agent 的 Memory 不是一个不断增长的聊天框。任务状态、会话、长期记忆和权威事实有不同的写入责任、保留期和授权方式；工具调用、MCP、A2A 与 Computer Use 也解决不同连接问题。</p>
-            <div className="tableWrap">
+            <div className={`tableWrap ${agentStyles.stackTable}`}>
               <table>
                 <thead><tr><th>状态层</th><th>保存什么</th><th>何时读取</th><th>谁能写入</th><th>重要边界</th></tr></thead>
-                <tbody>{memoryLayers.map((item) => <tr key={item.en}><th>{item.layer}<small>{item.en}</small></th><td>{item.stores}</td><td>{item.read}</td><td>{item.write}</td><td>{item.boundary}</td></tr>)}</tbody>
+                <tbody>{memoryLayers.map((item) => <tr key={item.en}><th>{item.layer}<small>{item.en}</small></th><td data-label="保存什么">{item.stores}</td><td data-label="何时读取">{item.read}</td><td data-label="谁能写入">{item.write}</td><td data-label="重要边界">{item.boundary}</td></tr>)}</tbody>
               </table>
             </div>
-            <div className="tableWrap" style={{ marginTop: 18 }}>
+            <div className={`tableWrap ${agentStyles.stackTable}`} style={{ marginTop: 18 }}>
               <table>
                 <thead><tr><th>连接能力</th><th>主要解决什么</th><th>责任边界</th><th>不能替代什么</th></tr></thead>
-                <tbody>{interactionBoundaries.map((item) => <tr key={item.capability}><th>{item.capability}</th><td>{item.purpose}</td><td>{item.owns}</td><td>{item.boundary}</td></tr>)}</tbody>
+                <tbody>{interactionBoundaries.map((item) => <tr key={item.capability}><th>{item.capability}</th><td data-label="主要解决什么">{item.purpose}</td><td data-label="责任边界">{item.owns}</td><td data-label="不能替代什么">{item.boundary}</td></tr>)}</tbody>
               </table>
             </div>
             <CriticalBoundary>RAG 主要提供组织知识，Memory 主要保存任务与主体相关状态，权威业务事实仍应回到事实源读取。连接协议能降低集成成本，却不会自动赋予身份、权限或生产可靠性。</CriticalBoundary>
@@ -548,7 +567,7 @@ export default function AgentModulePage() {
 
           <div className="subsection" id="agent-independent-depth" data-quality-section="deep-dive">
             <div className="subHead"><span>2.9</span><div><p className="kicker">INDEPENDENT KNOWLEDGE EXPANSION</p><h3>Agent 的生产托管条件</h3></div></div>
-            <p className="sectionLead">本节围绕一次真实任务的生命周期展开：Run 如何结束、工具怎样安全执行、崩溃后怎样恢复、记忆与委托怎样缩小信任。重点是客户长期托管能力，而不是框架功能清单。</p>
+            <p className="sectionLead">生产托管要回答四个问题：Run 以什么终态结束，工具怎样受权执行，进程崩溃后从哪里恢复，记忆与委托怎样维持最小信任。</p>
             <ModuleDeepDiveBlocks blocks={agentDeepDives as unknown as readonly DeepDiveBlock[]} sourceLedger={sourceLedger} />
           </div>
 
@@ -561,7 +580,7 @@ export default function AgentModulePage() {
               <article><span>CONTROLLED WRITE</span><h4>受控副作用</h4><p>只开放可逆或低风险写入，验证审批绑定、幂等、重复消息、结果未知、部分成功、补偿和恢复。</p></article>
               <article><span>OPERATIONS</span><h4>灰度与运营交接</h4><p>按风险分别验收成功率、接管率、P95 和成功任务成本；通过当前检查后再扩大自治，不预设固定天数。</p></article>
             </div>
-            <div className="gates"><h4>建议的通过 / 暂停条件</h4><div className="gateList"><span>端到端任务成功率</span><span>关键步骤完成率</span><span>策略违规 = 0</span><span>高风险误执行 = 0</span><span>人工接管率</span><span>P95 / 完成时长</span><span>每个成功任务成本</span><span>可恢复 / 可回滚</span></div><p>具体数值按业务风险、现有人工表现与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
+            <div className="gates"><h4>建议的通过 / 暂停条件</h4><dl className={agentStyles.releaseGateLedger}>{releaseAcceptanceGates.map((gate, index) => <div className={index < 2 ? agentStyles.releaseGatePrimary : undefined} key={gate.name}><dt><span>{String(index + 1).padStart(2, "0")}</span>{gate.name}</dt><dd>{gate.check}</dd></div>)}</dl><p>前两项是上线硬门：端到端结果和关键步骤都达到签字阈值后，才继续检查安全、运营、性能与成本。具体数值按业务风险、现有人工表现与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
             <div className="architectureNotes">
               <p><strong>价值侧</strong>：只计算经权威终态验证的周期缩短、返工减少、首次材料完整率提升和可释放人工。</p>
               <p><strong>完整 TCO</strong>：模型、检索、工具、平台、评估、人工接管、运营、安全与残余风险共同计入；不使用通用 ROI 数字替代客户基线。</p>
@@ -579,9 +598,9 @@ export default function AgentModulePage() {
           <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud">
             <div className="subHead"><span>F1</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>Agent 技术环节与云服务机会</h3></div></div>
             <div className="cloudIntro"><p>Agent 会把模型服务延伸到运行时、API、身份、数据、安全和运维。售前应先用厂商中立的能力描述拆解需求，再对应到当前云产品、地域、配额和计费。</p><span>模型只是其中一部分</span><span>身份贯穿每次调用</span><span>按成功任务核算成本</span></div>
-            <div className="cloudTable tableWrap">
+            <div className={`cloudTable tableWrap ${agentStyles.stackTable}`}>
               <table><thead><tr><th>Agent 环节</th><th>可连接的云服务</th><th>客户价值</th><th>售前发现问题</th></tr></thead><tbody>
-                {cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}
+                {cloudHooks.map((item) => <tr key={item.stage}><th>{item.stage}</th><td data-label="云服务">{item.services}</td><td data-label="客户价值">{item.value}</td><td data-label="售前发现问题">{item.discover}</td></tr>)}
               </tbody></table>
             </div>
             <BalancedGrid className="solutionBundles" maxColumns={3}>

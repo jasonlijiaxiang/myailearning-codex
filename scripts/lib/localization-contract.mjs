@@ -148,7 +148,8 @@ export async function resolveRendererDependencyFiles(projectRoot, entryFiles) {
 }
 
 export function chineseRendererEntryFiles(publication, { routeGroups = true } = {}) {
-  const route = publication.routeKind === "dedicated"
+  const hasSpecializedChineseRoute = publication.routeKind === "dedicated" || ["mcp", "a2a"].includes(publication.slug);
+  const route = hasSpecializedChineseRoute
     ? (routeGroups ? `app/(zh)${publication.path}/page.tsx` : `app${publication.path}/page.tsx`)
     : (routeGroups ? "app/(zh)/modules/[slug]/page.tsx" : "app/modules/[slug]/page.tsx");
   return [...(routeGroups ? CHINESE_MODULE_RENDERER_ENTRY_FILES : LEGACY_CHINESE_MODULE_RENDERER_ENTRY_FILES), route];

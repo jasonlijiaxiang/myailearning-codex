@@ -1,0 +1,179 @@
+.reader :global(.ragHero) { padding-bottom: 26px; }
+.reader :global(.ragHeader) { padding-top: 34px; padding-bottom: 22px; align-items: end; }
+.reader :global(.ragHeader .moduleHeroTitle) { margin-bottom: 0; line-height: .86; }
+.reader :global(.ragHeader .moduleHeroTitle span) { margin-top: 12px; font-size: 16px; line-height: 1.2; }
+.reader :global(.ragDefinition) { gap: 12px; }
+.reader :global(.ragDefinition > p) { max-width: 720px; font-size: 18px; line-height: 1.6; }
+
+.heroLedger { max-width: 1480px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border: 1px solid var(--fb-line); background: #fff; }
+.heroLedger > div { min-width: 0; padding: 13px 18px; border-right: 1px solid var(--fb-line); }
+.heroLedger > div:last-child { border-right: 0; }
+.heroLedger dt { color: var(--fb-meta); font: 700 11px/1.3 var(--font-geist-mono),monospace; letter-spacing: .06em; }
+.heroLedger dd { margin: 5px 0 0; color: var(--fb-ink); font-size: 14px; font-weight: 760; line-height: 1.4; }
+
+.reader :global(.moduleReadingExperience) { margin-top: 12px !important; }
+.reader :global(.moduleModePanel > :first-child) { margin-top: 0; }
+.reader :global(.decisionBanner) { padding-block: 24px; }
+.reader :global(.decisionBanner h2) { margin-block: 5px 7px; }
+.reader :global(.learningStage) { padding: 28px clamp(20px,3vw,42px); border-bottom: 1px solid var(--fb-line); }
+.reader :global(.learningStage > .subHead:first-child) { margin-bottom: 20px; }
+.reader :global(.learningStage > .subsection) { padding-block: 26px; }
+.reader :global(.learningStage > .subsection + .subsection) { border-top: 1px solid var(--fb-line); }
+.reader :global(.conceptGrid),
+.reader :global(.mechanicGrid),
+.reader :global(.technicalNotes),
+.reader :global(.pocGrid) { gap: 0; border: 1px solid var(--fb-line); border-radius: 8px; overflow: hidden; }
+.reader :global(.conceptGrid > article),
+.reader :global(.technicalNotes > article),
+.reader :global(.pocGrid > article) { border-radius: 0; border: 0; border-right: 1px solid var(--fb-line); border-bottom: 1px solid var(--fb-line); box-shadow: none; }
+.reader :global(.conceptGrid > article:nth-child(4n)),
+.reader :global(.technicalNotes > article:last-child),
+.reader :global(.pocGrid > article:nth-child(4n)) { border-right: 0; }
+.reader :global(.mechanicGrid) { display: block; }
+.reader :global(.mechanicGrid > article) { width: 100% !important; min-height: 0; padding: 20px; display: grid; grid-template-columns: 46px minmax(170px,.58fr) repeat(2,minmax(0,1fr)); gap: 7px 18px; border: 0; border-bottom: 1px solid var(--fb-line); border-radius: 0; box-shadow: none; }
+.reader :global(.mechanicGrid > article:last-child) { border-bottom: 0; }
+.reader :global(.mechanicGrid .mechanicNo) { grid-column: 1; grid-row: 1 / 4; }
+.reader :global(.mechanicGrid h4) { grid-column: 2; grid-row: 1 / 4; margin: 0; font-size: 20px; line-height: 1.3; }
+.reader :global(.mechanicGrid p) { margin: 0; font-size: 13.5px; line-height: 1.58; }
+.reader :global(.mechanicGrid p:nth-of-type(odd)) { grid-column: 3; }
+.reader :global(.mechanicGrid p:nth-of-type(even)) { grid-column: 4; }
+.reader :global(.mechanicGrid small) { grid-column: 3 / 5; padding-top: 8px; border-top: 1px dashed var(--fb-line); font-size: 12.5px; line-height: 1.55; }
+.reader :global(.memoryCompare > article),
+.reader :global(.workedExample),
+.reader :global(.principleDepth),
+.reader :global(.chainWrap),
+.reader :global(.gates),
+.reader :global(.architectureNotes) { border-radius: 7px; box-shadow: none; }
+.reader :global(.sectionLead) { max-width: 980px; }
+.reader :global(:is(.tableWrap,.cloudTable) table) { font-size: 13.5px; line-height: 1.5; }
+.reader :global(:is(.tableWrap,.cloudTable) th),
+.reader :global(:is(.tableWrap,.cloudTable) td) { padding-block: 11px; }
+.reader :global(.moduleModePanel--field > .subsection) { padding: 30px clamp(20px,3vw,42px); }
+
+.knowledgeRows { border: 1px solid var(--fb-line); border-radius: 8px; overflow: hidden; background: #fff; }
+.knowledgeRows details + details { border-top: 1px solid var(--fb-line); }
+.knowledgeRows summary { padding: 16px 46px 16px 18px; display: grid; grid-template-columns: minmax(160px,.44fr) minmax(0,1fr) minmax(0,1fr); gap: 16px; position: relative; cursor: pointer; list-style: none; }
+.knowledgeRows summary::-webkit-details-marker { display: none; }
+.knowledgeRows summary::after { content: "+"; position: absolute; top: 15px; right: 18px; color: var(--fb-link); font: 700 18px/1 var(--font-geist-mono),monospace; }
+.knowledgeRows details[open] summary::after { content: "−"; }
+.knowledgeIdentity { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 10px; align-items: start; color: var(--fb-ink); }
+.knowledgeIdentity b { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--fb-ink); color: #fff; font: 700 11px/1 var(--font-geist-mono),monospace; }
+.knowledgeIdentity strong { font-size: 17px; line-height: 1.35; }
+.knowledgeDigest { color: var(--fb-body); font-size: 13.5px; line-height: 1.58; }
+.knowledgeDigest b { margin-right: 7px; color: var(--fb-meta); font: 700 10px/1.3 var(--font-geist-mono),monospace; letter-spacing: .06em; }
+.knowledgeInspector { margin: 0; padding: 0 18px 18px 62px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px dashed var(--fb-line); }
+.knowledgeInspector > div { padding: 12px 16px; display: grid; grid-template-columns: 82px minmax(0,1fr); gap: 10px; border-bottom: 1px solid var(--fb-line); }
+.knowledgeInspector > div:nth-child(odd) { border-right: 1px solid var(--fb-line); }
+.knowledgeInspector > div:last-child { grid-column: 1 / -1; border-bottom: 0; border-right: 0; }
+.knowledgeInspector dt { color: var(--fb-meta); font: 700 10px/1.45 var(--font-geist-mono),monospace; }
+.knowledgeInspector dd { margin: 0; color: var(--fb-body); font-size: 13px; line-height: 1.55; }
+
+.stackTable td strong { display: block; color: var(--fb-ink); }
+.stackTable td small { display: block; margin-top: 4px; color: var(--fb-muted); font-size: 11px; line-height: 1.45; }
+
+.harnessLayerLedger { margin: 18px 0; border: 1px solid var(--fb-line); border-radius: 7px; background: #fff; }
+.harnessLayerLedger > div { padding: 15px 18px; display: grid; grid-template-columns: minmax(160px,.34fr) minmax(0,1fr); gap: 18px; }
+.harnessLayerLedger > div + div { border-top: 1px solid var(--fb-line); }
+.harnessLayerLedger dt { display: grid; gap: 3px; }
+.harnessLayerLedger dt span { color: var(--fb-meta); font: 700 10px/1.3 var(--font-geist-mono),monospace; letter-spacing: .06em; text-transform: uppercase; }
+.harnessLayerLedger dt strong { color: var(--fb-ink); font-size: 16px; }
+.harnessLayerLedger dd { margin: 0; color: var(--fb-body); font-size: 13.5px; line-height: 1.6; }
+
+.neighborLedger { margin-top: 18px; border-block: 1px solid var(--fb-line); }
+.neighborLedger > div { min-height: 54px; padding: 10px 4px; display: grid; grid-template-columns: minmax(118px,.3fr) minmax(180px,.72fr) minmax(0,1fr); gap: 14px; align-items: center; border-bottom: 1px solid var(--fb-line); }
+.neighborLedger > div:last-child { border-bottom: 0; }
+.neighborLedger strong { color: var(--fb-ink); font-size: 14px; }
+.neighborLedger span { color: var(--fb-body); font-size: 13.5px; line-height: 1.5; }
+.neighborLedger small { color: var(--fb-muted); font-size: 12.5px; line-height: 1.5; }
+
+.evaluationLedger { margin: 12px 0; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); list-style: none; border-block: 1px solid var(--fb-line); }
+.evaluationLedger li { min-height: 46px; padding: 10px 12px; display: grid; grid-template-columns: 30px minmax(0,1fr); gap: 8px; align-items: center; border-bottom: 1px solid var(--fb-line); color: var(--fb-body); font-size: 13px; line-height: 1.45; }
+.evaluationLedger li:nth-child(odd) { border-right: 1px solid var(--fb-line); }
+.evaluationLedger li:nth-last-child(-n+2) { border-bottom: 0; }
+.evaluationLedger span { color: var(--fb-meta); font: 700 10px/1.2 var(--font-geist-mono),monospace; }
+
+.releaseGateLedger { margin: 12px 0; border-block: 1px solid var(--fb-line); }
+.releaseGateLedger > div { padding: 10px 4px; display: grid; grid-template-columns: minmax(190px,.36fr) minmax(0,1fr); gap: 16px; border-bottom: 1px solid var(--fb-line); }
+.releaseGateLedger > div:last-child { border-bottom: 0; }
+.releaseGateLedger dt { display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 6px; color: var(--fb-ink); font-size: 13px; font-weight: 760; }
+.releaseGateLedger dt span { color: var(--fb-meta); font: 700 10px/1.45 var(--font-geist-mono),monospace; }
+.releaseGateLedger dd { margin: 0; color: var(--fb-body); font-size: 13px; line-height: 1.5; }
+.releaseGatePrimary { background: color-mix(in srgb, var(--fb-accent) 10%, #fff); }
+.releaseGatePrimary dt::after { content: "上线硬门"; width: max-content; margin: 3px 0 0 34px; padding: 2px 6px; grid-column: 1 / -1; border: 1px solid color-mix(in srgb, var(--fb-accent) 45%, var(--fb-line)); color: var(--fb-ink); font: 700 9px/1.3 var(--font-geist-mono),monospace; letter-spacing: .05em; }
+
+.reader :global(.qaAnswer) { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px 18px; }
+.reader :global(.qaAnswer > :nth-child(n+3)) { grid-column: 1 / -1; }
+.reader :global(.moduleModePanel--field .evidenceGrid > article) { box-shadow: none; }
+
+@media (max-width: 1180px) {
+  .heroLedger { margin-inline: 18px; }
+  .reader :global(.mechanicGrid > article) { grid-template-columns: 40px minmax(160px,.48fr) minmax(0,1fr); }
+  .reader :global(.mechanicGrid p),
+  .reader :global(.mechanicGrid p:nth-of-type(odd)),
+  .reader :global(.mechanicGrid p:nth-of-type(even)),
+  .reader :global(.mechanicGrid small) { grid-column: 3; }
+}
+
+@media (max-width: 720px) {
+  .reader :global(.ragHero) { padding-bottom: 16px; }
+  .reader :global(.ragHeader) { padding-top: 22px; padding-bottom: 16px; }
+  .reader :global(.ragDefinition > p) { font-size: 16px; }
+  .heroLedger { margin-inline: 0; grid-template-columns: 1fr 1fr; border-inline: 0; }
+  .heroLedger > div { padding: 11px 16px; border-bottom: 1px solid var(--fb-line); }
+  .heroLedger > div:nth-child(2n) { border-right: 0; }
+  .reader :global(.learningStage) { padding: 24px 18px; }
+  .reader :global(.learningStage > .subsection) { padding-block: 22px; }
+  .knowledgeRows summary { padding: 15px 42px 15px 14px; grid-template-columns: 1fr; gap: 9px; }
+  .knowledgeIdentity strong { font-size: 17px; }
+  .knowledgeDigest { font-size: 14px; line-height: 1.62; }
+  .knowledgeInspector { padding: 0 14px 14px; grid-template-columns: 1fr; }
+  .knowledgeInspector > div,
+  .knowledgeInspector > div:nth-child(odd),
+  .knowledgeInspector > div:last-child { grid-column: auto; padding: 11px 0; grid-template-columns: 92px minmax(0,1fr); border-right: 0; border-bottom: 1px solid var(--fb-line); }
+  .knowledgeInspector > div:last-child { border-bottom: 0; }
+  .knowledgeInspector dd { font-size: 14px; line-height: 1.58; }
+  .harnessLayerLedger > div { grid-template-columns: 1fr; gap: 8px; }
+  .harnessLayerLedger dd { font-size: 14px; }
+  .neighborLedger > div { grid-template-columns: 100px minmax(0,1fr); gap: 6px 10px; align-items: start; }
+  .neighborLedger small { grid-column: 2; font-size: 13px; }
+  .evaluationLedger { grid-template-columns: 1fr; }
+  .evaluationLedger li,
+  .evaluationLedger li:nth-child(odd),
+  .evaluationLedger li:nth-last-child(-n+2) { min-height: 44px; border-right: 0; border-bottom: 1px solid var(--fb-line); font-size: 14px; }
+  .evaluationLedger li:last-child { border-bottom: 0; }
+  .releaseGateLedger > div { grid-template-columns: 1fr; gap: 5px; }
+  .releaseGateLedger dt,
+  .releaseGateLedger dd { font-size: 14px; }
+  .stackTable { overflow: visible; }
+  .stackTable table,
+  .stackTable tbody,
+  .stackTable tr,
+  .stackTable th,
+  .stackTable td { width: 100%; min-width: 0 !important; display: block; }
+  .stackTable thead { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .stackTable tbody tr { padding: 13px 0; border-bottom: 1px solid var(--fb-line); }
+  .stackTable tbody tr:last-child { border-bottom: 0; }
+  .stackTable tbody th { padding: 0 12px 9px !important; border: 0 !important; color: var(--fb-ink); font-size: 16px; }
+  .stackTable tbody td { padding: 7px 12px !important; display: grid; grid-template-columns: 106px minmax(0,1fr); gap: 10px; border: 0 !important; font-size: 14px; line-height: 1.55; }
+  .stackTable tbody td::before { content: attr(data-label); color: var(--fb-meta); font: 700 10px/1.45 var(--font-geist-mono),monospace; letter-spacing: .02em; }
+  .reader :global(.qaAnswer) { grid-template-columns: 1fr; }
+  .reader :global(.qaAnswer > *) { grid-column: 1 !important; }
+  .reader :global(.relationMatrixScroll) { margin-right: 0; padding-right: 0; overflow: visible; }
+  .reader :global(.relationMatrix table),
+  .reader :global(.relationMatrix tbody),
+  .reader :global(.relationMatrix tr),
+  .reader :global(.relationMatrix th),
+  .reader :global(.relationMatrix td) { width: 100%; min-width: 0; display: block; }
+  .reader :global(.relationMatrix thead) { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .reader :global(.relationMatrix tbody tr) { padding: 10px 12px; border-bottom: 1px solid var(--fb-line); }
+  .reader :global(.relationMatrix th),
+  .reader :global(.relationMatrix td) { padding: 7px 0; border: 0; font-size: 14px; }
+  .reader :global(.relationMatrix td::before) { display: block; margin-bottom: 3px; color: var(--fb-meta); font: 700 10px/1.4 var(--font-geist-mono),monospace; }
+  .reader :global(.deepDiveList > .deepDiveBlock:nth-child(2) .relationMatrix td:nth-of-type(1)::before) { content: "必须声明"; }
+  .reader :global(.deepDiveList > .deepDiveBlock:nth-child(2) .relationMatrix td:nth-of-type(2)::before) { content: "售前验收"; }
+  .reader :global(.deepDiveList > .deepDiveBlock:nth-child(2) .relationMatrix td:nth-of-type(3)::before) { content: "常见误区"; }
+  .reader :global(.deepDiveList > .deepDiveBlock:nth-child(6) .relationMatrix td:nth-of-type(1)::before) { content: "判断内容"; }
+  .reader :global(.deepDiveList > .deepDiveBlock:nth-child(6) .relationMatrix td:nth-of-type(2)::before) { content: "售前问题"; }
+  .reader :global(.deepDiveList > .deepDiveBlock:nth-child(6) .relationMatrix td:nth-of-type(3)::before) { content: "常见误区"; }
+  .reader :global(.moduleModePanel--field > .subsection) { padding: 24px 18px; }
+}
