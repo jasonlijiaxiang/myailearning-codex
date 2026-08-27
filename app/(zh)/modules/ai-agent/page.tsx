@@ -4,14 +4,14 @@ import Link from "next/link";
 
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../../agent-content.mjs";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
-import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleQaList, ModuleUpdatedAt, type DeepDiveBlock } from "../../../module-content-components";
+import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList, ModuleUpdatedAt, type DeepDiveBlock } from "../../../module-content-components";
 import { ReadingProgress, SystemLens, type LensPanel } from "../../../fieldbook-interactions";
 import { AgentRunLab } from "../../../flagship-labs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { AgentControlPrimer } from "../../../module-pilot-views";
 import { getPublishedModule } from "../../../module-publication.mjs";
-import { englishModulePath } from "../../../i18n/locale-config.mjs";
 import { DenseModuleReadingModes } from "../../../dense-module-reading-modes";
+import { UnifiedModuleHero } from "../../../unified-module-hero";
 import agentStyles from "../../../agent-dense-reader.module.css";
 
 export const metadata: Metadata = {
@@ -20,8 +20,6 @@ export const metadata: Metadata = {
 };
 
 const agentPublication = getPublishedModule("ai-agent");
-const agentEnglishPath = englishModulePath("ai-agent");
-
 const conceptLinks = [
   { concept: "模型与推理", owner: "大语言模型原理", href: "/modules/llm", relation: "能力底座", local: "模型负责理解状态和选择下一步，但不应直接获得业务权限。" },
   { concept: "指令与上下文", owner: "提示词工程", href: "/modules/prompt-engineering", relation: "行为约束", local: "把角色、目标、边界、工具规则和输出契约组织为可版本化指令。" },
@@ -286,43 +284,24 @@ export default function AgentModulePage() {
   return (
     <main className={`fieldbookTheme modulePage modulePilot modulePilot--dedicated ${agentStyles.reader}`}>
       <ReadingProgress />
-      <section className="ragHero" id="agent" aria-labelledby="agent-title">
-        <nav className="topbar" aria-label="模块导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span>Cloud × AI / Presales Fieldbook</span>
-          </Link>
-          <div className="toplinks">
-            <Link href="#agent-principle">Agent 原理</Link>
-            <Link href="/coding-agents">Coding Agent 选型</Link>
-            <Link href="#qa">本模块问答</Link>
-            <Link href="/glossary">术语库</Link>
-            <Link href="/questions">全部问题</Link>
-            <Link href="/references">Reference</Link>
-            {agentEnglishPath ? <Link href={agentEnglishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
-          </div>
-        </nav>
-        <div id="main-content" className="skipTarget" tabIndex={-1} />
-        <div className="ragHeader">
-          <div>
-            <p className="kicker light">MODULE · APPLICATION PATTERN</p>
-            <h1
-              className="moduleHeroTitle"
-              id="agent-title"
-              style={{ "--module-title-size": "clamp(58px,7vw,92px)", "--module-title-mobile-size": "clamp(46px,14vw,66px)" } as CSSProperties}
-            >Agent<br /><span>智能体 · AI Agent</span></h1>
-          </div>
-          <div className="ragDefinition">
-            <p>一个受应用控制的 Run：模型可根据当前状态选择下一步、请求工具并吸收环境结果；身份、授权、真实动作、业务成功与停止权仍属于确定性控制层。</p>
-            <ModuleHeroMetrics sectionCount={3} questionCount={agentQa.length} evidenceCount={agentEvidenceCards.length} labels={{ ariaLabel: "模块内容概览", sections: "阅读方式", sectionUnit: "种", questions: "问题库", questionUnit: "题", evidence: "证据卡", evidenceUnit: "张" }} />
-          </div>
-        </div>
-        <dl className={agentStyles.heroLedger} aria-label="Agent 核心判断">
-          <div><dt>采用条件</dt><dd>新证据会改变下一步</dd></div>
-          <div><dt>模型责任</dt><dd>提出结构化动作意图</dd></div>
-          <div><dt>应用责任</dt><dd>身份、策略、执行与停止</dd></div>
-          <div><dt>完成证据</dt><dd>权威系统后置条件</dd></div>
-        </dl>
-      </section>
+      <UnifiedModuleHero
+        anchorId="agent"
+        definition="一个受应用控制的 Run：模型根据当前状态选择下一步、请求工具并吸收环境结果。"
+        enTitle="AI Agent"
+        evidenceCount={agentEvidenceCards.length}
+        facts={[
+          { label: "采用条件", value: "新证据会改变下一步" },
+          { label: "模型责任", value: "提出结构化动作意图" },
+          { label: "应用责任", value: "身份、策略、执行与停止" },
+          { label: "完成证据", value: "权威系统后置条件" },
+        ]}
+        position="Agent 位于应用控制的任务运行层；模型选择下一步，应用负责授权、执行、恢复和验收。"
+        questionCount={agentQa.length}
+        shortTitle="Agent"
+        slug="ai-agent"
+        titleId="agent-title"
+        zhTitle="智能体"
+      />
 
       <div className="dedicatedArticleLayout moduleReadingHost">
       <section className="section ragBody" aria-label="Agent 核心内容">
@@ -331,11 +310,22 @@ export default function AgentModulePage() {
           <DenseModuleReadingModes
             moduleName="Agent · 智能体"
             chapters={agentChapters}
+            criticalBoundary="工具调用意图、工具执行成功和业务完成是三件事；身份、授权、真实动作、停止与最终验收必须留在确定性控制层。"
+            directories={{
+              quick: [{ id: "agent-principle", label: "是否需要 Agent", eyebrow: "采用边界" }],
+              learn: agentChapters.slice(1, 7),
+              field: [
+                { id: "cloud-opportunities", label: "云能力与责任", eyebrow: "交付边界" },
+                { id: "evidence", label: "证据与适用范围", eyebrow: "来源核验" },
+                { id: "qa", label: "客户问题", eyebrow: "现场回答" },
+              ],
+            }}
             hashGroups={{
               quick: ["agent-principle"],
               learn: ["learn-run", "concept-map", "agent-loop", "learn-harness", "harness", "boundaries", "capabilities", "memory-interaction", "learn-release", "patterns", "architecture", "agent-independent-depth", "poc"],
               field: ["cloud-opportunities", "evidence", "qa"],
             }}
+            readerId="agent-reading"
             quick={(
               <>
           <div className="decisionBanner">
@@ -572,7 +562,7 @@ export default function AgentModulePage() {
           </div>
 
           <div className="subsection" id="poc">
-            <div className="subHead"><span>2.11</span><div><p className="kicker">POC PLAYBOOK</p><h3>Agent PoC 的自治风险阶梯</h3></div></div>
+            <div className="subHead"><span>2.10</span><div><p className="kicker">POC PLAYBOOK</p><h3>Agent PoC 的自治风险阶梯</h3></div></div>
             <p className="sectionLead">在同一理赔任务集、相同工具、相同身份与相同终态下，依次比较确定性 Workflow、Workflow 中的 LLM 步骤与单 Agent；多 Agent 只有在独立并行或隔离收益被数据证明后才进入候选。</p>
             <div className="pocGrid">
               <article><span>SHADOW</span><h4>任务与最终状态</h4><p>先以观察或建议模式运行，固定真实任务、可验证的最终状态、风险等级和现有人工 / 工作流表现。</p></article>

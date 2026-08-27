@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { A2AModuleModeShell, type A2AChapterLink, type A2AReadingMode } from "./a2a-module-mode-shell";
+import { DenseModuleReadingModes, type DenseChapterLink, type ReadingModeId } from "./dense-module-reading-modes";
 import styles from "./a2a-module-experience.module.css";
 import { requireModuleBrief } from "./module-brief-content.mjs";
 import { requireModuleCurriculum } from "./module-curriculum-content.mjs";
@@ -10,9 +10,10 @@ import { ModuleCurriculumAtlas, ModuleUpdatedAt, QuestionAddedAt } from "./modul
 import { getPublishedModule } from "./module-publication.mjs";
 import { sourceLedger } from "./reference-content.mjs";
 import { terminology } from "./terminology.mjs";
+import { UnifiedModuleHero } from "./unified-module-hero";
 
 export type A2AModuleExperienceProps = {
-  initialMode?: A2AReadingMode;
+  initialMode?: ReadingModeId;
   className?: string;
 };
 
@@ -67,7 +68,7 @@ const chapters = [
   { id: "a2a-chapter-9", label: "追踪与 Artifact", eyebrow: "证据和三层验收" },
   { id: "a2a-chapter-10", label: "拓扑与采用边界", eyebrow: "不为协议拆系统" },
   { id: "a2a-chapter-11", label: "三个验证实验", eyebrow: "用结果决定采用" },
-] as const satisfies readonly A2AChapterLink[];
+] as const satisfies readonly DenseChapterLink[];
 
 const taskStates = [
   { code: "TASK_STATE_SUBMITTED", label: "已提交", kind: "active", meaning: "服务端已接收并创建 Task，尚未开始主要执行。" },
@@ -262,9 +263,9 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
   return (
     <div className={styles.learnView}>
       <section className={styles.studyGuide} id="study-guide" data-quality-section="study-guide">
-        <header><span>LEARNING OUTPUT</span><h2>做完这组内容，你可以</h2></header>
+        <header><span>LEARNING OUTPUT</span><h2>学习产出</h2></header>
         <ol className={styles.learningOutcomes}>{learning.outcomes.map((outcome, index) => <li key={outcome}><span>{String(index + 1).padStart(2, "0")}</span>{outcome}</li>)}</ol>
-        <h3>从这里开始</h3>
+        <h3>学习路线</h3>
         <div className={styles.learningRoute}>{learning.route.map((step, index) => <article key={step.title}><span>{String(index + 1).padStart(2, "0")}</span><h4>{step.title}</h4><p>{step.learn}</p><strong>{step.checkpoint}</strong></article>)}</div>
       </section>
 
@@ -531,12 +532,6 @@ function FieldView({ qa, evidenceCards }: { qa: readonly SourceQa[]; evidenceCar
           <p>FIELD VERIFICATION · 会前与会中核对</p>
           <h2>先辨认“声明、官方规范、运行证据、边界说明”，再回答客户</h2>
         </div>
-        <ol>
-          <li><strong>1 · Card</strong><span>核验来源、JWS、版本与 Binding</span></li>
-          <li><strong>2 · Task</strong><span>跑通创建、等待、恢复、取消与终态</span></li>
-          <li><strong>3 · Artifact</strong><span>验证产物和业务接受</span></li>
-          <li><strong>4 · Evidence</strong><span>保留双方可共同核对的记录</span></li>
-        </ol>
       </section>
 
       <div className={styles.fieldLayout}>
@@ -608,13 +603,16 @@ function FieldView({ qa, evidenceCards }: { qa: readonly SourceQa[]; evidenceCar
             </article>
           ))}
         </div>
-        <div className={styles.sourceRows}>
-          {sources.map((source) => (
-            <Link href={`/references#source-${source.id}`} key={source.id}>
-              <span>{source.type}</span><strong>{source.title}</strong><p>{source.proves}</p><small>查看已核验来源</small>
-            </Link>
-          ))}
-        </div>
+        <details className={styles.detailBlock}>
+          <summary>完整来源注册表 · {sources.length} 项</summary>
+          <div className={styles.sourceRows}>
+            {sources.map((source) => (
+              <Link href={`/references#source-${source.id}`} key={source.id}>
+                <span>{source.type}</span><strong>{source.title}</strong><p>{source.proves}</p><small>查看已核验来源</small>
+              </Link>
+            ))}
+          </div>
+        </details>
       </section>
 
       <section className={styles.cloudSection} id="cloud" aria-labelledby="cloud-title" data-quality-section="cloud">
@@ -658,34 +656,54 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
   return (
     <main className={`${styles.page} fieldbookTheme modulePage modulePilot${className ? ` ${className}` : ""}`}>
       <ReadingProgress />
-      <header className={styles.hero} id="a2a-top">
-        <nav className={styles.heroNav} aria-label="A2A 模块导航">
-          <Link href="/">Cloud × AI / Presales Fieldbook</Link>
-          <div><a href="#a2a-reading">阅读任务</a><Link href="/questions?module=a2a">本模块问答</Link><Link href="/references#module-a2a">来源</Link></div>
-        </nav>
-        <div id="main-content" className={styles.skipTarget} tabIndex={-1} />
-        <div className={styles.heroGrid}>
-          <div>
-            <p>APPLICATION & PROTOCOL · MODULE</p>
-            <h1 id={publication.titleId}>A2A<span>智能体间协议</span></h1>
-            <strong>让独立 Agent 跨组织域交接一份可恢复、可追踪、可验收的任务档案。</strong>
-            <p className={styles.heroDefinition}>A2A 用 Agent Card 发布候选能力；一次 SendMessage 可直接返回 Message，也可创建带服务端 ID 的 Task，并以状态事件和可选 Artifact 交付结果。</p>
-          </div>
-          <dl className="moduleHeroMetrics" aria-label="模块内容概览">
-            <div><dt>阅读方式</dt><dd><strong>3</strong><span>种</span></dd></div>
-            <div><dt>问题库</dt><dd><strong>{sourceContent.qa.length}</strong><span>题</span></dd></div>
-            <div><dt>证据卡</dt><dd><strong>{sourceContent.evidenceCards.length}</strong><span>张</span></dd></div>
-          </dl>
-        </div>
-        <Boundary title="全页主线">A2A 处理独立 Agent 的水平协作；MCP / API 连接工具和数据；本地编排继续维护单一信任域内的细粒度执行。</Boundary>
-      </header>
+      <UnifiedModuleHero
+        anchorId="a2a-top"
+        definition="让独立 Agent 跨组织域交接一份可恢复、可追踪、可验收的任务档案。"
+        enTitle="Agent2Agent Protocol"
+        evidenceCount={sourceContent.evidenceCards.length}
+        facts={[
+          { label: "采用条件", value: "独立 Agent 跨信任域委派" },
+          { label: "返回对象", value: "Message 或 Task" },
+          { label: "运行责任", value: "调用方与服务方分别验收" },
+          { label: "完成证据", value: "Task 状态 + Artifact + 业务接受" },
+        ]}
+        position="A2A 用 Agent Card 发布候选能力；SendMessage 可直接返回 Message，也可创建带服务端 ID 的 Task，并以状态事件和可选 Artifact 交付。"
+        questionCount={sourceContent.qa.length}
+        shortTitle="A2A"
+        slug="a2a"
+        titleId={publication.titleId}
+        zhTitle="智能体间协议"
+      />
 
-      <A2AModuleModeShell
+      <DenseModuleReadingModes
         chapters={chapters}
-        quick={<QuickView knowledgeView={publication.knowledgeView ?? "delegated-task-lifecycle"} terms={terms} />}
-        learn={<LearnView curriculum={sourceContent.curriculum} learning={sourceContent.learning} />}
+        criticalBoundary="A2A 只处理独立 Agent 的水平协作；MCP / API 连接工具和数据，本地编排继续维护单一信任域内的细粒度执行。"
+        defaultMode={initialMode}
+        directories={{
+          quick: [
+            { id: "principle", label: "采用判断", eyebrow: "是否需要 A2A" },
+            { id: "a2a-handoff-title", label: "Message 或 Task", eyebrow: "响应分叉" },
+            { id: "quick-boundary-title", label: "三个协议边界", eyebrow: "责任不混用" },
+          ],
+          learn: chapters,
+          field: [
+            { id: "field-checklist-title", label: "现场核验顺序", eyebrow: "可执行 Runbook" },
+            { id: "qa", label: `${sourceContent.qa.length} 题客户问题`, eyebrow: "四类入口" },
+            { id: "evidence", label: `${sourceContent.evidenceCards.length} 张证据卡`, eyebrow: "来源与范围" },
+            { id: "cloud", label: "云能力与责任", eyebrow: "交付矩阵" },
+            { id: "related-modules", label: "相关模块", eyebrow: "责任连接" },
+          ],
+        }}
         field={<FieldView qa={sourceContent.qa} evidenceCards={sourceContent.evidenceCards} />}
-        initialMode={initialMode}
+        hashGroups={{
+          quick: ["principle", "a2a-handoff-title", "quick-boundary-title"],
+          learn: ["study-guide", "curriculum", ...chapters.map((chapter) => chapter.id)],
+          field: ["field-checklist-title", "qa", "evidence", "cloud", "related-modules"],
+        }}
+        learn={<LearnView curriculum={sourceContent.curriculum} learning={sourceContent.learning} />}
+        moduleName="A2A · 智能体间协议"
+        quick={<QuickView knowledgeView={publication.knowledgeView ?? "delegated-task-lifecycle"} terms={terms} />}
+        readerId="a2a-reading"
       />
 
       <footer className={styles.footer}>

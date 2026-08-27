@@ -718,6 +718,51 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.doesNotMatch(inference, /class="inferenceBudgetLedger"/);
 });
 
+test("Agent, MCP, and A2A share one header, hero, and task-led reader contract", async () => {
+  const paths = ["/modules/ai-agent", "/modules/mcp", "/modules/a2a"];
+  const htmlByPath = await Promise.all(paths.map((path) => renderHtml(path)));
+
+  for (const [index, html] of htmlByPath.entries()) {
+    assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
+    assert.match(html, /data-module-reader="unified"/, `${paths[index]} 缺少共享阅读控制器`);
+    assert.match(html, /Cloud × AI \/ Presales Fieldbook/, `${paths[index]} 必须使用统一品牌`);
+    assert.match(html, /aria-label="模块导航"/);
+    assert.match(html, />首页</);
+    assert.match(html, />本模块问答</);
+    assert.match(html, />来源</);
+    assert.match(html, />术语库</);
+    assert.match(html, />English</);
+    assert.match(html, /aria-label="模块导航菜单"/, `${paths[index]} 缺少移动端菜单`);
+    assert.match(html, /10 分钟速查/);
+    assert.match(html, /系统学习/);
+    assert.match(html, /现场查证/);
+    assert.match(html, /做判断/);
+    assert.match(html, /建模型/);
+    assert.match(html, /带证据/);
+    assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
+  }
+
+  const [agentRoute, mcpRoute, a2aRoute, readerSource, heroSource, mcpStyles] = await Promise.all([
+    readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/mcp-module-experience-client.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/a2a-module-experience.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/dense-module-reading-modes.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/unified-module-hero.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/mcp-module-experience.module.css", import.meta.url), "utf8"),
+  ]);
+  for (const routeSource of [agentRoute, mcpRoute, a2aRoute]) {
+    assert.match(routeSource, /UnifiedModuleHero/);
+    assert.match(routeSource, /DenseModuleReadingModes/);
+  }
+  assert.match(readerSource, /aria-current=\{activeId === item\.id \? "location"/);
+  assert.match(readerSource, /IntersectionObserver/);
+  assert.match(readerSource, /target\.startsWith\("qa-"\) \? "field"/);
+  assert.match(readerSource, /setActiveMode\(defaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "清空 hash 时必须恢复默认阅读任务");
+  assert.match(heroSource, /aria-label="模块导航菜单"/, "移动菜单名称不能绑定单一开合状态");
+  assert.doesNotMatch(mcpRoute, /mobileChapterNav|章节快速导航/, "MCP 不应保留第二套移动章节导航");
+  assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
+});
+
 test("inference reader renders the accepted heatmap, capacity lab, and evidence boundaries", async () => {
   const html = await renderHtml("/modules/llm-inference");
   assert.equal((html.match(/role="gridcell"/g) ?? []).length, 56, "推理热力图必须覆盖 7 个输入长度 × 8 个并发档位");
@@ -1161,7 +1206,7 @@ test("RAG route follows one evidence decision from adoption through production",
 test("Agent route explains the controlled loop, cloud runtime, and evidence-backed customer decisions", async () => {
   const html = await renderHtml("/modules/ai-agent");
 
-  assert.match(html, /智能体 · AI Agent/);
+  assert.match(html, /智能体[\s\S]*AI Agent/);
   assert.match(html, /Agent 的采购价值来自受控的动态决策/);
   assert.match(html, /Agent 的采用条件/);
   assert.match(html, /跨区域保险理赔材料补件与初审/);
@@ -1471,7 +1516,7 @@ test("every published module passes the shared reader, terminology, and depth co
       assert.match(html, new RegExp(`data-quality-section="${section}"`), `${publishedModule.slug} 缺少 ${section} 质量区块`);
     }
 
-    assert.match(html, /aria-label="(?:重要边界|需要单独验证的约束)"[^>]*data-importance="critical"/);
+    assert.match(html, /aria-label="(?:重要边界|需要单独验证的约束|生产硬边界)"[^>]*data-importance="critical"/);
     assert.match(html, /客户(?:高频问题与深度回答|问题)/);
     assert.match(html, /class="readingProgress"/, `${publishedModule.slug} 缺少阅读进度`);
     assert.match(html, /class="moduleReadingExperience"/, `${publishedModule.slug} 缺少任务阅读器`);
@@ -1866,10 +1911,10 @@ test("every shared module has a source-backed learning route and practical labs"
     const html = await renderHtml(publishedModuleEntry.path);
     assert.match(html, /id="study-guide"/);
     assert.match(html, /id="curriculum"/);
-    assert.match(html, /做完这组内容，你可以/);
-    assert.match(html, /从这里开始/);
+    assert.match(html, /(?:学习产出|做完这组内容，你可以)/);
+    assert.match(html, /(?:学习路线|从这里开始)/);
     assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
-    assert.match(html, /动手做一遍/);
+    assert.match(html, /(?:验证实验|动手做一遍)/);
     assert.match(html, /知识地图/);
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
   }
@@ -2009,7 +2054,10 @@ test("public page shells expose one real skip target after navigation without de
     assert.doesNotMatch(source, /V2\.0/, `${relativePath} 不得显示装饰性维护版本号`);
   }
 
-  assert.equal(pagesWithTopbar.length, 19, "全部公开页面壳必须进入 skip-link 回归范围");
+  assert.equal(pagesWithTopbar.length, 18, "传统公开页面壳必须全部进入 skip-link 回归范围");
+  const unifiedHero = await readFile(new URL("unified-module-hero.tsx", appRoot), "utf8");
+  assert.equal((unifiedHero.match(/id="main-content"/g) ?? []).length, 1, "共享模块 Hero 必须只有一个主内容跳转目标");
+  assert.ok(unifiedHero.indexOf('id="main-content"') > unifiedHero.indexOf("</nav>"), "共享模块 Hero 的跳转目标必须位于导航之后");
   for (const layoutPath of ["(zh)/layout.tsx", "(en)/layout.tsx"]) {
     const source = await readFile(new URL(layoutPath, appRoot), "utf8");
     assert.match(source, /className="skipLink" href="#main-content"/, `${layoutPath} 必须提供本地化 skip link`);

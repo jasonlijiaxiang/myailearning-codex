@@ -47801,6 +47801,14 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:ai-agent/renderedProjection/rendererDependencyFiles/$order",
+          "objectType": "renderedProjection-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
+          "currentHash": "sha256:25932b17536a5ae54b06590a087e0cd9630250b6708f7d9070f2ee7b4aa9d2ac",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-agent/renderedProjection/rendererDependencyFiles/004",
           "objectType": "renderedProjection",
           "changeKind": "modified",
@@ -47865,11 +47873,19 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:ai-agent/renderedProjection/rendererDependencyFiles/016",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:d844f4e36eb7d62d6b189039f863e722b0c884cd15ba0a11c1effbb2fc28da6d",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-agent/renderedProjection/sharedRendererHash",
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:fc3663631b2cd3e19609bd60a89c28a701e2cd59ad687bf550f623e74f34a5dd",
-          "currentHash": "sha256:b0098fe9fc22cff8cce047afbcb84956819171aca932306ff17cbed400e353c2",
+          "currentHash": "sha256:6ccef2c247bd8dcc1bdaf3cd414f69c2fdc1948b27766cf8123fd202d00c12af",
           "sourceIds": []
         },
         {
@@ -49356,7 +49372,7 @@
           "objectType": "renderedProjection-order",
           "changeKind": "modified",
           "baselineHash": "sha256:25932b17536a5ae54b06590a087e0cd9630250b6708f7d9070f2ee7b4aa9d2ac",
-          "currentHash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "currentHash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
           "sourceIds": []
         },
         {
@@ -49368,19 +49384,11 @@
           "sourceIds": []
         },
         {
-          "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/003",
-          "objectType": "renderedProjection",
-          "changeKind": "modified",
-          "baselineHash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
-          "currentHash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
-          "sourceIds": []
-        },
-        {
           "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/004",
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
-          "currentHash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "currentHash": "sha256:0d462183ed3bdb62a89352b7613b15831e963e1ac253c5c1c4a7fe0b71054a56",
           "sourceIds": []
         },
         {
@@ -49388,71 +49396,55 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
-          "currentHash": "sha256:000b1598d7ea9c928322619c47964590f19b50a456440ac2d03051bff22a038a",
-          "sourceIds": []
-        },
-        {
-          "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/006",
-          "objectType": "renderedProjection",
-          "changeKind": "modified",
-          "baselineHash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
-          "currentHash": "sha256:c427aa95c86ccfb77b5f624d95c442e22509c36d621eda96aa712f723ccecd85",
-          "sourceIds": []
-        },
-        {
-          "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/007",
-          "objectType": "renderedProjection",
-          "changeKind": "modified",
-          "baselineHash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
-          "currentHash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
+          "currentHash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
           "sourceIds": []
         },
         {
           "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/008",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
-          "currentHash": null,
+          "currentHash": "sha256:000b1598d7ea9c928322619c47964590f19b50a456440ac2d03051bff22a038a",
           "sourceIds": []
         },
         {
           "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/009",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:39ab1d59f7eab391f8f63a0ffd8899ba0d0113686f5a01ed41397f650bd863e2",
-          "currentHash": null,
+          "currentHash": "sha256:c427aa95c86ccfb77b5f624d95c442e22509c36d621eda96aa712f723ccecd85",
           "sourceIds": []
         },
         {
           "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/010",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:f19c61b7170f3caf21d46de69075b99abd44259e7bc3df058e7d21947656c820",
-          "currentHash": null,
+          "currentHash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
           "sourceIds": []
         },
         {
           "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/011",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
-          "currentHash": null,
+          "currentHash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
           "sourceIds": []
         },
         {
           "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/012",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:1e0310479f93c5d20f952bfa0cb9fbf0fddd18cafd518678e5f251762eefe5c4",
-          "currentHash": null,
+          "currentHash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
           "sourceIds": []
         },
         {
           "objectId": "/module:mcp/renderedProjection/rendererDependencyFiles/013",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
-          "currentHash": null,
+          "currentHash": "sha256:d844f4e36eb7d62d6b189039f863e722b0c884cd15ba0a11c1effbb2fc28da6d",
           "sourceIds": []
         },
         {
@@ -49484,7 +49476,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:e7a130776d1821dab47018ff24e02f43a6b3069a5135a7a5f902714c37f2faa2",
-          "currentHash": "sha256:e6a9f85c57a14a8eee5b9e11978bd67b6bd4cbb0f29b7b86c03fa85a300d7e05",
+          "currentHash": "sha256:0b8cd4c2ff117ded8f98e0922de55cde87875a8db5f55ae7b2182afd0137e461",
           "sourceIds": []
         }
       ],
@@ -49736,7 +49728,7 @@
           "objectType": "renderedProjection-order",
           "changeKind": "modified",
           "baselineHash": "sha256:25932b17536a5ae54b06590a087e0cd9630250b6708f7d9070f2ee7b4aa9d2ac",
-          "currentHash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "currentHash": "sha256:7861861f1344999672a1802b279bf03aa2d152c96916bca5c74a622717c621ed",
           "sourceIds": []
         },
         {
@@ -49760,7 +49752,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
-          "currentHash": "sha256:6a18b1b801c59d95d0734b7cc5105db1383281948da2a7b0747b709a85745364",
+          "currentHash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
           "sourceIds": []
         },
         {
@@ -49768,7 +49760,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
-          "currentHash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
+          "currentHash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
           "sourceIds": []
         },
         {
@@ -49776,7 +49768,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
-          "currentHash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
+          "currentHash": "sha256:0d462183ed3bdb62a89352b7613b15831e963e1ac253c5c1c4a7fe0b71054a56",
           "sourceIds": []
         },
         {
@@ -49788,11 +49780,27 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:a2a/renderedProjection/rendererDependencyFiles/007",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "currentHash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/rendererDependencyFiles/008",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "currentHash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:a2a/renderedProjection/rendererDependencyFiles/009",
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:39ab1d59f7eab391f8f63a0ffd8899ba0d0113686f5a01ed41397f650bd863e2",
-          "currentHash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
+          "currentHash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
           "sourceIds": []
         },
         {
@@ -49800,23 +49808,23 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:f19c61b7170f3caf21d46de69075b99abd44259e7bc3df058e7d21947656c820",
-          "currentHash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
+          "currentHash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
           "sourceIds": []
         },
         {
           "objectId": "/module:a2a/renderedProjection/rendererDependencyFiles/011",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
-          "currentHash": null,
+          "currentHash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
           "sourceIds": []
         },
         {
           "objectId": "/module:a2a/renderedProjection/rendererDependencyFiles/012",
           "objectType": "renderedProjection",
-          "changeKind": "deleted",
+          "changeKind": "modified",
           "baselineHash": "sha256:1e0310479f93c5d20f952bfa0cb9fbf0fddd18cafd518678e5f251762eefe5c4",
-          "currentHash": null,
+          "currentHash": "sha256:d844f4e36eb7d62d6b189039f863e722b0c884cd15ba0a11c1effbb2fc28da6d",
           "sourceIds": []
         },
         {
@@ -49856,7 +49864,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:e7a130776d1821dab47018ff24e02f43a6b3069a5135a7a5f902714c37f2faa2",
-          "currentHash": "sha256:08a5e2362b9386023af42d1f60c023528fa5f30991b071f2364fa2ffc767103b",
+          "currentHash": "sha256:a9c715f3448372738ad9139148e844a056d5f90ebcf147f1b0fee5e977aa59f1",
           "sourceIds": []
         }
       ],

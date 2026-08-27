@@ -804,10 +804,11 @@ test("Chinese global entry pages expose their matching English routes", async ()
 });
 
 test("English routes and all Chinese module page families expose reciprocal language paths", async () => {
-  const [sharedZh, ragZh, agentZh, promptZh, enHome, enShared, enRag, enModulePage] = await Promise.all([
+  const [sharedZh, ragZh, agentZh, unifiedHero, promptZh, enHome, enShared, enRag, enModulePage] = await Promise.all([
     readFile(new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/rag/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/unified-module-hero.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/prompt-engineering/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(en)/en/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(en)/en/modules/[slug]/page.tsx", import.meta.url), "utf8"),
@@ -816,7 +817,8 @@ test("English routes and all Chinese module page families expose reciprocal lang
   ]);
   assert.match(sharedZh, /englishModulePath/);
   assert.match(ragZh, /ragEnglishPath/);
-  assert.match(agentZh, /agentEnglishPath/);
+  assert.match(agentZh, /UnifiedModuleHero/);
+  assert.match(unifiedHero, /englishModulePath/);
   assert.match(promptZh, /promptEnglishPath/);
   assert.doesNotMatch(enHome, />English pilot</i);
   assert.match(enShared, /EnglishModulePage/);
