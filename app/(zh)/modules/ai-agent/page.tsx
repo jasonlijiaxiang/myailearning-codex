@@ -5,13 +5,13 @@ import Link from "next/link";
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../../agent-content.mjs";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList, ModuleUpdatedAt, type DeepDiveBlock } from "../../../module-content-components";
-import { ReadingProgress, SystemLens, type LensPanel } from "../../../fieldbook-interactions";
+import { SystemLens, type LensPanel } from "../../../fieldbook-interactions";
 import { AgentRunLab } from "../../../flagship-labs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { AgentControlPrimer } from "../../../module-pilot-views";
 import { getPublishedModule } from "../../../module-publication.mjs";
 import { DenseModuleReadingModes } from "../../../dense-module-reading-modes";
-import { UnifiedModuleHero } from "../../../unified-module-hero";
+import { UnifiedModuleScaffold } from "../../../unified-module-hero";
 import agentStyles from "../../../agent-dense-reader.module.css";
 
 export const metadata: Metadata = {
@@ -282,26 +282,27 @@ function AgentKnowledgeRows({ items, label }: { items: readonly AgentMechanicIte
 
 export default function AgentModulePage() {
   return (
-    <main className={`fieldbookTheme modulePage modulePilot modulePilot--dedicated ${agentStyles.reader}`}>
-      <ReadingProgress />
-      <UnifiedModuleHero
-        anchorId="agent"
-        definition="一个受应用控制的 Run：模型根据当前状态选择下一步、请求工具并吸收环境结果。"
-        enTitle="AI Agent"
-        evidenceCount={agentEvidenceCards.length}
-        facts={[
+    <UnifiedModuleScaffold
+      className={`fieldbookTheme modulePage modulePilot modulePilot--dedicated ${agentStyles.reader}`}
+      hero={{
+        anchorId: "agent",
+        definition: "一个受应用控制的 Run：模型根据当前状态选择下一步、请求工具并吸收环境结果。",
+        enTitle: "AI Agent",
+        evidenceCount: agentEvidenceCards.length,
+        facts: [
           { label: "采用条件", value: "新证据会改变下一步" },
           { label: "模型责任", value: "提出结构化动作意图" },
           { label: "应用责任", value: "身份、策略、执行与停止" },
           { label: "完成证据", value: "权威系统后置条件" },
-        ]}
-        position="Agent 位于应用控制的任务运行层；模型选择下一步，应用负责授权、执行、恢复和验收。"
-        questionCount={agentQa.length}
-        shortTitle="Agent"
-        slug="ai-agent"
-        titleId="agent-title"
-        zhTitle="智能体"
-      />
+        ],
+        position: "Agent 位于应用控制的任务运行层；模型选择下一步，应用负责授权、执行、恢复和验收。",
+        questionCount: agentQa.length,
+        shortTitle: "Agent",
+        slug: "ai-agent",
+        titleId: "agent-title",
+        zhTitle: "智能体",
+      }}
+    >
 
       <div className="dedicatedArticleLayout moduleReadingHost">
       <section className="section ragBody" aria-label="Agent 核心内容">
@@ -617,6 +618,6 @@ export default function AgentModulePage() {
       </div>
 
       <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>Agent 独立模块<ModuleUpdatedAt value={agentPublication?.updatedAt ?? undefined} /></p><a href="#agent">返回顶部 ↑</a></footer>
-    </main>
+    </UnifiedModuleScaffold>
   );
 }

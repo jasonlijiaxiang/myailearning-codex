@@ -50,7 +50,8 @@
 - `app/module-publication.mjs` 是正式发布模块的唯一状态与内容契约入口；首页入口、专用路由和测试名单必须从它派生，不得分别硬编码。
 - `app/module-content-registry.mjs` 统一登记已发布模块的客户问答与证据数据；新增正式模块时必须同步注册，不能在测试里另建模块名单。
 - 专业术语在 `app/terminology.mjs` 维护稳定中英名称。未来英文版共享概念 ID 和来源关系，但英文文案必须独立撰写、独立专业校对。
-- 中文模块的全局导航、Hero 与三种阅读模式优先使用共享 `UnifiedModuleHero` 和 `DenseModuleReadingModes`；标题、重要边界和动态卡片继续优先使用 `moduleHeroTitle`、`CriticalBoundary`、`BalancedGrid` 与 `balanceRows`，不得为单个模块复制 Header / Tab / 目录控制器，或增加固定数量布局与模块 ID CSS 补丁。
+- 新建或进入全面呈现重构的中文模块，其全局导航、Hero 与三种阅读模式必须使用共享 `UnifiedModuleScaffold`、`UnifiedModuleHero` 和 `DenseModuleReadingModes`；标题、重要边界和动态卡片继续优先使用 `moduleHeroTitle`、`CriticalBoundary`、`BalancedGrid` 与 `balanceRows`，不得为单个模块复制 Header / Tab / 目录控制器，或增加固定数量布局与模块 ID CSS 补丁。
+- 共享 Header / Hero 的颜色、字体与交互状态只由 `globals.css` 的 `--fb-chrome-*`、`--fb-font-*` 和 `unified-module-reader.module.css` 管理。模块 CSS 不得覆盖这些 Token，不得用 `.page a` 等页面根裸标签规则重置共享外壳，也不得穿透 `data-module-hero="unified"`；新增系统性视觉问题时必须同步更新 `tests/design-language-contract.test.mjs`。
 - 知识页面默认匿名可读，不引入 Login、个人会话或用户状态依赖；本仓库是源文件与必要资产的唯一事实源，不依赖临时目录、本机绝对路径或部署产物。
 - 图、卡、表、案例、问答和来源均按知识需要决定数量；不为排版凑数，也不以交付包大小为理由删减概念、边界或证据。
 - 每次出现新的系统性问题，修复当前页面的同时更新质量追溯矩阵、共享规则和可自动化的回归检查，并复核其他已发布模块。

@@ -5,8 +5,7 @@ import Link from "next/link";
 
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
 import { DenseModuleReadingModes } from "./dense-module-reading-modes";
-import { ReadingProgress } from "./fieldbook-interactions";
-import { UnifiedModuleHero } from "./unified-module-hero";
+import { UnifiedModuleScaffold } from "./unified-module-hero";
 import styles from "./mcp-module-experience.module.css";
 
 type SourceInfo = {
@@ -494,26 +493,27 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
   ];
 
   return (
-    <main className={`${styles.page} fieldbookTheme modulePage modulePilot moduleFocused`}>
-      <ReadingProgress />
-      <UnifiedModuleHero
-        anchorId="mcp-top"
-        definition="MCP 规定 AI 应用如何发现并调用外部工具、资源和提示，并用统一消息交换上下文。"
-        enTitle={data.module.en}
-        evidenceCount={data.evidenceCards.length}
-        facts={[
+    <UnifiedModuleScaffold
+      className={`${styles.page} fieldbookTheme modulePage modulePilot moduleFocused`}
+      hero={{
+        anchorId: "mcp-top",
+        definition: "MCP 规定 AI 应用如何发现并调用外部工具、资源和提示，并用统一消息交换上下文。",
+        enTitle: data.module.en,
+        evidenceCount: data.evidenceCards.length,
+        facts: [
           { label: "采用条件", value: "多客户端重复适配值得统一" },
           { label: "协议对象", value: "Tool · Resource · Prompt" },
           { label: "执行责任", value: "现有身份、授权与事务系统" },
           { label: "版本边界", value: "2026-07-28 与旧版不可混用" },
-        ]}
-        position="协议负责发现、描述与标准化调用；现有 API、身份、授权和业务事务系统继续负责真实执行与控制。"
-        questionCount={data.qa.length}
-        shortTitle="MCP"
-        slug="mcp"
-        titleId={data.module.titleId}
-        zhTitle={data.module.zh}
-      />
+        ],
+        position: "协议负责发现、描述与标准化调用；现有 API、身份、授权和业务事务系统继续负责真实执行与控制。",
+        questionCount: data.qa.length,
+        shortTitle: "MCP",
+        slug: "mcp",
+        titleId: data.module.titleId,
+        zhTitle: data.module.zh,
+      }}
+    >
 
       <DenseModuleReadingModes
         chapters={learnDirectory}
@@ -546,6 +546,6 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
       />
 
       <footer className={styles.footer}><strong>MCP · 模型上下文协议</strong><p>{data.curriculum.chapters.length} 章完整学习与现场查证<ModuleUpdatedAt value={data.module.updatedAt ?? undefined} /></p><a href="#mcp-reading">返回阅读任务 ↑</a></footer>
-    </main>
+    </UnifiedModuleScaffold>
   );
 }

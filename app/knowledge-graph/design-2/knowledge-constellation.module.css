@@ -9,12 +9,14 @@
   --cyan: #9fc4ca;
   --blue: #7195a3;
   --lime: #a8d84f;
-  --fb-focus: var(--lime);
+  --graph-focus: var(--lime);
   min-height: 100vh;
   overflow-x: hidden;
   background: radial-gradient(circle at 50% 28%, #1d434f 0, var(--night) 44%, #0b1a20 100%);
   color: var(--text);
 }
+
+.page :where(a, button, input, select, summary):focus-visible { outline-color: var(--graph-focus); }
 
 .siteHeader { border-bottom: 1px solid var(--line); background: var(--paper); color: var(--ink); }
 .siteHeader :global(.topbar) { max-width: 1600px; height: 70px; margin: 0 auto; padding: 0 3vw; border-bottom: 0; }

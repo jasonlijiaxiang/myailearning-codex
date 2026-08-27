@@ -817,7 +817,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   ]);
   assert.match(sharedZh, /englishModulePath/);
   assert.match(ragZh, /ragEnglishPath/);
-  assert.match(agentZh, /UnifiedModuleHero/);
+  assert.match(agentZh, /UnifiedModuleScaffold/);
   assert.match(unifiedHero, /englishModulePath/);
   assert.match(promptZh, /promptEnglishPath/);
   assert.doesNotMatch(enHome, />English pilot</i);

@@ -719,8 +719,17 @@ test("focused pilots use relationship-driven reading paths instead of standalone
 });
 
 test("Agent, MCP, and A2A share one header, hero, and task-led reader contract", async () => {
-  const paths = ["/modules/ai-agent", "/modules/mcp", "/modules/a2a"];
-  const htmlByPath = await Promise.all(paths.map((path) => renderHtml(path)));
+  const renderedModules = await Promise.all(publishedModules.map(async (module) => ({
+    html: await renderHtml(module.path),
+    path: module.path,
+  })));
+  const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
+  const paths = unifiedModules.map(({ path }) => path);
+  const htmlByPath = unifiedModules.map(({ html }) => html);
+  for (const requiredPath of ["/modules/ai-agent", "/modules/mcp", "/modules/a2a"]) {
+    assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
+  }
+  assert.ok(paths.length >= 3, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -751,7 +760,8 @@ test("Agent, MCP, and A2A share one header, hero, and task-led reader contract",
     readFile(new URL("../app/mcp-module-experience.module.css", import.meta.url), "utf8"),
   ]);
   for (const routeSource of [agentRoute, mcpRoute, a2aRoute]) {
-    assert.match(routeSource, /UnifiedModuleHero/);
+    assert.match(routeSource, /UnifiedModuleScaffold/);
+    assert.doesNotMatch(routeSource, /<UnifiedModuleHero\b|<ReadingProgress\b/);
     assert.match(routeSource, /DenseModuleReadingModes/);
   }
   assert.match(readerSource, /aria-current=\{activeId === item\.id \? "location"/);

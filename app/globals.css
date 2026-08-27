@@ -4,6 +4,7 @@
   /* A / Mist: the canonical site-wide design tokens. */
   --fb-ink: #153047;
   --fb-ink-2: #29485a;
+  --fb-body: var(--fb-ink-2);
   --fb-muted: #5f727e;
   --fb-meta: #5b6f7b;
   --fb-link: #3e6879;
@@ -21,7 +22,28 @@
   --fb-risk-soft: #fbf3f0;
   --fb-shadow: 0 14px 34px rgba(21, 48, 71, .07);
   --fb-focus: #315f72;
+
+  /*
+   * Shared public chrome is a closed visual contract. Module palettes may
+   * define --mcp-*, --a2a-* or other local roles, but Header / Hero controls
+   * consume only these tokens so their typography cannot drift by inheritance.
+   */
+  --fb-chrome-ink: #153047;
+  --fb-chrome-muted: #5f727e;
+  --fb-chrome-meta: #5b6f7b;
+  --fb-chrome-link: #3e6879;
+  --fb-chrome-line: #dee7e5;
+  --fb-chrome-accent: #a8d84f;
+  --fb-chrome-mist: #f3f7f7;
+  --fb-chrome-mint: #f3f7f3;
+  --fb-chrome-surface: #ffffff;
+  --fb-chrome-focus: #315f72;
+  --fb-chrome-shadow: 0 16px 36px rgba(8, 39, 66, .14);
+  --fb-font-ui: var(--font-geist-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
+  --fb-font-editorial: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+  --fb-font-code: var(--font-geist-mono), "SFMono-Regular", Consolas, monospace;
   --fb-shell: 1360px;
+  --fb-shell-wide: 1480px;
   --fb-prose: 68ch;
   --fb-text-body: 17px;
   --fb-text-body-mobile: 16px;

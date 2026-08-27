@@ -9,10 +9,12 @@
   --poster-muted: #a9bad2;
   --poster-blue: #74b8ff;
   --poster-gold: #ffc247;
-  --fb-focus: var(--poster-gold);
+  --poster-focus: var(--poster-gold);
   background: var(--poster-bg);
   color: var(--poster-text);
 }
+
+.modelPosterPage :where(a, button, input, select, summary):focus-visible { outline-color: var(--poster-focus); }
 
 .modelPosterHero {
   min-height: 0;

@@ -21,7 +21,6 @@
 .page *, .page *::before, .page *::after { box-sizing: border-box; }
 .page button, .page summary { font: inherit; }
 .page button { color: inherit; }
-.page a { color: inherit; }
 .page :where(a, button, summary):focus-visible { outline: 3px solid #315f72; outline-offset: 3px; }
 
 .siteHeader {

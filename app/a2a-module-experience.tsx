@@ -5,12 +5,11 @@ import styles from "./a2a-module-experience.module.css";
 import { requireModuleBrief } from "./module-brief-content.mjs";
 import { requireModuleCurriculum } from "./module-curriculum-content.mjs";
 import { requireModuleLearning } from "./module-learning-content.mjs";
-import { ReadingProgress } from "./fieldbook-interactions";
 import { ModuleCurriculumAtlas, ModuleUpdatedAt, QuestionAddedAt } from "./module-content-components";
 import { getPublishedModule } from "./module-publication.mjs";
 import { sourceLedger } from "./reference-content.mjs";
 import { terminology } from "./terminology.mjs";
-import { UnifiedModuleHero } from "./unified-module-hero";
+import { UnifiedModuleScaffold } from "./unified-module-hero";
 
 export type A2AModuleExperienceProps = {
   initialMode?: ReadingModeId;
@@ -654,26 +653,27 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
   });
 
   return (
-    <main className={`${styles.page} fieldbookTheme modulePage modulePilot${className ? ` ${className}` : ""}`}>
-      <ReadingProgress />
-      <UnifiedModuleHero
-        anchorId="a2a-top"
-        definition="让独立 Agent 跨组织域交接一份可恢复、可追踪、可验收的任务档案。"
-        enTitle="Agent2Agent Protocol"
-        evidenceCount={sourceContent.evidenceCards.length}
-        facts={[
+    <UnifiedModuleScaffold
+      className={`${styles.page} fieldbookTheme modulePage modulePilot${className ? ` ${className}` : ""}`}
+      hero={{
+        anchorId: "a2a-top",
+        definition: "让独立 Agent 跨组织域交接一份可恢复、可追踪、可验收的任务档案。",
+        enTitle: "Agent2Agent Protocol",
+        evidenceCount: sourceContent.evidenceCards.length,
+        facts: [
           { label: "采用条件", value: "独立 Agent 跨信任域委派" },
           { label: "返回对象", value: "Message 或 Task" },
           { label: "运行责任", value: "调用方与服务方分别验收" },
           { label: "完成证据", value: "Task 状态 + Artifact + 业务接受" },
-        ]}
-        position="A2A 用 Agent Card 发布候选能力；SendMessage 可直接返回 Message，也可创建带服务端 ID 的 Task，并以状态事件和可选 Artifact 交付。"
-        questionCount={sourceContent.qa.length}
-        shortTitle="A2A"
-        slug="a2a"
-        titleId={publication.titleId}
-        zhTitle="智能体间协议"
-      />
+        ],
+        position: "A2A 用 Agent Card 发布候选能力；SendMessage 可直接返回 Message，也可创建带服务端 ID 的 Task，并以状态事件和可选 Artifact 交付。",
+        questionCount: sourceContent.qa.length,
+        shortTitle: "A2A",
+        slug: "a2a",
+        titleId: publication.titleId,
+        zhTitle: "智能体间协议",
+      }}
+    >
 
       <DenseModuleReadingModes
         chapters={chapters}
@@ -710,7 +710,7 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
         <div><strong>A2A · Agent2Agent Protocol</strong><p>对象、状态、身份和验收都留下可核对记录。<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p></div>
         <nav><a href="#a2a-top">返回顶部</a><Link href="/references#module-a2a">来源与证据</Link></nav>
       </footer>
-    </main>
+    </UnifiedModuleScaffold>
   );
 }
 

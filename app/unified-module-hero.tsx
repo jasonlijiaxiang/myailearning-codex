@@ -1,5 +1,7 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 
+import { ReadingProgress } from "./fieldbook-interactions";
 import { englishModulePath } from "./i18n/locale-config.mjs";
 import { ModuleHeroMetrics } from "./module-content-components";
 import styles from "./unified-module-reader.module.css";
@@ -7,6 +9,20 @@ import styles from "./unified-module-reader.module.css";
 export type UnifiedModuleFact = {
   label: string;
   value: string;
+};
+
+export type UnifiedModuleHeroProps = {
+  anchorId: string;
+  titleId: string;
+  shortTitle: string;
+  zhTitle: string;
+  enTitle: string;
+  definition: string;
+  position: string;
+  slug: string;
+  questionCount: number;
+  evidenceCount: number;
+  facts: readonly UnifiedModuleFact[];
 };
 
 export function UnifiedModuleHero({
@@ -21,19 +37,7 @@ export function UnifiedModuleHero({
   questionCount,
   evidenceCount,
   facts,
-}: {
-  anchorId: string;
-  titleId: string;
-  shortTitle: string;
-  zhTitle: string;
-  enTitle: string;
-  definition: string;
-  position: string;
-  slug: string;
-  questionCount: number;
-  evidenceCount: number;
-  facts: readonly UnifiedModuleFact[];
-}) {
+}: UnifiedModuleHeroProps) {
   const englishPath = englishModulePath(slug);
 
   return (
@@ -49,7 +53,7 @@ export function UnifiedModuleHero({
           <Link href="/glossary">术语库</Link>
           {englishPath ? <Link href={englishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
         </div>
-        <details className={styles.mobileMenu}>
+        <details key={slug} className={styles.mobileMenu}>
           <summary aria-label="模块导航菜单"><span /><span /><span /></summary>
           <div>
             <Link href="/">首页</Link>
@@ -61,7 +65,6 @@ export function UnifiedModuleHero({
         </details>
       </nav>
 
-      <div id="main-content" className={styles.skipTarget} tabIndex={-1} />
       <div className={styles.heroGrid}>
         <div className={styles.identity}>
           <h1 id={titleId}>
@@ -95,5 +98,25 @@ export function UnifiedModuleHero({
         ))}
       </dl>
     </header>
+  );
+}
+
+export function UnifiedModuleScaffold({
+  children,
+  className,
+  hero,
+}: {
+  children: ReactNode;
+  className: string;
+  hero: UnifiedModuleHeroProps;
+}) {
+  return (
+    <>
+      <ReadingProgress />
+      <UnifiedModuleHero {...hero} />
+      <main id="main-content" className={className} data-module-content="unified" tabIndex={-1}>
+        {children}
+      </main>
+    </>
   );
 }
