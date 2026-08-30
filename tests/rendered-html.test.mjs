@@ -779,7 +779,7 @@ test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contr
   const revealHashSource = readerSource.slice(revealHashStart, revealHashEnd);
   assert.match(revealHashSource, /setPendingHashReveal\(\{[\s\S]*mode: nextMode/, "跨模式 Hash 必须登记提交后定位请求");
   assert.doesNotMatch(revealHashSource, /scrollHashTargetIntoView/, "Hash 事件处理器不能在目标面板提交前滚动");
-  assert.match(readerSource, /pendingHashReveal\.mode !== activeMode[\s\S]*requestAnimationFrame[\s\S]*scrollHashTargetIntoView\(hash\)/, "统一 reader 必须在目标模式提交后定位");
+  assert.match(readerSource, /pendingHashReveal\.mode !== activeMode[\s\S]*scrollHashTargetIntoView\(hash\)[\s\S]*queueMicrotask/, "统一 reader 必须在目标模式提交后立即定位并清理请求");
   assert.match(readerSource, /event\.preventDefault\(\);[\s\S]*window\.history\.pushState\(window\.history\.state/, "统一 reader 必须接管所属锚点并保留 Back 历史");
   assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "英文目录计数必须处理单复数");
   assert.match(heroSource, /mobileMenu: "模块导航菜单"/, "中文移动菜单名称必须保留在本地化契约中");

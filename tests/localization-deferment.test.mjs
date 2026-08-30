@@ -184,6 +184,7 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-unified-english-source-scope-2026-08-30",
     "erm-relation-matrix-accessibility-2026-08-30",
     "erm-unified-hash-navigation-2026-08-30",
+    "erm-unified-hash-post-commit-2026-08-30",
   ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
   assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
@@ -236,6 +237,13 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(hashNavigation?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
   assert.deepEqual(hashNavigation?.contentProjectionChangeSlugs, []);
   assert.equal(hashNavigation?.metadataScope, "none");
+  const hashPostCommit = maintenances.get("erm-unified-hash-post-commit-2026-08-30");
+  assert.equal(hashPostCommit?.kind, "document-shell");
+  assert.equal(hashPostCommit?.receiptId, "receipt-unified-hash-post-commit-runtime-2026-08-30");
+  assert.deepEqual(hashPostCommit?.changedRendererFiles, ["app/dense-module-reading-modes.tsx"]);
+  assert.deepEqual(hashPostCommit?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(hashPostCommit?.contentProjectionChangeSlugs, []);
+  assert.equal(hashPostCommit?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   const activeBySlug = new Map(registry.deferments
