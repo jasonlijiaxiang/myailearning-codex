@@ -7,13 +7,13 @@ import {
   type ReactNode,
   type RefObject,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
 } from "react";
 
-type ModeId = "quick" | "learn" | "field";
+import { DenseModuleReadingModes, type DenseChapterLink } from "./dense-module-reading-modes";
+
 type MetricId = "input" | "concurrency" | "ttft" | "tpot" | "goodput" | "oom";
 
 type CurriculumChapter = {
@@ -42,12 +42,11 @@ type LearningLab = {
 
 type InferenceStudioProps = {
   curriculum: { lead: string; chapters: readonly CurriculumChapter[] };
-  evidenceCount: number;
+  criticalBoundary: string;
   field: ReactNode;
   learningLabs: readonly LearningLab[];
   learningOutcomes: readonly string[];
   learningRoute: readonly LearningStep[];
-  questionCount: number;
   sourceTitles: Readonly<Record<string, string>>;
   updatedAt?: string | null;
 };
@@ -57,12 +56,6 @@ type Workload = {
   inputTokens: number;
   concurrency: number;
 };
-
-const modeDefinitions: Array<{ id: ModeId; label: string; icon: "clock" | "book" | "shield" }> = [
-  { id: "quick", label: "10 分钟速查", icon: "clock" },
-  { id: "learn", label: "系统学习", icon: "book" },
-  { id: "field", label: "现场查证", icon: "shield" },
-];
 
 const metricDefinitions: Array<{ id: MetricId; label: string; color: string; detail: string }> = [
   { id: "input", label: "输入长度", color: "#153047", detail: "输入越长，Prefill 计算和每个活跃请求的 KV Cache 通常越大。" },
@@ -87,37 +80,7 @@ const concurrencyOptions = [256, 128, 64, 32, 16, 8, 4, 1] as const;
 const outputOptions = [128, 256, 512, 1024, 2048] as const;
 const quickOutputTokens = 32;
 
-const chapterNavigation: ReadonlyArray<{ number: string; label: string; href: `#${string}`; metric?: MetricId; target?: string }> = [
-  { number: "01", label: "用户到底在等什么？", href: "#principle" },
-  { number: "02", label: "推理延迟的三段式模型", href: "#request-timeline" },
-  { number: "03", label: "输入长度的影响", href: "#metric-input", metric: "input", target: "latency-heatmap" },
-  { number: "04", label: "并发与排队", href: "#metric-concurrency", metric: "concurrency", target: "latency-heatmap" },
-  { number: "05", label: "TTFT 解析", href: "#metric-ttft", metric: "ttft", target: "request-timeline" },
-  { number: "06", label: "TPOT 解析", href: "#metric-tpot", metric: "tpot", target: "request-timeline" },
-  { number: "07", label: "Goodput 解析", href: "#metric-goodput", metric: "goodput", target: "selected-metric" },
-  { number: "08", label: "OOM 与显存账", href: "#metric-oom", metric: "oom", target: "oom-case" },
-  { number: "09", label: "显存账：权重 + KV Cache", href: "#chapter-runtime-memory" },
-  { number: "10", label: "时间账：拆分与并行", href: "#chapter-workload" },
-  { number: "11", label: "容量边界：三维约束", href: "#capacity-experiment" },
-  { number: "12", label: "模型与精度的选择", href: "#chapter-quantization" },
-  { number: "13", label: "推理服务架构", href: "#chapter-engines" },
-  { number: "14", label: "vLLM 关键参数", href: "#chapter-scheduling" },
-  { number: "15", label: "批处理与连续批", href: "#chapter-scheduling" },
-  { number: "16", label: "KV Cache 策略", href: "#chapter-runtime-memory" },
-  { number: "17", label: "流式输出的权衡", href: "#chapter-workload" },
-  { number: "18", label: "多机多卡扩展", href: "#chapter-disaggregated" },
-  { number: "19", label: "观测与告警", href: "#chapter-production" },
-  { number: "20", label: "成本与效率优化", href: "#chapter-release" },
-  { number: "21", label: "常见误区", href: "#qa" },
-  { number: "22", label: "选型速查表", href: "#evidence" },
-  { number: "23", label: "进一步阅读", href: "#related-modules" },
-];
-
 const quickMetricHashes = metricDefinitions.map((metric) => `metric-${metric.id}`);
-
-function navigationTarget(entry: (typeof chapterNavigation)[number]) {
-  return entry.target ?? entry.href.slice(1);
-}
 
 const chapterIds = [
   "chapter-workload",
@@ -129,6 +92,35 @@ const chapterIds = [
   "chapter-disaggregated",
   "chapter-production",
   "chapter-release",
+] as const;
+
+const inferenceDirectories = {
+  quick: [
+    { id: "principle", label: "延迟与容量地图", eyebrow: "拆开时间账与显存账" },
+    { id: "latency-heatmap", label: "负载热力图", eyebrow: "输入长度 × 并发" },
+    { id: "oom-case", label: "OOM 复盘", eyebrow: "从现象到恢复证据" },
+  ],
+  learn: [
+    { id: "study-guide", label: "学习路线", eyebrow: "先读单请求" },
+    { id: "curriculum", label: "知识地图", eyebrow: "再看多请求竞争" },
+    { id: "capacity-experiment", label: "容量实验", eyebrow: "形成容量曲线" },
+    { id: "practice", label: "实战任务", eyebrow: "交付可复核产物" },
+  ],
+  field: [
+    { id: "mechanism-index", label: "机制索引", eyebrow: "对应服务决定" },
+    { id: "decision-guide", label: "方案判断", eyebrow: "先看信号再建议" },
+    { id: "deep-dive", label: "容量诊断", eyebrow: "定位瓶颈与失败" },
+    { id: "evidence", label: "证据与边界", eyebrow: "说明测量条件" },
+    { id: "cloud", label: "云能力与责任", eyebrow: "连接交付与验收" },
+    { id: "qa", label: "客户问题", eyebrow: "带边界回答" },
+    { id: "related-modules", label: "相关模块", eyebrow: "继续上下游主题" },
+  ],
+} satisfies Record<"quick" | "learn" | "field", readonly DenseChapterLink[]>;
+
+const inferenceChapters = [
+  ...inferenceDirectories.quick,
+  ...inferenceDirectories.learn,
+  ...inferenceDirectories.field,
 ] as const;
 
 function clamp(value: number, min: number, max: number) {
@@ -159,31 +151,13 @@ function formatSeconds(value: number) {
   return `${value.toFixed(2)} s`;
 }
 
-function ModeIcon({ name }: { name: "clock" | "book" | "shield" }) {
-  if (name === "clock") {
-    return <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 7v5l3 2" /></svg>;
-  }
-  if (name === "book") {
-    return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5.5c2.7-.7 5.4.1 8 2v11c-2.6-1.9-5.3-2.7-8-2V5.5Zm16 0c-2.7-.7-5.4.1-8 2v11c2.6-1.9 5.3-2.7 8-2V5.5Z" /></svg>;
-  }
-  return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m12 3 7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3Z" /><path d="m9 12 2 2 4-4" /></svg>;
-}
-
 function LearningSourceLinks({ sourceIds, sourceTitles }: { sourceIds: readonly string[]; sourceTitles: Readonly<Record<string, string>> }) {
   return <footer className="learningSourceLinks" aria-label="本节依据">{sourceIds.map((sourceId) => <Link href={`/references#source-${sourceId}`} key={sourceId}>{sourceTitles[sourceId] ?? sourceId} ↗</Link>)}</footer>;
 }
 
-function MenuIcon({ open }: { open: boolean }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      {open ? <path d="m6 6 12 12M18 6 6 18" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
-    </svg>
-  );
-}
-
 function MetricStrip({ active, onChange }: { active: MetricId; onChange: (metric: MetricId) => void }) {
   return (
-    <div className="inferenceMetricStrip" aria-label="选择观察指标">
+    <div className="inferenceMetricStrip" role="group" aria-label="选择观察指标">
       {metricDefinitions.map((metric) => (
         <button
           aria-pressed={active === metric.id}
@@ -227,6 +201,8 @@ function Heatmap({
 
   return (
     <section className="inferenceHeatmapPanel" id="latency-heatmap" aria-labelledby="heatmap-title">
+      <span className="anchorAlias" id="metric-input" aria-hidden="true" />
+      <span className="anchorAlias" id="metric-concurrency" aria-hidden="true" />
       <header>
         <h3 id="heatmap-title">输入长度 × 并发热力图 <small>固定输出 {quickOutputTokens} Token · 延迟：秒</small></h3>
         <p>并发（请求数）</p>
@@ -295,6 +271,8 @@ function RequestTimeline({ workload }: { workload: Workload }) {
   ];
   return (
     <section className="requestTimeline" id="request-timeline" aria-labelledby="timeline-title">
+      <span className="anchorAlias" id="metric-ttft" aria-hidden="true" />
+      <span className="anchorAlias" id="metric-tpot" aria-hidden="true" />
       <header>
         <div><h3 id="timeline-title">请求时间线</h3><p>所选单元格：输入 {workload.inputLabel} × 并发 {workload.concurrency}</p></div>
         <output><span>端到端延迟（P95）</span><strong>{formatSeconds(metrics.total)}</strong></output>
@@ -356,6 +334,7 @@ function MetricInspector({
 function CaseReview() {
   return (
     <section className="focusedDecisionLedger" id="oom-case" aria-labelledby="oom-case-title">
+      <span className="anchorAlias" id="metric-oom" aria-hidden="true" />
       <div className="inferenceCaseReview">
         <header><span aria-hidden="true" /><h2 id="oom-case-title">案例复盘：长输入 + 高并发导致 OOM</h2><small>示例场景</small></header>
         <div className="caseReviewGrid">
@@ -535,15 +514,17 @@ function LearningPanel({
     const revealLinkedChapter = () => {
       const hash = window.location.hash.replace(/^#/, "");
       const linkedIndex = chapterIds.indexOf(hash as (typeof chapterIds)[number]);
-      const chapterIndex = hash === "capacity-experiment" ? 1 : linkedIndex;
-      if (chapterIndex < 0) return;
+      const panelMatch = /^inference-chapter-(\d+)$/.exec(hash);
+      const panelIndex = panelMatch ? Number(panelMatch[1]) : -1;
+      const chapterIndex = hash === "capacity-experiment" ? 1 : panelIndex >= 0 ? panelIndex : linkedIndex;
+      if (chapterIndex < 0 || chapterIndex >= curriculum.chapters.length) return;
       setOpenChapters((current) => new Set([...current, chapterIndex]));
       window.requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }));
     };
     revealLinkedChapter();
     window.addEventListener("hashchange", revealLinkedChapter);
     return () => window.removeEventListener("hashchange", revealLinkedChapter);
-  }, []);
+  }, [curriculum.chapters.length]);
 
   function toggleChapter(index: number) {
     setOpenChapters((current) => {
@@ -598,107 +579,33 @@ function LearningPanel({
   );
 }
 
-export function InferenceStudio({ curriculum, evidenceCount, field, learningLabs, learningOutcomes, learningRoute, questionCount, sourceTitles, updatedAt }: InferenceStudioProps) {
-  const [activeMode, setActiveMode] = useState<ModeId>("quick");
+export function InferenceStudio({ criticalBoundary, curriculum, field, learningLabs, learningOutcomes, learningRoute, sourceTitles, updatedAt }: InferenceStudioProps) {
   const [activeMetric, setActiveMetric] = useState<MetricId>("input");
-  const [activeAnchor, setActiveAnchor] = useState("principle");
-  const [activeNavNumber, setActiveNavNumber] = useState("01");
   const [workload, setWorkload] = useState<Workload>({ inputLabel: "8K", inputTokens: 8192, concurrency: 32 });
   const [inspectorOpen, setInspectorOpen] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const tabsId = useId();
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
-  const menuRef = useRef<HTMLElement | null>(null);
   const inspectorCloseButtonRef = useRef<HTMLButtonElement | null>(null);
   const inspectorOpenButtonRef = useRef<HTMLButtonElement | null>(null);
-  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
-    const selectFromHash = (shouldFocus = false) => {
+    const selectMetricFromHash = () => {
       const hash = window.location.hash.replace(/^#/, "");
-      if (["principle", "latency-heatmap", "request-timeline", "selected-metric", "oom-case", ...quickMetricHashes].includes(hash)) setActiveMode("quick");
-      if (["study-guide", "curriculum", "capacity-experiment", "practice", ...chapterIds].includes(hash)) setActiveMode("learn");
-      if (["field-guide", "mechanism-index", "decision-guide", "evidence", "deep-dive", "boundary", "cloud", "qa", "related-modules"].includes(hash)) setActiveMode("field");
-      const linkedEntry = chapterNavigation.find((entry) => entry.href === `#${hash}`);
-      if (hash) {
-        setActiveAnchor(hash);
-        if (linkedEntry) setActiveNavNumber(linkedEntry.number);
-        if (linkedEntry?.metric) {
-          setActiveMetric(linkedEntry.metric);
-          setInspectorOpen(true);
-        }
-      }
-      const targetId = linkedEntry ? navigationTarget(linkedEntry) : hash;
-      window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
-        const target = document.getElementById(targetId);
-        target?.scrollIntoView({ block: "start" });
-        if (shouldFocus && target) {
-          if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
-          target.focus({ preventScroll: true });
-        }
-      }));
+      const metric = metricDefinitions.find((item) => `metric-${item.id}` === hash)?.id;
+      setActiveMetric(metric ?? "input");
+      setInspectorOpen(true);
     };
-    selectFromHash();
-    const handleHashChange = () => selectFromHash(true);
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    selectMetricFromHash();
+    window.addEventListener("hashchange", selectMetricFromHash);
+    return () => window.removeEventListener("hashchange", selectMetricFromHash);
   }, []);
-
-  useEffect(() => {
-    const mobileViewport = window.matchMedia("(max-width: 760px)");
-    const closeAfterResize = (event: MediaQueryListEvent) => {
-      if (!event.matches) setMenuOpen(false);
-    };
-    mobileViewport.addEventListener("change", closeAfterResize);
-    return () => mobileViewport.removeEventListener("change", closeAfterResize);
-  }, []);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    if (!window.matchMedia("(max-width: 760px)").matches) return;
-    const menu = menuRef.current;
-    if (!menu) return;
-    const focusable = () => [...menu.querySelectorAll<HTMLElement>('a[href],button:not([disabled])')]
-      .filter((element) => getComputedStyle(element).visibility !== "hidden");
-    window.requestAnimationFrame(() => focusable()[0]?.focus());
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        setMenuOpen(false);
-        window.requestAnimationFrame(() => menuButtonRef.current?.focus());
-        return;
-      }
-      if (event.key !== "Tab") return;
-      const items = focusable();
-      if (!items.length) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && (document.activeElement === first || !menu.contains(document.activeElement))) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && (document.activeElement === last || !menu.contains(document.activeElement))) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [menuOpen]);
-
-  function closeMenuAndRestoreFocus() {
-    const shouldRestoreFocus = menuOpen && window.matchMedia("(max-width: 760px)").matches;
-    setMenuOpen(false);
-    if (shouldRestoreFocus) window.requestAnimationFrame(() => menuButtonRef.current?.focus());
-  }
 
   function selectMetric(metric: MetricId) {
-    const entry = chapterNavigation.find((item) => item.metric === metric);
     setActiveMetric(metric);
     setInspectorOpen(true);
-    if (!entry) return;
-    setActiveAnchor(entry.href.slice(1));
-    setActiveNavNumber(entry.number);
-    window.history.replaceState(null, "", entry.href);
+    const nextHash = `#metric-${metric}`;
+    if (window.location.hash !== nextHash) {
+      window.history.pushState(window.history.state, "", `${window.location.pathname}${window.location.search}${nextHash}`);
+    }
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
   }
 
   function closeInspector() {
@@ -711,120 +618,48 @@ export function InferenceStudio({ curriculum, evidenceCount, field, learningLabs
     window.requestAnimationFrame(() => inspectorCloseButtonRef.current?.focus());
   }
 
-  function changeMode(next: ModeId) {
-    setActiveMode(next);
-    setMenuOpen(false);
-    const nextHash = next === "quick" ? "principle" : next === "learn" ? "study-guide" : "field-guide";
-    window.history.replaceState(null, "", `#${nextHash}`);
-    setActiveAnchor(nextHash);
-    if (next !== "field") setActiveNavNumber("01");
-  }
-
-  function moveTab(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
-    event.preventDefault();
-    let nextIndex = index;
-    if (event.key === "ArrowLeft") nextIndex = (index - 1 + modeDefinitions.length) % modeDefinitions.length;
-    if (event.key === "ArrowRight") nextIndex = (index + 1) % modeDefinitions.length;
-    if (event.key === "Home") nextIndex = 0;
-    if (event.key === "End") nextIndex = modeDefinitions.length - 1;
-    changeMode(modeDefinitions[nextIndex].id);
-    tabRefs.current[nextIndex]?.focus();
-  }
-
   function revealCapacity() {
-    setActiveMode("learn");
-    window.history.replaceState(null, "", "#capacity-experiment");
-    window.dispatchEvent(new Event("hashchange"));
-    const behavior: ScrollBehavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
-    window.requestAnimationFrame(() => {
-      const chapter = document.getElementById("chapter-runtime-memory");
-      chapter?.scrollIntoView({ block: "start", behavior });
-      window.requestAnimationFrame(() => document.getElementById("capacity-experiment")?.scrollIntoView({ block: "center", behavior }));
-    });
+    if (window.location.hash === "#capacity-experiment") window.dispatchEvent(new HashChangeEvent("hashchange"));
+    else window.location.hash = "capacity-experiment";
   }
+
+  const quick = (
+    <section className="inferenceQuick focusedNarrative" id="principle" data-knowledge-view="latency-capacity-map" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW">
+      <p className="srOnly">机制速览 · 方案判断 · 重要边界</p>
+      <div className="inferenceQuickGrid">
+        <header className="inferenceSectionTitle"><span aria-hidden="true"/><div><h2>用户到底在等什么？</h2><p>从输入、排队到首字与持续生成，先定位慢在哪一段。</p></div></header>
+        <div className="inferenceExplorer">
+          <MetricStrip active={activeMetric} onChange={selectMetric}/>
+          <div className="inferenceDashboard"><Heatmap onSelect={setWorkload} selected={workload}/><RequestTimeline workload={workload}/></div>
+          <button className="mobileCapacityLink" onClick={revealCapacity} type="button">查看容量实验 <span>→</span></button>
+        </div>
+        <div className="metricInspectorSlot" id="selected-metric">
+          <span className="anchorAlias" id="metric-goodput" aria-hidden="true" />
+          {inspectorOpen ? <MetricInspector activeMetric={activeMetric} closeButtonRef={inspectorCloseButtonRef} onCapacity={revealCapacity} onClose={closeInspector} workload={workload}/> : <button className="openInspector" onClick={openInspector} ref={inspectorOpenButtonRef} type="button">展开指标说明</button>}
+        </div>
+        <CaseReview/>
+      </div>
+    </section>
+  );
 
   return (
     <>
-      <header className="inferenceTopbar">
-        <Link className="inferenceBrand" href="/" aria-label="返回首页"><span className="brandDesktop">Cloud × AI Presales Fieldbook</span><span className="brandMobile">Cloud × AI Fieldbook</span></Link>
-        <nav className="inferenceGlobalNav" aria-label="全站导航">
-          <Link href="/">首页</Link><Link className="isActive" href="/#knowledge-map">知识库</Link><Link href="/modules/solution-patterns">场景方案</Link><button onClick={revealCapacity} type="button">容量实验</button><Link href="/modules/ai-ops">最佳实践</Link><Link href="/questions">工具箱</Link>
-          <span aria-hidden="true" />
-          <Link href="/questions">⌕ 搜索</Link><a href="#related-modules">相关模块</a>
-        </nav>
-        <button className="mobileMenuButton" aria-expanded={menuOpen} aria-controls="inference-mobile-menu" aria-label={menuOpen ? "关闭目录" : "打开目录"} onClick={() => menuOpen ? closeMenuAndRestoreFocus() : setMenuOpen(true)} ref={menuButtonRef} type="button"><MenuIcon open={menuOpen}/></button>
-      </header>
-
-      <aside aria-modal={menuOpen ? "true" : undefined} className={`inferenceChapterRail${menuOpen ? " isOpen" : ""}`} id="inference-mobile-menu" aria-label="大模型推理目录" ref={menuRef} role={menuOpen ? "dialog" : undefined}>
-        <header><strong>大模型推理 · 目录</strong><button aria-label="关闭目录" onClick={closeMenuAndRestoreFocus} type="button">×</button></header>
-        <nav>
-          {chapterNavigation.map(({ number, label, href, metric }) => {
-            return <a className={number === activeNavNumber && href === `#${activeAnchor}` ? "isActive" : undefined} href={href} key={`${number}-${label}`} onClick={() => { setActiveAnchor(href.slice(1)); setActiveNavNumber(number); if (metric) { setActiveMetric(metric); setInspectorOpen(true); } closeMenuAndRestoreFocus(); }}><span>{number}</span>{label}</a>;
-          })}
-        </nav>
-        <footer><Link href="/references#module-llm-inference">↓ 查看本页来源</Link><Link href="/en/modules/llm-inference" hrefLang="en" lang="en" prefetch={false}>English</Link></footer>
-      </aside>
-
-      <div className={`inferenceMain${inspectorOpen ? "" : " inspectorClosed"}`}>
-        <div id="main-content" className="skipTarget" tabIndex={-1}/>
-        <header className="inferenceHero" id="top">
-          <h1 id="llm-inference-title">大模型推理</h1>
-          <p className="inferenceHeroEn">LLM Inference</p>
-          <p className="inferenceHeroLead">{activeMode === "quick"
-            ? "把一次推理拆成时间账、显存账和容量边界。"
-            : activeMode === "learn"
-              ? "先读懂单请求，再看多请求怎样争抢显存和算力，最后跑一遍容量实验。"
-              : "先看证据和测量条件，再回答客户的容量问题。"}</p>
-          <p className="srOnly">机制速览 · 方案判断 · 重要边界</p>
-          <dl className="moduleHeroMetrics" aria-label="模块内容概览"><div><dt>阅读方式</dt><dd><strong>3</strong><span>种</span></dd></div><div><dt>问题库</dt><dd><strong>{questionCount}</strong><span>题</span></dd></div><div><dt>证据卡</dt><dd><strong>{evidenceCount}</strong><span>张</span></dd></div></dl>
-        </header>
-
-        <section className="moduleReadingExperience" id="module-reading" aria-label="大模型推理阅读方式">
-          <div className="inferenceModeTabs" role="tablist" aria-label="阅读方式">
-            {modeDefinitions.map((mode, index) => (
-              <button
-                aria-controls={`${tabsId}-${mode.id}`}
-                aria-selected={activeMode === mode.id}
-                id={`${tabsId}-${mode.id}-tab`}
-                key={mode.id}
-                onClick={() => changeMode(mode.id)}
-                onKeyDown={(event) => moveTab(event, index)}
-                ref={(node) => { tabRefs.current[index] = node; }}
-                role="tab"
-                tabIndex={activeMode === mode.id ? 0 : -1}
-                type="button"
-              ><ModeIcon name={mode.icon}/><strong>{mode.label}</strong></button>
-            ))}
-          </div>
-
-          <div aria-labelledby={`${tabsId}-quick-tab`} hidden={activeMode !== "quick"} id={`${tabsId}-quick`} role="tabpanel" tabIndex={0}>
-            <section className="inferenceQuick focusedNarrative" id="principle" data-knowledge-view="latency-capacity-map" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW">
-              <div className="inferenceQuickGrid">
-                <header className="inferenceSectionTitle"><span aria-hidden="true"/><div><h2>用户到底在等什么？</h2><p>从输入、排队到首字与持续生成，先定位慢在哪一段。</p></div></header>
-                <div className="inferenceExplorer">
-                  <MetricStrip active={activeMetric} onChange={selectMetric}/>
-                  <div className="inferenceDashboard"><Heatmap onSelect={setWorkload} selected={workload}/><RequestTimeline workload={workload}/></div>
-                  <button className="mobileCapacityLink" onClick={revealCapacity} type="button">查看容量实验 <span>→</span></button>
-                </div>
-                <div className="metricInspectorSlot" id="selected-metric">
-                  {inspectorOpen ? <MetricInspector activeMetric={activeMetric} closeButtonRef={inspectorCloseButtonRef} onCapacity={revealCapacity} onClose={closeInspector} workload={workload}/> : <button className="openInspector" onClick={openInspector} ref={inspectorOpenButtonRef} type="button">展开指标说明</button>}
-                </div>
-                <CaseReview/>
-              </div>
-            </section>
-          </div>
-
-          <div aria-labelledby={`${tabsId}-learn-tab`} hidden={activeMode !== "learn"} id={`${tabsId}-learn`} role="tabpanel" tabIndex={0}>
-            <LearningPanel curriculum={curriculum} learningLabs={learningLabs} learningOutcomes={learningOutcomes} learningRoute={learningRoute} sourceTitles={sourceTitles}/>
-          </div>
-
-          <div aria-labelledby={`${tabsId}-field-tab`} className="inferenceFieldPanel" hidden={activeMode !== "field"} id={`${tabsId}-field`} role="tabpanel" tabIndex={0}>{field}</div>
-        </section>
-
-        <footer className="inferenceFooter"><strong>Cloud × AI Presales Fieldbook</strong><span>大模型推理</span>{updatedAt ? <span className="moduleUpdatedAt">最近更新于 {updatedAt}</span> : null}<a href="#top">返回顶部 ↑</a></footer>
-      </div>
-      {menuOpen ? <button aria-label="关闭目录遮罩" className="inferenceMenuScrim" onClick={closeMenuAndRestoreFocus} type="button"/> : null}
+      <DenseModuleReadingModes
+        moduleName="大模型推理"
+        chapters={inferenceChapters}
+        criticalBoundary={criticalBoundary}
+        directories={inferenceDirectories}
+        hashGroups={{
+          quick: ["principle", "latency-heatmap", "request-timeline", "selected-metric", "oom-case", ...quickMetricHashes],
+          learn: ["study-guide", "curriculum", "capacity-experiment", "practice", ...chapterIds],
+          field: ["field-guide", "mechanism-index", "decision-guide", "deep-dive", "evidence", "boundary", "cloud", "qa", "related-modules"],
+        }}
+        readerId="module-reading"
+        quick={<div className="inferenceStudio inferenceContentScope">{quick}</div>}
+        learn={<div className="inferenceStudio inferenceContentScope"><LearningPanel curriculum={curriculum} learningLabs={learningLabs} learningOutcomes={learningOutcomes} learningRoute={learningRoute} sourceTitles={sourceTitles}/></div>}
+        field={<div className="inferenceStudio inferenceContentScope inferenceFieldPanel">{field}</div>}
+      />
+      <footer className="inferenceStudio inferenceContentScope inferenceFooter"><strong>Cloud × AI Presales Fieldbook</strong><span>大模型推理</span>{updatedAt ? <span className="moduleUpdatedAt">最近更新于 {updatedAt}</span> : null}<a href="#top">返回顶部 ↑</a></footer>
     </>
   );
 }

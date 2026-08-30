@@ -401,7 +401,7 @@ export function FineTuningPrimer() {
       <TermHintRow label="微调方法常用缩写" termIds={["sft", "peft", "lora", "qlora", "dpo", "llm"]} />
       <div className="tuningEvidenceBoard">
         <div><p className="miniLabel">PARAMETER UPDATE</p><h3>三种参数更新方式</h3></div>
-        <div className="tuningMethodMatrix" role="table">
+        <div className="tuningMethodMatrix" role="table" aria-label="微调参数更新方式比较" tabIndex={0}>
           <div className="tuningMethodRow tuningMethodRow--head" role="row"><span role="columnheader">方法</span><span role="columnheader">更新什么</span><span role="columnheader">更适合</span><span role="columnheader">主要代价</span></div>
           {tuningMethodMatrix.map(([method, update, fit, cost]) => <div className="tuningMethodRow" role="row" key={method}><strong role="rowheader">{method}</strong><span role="cell">{update}</span><span role="cell">{fit}</span><span role="cell">{cost}</span></div>)}
         </div>

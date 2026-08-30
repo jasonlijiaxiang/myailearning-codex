@@ -149,6 +149,26 @@ const configs = Object.freeze({
       { label: "生产边界", value: "流畅输出不证明事实、授权或业务动作有效" },
     ],
   }),
+  "fine-tuning": defineConfig({
+    shortTitle: "微调",
+    primer: { id: "fine-tuning-primer-title", label: "可逆训练实验", eyebrow: "分流、门禁、验收、发布与停止" },
+    facts: [
+      { label: "训练触发", value: "轻量路线后仍有稳定、可重复、可标注的行为缺口" },
+      { label: "不微调门", value: "数据权利 · PII · 可靠标注 · 冻结评测 · 版本化 · 回滚" },
+      { label: "发布单元", value: "数据 · 冻结评估集 · 基座 / Adapter · Tokenizer / Chat Template · Runtime / Policy" },
+      { label: "停止条件", value: "收益不稳定、关键退化、完整成本越界或轻量路线反超" },
+    ],
+  }),
+  "llm-training": defineConfig({
+    shortTitle: "训练系统",
+    primer: { id: "llm-training-extension-primer-title", label: "训练供应链", eyebrow: "从数据与权利到候选评估" },
+    facts: [
+      { label: "训练信号", value: "通用模式学习 · 指令示范 · 偏好信号 · 可验证结果" },
+      { label: "Run 合同", value: "基础权重 · Tokenizer · 数据快照与配比 · 目标 · 优化器与调度器 · 精度 · 并行拓扑 · 环境 · 停止规则 · 评估版本" },
+      { label: "有效进度", value: "计算 · 通信 · I/O · 故障 · 恢复" },
+      { label: "候选门", value: "未见任务 · 关键切片 · 安全 · 能力保留 · 资源 · 不确定性" },
+    ],
+  }),
   "data-engineering": defineConfig({
     shortTitle: "AI 数据",
     primer: { id: "data-engineering-extension-primer-title", label: "数据血缘主线", eyebrow: "从权威源到撤回" },

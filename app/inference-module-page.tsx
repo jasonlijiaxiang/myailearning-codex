@@ -4,7 +4,6 @@ import Link from "next/link";
 import "./inference-studio.css";
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
-import { ReadingProgress } from "./fieldbook-interactions";
 import { InferenceStudio } from "./inference-studio";
 import { requireModuleBrief } from "./module-brief-content.mjs";
 import {
@@ -20,6 +19,7 @@ import { requireModuleLearning } from "./module-learning-content.mjs";
 import { getModuleBySlug } from "./knowledge-map.mjs";
 import { getPublishedModule } from "./module-publication.mjs";
 import { sourceLedger } from "./reference-content.mjs";
+import { UnifiedModuleScaffold } from "./unified-module-hero";
 
 type BriefCloudHook = {
   stage: string;
@@ -109,11 +109,6 @@ export function InferenceModulePage() {
         <span>这里放证据、适用范围，以及还需要补做的验证。</span>
       </header>
 
-      <section className="inferenceFieldOverview" aria-label="模块定义与位置">
-        <article><span>定义</span><p>{brief.definition}</p></article>
-        <article><span>位置</span><p>{brief.position}</p></article>
-      </section>
-
       <section className="inferenceFieldSection inferenceMechanismIndex" id="mechanism-index">
         <header><span>F0</span><div><h2>{brief.principleTitle}</h2><p>每一项都落到一个可验证的服务决定。</p></div></header>
         <div>{brief.principles.map((item, index) => <article key={item.zh}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{item.zh}<small>{item.en}</small></h3><p>{item.explanation}</p><strong>{item.decision}</strong></div></article>)}</div>
@@ -166,19 +161,37 @@ export function InferenceModulePage() {
   );
 
   return (
-    <main className="fieldbookTheme modulePage modulePilot moduleFocused inferenceStudio">
-      <ReadingProgress/>
+    <UnifiedModuleScaffold
+      className="fieldbookTheme modulePage modulePilot moduleFocused"
+      hero={{
+        anchorId: "top",
+        definition: brief.definition,
+        enTitle: "LLM Inference",
+        evidenceCount: brief.evidenceCards.length,
+        facts: [
+          { label: "发布单元", value: "模型 × Tokenizer × 模板 × 量化制品 × 引擎 × 调度配置" },
+          { label: "时间账", value: "排队 × Prefill × Decode × 结果传输" },
+          { label: "显存账", value: "权重 × KV Cache × 工作区 / 碎片 × 运行余量" },
+          { label: "验收口径", value: "质量 × SLO × Goodput × 单位达标任务成本" },
+        ],
+        position: brief.position,
+        questionCount: brief.qa.length,
+        shortTitle: "LLM 推理",
+        slug: "llm-inference",
+        titleId: "llm-inference-title",
+        zhTitle: "大模型推理",
+      }}
+    >
       <InferenceStudio
         curriculum={curriculum}
-        evidenceCount={brief.evidenceCards.length}
+        criticalBoundary="模型能加载不等于能以目标并发稳定服务。图中数值只解释指标怎样联动，不是容量承诺；采购和上线前仍要用目标模型、硬件与真实请求分布重跑。"
         field={field}
         learningLabs={learning.labs}
         learningOutcomes={learning.outcomes}
         learningRoute={learning.route}
-        questionCount={brief.qa.length}
         sourceTitles={sourceTitles}
         updatedAt={publication?.updatedAt}
       />
-    </main>
+    </UnifiedModuleScaffold>
   );
 }
