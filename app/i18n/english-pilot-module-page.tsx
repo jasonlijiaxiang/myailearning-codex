@@ -186,6 +186,20 @@ const englishUnifiedReaderConfigs: Readonly<Record<string, EnglishUnifiedReaderC
     groupIds: standardUnifiedGroupIds,
     fieldGroupsBeforeEvidence: false,
   },
+  multimodal: {
+    titleId: "multimodal-english-title",
+    shortTitle: "Multimodal",
+    criticalBoundary: "A larger model cannot recover pixels, sound, or pages that were never captured. Perception does not grant tool permission; MCP or A2A is not required for read-only understanding. Success at one gate does not authorize the next.",
+    facts: [
+      { label: "Adoption condition", value: "Non-text information changes the task decision" },
+      { label: "Evidence coordinates", value: "Asset × page or region × interval or speaker" },
+      { label: "Route choice", value: "Compare specialist, native, and hybrid paths on the same difficult cases" },
+      { label: "Safe degradation", value: "Recapture, specialist processing, or accountable review" },
+    ],
+    directories: standardUnifiedDirectories({ id: "multimodal-english-primer-title", label: "Evidence pipeline", eyebrow: "Locate information loss" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
   llm: {
     titleId: "llm-english-title",
     shortTitle: "LLM",
@@ -266,6 +280,34 @@ const englishUnifiedReaderConfigs: Readonly<Record<string, EnglishUnifiedReaderC
     groupIds: standardUnifiedGroupIds,
     fieldGroupsBeforeEvidence: false,
     completeFocusedProjection: true,
+  },
+  a2a: {
+    titleId: "a2a-english-title",
+    shortTitle: "A2A",
+    criticalBoundary: "A2A coordinates independently operated agents through a Message-or-Task contract. MCP or conventional APIs connect tools and data, while local orchestration keeps fine-grained work inside one trust domain. Discovery, protocol-level COMPLETED, and Artifact delivery establish neither authorization nor business acceptance.",
+    facts: [
+      { label: "Adoption condition", value: "Independent-agent delegation across an ownership or trust boundary" },
+      { label: "Response object", value: "Message or server-created Task" },
+      { label: "Operating responsibility", value: "Delegator and provider validate separately" },
+      { label: "Completion evidence", value: "Task state + optional Artifact validation + business acceptance" },
+    ],
+    directories: standardUnifiedDirectories({ id: "a2a-english-primer-title", label: "Message or Task", eyebrow: "Choose the response object" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
+  veadk: {
+    titleId: "veadk-english-title",
+    shortTitle: "VeADK",
+    criticalBoundary: "VeADK helps define and execute agent logic; it does not provision a cloud Runtime, establish trusted end-user identity, authorize business actions, or make process-local state safe across replicas. A registered Tool, completed local run, or successful create_agentkit_app call is not proof of permission, authoritative business completion, or production readiness.",
+    facts: [
+      { label: "Pinned implementation", value: "VeADK Agent and Runner extend Google ADK abstractions" },
+      { label: "Execution record", value: "Versioned root_agent, Runner events, and Session scope" },
+      { label: "State boundary", value: "Conversation, long-term memory, and authoritative truth stay separate" },
+      { label: "Production handoff", value: "create_agentkit_app ≠ deployed Runtime or customer SLO" },
+    ],
+    directories: standardUnifiedDirectories({ id: "veadk-english-primer-title", label: "Framework execution boundary", eyebrow: "From inheritance to application handoff" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
   },
 };
 

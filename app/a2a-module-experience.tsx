@@ -332,10 +332,11 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
 
         <div className={styles.tableBlock}>
           <header><span>BINDING CONTRACT MATRIX</span><h3>每个接口、每种 Binding 都要单独验收</h3></header>
-          <div className={styles.tableScroll} tabIndex={0} aria-label="A2A 三种 Binding 契约矩阵，可横向滚动">
+          <div className={styles.tableScroll} role="region" tabIndex={0} aria-label="A2A 三种 Binding 契约矩阵，可横向滚动">
             <table className={styles.bindingTable}>
-              <thead><tr><th>Binding</th><th>接口声明</th><th>直接响应</th><th>Task</th><th>流式</th><th>取消</th><th>错误</th><th>认证与授权</th></tr></thead>
-              <tbody>{bindingRows.map((row) => <tr key={row.binding}><th>{row.binding}</th><td>{row.interface}</td><td>{row.direct}</td><td>{row.task}</td><td>{row.stream}</td><td>{row.cancel}</td><td>{row.error}</td><td>{row.auth}</td></tr>)}</tbody>
+              <caption className="srOnly">A2A 三种 Binding 契约矩阵</caption>
+              <thead><tr><th scope="col">Binding</th><th scope="col">接口声明</th><th scope="col">直接响应</th><th scope="col">Task</th><th scope="col">流式</th><th scope="col">取消</th><th scope="col">错误</th><th scope="col">认证与授权</th></tr></thead>
+              <tbody>{bindingRows.map((row) => <tr key={row.binding}><th scope="row">{row.binding}</th><td>{row.interface}</td><td>{row.direct}</td><td>{row.task}</td><td>{row.stream}</td><td>{row.cancel}</td><td>{row.error}</td><td>{row.auth}</td></tr>)}</tbody>
             </table>
           </div>
           <p className={styles.tableNote}>同一套对象语义不代表三种承载自动互通。逐项测试 Message、Task、九状态、Artifact、Streaming、认证、授权、取消、错误与不支持版本。</p>
@@ -409,10 +410,11 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
 
       <section className={styles.chapter} id="a2a-chapter-6">
         <SectionHeader number="06" eyebrow="DELIVERY" title="交付方式" lead="交付通道匹配在线条件；权威状态仍由 Task 保存。" />
-        <div className={styles.tableScroll} tabIndex={0} aria-label="A2A 交付方式矩阵，可横向滚动">
+        <div className={styles.tableScroll} role="region" tabIndex={0} aria-label="A2A 交付方式矩阵，可横向滚动">
           <table className={styles.deliveryTable}>
-            <thead><tr><th>方式</th><th>适用条件</th><th>状态模型</th><th>客户端条件</th><th>必须验证</th></tr></thead>
-            <tbody>{deliveryRows.map((row) => <tr key={row.mode}><th>{row.mode}</th><td>{row.when}</td><td>{row.state}</td><td>{row.client}</td><td>{row.guard}</td></tr>)}</tbody>
+            <caption className="srOnly">A2A 交付方式矩阵</caption>
+            <thead><tr><th scope="col">方式</th><th scope="col">适用条件</th><th scope="col">状态模型</th><th scope="col">客户端条件</th><th scope="col">必须验证</th></tr></thead>
+            <tbody>{deliveryRows.map((row) => <tr key={row.mode}><th scope="row">{row.mode}</th><td>{row.when}</td><td>{row.state}</td><td>{row.client}</td><td>{row.guard}</td></tr>)}</tbody>
           </table>
         </div>
         <div className={styles.deliveryChecks}>
@@ -616,14 +618,15 @@ function FieldView({ qa, evidenceCards }: { qa: readonly SourceQa[]; evidenceCar
 
       <section className={styles.cloudSection} id="cloud" aria-labelledby="cloud-title" data-quality-section="cloud">
         <header className={styles.compactHeader}><span>CLOUD RESPONSIBILITY</span><h2 id="cloud-title">云能力与责任</h2><p>按运行与目录、任务与消息、身份边界、产物与可观测四个责任面核对云能力和项目 Owner；地域、配额、SLA、价格与协议版本在采购时复核。</p></header>
-        <div className={styles.tableScroll} tabIndex={0} aria-label="A2A 云责任矩阵，可横向滚动">
+        <div className={styles.tableScroll} role="region" tabIndex={0} aria-label="A2A 云责任矩阵，可横向滚动">
           <table className={styles.cloudTable}>
-            <thead><tr><th>能力面</th><th>常见云能力</th><th>项目交付责任</th><th>现场要问</th></tr></thead>
+            <caption className="srOnly">A2A 云责任矩阵</caption>
+            <thead><tr><th scope="col">能力面</th><th scope="col">常见云能力</th><th scope="col">项目交付责任</th><th scope="col">现场要问</th></tr></thead>
             <tbody>
-              <tr><th>运行与目录</th><td>Agent Runtime、容器、服务发现、私有目录、DNS</td><td>稳定入口、所有者、Card 发布与停用</td><td>Agent 分属哪些团队、云和信任域？</td></tr>
-              <tr><th>任务与消息</th><td>任务存储、数据库、队列、事件总线、工作流</td><td>状态、恢复、幂等、取消、补偿和 SLO</td><td>任务最长多久，断线后从哪里恢复？</td></tr>
-              <tr><th>身份与边界</th><td>API Gateway、OAuth/OIDC、mTLS、IAM、策略引擎</td><td>四段身份链、最小授权、租户与数据策略</td><td>谁有权委派哪个 Skill 和哪份数据？</td></tr>
-              <tr><th>产物与可观测</th><td>对象存储、KMS、Tracing、日志、审计、成本监控</td><td>受控交付、校验、保留、Trace 和三层验收</td><td>哪个 Trace 关联双方，谁接受哪个版本？</td></tr>
+              <tr><th scope="row">运行与目录</th><td>Agent Runtime、容器、服务发现、私有目录、DNS</td><td>稳定入口、所有者、Card 发布与停用</td><td>Agent 分属哪些团队、云和信任域？</td></tr>
+              <tr><th scope="row">任务与消息</th><td>任务存储、数据库、队列、事件总线、工作流</td><td>状态、恢复、幂等、取消、补偿和 SLO</td><td>任务最长多久，断线后从哪里恢复？</td></tr>
+              <tr><th scope="row">身份与边界</th><td>API Gateway、OAuth/OIDC、mTLS、IAM、策略引擎</td><td>四段身份链、最小授权、租户与数据策略</td><td>谁有权委派哪个 Skill 和哪份数据？</td></tr>
+              <tr><th scope="row">产物与可观测</th><td>对象存储、KMS、Tracing、日志、审计、成本监控</td><td>受控交付、校验、保留、Trace 和三层验收</td><td>哪个 Trace 关联双方，谁接受哪个版本？</td></tr>
             </tbody>
           </table>
         </div>

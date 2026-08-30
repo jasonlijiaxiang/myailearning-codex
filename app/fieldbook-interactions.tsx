@@ -471,8 +471,12 @@ export function QaFilterShell({
       const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
       if (!(target instanceof HTMLDetailsElement) || !target.dataset.qaTag) return;
       setShowAll(true);
+      target.hidden = false;
       target.open = true;
-      window.requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+      window.requestAnimationFrame(() => {
+        target.scrollIntoView({ block: "start" });
+        window.requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+      });
     };
     revealTarget();
     window.addEventListener("hashchange", revealTarget);

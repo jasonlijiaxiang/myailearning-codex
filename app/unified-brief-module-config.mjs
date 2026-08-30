@@ -38,6 +38,26 @@ const configs = Object.freeze({
       { label: "退出证明", value: "备用候选通过相同硬门；否则阻断或转人工" },
     ],
   }),
+  multimodal: defineConfig({
+    shortTitle: "多模态",
+    primer: { id: "multimodal-extension-primer-title", label: "证据管线", eyebrow: "定位信息损失" },
+    facts: [
+      { label: "采用条件", value: "非文本信息会改变任务判断" },
+      { label: "证据坐标", value: "资产 × 页面/区域 × 时间段/说话人" },
+      { label: "路线选择", value: "专用解析、原生模型与混合路线同卷比较" },
+      { label: "安全降级", value: "重采、专用处理或责任复核；不继续猜" },
+    ],
+  }),
+  veadk: defineConfig({
+    shortTitle: "VeADK",
+    primer: { id: "veadk-extension-primer-title", label: "Agent 交付桥", eyebrow: "定义、执行、状态、适配、证明" },
+    facts: [
+      { label: "实现基线", value: "固定源码中 Agent 与 Runner 扩展 Google ADK" },
+      { label: "执行记录", value: "root_agent 版本 × Runner 事件 × Session 作用域" },
+      { label: "状态边界", value: "会话、长期记忆与权威事实分层" },
+      { label: "生产转交", value: "create_agentkit_app ≠ Runtime 已部署" },
+    ],
+  }),
   llm: defineConfig({
     shortTitle: "LLM",
     primer: { id: "llm-theory-primer-title", label: "生成主线", eyebrow: "从 Token 到输出" },
