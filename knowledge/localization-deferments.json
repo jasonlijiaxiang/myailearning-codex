@@ -2627,16 +2627,16 @@
       }
     },
     "model-landscape": {
-      "zhBaselineCommit": "b327d467c9675d4cf96b0fe9258bd77fc2f80a00",
-      "enBaselineCommit": "b327d467c9675d4cf96b0fe9258bd77fc2f80a00",
+      "zhBaselineCommit": "90b428e2759d90fb53e4fee2a94341fd085a91d2",
+      "enBaselineCommit": "90b428e2759d90fb53e4fee2a94341fd085a91d2",
       "reviewSetIds": [
-        "br-model-landscape-2026-08-13-ultra-exception",
-        "br-model-landscape-2026-08-13-xhigh-author",
-        "br-model-landscape-2026-08-13-xhigh-language",
-        "br-model-landscape-2026-08-13-xhigh-semantic"
+        "br-model-landscape-2026-08-30-ultra-exception",
+        "br-model-landscape-2026-08-30-xhigh-author",
+        "br-model-landscape-2026-08-30-xhigh-language",
+        "br-model-landscape-2026-08-30-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:7e478acd26cf3a304cb4f1c00d2bca123d860075c8bd3a9465dc18c71fc0e99a",
-      "zhStateHash": "sha256:7e478acd26cf3a304cb4f1c00d2bca123d860075c8bd3a9465dc18c71fc0e99a",
+      "zhReviewHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
+      "zhStateHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
       "zhObjects": {
         "/module:model-landscape/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -2704,7 +2704,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/deepDiveLead": {
-          "hash": "sha256:ad1a9fbd4a963187aefb69d194ca77932c22f1b237b2e2ba3fff8febed7ef4a4",
+          "hash": "sha256:316992c186baea64845cd10dd217071854e3569613ee037013fff31a9a4d4eeb",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -2714,7 +2714,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/deepDives/000": {
-          "hash": "sha256:55c58b20656fa12398d1f3758b149b5985d74df2f32cd9fbc0c30279c5e9b4d3",
+          "hash": "sha256:12cfc792361beb96021da0cebdb62b67090226767c1108bd97ff7dcf8e6ae3fa",
           "objectType": "brief",
           "sourceIds": [
             "anthropic-models",
@@ -2726,7 +2726,7 @@
           ]
         },
         "/module:model-landscape/brief/deepDives/001": {
-          "hash": "sha256:128ed59fc741d29bea421e7f7e090521b82685a82877de1427552fdde607f71a",
+          "hash": "sha256:f3741978c22de23d54799d9a03ce04b779a80b0a63f83276c5a1d7761871dc3e",
           "objectType": "brief",
           "sourceIds": [
             "anthropic-models",
@@ -2737,7 +2737,7 @@
           ]
         },
         "/module:model-landscape/brief/deepDives/002": {
-          "hash": "sha256:1056e30f09531a5a0f508a266577b5e90f93a4a3f7c34d85c21c75d2fc2615d2",
+          "hash": "sha256:c478fb60108063993ea6e336cb2f0be77e36b22758bb746671a44fee93e2e763",
           "objectType": "brief",
           "sourceIds": [
             "anthropic-models",
@@ -2749,12 +2749,12 @@
           ]
         },
         "/module:model-landscape/brief/deepDiveTitle": {
-          "hash": "sha256:eda85c169674532adad6136e5af8bb16dc44e89a8f526294186319238d7f9a2e",
+          "hash": "sha256:23ba786139360f4e28fefffabb20d56fcaf95f9a6e2e2869221245f96d3f8268",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:model-landscape/brief/definition": {
-          "hash": "sha256:0f67d254e16c14251dbc212391b4ca4464edb3808adf07334ef81922b122a204",
+          "hash": "sha256:7cfa8ade4ff92223e863d37b477a1f6a6e62d1c448194ac238d021131689184b",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -2764,21 +2764,21 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/evidenceCards/000": {
-          "hash": "sha256:204ab4bad156f5c55555a2d4dbbc0a83891e4acac289fbe5df16d4b9c59b9d18",
+          "hash": "sha256:140b265820832953726436791701ca31ed7fb695a3501a7c3c15b9fdff072951",
           "objectType": "brief",
           "sourceIds": [
             "openai-models"
           ]
         },
         "/module:model-landscape/brief/evidenceCards/001": {
-          "hash": "sha256:f3784bdf33c8c603fe0bb23673f23c86605e64fa0a96a96ea90604b9c728a4d3",
+          "hash": "sha256:f4ecb7184d713024f0611f9762f585d76ac9618679eaffdd028b28dbbd76d2bb",
           "objectType": "brief",
           "sourceIds": [
             "nist-genai-profile"
           ]
         },
         "/module:model-landscape/brief/evidenceCards/002": {
-          "hash": "sha256:71f8549183a4ddf40c14abea27a20944f3252f3f4b7f5f1e1e2f6bb5394d72b6",
+          "hash": "sha256:59cbfdcf08f0e9a266287c2a63197b58bab7e237908cbd825f61d552c70ebc5a",
           "objectType": "brief",
           "sourceIds": [
             "finops-unit-economics"
@@ -2807,22 +2807,22 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/principles/000": {
-          "hash": "sha256:81f16d375f609febcb9ca34d988207836ebe5eafdf1ceee1c427464f5a683c57",
+          "hash": "sha256:d79d4b66be411a57071b68f959bedfb3de377b79866ef1d7ee2583deb46f50f0",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:model-landscape/brief/principles/001": {
-          "hash": "sha256:c574da3695434ba1f045f649d5c8d35160ec8e81fb54db4d4078f57ad1c6e675",
+          "hash": "sha256:80dfc68c9c680f1f61f000b884378421d82bfebd35d55ed35efe217c2d6a824d",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:model-landscape/brief/principles/002": {
-          "hash": "sha256:d92bbb3a480f5d79f551d88a3e4556ad5d0db7e4af2f387ca544160281bca6e1",
+          "hash": "sha256:655d151a942ff06c0a46da9dfd13e06bded93a142ecd3f59a5ba76e3b98f122e",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:model-landscape/brief/principles/003": {
-          "hash": "sha256:c3a02344edf87ca1f4cea64454bfd890a3ff319f9ce77619a08da70c31b038ae",
+          "hash": "sha256:39724f56746597563cc8e112f31f68386fbd13ec21fe42871b3578b12d56422b",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -2832,7 +2832,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/principles/005": {
-          "hash": "sha256:eb9098346ba8ed9c565dc57f19063204bd2a79adc65c761f8303a893f2af8382",
+          "hash": "sha256:682cb8ba57dc5006ad8593538e79b4688b59370a6285c3a6a3e15ef49697e217",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -2842,7 +2842,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/brief/principleTitle": {
-          "hash": "sha256:a84b0559f66ba5c235f0f611f0813762154b58ca0fa4157255de24479a608a3e",
+          "hash": "sha256:06901109c4300918348f8d0b197ab5fd5685b13e3f1fb778ed2ed83382a36c7d",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -3124,7 +3124,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/content/deepDives/000": {
-          "hash": "sha256:55c58b20656fa12398d1f3758b149b5985d74df2f32cd9fbc0c30279c5e9b4d3",
+          "hash": "sha256:12cfc792361beb96021da0cebdb62b67090226767c1108bd97ff7dcf8e6ae3fa",
           "objectType": "content",
           "sourceIds": [
             "anthropic-models",
@@ -3136,7 +3136,7 @@
           ]
         },
         "/module:model-landscape/content/deepDives/001": {
-          "hash": "sha256:128ed59fc741d29bea421e7f7e090521b82685a82877de1427552fdde607f71a",
+          "hash": "sha256:f3741978c22de23d54799d9a03ce04b779a80b0a63f83276c5a1d7761871dc3e",
           "objectType": "content",
           "sourceIds": [
             "anthropic-models",
@@ -3147,7 +3147,7 @@
           ]
         },
         "/module:model-landscape/content/deepDives/002": {
-          "hash": "sha256:1056e30f09531a5a0f508a266577b5e90f93a4a3f7c34d85c21c75d2fc2615d2",
+          "hash": "sha256:c478fb60108063993ea6e336cb2f0be77e36b22758bb746671a44fee93e2e763",
           "objectType": "content",
           "sourceIds": [
             "anthropic-models",
@@ -3164,21 +3164,21 @@
           "sourceIds": []
         },
         "/module:model-landscape/content/evidenceCards/000": {
-          "hash": "sha256:204ab4bad156f5c55555a2d4dbbc0a83891e4acac289fbe5df16d4b9c59b9d18",
+          "hash": "sha256:140b265820832953726436791701ca31ed7fb695a3501a7c3c15b9fdff072951",
           "objectType": "content",
           "sourceIds": [
             "openai-models"
           ]
         },
         "/module:model-landscape/content/evidenceCards/001": {
-          "hash": "sha256:f3784bdf33c8c603fe0bb23673f23c86605e64fa0a96a96ea90604b9c728a4d3",
+          "hash": "sha256:f4ecb7184d713024f0611f9762f585d76ac9618679eaffdd028b28dbbd76d2bb",
           "objectType": "content",
           "sourceIds": [
             "nist-genai-profile"
           ]
         },
         "/module:model-landscape/content/evidenceCards/002": {
-          "hash": "sha256:71f8549183a4ddf40c14abea27a20944f3252f3f4b7f5f1e1e2f6bb5394d72b6",
+          "hash": "sha256:59cbfdcf08f0e9a266287c2a63197b58bab7e237908cbd825f61d552c70ebc5a",
           "objectType": "content",
           "sourceIds": [
             "finops-unit-economics"
@@ -3520,7 +3520,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/extensionView/title": {
-          "hash": "sha256:176dcbc30232a0dbbbfe5f82a5ae973a2ee6f314eead7b643e201d8c54d6d866",
+          "hash": "sha256:7752c21e903cf9f251075f90d1b9b232ea978b7640a0005dc438f96189d9a7b9",
           "objectType": "extensionView",
           "sourceIds": []
         },
@@ -3632,7 +3632,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/publication/contentContract/boundary/000": {
-          "hash": "sha256:97dd1b1c3f027764fc11c9273d498025eeb2b0537dd147d2286998f83f826874",
+          "hash": "sha256:edf919e5b1f769fa5190ebf8efab447fcbbaff222ac0f73e89ff136451d41af3",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -3642,7 +3642,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/publication/contentContract/cloud/000": {
-          "hash": "sha256:8763f9c13eee0b189da1b3ec3076f221b22884a6376c47de08193647edec8dd6",
+          "hash": "sha256:0c235277e8ed1cadbc5746a2732715e41b959c99a3a9db908861bb814b4821e7",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -3652,7 +3652,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/publication/contentContract/customer/000": {
-          "hash": "sha256:538ac162b2333b08136a9de61ee04d4c37855364ad3133d22837cca5dbc0ec42",
+          "hash": "sha256:250cf32b6cb9f4a4c8d924ee155c714fbd4447b7c6a83805d7fd8403567df9e5",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -3662,7 +3662,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/publication/contentContract/mechanism/000": {
-          "hash": "sha256:0cd6375a37bb434b73a77383ebe440ba2c3116954567f4eabd3f18c2fd0b70f2",
+          "hash": "sha256:e8cc6d27bdf497536064975ffc71f5ee020dc92298846ea3ea8ce3336e43123f",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -3672,7 +3672,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/publication/contentContract/principle/000": {
-          "hash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
+          "hash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -4132,7 +4132,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/$order": {
-          "hash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
+          "hash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -4172,42 +4172,67 @@
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/007": {
-          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "hash": "sha256:3678d737f95daa2abb180d27ac73d285a9a55e852f91851a3726051281a27777",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/008": {
-          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "hash": "sha256:4fa4004426e49fbeb523764e9047e33b699052c01268ef817e8e860d8157637f",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/009": {
-          "hash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/010": {
-          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
+          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/011": {
-          "hash": "sha256:d227808869b1fc8b0373dbf8a6ff006fbac55a9b1b8349e2cf935474b7deb093",
+          "hash": "sha256:39ab1d59f7eab391f8f63a0ffd8899ba0d0113686f5a01ed41397f650bd863e2",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/012": {
-          "hash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
+          "hash": "sha256:f19c61b7170f3caf21d46de69075b99abd44259e7bc3df058e7d21947656c820",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/rendererDependencyFiles/013": {
+          "hash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/rendererDependencyFiles/014": {
+          "hash": "sha256:1e0310479f93c5d20f952bfa0cb9fbf0fddd18cafd518678e5f251762eefe5c4",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/rendererDependencyFiles/015": {
+          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/rendererDependencyFiles/016": {
+          "hash": "sha256:d227808869b1fc8b0373dbf8a6ff006fbac55a9b1b8349e2cf935474b7deb093",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/rendererDependencyFiles/017": {
+          "hash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:model-landscape/renderedProjection/rendererDependencyFiles/018": {
           "hash": "sha256:ea5a8e0fa921f951c9dd093928846157bc129eda92f33cc6ad8b8666340eaf15",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:model-landscape/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:fbdd44aed683001009326b8c0f7f925c5e2ee5c79a9ed13e7a90957f7e1464fe",
+          "hash": "sha256:3e622e76b82c8fef934740ef03791dfd82b62cbb991e329f115029594eeabc43",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -4217,7 +4242,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/sources/anthropic-models": {
-          "hash": "sha256:e67063b5f80ed68337df99cb77c0ebd1fcbe0fefc44f3928f83dbb800f20aadc",
+          "hash": "sha256:c98415192f3b9d628a3745466832b21f91a43498275bccb7dd32d62eabffbd7b",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -4287,7 +4312,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/sources/google-models": {
-          "hash": "sha256:cedccfe509c17c33c206023f3064c35cc5d426aa8bd8832f9c0a876bc30d197c",
+          "hash": "sha256:918c5bd8d97ef6dbf0e78882d43b7126b578e06c35e5d573afbc072726fcffbd",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -4327,7 +4352,7 @@
           "sourceIds": []
         },
         "/module:model-landscape/sources/openai-models": {
-          "hash": "sha256:bece3d68bc1c9c8fb86160ed83cae6fe966d034b149199e37d9390ccd2bf4931",
+          "hash": "sha256:c82d542c2ab7cef9c5e54d942d7447803ae932dfedfada2beae9b33e590ba0a9",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -4550,17 +4575,22 @@
         "app/fieldbook-interactions.tsx",
         "app/focused-visual-explainers.tsx",
         "app/i18n/locale-config.mjs",
+        "app/inference-module-page.tsx",
+        "app/inference-studio.tsx",
         "app/layout-utils.mjs",
         "app/module-content-components.tsx",
+        "app/module-decision-workbench.tsx",
+        "app/module-extension-views-zh.mjs",
         "app/module-pilot-views.tsx",
+        "app/module-reading-modes.tsx",
         "app/module-representation-assessment.mjs",
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs",
         "app/term-hint.tsx"
       ],
-      "enAuthoredHash": "sha256:c61462973d6f09811fddc6c92963c4677f297cd0e908c694b0cb1aa82ffdd211",
-      "enEffectiveHash": "sha256:8106385a0033659cf0d49b32355897c05ce9374b35cd2012149d2681be1d3454",
-      "enReviewHash": "sha256:d27f707bc6291666782672dc060e6fc1a725f9e16517db8a6a4fcc8c1ee68c67",
+      "enAuthoredHash": "sha256:2685611b9b534836c79c79dfb75f552737120c501c0106c4d721ec7a82060e61",
+      "enEffectiveHash": "sha256:00d76f98b8b9c9ac0d03f72a0787090949aaf4ae580f2fe142629ebcd24c0c8f",
+      "enReviewHash": "sha256:17afd08eabe3370823ebad5b9d431d8d0869a2f1f79449826b130a85eaab6d80",
       "enRendererFiles": [
         "app/(en)/en/modules/[slug]/page.tsx",
         "app/(en)/layout.tsx",
@@ -4578,7 +4608,7 @@
         "app/module-visual-explorers.tsx",
         "app/question-filter.mjs"
       ],
-      "englishUpdatedAt": "2026-08-13",
+      "englishUpdatedAt": "2026-08-30",
       "reviewFiles": {
         "br-model-landscape-2026-08-10-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-10/model-landscape.ultra-exception.json",
@@ -4627,6 +4657,30 @@
           "hash": "sha256:10c61796e79bb060a155ccd0e828759af543f6e99860107ff3d98d15b63b68d7",
           "zhContentHash": "sha256:7e478acd26cf3a304cb4f1c00d2bca123d860075c8bd3a9465dc18c71fc0e99a",
           "enContentHash": "sha256:d27f707bc6291666782672dc060e6fc1a725f9e16517db8a6a4fcc8c1ee68c67"
+        },
+        "br-model-landscape-2026-08-30-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-30/model-landscape.ultra-exception.json",
+          "hash": "sha256:3c57d9b6fcc0e83f35a28e5d94d23cc655073da7ba47927807fae6efdd76879b",
+          "zhContentHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
+          "enContentHash": "sha256:17afd08eabe3370823ebad5b9d431d8d0869a2f1f79449826b130a85eaab6d80"
+        },
+        "br-model-landscape-2026-08-30-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-30/model-landscape.xhigh-author.json",
+          "hash": "sha256:35abc5615d8494a03839c01089921c7efb077d69d78cb69c539be2c994e2de1c",
+          "zhContentHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
+          "enContentHash": "sha256:17afd08eabe3370823ebad5b9d431d8d0869a2f1f79449826b130a85eaab6d80"
+        },
+        "br-model-landscape-2026-08-30-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-30/model-landscape.xhigh-language.json",
+          "hash": "sha256:d430be9966c1e7c13842e4126f2a9602b311daed3beedb38515f6e26c0690753",
+          "zhContentHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
+          "enContentHash": "sha256:17afd08eabe3370823ebad5b9d431d8d0869a2f1f79449826b130a85eaab6d80"
+        },
+        "br-model-landscape-2026-08-30-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-08-30/model-landscape.xhigh-semantic.json",
+          "hash": "sha256:388f4fc0ddf0b0330e3b7ef4fa51add6f8155e2832e16dd74e667e54a000f4ff",
+          "zhContentHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
+          "enContentHash": "sha256:17afd08eabe3370823ebad5b9d431d8d0869a2f1f79449826b130a85eaab6d80"
         },
         "br-model-landscape-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/model-landscape.ultra-exception.json",
@@ -48323,7 +48377,7 @@
       "moduleSlug": "model-landscape",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-24",
       "openedFromCommit": "b327d467c9675d4cf96b0fe9258bd77fc2f80a00",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
@@ -48801,7 +48855,16 @@
         "br-model-landscape-2026-08-13-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-module-content-presentation-refresh-locale-gate-2026-08-24",
-      "closureCriteria": "完成独立英文撰写与 xhigh-author、xhigh-semantic、xhigh-language、ultra-exception 四阶段审校，登记候选哈希并通过 ready 门后，方可原子提升双语基线并关闭。"
+      "closureCriteria": "完成独立英文撰写与 xhigh-author、xhigh-semantic、xhigh-language、ultra-exception 四阶段审校，登记候选哈希并通过 ready 门后，方可原子提升双语基线并关闭。",
+      "closedAt": "2026-08-30",
+      "promotedCommit": "90b428e2759d90fb53e4fee2a94341fd085a91d2",
+      "closureReviewIds": [
+        "br-model-landscape-2026-08-30-xhigh-author",
+        "br-model-landscape-2026-08-30-xhigh-semantic",
+        "br-model-landscape-2026-08-30-xhigh-language",
+        "br-model-landscape-2026-08-30-ultra-exception"
+      ],
+      "closureReceipt": "receipt-model-landscape-module-presentation-english-closure-2026-08-30"
     },
     {
       "defermentId": "dfr-rag-module-presentation-refresh-2026-08-24",
