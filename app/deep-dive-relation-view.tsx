@@ -95,13 +95,14 @@ function MatrixView({ block, active, onSelect }: { block: RelationBlock; active:
 
   return (
     <div className="relationMatrix">
-      <div className="relationMatrixScroll">
+      <div className="relationMatrixScroll" role="region" aria-label={block.title} tabIndex={0}>
         <table>
-          <thead><tr><th>{labels.name}</th><th>{labels.mechanism}</th><th>{labels.decision}</th><th>{labels.boundary}</th></tr></thead>
+          <caption className="srOnly">{block.title}</caption>
+          <thead><tr><th scope="col">{labels.name}</th><th scope="col">{labels.mechanism}</th><th scope="col">{labels.decision}</th><th scope="col">{labels.boundary}</th></tr></thead>
           <tbody>
             {block.items.map((item, index) => (
               <tr className={active === index ? "isActive" : undefined} key={item.name}>
-                <th><button type="button" aria-pressed={active === index} onClick={() => onSelect(index)}><span>{String(index + 1).padStart(2, "0")}</span>{item.name}{item.en ? <small>{item.en}</small> : null}</button></th>
+                <th scope="row"><button type="button" aria-pressed={active === index} onClick={() => onSelect(index)}><span>{String(index + 1).padStart(2, "0")}</span>{item.name}{item.en ? <small>{item.en}</small> : null}</button></th>
                 <td>{item.mechanism}</td>
                 <td>{item.decision}</td>
                 <td>{item.boundary ?? "—"}</td>
