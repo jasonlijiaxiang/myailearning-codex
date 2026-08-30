@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { getPublishedModule, publishedModules, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, hasOnlyChineseRendererProjectionDelta, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, promotedBaselineFromCommittedState, sameChineseRendererProjectionState, validateLocalizationRegistry, withRuntimeChineseBaseline } from "../scripts/audit-localization-deferments.mjs";
+import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, hasOnlyChineseRendererProjectionDelta, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, matchesRegisteredDeferredChineseProjection, promotedBaselineFromCommittedState, sameChineseRendererProjectionState, validateLocalizationRegistry, withRuntimeChineseBaseline } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
@@ -325,6 +325,31 @@ test("document-shell projection checks reject non-renderer Chinese changes", () 
 
   const mergedBaseline = withRuntimeChineseBaseline(fixture.baseline, smuggledContent);
   assert.equal(Object.hasOwn(mergedBaseline.zhObjects, `/module:${fixture.deferment.moduleSlug}/brief/runtime-smuggled-content`), false);
+});
+
+test("an English runtime may start from the exact Chinese renderer projection registered by an active deferment", () => {
+  const fixture = makeIsolatedDeferredFixture();
+  const slug = fixture.deferment.moduleSlug;
+  const projectionObjectId = Object.keys(fixture.baseline.zhObjects)
+    .find((objectId) => objectId.endsWith("/renderedProjection/sharedRendererHash"));
+  assert.ok(projectionObjectId);
+
+  const deferredState = structuredClone(fixture.moduleState);
+  deferredState.zhObjects[projectionObjectId].hash = fullHashC;
+  fixture.deferment.affectedObjects = diffObjectCatalogs(fixture.baseline.zhObjects, deferredState.zhObjects);
+
+  assert.equal(
+    matchesRegisteredDeferredChineseProjection(fixture.candidateRegistry, slug, fixture.baseline, deferredState),
+    true,
+    "a reconstructable active deferment may carry its exact Chinese renderer projection into a later English-only runtime",
+  );
+
+  const unregisteredState = structuredClone(deferredState);
+  unregisteredState.zhObjects[projectionObjectId].hash = fullHashB;
+  assert.equal(matchesRegisteredDeferredChineseProjection(fixture.candidateRegistry, slug, fixture.baseline, unregisteredState), false);
+
+  fixture.deferment.status = "closed";
+  assert.equal(matchesRegisteredDeferredChineseProjection(fixture.candidateRegistry, slug, fixture.baseline, deferredState), false);
 });
 
 test("an effective-hash contract change covers every English module", () => {

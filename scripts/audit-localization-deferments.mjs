@@ -111,6 +111,19 @@ export function sameChineseRendererProjectionState(left, right) {
   return same(chineseRendererProjectionState(left), chineseRendererProjectionState(right));
 }
 
+export function matchesRegisteredDeferredChineseProjection(registry, slug, expectedState, actualState) {
+  const active = (registry.deferments ?? [])
+    .filter((deferment) => deferment.moduleSlug === slug && deferment.status !== "closed");
+  if (active.length !== 1) return false;
+
+  const actualProjectionDelta = diffObjectCatalogs(expectedState.zhObjects, actualState.zhObjects)
+    .filter(({ objectId }) => isChineseRendererProjectionObjectId(objectId));
+  const registeredProjectionDelta = active[0].affectedObjects
+    .filter(({ objectId }) => isChineseRendererProjectionObjectId(objectId));
+  return actualProjectionDelta.length > 0
+    && compareAffectedObjects(actualProjectionDelta, registeredProjectionDelta);
+}
+
 export function withRuntimeChineseBaseline(baseline, runtimeState) {
   const baselineObjects = Object.entries(baseline.zhObjects)
     .filter(([objectId]) => !isChineseRendererProjectionObjectId(objectId));
@@ -616,7 +629,8 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           failures.push(`${label}: ${slug} base commit does not match the registered English baseline or prior runtime maintenance`);
           continue;
         }
-        if (!sameChineseRendererProjectionState(before, expectedBefore)) {
+        if (!sameChineseRendererProjectionState(before, expectedBefore)
+          && !matchesRegisteredDeferredChineseProjection(registry, slug, expectedBefore, before)) {
           failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer projection`);
           continue;
         }
