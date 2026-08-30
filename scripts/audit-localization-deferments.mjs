@@ -609,6 +609,7 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
   for (const maintenance of records) {
     const label = maintenance.maintenanceId ?? "runtime-maintenance";
     const documentShell = maintenance.kind === "document-shell";
+    let documentShellChangedChineseProjection = false;
     if (knownMaintenanceIds.has(maintenance.maintenanceId)) {
       failures.push(`duplicate runtime maintenance ID ${maintenance.maintenanceId}`);
       continue;
@@ -667,9 +668,14 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           }
         }
         if (documentShell) {
-          if (!hasOnlyChineseRendererProjectionDelta(before, after)) {
+          if (sameChineseRuntimeState(before, after)) {
+            // One shared file can enter every English renderer closure while
+            // entering only a subset of Chinese renderer closures.
+          } else if (!hasOnlyChineseRendererProjectionDelta(before, after)) {
             failures.push(`${label}: ${slug} changes Chinese reader content outside its renderer projection`);
             continue;
+          } else {
+            documentShellChangedChineseProjection = true;
           }
         } else if (!sameChineseRuntimeState(before, after)) {
           failures.push(`${label}: ${slug} changes Chinese renderer state; record a document-shell maintenance instead`);
@@ -684,6 +690,9 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           continue;
         }
         overlays.set(slug, { maintenanceId: maintenance.maintenanceId, kind: maintenance.kind, state: after });
+      }
+      if (documentShell && !documentShellChangedChineseProjection) {
+        failures.push(`${label}: document-shell maintenance has no Chinese renderer projection change`);
       }
     } catch (error) {
       failures.push(`${label}: ${error.message}`);

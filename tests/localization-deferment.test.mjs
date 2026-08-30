@@ -448,7 +448,7 @@ test("runtime maintenance cannot relabel a document shell as an English-only ren
   const reader = mislabeledEnglishRuntime.runtimeMaintenances.find((item) => item.maintenanceId === "erm-english-reader-2026-08-09");
   reader.kind = "document-shell";
   const readerResult = await loadRuntimeMaintenanceOverlays(mislabeledEnglishRuntime);
-  assert.match(readerResult.failures.join("\n"), /changes Chinese reader content outside its renderer projection/);
+  assert.match(readerResult.failures.join("\n"), /document-shell maintenance has no Chinese renderer projection change/);
 });
 
 test("candidate review scope covers the complete Chinese effective state", () => {
