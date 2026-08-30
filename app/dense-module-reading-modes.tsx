@@ -85,6 +85,23 @@ function modeForHash(
   return target.startsWith("qa-") ? "field" : null;
 }
 
+function directoryAnchorForTarget(
+  targetId: string,
+  modeId: ReadingModeId,
+  directories: Record<ReadingModeId, readonly DenseChapterLink[]>,
+) {
+  const directoryIds = new Set(directories[modeId].map((item) => item.id));
+  if (directoryIds.has(targetId)) return targetId;
+  if (typeof document === "undefined") return undefined;
+
+  let current: HTMLElement | null = document.getElementById(targetId);
+  while (current) {
+    if (current.id && directoryIds.has(current.id)) return current.id;
+    current = current.parentElement;
+  }
+  return undefined;
+}
+
 function scrollHashTargetIntoView(hash: string) {
   const target = document.getElementById(hash.replace(/^#/, ""));
   if (!target) return;
@@ -171,8 +188,9 @@ export function DenseModuleReadingModes({
       setPendingHashReveal(null);
       return;
     }
+    const targetId = hash.replace(/^#/, "");
     setActiveMode(nextMode);
-    setActiveAnchor(hash.replace(/^#/, ""));
+    setActiveAnchor(directoryAnchorForTarget(targetId, nextMode, directoryByMode) ?? targetId);
     setPendingHashReveal({
       hash,
       mode: nextMode,

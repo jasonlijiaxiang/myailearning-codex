@@ -130,6 +130,7 @@ type EnglishUnifiedReaderConfig = {
     field: readonly string[];
   };
   fieldGroupsBeforeEvidence: boolean;
+  completeFocusedProjection?: boolean;
 };
 
 function standardUnifiedDirectories(primer: DenseChapterLink) {
@@ -171,6 +172,20 @@ const englishUnifiedReaderConfigs: Readonly<Record<string, EnglishUnifiedReaderC
     groupIds: ragUnifiedGroupIds,
     fieldGroupsBeforeEvidence: true,
   },
+  "model-landscape": {
+    titleId: "model-landscape-english-title",
+    shortTitle: "Model Selection",
+    criticalBoundary: "Catalogs, prices, versions, and platform capabilities are time-sensitive. Bind every customer comparison to its verification date, region, exact candidate identity, and like-for-like pilot. A leaderboard, one demo, or consumer product experience cannot establish the customer-use-case conclusion.",
+    facts: [
+      { label: "Decision start", value: "Task, unacceptable loss, and delivery hard gates" },
+      { label: "Candidate identity", value: "Provider × endpoint × region × exact version × delivery form" },
+      { label: "Pilot contract", value: "Same prompt, context, tools, schema, budget, and test set" },
+      { label: "Exit proof", value: "A reserve passes the same gates; otherwise block or hand off" },
+    ],
+    directories: standardUnifiedDirectories({ id: "model-landscape-english-primer-title", label: "Selection coordinates", eyebrow: "From business loss to exit proof" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
   llm: {
     titleId: "llm-english-title",
     shortTitle: "LLM",
@@ -199,7 +214,62 @@ const englishUnifiedReaderConfigs: Readonly<Record<string, EnglishUnifiedReaderC
     groupIds: standardUnifiedGroupIds,
     fieldGroupsBeforeEvidence: false,
   },
+  "ai-agent": {
+    titleId: "ai-agent-english-title",
+    shortTitle: "AI Agent",
+    criticalBoundary: "A tool-call intent, successful tool execution, and business completion are three different claims. Deterministic controls must retain identity, authorization, real-world execution, stopping, and final acceptance.",
+    facts: [
+      { label: "Adoption condition", value: "New evidence changes the next step" },
+      { label: "Model responsibility", value: "Propose structured action intent" },
+      { label: "Application responsibility", value: "Identity, policy, execution, and stopping" },
+      { label: "Completion proof", value: "Authoritative business postconditions" },
+    ],
+    directories: {
+      quick: [
+        { id: "ai-agent-english-primer-title", label: "Control loop", eyebrow: "Separate intent from authority" },
+        { id: "agent-adoption-decision", label: "Adoption decision", eyebrow: "Prove the path must adapt" },
+      ],
+      learn: [
+        { id: "agent-operating-model", label: "Operating model", eyebrow: "Bound the run" },
+        { id: "agent-harness-engineering", label: "Harness engineering", eyebrow: "Control model-facing state" },
+        { id: "agent-control-architecture", label: "Control architecture", eyebrow: "Place deterministic authority" },
+        { id: "agent-production-runtime", label: "Production runtime", eyebrow: "Recover durable work" },
+        { id: "agent-interoperability", label: "Interoperability", eyebrow: "Delegate without broad authority" },
+        { id: "agent-memory-poisoning", label: "Memory controls", eyebrow: "Preserve provenance and recovery" },
+      ],
+      field: [
+        { id: "agent-low-code-choice", label: "Delivery choice", eyebrow: "Test platform fit" },
+        { id: "agent-cloud-evaluation", label: "Cloud and PoC", eyebrow: "Map controls and proof" },
+        { id: "evidence", label: "Evidence and limits", eyebrow: "State what sources prove" },
+        { id: "qa", label: "Customer questions", eyebrow: "Answer with boundaries" },
+        { id: "related-modules", label: "Related modules", eyebrow: "Explore adjacent topics" },
+      ],
+    },
+    groupIds: {
+      quick: ["agent-adoption-decision"],
+      learn: ["agent-operating-model", "agent-harness-engineering", "agent-control-architecture", "agent-production-runtime", "agent-interoperability", "agent-memory-poisoning"],
+      field: ["agent-low-code-choice", "agent-cloud-evaluation"],
+    },
+    fieldGroupsBeforeEvidence: true,
+  },
+  mcp: {
+    titleId: "mcp-english-title",
+    shortTitle: "MCP",
+    criticalBoundary: "MCP standardizes discovery and invocation. It does not grant authority, establish a supplier's identity, validate business semantics, or make an action safe. Preserve the API gateway, identity, policy, transaction, validation, and audit controls that existed before MCP.",
+    facts: [
+      { label: "Adoption condition", value: "Repeated integration across real Hosts or providers" },
+      { label: "Protocol primitives", value: "Tool · Resource · Prompt" },
+      { label: "Authority", value: "Existing identity, policy, gateway, and business systems" },
+      { label: "Version boundary", value: "2026-07-28 current · 2025-11-25 legacy" },
+    ],
+    directories: standardUnifiedDirectories({ id: "mcp-english-primer-title", label: "Protocol boundary", eyebrow: "Standardize exchange, not authority" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+    completeFocusedProjection: true,
+  },
 };
+
+export const englishUnifiedReaderSlugs = Object.freeze(Object.keys(englishUnifiedReaderConfigs));
 
 function EnglishTermHintRow({ module, primer }: { module: EnglishModule; primer: EnglishPrimer }) {
   return (
@@ -380,12 +450,13 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
     const columns = block.columns ?? ["Topic", "Mechanism", "Decision", "Boundary"];
     const explicitCellCount = Math.max(0, ...block.items.map((item) => item.cells?.length ?? 0));
     const renderedColumns = explicitCellCount > 0 && columns.length === explicitCellCount ? ["Topic", ...columns] : columns;
+    const tableLabel = block.title ?? `${sectionId} comparison`;
     return (
-      <div className="tableWrap">
+      <div className="tableWrap" role="region" aria-label={tableLabel} tabIndex={0}>
         {legacyAnchors}
         {block.title ? <h3>{block.title}</h3> : null}
         {block.intro ? <p>{block.intro}</p> : null}
-        <table><caption className="srOnly">{block.title ?? `${sectionId} comparison`}</caption><thead><tr>{renderedColumns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr></thead><tbody>
+        <table><caption className="srOnly">{tableLabel}</caption><thead><tr>{renderedColumns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr></thead><tbody>
           {block.items.map((item) => {
             const cells = item.cells ? [item.title, ...item.cells] : [item.title, item.body ?? "—", item.decision ?? "—", item.boundary ?? "—"];
             return <tr id={item.id} key={item.id}>{cells.map((cell, index) => index === 0 ? <th scope="row" key={`${item.id}-${index}`}>{cell}</th> : <td key={`${item.id}-${index}`}>{cell}{index === cells.length - 1 ? <SourceLinks sourceIds={item.sourceIds} /> : null}</td>)}</tr>;
@@ -475,13 +546,17 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   const canonicalModule = getModuleBySlug(module.slug);
   if (!canonicalModule) throw new Error(`English module is missing from the knowledge map: ${module.slug}`);
   const primer = publication.knowledgeView ? module.primer ?? deriveEnglishPrimer(module, publication.knowledgeView) : null;
-  const sectionGroups = buildEnglishSectionGroups(module) as EnglishSectionGroup[];
+  const unifiedConfig = reader === "unified" ? englishUnifiedReaderConfigs[module.slug] : undefined;
+  const completeFocusedProjection = Boolean(unifiedConfig?.completeFocusedProjection);
+  const sectionGroups = buildEnglishSectionGroups(module, { completeFocusedProjection }) as EnglishSectionGroup[];
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
-  const visibleSectionGroups = selectVisibleEnglishSectionGroups(module, sectionGroups) as EnglishSectionGroup[];
+  const visibleSectionGroups = completeFocusedProjection
+    ? sectionGroups
+    : selectVisibleEnglishSectionGroups(module, sectionGroups) as EnglishSectionGroup[];
   const cloudGroups = visibleSectionGroups.filter((group) => group.role === "cloud");
   const visibleMainGroups = visibleSectionGroups.filter((group) => group.role !== "cloud");
-  const visibleEvidenceCards = selectVisibleEnglishEvidenceCards(module);
-  const visibleQuestions = selectVisibleEnglishQuestions(module);
+  const visibleEvidenceCards = completeFocusedProjection ? module.evidenceCards : selectVisibleEnglishEvidenceCards(module);
+  const visibleQuestions = completeFocusedProjection ? module.qa : selectVisibleEnglishQuestions(module);
   const contentReadingSections: ReadingSection[] = [
     ...visibleMainGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "evidence", label: "Evidence and limits", eyebrow: "Know what sources prove" },
@@ -542,7 +617,6 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   );
 
   if (reader === "unified") {
-    const unifiedConfig = englishUnifiedReaderConfigs[module.slug];
     if (!unifiedConfig) throw new Error(`The unified English reader is not configured for: ${module.slug}`);
     if (!primer) throw new Error(`The unified English ${module.slug} reader requires its architecture primer.`);
 

@@ -28,6 +28,16 @@ function defineConfig({ facts, primer, shortTitle }) {
 }
 
 const configs = Object.freeze({
+  "model-landscape": defineConfig({
+    shortTitle: "模型选型",
+    primer: { id: "model-landscape-extension-primer-title", label: "选型坐标", eyebrow: "从业务损失到退出证明" },
+    facts: [
+      { label: "判断起点", value: "任务、不可接受损失与交付硬门" },
+      { label: "候选身份", value: "提供方 × 端点 × 地域 × 精确版本 × 交付形态" },
+      { label: "试点合同", value: "同一 Prompt、上下文、工具、Schema、预算与考卷" },
+      { label: "退出证明", value: "备用候选通过相同硬门；否则阻断或转人工" },
+    ],
+  }),
   llm: defineConfig({
     shortTitle: "LLM",
     primer: { id: "llm-theory-primer-title", label: "生成主线", eyebrow: "从 Token 到输出" },

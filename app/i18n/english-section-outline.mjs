@@ -28,7 +28,7 @@ export function classifySharedSection(section) {
   return "deep";
 }
 
-export function buildEnglishSectionGroups(module) {
+export function buildEnglishSectionGroups(module, { completeFocusedProjection = false } = {}) {
   if (hasDedicatedModule(module.slug)) {
     return module.sections.map((section) => ({
       role: "authored",
@@ -45,7 +45,9 @@ export function buildEnglishSectionGroups(module) {
     grouped.set(role, [...(grouped.get(role) ?? []), section]);
   }
 
-  const roleOrder = focusedEnglishModuleSlugs.includes(module.slug) ? focusedSectionRoleOrder : sharedSectionRoleOrder;
+  const roleOrder = focusedEnglishModuleSlugs.includes(module.slug) && !completeFocusedProjection
+    ? focusedSectionRoleOrder
+    : sharedSectionRoleOrder;
   return roleOrder.flatMap((role) => {
     const sections = grouped.get(role);
     if (!sections?.length) return [];

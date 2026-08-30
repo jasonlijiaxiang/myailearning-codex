@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { EnglishModulePage } from "../../../../i18n/english-pilot-module-page";
+import { EnglishModulePage, englishUnifiedReaderSlugs } from "../../../../i18n/english-pilot-module-page";
 import { englishPageMetadata } from "../../../../i18n/english-page-metadata";
 import { englishModuleRegistry, requireEnglishModule } from "../../../../i18n/en/registry.mjs";
 
@@ -26,6 +26,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function EnglishSharedModulePage({ params }: PageProps) {
   const { slug } = await params;
   if (slug === "rag" || !englishModuleRegistry[slug]) notFound();
-  const reader = ["llm", "data-engineering"].includes(slug) ? "unified" : "legacy";
+  const reader = englishUnifiedReaderSlugs.includes(slug) ? "unified" : "legacy";
   return <EnglishModulePage module={requireEnglishModule(slug)} reader={reader} />;
 }
