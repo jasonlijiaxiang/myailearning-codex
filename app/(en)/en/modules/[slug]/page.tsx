@@ -26,5 +26,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function EnglishSharedModulePage({ params }: PageProps) {
   const { slug } = await params;
   if (slug === "rag" || !englishModuleRegistry[slug]) notFound();
-  return <EnglishModulePage module={requireEnglishModule(slug)} />;
+  const reader = ["llm", "data-engineering"].includes(slug) ? "unified" : "legacy";
+  return <EnglishModulePage module={requireEnglishModule(slug)} reader={reader} />;
 }

@@ -114,7 +114,92 @@ const ragUnifiedGroupIds = {
   field: ["cloud-opportunities", "rag-customer-question-guide"],
 } as const;
 
-const ragChapters = [...ragQuickDirectory, ...ragLearnDirectory, ...ragFieldDirectory];
+type EnglishUnifiedReaderConfig = {
+  titleId: string;
+  shortTitle: string;
+  criticalBoundary: string;
+  facts: readonly { label: string; value: string }[];
+  directories: {
+    quick: readonly DenseChapterLink[];
+    learn: readonly DenseChapterLink[];
+    field: readonly DenseChapterLink[];
+  };
+  groupIds: {
+    quick: readonly string[];
+    learn: readonly string[];
+    field: readonly string[];
+  };
+  fieldGroupsBeforeEvidence: boolean;
+};
+
+function standardUnifiedDirectories(primer: DenseChapterLink) {
+  return {
+    quick: [primer, { id: "decisions", label: "Solution decisions", eyebrow: "Assign the handoff" }],
+    learn: [
+      { id: "principle", label: "Mechanism", eyebrow: "Build the working model" },
+      { id: "study-guide", label: "Study and practice", eyebrow: "Produce reviewable work" },
+      { id: "curriculum", label: "Knowledge map", eyebrow: "Complete the theory" },
+      { id: "deep-dive", label: "Engineering depth", eyebrow: "Diagnose failure and limits" },
+    ],
+    field: [
+      { id: "evidence", label: "Evidence and limits", eyebrow: "State what sources prove" },
+      { id: "cloud", label: "Cloud capabilities", eyebrow: "Map delivery and ownership" },
+      { id: "qa", label: "Customer questions", eyebrow: "Answer with boundaries" },
+      { id: "related-modules", label: "Related modules", eyebrow: "Continue the responsibility chain" },
+    ],
+  } satisfies EnglishUnifiedReaderConfig["directories"];
+}
+
+const standardUnifiedGroupIds = {
+  quick: ["decisions"],
+  learn: ["principle", "study-guide", "curriculum", "deep-dive"],
+  field: ["cloud"],
+} as const;
+
+const englishUnifiedReaderConfigs: Readonly<Record<string, EnglishUnifiedReaderConfig>> = {
+  rag: {
+    titleId: "rag-english-title",
+    shortTitle: "RAG",
+    criticalBoundary: "RAG does not turn retrieved text into truth. It turns governed external material into candidate evidence and preserves enough identity, scope, and provenance for the application to decide whether a claim may be made.",
+    facts: [
+      { label: "Adoption condition", value: "Changing evidence, access, citation, or withdrawal" },
+      { label: "Evidence path", value: "Source → evidence object → answer decision" },
+      { label: "Production gate", value: "Authority, identity, version, citation, and safe stop" },
+      { label: "Extension rule", value: "Add Agent, MCP, or A2A only for a measured need" },
+    ],
+    directories: { quick: ragQuickDirectory, learn: ragLearnDirectory, field: ragFieldDirectory },
+    groupIds: ragUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: true,
+  },
+  llm: {
+    titleId: "llm-english-title",
+    shortTitle: "LLM",
+    criticalBoundary: "Fluent output does not establish factual correctness, authorization, or the validity of a business action. External systems must validate factual claims and enforce security, permissions, and deterministic business rules.",
+    facts: [
+      { label: "Generation path", value: "Token representation → context interaction → autoregressive sampling" },
+      { label: "Diagnosis order", value: "Separate capability, evidence, instruction, decoding, serving, and orchestration" },
+      { label: "Performance handoff", value: "Move capacity and latency to inference only after quality passes" },
+      { label: "Production boundary", value: "Fluency does not prove truth, authority, or a valid business action" },
+    ],
+    directories: standardUnifiedDirectories({ id: "llm-english-primer-title", label: "Generation path", eyebrow: "From tokens to output" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
+  "data-engineering": {
+    titleId: "data-engineering-english-title",
+    shortTitle: "AI Data",
+    criticalBoundary: "Business and data owners decide authoritative meaning and permitted use; Data Engineering publishes traceable derivatives and propagates lifecycle state, while Security, IAM, and the application enforce current authorization.",
+    facts: [
+      { label: "Admission conditions", value: "Authoritative source, permitted purpose, and stable identity" },
+      { label: "Lifecycle", value: "Connect → parse → adjudicate → derive → publish → withdraw" },
+      { label: "Production gate", value: "Verifiable structure, version, policy reference, quality, and lineage" },
+      { label: "Completion proof", value: "State reaches every derivative and negative probes pass" },
+    ],
+    directories: standardUnifiedDirectories({ id: "data-engineering-english-primer-title", label: "Data lineage", eyebrow: "From authority to withdrawal" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
+};
 
 function EnglishTermHintRow({ module, primer }: { module: EnglishModule; primer: EnglishPrimer }) {
   return (
@@ -407,9 +492,9 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   const readingSections = usesFocusedReadingProfile
     ? [...contentReadingSections, relatedReadingSection]
     : [relatedReadingSection, ...contentReadingSections];
-  const relatedSection = (
+  const renderRelatedSection = (number: number) => (
     <section className={`subsection moduleBriefRelated${usesFocusedReadingProfile ? " focusedRelated" : ""}`} id="related-modules">
-      <div className="subHead"><span>{usesFocusedReadingProfile ? String(visibleMainGroups.length + cloudGroups.length + 4).padStart(2, "0") : "01"}</span><div><p className="kicker">RELATED MODULES</p><h2>Continue through the knowledge map</h2></div></div>
+      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">RELATED MODULES</p><h2>Continue through the knowledge map</h2></div></div>
       <div className="relatedModuleGrid" data-count={module.relatedSlugs.length} data-odd={module.relatedSlugs.length % 2 === 1 ? "true" : "false"}>
         {module.relatedSlugs.map((slug) => {
           const related = getModuleBySlug(slug);
@@ -421,9 +506,9 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
     </section>
   );
 
-  const evidenceSection = (
+  const renderEvidenceSection = (number: number) => (
     <section className={`subsection moduleBriefSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="evidence">
-      <div className="subHead"><span>{String(visibleMainGroups.length + 2).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2>Evidence cards</h2></div></div>
+      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2>Evidence cards</h2></div></div>
       <div className="evidenceGrid" data-count={visibleEvidenceCards.length} data-odd={visibleEvidenceCards.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(visibleEvidenceCards, 3).flatMap((row) => row.map((card) => {
         const source = sourceLedger[card.sourceId];
         const localizedSource = englishSourceCopy[card.sourceId];
@@ -434,9 +519,9 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
     </section>
   );
 
-  const qaSection = (
+  const renderQaSection = (number: number) => (
     <section className={`subsection moduleBriefSection qaSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="qa">
-      <div className="subHead"><span>{String(visibleMainGroups.length + cloudGroups.length + 3).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>Common questions and evidence-backed answers</h2></div></div>
+      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>Common questions and evidence-backed answers</h2></div></div>
       <div className="qaList">{visibleQuestions.map((item, index) => (
         <details className="qaItem" id={`qa-${item.id}`} key={item.id}>
           <summary><span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span><span className="qaQuestion"><strong>{item.q}</strong>{item.addedAt ? <small>Added on {item.addedAt}</small> : null}</span><span className="qaTag">{item.tag}</span><span className="plus">＋</span></summary>
@@ -457,39 +542,57 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   );
 
   if (reader === "unified") {
-    if (module.slug !== "rag") throw new Error(`The unified English reader is not configured for: ${module.slug}`);
-    if (!primer) throw new Error("The unified English RAG reader requires its architecture primer.");
+    const unifiedConfig = englishUnifiedReaderConfigs[module.slug];
+    if (!unifiedConfig) throw new Error(`The unified English reader is not configured for: ${module.slug}`);
+    if (!primer) throw new Error(`The unified English ${module.slug} reader requires its architecture primer.`);
 
     const groupById = new Map(visibleSectionGroups.map((group) => [group.id, group]));
-    const assignedGroupIds = [...ragUnifiedGroupIds.quick, ...ragUnifiedGroupIds.learn, ...ragUnifiedGroupIds.field];
+    const assignedGroupIds = [...unifiedConfig.groupIds.quick, ...unifiedConfig.groupIds.learn, ...unifiedConfig.groupIds.field];
     const assignedGroupIdSet = new Set<string>(assignedGroupIds);
     const duplicateGroupIds = assignedGroupIds.filter((groupId, index) => assignedGroupIds.indexOf(groupId) !== index);
     const unknownGroupIds = assignedGroupIds.filter((groupId) => !groupById.has(groupId));
     const missingGroupIds = visibleSectionGroups.map((group) => group.id).filter((groupId) => !assignedGroupIdSet.has(groupId));
     const visibleGroupIds = visibleSectionGroups.map((group) => group.id);
     const duplicateVisibleGroupIds = visibleGroupIds.filter((groupId, index) => visibleGroupIds.indexOf(groupId) !== index);
-    const reservedIds = new Set([primer.id, "rag-english-primer-title", "evidence", "qa", "related-modules"]);
+    const reservedIds = new Set([primer.id, `${module.slug}-english-primer-title`, "evidence", "qa", "related-modules"]);
     const conflictingGroupIds = assignedGroupIds.filter((groupId) => reservedIds.has(groupId));
     if (duplicateVisibleGroupIds.length || duplicateGroupIds.length || unknownGroupIds.length || missingGroupIds.length || conflictingGroupIds.length) {
-      throw new Error(`English RAG unified reader group contract mismatch: duplicate-visible=${duplicateVisibleGroupIds.join(",") || "none"}; duplicate-config=${duplicateGroupIds.join(",") || "none"}; unknown=${unknownGroupIds.join(",") || "none"}; missing=${missingGroupIds.join(",") || "none"}; reserved=${conflictingGroupIds.join(",") || "none"}`);
+      throw new Error(`English ${module.slug} unified reader group contract mismatch: duplicate-visible=${duplicateVisibleGroupIds.join(",") || "none"}; duplicate-config=${duplicateGroupIds.join(",") || "none"}; unknown=${unknownGroupIds.join(",") || "none"}; missing=${missingGroupIds.join(",") || "none"}; reserved=${conflictingGroupIds.join(",") || "none"}`);
     }
 
-    const renderUnifiedGroups = (groupIds: readonly string[]) => groupIds.map((groupId) => {
+    const renderUnifiedGroups = (groupIds: readonly string[], startNumber: number) => groupIds.map((groupId, index) => {
       const group = groupById.get(groupId);
-      if (!group) throw new Error(`English RAG unified reader references an unknown group: ${groupId}`);
-      return <EnglishSectionGroupView group={group} number={assignedGroupIds.findIndex((candidate) => candidate === groupId) + 2} key={group.id} />;
+      if (!group) throw new Error(`English ${module.slug} unified reader references an unknown group: ${groupId}`);
+      return <EnglishSectionGroupView group={group} number={startNumber + index} key={group.id} />;
     });
-    const quickGroups = renderUnifiedGroups(ragUnifiedGroupIds.quick);
-    const learnGroups = renderUnifiedGroups(ragUnifiedGroupIds.learn);
-    const fieldGroups = renderUnifiedGroups(ragUnifiedGroupIds.field);
+    const quickStart = 2;
+    const learnStart = quickStart + unifiedConfig.groupIds.quick.length;
+    const fieldBase = learnStart + unifiedConfig.groupIds.learn.length;
+    const quickGroups = renderUnifiedGroups(unifiedConfig.groupIds.quick, quickStart);
+    const learnGroups = renderUnifiedGroups(unifiedConfig.groupIds.learn, learnStart);
+    const fieldGroupStart = unifiedConfig.fieldGroupsBeforeEvidence ? fieldBase : fieldBase + 1;
+    const fieldGroups = renderUnifiedGroups(unifiedConfig.groupIds.field, fieldGroupStart);
+    const evidenceNumber = unifiedConfig.fieldGroupsBeforeEvidence
+      ? fieldBase + unifiedConfig.groupIds.field.length
+      : fieldBase;
+    const qaNumber = fieldBase + unifiedConfig.groupIds.field.length + 1;
+    const relatedNumber = qaNumber + 1;
+    const fieldContent = unifiedConfig.fieldGroupsBeforeEvidence
+      ? <>{fieldGroups}{renderEvidenceSection(evidenceNumber)}{renderQaSection(qaNumber)}{renderRelatedSection(relatedNumber)}</>
+      : <>{renderEvidenceSection(evidenceNumber)}{fieldGroups}{renderQaSection(qaNumber)}{renderRelatedSection(relatedNumber)}</>;
+    const chapters = [
+      ...unifiedConfig.directories.quick,
+      ...unifiedConfig.directories.learn,
+      ...unifiedConfig.directories.field,
+    ];
 
     return (
       <UnifiedModuleScaffold
-        className="fieldbookTheme modulePage moduleBriefPage modulePilot modulePilot--dedicated moduleFocused"
+        className={`fieldbookTheme modulePage moduleBriefPage modulePilot${module.slug === "rag" ? " modulePilot--dedicated" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}
         hero={{
           anchorId: "top",
-          titleId: "rag-english-title",
-          shortTitle: module.subtitle,
+          titleId: unifiedConfig.titleId,
+          shortTitle: unifiedConfig.shortTitle,
           zhTitle: "",
           enTitle: module.title,
           definition: module.definition,
@@ -498,27 +601,22 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
           questionCount: visibleQuestions.length,
           evidenceCount: visibleEvidenceCards.length,
           locale: "en",
-          facts: [
-            { label: "Adoption condition", value: "Changing evidence, access, citation, or withdrawal" },
-            { label: "Evidence path", value: "Source → evidence object → answer decision" },
-            { label: "Production gate", value: "Authority, identity, version, citation, and safe stop" },
-            { label: "Extension rule", value: "Add Agent, MCP, or A2A only for a measured need" },
-          ],
+          facts: unifiedConfig.facts,
         }}
       >
         <div className="dedicatedArticleLayout moduleReadingHost">
-          <section className="section ragBody" aria-label="RAG core content">
+          <section className={module.slug === "rag" ? "section ragBody" : "section"} aria-label={`${module.title} core content`}>
             <div className="sectionNumber">02</div>
             <div className="sectionBody">
               <DenseModuleReadingModes
-                chapters={ragChapters}
-                criticalBoundary="RAG does not turn retrieved text into truth. It turns governed external material into candidate evidence and preserves enough identity, scope, and provenance for the application to decide whether a claim may be made."
-                directories={{ quick: ragQuickDirectory, learn: ragLearnDirectory, field: ragFieldDirectory }}
-                field={<>{fieldGroups}{evidenceSection}{qaSection}{relatedSection}</>}
-                hashGroups={ragUnifiedGroupIds}
+                chapters={chapters}
+                criticalBoundary={unifiedConfig.criticalBoundary}
+                directories={unifiedConfig.directories}
+                field={fieldContent}
+                hashGroups={unifiedConfig.groupIds}
                 learn={<>{learnGroups}</>}
                 locale="en"
-                moduleName="RAG: Retrieval-Augmented Generation"
+                moduleName={module.title}
                 quick={<><EnglishModulePrimer module={module} primer={primer} />{quickGroups}</>}
                 readerId="module-reading"
               />
@@ -562,16 +660,16 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
         ]} labels={{ navigation: "section navigation", progress: "Reading", quickLinks: "Quick links" }} />
         <div className="moduleArticleContent">
           {primer ? <EnglishModulePrimer module={module} primer={primer} /> : null}
-          {!usesFocusedReadingProfile ? relatedSection : null}
+          {!usesFocusedReadingProfile ? renderRelatedSection(1) : null}
 
           {visibleMainGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}
 
-          {evidenceSection}
+          {renderEvidenceSection(visibleMainGroups.length + 2)}
 
           {cloudGroups.map((group, index) => <EnglishSectionGroupView group={group} number={visibleMainGroups.length + index + 3} key={group.id} />)}
 
-          {qaSection}
-          {usesFocusedReadingProfile ? relatedSection : null}
+          {renderQaSection(visibleMainGroups.length + cloudGroups.length + 3)}
+          {usesFocusedReadingProfile ? renderRelatedSection(visibleMainGroups.length + cloudGroups.length + 4) : null}
         </div>
       </div>
 

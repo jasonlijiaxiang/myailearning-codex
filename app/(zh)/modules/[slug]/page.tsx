@@ -19,6 +19,8 @@ import { sourceLedger } from "../../../reference-content.mjs";
 import { requireTerm } from "../../../terminology.mjs";
 import { SharedModulePrimer } from "../../../module-pilot-views";
 import { englishModulePath } from "../../../i18n/locale-config.mjs";
+import { getUnifiedBriefModuleConfig } from "../../../unified-brief-module-config.mjs";
+import { UnifiedBriefModulePage } from "../../../unified-brief-module-page";
 
 type ModulePageProps = { params: Promise<{ slug: string }> };
 
@@ -180,8 +182,111 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const primerOwnsPrincipleId = ["decision-blueprint", "mcp-host-server-boundary", "latency-capacity-map"].includes(publication.knowledgeView ?? "");
   const primerDecisionCount = primerOwnsPrincipleId ? 4 : 0;
   const remainingDecisions = brief.decisions.slice(primerDecisionCount);
+  const pageClassName = `fieldbookTheme modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`;
+  const unifiedConfig = getUnifiedBriefModuleConfig(currentModule.canonicalSlug);
+  const primer = <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} />;
+  const decisionSection = (showCriticalBoundary: boolean) => remainingDecisions.length ? (
+    <section className="subsection moduleBriefSection" id="decisions" data-quality-section="decisions">
+      <ModuleSectionHeader code="Q1" title="方案判断" />
+      <ModuleDecisionWorkbench decisions={remainingDecisions} moduleName={currentModule.zh} />
+      {showCriticalBoundary && !usesFocusedReadingProfile ? <CriticalBoundary>{brief.criticalBoundary}</CriticalBoundary> : null}
+    </section>
+  ) : null;
+  const learnContent = (
+    <>
+      <section className="subsection moduleBriefSection" id={primerOwnsPrincipleId ? "mechanism-summary" : "principle"} data-quality-section="principle">
+        <ModuleSectionHeader code="L1" eyebrow="机制速览 · 工作方式与失败信号" title={brief.principleTitle} />
+        <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
+        <PrincipleView brief={brief} />
+      </section>
+
+      <section className="subsection moduleBriefSection learningStudioSection" id="study-guide" data-quality-section="study-guide">
+        <div className="subHead"><span>L2</span><div><h2>学习路线与实战</h2></div></div>
+        <p className="sectionLead">从心智模型进入方案练习，每一步都有检查点和可交付产物。</p>
+        <ModuleLearningStudio content={learningContent} sourceLedger={sourceLedger} />
+      </section>
+
+      <section className="subsection moduleBriefSection curriculumSection" id="curriculum" data-quality-section="curriculum">
+        <div className="subHead"><span>L3</span><div><h2>知识地图</h2></div></div>
+        <p className="sectionLead">章节按实际判断展开：为什么重要、会改变什么决定、适用范围在哪里。</p>
+        <ModuleCurriculumAtlas content={curriculumContent} sourceLedger={sourceLedger} />
+      </section>
+
+      {hasDeepDives ? (
+        <section className="subsection moduleBriefSection" id="deep-dive" data-quality-section="deep-dive">
+          <div className="subHead"><span>L4</span><div><h2>{brief.deepDiveTitle ?? "工程深挖"}</h2></div></div>
+          {brief.deepDiveLead ? <p className="sectionLead">{brief.deepDiveLead}</p> : null}
+          <ModuleDeepDiveBlocks blocks={brief.deepDives ?? []} sourceLedger={sourceLedger} />
+        </section>
+      ) : null}
+    </>
+  );
+  const fieldContent = (
+    <>
+      <section className="subsection moduleBriefSection" id="evidence" data-quality-section="evidence">
+        <div className="subHead"><span>F1</span><div><h2>证据能说明什么</h2></div></div>
+        <ModuleEvidenceGrid cards={brief.evidenceCards} sourceLedger={sourceLedger} maxColumns={3} headingLevel={3} />
+        <p className="focusedDirectoryLink"><Link href={`/references#module-${currentModule.canonicalSlug}`}>查看来源、核验日期与完整适用范围 →</Link></p>
+      </section>
+
+      <section className="subsection moduleBriefSection cloudSection" id="cloud" data-quality-section="cloud">
+        <div className="subHead"><span>F2</span><div><h2>云能力与责任</h2></div></div>
+        <p className="sectionLead">这里按能力和验收组织，不绑定某个时期的产品目录。地域、配额、SLA 与价格在采购时复核。</p>
+        <div className="focusedCloudRows">
+          {brief.cloudHooks.map((item) => <article key={item.stage}><h3>{item.stage}</h3><p><strong>{item.value}</strong>{item.services}</p><small>现场可问：{item.discover}</small></article>)}
+        </div>
+      </section>
+
+      <section className="subsection moduleBriefSection qaSection" id="qa" data-quality-section="qa">
+        <div className="subHead"><span>F3</span><div><h2>客户问题</h2></div></div>
+        <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} directoryHref={`/questions?module=${currentModule.canonicalSlug}`} />
+      </section>
+
+      <section className="subsection moduleBriefRelated" id="related-modules" data-quality-section="related-modules" aria-labelledby="related-modules-title">
+        <div className="subHead"><span>F4</span><div><h2 id="related-modules-title">接着看什么</h2></div></div>
+        <div className="relatedModuleGrid" data-count={relatedModules.length} data-odd={relatedModules.length % 2 === 1 ? "true" : "false"}>
+          {(relatedRows as KnowledgeModule[][]).flatMap((row) => row.map((related) => (
+            <Link href={related.href} key={related.slug} style={{ "--related-span": gridSpan(row.length) } as CSSProperties}>
+              <span>{related.layerNo}</span><strong>{related.zh}</strong><small>{related.en}</small>
+            </Link>
+          )))}
+        </div>
+      </section>
+    </>
+  );
+  const pageFooter = <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>;
+
+  if (unifiedConfig) {
+    return (
+      <UnifiedBriefModulePage
+        className={pageClassName}
+        contentAriaLabel={`${currentModule.zh}核心内容`}
+        criticalBoundary={brief.criticalBoundary}
+        directories={unifiedConfig.directories}
+        field={fieldContent}
+        footer={pageFooter}
+        hero={{
+          anchorId: "top",
+          titleId: publication.titleId,
+          shortTitle: unifiedConfig.shortTitle,
+          zhTitle: currentModule.zh,
+          enTitle: currentModule.en,
+          definition: brief.definition,
+          position: brief.position,
+          slug: currentModule.canonicalSlug,
+          questionCount: brief.qa.length,
+          evidenceCount: brief.evidenceCards.length,
+          facts: unifiedConfig.facts,
+        }}
+        learn={learnContent}
+        moduleName={currentModule.zh}
+        quick={<>{primer}{decisionSection(false)}</>}
+      />
+    );
+  }
+
   return (
-    <main className={`fieldbookTheme modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
+    <main className={pageClassName}>
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
         <nav className="topbar" aria-label="模块导航">
@@ -208,81 +313,12 @@ export default async function ModulePage({ params }: ModulePageProps) {
         hashGroups={primerOwnsPrincipleId
           ? { quick: ["principle", "decisions"], learn: ["mechanism-summary"] }
           : { quick: ["decisions"], learn: ["principle"] }}
-        quick={(
-          <>
-            <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} />
-            {remainingDecisions.length ? <section className="subsection moduleBriefSection" id="decisions" data-quality-section="decisions">
-              <ModuleSectionHeader code="Q1" title="方案判断" />
-              <ModuleDecisionWorkbench decisions={remainingDecisions} moduleName={currentModule.zh} />
-              {!usesFocusedReadingProfile ? <CriticalBoundary>{brief.criticalBoundary}</CriticalBoundary> : null}
-            </section> : null}
-          </>
-        )}
-        learn={(
-          <>
-            <section className="subsection moduleBriefSection" id={primerOwnsPrincipleId ? "mechanism-summary" : "principle"} data-quality-section="principle">
-              <ModuleSectionHeader code="L1" eyebrow="机制速览 · 工作方式与失败信号" title={brief.principleTitle} />
-              <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
-              <PrincipleView brief={brief} />
-            </section>
-
-            <section className="subsection moduleBriefSection learningStudioSection" id="study-guide" data-quality-section="study-guide">
-              <div className="subHead"><span>L2</span><div><h2>学习路线与实战</h2></div></div>
-              <p className="sectionLead">从心智模型进入方案练习，每一步都有检查点和可交付产物。</p>
-              <ModuleLearningStudio content={learningContent} sourceLedger={sourceLedger} />
-            </section>
-
-            <section className="subsection moduleBriefSection curriculumSection" id="curriculum" data-quality-section="curriculum">
-              <div className="subHead"><span>L3</span><div><h2>知识地图</h2></div></div>
-              <p className="sectionLead">章节按实际判断展开：为什么重要、会改变什么决定、适用范围在哪里。</p>
-              <ModuleCurriculumAtlas content={curriculumContent} sourceLedger={sourceLedger} />
-            </section>
-
-            {hasDeepDives ? (
-              <section className="subsection moduleBriefSection" id="deep-dive" data-quality-section="deep-dive">
-                <div className="subHead"><span>L4</span><div><h2>{brief.deepDiveTitle ?? "工程深挖"}</h2></div></div>
-                {brief.deepDiveLead ? <p className="sectionLead">{brief.deepDiveLead}</p> : null}
-                <ModuleDeepDiveBlocks blocks={brief.deepDives ?? []} sourceLedger={sourceLedger} />
-              </section>
-            ) : null}
-          </>
-        )}
-        field={(
-          <>
-            <section className="subsection moduleBriefSection" id="evidence" data-quality-section="evidence">
-              <div className="subHead"><span>F1</span><div><h2>证据能说明什么</h2></div></div>
-              <ModuleEvidenceGrid cards={brief.evidenceCards} sourceLedger={sourceLedger} maxColumns={3} headingLevel={3} />
-              <p className="focusedDirectoryLink"><Link href={`/references#module-${currentModule.canonicalSlug}`}>查看来源、核验日期与完整适用范围 →</Link></p>
-            </section>
-
-            <section className="subsection moduleBriefSection cloudSection" id="cloud" data-quality-section="cloud">
-              <div className="subHead"><span>F2</span><div><h2>云能力与责任</h2></div></div>
-              <p className="sectionLead">这里按能力和验收组织，不绑定某个时期的产品目录。地域、配额、SLA 与价格在采购时复核。</p>
-              <div className="focusedCloudRows">
-                {brief.cloudHooks.map((item) => <article key={item.stage}><h3>{item.stage}</h3><p><strong>{item.value}</strong>{item.services}</p><small>现场可问：{item.discover}</small></article>)}
-              </div>
-            </section>
-
-            <section className="subsection moduleBriefSection qaSection" id="qa" data-quality-section="qa">
-              <div className="subHead"><span>F3</span><div><h2>客户问题</h2></div></div>
-              <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} directoryHref={`/questions?module=${currentModule.canonicalSlug}`} />
-            </section>
-
-            <section className="subsection moduleBriefRelated" id="related-modules" data-quality-section="related-modules" aria-labelledby="related-modules-title">
-              <div className="subHead"><span>F4</span><div><h2 id="related-modules-title">接着看什么</h2></div></div>
-              <div className="relatedModuleGrid" data-count={relatedModules.length} data-odd={relatedModules.length % 2 === 1 ? "true" : "false"}>
-                {(relatedRows as KnowledgeModule[][]).flatMap((row) => row.map((related) => (
-                  <Link href={related.href} key={related.slug} style={{ "--related-span": gridSpan(row.length) } as CSSProperties}>
-                    <span>{related.layerNo}</span><strong>{related.zh}</strong><small>{related.en}</small>
-                  </Link>
-                )))}
-              </div>
-            </section>
-          </>
-        )}
+        quick={<>{primer}{decisionSection(true)}</>}
+        learn={learnContent}
+        field={fieldContent}
       />
 
-      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>
+      {pageFooter}
     </main>
   );
 }
