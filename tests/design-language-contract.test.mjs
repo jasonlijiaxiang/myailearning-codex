@@ -11,6 +11,7 @@ const denseReaderComponentUrl = new URL("../app/dense-module-reading-modes.tsx",
 const englishModuleComponentUrl = new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url);
 const qaInteractionComponentUrl = new URL("../app/fieldbook-interactions.tsx", import.meta.url);
 const a2aComponentUrl = new URL("../app/a2a-module-experience.tsx", import.meta.url);
+const modulePilotViewsUrl = new URL("../app/module-pilot-views.tsx", import.meta.url);
 const designLanguageUrl = new URL("../docs/DESIGN-LANGUAGE.md", import.meta.url);
 const appUrl = new URL("../app/", import.meta.url);
 
@@ -317,11 +318,12 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
 });
 
 test("unified deep links and comparison tables keep their accessibility ownership", async () => {
-  const [readerSource, englishSource, qaInteractionSource, a2aSource] = await Promise.all([
+  const [readerSource, englishSource, qaInteractionSource, a2aSource, modulePilotSource] = await Promise.all([
     readFile(denseReaderComponentUrl, "utf8"),
     readFile(englishModuleComponentUrl, "utf8"),
     readFile(qaInteractionComponentUrl, "utf8"),
     readFile(a2aComponentUrl, "utf8"),
+    readFile(modulePilotViewsUrl, "utf8"),
   ]);
   assert.match(readerSource, /function directoryAnchorForTarget\(/);
   assert.match(readerSource, /const directoryIds = new Set\(directories\[modeId\]\.map\(\(item\) => item\.id\)\)/);
@@ -346,4 +348,6 @@ test("unified deep links and comparison tables keep their accessibility ownershi
   assert.equal((a2aSource.match(/<caption className="srOnly">/g) ?? []).length, 3);
   assert.equal((a2aSource.match(/scope="col"/g) ?? []).length, 17);
   assert.equal((a2aSource.match(/scope="row"/g) ?? []).length, 6);
+  assert.match(modulePilotSource, /className="primerAtlasTable" role="table" aria-label="七类场景的目标、指标和隐藏风险"/);
+  assert.match(modulePilotSource, /brief && showCriticalBoundary \? <aside/, "focused primers must support one explicit critical-boundary owner");
 });

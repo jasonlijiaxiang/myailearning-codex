@@ -726,10 +726,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/llm", "/modules/data-engineering"]) {
+  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/llm", "/modules/data-engineering"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 12, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 15, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -815,6 +815,19 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
 test("standard brief modules preserve their authored content in the unified reader", async () => {
   const cases = [
     {
+      slug: "solution-patterns",
+      zhTitleId: "solution-patterns-title",
+      enTitleId: "solution-patterns-english-title",
+      zhPrimerId: "solution-pattern-primer-title",
+      enPrimerId: "solution-patterns-english-primer-title",
+      zhMechanism: /data-knowledge-view="decision-blueprint"/,
+      enMechanism: /data-knowledge-view="decision-blueprint"/,
+      zhQuestionCount: 20,
+      englishTableCount: 4,
+      requiredChineseIds: ["principle", "mechanism-summary", "solution-decision-ledger-title", "qa-20"],
+      requiredEnglishIds: ["decision-blueprint", "solution-outcome-poc", "solution-pattern-curriculum", "solution-claims-intake-exit", "solution-cloud-operate", "evidence-solution-value-connection", "qa-claim-intake-prohibited-actions"],
+    },
+    {
       slug: "model-landscape",
       zhTitleId: "model-landscape-title",
       enTitleId: "model-landscape-english-title",
@@ -885,6 +898,30 @@ test("standard brief modules preserve their authored content in the unified read
       requiredEnglishIds: ["governance-critical-boundary", "governance-decision-private-deployment", "governance-obligation-labeling", "qa-eu-ai-act-timeline-freshness", "qa-china-algorithm-filing-triage", "evidence-eu-amendment-timeline"],
     },
     {
+      slug: "security",
+      zhTitleId: "security-title",
+      enTitleId: "security-english-title",
+      zhPrimerId: "security-threat-primer-title",
+      enPrimerId: "security-english-primer-title",
+      zhMechanism: /data-knowledge-view="threat-path"/,
+      enMechanism: /data-knowledge-view="threat-path"/,
+      zhQuestionCount: 11,
+      englishTableCount: 2,
+      requiredEnglishIds: ["threat-path", "security-path-authorize", "security-owner-boundary", "security-decision-ats", "security-incident-ats-action", "security-cloud-response", "qa-content-labeling-log-controls", "evidence-content-labeling-controls"],
+    },
+    {
+      slug: "ai-gateway",
+      zhTitleId: "ai-gateway-title",
+      enTitleId: "ai-gateway-english-title",
+      zhPrimerId: "ai-gateway-extension-primer-title",
+      enPrimerId: "ai-gateway-english-primer-title",
+      zhMechanism: /data-knowledge-view="gateway-policy-data-plane"/,
+      enMechanism: /data-knowledge-view="gateway-policy-data-plane"/,
+      zhQuestionCount: 14,
+      englishTableCount: 3,
+      requiredEnglishIds: ["gateway-policy-data-plane", "gateway-decision-managed", "gateway-deep-offline-replay", "gateway-cloud-routing", "qa-request-rate-limit-not-enough", "evidence-gateway-routing-risk-loop"],
+    },
+    {
       slug: "llm",
       zhTitleId: "llm-title",
       enTitleId: "llm-english-title",
@@ -936,6 +973,9 @@ test("standard brief modules preserve their authored content in the unified read
     assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, moduleCase.zhQuestionCount);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
+    for (const id of moduleCase.requiredChineseIds ?? []) {
+      assert.equal((zhHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must preserve Chinese #${id}`);
+    }
     if (moduleCase.englishTableCount !== undefined) {
       assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, moduleCase.englishTableCount);
     }
@@ -951,6 +991,10 @@ test("standard brief modules preserve their authored content in the unified read
     }
     const englishIds = [...enHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
     assert.equal(new Set(englishIds).size, englishIds.length, `${moduleCase.slug} English reader must not duplicate DOM IDs`);
+    if (moduleCase.slug === "solution-patterns") {
+      assert.equal((zhHtml.match(/aria-label="重要边界" data-importance="critical"/g) ?? []).length, 1, "Solution Patterns must expose one critical-boundary owner");
+      assert.match(zhHtml, /class="primerAtlasTable" role="table" aria-label="七类场景的目标、指标和隐藏风险"/, "Solution Patterns scenario table must have its own accessible name");
+    }
   }
 });
 
@@ -1752,8 +1796,9 @@ test("Batch 09 control views expose every step and focused search entries resolv
 
   const solutionGroups = searchableEnglishSectionGroups("solution-patterns", buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]));
   assert.deepEqual(solutionGroups.map((group) => group.role), ["decision", "deep"]);
-  assert.doesNotMatch(solutionEn, /id="curriculum"|id="study-guide"/);
-  assert.equal((solutionEn.match(/class="qaItem"/g) ?? []).length, 5);
+  assert.match(solutionEn, /id="curriculum"/);
+  assert.match(solutionEn, /id="study-guide"/);
+  assert.equal((solutionEn.match(/class="qaItem"/g) ?? []).length, englishModuleRegistry["solution-patterns"].qa.length);
   assert.match(solutionEn, /Worked example: verifiable customer-service resolution/);
   assert.match(solutionEn, /id="solution-outcome-poc"/);
   assert.match(platformEn, /id="curriculum-serving-platform"/);
