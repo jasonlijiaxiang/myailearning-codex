@@ -324,6 +324,13 @@
       "recordedAt": "2026-08-31",
       "decisionId": "module-reading-modes-2026-08-24",
       "summary": "English renderer maintenance erm-batch07-unified-readers-2026-08-31: Unified the fine-tuning, LLM training, and LLM inference readers while preserving the complete inference interactions, English projection, stable hashes, and accessibility without changing authored module data, metadata, or publication dates."
+    },
+    {
+      "receiptId": "receipt-batch08-unified-readers-runtime-2026-08-31",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-31",
+      "decisionId": "module-reading-modes-2026-08-24",
+      "summary": "English renderer maintenance erm-batch08-unified-readers-2026-08-31: Added the AI compute and infrastructure platform reader configurations to the shared English projection while preserving their complete authored mechanisms, evidence, questions, stable hashes, and accessibility without changing authored module data, metadata, sources, or publication dates."
     }
   ],
   "moduleBaselines": {
@@ -41402,6 +41409,51 @@
       ],
       "metadataScope": "none",
       "summary": "Unified the fine-tuning, LLM training, and LLM inference readers while preserving the complete inference interactions, English projection, stable hashes, and accessibility without changing authored module data, metadata, or publication dates."
+    },
+    {
+      "maintenanceId": "erm-batch08-unified-readers-2026-08-31",
+      "status": "applied",
+      "kind": "english-renderer",
+      "decisionId": "module-reading-modes-2026-08-24",
+      "recordedAt": "2026-08-31",
+      "baseCommit": "b75b2794da7000f76a15e801fdaaf9bf577268d0",
+      "implementationCommit": "0a6dba623c4b98c323653a02bc6d4911379039a1",
+      "receiptId": "receipt-batch08-unified-readers-runtime-2026-08-31",
+      "changedRendererFiles": [
+        "app/i18n/english-pilot-module-page.tsx",
+        "app/unified-brief-module-config.mjs"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "agentkit",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns",
+        "veadk"
+      ],
+      "contentProjectionChangeSlugs": [
+        "ai-infra-compute",
+        "ai-infra-platform"
+      ],
+      "metadataScope": "none",
+      "summary": "Added the AI compute and infrastructure platform reader configurations to the shared English projection while preserving their complete authored mechanisms, evidence, questions, stable hashes, and accessibility without changing authored module data, metadata, sources, or publication dates."
     }
   ],
   "deferments": [
