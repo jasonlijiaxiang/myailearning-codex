@@ -192,6 +192,7 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-batch04-unified-readers-2026-08-30",
     "erm-batch05-unified-readers-2026-08-30",
     "erm-batch06-unified-readers-2026-08-31",
+    "erm-batch07-unified-readers-2026-08-31",
   ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
   assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
@@ -333,6 +334,26 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(batch06Readers?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
   assert.deepEqual(batch06Readers?.contentProjectionChangeSlugs, ["ai-ops", "predictive-ai-mlops", "prompt-engineering"]);
   assert.equal(batch06Readers?.metadataScope, "none");
+  const batch07Readers = maintenances.get("erm-batch07-unified-readers-2026-08-31");
+  assert.equal(batch07Readers?.kind, "document-shell");
+  assert.equal(batch07Readers?.receiptId, "receipt-batch07-unified-readers-runtime-2026-08-31");
+  assert.deepEqual(batch07Readers?.changedRendererFiles, [
+    "app/i18n/english-pilot-module-page.tsx",
+    "app/inference-module-page.tsx",
+    "app/inference-studio.tsx",
+    "app/module-pilot-views.tsx",
+    "app/unified-brief-module-config.mjs",
+  ]);
+  assert.deepEqual(batch07Readers?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(batch07Readers?.contentProjectionChangeSlugs, ["fine-tuning", "llm-inference", "llm-training"]);
+  assert.equal(batch07Readers?.metadataScope, "none");
+  for (const defermentId of [
+    "dfr-fine-tuning-module-presentation-refresh-2026-08-24",
+    "dfr-llm-inference-module-presentation-refresh-2026-08-24",
+    "dfr-llm-training-module-presentation-refresh-2026-08-24",
+  ]) {
+    assert.equal(registry.deferments.find((item) => item.defermentId === defermentId)?.status, "deferred");
+  }
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   const activeBySlug = new Map(registry.deferments

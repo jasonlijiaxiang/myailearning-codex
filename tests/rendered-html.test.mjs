@@ -726,10 +726,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/ai-ops", "/modules/predictive-ai-mlops", "/modules/prompt-engineering", "/modules/llm", "/modules/data-engineering"]) {
+  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/ai-ops", "/modules/predictive-ai-mlops", "/modules/prompt-engineering", "/modules/llm", "/modules/fine-tuning", "/modules/llm-training", "/modules/llm-inference", "/modules/data-engineering"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 18, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 21, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -963,6 +963,46 @@ test("standard brief modules preserve their authored content in the unified read
       zhQuestionCount: 10,
     },
     {
+      slug: "fine-tuning",
+      zhTitleId: "fine-tuning-title",
+      enTitleId: "fine-tuning-english-title",
+      zhPrimerId: "fine-tuning-primer-title",
+      enPrimerId: "fine-tuning-english-primer-title",
+      zhMechanism: /data-knowledge-view="tuning-lifecycle"/,
+      enMechanism: /data-knowledge-view="tuning-lifecycle"/,
+      zhQuestionCount: 11,
+      englishTableCount: 3,
+      requiredChineseIds: ["qa-11"],
+      requiredEnglishIds: ["tuning-lifecycle", "critical-tuning-boundary", "tuning-production", "qa-detect-catastrophic-forgetting", "evidence-dpo-preference-pairs"],
+      requiredEnglishFacts: [
+        ["Training trigger", "Train only when a stable, repeatable, labelable behavior gap remains."],
+        ["No-tune gate", "Data rights · privacy treatment · reliable adjudication · frozen evaluation · versioning · rollback"],
+        ["Release tuple", "Data · base · adapter · tokenizer · template · runtime · policy · evidence · economics"],
+        ["Stop condition", "Unstable gains · critical regression · a lighter route wins"],
+      ],
+      englishBoundary: /Do not use fine-tuning in place of a current knowledge source[\s\S]*tool authorization[\s\S]*model-impact obligations/,
+    },
+    {
+      slug: "llm-training",
+      zhTitleId: "llm-training-title",
+      enTitleId: "llm-training-english-title",
+      zhPrimerId: "llm-training-extension-primer-title",
+      enPrimerId: "llm-training-english-primer-title",
+      zhMechanism: /data-knowledge-view="training-supply-chain"/,
+      enMechanism: /data-knowledge-view="training-supply-chain"/,
+      zhQuestionCount: 10,
+      englishTableCount: 1,
+      requiredChineseIds: ["qa-10"],
+      requiredEnglishIds: ["principles", "training-product-boundary", "deep-failure-recovery", "qa-checkpoint-frequency", "evidence-fine-tuning-four-layer-gate"],
+      requiredEnglishFacts: [
+        ["Training signals", "General-pattern learning · instruction demonstrations · preference signals · verifiable outcomes"],
+        ["Run contract", "Base weights · tokenizer · dataset snapshot and mixture · objective · optimizer and scheduler · precision · parallel topology · environment · stop rule · evaluation version"],
+        ["Valid training progress", "Compute · communication · I/O · failure · recovery"],
+        ["Release gate", "Unseen tasks · critical slices · safety · capability retention · resources · uncertainty"],
+      ],
+      englishBoundary: /Completing optimization only creates a candidate artifact; serving, shadow traffic, and continuing monitoring remain separate gates\. Training-set results and public benchmarks cannot replace the customer(?:'|&#x27;)s Go\/No-Go gate\./,
+    },
+    {
       slug: "data-engineering",
       zhTitleId: "data-engineering-title",
       enTitleId: "data-engineering-english-title",
@@ -999,6 +1039,10 @@ test("standard brief modules preserve their authored content in the unified read
     assert.match(enHtml, new RegExp(`id="${moduleCase.enPrimerId}"`));
     assert.match(zhHtml, moduleCase.zhMechanism);
     assert.match(enHtml, moduleCase.enMechanism);
+    for (const [label, value] of moduleCase.requiredEnglishFacts ?? []) {
+      assert.match(enHtml, new RegExp(`<dt>${escapeRegExp(label)}</dt><dd>${escapeRegExp(value)}</dd>`));
+    }
+    if (moduleCase.englishBoundary) assert.match(enHtml, moduleCase.englishBoundary);
     assert.match(zhHtml, new RegExp(`href="/references#module-${moduleCase.slug}"`));
     assert.match(enHtml, new RegExp(`href="/en/references\\?module=${moduleCase.slug}"`));
     assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, moduleCase.zhQuestionCount);
@@ -1025,6 +1069,13 @@ test("standard brief modules preserve their authored content in the unified read
     if (moduleCase.slug === "solution-patterns") {
       assert.equal((zhHtml.match(/aria-label="重要边界" data-importance="critical"/g) ?? []).length, 1, "Solution Patterns must expose one critical-boundary owner");
       assert.match(zhHtml, /class="primerAtlasTable" role="table" aria-label="七类场景的目标、指标和隐藏风险"/, "Solution Patterns scenario table must have its own accessible name");
+    }
+    if (moduleCase.slug === "fine-tuning") {
+      assert.match(
+        zhHtml,
+        /<div class="tuningMethodMatrix"(?=[^>]*role="table")(?=[^>]*aria-label="微调参数更新方式比较")(?=[^>]*tabindex="0")[^>]*>/,
+        "Fine-tuning parameter-update matrix must be a named, keyboard-scrollable table region",
+      );
     }
   }
 });
@@ -1109,8 +1160,26 @@ test("A2A preserves its complete English pack and accessible Chinese comparison 
   assert.equal(new Set(englishIds).size, englishIds.length, "A2A English reader must not duplicate DOM IDs");
 });
 
-test("inference reader renders the accepted heatmap, capacity lab, and evidence boundaries", async () => {
-  const html = await renderHtml("/modules/llm-inference");
+test("inference reader preserves its interactive system view inside the unified bilingual shell", async () => {
+  const [html, enHtml, studioSource, pageSource] = await Promise.all([
+    renderHtml("/modules/llm-inference"),
+    renderHtml("/en/modules/llm-inference"),
+    readFile(new URL("../app/inference-studio.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/inference-module-page.tsx", import.meta.url), "utf8"),
+  ]);
+  for (const [locale, rendered] of [["zh", html], ["en", enHtml]]) {
+    assert.equal((rendered.match(/data-module-hero="unified"/g) ?? []).length, 1, `${locale} inference must render one unified Hero`);
+    assert.equal((rendered.match(/data-module-reader="unified"/g) ?? []).length, 1, `${locale} inference must render one unified reader`);
+    assert.equal((rendered.match(/id="main-content"/g) ?? []).length, 1, `${locale} inference must render one main-content target`);
+    assert.equal((rendered.match(/id="top"/g) ?? []).length, 1, `${locale} inference must preserve one #top target`);
+    assert.equal((rendered.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} inference must render three reading modes`);
+    assert.doesNotMatch(rendered, /inferenceTopbar|inferenceChapterRail|class="topbar"/, `${locale} inference must not retain the legacy shell`);
+    const ids = [...rendered.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+    assert.equal(new Set(ids).size, ids.length, `${locale} inference must not duplicate DOM IDs`);
+  }
+  assert.match(html, /id="llm-inference-title"/);
+  assert.match(enHtml, /id="llm-inference-english-title"/);
+  assert.match(enHtml, /id="llm-inference-english-primer-title"/);
   assert.equal((html.match(/role="gridcell"/g) ?? []).length, 56, "推理热力图必须覆盖 7 个输入长度 × 8 个并发档位");
   assert.equal((html.match(/<button[^>]*aria-selected="true"[^>]*role="gridcell"/g) ?? []).length, 1, "服务端首屏只能有一个默认选中的热力图单元格");
   assert.match(html, /data-memory-gb="18\.0"/, "低负载显存估算不能低于示例 BF16 模型的常驻基线");
@@ -1126,14 +1195,34 @@ test("inference reader renders the accepted heatmap, capacity lab, and evidence 
   assert.match(html, /有效吞吐（Goodput）<\/dt><dd>849<!-- --> token\/s <small>≤ 原始吞吐 <!-- -->997<\/small>/);
   assert.match(html, /吞吐（平均）<\/span><strong>685<small>token\/s<\/small>/);
   assert.equal((html.match(/trendCurrentPoint trendCurrentPoint--/g) ?? []).length, 3, "容量曲线的三个当前点必须分别落在 TTFT、TPOT 与吞吐曲线上");
-  assert.match(html, /href="#metric-concurrency"/);
-  assert.match(html, /href="#metric-ttft"/);
-  assert.match(html, /href="#metric-tpot"/);
+  assert.match(html, /class="inferenceMetricStrip" role="group" aria-label="选择观察指标"/);
+  const metricStripHtml = html.match(/<div class="inferenceMetricStrip"[\s\S]*?<\/div>/)?.[0] ?? "";
+  assert.equal((metricStripHtml.match(/aria-pressed="(?:true|false)"/g) ?? []).length, 6, "六个推理指标必须保留可访问选择状态");
+  for (const metric of ["input", "concurrency", "ttft", "tpot", "goodput", "oom"]) {
+    assert.equal((html.match(new RegExp(`id="metric-${metric}"`, "g")) ?? []).length, 1, `推理页必须保留唯一 #metric-${metric} 深链`);
+  }
+  assert.match(studioSource, /window\.history\.pushState\(window\.history\.state/);
+  assert.match(studioSource, /window\.dispatchEvent\(new HashChangeEvent\("hashchange"\)\)/);
+  assert.match(studioSource, /setActiveMetric\(metric \?\? "input"\)/, "Back 到非指标 Hash 时必须恢复默认指标");
+  assert.match(pageSource, /definition: brief\.definition/);
+  assert.match(pageSource, /position: brief\.position/);
+  assert.equal((html.match(/id="chapter-[^"]+"/g) ?? []).length, 9, "推理课程必须保留九个章节锚点");
+  assert.equal((html.match(/id="inference-chapter-\d+"/g) ?? []).length, 9, "推理课程必须保留九个可展开面板");
+  assert.equal((html.match(/id="qa-\d+"/g) ?? []).length, 14, "中文推理问答必须完整保留");
+  assert.equal((html.match(/<article class="metricCard[^"]*"/g) ?? []).length, 3, "中文推理证据卡必须完整保留");
+  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, 14, "英文推理问答必须完整投影");
+  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, 3, "英文推理证据卡必须完整投影");
+  assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, 1, "英文推理宽表必须可命名、聚焦和横滚");
+  for (const id of ["principle", "study-guide", "curriculum", "principles", "decisions", "deep-dive", "evidence", "cloud", "qa", "related-modules", "inference-engine-boundary", "qa-maximum-context-admission", "evidence-kv-cache-serving-capacity"]) {
+    assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `英文推理页必须完整保留 #${id}`);
+  }
   assert.match(html, /示例估算，不构成容量承诺/);
   assert.match(html, /案例复盘：长输入 \+ 高并发导致 OOM/);
   assert.match(html, /id="mechanism-index"/);
   assert.match(html, /id="decision-guide"/);
-  assert.match(html, /aria-label="重要边界" data-importance="critical"/);
+  assert.equal((html.match(/aria-label="重要边界" data-importance="critical"/g) ?? []).length, 2, "推理页只保留一条全局边界和一条现场细分边界");
+  assert.equal((html.match(/<p>模型能加载不等于能以目标并发稳定服务/g) ?? []).length, 1);
+  assert.equal((html.match(/<strong>容量结论必须绑定运行包络<\/strong>/g) ?? []).length, 1);
   assert.match(html, /href="\/en\/modules\/llm-inference" hrefLang="en" lang="en"/);
   assert.doesNotMatch(html, /真实案例/);
 });

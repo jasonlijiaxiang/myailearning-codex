@@ -835,7 +835,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
   }
-  assert.deepEqual(unifiedBriefModuleSlugs, ["solution-patterns", "model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "llm", "data-engineering"]);
+  assert.deepEqual(unifiedBriefModuleSlugs, ["solution-patterns", "model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "llm", "fine-tuning", "llm-training", "data-engineering"]);
   for (const slug of unifiedBriefModuleSlugs) {
     const config = getUnifiedBriefModuleConfig(slug);
     assert.ok(config, `${slug} must have a Chinese unified-reader config`);
@@ -844,7 +844,35 @@ test("English routes and all Chinese module page families expose reciprocal lang
     assert.deepEqual(config.directories.field.map((item) => item.id), ["evidence", "cloud", "qa", "related-modules"]);
     assert.equal(config.facts.length, 4);
   }
-  for (const slug of ["solution-patterns", "model-landscape", "multimodal", "llm", "data-engineering", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "prompt-engineering"]) {
+  const batch07ChineseReaders = {
+    "fine-tuning": {
+      shortTitle: "微调",
+      primer: { id: "fine-tuning-primer-title", label: "可逆训练实验", eyebrow: "分流、门禁、验收、发布与停止" },
+      facts: [
+        { label: "训练触发", value: "轻量路线后仍有稳定、可重复、可标注的行为缺口" },
+        { label: "不微调门", value: "数据权利 · PII · 可靠标注 · 冻结评测 · 版本化 · 回滚" },
+        { label: "发布单元", value: "数据 · 冻结评估集 · 基座 / Adapter · Tokenizer / Chat Template · Runtime / Policy" },
+        { label: "停止条件", value: "收益不稳定、关键退化、完整成本越界或轻量路线反超" },
+      ],
+    },
+    "llm-training": {
+      shortTitle: "训练系统",
+      primer: { id: "llm-training-extension-primer-title", label: "训练供应链", eyebrow: "从数据与权利到候选评估" },
+      facts: [
+        { label: "训练信号", value: "通用模式学习 · 指令示范 · 偏好信号 · 可验证结果" },
+        { label: "Run 合同", value: "基础权重 · Tokenizer · 数据快照与配比 · 目标 · 优化器与调度器 · 精度 · 并行拓扑 · 环境 · 停止规则 · 评估版本" },
+        { label: "有效进度", value: "计算 · 通信 · I/O · 故障 · 恢复" },
+        { label: "候选门", value: "未见任务 · 关键切片 · 安全 · 能力保留 · 资源 · 不确定性" },
+      ],
+    },
+  };
+  for (const [slug, expected] of Object.entries(batch07ChineseReaders)) {
+    const config = getUnifiedBriefModuleConfig(slug);
+    assert.equal(config.shortTitle, expected.shortTitle);
+    assert.deepEqual(config.directories.quick[0], expected.primer);
+    assert.deepEqual(config.facts, expected.facts);
+  }
+  for (const slug of ["solution-patterns", "model-landscape", "multimodal", "llm", "fine-tuning", "llm-training", "llm-inference", "data-engineering", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "prompt-engineering"]) {
     assert.match(enModulePage, new RegExp(`(?:^|\\n)  (?:"${slug}"|${slug}): \\{`), `English unified reader config must include ${slug}`);
   }
   assert.match(enModulePage, /"prompt-engineering": \{[\s\S]*prompt-pattern-diagnostics[\s\S]*cloud-poc-operating-model/, "Prompt must preserve its dedicated reader map");
