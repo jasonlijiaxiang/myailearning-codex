@@ -74,7 +74,7 @@ export default function EnglishModelRadarPage() {
             candidatePool={englishModelRadarPolicy.candidatePool}
             locale="en"
             referencesHref="/en/references"
-            modelLandscapeHref="/en/modules/model-landscape#qa-1"
+            modelLandscapeHref="/en/modules/model-landscape#qa-contextual-model-choice"
           />
         </div>
       </section>
