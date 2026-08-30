@@ -5,6 +5,8 @@ import test from "node:test";
 const globalsUrl = new URL("../app/globals.css", import.meta.url);
 const sharedHeroUrl = new URL("../app/unified-module-reader.module.css", import.meta.url);
 const sharedHeroComponentUrl = new URL("../app/unified-module-hero.tsx", import.meta.url);
+const sharedChineseModuleUrl = new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url);
+const unifiedBriefComponentUrl = new URL("../app/unified-brief-module-page.tsx", import.meta.url);
 const designLanguageUrl = new URL("../docs/DESIGN-LANGUAGE.md", import.meta.url);
 const appUrl = new URL("../app/", import.meta.url);
 
@@ -269,15 +271,25 @@ test("the unified Header and Hero own every typography and interaction role", as
 });
 
 test("the shared scaffold keeps module CSS outside the Header boundary", async () => {
-  const [componentSource, appEntries] = await Promise.all([
+  const [componentSource, appEntries, sharedChineseSource, unifiedBriefSource] = await Promise.all([
     readFile(sharedHeroComponentUrl, "utf8"),
     readdir(appUrl, { recursive: true }),
+    readFile(sharedChineseModuleUrl, "utf8"),
+    readFile(unifiedBriefComponentUrl, "utf8"),
   ]);
   const heroIndex = componentSource.indexOf("<UnifiedModuleHero {...hero} />");
   const contentIndex = componentSource.indexOf('data-module-content="unified"');
   assert.ok(heroIndex > 0 && contentIndex > heroIndex, "共享 Hero 必须是模块内容根的前置兄弟节点");
   assert.match(componentSource, /<main[^>]+id="main-content"[^>]+data-module-content="unified"/s);
   assert.doesNotMatch(componentSource, /--fb-[a-z0-9-]+\s*:/, "共享组件不得按模块内联覆盖全站基础 Token");
+  const chineseUnifiedBranchStart = sharedChineseSource.indexOf("if (unifiedConfig)");
+  const chineseLegacyBranchStart = sharedChineseSource.indexOf("\n  return (\n    <main", chineseUnifiedBranchStart);
+  assert.ok(chineseUnifiedBranchStart > 0 && chineseLegacyBranchStart > chineseUnifiedBranchStart, "中文混合 brief renderer 必须保持可识别的统一与旧版分支边界");
+  assert.match(sharedChineseSource.slice(chineseUnifiedBranchStart, chineseLegacyBranchStart), /<UnifiedBriefModulePage\b/);
+  assert.doesNotMatch(sharedChineseSource.slice(chineseUnifiedBranchStart, chineseLegacyBranchStart), /<ReadingProgress\b/, "中文统一分支不得复制旧版页面外壳");
+  assert.match(unifiedBriefSource, /<UnifiedModuleScaffold\b/);
+  assert.match(unifiedBriefSource, /<DenseModuleReadingModes\b/);
+  assert.doesNotMatch(unifiedBriefSource, /<UnifiedModuleHero\b|<ReadingProgress\b/, "共享 brief wrapper 不得拆开共享页面边界");
 
   const sourceEntries = appEntries.filter((entry) => /\.(?:tsx|jsx)$/.test(entry) && entry !== "unified-module-hero.tsx");
   const scaffoldEntries = [];
@@ -297,5 +309,5 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
     assert.doesNotMatch(source, /data-module-hero\s*=/, `${entry} 不得复制共享 Hero 标记`);
     assert.doesNotMatch(source, /--fb-[a-z0-9-]+\s*:/, `${entry} 不得以内联样式覆盖全站基础 Token`);
   }
-  assert.ok(scaffoldEntries.length >= 4, "当前迁移批次必须至少覆盖 RAG、Agent、MCP 与 A2A");
+  assert.ok(scaffoldEntries.length >= 5, "当前迁移批次必须包含共享 brief wrapper 及既有专用模块接入点");
 });

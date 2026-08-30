@@ -22,6 +22,7 @@ import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { getPublishedModule, hasDedicatedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
 import { terminology } from "../app/terminology.mjs";
+import { getUnifiedBriefModuleConfig, unifiedBriefModuleSlugs } from "../app/unified-brief-module-config.mjs";
 import { loadPromotedProjects, loadRuntimeMaintenanceOverlays, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import { loadLocalizationProject } from "../scripts/lib/localization-contract.mjs";
@@ -456,7 +457,7 @@ test("English module pages render the canonical knowledge view before the shared
   assert.match(englishModulePage, /<ModuleKnowledgeExplorer view=\{explorerView\} locale="en" \/>/, "English modules must share the canonical interactive knowledge view");
   assert.doesNotMatch(englishModulePage, /className="extensionPrimerMap"/, "English modules must not fall back to the old static card rail");
   assert.match(englishModulePage, /<DeepDiveRelationView[\s\S]*locale="en"/, "English step relationships should use the shared adaptive relation view");
-  assert.match(englishModulePage, /usesFocusedReadingProfile \? relatedSection : null/, "focused pages must place related modules after the main argument");
+  assert.match(englishModulePage, /usesFocusedReadingProfile \? renderRelatedSection\(/, "focused pages must place related modules after the main argument");
   for (const slug of englishModuleSlugs) assert.ok(getPublishedModule(slug), `${slug} needs a canonical bilingual publication contract`);
   for (const [slug, module] of Object.entries(englishModuleRegistry)) {
     if (!module.primer) continue;
@@ -825,11 +826,24 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.match(promptZh, /promptEnglishPath/);
   assert.doesNotMatch(enHome, />English pilot</i);
   assert.match(enShared, /EnglishModulePage/);
+  assert.match(enShared, /\["llm", "data-engineering"\]\.includes\(slug\)/, "English shared route must opt the first brief batch into the unified reader");
   assert.match(enRag, /EnglishModulePage[^>]*reader="unified"/, "English RAG must opt into the shared task-led reader");
   assert.match(enModulePage, /DenseModuleReadingModes/);
   assert.match(enModulePage, /locale="en"/);
   for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
+  }
+  assert.deepEqual(unifiedBriefModuleSlugs, ["llm", "data-engineering"]);
+  for (const slug of unifiedBriefModuleSlugs) {
+    const config = getUnifiedBriefModuleConfig(slug);
+    assert.ok(config, `${slug} must have a Chinese unified-reader config`);
+    assert.deepEqual(config.directories.quick.map((item) => item.id).slice(1), ["decisions"]);
+    assert.deepEqual(config.directories.learn.map((item) => item.id), ["principle", "study-guide", "curriculum", "deep-dive"]);
+    assert.deepEqual(config.directories.field.map((item) => item.id), ["evidence", "cloud", "qa", "related-modules"]);
+    assert.equal(config.facts.length, 4);
+  }
+  for (const slug of ["llm", "data-engineering"]) {
+    assert.match(enModulePage, new RegExp(`(?:^|\\n)  (?:"${slug}"|${slug}): \\{`), `English unified reader config must include ${slug}`);
   }
   assert.match(enModulePage, /englishSourceCopy/, "English module pages must render localized source labels");
   assert.doesNotMatch(enModulePage, /sourceLedger\[evidence\.sourceId\]\?\.(?:kind|shortTitle)/, "English QA evidence must not render Chinese canonical labels");

@@ -185,6 +185,8 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-relation-matrix-accessibility-2026-08-30",
     "erm-unified-hash-navigation-2026-08-30",
     "erm-unified-hash-post-commit-2026-08-30",
+    "erm-batch01-unified-readers-2026-08-30",
+    "erm-batch01-directory-copy-2026-08-30",
   ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
   assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
@@ -244,6 +246,29 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(hashPostCommit?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
   assert.deepEqual(hashPostCommit?.contentProjectionChangeSlugs, []);
   assert.equal(hashPostCommit?.metadataScope, "none");
+  const batch01Readers = maintenances.get("erm-batch01-unified-readers-2026-08-30");
+  assert.equal(batch01Readers?.kind, "document-shell");
+  assert.equal(batch01Readers?.receiptId, "receipt-batch01-unified-readers-runtime-2026-08-30");
+  assert.deepEqual(batch01Readers?.changedRendererFiles, [
+    "app/(en)/en/modules/[slug]/page.tsx",
+    "app/(zh)/modules/[slug]/page.tsx",
+    "app/i18n/english-pilot-module-page.tsx",
+    "app/unified-brief-module-config.mjs",
+    "app/unified-brief-module-page.tsx",
+  ]);
+  assert.deepEqual(batch01Readers?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(batch01Readers?.contentProjectionChangeSlugs, ["data-engineering", "llm"]);
+  assert.equal(batch01Readers?.metadataScope, "none");
+  const batch01DirectoryCopy = maintenances.get("erm-batch01-directory-copy-2026-08-30");
+  assert.equal(batch01DirectoryCopy?.kind, "english-renderer");
+  assert.equal(batch01DirectoryCopy?.receiptId, "receipt-batch01-directory-copy-runtime-2026-08-30");
+  assert.deepEqual(batch01DirectoryCopy?.changedRendererFiles, [
+    "app/i18n/english-pilot-module-page.tsx",
+    "app/unified-brief-module-config.mjs",
+  ]);
+  assert.deepEqual(batch01DirectoryCopy?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(batch01DirectoryCopy?.contentProjectionChangeSlugs, ["data-engineering", "llm"]);
+  assert.equal(batch01DirectoryCopy?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   const activeBySlug = new Map(registry.deferments
@@ -295,13 +320,16 @@ test("a later runtime maintenance may supersede an earlier overlay for the same 
   assert.doesNotMatch(result.failures.join("\n"), /already covered by/);
 });
 
-test("the latest document-shell maintenance retains the complete prior runtime chain", () => {
+test("the latest runtime maintenance retains the complete prior document-shell chain", () => {
   const result = validate(registry, currentProject, { runtimeOverlays });
   const latestDocumentShell = registry.runtimeMaintenances.filter((item) => item.kind === "document-shell").at(-1);
+  const latestMaintenance = registry.runtimeMaintenances.at(-1);
   assert.ok(latestDocumentShell, "the registry must contain a document-shell maintenance");
+  assert.ok(latestMaintenance, "the registry must contain a runtime maintenance");
   assert.deepEqual(result.failures, []);
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === "document-shell"));
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === latestDocumentShell.maintenanceId));
+  assert.ok(registry.runtimeMaintenances.indexOf(latestDocumentShell) <= registry.runtimeMaintenances.indexOf(latestMaintenance));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === latestMaintenance.kind));
+  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === latestMaintenance.maintenanceId));
 });
 
 test("a document-shell overlay preserves an active deferment's exact authored-content delta", () => {

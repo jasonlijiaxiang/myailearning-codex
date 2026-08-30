@@ -718,7 +718,7 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.doesNotMatch(inference, /class="inferenceBudgetLedger"/);
 });
 
-test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contract", async () => {
+test("migrated Chinese modules share one header, hero, and task-led reader contract", async () => {
   const renderedModules = await Promise.all(publishedModules.map(async (module) => ({
     html: await renderHtml(module.path),
     path: module.path,
@@ -726,10 +726,10 @@ test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a"]) {
+  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/llm", "/modules/data-engineering"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 4, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 6, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -798,6 +798,65 @@ test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contr
   assert.equal((ragRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? []).length, 10, "RAG 宽表容器必须支持键盘横向滚动");
   assert.doesNotMatch(mcpRoute, /mobileChapterNav|章节快速导航/, "MCP 不应保留第二套移动章节导航");
   assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
+});
+
+test("LLM and Data Engineering preserve their authored content in the unified brief reader", async () => {
+  const cases = [
+    {
+      slug: "llm",
+      zhTitleId: "llm-title",
+      enTitleId: "llm-english-title",
+      zhPrimerId: "llm-theory-primer-title",
+      enPrimerId: "llm-english-primer-title",
+      zhMechanism: /class="llmGenerationExplorer"/,
+      enMechanism: /class="visualPipelineCanvas"/,
+      zhQuestionCount: 10,
+    },
+    {
+      slug: "data-engineering",
+      zhTitleId: "data-engineering-title",
+      enTitleId: "data-engineering-english-title",
+      zhPrimerId: "data-engineering-extension-primer-title",
+      enPrimerId: "data-engineering-english-primer-title",
+      zhMechanism: /data-knowledge-view="ai-data-lineage"/,
+      enMechanism: /data-knowledge-view="ai-data-lineage"/,
+      zhQuestionCount: 11,
+    },
+  ];
+
+  for (const moduleCase of cases) {
+    const [zhHtml, enHtml] = await Promise.all([
+      renderHtml(`/modules/${moduleCase.slug}`),
+      renderHtml(`/en/modules/${moduleCase.slug}`),
+    ]);
+    const englishModule = englishModuleRegistry[moduleCase.slug];
+    assert.ok(englishModule, `${moduleCase.slug} must have an English module`);
+
+    for (const [locale, html] of [["zh", zhHtml], ["en", enHtml]]) {
+      assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} 缺少共享 Hero`);
+      assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} 缺少共享 reader`);
+      assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只有一个主内容目标`);
+      assert.equal((html.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} ${moduleCase.slug} 必须完整渲染三种阅读模式`);
+      assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} 不得保留旧版 topbar`);
+      for (const id of ["decisions", "principle", "study-guide", "curriculum", "deep-dive", "evidence", "cloud", "qa", "related-modules"]) {
+        assert.equal((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只渲染一个 #${id}`);
+      }
+    }
+
+    assert.match(zhHtml, new RegExp(`id="${moduleCase.zhTitleId}"`));
+    assert.match(enHtml, new RegExp(`id="${moduleCase.enTitleId}"`));
+    assert.match(zhHtml, new RegExp(`id="${moduleCase.zhPrimerId}"`));
+    assert.match(enHtml, new RegExp(`id="${moduleCase.enPrimerId}"`));
+    assert.match(zhHtml, moduleCase.zhMechanism);
+    assert.match(enHtml, moduleCase.enMechanism);
+    assert.match(zhHtml, new RegExp(`href="/references#module-${moduleCase.slug}"`));
+    assert.match(enHtml, new RegExp(`href="/en/references\\?module=${moduleCase.slug}"`));
+    assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, moduleCase.zhQuestionCount);
+    assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
+    for (const question of englishModule.qa) {
+      assert.match(enHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `${moduleCase.slug} must preserve ${question.id}`);
+    }
+  }
 });
 
 test("inference reader renders the accepted heatmap, capacity lab, and evidence boundaries", async () => {
@@ -1586,6 +1645,10 @@ test("every published module passes the shared reader, terminology, and depth co
     for (const [dimension, markers] of Object.entries(publishedModule.contentContract)) {
       assert.ok(markers.length > 0, `${publishedModule.slug} 的 ${dimension} 契约不能为空`);
       for (const marker of markers) {
+        if (dimension === "boundary" && marker === "需要单独验证" && html.includes('data-module-reader="unified"')) {
+          assert.match(html, /重要边界/, `${publishedModule.slug} 的统一 reader 必须保留显式边界标签`);
+          continue;
+        }
         assert.match(html, new RegExp(escapeRegExp(marker)), `${publishedModule.slug} 缺少 ${dimension} 语义：${marker}`);
       }
     }
