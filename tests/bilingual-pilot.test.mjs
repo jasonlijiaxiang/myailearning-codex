@@ -820,10 +820,17 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.doesNotMatch(ragZh, /<nav className="topbar"|<ReadingProgress\b/, "RAG must not duplicate the shared page shell");
   assert.match(agentZh, /UnifiedModuleScaffold/);
   assert.match(unifiedHero, /englishModulePath/);
+  assert.match(unifiedHero, /`\/en\/references\?module=\$\{slug\}`/, "English unified modules must use the real scoped source-ledger URL");
+  assert.doesNotMatch(unifiedHero, /\/en\/references#module-/, "English unified modules must not point to a nonexistent source anchor");
   assert.match(promptZh, /promptEnglishPath/);
   assert.doesNotMatch(enHome, />English pilot</i);
   assert.match(enShared, /EnglishModulePage/);
-  assert.match(enRag, /EnglishModulePage/);
+  assert.match(enRag, /EnglishModulePage[^>]*reader="unified"/, "English RAG must opt into the shared task-led reader");
+  assert.match(enModulePage, /DenseModuleReadingModes/);
+  assert.match(enModulePage, /locale="en"/);
+  for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
+    assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
+  }
   assert.match(enModulePage, /englishSourceCopy/, "English module pages must render localized source labels");
   assert.doesNotMatch(enModulePage, /sourceLedger\[evidence\.sourceId\]\?\.(?:kind|shortTitle)/, "English QA evidence must not render Chinese canonical labels");
 });

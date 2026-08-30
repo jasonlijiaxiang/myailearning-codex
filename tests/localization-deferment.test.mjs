@@ -180,6 +180,9 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-english-source-scope-2026-08-10",
     "erm-full-site-design-voice-2026-08-12",
     "erm-module-reading-modes-2026-08-24",
+    "erm-rag-unified-english-reader-2026-08-30",
+    "erm-unified-english-source-scope-2026-08-30",
+    "erm-relation-matrix-accessibility-2026-08-30",
   ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
   assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
@@ -206,6 +209,25 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(fullSiteReview?.affectedModuleSlugs, preAgentPlatformModuleSlugs);
   assert.deepEqual(fullSiteReview?.contentProjectionChangeSlugs, []);
   assert.equal(fullSiteReview?.metadataScope, "none");
+  const ragUnifiedReader = maintenances.get("erm-rag-unified-english-reader-2026-08-30");
+  assert.equal(ragUnifiedReader?.kind, "english-renderer");
+  assert.equal(ragUnifiedReader?.receiptId, "receipt-rag-unified-english-reader-runtime-2026-08-30");
+  assert.deepEqual(ragUnifiedReader?.changedRendererFiles, ["app/(en)/en/modules/rag/page.tsx", "app/i18n/english-pilot-module-page.tsx"]);
+  assert.deepEqual(ragUnifiedReader?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(ragUnifiedReader?.contentProjectionChangeSlugs, ["rag"]);
+  assert.equal(ragUnifiedReader?.metadataScope, "none");
+  const unifiedSourceScope = maintenances.get("erm-unified-english-source-scope-2026-08-30");
+  assert.equal(unifiedSourceScope?.kind, "document-shell");
+  assert.equal(unifiedSourceScope?.receiptId, "receipt-unified-english-source-scope-runtime-2026-08-30");
+  assert.deepEqual(unifiedSourceScope?.changedRendererFiles, ["app/unified-module-hero.tsx"]);
+  assert.deepEqual(unifiedSourceScope?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(unifiedSourceScope?.contentProjectionChangeSlugs, []);
+  const relationMatrix = maintenances.get("erm-relation-matrix-accessibility-2026-08-30");
+  assert.equal(relationMatrix?.kind, "document-shell");
+  assert.equal(relationMatrix?.receiptId, "receipt-relation-matrix-accessibility-runtime-2026-08-30");
+  assert.deepEqual(relationMatrix?.changedRendererFiles, ["app/deep-dive-relation-view.tsx"]);
+  assert.deepEqual(relationMatrix?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(relationMatrix?.contentProjectionChangeSlugs, []);
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   const activeBySlug = new Map(registry.deferments

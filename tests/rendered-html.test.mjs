@@ -751,13 +751,14 @@ test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contr
     assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
   }
 
-  const [ragRoute, agentRoute, mcpRoute, a2aRoute, readerSource, heroSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
+  const [ragRoute, agentRoute, mcpRoute, a2aRoute, readerSource, heroSource, relationSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
     readFile(new URL("../app/(zh)/modules/rag/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp-module-experience-client.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/a2a-module-experience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/dense-module-reading-modes.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/unified-module-hero.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/deep-dive-relation-view.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp-module-experience.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/dense-module-reading-modes.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
@@ -777,6 +778,10 @@ test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contr
   assert.match(heroSource, /mobileMenu: "模块导航菜单"/, "中文移动菜单名称必须保留在本地化契约中");
   assert.match(heroSource, /aria-label=\{copy\.mobileMenu\}/, "移动菜单名称不能绑定单一开合状态");
   assert.match(heroSource, /<em lang="en"> · \{enTitle\}<\/em>/, "中文 Hero 的英文副题必须声明语言");
+  assert.match(relationSource, /className="relationMatrixScroll" role="region" aria-label=\{block\.title\} tabIndex=\{0\}/, "关系矩阵横滚区必须可聚焦且有可访问名称");
+  assert.match(relationSource, /<caption className="srOnly">\{block\.title\}<\/caption>/, "关系矩阵必须声明隐藏表名");
+  assert.equal((relationSource.match(/scope="col"/g) ?? []).length, 4, "关系矩阵四列必须声明列标题");
+  assert.match(relationSource, /<th scope="row"><button/, "关系矩阵对象列必须声明行标题");
   assert.match(fieldbookStyles, /\.moduleReadingExperience\[data-module-reader="unified"\]\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 不能裁掉 sticky 元素");
   assert.match(fieldbookStyles, /\[data-module-content="unified"\] \.moduleReadingHost > \.section\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 的正文祖先不能破坏 sticky 定位");
   assert.doesNotMatch(denseStyles, /#fff\b/, "统一 reader 必须消费共享 surface token");
@@ -1014,10 +1019,24 @@ test("English RAG renders its complete dedicated reader and its source ledger ca
   const visibleGroups = selectVisibleEnglishSectionGroups(rag);
   const visibleEvidence = selectVisibleEnglishEvidenceCards(rag);
   const visibleQuestions = selectVisibleEnglishQuestions(rag);
+  assert.match(ragHtml, /data-module-hero="unified"/);
+  assert.match(ragHtml, /data-module-reader="unified"/);
+  assert.match(ragHtml, /aria-label="Module navigation"/);
+  assert.match(ragHtml, /aria-label="Reading modes"/);
+  assert.match(ragHtml, />10-minute scan</);
+  assert.match(ragHtml, />Systematic study</);
+  assert.match(ragHtml, />Field lookup</);
+  assert.match(ragHtml, /aria-label="Critical boundary"[^>]*data-importance="critical"/);
+  assert.equal((ragHtml.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3);
+  assert.equal((ragHtml.match(/id="main-content"/g) ?? []).length, 1, "English RAG must expose one shared skip target");
+  assert.doesNotMatch(ragHtml, /class="topbar"/, "English RAG must not render the legacy module shell");
   assert.equal(visibleGroups.length, rag.sections.length);
   assert.equal(visibleEvidence.length, rag.evidenceCards.length);
   assert.equal(visibleQuestions.length, rag.qa.length);
-  for (const group of visibleGroups) assert.match(ragHtml, new RegExp(`id="${escapeRegExp(group.id)}"`), `RAG must render its ${group.id} section`);
+  for (const group of visibleGroups) {
+    const groupMatches = ragHtml.match(new RegExp(`id="${escapeRegExp(group.id)}"`, "g")) ?? [];
+    assert.equal(groupMatches.length, 1, `RAG must render its ${group.id} section exactly once`);
+  }
   for (const card of visibleEvidence) assert.match(ragHtml, new RegExp(`id="evidence-${escapeRegExp(card.id)}"`), `RAG must render its ${card.id} evidence card`);
   for (const question of visibleQuestions) assert.match(ragHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `RAG must render its ${question.id} question`);
   const primerTarget = visibleGroups.find((group) => /(?:production|deep)/.test(group.id))?.id ?? visibleGroups[0]?.id;

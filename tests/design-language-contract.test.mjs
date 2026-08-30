@@ -285,7 +285,14 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
     const source = await readFile(new URL(entry, appUrl), "utf8");
     if (/<UnifiedModuleScaffold\b/.test(source)) {
       scaffoldEntries.push(entry);
-      assert.doesNotMatch(source, /<UnifiedModuleHero\b|<ReadingProgress\b/, `${entry} 不得拆开共享页面边界`);
+      if (entry === "i18n/english-pilot-module-page.tsx") {
+        const unifiedBranchStart = source.indexOf('if (reader === "unified")');
+        const legacyBranchStart = source.indexOf("\n  return (\n    <main", unifiedBranchStart);
+        assert.ok(unifiedBranchStart > 0 && legacyBranchStart > unifiedBranchStart, "英文混合 renderer 必须保持可识别的统一与旧版分支边界");
+        assert.doesNotMatch(source.slice(unifiedBranchStart, legacyBranchStart), /<UnifiedModuleHero\b|<ReadingProgress\b/, `${entry} 的统一分支不得拆开共享页面边界`);
+      } else {
+        assert.doesNotMatch(source, /<UnifiedModuleHero\b|<ReadingProgress\b/, `${entry} 不得拆开共享页面边界`);
+      }
     }
     assert.doesNotMatch(source, /data-module-hero\s*=/, `${entry} 不得复制共享 Hero 标记`);
     assert.doesNotMatch(source, /--fb-[a-z0-9-]+\s*:/, `${entry} 不得以内联样式覆盖全站基础 Token`);
