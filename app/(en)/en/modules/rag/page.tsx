@@ -14,5 +14,5 @@ export const metadata: Metadata = englishPageMetadata({
 });
 
 export default function EnglishRagPage() {
-  return <EnglishModulePage module={rag} />;
+  return <EnglishModulePage module={rag} reader="unified" />;
 }

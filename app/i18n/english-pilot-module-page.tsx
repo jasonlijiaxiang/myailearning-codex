@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
+import { DenseModuleReadingModes, type DenseChapterLink } from "../dense-module-reading-modes";
 import { ModuleReadingNav, ReadingProgress, type ReadingSection } from "../fieldbook-interactions";
 import { balanceGridRows, gridSpan } from "../layout-utils.mjs";
 import { getModuleBySlug } from "../knowledge-map.mjs";
@@ -10,6 +11,7 @@ import { requireModuleExtensionView } from "../module-extension-views.mjs";
 import { ModuleKnowledgeExplorer, type ExtensionView } from "../module-visual-explorers";
 import { getPublishedModule } from "../module-publication.mjs";
 import { sourceLedger } from "../reference-content.mjs";
+import { UnifiedModuleScaffold } from "../unified-module-hero";
 import { englishSourceCopy } from "./en/registry.mjs";
 import { getEnglishUpdatedAt } from "../english-update-dates.mjs";
 import { shouldVisualizeEnglishSteps } from "./english-representation-assessment.mjs";
@@ -79,6 +81,40 @@ type EnglishModule = {
   evidenceCards: Array<{ id: string; metric: string; title: string; finding: string; boundary: string; sourceId: string; accent?: boolean }>;
   terms: Record<string, { name: string; abbr?: string; definition: string }>;
 };
+
+const ragQuickDirectory = [
+  { id: "rag-english-primer-title", label: "Primer", eyebrow: "Evidence system" },
+  { id: "concept-map", label: "Decision map", eyebrow: "Start with the outcome" },
+  { id: "when-to-use", label: "Adoption test", eyebrow: "Choose the simplest route" },
+] satisfies readonly DenseChapterLink[];
+
+const ragLearnDirectory = [
+  { id: "rag-principle", label: "Usable evidence", eyebrow: "Authority and scope" },
+  { id: "architecture", label: "Reference architecture", eyebrow: "Offline and online chains" },
+  { id: "retrieval-basics", label: "Retrieval foundations", eyebrow: "Evidence objects" },
+  { id: "production-rag", label: "Online answer path", eyebrow: "Answer or safe stop" },
+  { id: "choice", label: "Stack selection", eyebrow: "Target the bottleneck" },
+  { id: "rag-independent-depth", label: "Lifecycle consistency", eyebrow: "Access and versions" },
+  { id: "poc", label: "PoC decision", eyebrow: "Go, Repair, or Stop" },
+  { id: "rag-variants", label: "Extension patterns", eyebrow: "Add measured complexity" },
+  { id: "rag-evidence-practice", label: "Practice outputs", eyebrow: "Learn by deliverable" },
+] satisfies readonly DenseChapterLink[];
+
+const ragFieldDirectory = [
+  { id: "cloud-opportunities", label: "Cloud capabilities", eyebrow: "Map value and ownership" },
+  { id: "rag-customer-question-guide", label: "Question guide", eyebrow: "Use the pack" },
+  { id: "evidence", label: "Evidence and limits", eyebrow: "Know what sources prove" },
+  { id: "qa", label: "Customer questions", eyebrow: "Answer with boundaries" },
+  { id: "related-modules", label: "Related modules", eyebrow: "Follow responsibility" },
+] satisfies readonly DenseChapterLink[];
+
+const ragUnifiedGroupIds = {
+  quick: ["concept-map", "when-to-use"],
+  learn: ["rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice"],
+  field: ["cloud-opportunities", "rag-customer-question-guide"],
+} as const;
+
+const ragChapters = [...ragQuickDirectory, ...ragLearnDirectory, ...ragFieldDirectory];
 
 function EnglishTermHintRow({ module, primer }: { module: EnglishModule; primer: EnglishPrimer }) {
   return (
@@ -348,7 +384,7 @@ function EnglishSectionGroupView({ group, number }: { group: EnglishSectionGroup
   );
 }
 
-export function EnglishModulePage({ module }: { module: EnglishModule }) {
+export function EnglishModulePage({ module, reader = "legacy" }: { module: EnglishModule; reader?: "legacy" | "unified" }) {
   const publication = getPublishedModule(module.slug);
   if (!publication) throw new Error(`English module is not published in Chinese: ${module.slug}`);
   const canonicalModule = getModuleBySlug(module.slug);
@@ -384,6 +420,115 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
       </div>
     </section>
   );
+
+  const evidenceSection = (
+    <section className={`subsection moduleBriefSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="evidence">
+      <div className="subHead"><span>{String(visibleMainGroups.length + 2).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2>Evidence cards</h2></div></div>
+      <div className="evidenceGrid" data-count={visibleEvidenceCards.length} data-odd={visibleEvidenceCards.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(visibleEvidenceCards, 3).flatMap((row) => row.map((card) => {
+        const source = sourceLedger[card.sourceId];
+        const localizedSource = englishSourceCopy[card.sourceId];
+        if (!source || !localizedSource) throw new Error(`Unknown evidence sourceId: ${card.sourceId}`);
+        return <article className={`metricCard${card.accent ? " accent" : ""}`} id={`evidence-${card.id}`} key={card.id} style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}><p className="metric">{card.metric}</p><h3>{card.title}</h3><p className="metricFinding">{card.finding}</p><p className="metricBoundary"><strong>Evidence limit</strong>{card.boundary}</p><Link href={`/en/references#source-${card.sourceId}`} prefetch={false}>{localizedSource.shortTitle} ↘</Link></article>;
+      }))}</div>
+      {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/references?module=${module.slug}`} prefetch={false}>Review this module’s source ledger and verification dates →</Link></p> : null}
+    </section>
+  );
+
+  const qaSection = (
+    <section className={`subsection moduleBriefSection qaSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="qa">
+      <div className="subHead"><span>{String(visibleMainGroups.length + cloudGroups.length + 3).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>Common questions and evidence-backed answers</h2></div></div>
+      <div className="qaList">{visibleQuestions.map((item, index) => (
+        <details className="qaItem" id={`qa-${item.id}`} key={item.id}>
+          <summary><span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span><span className="qaQuestion"><strong>{item.q}</strong>{item.addedAt ? <small>Added on {item.addedAt}</small> : null}</span><span className="qaTag">{item.tag}</span><span className="plus">＋</span></summary>
+          <div className="qaAnswer">
+            <div><p className="answerLabel">SHORT ANSWER</p><p>{item.a}</p></div>
+            <div><p className="answerLabel">TECHNICAL DETAIL</p><p>{item.depth}</p></div>
+            <div className="qaBasis" aria-label="Evidence for this answer"><div className="qaBasisHead"><p className="answerLabel">EVIDENCE AND LIMITS</p><span>{item.basis}</span></div><div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(item.evidence, 3).flatMap((row) => row.map((evidence) => <Link href={`/en/references#source-${evidence.sourceId}`} key={evidence.sourceId} prefetch={false} style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}><span className="qaEvidenceMeta">{sourceLedger[evidence.sourceId]?.grade} · {englishSourceCopy[evidence.sourceId]?.kind}</span><strong>{englishSourceCopy[evidence.sourceId]?.shortTitle ?? evidence.sourceId}</strong><small>{evidence.supports}</small></Link>))}</div></div>
+            <div className="ask"><p className="answerLabel">RECOMMENDED DISCOVERY QUESTION</p><p>{discoveryQuestion(item.ask)}</p></div>
+          </div>
+        </details>
+      ))}</div>
+      {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/questions?module=${module.slug}`} prefetch={false}>Browse every customer question for this module →</Link></p> : null}
+    </section>
+  );
+
+  const pageFooter = (
+    <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{module.title}<ModuleUpdatedAt value={getEnglishUpdatedAt(module.slug) ?? publication.updatedAt ?? undefined} locale="en" /></p><a href="#top">Back to top ↑</a></footer>
+  );
+
+  if (reader === "unified") {
+    if (module.slug !== "rag") throw new Error(`The unified English reader is not configured for: ${module.slug}`);
+    if (!primer) throw new Error("The unified English RAG reader requires its architecture primer.");
+
+    const groupById = new Map(visibleSectionGroups.map((group) => [group.id, group]));
+    const assignedGroupIds = [...ragUnifiedGroupIds.quick, ...ragUnifiedGroupIds.learn, ...ragUnifiedGroupIds.field];
+    const assignedGroupIdSet = new Set<string>(assignedGroupIds);
+    const duplicateGroupIds = assignedGroupIds.filter((groupId, index) => assignedGroupIds.indexOf(groupId) !== index);
+    const unknownGroupIds = assignedGroupIds.filter((groupId) => !groupById.has(groupId));
+    const missingGroupIds = visibleSectionGroups.map((group) => group.id).filter((groupId) => !assignedGroupIdSet.has(groupId));
+    const visibleGroupIds = visibleSectionGroups.map((group) => group.id);
+    const duplicateVisibleGroupIds = visibleGroupIds.filter((groupId, index) => visibleGroupIds.indexOf(groupId) !== index);
+    const reservedIds = new Set([primer.id, "rag-english-primer-title", "evidence", "qa", "related-modules"]);
+    const conflictingGroupIds = assignedGroupIds.filter((groupId) => reservedIds.has(groupId));
+    if (duplicateVisibleGroupIds.length || duplicateGroupIds.length || unknownGroupIds.length || missingGroupIds.length || conflictingGroupIds.length) {
+      throw new Error(`English RAG unified reader group contract mismatch: duplicate-visible=${duplicateVisibleGroupIds.join(",") || "none"}; duplicate-config=${duplicateGroupIds.join(",") || "none"}; unknown=${unknownGroupIds.join(",") || "none"}; missing=${missingGroupIds.join(",") || "none"}; reserved=${conflictingGroupIds.join(",") || "none"}`);
+    }
+
+    const renderUnifiedGroups = (groupIds: readonly string[]) => groupIds.map((groupId) => {
+      const group = groupById.get(groupId);
+      if (!group) throw new Error(`English RAG unified reader references an unknown group: ${groupId}`);
+      return <EnglishSectionGroupView group={group} number={assignedGroupIds.findIndex((candidate) => candidate === groupId) + 2} key={group.id} />;
+    });
+    const quickGroups = renderUnifiedGroups(ragUnifiedGroupIds.quick);
+    const learnGroups = renderUnifiedGroups(ragUnifiedGroupIds.learn);
+    const fieldGroups = renderUnifiedGroups(ragUnifiedGroupIds.field);
+
+    return (
+      <UnifiedModuleScaffold
+        className="fieldbookTheme modulePage moduleBriefPage modulePilot modulePilot--dedicated moduleFocused"
+        hero={{
+          anchorId: "top",
+          titleId: "rag-english-title",
+          shortTitle: module.subtitle,
+          zhTitle: "",
+          enTitle: module.title,
+          definition: module.definition,
+          position: module.position,
+          slug: module.slug,
+          questionCount: visibleQuestions.length,
+          evidenceCount: visibleEvidenceCards.length,
+          locale: "en",
+          facts: [
+            { label: "Adoption condition", value: "Changing evidence, access, citation, or withdrawal" },
+            { label: "Evidence path", value: "Source → evidence object → answer decision" },
+            { label: "Production gate", value: "Authority, identity, version, citation, and safe stop" },
+            { label: "Extension rule", value: "Add Agent, MCP, or A2A only for a measured need" },
+          ],
+        }}
+      >
+        <div className="dedicatedArticleLayout moduleReadingHost">
+          <section className="section ragBody" aria-label="RAG core content">
+            <div className="sectionNumber">02</div>
+            <div className="sectionBody">
+              <DenseModuleReadingModes
+                chapters={ragChapters}
+                criticalBoundary="RAG does not turn retrieved text into truth. It turns governed external material into candidate evidence and preserves enough identity, scope, and provenance for the application to decide whether a claim may be made."
+                directories={{ quick: ragQuickDirectory, learn: ragLearnDirectory, field: ragFieldDirectory }}
+                field={<>{fieldGroups}{evidenceSection}{qaSection}{relatedSection}</>}
+                hashGroups={ragUnifiedGroupIds}
+                learn={<>{learnGroups}</>}
+                locale="en"
+                moduleName="RAG: Retrieval-Augmented Generation"
+                quick={<><EnglishModulePrimer module={module} primer={primer} />{quickGroups}</>}
+                readerId="module-reading"
+              />
+            </div>
+          </section>
+        </div>
+        {pageFooter}
+      </UnifiedModuleScaffold>
+    );
+  }
 
   return (
     <main lang="en" className={`fieldbookTheme modulePage moduleBriefPage${publication.visualProfile === "dense-reading" ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
@@ -421,39 +566,16 @@ export function EnglishModulePage({ module }: { module: EnglishModule }) {
 
           {visibleMainGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}
 
-          <section className={`subsection moduleBriefSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="evidence">
-            <div className="subHead"><span>{String(visibleMainGroups.length + 2).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2>Evidence cards</h2></div></div>
-            <div className="evidenceGrid" data-count={visibleEvidenceCards.length} data-odd={visibleEvidenceCards.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(visibleEvidenceCards, 3).flatMap((row) => row.map((card) => {
-              const source = sourceLedger[card.sourceId];
-              const localizedSource = englishSourceCopy[card.sourceId];
-              if (!source || !localizedSource) throw new Error(`Unknown evidence sourceId: ${card.sourceId}`);
-              return <article className={`metricCard${card.accent ? " accent" : ""}`} id={`evidence-${card.id}`} key={card.id} style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}><p className="metric">{card.metric}</p><h3>{card.title}</h3><p className="metricFinding">{card.finding}</p><p className="metricBoundary"><strong>Evidence limit</strong>{card.boundary}</p><Link href={`/en/references#source-${card.sourceId}`} prefetch={false}>{localizedSource.shortTitle} ↘</Link></article>;
-            }))}</div>
-            {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/references?module=${module.slug}`} prefetch={false}>Review this module’s source ledger and verification dates →</Link></p> : null}
-          </section>
+          {evidenceSection}
 
           {cloudGroups.map((group, index) => <EnglishSectionGroupView group={group} number={visibleMainGroups.length + index + 3} key={group.id} />)}
 
-          <section className={`subsection moduleBriefSection qaSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="qa">
-            <div className="subHead"><span>{String(visibleMainGroups.length + cloudGroups.length + 3).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>Common questions and evidence-backed answers</h2></div></div>
-            <div className="qaList">{visibleQuestions.map((item, index) => (
-              <details className="qaItem" id={`qa-${item.id}`} key={item.id}>
-                <summary><span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span><span className="qaQuestion"><strong>{item.q}</strong>{item.addedAt ? <small>Added on {item.addedAt}</small> : null}</span><span className="qaTag">{item.tag}</span><span className="plus">＋</span></summary>
-                <div className="qaAnswer">
-                  <div><p className="answerLabel">SHORT ANSWER</p><p>{item.a}</p></div>
-                  <div><p className="answerLabel">TECHNICAL DETAIL</p><p>{item.depth}</p></div>
-                  <div className="qaBasis" aria-label="Evidence for this answer"><div className="qaBasisHead"><p className="answerLabel">EVIDENCE AND LIMITS</p><span>{item.basis}</span></div><div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(item.evidence, 3).flatMap((row) => row.map((evidence) => <Link href={`/en/references#source-${evidence.sourceId}`} key={evidence.sourceId} prefetch={false} style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}><span className="qaEvidenceMeta">{sourceLedger[evidence.sourceId]?.grade} · {englishSourceCopy[evidence.sourceId]?.kind}</span><strong>{englishSourceCopy[evidence.sourceId]?.shortTitle ?? evidence.sourceId}</strong><small>{evidence.supports}</small></Link>))}</div></div>
-                  <div className="ask"><p className="answerLabel">RECOMMENDED DISCOVERY QUESTION</p><p>{discoveryQuestion(item.ask)}</p></div>
-                </div>
-              </details>
-            ))}</div>
-            {usesFocusedReadingProfile ? <p className="focusedDirectoryLink"><Link href={`/en/questions?module=${module.slug}`} prefetch={false}>Browse every customer question for this module →</Link></p> : null}
-          </section>
+          {qaSection}
           {usesFocusedReadingProfile ? relatedSection : null}
         </div>
       </div>
 
-      <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{module.title}<ModuleUpdatedAt value={getEnglishUpdatedAt(module.slug) ?? publication.updatedAt ?? undefined} locale="en" /></p><a href="#top">Back to top ↑</a></footer>
+      {pageFooter}
     </main>
   );
 }
