@@ -835,7 +835,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
   }
-  assert.deepEqual(unifiedBriefModuleSlugs, ["solution-patterns", "model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "llm", "fine-tuning", "llm-training", "data-engineering"]);
+  assert.deepEqual(unifiedBriefModuleSlugs, ["solution-patterns", "model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "llm", "fine-tuning", "llm-training", "data-engineering", "ai-infra-compute", "ai-infra-platform"]);
   for (const slug of unifiedBriefModuleSlugs) {
     const config = getUnifiedBriefModuleConfig(slug);
     assert.ok(config, `${slug} must have a Chinese unified-reader config`);
@@ -872,7 +872,35 @@ test("English routes and all Chinese module page families expose reciprocal lang
     assert.deepEqual(config.directories.quick[0], expected.primer);
     assert.deepEqual(config.facts, expected.facts);
   }
-  for (const slug of ["solution-patterns", "model-landscape", "multimodal", "llm", "fine-tuning", "llm-training", "llm-inference", "data-engineering", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "prompt-engineering"]) {
+  const batch08ChineseReaders = {
+    "ai-infra-compute": {
+      shortTitle: "AI 算力",
+      primer: { id: "ai-infra-compute-extension-primer-title", label: "瓶颈路径", eyebrow: "先冻结负载，再定位最窄环节" },
+      facts: [
+        { label: "容量输入", value: "模型版本 · 精度 · 序列或数据 · 批量 · 并行 · 并发 · SLO · 恢复" },
+        { label: "完整通路", value: "计算 · HBM · Scale-up · Scale-out · 存储 · 电力 · 散热" },
+        { label: "验收画像", value: "冷启动 · 稳态 · 峰值 · 长跑 · 缩放 · 故障 · 恢复" },
+        { label: "经营口径", value: "每个满足质量与 SLO 的达标结果完整成本" },
+      ],
+    },
+    "ai-infra-platform": {
+      shortTitle: "基础设施平台",
+      primer: { id: "ai-infra-platform-extension-primer-title", label: "控制与执行", eyebrow: "从自助契约到恢复证据" },
+      facts: [
+        { label: "工作负载合同", value: "用户 × 身份 × 设备 × 拓扑 × 数据 × 运行时 × 时限 × 恢复" },
+        { label: "调度路径", value: "准入 → 排队 → 放置 → 准备 → 执行 → 恢复" },
+        { label: "多租户验收", value: "控制层 · 身份/数据/网络 · 性能/资源 · 成本归属" },
+        { label: "经营边界", value: "Goodput 与资源经济归平台；业务质量与 ROI 归应用和业务" },
+      ],
+    },
+  };
+  for (const [slug, expected] of Object.entries(batch08ChineseReaders)) {
+    const config = getUnifiedBriefModuleConfig(slug);
+    assert.equal(config.shortTitle, expected.shortTitle);
+    assert.deepEqual(config.directories.quick[0], expected.primer);
+    assert.deepEqual(config.facts, expected.facts);
+  }
+  for (const slug of ["solution-patterns", "model-landscape", "multimodal", "llm", "fine-tuning", "llm-training", "llm-inference", "data-engineering", "ai-infra-compute", "ai-infra-platform", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "prompt-engineering"]) {
     assert.match(enModulePage, new RegExp(`(?:^|\\n)  (?:"${slug}"|${slug}): \\{`), `English unified reader config must include ${slug}`);
   }
   assert.match(enModulePage, /"prompt-engineering": \{[\s\S]*prompt-pattern-diagnostics[\s\S]*cloud-poc-operating-model/, "Prompt must preserve its dedicated reader map");

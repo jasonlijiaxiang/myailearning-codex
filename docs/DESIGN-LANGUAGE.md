@@ -156,7 +156,7 @@
 
 CSS Module 只会哈希类名，不会阻止 `.page a` 命中后代。`UnifiedModuleScaffold` 因此把 Header / Hero 放在模块正文根之前，两者是兄弟节点；`.page`、`.reader` 等模块选择器只包住正文。共享样式再为每个文字角色直接指定颜色、字体、字号、字重、行高和字距。级联顺序不再参与模块间的一致性判断。
 
-共享 `brief` 路由通过不可变的模块配置显式接入统一 reader；当前已接入 Solution Patterns、Model Landscape、Multimodal、VeADK、AgentKit、Evaluation、AI Governance、Security、AI Gateway、AI Ops、Predictive AI / MLOps、LLM、Fine-tuning、LLM Training 与 Data Engineering，专用 LLM Inference、Prompt Engineering 与 AI Agent / MCP / A2A 也复用同一阅读任务和页面外壳。配置只声明 Hero 决策事实、目录和 authored group 映射，正文、稳定锚点、独有机制视图与来源仍由各模块内容 owner 维护。专用 Primer 若已呈现生产边界，必须通过组件契约把所有权交给共享 reader，不能让同一边界重复出现；历史知识视图值或交互选择值若曾作为公开 Hash，必须由 route-local、唯一的真实 DOM 锚点承接，并让 Back / Forward 同步恢复对应界面状态。新增批次不得在路由里累积 slug 分支，也不得增加模块专属 Header、Tab 或 CSS 补丁。
+共享 `brief` 路由通过不可变的模块配置显式接入统一 reader；当前已接入 Solution Patterns、Model Landscape、Multimodal、VeADK、AgentKit、Evaluation、AI Governance、Security、AI Gateway、AI Ops、Predictive AI / MLOps、LLM、Fine-tuning、LLM Training、Data Engineering、AI Compute 与 Infra Platform，专用 LLM Inference、Prompt Engineering 与 AI Agent / MCP / A2A 也复用同一阅读任务和页面外壳。配置只声明 Hero 决策事实、目录和 authored group 映射，正文、稳定锚点、独有机制视图与来源仍由各模块内容 owner 维护。专用 Primer 若已呈现生产边界，必须通过组件契约把所有权交给共享 reader，不能让同一边界重复出现；历史知识视图值或交互选择值若曾作为公开 Hash，必须由 route-local、唯一的真实 DOM 锚点承接，并让 Back / Forward 同步恢复对应界面状态。新增批次不得在路由里累积 slug 分支，也不得增加模块专属 Header、Tab 或 CSS 补丁。
 
 ## 7. 页面家族的应用
 

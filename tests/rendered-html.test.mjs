@@ -726,10 +726,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/ai-ops", "/modules/predictive-ai-mlops", "/modules/prompt-engineering", "/modules/llm", "/modules/fine-tuning", "/modules/llm-training", "/modules/llm-inference", "/modules/data-engineering"]) {
+  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/ai-ops", "/modules/predictive-ai-mlops", "/modules/prompt-engineering", "/modules/llm", "/modules/fine-tuning", "/modules/llm-training", "/modules/llm-inference", "/modules/data-engineering", "/modules/ai-infra-compute", "/modules/ai-infra-platform"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 21, "共享阅读壳迁移批次不得静默缩小");
+  assert.equal(paths.length, 23, "全部正式模块都必须接入共享阅读壳");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -1011,6 +1011,46 @@ test("standard brief modules preserve their authored content in the unified read
       zhMechanism: /data-knowledge-view="ai-data-lineage"/,
       enMechanism: /data-knowledge-view="ai-data-lineage"/,
       zhQuestionCount: 11,
+    },
+    {
+      slug: "ai-infra-compute",
+      zhTitleId: "ai-infra-compute-title",
+      enTitleId: "ai-infra-compute-english-title",
+      zhPrimerId: "ai-infra-compute-extension-primer-title",
+      enPrimerId: "ai-infra-compute-english-primer-title",
+      zhMechanism: /data-knowledge-view="compute-bottleneck-path"/,
+      enMechanism: /data-knowledge-view="compute-bottleneck-path"/,
+      zhQuestionCount: 12,
+      englishTableCount: 1,
+      requiredChineseIds: ["qa-5", "qa-12"],
+      requiredEnglishIds: ["curriculum-workload-first", "compute-foundation-boundary", "bottleneck-communication", "proof-failure-recovery", "evidence-complete-gpu-runtime", "qa-procurement-beyond-gpu", "qa-heterogeneous-supply-risk"],
+      requiredEnglishFacts: [
+        ["Sizing inputs", "Model version · precision · sequence or data · batch · parallelism · concurrency · SLO · recovery"],
+        ["Complete path", "Compute · HBM · scale-up · scale-out · storage · power · cooling"],
+        ["Acceptance profile", "Cold start · steady state · peak · soak · scaling · failure · recovery"],
+        ["Economic unit", "Full cost per result that meets quality and SLO criteria"],
+      ],
+      englishBoundary: /Peak specifications are screening data\.[\s\S]*Resource-level TCO is not project ROI[\s\S]*cannot establish durable capacity\./,
+    },
+    {
+      slug: "ai-infra-platform",
+      zhTitleId: "ai-infra-platform-title",
+      enTitleId: "ai-infra-platform-english-title",
+      zhPrimerId: "ai-infra-platform-extension-primer-title",
+      enPrimerId: "ai-infra-platform-english-primer-title",
+      zhMechanism: /data-knowledge-view="scheduler-control-plane"/,
+      enMechanism: /data-knowledge-view="scheduler-control-plane"/,
+      zhQuestionCount: 12,
+      englishTableCount: 1,
+      requiredChineseIds: ["qa-1", "qa-12"],
+      requiredEnglishIds: ["curriculum-serving-platform", "platform-component-boundary", "queue-startup-path", "upgrade-executable-rollback", "evidence-image-not-migration", "qa-quota-not-isolation", "qa-containerized-not-fully-portable"],
+      requiredEnglishFacts: [
+        ["Workload contract", "User × identity × device × topology × data × runtime × deadline × recovery"],
+        ["Scheduling path", "Admission → queueing → placement → preparation → execution → recovery"],
+        ["Tenant validation", "Control plane · identity/data/network · performance/resources · cost allocation/accountability"],
+        ["Ownership boundary", "Platform Goodput and resource economics · application quality and ROI stay with application and business owners"],
+      ],
+      englishBoundary: /The platform owns resource, job, and service-runtime lifecycles[\s\S]*Kubernetes, GPU Operator[\s\S]*not proof of a complete platform\./,
     },
   ];
 

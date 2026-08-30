@@ -193,6 +193,7 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-batch05-unified-readers-2026-08-30",
     "erm-batch06-unified-readers-2026-08-31",
     "erm-batch07-unified-readers-2026-08-31",
+    "erm-batch08-unified-readers-2026-08-31",
   ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
   assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
@@ -351,6 +352,22 @@ test("localization registry passes its recursive schema and covers every module"
     "dfr-fine-tuning-module-presentation-refresh-2026-08-24",
     "dfr-llm-inference-module-presentation-refresh-2026-08-24",
     "dfr-llm-training-module-presentation-refresh-2026-08-24",
+  ]) {
+    assert.equal(registry.deferments.find((item) => item.defermentId === defermentId)?.status, "deferred");
+  }
+  const batch08Readers = maintenances.get("erm-batch08-unified-readers-2026-08-31");
+  assert.equal(batch08Readers?.kind, "english-renderer");
+  assert.equal(batch08Readers?.receiptId, "receipt-batch08-unified-readers-runtime-2026-08-31");
+  assert.deepEqual(batch08Readers?.changedRendererFiles, [
+    "app/i18n/english-pilot-module-page.tsx",
+    "app/unified-brief-module-config.mjs",
+  ]);
+  assert.deepEqual(batch08Readers?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(batch08Readers?.contentProjectionChangeSlugs, ["ai-infra-compute", "ai-infra-platform"]);
+  assert.equal(batch08Readers?.metadataScope, "none");
+  for (const defermentId of [
+    "dfr-ai-infra-compute-module-presentation-refresh-2026-08-24",
+    "dfr-ai-infra-platform-module-presentation-refresh-2026-08-24",
   ]) {
     assert.equal(registry.deferments.find((item) => item.defermentId === defermentId)?.status, "deferred");
   }
