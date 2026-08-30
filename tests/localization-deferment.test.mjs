@@ -183,6 +183,7 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-rag-unified-english-reader-2026-08-30",
     "erm-unified-english-source-scope-2026-08-30",
     "erm-relation-matrix-accessibility-2026-08-30",
+    "erm-unified-hash-navigation-2026-08-30",
   ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
   assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
@@ -228,6 +229,13 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(relationMatrix?.changedRendererFiles, ["app/deep-dive-relation-view.tsx"]);
   assert.deepEqual(relationMatrix?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
   assert.deepEqual(relationMatrix?.contentProjectionChangeSlugs, []);
+  const hashNavigation = maintenances.get("erm-unified-hash-navigation-2026-08-30");
+  assert.equal(hashNavigation?.kind, "document-shell");
+  assert.equal(hashNavigation?.receiptId, "receipt-unified-hash-navigation-runtime-2026-08-30");
+  assert.deepEqual(hashNavigation?.changedRendererFiles, ["app/dense-module-reading-modes.tsx"]);
+  assert.deepEqual(hashNavigation?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(hashNavigation?.contentProjectionChangeSlugs, []);
+  assert.equal(hashNavigation?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   const activeBySlug = new Map(registry.deferments

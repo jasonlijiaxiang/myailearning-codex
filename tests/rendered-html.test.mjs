@@ -774,6 +774,13 @@ test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contr
   assert.match(readerSource, /data-reading-mode=\{mode\.id\}/, "每个阅读面板必须声明稳定所属模式");
   assert.match(readerSource, /target\.startsWith\("qa-"\) \? "field"/);
   assert.match(readerSource, /setActiveMode\(defaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "清空 hash 时必须恢复默认阅读任务");
+  const revealHashStart = readerSource.indexOf("const revealHash =");
+  const revealHashEnd = readerSource.indexOf("\n\n  useEffect(", revealHashStart);
+  const revealHashSource = readerSource.slice(revealHashStart, revealHashEnd);
+  assert.match(revealHashSource, /setPendingHashReveal\(\{[\s\S]*mode: nextMode/, "跨模式 Hash 必须登记提交后定位请求");
+  assert.doesNotMatch(revealHashSource, /scrollHashTargetIntoView/, "Hash 事件处理器不能在目标面板提交前滚动");
+  assert.match(readerSource, /pendingHashReveal\.mode !== activeMode[\s\S]*requestAnimationFrame[\s\S]*scrollHashTargetIntoView\(hash\)/, "统一 reader 必须在目标模式提交后定位");
+  assert.match(readerSource, /event\.preventDefault\(\);[\s\S]*window\.history\.pushState\(window\.history\.state/, "统一 reader 必须接管所属锚点并保留 Back 历史");
   assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "英文目录计数必须处理单复数");
   assert.match(heroSource, /mobileMenu: "模块导航菜单"/, "中文移动菜单名称必须保留在本地化契约中");
   assert.match(heroSource, /aria-label=\{copy\.mobileMenu\}/, "移动菜单名称不能绑定单一开合状态");
