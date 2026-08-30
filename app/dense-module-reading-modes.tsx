@@ -142,8 +142,14 @@ export function DenseModuleReadingModes({
   const readingModes = copy.modes;
   const [activeMode, setActiveMode] = useState<ReadingModeId>(defaultMode);
   const [activeAnchor, setActiveAnchor] = useState<string | undefined>();
+  const [pendingHashReveal, setPendingHashReveal] = useState<{
+    hash: string;
+    mode: ReadingModeId;
+    requestId: number;
+  } | null>(null);
   const tabsId = useId();
   const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
+  const hashRevealRequestRef = useRef(0);
   const directoryByMode = useMemo<Record<ReadingModeId, readonly DenseChapterLink[]>>(() => ({
     quick: directories?.quick ?? chapters,
     learn: directories?.learn ?? chapters,
@@ -157,22 +163,43 @@ export function DenseModuleReadingModes({
     if (!hash.replace(/^#/, "")) {
       setActiveMode(defaultMode);
       setActiveAnchor(undefined);
+      setPendingHashReveal(null);
       return;
     }
     const nextMode = modeForHash(hash, hashGroups, directoryByMode);
-    if (!nextMode) return;
+    if (!nextMode) {
+      setPendingHashReveal(null);
+      return;
+    }
     setActiveMode(nextMode);
     setActiveAnchor(hash.replace(/^#/, ""));
-    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
-      scrollHashTargetIntoView(hash);
-    }));
+    setPendingHashReveal({
+      hash,
+      mode: nextMode,
+      requestId: ++hashRevealRequestRef.current,
+    });
   }, [defaultMode, directoryByMode, hashGroups]);
 
   useEffect(() => {
     const handleHashChange = () => revealHash(window.location.hash);
     const handleDocumentClick = (event: MouseEvent) => {
       const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
-      if (anchor?.hash) revealHash(anchor.hash);
+      if (
+        event.defaultPrevented
+        || event.button !== 0
+        || event.metaKey
+        || event.ctrlKey
+        || event.shiftKey
+        || event.altKey
+        || anchor?.target === "_blank"
+        || !anchor?.hash
+        || !modeForHash(anchor.hash, hashGroups, directoryByMode)
+      ) return;
+      event.preventDefault();
+      if (window.location.hash !== anchor.hash) {
+        window.history.pushState(window.history.state, "", `${window.location.pathname}${window.location.search}${anchor.hash}`);
+      }
+      revealHash(anchor.hash);
     };
     handleHashChange();
     window.addEventListener("hashchange", handleHashChange);
@@ -181,7 +208,17 @@ export function DenseModuleReadingModes({
       window.removeEventListener("hashchange", handleHashChange);
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [revealHash]);
+  }, [directoryByMode, hashGroups, revealHash]);
+
+  useEffect(() => {
+    if (!pendingHashReveal || pendingHashReveal.mode !== activeMode) return;
+    const { hash, requestId } = pendingHashReveal;
+    const frame = window.requestAnimationFrame(() => {
+      scrollHashTargetIntoView(hash);
+      setPendingHashReveal((current) => current?.requestId === requestId ? null : current);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeMode, pendingHashReveal]);
 
   useEffect(() => {
     const targets = activeDirectory
