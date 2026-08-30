@@ -1090,6 +1090,10 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   background: var(--fb-surface);
 }
 
+.fieldbookTheme.modulePage .moduleReadingExperience[data-module-reader="unified"] {
+  overflow: visible;
+}
+
 .fieldbookTheme.modulePage .moduleModeHeader {
   display: grid;
   grid-template-columns: 250px minmax(0, 1fr);
@@ -2639,6 +2643,10 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   border: 1px solid var(--fb-line);
   border-radius: 12px;
   background: var(--fb-surface);
+}
+
+.fieldbookTheme.modulePage[data-module-content="unified"] .moduleReadingHost > .section {
+  overflow: visible;
 }
 
 .fieldbookTheme.modulePage .decisionBanner {

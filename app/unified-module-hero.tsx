@@ -11,6 +11,48 @@ export type UnifiedModuleFact = {
   value: string;
 };
 
+export type UnifiedModuleLocale = "zh-CN" | "en";
+
+const heroCopyByLocale = {
+  "zh-CN": {
+    navigation: "模块导航",
+    brandAria: "返回云与 AI 售前知识库首页",
+    home: "首页",
+    questions: "本模块问答",
+    sources: "来源",
+    glossary: "术语库",
+    language: "English",
+    mobileMenu: "模块导航菜单",
+    metrics: {
+      ariaLabel: "模块内容概览",
+      sections: "阅读方式",
+      sectionUnit: "种",
+      questions: "问题库",
+      questionUnit: "题",
+      evidence: "证据卡",
+      evidenceUnit: "张",
+    },
+    facts: (shortTitle: string) => `${shortTitle} 核心判断`,
+  },
+  en: {
+    navigation: "Module navigation",
+    brandAria: "Return to the Cloud and AI Presales Fieldbook home",
+    home: "Home",
+    questions: "Questions",
+    sources: "Sources",
+    glossary: "Glossary",
+    language: "Chinese",
+    mobileMenu: "Module navigation menu",
+    metrics: {
+      ariaLabel: "Module content overview",
+      sections: "Reading modes",
+      questions: "Questions",
+      evidence: "Evidence cards",
+    },
+    facts: (shortTitle: string) => `${shortTitle} decision facts`,
+  },
+} as const;
+
 export type UnifiedModuleHeroProps = {
   anchorId: string;
   titleId: string;
@@ -23,6 +65,7 @@ export type UnifiedModuleHeroProps = {
   questionCount: number;
   evidenceCount: number;
   facts: readonly UnifiedModuleFact[];
+  locale?: UnifiedModuleLocale;
 };
 
 export function UnifiedModuleHero({
@@ -37,31 +80,44 @@ export function UnifiedModuleHero({
   questionCount,
   evidenceCount,
   facts,
+  locale = "zh-CN",
 }: UnifiedModuleHeroProps) {
-  const englishPath = englishModulePath(slug);
+  const copy = heroCopyByLocale[locale];
+  const isEnglish = locale === "en";
+  const languagePath = isEnglish ? `/modules/${slug}` : englishModulePath(slug);
+  const homePath = isEnglish ? "/en" : "/";
+  const sourcesPath = isEnglish ? `/en/references#module-${slug}` : `/references#module-${slug}`;
+  const glossaryPath = isEnglish ? "/en/glossary" : "/glossary";
+
+  const navigationLinks = (
+    <>
+      <Link href={homePath}>{copy.home}</Link>
+      <a href="#qa">{copy.questions}</a>
+      <Link href={sourcesPath}>{copy.sources}</Link>
+      <Link href={glossaryPath}>{copy.glossary}</Link>
+      {languagePath ? (
+        <Link
+          href={languagePath}
+          hrefLang={isEnglish ? "zh-CN" : "en"}
+          lang={isEnglish ? "zh-CN" : "en"}
+          prefetch={false}
+        >
+          {copy.language}
+        </Link>
+      ) : null}
+    </>
+  );
 
   return (
-    <header className={styles.hero} data-module-hero="unified" id={anchorId} aria-labelledby={titleId}>
-      <nav className={styles.siteNav} aria-label="模块导航">
-        <Link className={styles.brand} href="/" aria-label="返回云与 AI 售前知识库首页">
+    <header className={styles.hero} data-module-hero="unified" id={anchorId} aria-labelledby={titleId} lang={isEnglish ? "en" : undefined}>
+      <nav className={styles.siteNav} aria-label={copy.navigation}>
+        <Link className={styles.brand} href={homePath} aria-label={copy.brandAria}>
           Cloud × AI / Presales Fieldbook
         </Link>
-        <div className={styles.siteLinks}>
-          <Link href="/">首页</Link>
-          <a href="#qa">本模块问答</a>
-          <Link href={`/references#module-${slug}`}>来源</Link>
-          <Link href="/glossary">术语库</Link>
-          {englishPath ? <Link href={englishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
-        </div>
+        <div className={styles.siteLinks}>{navigationLinks}</div>
         <details key={slug} className={styles.mobileMenu}>
-          <summary aria-label="模块导航菜单"><span /><span /><span /></summary>
-          <div>
-            <Link href="/">首页</Link>
-            <a href="#qa">本模块问答</a>
-            <Link href={`/references#module-${slug}`}>来源</Link>
-            <Link href="/glossary">术语库</Link>
-            {englishPath ? <Link href={englishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}
-          </div>
+          <summary aria-label={copy.mobileMenu}><span /><span /><span /></summary>
+          <div>{navigationLinks}</div>
         </details>
       </nav>
 
@@ -69,7 +125,7 @@ export function UnifiedModuleHero({
         <div className={styles.identity}>
           <h1 id={titleId}>
             <span>{shortTitle}</span>
-            <small>{zhTitle}<em> · {enTitle}</em></small>
+            {isEnglish ? <small>{enTitle}</small> : <small>{zhTitle}<em lang="en"> · {enTitle}</em></small>}
           </h1>
         </div>
         <div className={styles.summary}>
@@ -79,20 +135,12 @@ export function UnifiedModuleHero({
             sectionCount={3}
             questionCount={questionCount}
             evidenceCount={evidenceCount}
-            labels={{
-              ariaLabel: "模块内容概览",
-              sections: "阅读方式",
-              sectionUnit: "种",
-              questions: "问题库",
-              questionUnit: "题",
-              evidence: "证据卡",
-              evidenceUnit: "张",
-            }}
+            labels={copy.metrics}
           />
         </div>
       </div>
 
-      <dl className={styles.factLedger} aria-label={`${shortTitle} 核心判断`}>
+      <dl className={styles.factLedger} aria-label={copy.facts(shortTitle)}>
         {facts.map((fact) => (
           <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>
         ))}
@@ -114,7 +162,7 @@ export function UnifiedModuleScaffold({
     <>
       <ReadingProgress />
       <UnifiedModuleHero {...hero} />
-      <main id="main-content" className={className} data-module-content="unified" tabIndex={-1}>
+      <main id="main-content" className={className} data-module-content="unified" lang={hero.locale === "en" ? "en" : undefined} tabIndex={-1}>
         {children}
       </main>
     </>

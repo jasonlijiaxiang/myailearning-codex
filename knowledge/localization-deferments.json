@@ -47957,7 +47957,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:fc3663631b2cd3e19609bd60a89c28a701e2cd59ad687bf550f623e74f34a5dd",
-          "currentHash": "sha256:e65f003aca677007a1ed231dbdf81d86294ac901a739ba766985ea3b257934f7",
+          "currentHash": "sha256:7e8338384ea63583463200e24de1c7cbc83e166114744518a3985d8609af88f3",
           "sourceIds": []
         },
         {
@@ -48958,6 +48958,94 @@
           "baselineHash": "sha256:42e5f3dee6db79c98a95749f1ab9f3f74a9807ea7eb3edf1655f939c5ce13326",
           "currentHash": "sha256:22c55570c2c6f36bb17ad978dc50e1df28520434fef84200d6a0d113dcc7a20d",
           "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/$order",
+          "objectType": "renderedProjection-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
+          "currentHash": "sha256:25932b17536a5ae54b06590a087e0cd9630250b6708f7d9070f2ee7b4aa9d2ac",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/004",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
+          "currentHash": "sha256:0d462183ed3bdb62a89352b7613b15831e963e1ac253c5c1c4a7fe0b71054a56",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/005",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b3b0a191d2306edf3474da2b036a064aa47d619ef6911c7f742511ace71d9526",
+          "currentHash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/006",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
+          "currentHash": "sha256:b3b0a191d2306edf3474da2b036a064aa47d619ef6911c7f742511ace71d9526",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/007",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
+          "currentHash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/008",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "currentHash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/009",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "currentHash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/010",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "currentHash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/011",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1e0310479f93c5d20f952bfa0cb9fbf0fddd18cafd518678e5f251762eefe5c4",
+          "currentHash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/rendererDependencyFiles/016",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:d844f4e36eb7d62d6b189039f863e722b0c884cd15ba0a11c1effbb2fc28da6d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:rag/renderedProjection/sharedRendererHash",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:fb677ee4493b75c013af12f3c36753dc66c9934b3d47b9571b7ea66017869f80",
+          "currentHash": "sha256:5c0a6263ca497577b11ee25cb802d008ac4a14c334c35610ac1e23cd00d01371",
+          "sourceIds": []
         }
       ],
       "baselineReviewIds": [
@@ -49651,7 +49739,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:e7a130776d1821dab47018ff24e02f43a6b3069a5135a7a5f902714c37f2faa2",
-          "currentHash": "sha256:4685d5df4eadfdfc3c042da61a8f7b2afe5c579360561ced39e97b466b9a67ed",
+          "currentHash": "sha256:23eff950363e7e48e380e34106b2bbe3078be92d82bac0f1b555efb41953a5bc",
           "sourceIds": []
         },
         {
@@ -50047,7 +50135,7 @@
           "objectType": "renderedProjection",
           "changeKind": "modified",
           "baselineHash": "sha256:e7a130776d1821dab47018ff24e02f43a6b3069a5135a7a5f902714c37f2faa2",
-          "currentHash": "sha256:693c56f525ac4e9c8d1a54bc6bff16299525e700b322058793f69bc7b405352f",
+          "currentHash": "sha256:c9df74fe27af487fa5231147433145ef0cc3be2affd11154154687110138a97e",
           "sourceIds": []
         }
       ],

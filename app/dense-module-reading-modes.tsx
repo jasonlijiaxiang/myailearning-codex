@@ -3,6 +3,7 @@
 import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import styles from "./dense-module-reading-modes.module.css";
+import type { UnifiedModuleLocale } from "./unified-module-hero";
 
 export type ReadingModeId = "quick" | "learn" | "field";
 
@@ -12,11 +13,54 @@ export type DenseChapterLink = {
   eyebrow?: string;
 };
 
-const readingModes = [
-  { id: "quick", label: "10 分钟速查", eyebrow: "做判断", outcome: "用采用条件、机制主线和硬边界完成第一次方案判断。" },
-  { id: "learn", label: "系统学习", eyebrow: "建模型", outcome: "按章节掌握对象、机制、失败模式、工程控制与验证实验。" },
-  { id: "field", label: "现场查证", eyebrow: "带证据", outcome: "用问答、证据与责任清单回答客户，并说明来源和适用范围。" },
-] as const;
+type ReadingModeDefinition = {
+  id: ReadingModeId;
+  label: string;
+  eyebrow: string;
+  outcome: string;
+};
+
+const readingModeIds = ["quick", "learn", "field"] as const;
+
+const readerCopyByLocale: Record<UnifiedModuleLocale, {
+  modes: readonly ReadingModeDefinition[];
+  readingTask: string;
+  readingModes: string;
+  boundaryAria: string;
+  boundaryLabel: string;
+  entries: (count: number) => string;
+  directory: (moduleName: string, modeLabel: string) => string;
+  experience: (moduleName: string) => string;
+}> = {
+  "zh-CN": {
+    modes: [
+      { id: "quick", label: "10 分钟速查", eyebrow: "做判断", outcome: "用采用条件、机制主线和硬边界完成第一次方案判断。" },
+      { id: "learn", label: "系统学习", eyebrow: "建模型", outcome: "按章节掌握对象、机制、失败模式、工程控制与验证实验。" },
+      { id: "field", label: "现场查证", eyebrow: "带证据", outcome: "用问答、证据与责任清单回答客户，并说明来源和适用范围。" },
+    ],
+    readingTask: "当前阅读任务",
+    readingModes: "阅读方式",
+    boundaryAria: "重要边界",
+    boundaryLabel: "生产硬边界",
+    entries: (count) => `${count} 个入口`,
+    directory: (moduleName, modeLabel) => `${moduleName}${modeLabel}目录`,
+    experience: (moduleName) => `${moduleName}阅读方式`,
+  },
+  en: {
+    modes: [
+      { id: "quick", label: "10-minute scan", eyebrow: "Decide", outcome: "Use adoption conditions, the mechanism, and hard boundaries to make the first solution decision." },
+      { id: "learn", label: "Systematic study", eyebrow: "Build a model", outcome: "Work through the objects, mechanisms, failure modes, engineering controls, and validation experiments." },
+      { id: "field", label: "Field lookup", eyebrow: "Bring evidence", outcome: "Answer with questions, evidence, and responsibility checks while stating the source and scope." },
+    ],
+    readingTask: "Current reading task",
+    readingModes: "Reading modes",
+    boundaryAria: "Critical boundary",
+    boundaryLabel: "Production hard boundary",
+    entries: (count) => `${count} ${count === 1 ? "entry" : "entries"}`,
+    directory: (moduleName, modeLabel) => `${moduleName} ${modeLabel} directory`,
+    experience: (moduleName) => `${moduleName} reading modes`,
+  },
+};
 
 type ModeMap<T> = Partial<Record<ReadingModeId, T>>;
 
@@ -28,10 +72,15 @@ function modeForHash(
   const target = hash.replace(/^#/, "");
   if (!target) return null;
 
-  for (const mode of readingModes) {
-    if (hashGroups?.[mode.id]?.includes(target)) return mode.id;
-    if (directories[mode.id].some((item) => item.id === target)) return mode.id;
+  for (const modeId of readingModeIds) {
+    if (hashGroups?.[modeId]?.includes(target)) return modeId;
+    if (directories[modeId].some((item) => item.id === target)) return modeId;
   }
+
+  const containingPanel = typeof document === "undefined"
+    ? null
+    : document.getElementById(target)?.closest<HTMLElement>("[data-reading-mode]")?.dataset.readingMode;
+  if (readingModeIds.some((modeId) => modeId === containingPanel)) return containingPanel as ReadingModeId;
 
   return target.startsWith("qa-") ? "field" : null;
 }
@@ -74,6 +123,7 @@ export function DenseModuleReadingModes({
   criticalBoundary,
   readerId = "module-reading",
   modeDescriptions,
+  locale = "zh-CN",
 }: {
   moduleName: string;
   chapters: readonly DenseChapterLink[];
@@ -86,7 +136,10 @@ export function DenseModuleReadingModes({
   criticalBoundary?: string;
   readerId?: string;
   modeDescriptions?: ModeMap<string>;
+  locale?: UnifiedModuleLocale;
 }) {
+  const copy = readerCopyByLocale[locale];
+  const readingModes = copy.modes;
   const [activeMode, setActiveMode] = useState<ReadingModeId>(defaultMode);
   const [activeAnchor, setActiveAnchor] = useState<string | undefined>();
   const tabsId = useId();
@@ -169,17 +222,17 @@ export function DenseModuleReadingModes({
 
   return (
     <section
-      aria-label={`${moduleName}阅读方式`}
+      aria-label={copy.experience(moduleName)}
       className="moduleReadingExperience"
       data-module-reader="unified"
       id={readerId}
     >
       <header className={`moduleModeHeader ${styles.modeHeader}`}>
         <div className={styles.modePrompt}>
-          <span>当前阅读任务</span>
+          <span>{copy.readingTask}</span>
           <strong>{moduleName}</strong>
         </div>
-        <div className="moduleModeTabs" role="tablist" aria-label="阅读方式">
+        <div className="moduleModeTabs" role="tablist" aria-label={copy.readingModes}>
           {readingModes.map((mode, index) => (
             <button
               aria-controls={`${tabsId}-${mode.id}`}
@@ -202,20 +255,20 @@ export function DenseModuleReadingModes({
       </header>
 
       {criticalBoundary ? (
-        <aside className={styles.boundary} aria-label="重要边界" data-importance="critical">
-          <strong>生产硬边界</strong><p>{criticalBoundary}</p>
+        <aside className={styles.boundary} aria-label={copy.boundaryAria} data-importance="critical">
+          <strong>{copy.boundaryLabel}</strong><p>{criticalBoundary}</p>
         </aside>
       ) : null}
 
       <details className={styles.mobileDirectory}>
-        <summary>{activeDefinition.label} · {activeDirectory.length} 个入口</summary>
-        <nav aria-label={`${moduleName}${activeDefinition.label}目录`}><DirectoryList activeId={displayedActiveAnchor} items={activeDirectory} /></nav>
+        <summary>{activeDefinition.label}: {copy.entries(activeDirectory.length)}</summary>
+        <nav aria-label={copy.directory(moduleName, activeDefinition.label)}><DirectoryList activeId={displayedActiveAnchor} items={activeDirectory} /></nav>
         <p>{currentOutcome}</p>
       </details>
 
       <div className={`moduleModeWorkspace ${styles.workspace}`}>
-        <aside className={styles.directory} aria-label={`${moduleName}${activeDefinition.label}目录`}>
-          <header><span>{activeDirectory.length} 个入口</span><strong>{activeDefinition.label}</strong></header>
+        <aside className={styles.directory} aria-label={copy.directory(moduleName, activeDefinition.label)}>
+          <header><span>{copy.entries(activeDirectory.length)}</span><strong>{activeDefinition.label}</strong></header>
           <nav><DirectoryList activeId={displayedActiveAnchor} items={activeDirectory} /></nav>
           <footer aria-live="polite"><span>{activeDefinition.eyebrow}</span><p>{currentOutcome}</p></footer>
         </aside>
@@ -229,6 +282,7 @@ export function DenseModuleReadingModes({
               id={`${tabsId}-${mode.id}`}
               key={mode.id}
               role="tabpanel"
+              data-reading-mode={mode.id}
               tabIndex={0}
             >
               {panels[mode.id]}

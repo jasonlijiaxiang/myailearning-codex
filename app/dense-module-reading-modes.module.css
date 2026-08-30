@@ -18,7 +18,7 @@
   gap: 18px;
   align-items: center;
   border-bottom: 1px solid var(--fb-line);
-  background: color-mix(in srgb, var(--fb-mint) 70%, #fff);
+  background: color-mix(in srgb, var(--fb-mint) 70%, var(--fb-surface));
 }
 .boundary strong {
   color: var(--fb-meta);
@@ -60,7 +60,7 @@
   align-items: center;
 }
 .directory a:hover,
-.directory a:focus-visible { background: #fff; }
+.directory a:focus-visible { background: var(--fb-surface); }
 .directory a[aria-current="location"],
 .mobileDirectory a[aria-current="location"] {
   background: var(--fb-mint);
@@ -76,7 +76,7 @@
 
 .panels,
 .panel { min-width: 0; }
-.panel { background: #fff; }
+.panel { background: var(--fb-surface); }
 .panel[hidden] { display: none; }
 .panel:focus-visible { outline: 3px solid var(--fb-ink); outline-offset: -3px; }
 .panels :global([id]) { scroll-margin-top: 102px; }
@@ -87,15 +87,13 @@
   .modePrompt { display: none !important; }
   .modeHeader { display: block !important; }
   .boundary { grid-template-columns: 118px minmax(0, 1fr); padding: 11px 18px; }
-  .workspace { display: block !important; min-height: 0; background: #fff !important; }
+  .workspace { display: block !important; min-height: 0; background: var(--fb-surface) !important; }
   .directory { display: none; }
   .mobileDirectory { display: block; border-bottom: 1px solid var(--fb-line); background: var(--fb-mist); }
   .mobileDirectory summary { min-height: 48px; padding: 13px 20px; color: var(--fb-ink); font-size: 13px; font-weight: 780; cursor: pointer; }
   .mobileDirectory nav { padding: 0 14px 14px; }
-  .mobileDirectory ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .mobileDirectory li { min-width: 0; border: 1px solid var(--fb-line); border-right: 0; border-bottom: 0; background: #fff; }
-  .mobileDirectory li:nth-child(3n) { border-right: 1px solid var(--fb-line); }
-  .mobileDirectory li:nth-last-child(-n + 3) { border-bottom: 1px solid var(--fb-line); }
+  .mobileDirectory ol { padding: 1px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--fb-line); }
+  .mobileDirectory li { min-width: 0; background: var(--fb-surface); }
   .mobileDirectory a { min-height: 54px; padding: 9px 10px; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 2px 6px; align-content: center; }
   .mobileDirectory a > span { grid-row: 1 / 3; color: var(--fb-meta); font: 700 10px/1.3 var(--font-geist-mono), monospace; }
   .mobileDirectory a strong { overflow-wrap: anywhere; font-size: 12px; line-height: 1.35; }
@@ -109,10 +107,6 @@
   .boundary { min-height: 0; padding: 10px 16px; grid-template-columns: 1fr; gap: 3px; }
   .boundary p { font-size: 12px; }
   .mobileDirectory ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .mobileDirectory li:nth-child(3n) { border-right: 0; }
-  .mobileDirectory li:nth-child(2n) { border-right: 1px solid var(--fb-line); }
-  .mobileDirectory li:nth-last-child(-n + 3) { border-bottom: 0; }
-  .mobileDirectory li:nth-last-child(-n + 2) { border-bottom: 1px solid var(--fb-line); }
   .mobileDirectory a { min-height: 58px; padding: 9px 8px; }
   .panels :global([id]) { scroll-margin-top: 78px; }
 }

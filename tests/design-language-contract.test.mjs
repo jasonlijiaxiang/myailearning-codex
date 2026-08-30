@@ -290,5 +290,5 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
     assert.doesNotMatch(source, /data-module-hero\s*=/, `${entry} 不得复制共享 Hero 标记`);
     assert.doesNotMatch(source, /--fb-[a-z0-9-]+\s*:/, `${entry} 不得以内联样式覆盖全站基础 Token`);
   }
-  assert.ok(scaffoldEntries.length >= 3, "当前迁移批次必须至少覆盖 Agent、MCP 与 A2A");
+  assert.ok(scaffoldEntries.length >= 4, "当前迁移批次必须至少覆盖 RAG、Agent、MCP 与 A2A");
 });

@@ -718,7 +718,7 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.doesNotMatch(inference, /class="inferenceBudgetLedger"/);
 });
 
-test("Agent, MCP, and A2A share one header, hero, and task-led reader contract", async () => {
+test("RAG, Agent, MCP, and A2A share one header, hero, and task-led reader contract", async () => {
   const renderedModules = await Promise.all(publishedModules.map(async (module) => ({
     html: await renderHtml(module.path),
     path: module.path,
@@ -726,10 +726,10 @@ test("Agent, MCP, and A2A share one header, hero, and task-led reader contract",
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/ai-agent", "/modules/mcp", "/modules/a2a"]) {
+  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 3, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 4, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -751,24 +751,39 @@ test("Agent, MCP, and A2A share one header, hero, and task-led reader contract",
     assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
   }
 
-  const [agentRoute, mcpRoute, a2aRoute, readerSource, heroSource, mcpStyles] = await Promise.all([
+  const [ragRoute, agentRoute, mcpRoute, a2aRoute, readerSource, heroSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
+    readFile(new URL("../app/(zh)/modules/rag/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp-module-experience-client.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/a2a-module-experience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/dense-module-reading-modes.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/unified-module-hero.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp-module-experience.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/dense-module-reading-modes.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
   ]);
-  for (const routeSource of [agentRoute, mcpRoute, a2aRoute]) {
+  for (const routeSource of [ragRoute, agentRoute, mcpRoute, a2aRoute]) {
     assert.match(routeSource, /UnifiedModuleScaffold/);
     assert.doesNotMatch(routeSource, /<UnifiedModuleHero\b|<ReadingProgress\b/);
     assert.match(routeSource, /DenseModuleReadingModes/);
   }
   assert.match(readerSource, /aria-current=\{activeId === item\.id \? "location"/);
   assert.match(readerSource, /IntersectionObserver/);
+  assert.match(readerSource, /closest<HTMLElement>\("\[data-reading-mode\]"\)/, "嵌套深链必须自动识别所属阅读面板");
+  assert.match(readerSource, /data-reading-mode=\{mode\.id\}/, "每个阅读面板必须声明稳定所属模式");
   assert.match(readerSource, /target\.startsWith\("qa-"\) \? "field"/);
   assert.match(readerSource, /setActiveMode\(defaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "清空 hash 时必须恢复默认阅读任务");
-  assert.match(heroSource, /aria-label="模块导航菜单"/, "移动菜单名称不能绑定单一开合状态");
+  assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "英文目录计数必须处理单复数");
+  assert.match(heroSource, /mobileMenu: "模块导航菜单"/, "中文移动菜单名称必须保留在本地化契约中");
+  assert.match(heroSource, /aria-label=\{copy\.mobileMenu\}/, "移动菜单名称不能绑定单一开合状态");
+  assert.match(heroSource, /<em lang="en"> · \{enTitle\}<\/em>/, "中文 Hero 的英文副题必须声明语言");
+  assert.match(fieldbookStyles, /\.moduleReadingExperience\[data-module-reader="unified"\]\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 不能裁掉 sticky 元素");
+  assert.match(fieldbookStyles, /\[data-module-content="unified"\] \.moduleReadingHost > \.section\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 的正文祖先不能破坏 sticky 定位");
+  assert.doesNotMatch(denseStyles, /#fff\b/, "统一 reader 必须消费共享 surface token");
+  assert.equal((ragRoute.match(/<table>/g) ?? []).length, 10, "RAG 的宽表清单不得静默缩小");
+  assert.equal((ragRoute.match(/<caption className="srOnly">/g) ?? []).length, 10, "RAG 每张表必须有可访问名称");
+  assert.equal((ragRoute.match(/scope="row"/g) ?? []).length, 10, "RAG 每张表必须声明行标题");
+  assert.equal((ragRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? []).length, 10, "RAG 宽表容器必须支持键盘横向滚动");
   assert.doesNotMatch(mcpRoute, /mobileChapterNav|章节快速导航/, "MCP 不应保留第二套移动章节导航");
   assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
 });
@@ -1156,7 +1171,7 @@ test("RAG route follows one evidence decision from adoption through production",
   const html = await renderHtml("/modules/rag");
   assertValidGridSpans(html, "/modules/rag");
 
-  assert.match(html, /检索增强生成 · Retrieval-Augmented Generation/);
+  assert.match(html, /<small>检索增强生成<em lang="en"> · (?:<!-- -->)?Retrieval-Augmented Generation<\/em><\/small>/);
   assert.match(html, /把外部资料整理成当前用户可使用、能核对且可撤回的依据/);
   assert.match(html, /核心问题/);
   assert.match(html, /只使用当前用户有权访问、仍然有效、能够回到原文的证据/);
@@ -1195,7 +1210,7 @@ test("RAG route follows one evidence decision from adoption through production",
   assert.match(html, /搜索客户问题/);
   assert.match(html, /RAG 检索链实验/);
   assert.match(html, /关键词检索 BM25/);
-  assert.match(html, /href="\/references"/);
+  assert.match(html, /href="\/references#module-rag"/);
   assert.match(html, /<dt>阅读方式<\/dt>/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("rag"))) {
@@ -2064,7 +2079,7 @@ test("public page shells expose one real skip target after navigation without de
     assert.doesNotMatch(source, /V2\.0/, `${relativePath} 不得显示装饰性维护版本号`);
   }
 
-  assert.equal(pagesWithTopbar.length, 18, "传统公开页面壳必须全部进入 skip-link 回归范围");
+  assert.equal(pagesWithTopbar.length, 17, "传统公开页面壳必须全部进入 skip-link 回归范围");
   const unifiedHero = await readFile(new URL("unified-module-hero.tsx", appRoot), "utf8");
   assert.equal((unifiedHero.match(/id="main-content"/g) ?? []).length, 1, "共享模块 Hero 必须只有一个主内容跳转目标");
   assert.ok(unifiedHero.indexOf('id="main-content"') > unifiedHero.indexOf("</nav>"), "共享模块 Hero 的跳转目标必须位于导航之后");

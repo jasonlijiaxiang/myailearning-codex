@@ -816,7 +816,8 @@ test("English routes and all Chinese module page families expose reciprocal lang
     readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8"),
   ]);
   assert.match(sharedZh, /englishModulePath/);
-  assert.match(ragZh, /ragEnglishPath/);
+  assert.match(ragZh, /UnifiedModuleScaffold/);
+  assert.doesNotMatch(ragZh, /<nav className="topbar"|<ReadingProgress\b/, "RAG must not duplicate the shared page shell");
   assert.match(agentZh, /UnifiedModuleScaffold/);
   assert.match(unifiedHero, /englishModulePath/);
   assert.match(promptZh, /promptEnglishPath/);
