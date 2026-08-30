@@ -184,7 +184,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const remainingDecisions = brief.decisions.slice(primerDecisionCount);
   const pageClassName = `fieldbookTheme modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`;
   const unifiedConfig = getUnifiedBriefModuleConfig(currentModule.canonicalSlug);
-  const primer = <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} />;
+  const primer = <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} showCriticalBoundary={!unifiedConfig} />;
   const decisionSection = (showCriticalBoundary: boolean) => remainingDecisions.length ? (
     <section className="subsection moduleBriefSection" id="decisions" data-quality-section="decisions">
       <ModuleSectionHeader code="Q1" title="方案判断" />

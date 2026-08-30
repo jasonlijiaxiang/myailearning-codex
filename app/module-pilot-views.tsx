@@ -208,7 +208,7 @@ const solutionScenarioAtlas = [
   ["会议助手", "记录决定并推进事项", "决定召回 · 责任人正确", "隐私与错误归责"],
 ];
 
-export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
+export function SolutionPatternPrimer({ brief, showCriticalBoundary = true }: { brief?: FocusedBrief; showCriticalBoundary?: boolean }) {
   const decisionRows = brief?.decisions.slice(0, 4) ?? [];
   return (
     <section className="pilotPrimer pilotPrimer--solution focusedNarrative focusedNarrative--decision" id="principle" data-knowledge-view="decision-blueprint" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="solution-pattern-primer-title">
@@ -255,12 +255,12 @@ export function SolutionPatternPrimer({ brief }: { brief?: FocusedBrief }) {
       ) : null}
       <div className="primerAtlas" aria-label="七类常见场景的目标、指标和隐藏风险">
         <div className="primerAtlasHeader"><h3>七类场景，七套验收重点</h3><p>复用的是能力积木，不是同一套指标。</p></div>
-        <div className="primerAtlasTable" role="table">
+        <div className="primerAtlasTable" role="table" aria-label="七类场景的目标、指标和隐藏风险">
           <div className="primerAtlasRow primerAtlasRow--head" role="row"><span role="columnheader">场景</span><span role="columnheader">要改变的工作</span><span role="columnheader">主要指标</span><span role="columnheader">容易漏掉</span></div>
           {solutionScenarioAtlas.map(([scene, outcome, metric, risk]) => <div className="primerAtlasRow" role="row" key={scene}><strong role="rowheader">{scene}</strong><span role="cell">{outcome}</span><span role="cell">{metric}</span><span role="cell">{risk}</span></div>)}
         </div>
       </div>
-      {brief ? <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside> : null}
+      {brief && showCriticalBoundary ? <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside> : null}
       <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用六道决策门把模糊需求缩成一个可验证闭环，再沿八层责任架构逐项检查必要性、Owner、证据、失败响应和退出条件；技术越复杂，证明责任越重。</p><nav aria-label="场景解决方案深入阅读"><a href="#deep-dive">检查生产边界</a><a href="#evidence">核对证据</a><a href="#cloud">对应云服务</a></nav></footer>
     </section>
   );
@@ -440,10 +440,10 @@ export function ModuleExtensionPrimer({ slug, view = requireModuleExtensionView(
   );
 }
 
-export function SharedModulePrimer({ slug, knowledgeView, brief, extensionView }: { slug: string; knowledgeView: string | null; brief?: FocusedBrief; extensionView?: ExtensionView }) {
+export function SharedModulePrimer({ slug, knowledgeView, brief, extensionView, showCriticalBoundary = true }: { slug: string; knowledgeView: string | null; brief?: FocusedBrief; extensionView?: ExtensionView; showCriticalBoundary?: boolean }) {
   if (!knowledgeView) return null;
   if (knowledgeView === "theory-atlas") return <LlmTheoryPrimer />;
-  if (knowledgeView === "decision-blueprint") return <SolutionPatternPrimer brief={brief} />;
+  if (knowledgeView === "decision-blueprint") return <SolutionPatternPrimer brief={brief} showCriticalBoundary={showCriticalBoundary} />;
   if (knowledgeView === "mcp-host-server-boundary" && brief) return <McpFocusedPrimer brief={brief} view={extensionView} />;
   if (knowledgeView === "latency-capacity-map" && brief) return <InferenceFocusedPrimer brief={brief} view={extensionView} />;
   if (knowledgeView === "threat-path") return <SecurityThreatPrimer />;

@@ -2,13 +2,13 @@ function freezeDirectory(items) {
   return Object.freeze(items.map((item) => Object.freeze(item)));
 }
 
-function defineConfig({ facts, primer, shortTitle }) {
+function defineConfig({ facts, mechanismId = "principle", primer, shortTitle }) {
   const quick = freezeDirectory([
     primer,
     { id: "decisions", label: "方案判断", eyebrow: "明确责任转交" },
   ]);
   const learn = freezeDirectory([
-    { id: "principle", label: "机制速览", eyebrow: "建立工作模型" },
+    { id: mechanismId, label: "机制速览", eyebrow: "建立工作模型" },
     { id: "study-guide", label: "学习与练习", eyebrow: "形成可复核产物" },
     { id: "curriculum", label: "知识地图", eyebrow: "补齐理论版图" },
     { id: "deep-dive", label: "工程深挖", eyebrow: "定位失败与边界" },
@@ -28,6 +28,17 @@ function defineConfig({ facts, primer, shortTitle }) {
 }
 
 const configs = Object.freeze({
+  "solution-patterns": defineConfig({
+    shortTitle: "场景解决方案",
+    mechanismId: "mechanism-summary",
+    primer: { id: "solution-pattern-primer-title", label: "决策蓝图", eyebrow: "从业务结果到可验收闭环" },
+    facts: [
+      { label: "方案起点", value: "业务结果 × 当前基线 × 权威终态 × Owner" },
+      { label: "最小闭环", value: "先比较无 AI、规则与单次模型；只为必要责任增加组件" },
+      { label: "交付阶段", value: "Discovery → PoC → Pilot → Production" },
+      { label: "经营与退出", value: "每个达标结果的完整成本 + 回滚、迁移与停服" },
+    ],
+  }),
   "model-landscape": defineConfig({
     shortTitle: "模型选型",
     primer: { id: "model-landscape-extension-primer-title", label: "选型坐标", eyebrow: "从业务损失到退出证明" },
@@ -86,6 +97,26 @@ const configs = Object.freeze({
       { label: "保证闭环", value: "登记 → 分级 → 保证 → 运营 / 复审" },
       { label: "批准状态", value: "Approve · Conditional · Hold · No-Go，均绑定证据与条件" },
       { label: "变化门禁", value: "重大变化先暂停受影响范围，再补证与重决策" },
+    ],
+  }),
+  security: defineConfig({
+    shortTitle: "AI 安全",
+    primer: { id: "security-threat-primer-title", label: "威胁路径", eyebrow: "从恶意简历到 ATS 终态" },
+    facts: [
+      { label: "威胁起点", value: "不可接受损失 × 不可信 Source × 高影响 Sink" },
+      { label: "数据边界", value: "招聘人员 × 职位 × 候选人 × 用途；检索时 ACL" },
+      { label: "动作边界", value: "模型形成有据提案；真实身份与确定性策略授权 ATS" },
+      { label: "恢复证明", value: "暂停写入 → 撤销凭据 → 核对 ATS 终态 → 补偿 → 回归" },
+    ],
+  }),
+  "ai-gateway": defineConfig({
+    shortTitle: "AI 网关",
+    primer: { id: "ai-gateway-extension-primer-title", label: "策略与数据面", eyebrow: "沿一次请求检查控制证据" },
+    facts: [
+      { label: "引入条件", value: "消除重复控制，或形成可验证的治理证据" },
+      { label: "策略上下文", value: "主体 × 任务 × 数据级别 × 地域 × 模型 / 工具 × 版本" },
+      { label: "请求证据", value: "策略版本 × 路由理由 × 实际调用尝试 × 业务终态" },
+      { label: "故障转移", value: "HTTP 200 ≠ 能力、质量、地域、安全或授权等价" },
     ],
   }),
   llm: defineConfig({
