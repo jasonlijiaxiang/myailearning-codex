@@ -145,7 +145,7 @@ function standardUnifiedDirectories(primer: DenseChapterLink) {
       { id: "evidence", label: "Evidence and limits", eyebrow: "State what sources prove" },
       { id: "cloud", label: "Cloud capabilities", eyebrow: "Map delivery and ownership" },
       { id: "qa", label: "Customer questions", eyebrow: "Answer with boundaries" },
-      { id: "related-modules", label: "Related modules", eyebrow: "Continue the responsibility chain" },
+      { id: "related-modules", label: "Related modules", eyebrow: "Explore adjacent topics" },
     ],
   } satisfies EnglishUnifiedReaderConfig["directories"];
 }
