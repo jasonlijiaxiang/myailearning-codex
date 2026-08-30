@@ -309,6 +309,48 @@ const englishUnifiedReaderConfigs: Readonly<Record<string, EnglishUnifiedReaderC
     groupIds: standardUnifiedGroupIds,
     fieldGroupsBeforeEvidence: false,
   },
+  agentkit: {
+    titleId: "agentkit-english-title",
+    shortTitle: "AgentKit",
+    criticalBoundary: "AgentKit manages application delivery, the Runtime lifecycle, and resource bindings. The application team still owns agent logic, trusted identity, shared state, business authorization, quality, load, recovery, and the release decision. Runtime Ready is a platform state, not proof of a customer SLO or production acceptance.",
+    facts: [
+      { label: "Application contract", value: "Entry point × dependencies × configuration × invocation surface" },
+      { label: "Delivery chain", value: "Source → image → Runtime → target-environment verification" },
+      { label: "State boundary", value: "Shared sessions and governed memory stay separate from authoritative truth" },
+      { label: "Release proof", value: "Runtime Ready ≠ customer SLO or production acceptance" },
+    ],
+    directories: standardUnifiedDirectories({ id: "agentkit-english-primer-title", label: "Application to Runtime", eyebrow: "From application contract to release evidence" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
+  evaluation: {
+    titleId: "evaluation-english-title",
+    shortTitle: "Evaluation",
+    criticalBoundary: "A score is meaningful only with its contract: version, population, tasks, graders, trials, slices, uncertainty, and decision rules. An aggregate cannot compensate for unauthorized action, sensitive-data exposure, an incorrect business state, or another non-compensable failure.",
+    facts: [
+      { label: "Evaluation unit", value: "Version tuple × tasks and slices × environment × graders" },
+      { label: "Grader split", value: "Code for authoritative state · calibrated judge for semantics · people for adjudication" },
+      { label: "Release gate", value: "Repeated trials, critical slices, uncertainty, and non-compensable gates" },
+      { label: "Owner handoff", value: "Evaluation recommends · AI Ops executes · Governance accepts exceptions" },
+    ],
+    directories: standardUnifiedDirectories({ id: "evaluation-english-primer-title", label: "Evaluation contract", eyebrow: "Define the decision before the score" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
+  "ai-governance": {
+    titleId: "ai-governance-english-title",
+    shortTitle: "AI Governance",
+    criticalBoundary: "Governance defines the use inventory, evidence requirements, approval gates, exception process, and reassessment triggers. The authorized business owner decides whether the use operates and accepts residual business risk within delegated authority. Governance does not perform Security's attack testing, Evaluation's measurement, AI Ops' release and recovery work, the ATS owner's transaction authorization, or counsel's legal classification.",
+    facts: [
+      { label: "Governed identity", value: "Use × affected people × decision × data × supplier × region × owner" },
+      { label: "Assurance path", value: "Register → tier → assess → assign controls → assemble evidence → decide → operate → reassess" },
+      { label: "Decision states", value: "Approve · conditionally approve · hold · reject" },
+      { label: "Change gate", value: "Suspend affected scope; refresh evidence; restore, restrict, or retire" },
+    ],
+    directories: standardUnifiedDirectories({ id: "ai-governance-english-primer-title", label: "Governance assurance loop", eyebrow: "From governed use to reassessment" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
 };
 
 export const englishUnifiedReaderSlugs = Object.freeze(Object.keys(englishUnifiedReaderConfigs));
@@ -562,13 +604,14 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
 
 function EnglishSectionGroupView({ group, number }: { group: EnglishSectionGroup; number: number }) {
   const singleSection = group.sections.length === 1 ? group.sections[0] : null;
+  const headingId = `${group.id}-section-title`;
   return (
-    <section className="subsection moduleBriefSection" id={group.id} data-section-role={group.role}>
+    <section aria-labelledby={headingId} className="subsection moduleBriefSection" id={group.id} data-section-role={group.role}>
       <div className="subHead">
         <span>{String(number).padStart(2, "0")}</span>
         <div>
           <p className="kicker">{singleSection?.eyebrow ?? group.eyebrow}</p>
-          <h2>{singleSection?.title ?? group.label}</h2>
+          <h2 id={headingId}>{singleSection?.title ?? group.label}</h2>
         </div>
       </div>
       {group.sections.map((section) => (
@@ -610,8 +653,8 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
     ? [...contentReadingSections, relatedReadingSection]
     : [relatedReadingSection, ...contentReadingSections];
   const renderRelatedSection = (number: number) => (
-    <section className={`subsection moduleBriefRelated${usesFocusedReadingProfile ? " focusedRelated" : ""}`} id="related-modules">
-      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">RELATED MODULES</p><h2>Continue through the knowledge map</h2></div></div>
+    <section aria-labelledby="related-modules-section-title" className={`subsection moduleBriefRelated${usesFocusedReadingProfile ? " focusedRelated" : ""}`} id="related-modules">
+      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">RELATED MODULES</p><h2 id="related-modules-section-title">Continue through the knowledge map</h2></div></div>
       <div className="relatedModuleGrid" data-count={module.relatedSlugs.length} data-odd={module.relatedSlugs.length % 2 === 1 ? "true" : "false"}>
         {module.relatedSlugs.map((slug) => {
           const related = getModuleBySlug(slug);
@@ -624,8 +667,8 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   );
 
   const renderEvidenceSection = (number: number) => (
-    <section className={`subsection moduleBriefSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="evidence">
-      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2>Evidence cards</h2></div></div>
+    <section aria-labelledby="evidence-section-title" className={`subsection moduleBriefSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="evidence">
+      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2 id="evidence-section-title">Evidence cards</h2></div></div>
       <div className="evidenceGrid" data-count={visibleEvidenceCards.length} data-odd={visibleEvidenceCards.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(visibleEvidenceCards, 3).flatMap((row) => row.map((card) => {
         const source = sourceLedger[card.sourceId];
         const localizedSource = englishSourceCopy[card.sourceId];
@@ -637,8 +680,8 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   );
 
   const renderQaSection = (number: number) => (
-    <section className={`subsection moduleBriefSection qaSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="qa">
-      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2>Common questions and evidence-backed answers</h2></div></div>
+    <section aria-labelledby="qa-section-title" className={`subsection moduleBriefSection qaSection${usesFocusedReadingProfile ? " focusedSection" : ""}`} id="qa">
+      <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h2 id="qa-section-title">Common questions and evidence-backed answers</h2></div></div>
       <div className="qaList">{visibleQuestions.map((item, index) => (
         <details className="qaItem" id={`qa-${item.id}`} key={item.id}>
           <summary><span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span><span className="qaQuestion"><strong>{item.q}</strong>{item.addedAt ? <small>Added on {item.addedAt}</small> : null}</span><span className="qaTag">{item.tag}</span><span className="plus">＋</span></summary>

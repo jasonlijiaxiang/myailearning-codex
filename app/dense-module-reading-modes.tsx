@@ -103,13 +103,22 @@ function directoryAnchorForTarget(
 }
 
 function scrollHashTargetIntoView(hash: string) {
-  const target = document.getElementById(hash.replace(/^#/, ""));
-  if (!target) return;
-  const root = document.documentElement;
-  const previousBehavior = root.style.scrollBehavior;
-  root.style.scrollBehavior = "auto";
-  target.scrollIntoView({ block: "start" });
-  root.style.scrollBehavior = previousBehavior;
+  const targetId = hash.replace(/^#/, "");
+  const revealTarget = () => {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    if (target instanceof HTMLDetailsElement) target.open = true;
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    target.scrollIntoView({ block: "start" });
+    root.style.scrollBehavior = previousBehavior;
+  };
+  revealTarget();
+  window.requestAnimationFrame(() => {
+    revealTarget();
+    window.requestAnimationFrame(revealTarget);
+  });
 }
 
 function DirectoryList({ items, activeId }: { items: readonly DenseChapterLink[]; activeId?: string }) {
@@ -254,7 +263,7 @@ export function DenseModuleReadingModes({
 
   function activateMode(nextMode: ReadingModeId) {
     setActiveMode(nextMode);
-    if (window.location.hash) window.history.replaceState({}, "", `${window.location.pathname}${window.location.search}`);
+    if (window.location.hash) window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}`);
     window.requestAnimationFrame(() => document.getElementById(readerId)?.scrollIntoView({ block: "start" }));
   }
 

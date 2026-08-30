@@ -58,6 +58,36 @@ const configs = Object.freeze({
       { label: "生产转交", value: "create_agentkit_app ≠ Runtime 已部署" },
     ],
   }),
+  agentkit: defineConfig({
+    shortTitle: "AgentKit",
+    primer: { id: "agentkit-extension-primer-title", label: "应用到 Runtime", eyebrow: "从应用合同到上线证据" },
+    facts: [
+      { label: "应用合同", value: "入口 × 依赖 × 配置 × 调用接口" },
+      { label: "交付链", value: "Source → Image → Runtime → 目标环境验证" },
+      { label: "状态边界", value: "共享 Session 与受治理 Memory 分层；Memory ≠ 权威事实" },
+      { label: "上线证明", value: "Runtime Ready ≠ 客户 SLO 或生产验收" },
+    ],
+  }),
+  evaluation: defineConfig({
+    shortTitle: "评估",
+    primer: { id: "evaluation-extension-primer-title", label: "评估契约", eyebrow: "先定义决定，再定义分数" },
+    facts: [
+      { label: "评估单元", value: "版本元组 × 任务切片 × 环境 × 评分器" },
+      { label: "评分分工", value: "代码验证终态 · 校准 Judge 评语义 · 人工裁决" },
+      { label: "发布门禁", value: "重复试验、关键切片、不确定性与不可补偿硬门" },
+      { label: "责任转交", value: "Evaluation 建议 · AI Ops 执行 · Governance 批准例外" },
+    ],
+  }),
+  "ai-governance": defineConfig({
+    shortTitle: "AI 治理",
+    primer: { id: "ai-governance-extension-primer-title", label: "治理保证闭环", eyebrow: "从受治理用途到重新评估" },
+    facts: [
+      { label: "治理主键", value: "用途 × 人群 × 决定 × 数据 × 供应商 × 地区" },
+      { label: "保证闭环", value: "登记 → 分级 → 保证 → 运营 / 复审" },
+      { label: "批准状态", value: "Approve · Conditional · Hold · No-Go，均绑定证据与条件" },
+      { label: "变化门禁", value: "重大变化先暂停受影响范围，再补证与重决策" },
+    ],
+  }),
   llm: defineConfig({
     shortTitle: "LLM",
     primer: { id: "llm-theory-primer-title", label: "生成主线", eyebrow: "从 Token 到输出" },
