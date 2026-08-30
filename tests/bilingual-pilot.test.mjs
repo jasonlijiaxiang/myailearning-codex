@@ -823,7 +823,9 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.match(unifiedHero, /englishModulePath/);
   assert.match(unifiedHero, /`\/en\/references\?module=\$\{slug\}`/, "English unified modules must use the real scoped source-ledger URL");
   assert.doesNotMatch(unifiedHero, /\/en\/references#module-/, "English unified modules must not point to a nonexistent source anchor");
-  assert.match(promptZh, /promptEnglishPath/);
+  assert.match(promptZh, /UnifiedModuleScaffold/);
+  assert.match(promptZh, /DenseModuleReadingModes/);
+  assert.doesNotMatch(promptZh, /promptEnglishPath|<nav className="topbar"|<ReadingProgress\b/, "Prompt must use the shared shell and language switch");
   assert.doesNotMatch(enHome, />English pilot</i);
   assert.match(enShared, /EnglishModulePage/);
   assert.match(enShared, /englishUnifiedReaderSlugs\.includes\(slug\)/, "English shared route must consume the centralized unified-reader registry");
@@ -833,7 +835,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
   }
-  assert.deepEqual(unifiedBriefModuleSlugs, ["solution-patterns", "model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "llm", "data-engineering"]);
+  assert.deepEqual(unifiedBriefModuleSlugs, ["solution-patterns", "model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "llm", "data-engineering"]);
   for (const slug of unifiedBriefModuleSlugs) {
     const config = getUnifiedBriefModuleConfig(slug);
     assert.ok(config, `${slug} must have a Chinese unified-reader config`);
@@ -842,9 +844,11 @@ test("English routes and all Chinese module page families expose reciprocal lang
     assert.deepEqual(config.directories.field.map((item) => item.id), ["evidence", "cloud", "qa", "related-modules"]);
     assert.equal(config.facts.length, 4);
   }
-  for (const slug of ["solution-patterns", "model-landscape", "multimodal", "llm", "data-engineering", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway"]) {
+  for (const slug of ["solution-patterns", "model-landscape", "multimodal", "llm", "data-engineering", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "prompt-engineering"]) {
     assert.match(enModulePage, new RegExp(`(?:^|\\n)  (?:"${slug}"|${slug}): \\{`), `English unified reader config must include ${slug}`);
   }
+  assert.match(enModulePage, /"prompt-engineering": \{[\s\S]*prompt-pattern-diagnostics[\s\S]*cloud-poc-operating-model/, "Prompt must preserve its dedicated reader map");
+  assert.match(enModulePage, /"prompt-engineering": \["prompt-engineering", "context-engineering", "tools-schema", "structured-outputs", "prompt-injection"\]/, "Prompt primer must retain five locally defined terms");
   assert.match(enModulePage, /export const englishUnifiedReaderSlugs = Object\.freeze\(Object\.keys\(englishUnifiedReaderConfigs\)\)/);
   assert.match(enModulePage, /mcp: \{[\s\S]*completeFocusedProjection: true/, "MCP must render its complete authored English projection");
   assert.match(enModulePage, /"solution-patterns": \{[\s\S]*completeFocusedProjection: true/, "Solution Patterns must render its complete authored English projection");

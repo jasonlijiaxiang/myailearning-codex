@@ -726,10 +726,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/llm", "/modules/data-engineering"]) {
+  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/ai-ops", "/modules/predictive-ai-mlops", "/modules/prompt-engineering", "/modules/llm", "/modules/data-engineering"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 15, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 18, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -751,11 +751,12 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
     assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
   }
 
-  const [ragRoute, agentRoute, mcpRoute, a2aRoute, readerSource, qaInteractionSource, heroSource, relationSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
+  const [ragRoute, agentRoute, mcpRoute, a2aRoute, promptRoute, readerSource, qaInteractionSource, heroSource, relationSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
     readFile(new URL("../app/(zh)/modules/rag/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp-module-experience-client.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/a2a-module-experience.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/(zh)/modules/prompt-engineering/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/dense-module-reading-modes.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/unified-module-hero.tsx", import.meta.url), "utf8"),
@@ -764,7 +765,7 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
     readFile(new URL("../app/dense-module-reading-modes.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
   ]);
-  for (const routeSource of [ragRoute, agentRoute, mcpRoute, a2aRoute]) {
+  for (const routeSource of [ragRoute, agentRoute, mcpRoute, a2aRoute, promptRoute]) {
     assert.match(routeSource, /UnifiedModuleScaffold/);
     assert.doesNotMatch(routeSource, /<UnifiedModuleHero\b|<ReadingProgress\b/);
     assert.match(routeSource, /DenseModuleReadingModes/);
@@ -808,6 +809,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.equal((a2aRoute.match(/<caption className="srOnly">/g) ?? []).length, 3, "A2A 三张宽表必须声明隐藏表名");
   assert.equal((a2aRoute.match(/scope="col"/g) ?? []).length, 17, "A2A 表格的所有列头必须声明 scope");
   assert.equal((a2aRoute.match(/scope="row"/g) ?? []).length, 6, "A2A 表格的所有行标题模板必须声明 scope");
+  assert.equal((promptRoute.match(/role="region"[^>]*aria-label="[^"]+"[^>]*tabIndex=\{0\}/g) ?? []).length, 7, "Prompt 七张手写宽表必须使用可聚焦的命名区域");
+  assert.equal((promptRoute.match(/<caption className="srOnly">/g) ?? []).length, 7, "Prompt 七张手写宽表必须声明隐藏表名");
+  assert.equal((promptRoute.match(/scope="col"/g) ?? []).length, 27, "Prompt 手写表的所有列头必须声明 scope");
+  assert.match(promptRoute, /id="context-assembly"[\s\S]*<ModuleExtensionPrimer/, "Prompt 必须为历史 context-assembly 深链保留真实 DOM 目标");
   assert.doesNotMatch(mcpRoute, /mobileChapterNav|章节快速导航/, "MCP 不应保留第二套移动章节导航");
   assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
 });
@@ -920,6 +925,32 @@ test("standard brief modules preserve their authored content in the unified read
       zhQuestionCount: 14,
       englishTableCount: 3,
       requiredEnglishIds: ["gateway-policy-data-plane", "gateway-decision-managed", "gateway-deep-offline-replay", "gateway-cloud-routing", "qa-request-rate-limit-not-enough", "evidence-gateway-routing-risk-loop"],
+    },
+    {
+      slug: "ai-ops",
+      zhTitleId: "ai-ops-title",
+      enTitleId: "ai-ops-english-title",
+      zhPrimerId: "ai-ops-extension-primer-title",
+      enPrimerId: "ai-ops-english-primer-title",
+      zhMechanism: /data-knowledge-view="operations-feedback-loop"/,
+      enMechanism: /data-knowledge-view="operations-feedback-loop"/,
+      zhQuestionCount: 27,
+      englishTableCount: 4,
+      requiredChineseIds: ["qa-19", "qa-21", "qa-27"],
+      requiredEnglishIds: ["ai-ops-operating-model", "principle-task-contract", "ai-ops-decisions", "decision-release-traffic", "ai-ops-delivery-chain", "incident-freeze-evidence", "ai-ops-cloud", "cloud-release-incident", "qa-incident-business-state", "evidence-model-external-stop"],
+    },
+    {
+      slug: "predictive-ai-mlops",
+      zhTitleId: "predictive-ai-mlops-title",
+      enTitleId: "predictive-ai-mlops-english-title",
+      zhPrimerId: "predictive-ai-mlops-extension-primer-title",
+      enPrimerId: "predictive-ai-mlops-english-primer-title",
+      zhMechanism: /data-knowledge-view="predictive-model-lifecycle"/,
+      enMechanism: /data-knowledge-view="predictive-model-lifecycle"/,
+      zhQuestionCount: 10,
+      englishTableCount: 3,
+      requiredChineseIds: ["qa-5", "qa-10"],
+      requiredEnglishIds: ["predictive-model-lifecycle", "predictive-decision-retraining", "predictive-deep-skew", "predictive-cloud-monitor", "qa-predictive-rollback-bundle", "evidence-production-readiness-score"],
     },
     {
       slug: "llm",
@@ -1589,8 +1620,26 @@ test("Prompt Engineering route covers context boundaries, release governance, an
     readFile(new URL("../app/flagship-labs.tsx", import.meta.url), "utf8"),
   ]);
 
+  for (const rendered of [html, englishHtml]) {
+    assert.match(rendered, /data-module-hero="unified"/);
+    assert.match(rendered, /data-module-reader="unified"/);
+    assert.equal((rendered.match(/id="main-content"/g) ?? []).length, 1);
+    assert.equal((rendered.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3);
+    assert.doesNotMatch(rendered, /class="topbar"/);
+  }
   assert.match(html, /提示词工程/);
   assert.match(html, /Prompt Engineering/);
+  assert.equal((html.match(/id="context-assembly"/g) ?? []).length, 1);
+  assert.match(html, /id="prompt-engineering-extension-primer-title"/);
+  assert.equal((html.match(/id="qa-\d+"/g) ?? []).length, promptQa.length);
+  assert.equal((englishHtml.match(/class="qaItem"/g) ?? []).length, promptQa.length);
+  assert.equal((englishHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, 8);
+  assert.equal((html.match(/class="[^"]*\btableWrap\b[^"]*"[^>]*role="region"[^>]*aria-label="[^"]+"[^>]*tabindex="0"/g) ?? []).length, 7);
+  assert.equal((html.match(/<caption class="srOnly">/g) ?? []).length, 9);
+  assert.equal((englishHtml.match(/class="termHint" data-term-id=/g) ?? []).length, 5);
+  for (const id of ["prompt-pattern-diagnostics", "technique-reasoning", "prompt-context-boundary", "claim-route-rules", "controlled-context-assembly", "validation-transaction", "boundary-prompt-hardening", "release-rollback-learn", "evidence-continuous-release-evaluation", "cloud-poc-operating-model", "boundary-universal-threshold", "qa-risk-based-go-no-go", "related-modules"]) {
+    assert.equal((englishHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `Prompt English reader must preserve #${id}`);
+  }
   assert.match(html, /Prompt 是什么，以及 Context Engineering 的边界/);
   assert.match(html, /明确且稳定的指令 · Instructions/);
   assert.match(html, /动态上下文 · Context/);
@@ -2388,7 +2437,7 @@ test("public page shells expose one real skip target after navigation without de
     assert.doesNotMatch(source, /V2\.0/, `${relativePath} 不得显示装饰性维护版本号`);
   }
 
-  assert.equal(pagesWithTopbar.length, 17, "传统公开页面壳必须全部进入 skip-link 回归范围");
+  assert.equal(pagesWithTopbar.length, 16, "传统公开页面壳必须全部进入 skip-link 回归范围");
   const unifiedHero = await readFile(new URL("unified-module-hero.tsx", appRoot), "utf8");
   assert.equal((unifiedHero.match(/id="main-content"/g) ?? []).length, 1, "共享模块 Hero 必须只有一个主内容跳转目标");
   assert.ok(unifiedHero.indexOf('id="main-content"') > unifiedHero.indexOf("</nav>"), "共享模块 Hero 的跳转目标必须位于导航之后");

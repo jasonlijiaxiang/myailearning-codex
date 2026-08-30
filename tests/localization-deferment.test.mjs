@@ -191,6 +191,7 @@ test("localization registry passes its recursive schema and covers every module"
     "erm-batch03-unified-readers-2026-08-30",
     "erm-batch04-unified-readers-2026-08-30",
     "erm-batch05-unified-readers-2026-08-30",
+    "erm-batch06-unified-readers-2026-08-31",
   ]) assert.ok(maintenances.has(maintenanceId), `${maintenanceId} must remain in the runtime chain`);
   assert.equal(maintenances.size, registry.runtimeMaintenances.length, "runtime maintenance IDs must be unique");
   const reader = maintenances.get("erm-english-reader-2026-08-09");
@@ -321,6 +322,17 @@ test("localization registry passes its recursive schema and covers every module"
   assert.deepEqual(batch05Readers?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
   assert.deepEqual(batch05Readers?.contentProjectionChangeSlugs, ["ai-gateway", "security", "solution-patterns"]);
   assert.equal(batch05Readers?.metadataScope, "none");
+  const batch06Readers = maintenances.get("erm-batch06-unified-readers-2026-08-31");
+  assert.equal(batch06Readers?.kind, "document-shell");
+  assert.equal(batch06Readers?.receiptId, "receipt-batch06-unified-readers-runtime-2026-08-31");
+  assert.deepEqual(batch06Readers?.changedRendererFiles, [
+    "app/(zh)/modules/prompt-engineering/page.tsx",
+    "app/i18n/english-pilot-module-page.tsx",
+    "app/unified-brief-module-config.mjs",
+  ]);
+  assert.deepEqual(batch06Readers?.affectedModuleSlugs, [...publishedModuleSlugs].sort());
+  assert.deepEqual(batch06Readers?.contentProjectionChangeSlugs, ["ai-ops", "predictive-ai-mlops", "prompt-engineering"]);
+  assert.equal(batch06Readers?.metadataScope, "none");
   assert.deepEqual(Object.keys(registry.moduleBaselines).sort(), [...publishedModuleSlugs].sort());
   assert.match(registry.baselineCommit, /^[0-9a-f]{40}$/);
   const activeBySlug = new Map(registry.deferments
