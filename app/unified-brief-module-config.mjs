@@ -119,6 +119,26 @@ const configs = Object.freeze({
       { label: "故障转移", value: "HTTP 200 ≠ 能力、质量、地域、安全或授权等价" },
     ],
   }),
+  "ai-ops": defineConfig({
+    shortTitle: "AI Ops",
+    primer: { id: "ai-ops-extension-primer-title", label: "交付恢复闭环", eyebrow: "组装、验证、发布、观测、恢复" },
+    facts: [
+      { label: "发布单元", value: "模型 · Prompt · 数据或索引 · 工具 · 工作流 · 策略 · 运行配置" },
+      { label: "测试分层", value: "代码契约 · 语义质量 · 风险 · 性能 · 业务终态" },
+      { label: "受控流量", value: "回放 → 无副作用影子 → 灰度 → 回滚" },
+      { label: "改进门禁", value: "隐私审查 · 去重 · 溯源 · 裁决后进入回归集" },
+    ],
+  }),
+  "predictive-ai-mlops": defineConfig({
+    shortTitle: "预测式 AI / MLOps",
+    primer: { id: "predictive-ai-mlops-extension-primer-title", label: "预测生命周期", eyebrow: "从任务合同到成熟真值" },
+    facts: [
+      { label: "任务合同", value: "实体 × 预测时点 × 标签窗口 × 业务动作 × 误判成本" },
+      { label: "时间正确", value: "每条训练样本只使用预测时点已可获得的信息" },
+      { label: "发布身份", value: "模型 × 特征 × 预处理 × 镜像 × 配置 × 阈值 × 策略 × 批准" },
+      { label: "更新边界", value: "漂移 → 调查；训练 → 候选；发布门 → 生产替换" },
+    ],
+  }),
   llm: defineConfig({
     shortTitle: "LLM",
     primer: { id: "llm-theory-primer-title", label: "生成主线", eyebrow: "从 Token 到输出" },

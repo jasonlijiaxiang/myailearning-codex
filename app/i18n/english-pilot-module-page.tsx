@@ -394,6 +394,70 @@ const englishUnifiedReaderConfigs: Readonly<Record<string, EnglishUnifiedReaderC
     groupIds: standardUnifiedGroupIds,
     fieldGroupsBeforeEvidence: false,
   },
+  "prompt-engineering": {
+    titleId: "prompt-engineering-english-title",
+    shortTitle: "Prompt",
+    criticalBoundary: "Message roles and instruction priority guide model behavior; they do not grant identity, access, transaction validity, or proof that an external action succeeded. Keep secrets and every mandatory authorization or business invariant outside the model, and reauthorize each proposed action at execution time.",
+    facts: [
+      { label: "Input unit", value: "Instructions × trusted state × dynamic evidence × tools and schemas" },
+      { label: "Model responsibility", value: "Produce a candidate response or structured action intent" },
+      { label: "Application responsibility", value: "Identity, authorization, validation, execution, and business truth" },
+      { label: "Release unit", value: "Model snapshot × prompt × context × tools × evaluation × rollback" },
+    ],
+    directories: {
+      quick: [
+        { id: "prompt-engineering-english-primer-title", label: "Context assembly", eyebrow: "Separate task expression from authority" },
+        { id: "prompt-pattern-diagnostics", label: "Technique triage", eyebrow: "Route the failure" },
+      ],
+      learn: [
+        { id: "prompt-context-boundary", label: "Scope and ownership", eyebrow: "Define the responsibility split" },
+        { id: "controlled-context-assembly", label: "Context manifest", eyebrow: "Budget and preserve provenance" },
+        { id: "output-tool-contracts", label: "Output and action", eyebrow: "Validate each contract layer" },
+        { id: "prompt-injection-controls", label: "Injection controls", eyebrow: "Bound source-to-sink impact" },
+        { id: "evaluation-release-governance", label: "Release governance", eyebrow: "Version, evaluate, canary, and roll back" },
+      ],
+      field: [
+        { id: "evidence", label: "Evidence and limits", eyebrow: "State what sources prove" },
+        { id: "cloud-poc-operating-model", label: "Cloud and PoC", eyebrow: "Make the capability operable" },
+        { id: "qa", label: "Customer questions", eyebrow: "Answer with boundaries" },
+        { id: "related-modules", label: "Related modules", eyebrow: "Explore adjacent topics" },
+      ],
+    },
+    groupIds: {
+      quick: ["prompt-pattern-diagnostics"],
+      learn: ["prompt-context-boundary", "controlled-context-assembly", "output-tool-contracts", "prompt-injection-controls", "evaluation-release-governance"],
+      field: ["cloud-poc-operating-model"],
+    },
+    fieldGroupsBeforeEvidence: false,
+  },
+  "ai-ops": {
+    titleId: "ai-ops-english-title",
+    shortTitle: "AI Ops",
+    criticalBoundary: "AI Ops binds the Evaluation Contract, governed datasets, evaluator versions, thresholds, models, prompts, retrieval, tools, policy, and runtime into a release manifest; it runs approved gates, exposes controlled traffic, observes production, and preserves recovery evidence. This is not traditional AIOps alert reduction or GPU-only monitoring. DevOps, DataOps, MLOps, Evaluation, Security, Governance, and business systems retain their own authority; telemetry is evidence, not proof of correctness. AI Ops owns gate enforcement, stop controls, rollback, and recovery.",
+    facts: [
+      { label: "Release unit", value: "Model · prompt · data or index · tools · workflow · policy · runtime" },
+      { label: "Test layers", value: "Code contracts · semantic quality · risk · performance · business outcome" },
+      { label: "Controlled traffic", value: "Replay → no-side-effect shadow → canary → rollback" },
+      { label: "Improvement gate", value: "Privacy review · deduplication · provenance · adjudication" },
+    ],
+    directories: standardUnifiedDirectories({ id: "ai-ops-english-primer-title", label: "Operating lifecycle", eyebrow: "Task, bundle, evidence, and business outcome" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
+  "predictive-ai-mlops": {
+    titleId: "predictive-ai-mlops-english-title",
+    shortTitle: "Predictive AI / MLOps",
+    criticalBoundary: "Feature stores, pipelines, registries, and deployment guardrails can make controls repeatable, but they cannot decide whether a model is appropriate for a use, population, or consequence. A registry entry, successful pipeline, or drift alert is evidence—not authority. A technical rollback also cannot undo notifications, prices, eligibility decisions, or other business actions already taken.",
+    facts: [
+      { label: "Decision contract", value: "Entity × prediction time × label window × action × error cost" },
+      { label: "Temporal integrity", value: "Each training row uses only information available at prediction time" },
+      { label: "Release identity", value: "Model × features × preprocessing × image × config × threshold × policy × approval" },
+      { label: "Update authority", value: "Drift opens investigation · training creates a candidate · the release gate replaces production" },
+    ],
+    directories: standardUnifiedDirectories({ id: "predictive-ai-mlops-english-primer-title", label: "Prediction lifecycle", eyebrow: "From decision contract to mature ground truth" }),
+    groupIds: standardUnifiedGroupIds,
+    fieldGroupsBeforeEvidence: false,
+  },
 };
 
 export const englishUnifiedReaderSlugs = Object.freeze(Object.keys(englishUnifiedReaderConfigs));
@@ -463,6 +527,7 @@ const specialPrimerStepCounts: Record<string, number> = {
 };
 const specialPrimerTermIds: Record<string, string[]> = {
   "solution-patterns": ["poc", "sla", "tco", "rag", "ai-agent"],
+  "prompt-engineering": ["prompt-engineering", "context-engineering", "tools-schema", "structured-outputs", "prompt-injection"],
 };
 
 function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): EnglishPrimer {
