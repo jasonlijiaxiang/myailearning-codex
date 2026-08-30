@@ -268,6 +268,13 @@
       "recordedAt": "2026-08-30",
       "decisionId": "module-reading-modes-2026-08-24",
       "summary": "English renderer maintenance erm-unified-hash-post-commit-2026-08-30: Settles owned fragment navigation synchronously in the committed visible mode and clears the pending request in a microtask, preventing delayed native smooth-scroll races without changing authored content, review scope, review files, metadata, or dates."
+    },
+    {
+      "receiptId": "receipt-batch01-unified-readers-runtime-2026-08-30",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-30",
+      "decisionId": "module-reading-modes-2026-08-24",
+      "summary": "English renderer maintenance erm-batch01-unified-readers-2026-08-30: Migrates the Chinese and English LLM and Data Engineering brief pages to the shared task-led scaffold, preserves authored mechanisms and stable anchors, and adds concise decision ledgers derived from existing content without changing authored module data, review files, metadata, or dates."
     }
   ],
   "moduleBaselines": {
@@ -40965,6 +40972,54 @@
       "contentProjectionChangeSlugs": [],
       "metadataScope": "none",
       "summary": "Settles owned fragment navigation synchronously in the committed visible mode and clears the pending request in a microtask, preventing delayed native smooth-scroll races without changing authored content, review scope, review files, metadata, or dates."
+    },
+    {
+      "maintenanceId": "erm-batch01-unified-readers-2026-08-30",
+      "status": "applied",
+      "kind": "document-shell",
+      "decisionId": "module-reading-modes-2026-08-24",
+      "recordedAt": "2026-08-30",
+      "baseCommit": "22453155dce73b240b010fa9970ae8f7c234648a",
+      "implementationCommit": "4f0049341fd5e2b5789f130fcb038c7dcf879ac1",
+      "receiptId": "receipt-batch01-unified-readers-runtime-2026-08-30",
+      "changedRendererFiles": [
+        "app/(en)/en/modules/[slug]/page.tsx",
+        "app/(zh)/modules/[slug]/page.tsx",
+        "app/i18n/english-pilot-module-page.tsx",
+        "app/unified-brief-module-config.mjs",
+        "app/unified-brief-module-page.tsx"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "agentkit",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns",
+        "veadk"
+      ],
+      "contentProjectionChangeSlugs": [
+        "data-engineering",
+        "llm"
+      ],
+      "metadataScope": "none",
+      "summary": "Migrates the Chinese and English LLM and Data Engineering brief pages to the shared task-led scaffold, preserves authored mechanisms and stable anchors, and adds concise decision ledgers derived from existing content without changing authored module data, review files, metadata, or dates."
     }
   ],
   "deferments": [
