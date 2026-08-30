@@ -226,6 +226,13 @@
       "recordedAt": "2026-08-24",
       "decisionId": "module-quick-flow-2026-08-24",
       "summary": "English renderer maintenance erm-module-quick-flow-2026-08-24: Moves mechanism detail into systematic study and removes repeated focused decisions without changing authored English, review scope, review files, or dates."
+    },
+    {
+      "receiptId": "receipt-model-landscape-module-presentation-english-closure-2026-08-30",
+      "kind": "closure",
+      "recordedAt": "2026-08-30",
+      "decisionId": "module-content-presentation-refresh-2026-08-24",
+      "summary": "Independent four-stage English review passed for the current Model Landscape selection method, illustrative pilot scope, dynamic provider-catalog boundaries, evidence relationships, customer authority boundary, and atomic baseline promotion candidate."
     }
   ],
   "moduleBaselines": {
@@ -47432,6 +47439,17 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:ai-agent/claims/001",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4e82d08656c51c4c4373ba59a1f2516839fc0fa6ca7d24acbab11dcf8d1c2d80",
+          "currentHash": "sha256:e62f7cf2b1bae479e7c3dcd41f86d49cbd29723d87b559e63243f44e7d0ccbc0",
+          "sourceIds": [
+            "mcp-2026-07-28-rc",
+            "mcp-specification-2026-07-28"
+          ]
+        },
+        {
           "objectId": "/module:ai-agent/claims/004",
           "objectType": "claims",
           "changeKind": "modified",
@@ -47889,6 +47907,14 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:ai-agent/sources/mcp-2026-07-28-rc",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:687224371b3860298b7978f0c677001486818cd7ddb765b1e749a6a8995f9306",
+          "currentHash": "sha256:ae3f5ab5a995ff6a16fbfb3726c0c24306f2879adabdfb4bbc48138c6b0062f4",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-agent/sources/product-aider-docs",
           "objectType": "sources",
           "changeKind": "modified",
@@ -48297,7 +48323,7 @@
       "moduleSlug": "model-landscape",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-24",
       "openedFromCommit": "b327d467c9675d4cf96b0fe9258bd77fc2f80a00",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
@@ -48311,6 +48337,57 @@
       "workItemIds": [
         "module-content-presentation-refresh-2026-08-24"
       ],
+      "englishCandidate": {
+        "zhReviewHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
+        "zhRendererFiles": [
+          "app/(zh)/layout.tsx",
+          "app/(zh)/modules/[slug]/page.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/inference-module-page.tsx",
+          "app/inference-studio.tsx",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-decision-workbench.tsx",
+          "app/module-extension-views-zh.mjs",
+          "app/module-pilot-views.tsx",
+          "app/module-reading-modes.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx"
+        ],
+        "enAuthoredHash": "sha256:2685611b9b534836c79c79dfb75f552737120c501c0106c4d721ec7a82060e61",
+        "enEffectiveHash": "sha256:00d76f98b8b9c9ac0d03f72a0787090949aaf4ae580f2fe142629ebcd24c0c8f",
+        "enReviewHash": "sha256:17afd08eabe3370823ebad5b9d431d8d0869a2f1f79449826b130a85eaab6d80",
+        "enRendererFiles": [
+          "app/(en)/en/modules/[slug]/page.tsx",
+          "app/(en)/layout.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs"
+        ],
+        "englishUpdatedAt": "2026-08-30",
+        "reviewIds": [
+          "br-model-landscape-2026-08-30-xhigh-author",
+          "br-model-landscape-2026-08-30-xhigh-semantic",
+          "br-model-landscape-2026-08-30-xhigh-language",
+          "br-model-landscape-2026-08-30-ultra-exception"
+        ]
+      },
       "affectedObjects": [
         {
           "objectId": "/module:model-landscape/brief/deepDiveLead",
@@ -48578,6 +48655,30 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/anthropic-models",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e67063b5f80ed68337df99cb77c0ebd1fcbe0fefc44f3928f83dbb800f20aadc",
+          "currentHash": "sha256:c98415192f3b9d628a3745466832b21f91a43498275bccb7dd32d62eabffbd7b",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/google-models",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:cedccfe509c17c33c206023f3064c35cc5d426aa8bd8832f9c0a876bc30d197c",
+          "currentHash": "sha256:918c5bd8d97ef6dbf0e78882d43b7126b578e06c35e5d573afbc072726fcffbd",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:model-landscape/sources/openai-models",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bece3d68bc1c9c8fb86160ed83cae6fe966d034b149199e37d9390ccd2bf4931",
+          "currentHash": "sha256:c82d542c2ab7cef9c5e54d942d7447803ae932dfedfada2beae9b33e590ba0a9",
           "sourceIds": []
         },
         {
@@ -49247,6 +49348,17 @@
           ]
         },
         {
+          "objectId": "/module:mcp/claims/001",
+          "objectType": "claims",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4e82d08656c51c4c4373ba59a1f2516839fc0fa6ca7d24acbab11dcf8d1c2d80",
+          "currentHash": "sha256:e62f7cf2b1bae479e7c3dcd41f86d49cbd29723d87b559e63243f44e7d0ccbc0",
+          "sourceIds": [
+            "mcp-2026-07-28-rc",
+            "mcp-specification-2026-07-28"
+          ]
+        },
+        {
           "objectId": "/module:mcp/content/deepDives/000",
           "objectType": "content",
           "changeKind": "modified",
@@ -49477,6 +49589,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:e7a130776d1821dab47018ff24e02f43a6b3069a5135a7a5f902714c37f2faa2",
           "currentHash": "sha256:4685d5df4eadfdfc3c042da61a8f7b2afe5c579360561ced39e97b466b9a67ed",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/mcp-2026-07-28-rc",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:687224371b3860298b7978f0c677001486818cd7ddb765b1e749a6a8995f9306",
+          "currentHash": "sha256:ae3f5ab5a995ff6a16fbfb3726c0c24306f2879adabdfb4bbc48138c6b0062f4",
           "sourceIds": []
         }
       ],

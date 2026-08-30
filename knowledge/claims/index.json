@@ -187,8 +187,8 @@
       "scope": "这是一条已完成的历史公告记录；最终协议要求以正式规范为准，RC 公告不能证明任何 SDK、客户端、Server 或产品兼容。",
       "sourceIds": ["mcp-2026-07-28-rc", "mcp-specification-2026-07-28"],
       "evidenceGrade": "A",
-      "verifiedAt": "2026-07-29",
-      "reviewBy": "2027-01-25",
+      "verifiedAt": "2026-08-30",
+      "reviewBy": "2027-02-26",
       "reviewCadenceDays": 180,
       "owner": "knowledge-curation",
       "status": "replaced"

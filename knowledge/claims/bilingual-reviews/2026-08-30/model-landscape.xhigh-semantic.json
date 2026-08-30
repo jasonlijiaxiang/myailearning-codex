@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-model-landscape-2026-08-30-xhigh-semantic",
+  "scope": {
+    "moduleId": "model-landscape",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:1005dec782b1076fa95a3b3e8baaa7685c86b908318f68f414e96cbcd8738ada",
+    "enContentHash": "sha256:17afd08eabe3370823ebad5b9d431d8d0869a2f1f79449826b130a85eaab6d80",
+    "termIds": [
+      "access-spectrum",
+      "capability-matrix",
+      "llm",
+      "model-landscape",
+      "model-lifecycle",
+      "model-routing",
+      "poc",
+      "sla",
+      "tco"
+    ],
+    "sourceIds": [
+      "agentic-index",
+      "anthropic-models",
+      "arena-leaderboard",
+      "artificial-analysis-methodology",
+      "artificial-analysis-models",
+      "bfcl",
+      "coding-index",
+      "deepseek-r1-2025",
+      "dify-enterprise-pricing",
+      "dify-open-source-license",
+      "financebench",
+      "finops-ai-overview",
+      "finops-ai-tools-considerations",
+      "finops-unit-economics",
+      "gdpval-aa-v2",
+      "google-models",
+      "gpqa-diamond",
+      "humanity-last-exam",
+      "intelligence-index",
+      "livebench",
+      "lost-middle",
+      "nist-ai-800-3",
+      "nist-genai-profile",
+      "openai-models",
+      "openai-reasoning-guide",
+      "opentelemetry-genai-observability-2026",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv",
+      "osi-open-source-ai-definition-1-0",
+      "scicode",
+      "scicode-verified-2026",
+      "swe-bench",
+      "swe-rebench",
+      "tau3-banking",
+      "terminal-bench",
+      "terminal-bench-v21",
+      "webarena-2024"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-structure-parity",
+      "status": "PASS",
+      "evidence": [
+        "Independent assertions matched all 15 customer questions in order, each question's evidence-source order and addedAt value, all four evidence-card source sequences, and all nine canonical English term names.",
+        "The English candidate covers the 200-record population, separately reported 30-record high-risk slice, and three fully identified candidates, while preserving that these numbers illustrate stratified comparison and do not prescribe production sample size or thresholds.",
+        "Candidate shortlist, exclusion rationale, like-for-like results, and qualified reserve path are explicit; claim eligibility, payment, and approval remain with deterministic controls and authorized people.",
+        "OpenAI, Google, and Anthropic catalogs remain dynamic verification inputs rather than a frozen model ranking. The Anthropic canonical URL correction changes neither the stable source ID nor its evidence boundary."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 4,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

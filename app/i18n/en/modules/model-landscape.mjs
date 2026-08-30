@@ -2,7 +2,7 @@ export const englishModule = Object.freeze({
   slug: "model-landscape",
   title: "Model Landscape",
   subtitle: "Turn business loss and delivery constraints into a testable model decision",
-  definition: "Model selection translates a business task, error loss, delivery constraints, and lifecycle requirements into a feasible set, fully identified candidates, and an exit strategy. It does not produce a universal winner; it chooses the simplest portfolio that survives like-for-like customer testing and can be released, observed, and replaced safely.",
+  definition: "Model selection translates a business task, error loss, delivery constraints, and lifecycle requirements into a feasible set, fully identified candidates, and an exit strategy. Its deliverables are a candidate shortlist, recorded exclusion rationale, like-for-like pilot results, and a qualified reserve path. It does not produce a universal winner; it chooses the simplest portfolio that survives like-for-like customer testing and can be released, observed, and replaced safely.",
   position: "This solution-layer module owns model eligibility and candidate selection. Evaluation owns the measurement contract, the AI gateway executes runtime routes, and AI FinOps owns the complete investment decision.",
   relatedSlugs: Object.freeze([
     "solution-patterns",
@@ -42,8 +42,8 @@ export const englishModule = Object.freeze({
               id: "selection-serving-constraints",
               title: "Controlled pilot",
               subtitle: "Same prompt, context, tools, schema, budget, and test population",
-              body: "Compare severe errors, critical slices, P95 latency, human-review demand, and cost per qualified intake task under one frozen invocation contract.",
-              decision: "Keep one model when it passes. Introduce routing only when stable, observable task segmentation justifies the added control surface.",
+              body: "For this exercise, compare three fully identified candidates across the same 200 claim-intake records, separately reporting a 30-record high-risk slice. Compare severe errors, critical slices, P95 latency, human-review demand, and cost per qualified intake task under one frozen invocation contract.",
+              decision: "The 200/30/three-candidate structure illustrates stratified comparison; the customer sets production sample size and thresholds from risk. Keep one model when it passes, and introduce routing only when stable, observable task segmentation justifies the added control surface.",
             }),
             Object.freeze({
               id: "selection-lifecycle",
@@ -172,9 +172,9 @@ export const englishModule = Object.freeze({
               id: "lab-tiered-model-routing",
               title: "Run a like-for-like claim-intake pilot",
               subtitle: "Scenario: a leaderboard winner and a cheaper routing design have both been proposed without customer evidence",
-              body: "Freeze the prompt, context, tools, schema, budget, and test population. Report severe errors and uncertainty by language, layout, risk, and long-tail slice, then compare one-model, routed, and human-escalation options.",
-              decision: "Deliverable: per-slice evidence and a Go, Hold, or No-Go recommendation.",
-              boundary: "Acceptance: every conclusion resolves to a complete candidate tuple, and a high-risk omission is never hidden by an average.",
+              body: "Freeze the prompt, context, tools, schema, budget, and test population. For the exercise, run three fully identified candidates against the same 200 claim-intake records, report the 30-record high-risk slice separately, and compare one-model, routed, and human-escalation options. The counts demonstrate a sampling structure rather than prescribing production scale or thresholds.",
+              decision: "Deliverable: a candidate shortlist, exclusion rationale, like-for-like per-slice evidence, a qualified reserve path, and a Go, Hold, or No-Go recommendation.",
+              boundary: "Acceptance: the customer sets production sample size and thresholds from risk; every conclusion resolves to a complete candidate tuple; a high-risk omission is never hidden by an average; and claim eligibility, payment, and approval remain with deterministic controls and authorized people.",
               sourceIds: Object.freeze(["nist-ai-800-3", "finops-unit-economics", "nist-genai-profile"]),
             }),
             Object.freeze({
