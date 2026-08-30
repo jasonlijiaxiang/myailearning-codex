@@ -11,7 +11,7 @@
   --if-orange: #f49a28;
   --if-risk: #ef5b50;
   min-height: 100vh;
-  overflow: clip;
+  overflow: visible;
   background: #fff;
   color: var(--if-ink);
   font-variant-numeric: tabular-nums;
@@ -22,6 +22,7 @@
 .inferenceStudio [hidden] { display: none !important; }
 .inferenceStudio a { text-underline-offset: 3px; }
 .inferenceStudio footer { min-height: 0; }
+.inferenceContentScope { min-height: 0; overflow: visible; background: transparent; }
 .inferenceTopbar {
   position: sticky;
   top: 0;
@@ -145,7 +146,10 @@
 .inferenceModeTabs button:focus-visible { background: var(--if-lime-soft); outline: 2px solid var(--if-ink); outline-offset: -2px; }
 .inferenceModeTabs button[aria-selected="true"] { background: linear-gradient(110deg,#b8dc57,var(--if-lime)); color: var(--if-ink); }
 
-.fieldbookTheme.modulePage.inferenceStudio .inferenceQuick.focusedNarrative { margin: 0; padding: 2px 0 0; border: 0; background: #fff; }
+.moduleModePanel > .inferenceContentScope { padding: 30px clamp(20px,3vw,42px); }
+
+.fieldbookTheme.modulePage.inferenceStudio .inferenceQuick.focusedNarrative,
+.inferenceContentScope .inferenceQuick.focusedNarrative { margin: 0; padding: 2px 0 0; border: 0; background: #fff; }
 .inferenceSectionTitle { grid-area: title; width: 100%; padding-top: 18px; display: flex; gap: 13px; align-items: start; }
 .inferenceSectionTitle > span { width: 3px; height: 22px; margin-top: 2px; background: var(--if-lime); }
 .inferenceSectionTitle h2 { margin: 0; font-family: var(--font-serif); font-size: 24px; font-weight: 600; line-height: 1.15; }
@@ -284,13 +288,18 @@
 .caseAcceptance { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid #efd8d0; color: #7a463f; font-size: 10px; line-height: 1.55; }
 
 .inferenceLearning { padding-top: 18px; }
-.fieldbookTheme.modulePage.inferenceStudio .learningRoute { max-width: 1000px; padding: 0; border: 0; background: #fff; }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute,
+.inferenceContentScope .learningRoute { max-width: 1000px; padding: 0; border: 0; background: #fff; }
 .learningRoute h2 { margin: 0 0 13px; font-family: var(--font-serif); font-size: 17px; }
-.fieldbookTheme.modulePage.inferenceStudio .learningRoute ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); list-style: none; }
-.fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li { position: relative; min-width: 0; padding: 0; display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 10px; align-items: start; border: 0; background: #fff; }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute ol,
+.inferenceContentScope .learningRoute ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); list-style: none; }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li,
+.inferenceContentScope .learningRoute > ol > li { position: relative; min-width: 0; padding: 0; display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 10px; align-items: start; border: 0; background: #fff; }
 .inferenceStudio .learningRoute li::after { content: ""; position: absolute; top: 15px; right: 16px; left: 42px; width: auto; height: 1px; border: 0; border-radius: 0; background: var(--if-line-strong); }
-.fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li:not(:last-child)::after { content: ""; top: 15px; right: 16px; bottom: auto; left: 42px; width: auto; height: 1px; border: 0; border-radius: 0; background: var(--if-line-strong); }
-.fieldbookTheme.modulePage.inferenceStudio .learningRoute li:last-child::after { display: none; }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li:not(:last-child)::after,
+.inferenceContentScope .learningRoute > ol > li:not(:last-child)::after { content: ""; top: 15px; right: 16px; bottom: auto; left: 42px; width: auto; height: 1px; border: 0; border-radius: 0; background: var(--if-line-strong); }
+.fieldbookTheme.modulePage.inferenceStudio .learningRoute li:last-child::after,
+.inferenceContentScope .learningRoute li:last-child::after { display: none; }
 .learningRoute li > span { position: relative; z-index: 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--if-line-strong); border-radius: 50%; background: #fff; font-size: 11px; font-weight: 800; }
 .learningRoute li.isActive > span { border-color: var(--if-lime); background: var(--if-lime); }
 .learningRoute li div { position: relative; z-index: 2; width: fit-content; padding: 1px 14px 0 0; display: grid; background: #fff; }
@@ -470,7 +479,7 @@
 .inferenceFieldContent .focusedCloudRows h3 { font-size: 14px; }
 .inferenceFieldContent .focusedCloudRows p { font-size: 12px; }
 .inferenceFieldContent .focusedCloudRows small { font-size: 10px; }
-.inferenceFooter { margin: 60px -30px 0 -52px; padding: 20px 30px 20px 52px; display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--if-line); color: var(--if-muted); font-size: 10px; }
+.inferenceFooter { margin: 0; padding: 20px clamp(20px,3vw,42px); display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--if-line); color: var(--if-muted); font-size: 10px; }
 .inferenceFooter strong { color: var(--if-ink); }
 .inferenceMenuScrim { display: none; }
 
@@ -507,7 +516,7 @@
 }
 
 @media (max-width: 760px) {
-  .inferenceStudio { overflow: clip; }
+  .inferenceStudio { overflow: visible; }
   .inferenceTopbar { position: sticky; height: 64px; padding: 0 19px; grid-template-columns: minmax(0,1fr) 44px; }
   .brandDesktop,
   .inferenceGlobalNav { display: none; }
@@ -542,15 +551,15 @@
   .inferenceModeTabs button { min-width: 0; min-height: 62px; padding: 7px 4px; gap: 7px; }
   .inferenceModeTabs button svg { width: 20px; height: 20px; }
   .inferenceModeTabs button strong { font-size: 12px; white-space: nowrap; }
-  .fieldbookTheme.modulePage.inferenceStudio .inferenceQuick.focusedNarrative { padding-top: 30px; }
+  .fieldbookTheme.modulePage.inferenceStudio .inferenceQuick.focusedNarrative,
+  .inferenceContentScope .inferenceQuick.focusedNarrative { padding-top: 30px; }
   .inferenceQuickGrid { grid-template-areas: "title" "explorer" "inspector" "case"; row-gap: 12px; }
   .inferenceSectionTitle { padding-top: 0; gap: 12px; }
   .inferenceSectionTitle > span { height: 30px; }
   .inferenceSectionTitle h2 { font-size: 25px; }
   .inferenceSectionTitle p { display: none; }
   .inferenceQuickGrid { margin-top: 17px; gap: 12px; }
-  .inferenceMetricStrip { grid-template-columns: repeat(4,minmax(0,1fr)); }
-  .inferenceMetricStrip button:nth-child(n+5) { display: none; }
+  .inferenceMetricStrip { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .inferenceMetricStrip button { min-height: 44px; font-size: 12px; }
   .inferenceDashboard { border-top: 0; }
   .inferenceHeatmapPanel,
@@ -610,7 +619,8 @@
   .learningRoute { overflow: hidden; }
   .learningRoute h2 { font-size: 20px; }
   .learningRoute ol { grid-template-columns: 1fr; gap: 12px; }
-  .fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li:not(:last-child)::after { top: 30px; right: auto; bottom: -12px; left: 15px; width: 1px; height: auto; }
+  .fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li:not(:last-child)::after,
+  .inferenceContentScope .learningRoute > ol > li:not(:last-child)::after { top: 30px; right: auto; bottom: -12px; left: 15px; width: 1px; height: auto; }
   .learningRoute li div { width: auto; }
   .learningRoute li strong { font-size: 13px; }
   .learningRoute li small { font-size: 10px; }
@@ -648,7 +658,8 @@
   .inferenceFieldContent .focusedCloudRows article { display: block; }
   .inferenceFieldContent .focusedCloudRows article > * + * { margin-top: 8px; }
   .inferenceFieldContent .focusedCloudRows small { display: block; }
-  .inferenceFooter { margin: 45px -18px 0; padding: 18px; display: grid; gap: 5px; }
+  .moduleModePanel > .inferenceContentScope { padding: 24px 18px; }
+  .inferenceFooter { margin: 0; padding: 18px; display: grid; gap: 5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
