@@ -726,10 +726,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/llm", "/modules/data-engineering"]) {
+  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/llm", "/modules/data-engineering"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 7, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 9, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -751,12 +751,13 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
     assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
   }
 
-  const [ragRoute, agentRoute, mcpRoute, a2aRoute, readerSource, heroSource, relationSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
+  const [ragRoute, agentRoute, mcpRoute, a2aRoute, readerSource, qaInteractionSource, heroSource, relationSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
     readFile(new URL("../app/(zh)/modules/rag/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/ai-agent/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp-module-experience-client.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/a2a-module-experience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/dense-module-reading-modes.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/unified-module-hero.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/deep-dive-relation-view.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/mcp-module-experience.module.css", import.meta.url), "utf8"),
@@ -784,6 +785,7 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.doesNotMatch(revealHashSource, /scrollHashTargetIntoView/, "Hash 事件处理器不能在目标面板提交前滚动");
   assert.match(readerSource, /pendingHashReveal\.mode !== activeMode[\s\S]*scrollHashTargetIntoView\(hash\)[\s\S]*queueMicrotask/, "统一 reader 必须在目标模式提交后立即定位并清理请求");
   assert.match(readerSource, /event\.preventDefault\(\);[\s\S]*window\.history\.pushState\(window\.history\.state/, "统一 reader 必须接管所属锚点并保留 Back 历史");
+  assert.match(qaInteractionSource, /target\.hidden = false;[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*target\.scrollIntoView[\s\S]*requestAnimationFrame\(\(\) => target\.scrollIntoView/, "折叠集合中的问答深链必须在展开提交后再次稳定定位");
   assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "英文目录计数必须处理单复数");
   assert.match(heroSource, /mobileMenu: "模块导航菜单"/, "中文移动菜单名称必须保留在本地化契约中");
   assert.match(heroSource, /aria-label=\{copy\.mobileMenu\}/, "移动菜单名称不能绑定单一开合状态");
@@ -799,6 +801,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.equal((ragRoute.match(/<caption className="srOnly">/g) ?? []).length, 10, "RAG 每张表必须有可访问名称");
   assert.equal((ragRoute.match(/scope="row"/g) ?? []).length, 10, "RAG 每张表必须声明行标题");
   assert.equal((ragRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? []).length, 10, "RAG 宽表容器必须支持键盘横向滚动");
+  assert.equal((a2aRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? []).length, 3, "A2A 三张宽表必须使用可聚焦的命名区域");
+  assert.equal((a2aRoute.match(/<caption className="srOnly">/g) ?? []).length, 3, "A2A 三张宽表必须声明隐藏表名");
+  assert.equal((a2aRoute.match(/scope="col"/g) ?? []).length, 17, "A2A 表格的所有列头必须声明 scope");
+  assert.equal((a2aRoute.match(/scope="row"/g) ?? []).length, 6, "A2A 表格的所有行标题模板必须声明 scope");
   assert.doesNotMatch(mcpRoute, /mobileChapterNav|章节快速导航/, "MCP 不应保留第二套移动章节导航");
   assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
 });
@@ -814,6 +820,30 @@ test("standard brief modules preserve their authored content in the unified read
       zhMechanism: /data-knowledge-view="selection-coordinate"/,
       enMechanism: /data-knowledge-view="selection-coordinate"/,
       zhQuestionCount: 15,
+    },
+    {
+      slug: "multimodal",
+      zhTitleId: "multimodal-title",
+      enTitleId: "multimodal-english-title",
+      zhPrimerId: "multimodal-extension-primer-title",
+      enPrimerId: "multimodal-english-primer-title",
+      zhMechanism: /data-knowledge-view="multimodal-evidence-pipeline"/,
+      enMechanism: /data-knowledge-view="multimodal-evidence-pipeline"/,
+      zhQuestionCount: 14,
+      englishTableCount: 3,
+      requiredEnglishIds: ["multimodal-evidence-pipeline", "multimodal-barge-in-runtime", "multimodal-failure-slices", "multimodal-content-delivery-chain", "pipeline-contract", "failure-small-text-table"],
+    },
+    {
+      slug: "veadk",
+      zhTitleId: "veadk-title",
+      enTitleId: "veadk-english-title",
+      zhPrimerId: "veadk-extension-primer-title",
+      enPrimerId: "veadk-english-primer-title",
+      zhMechanism: /data-knowledge-view="agent-definition-runtime-bridge"/,
+      enMechanism: /data-knowledge-view="agent-definition-runtime-bridge"/,
+      zhQuestionCount: 7,
+      englishTableCount: 0,
+      requiredEnglishIds: ["principles", "cloud-connections", "decision-veadk-or-google-adk", "deep-state-and-memory", "qa-veadk-application-entry-choice"],
     },
     {
       slug: "llm",
@@ -867,6 +897,12 @@ test("standard brief modules preserve their authored content in the unified read
     assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, moduleCase.zhQuestionCount);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
+    if (moduleCase.englishTableCount !== undefined) {
+      assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, moduleCase.englishTableCount);
+    }
+    for (const id of moduleCase.requiredEnglishIds ?? []) {
+      assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must preserve #${id}`);
+    }
     for (const question of englishModule.qa) {
       assert.match(enHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `${moduleCase.slug} must preserve ${question.id}`);
     }
@@ -926,6 +962,31 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
     assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, moduleCase.tableCount);
     assert.equal((enHtml.match(/<caption class="srOnly">/g) ?? []).length, moduleCase.tableCount);
   }
+});
+
+test("A2A preserves its complete English pack and accessible Chinese comparison tables", async () => {
+  const [zhHtml, enHtml] = await Promise.all([
+    renderHtml("/modules/a2a"),
+    renderHtml("/en/modules/a2a"),
+  ]);
+  for (const [locale, html] of [["zh", zhHtml], ["en", enHtml]]) {
+    assert.match(html, /data-module-hero="unified"/, `${locale} A2A 缺少共享 Hero`);
+    assert.match(html, /data-module-reader="unified"/, `${locale} A2A 缺少共享 reader`);
+    assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} A2A 必须只有一个主内容目标`);
+    assert.equal((html.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} A2A 必须完整渲染三种阅读模式`);
+    assert.doesNotMatch(html, /class="topbar"/, `${locale} A2A 不得保留旧版 topbar`);
+  }
+  for (const id of ["a2a-collaboration-model", "a2a-practice", "a2a-curriculum", "a2a-decisions", "a2a-task-lifecycle", "a2a-cloud", "task-terminal-state", "evidence-card-task-artifact", "qa-a2a-one-point-zero-acceptance"]) {
+    assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `A2A must preserve #${id}`);
+  }
+  assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, 12);
+  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, 12);
+  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, 4);
+  assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, 3);
+  assert.equal((zhHtml.match(/role="region" tabindex="0" aria-label="A2A [^"]+矩阵，可横向滚动"/g) ?? []).length, 3);
+  assert.equal((zhHtml.match(/<caption class="srOnly">A2A [^<]+矩阵<\/caption>/g) ?? []).length, 3);
+  const englishIds = [...enHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(new Set(englishIds).size, englishIds.length, "A2A English reader must not duplicate DOM IDs");
 });
 
 test("inference reader renders the accepted heatmap, capacity lab, and evidence boundaries", async () => {
