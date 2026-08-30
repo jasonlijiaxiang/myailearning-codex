@@ -303,6 +303,13 @@
       "recordedAt": "2026-08-30",
       "decisionId": "module-reading-modes-2026-08-24",
       "summary": "English renderer maintenance erm-batch04-unified-readers-2026-08-30: Unified the AgentKit, Evaluation, and AI Governance bilingual readers, gave English content sections stable accessible names, preserved browser history state across mode changes, and made question deep links open and settle after responsive layout without changing authored module data, metadata, or update dates."
+    },
+    {
+      "receiptId": "receipt-batch05-unified-readers-runtime-2026-08-30",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-30",
+      "decisionId": "module-reading-modes-2026-08-24",
+      "summary": "English renderer maintenance erm-batch05-unified-readers-2026-08-30: Unified the Solution Patterns, Security, and AI Gateway bilingual readers, restored the complete focused Solution Patterns projection, assigned its critical boundary to one visible owner, and gave its scenario table an accessible name without changing authored module data, metadata, or update dates."
     }
   ],
   "moduleBaselines": {
@@ -41237,6 +41244,54 @@
       ],
       "metadataScope": "none",
       "summary": "Unified the AgentKit, Evaluation, and AI Governance bilingual readers, gave English content sections stable accessible names, preserved browser history state across mode changes, and made question deep links open and settle after responsive layout without changing authored module data, metadata, or update dates."
+    },
+    {
+      "maintenanceId": "erm-batch05-unified-readers-2026-08-30",
+      "status": "applied",
+      "kind": "document-shell",
+      "decisionId": "module-reading-modes-2026-08-24",
+      "recordedAt": "2026-08-30",
+      "baseCommit": "b266c85a5321d2dec2c1a69846f5d1a55e745118",
+      "implementationCommit": "cba2740239dee2d0a9dd4e54fc7ca6b12cf996cc",
+      "receiptId": "receipt-batch05-unified-readers-runtime-2026-08-30",
+      "changedRendererFiles": [
+        "app/(zh)/modules/[slug]/page.tsx",
+        "app/i18n/english-pilot-module-page.tsx",
+        "app/module-pilot-views.tsx",
+        "app/unified-brief-module-config.mjs"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "agentkit",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns",
+        "veadk"
+      ],
+      "contentProjectionChangeSlugs": [
+        "ai-gateway",
+        "security",
+        "solution-patterns"
+      ],
+      "metadataScope": "none",
+      "summary": "Unified the Solution Patterns, Security, and AI Gateway bilingual readers, restored the complete focused Solution Patterns projection, assigned its critical boundary to one visible owner, and gave its scenario table an accessible name without changing authored module data, metadata, or update dates."
     }
   ],
   "deferments": [
