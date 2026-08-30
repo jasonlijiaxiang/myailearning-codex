@@ -86,7 +86,7 @@ export function UnifiedModuleHero({
   const isEnglish = locale === "en";
   const languagePath = isEnglish ? `/modules/${slug}` : englishModulePath(slug);
   const homePath = isEnglish ? "/en" : "/";
-  const sourcesPath = isEnglish ? `/en/references#module-${slug}` : `/references#module-${slug}`;
+  const sourcesPath = isEnglish ? `/en/references?module=${slug}` : `/references#module-${slug}`;
   const glossaryPath = isEnglish ? "/en/glossary" : "/glossary";
 
   const navigationLinks = (
