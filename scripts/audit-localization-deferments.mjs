@@ -573,6 +573,14 @@ function changedFilesBetween(baseCommit, implementationCommit) {
     .sort();
 }
 
+function localizationRegistryAtCommit(commit) {
+  return JSON.parse(execFileSync(
+    "git",
+    ["show", `${commit}:knowledge/localization-deferments.json`],
+    { cwd: root, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+  ));
+}
+
 const effectiveHashContractFiles = new Set(["scripts/lib/localization-contract.mjs"]);
 
 export function derivedAffectedModuleSlugs(beforeProject, implementationProject, changedRendererFiles) {
@@ -631,6 +639,7 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
         continue;
       }
 
+      let baseRegistry = null;
       for (const slug of maintenance.affectedModuleSlugs) {
         const baseline = registry.moduleBaselines[slug];
         const before = beforeProject.modules[slug];
@@ -650,10 +659,12 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           failures.push(`${label}: ${slug} base commit does not match the registered English baseline or prior runtime maintenance`);
           continue;
         }
-        if (!sameChineseRendererProjectionState(before, expectedBefore)
-          && !matchesRegisteredDeferredChineseProjection(registry, slug, expectedBefore, before)) {
-          failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer projection`);
-          continue;
+        if (!sameChineseRendererProjectionState(before, expectedBefore)) {
+          baseRegistry ??= localizationRegistryAtCommit(maintenance.baseCommit);
+          if (!matchesRegisteredDeferredChineseProjection(baseRegistry, slug, expectedBefore, before)) {
+            failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer projection`);
+            continue;
+          }
         }
         if (documentShell) {
           if (!hasOnlyChineseRendererProjectionDelta(before, after)) {
