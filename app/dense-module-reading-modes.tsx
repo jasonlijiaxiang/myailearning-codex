@@ -185,8 +185,7 @@ export function DenseModuleReadingModes({
     const handleDocumentClick = (event: MouseEvent) => {
       const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
       if (
-        event.defaultPrevented
-        || event.button !== 0
+        event.button !== 0
         || event.metaKey
         || event.ctrlKey
         || event.shiftKey
@@ -213,11 +212,10 @@ export function DenseModuleReadingModes({
   useEffect(() => {
     if (!pendingHashReveal || pendingHashReveal.mode !== activeMode) return;
     const { hash, requestId } = pendingHashReveal;
-    const frame = window.requestAnimationFrame(() => {
-      scrollHashTargetIntoView(hash);
+    scrollHashTargetIntoView(hash);
+    window.queueMicrotask(() => {
       setPendingHashReveal((current) => current?.requestId === requestId ? null : current);
     });
-    return () => window.cancelAnimationFrame(frame);
   }, [activeMode, pendingHashReveal]);
 
   useEffect(() => {
