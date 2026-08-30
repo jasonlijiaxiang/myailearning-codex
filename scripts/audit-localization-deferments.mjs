@@ -137,6 +137,27 @@ export function withRuntimeChineseBaseline(baseline, runtimeState) {
   };
 }
 
+export function rebaseActiveDefermentRendererProjection(registry, currentProject, runtimeOverlays) {
+  for (const deferment of registry.deferments ?? []) {
+    if (deferment.status === "closed") continue;
+    const baseline = registry.moduleBaselines[deferment.moduleSlug];
+    const current = currentProject.modules[deferment.moduleSlug];
+    const runtimeOverlay = runtimeOverlays.get(deferment.moduleSlug);
+    if (!baseline || !current || !runtimeOverlay) continue;
+
+    const runtimeBaseline = withRuntimeChineseBaseline(baseline, runtimeOverlay.state);
+    const rebasedDelta = diffObjectCatalogs(runtimeBaseline.zhObjects, current.zhObjects);
+    const registeredContentDelta = deferment.affectedObjects
+      .filter(({ objectId }) => !isChineseRendererProjectionObjectId(objectId));
+    const rebasedContentDelta = rebasedDelta
+      .filter(({ objectId }) => !isChineseRendererProjectionObjectId(objectId));
+    if (!compareAffectedObjects(registeredContentDelta, rebasedContentDelta)) {
+      throw new Error(`${deferment.defermentId}: runtime maintenance cannot change the registered Chinese authored-content delta`);
+    }
+    deferment.affectedObjects = rebasedDelta;
+  }
+}
+
 export function hasOnlyChineseRendererProjectionDelta(before, after) {
   const delta = diffObjectCatalogs(before.zhObjects, after.zhObjects);
   return delta.length > 0 && delta.every(({ objectId }) => isChineseRendererProjectionObjectId(objectId));
@@ -760,6 +781,8 @@ async function recordRuntimeMaintenance({ registry, schema, reviewSchema, curren
     loadRuntimeMaintenanceOverlays(candidateRegistry, { requireRemote: false }),
   ]);
   if (runtime.failures.length) throw new Error(`Refusing runtime maintenance:\n${runtime.failures.map((failure) => `- ${failure}`).join("\n")}`);
+  rebaseActiveDefermentRendererProjection(candidateRegistry, currentProject, runtime.overlays);
+  assertJsonSchema(candidateRegistry, schema, "localization registry");
   const validation = validateLocalizationRegistry(candidateRegistry, currentProject, {
     candidateIds,
     reviewSchema,

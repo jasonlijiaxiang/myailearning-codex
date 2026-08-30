@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { getPublishedModule, publishedModules, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, hasOnlyChineseRendererProjectionDelta, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, matchesRegisteredDeferredChineseProjection, promotedBaselineFromCommittedState, sameChineseRendererProjectionState, validateLocalizationRegistry, withRuntimeChineseBaseline } from "../scripts/audit-localization-deferments.mjs";
+import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, hasOnlyChineseRendererProjectionDelta, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, matchesRegisteredDeferredChineseProjection, promotedBaselineFromCommittedState, rebaseActiveDefermentRendererProjection, sameChineseRendererProjectionState, validateLocalizationRegistry, withRuntimeChineseBaseline } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
@@ -350,6 +350,33 @@ test("an English runtime may start from the exact Chinese renderer projection re
 
   fixture.deferment.status = "closed";
   assert.equal(matchesRegisteredDeferredChineseProjection(fixture.candidateRegistry, slug, fixture.baseline, deferredState), false);
+});
+
+test("a runtime receipt rebases only an active deferment's renderer projection", () => {
+  const fixture = makeIsolatedDeferredFixture();
+  const slug = fixture.deferment.moduleSlug;
+  const projectionObjectId = Object.keys(fixture.baseline.zhObjects)
+    .find((objectId) => objectId.endsWith("/renderedProjection/sharedRendererHash"));
+  assert.ok(projectionObjectId);
+
+  fixture.moduleState.zhObjects[projectionObjectId].hash = fullHashC;
+  fixture.deferment.affectedObjects = diffObjectCatalogs(fixture.baseline.zhObjects, fixture.moduleState.zhObjects);
+  const overlayState = structuredClone(fixture.moduleState);
+  const overlays = new Map([[slug, { maintenanceId: "erm-rebase-test", kind: "english-renderer", state: overlayState }]]);
+
+  rebaseActiveDefermentRendererProjection(fixture.candidateRegistry, fixture.candidateProject, overlays);
+  assert.ok(fixture.deferment.affectedObjects.some((item) => item.objectId === fixture.contentObjectId));
+  assert.equal(fixture.deferment.affectedObjects.some((item) => item.objectId === projectionObjectId), false);
+
+  fixture.moduleState.zhObjects[`/module:${slug}/brief/unregistered-content`] = {
+    hash: fullHashB,
+    objectType: "brief",
+    sourceIds: [],
+  };
+  assert.throws(
+    () => rebaseActiveDefermentRendererProjection(fixture.candidateRegistry, fixture.candidateProject, overlays),
+    /cannot change the registered Chinese authored-content delta/,
+  );
 });
 
 test("an effective-hash contract change covers every English module", () => {
