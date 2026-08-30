@@ -421,6 +421,6 @@ HTML 不是 PPT 的逐页搬运，也不是把幻灯片纵向拼成长页。PPT 
 24. **图解语义**：核心图解必须包含与知识关系相符的结构标记，例如流程连线、反馈回路、协议边界、状态变化或变量影响；禁止只用编号、并排框和装饰箭头冒充图解。
 25. **交互回退**：选择节点、阶段或参数后必须产生可访问的状态变化；服务端初始 HTML 保留完整结论和语义标签，键盘、触屏与减少动态效果模式均可使用。
 26. **共享外壳级联**：`globals.css` 是全部 `--fb-*` 基础 Token 的唯一声明者；专题页面需要不同色值时使用自己的语义前缀。`UnifiedModuleScaffold` 必须让 Header / Hero 位于模块正文根之外。共享 Header 每个文字角色直接映射颜色与排版 Token，模块 CSS 禁止穿透 `data-module-hero="unified"`。
-27. **Brief 批次接入**：共享 `brief` 模块只通过集中配置显式接入 `UnifiedBriefModulePage` 与英文 unified reader。已迁移的 Model Landscape / Multimodal / VeADK / LLM / Data Engineering，以及专用 AI Agent / MCP / A2A，必须保留 Primer、课程或专用 authored group、证据、QA、相关模块和稳定锚点；focused profile 只有在显式完整投影契约下才能进入统一 reader。renderer 迁移不得改写内容 owner、日期或关闭尚未完成的本地化延期。每批同时验证中文与英文、嵌套 Hash、Back、移动端、折叠集合深链复位、可聚焦横滚表格和唯一页面外壳。
+27. **Brief 批次接入**：共享 `brief` 模块只通过集中配置显式接入 `UnifiedBriefModulePage` 与英文 unified reader。已迁移的 Model Landscape / Multimodal / VeADK / AgentKit / Evaluation / AI Governance / LLM / Data Engineering，以及专用 AI Agent / MCP / A2A，必须保留 Primer、课程或专用 authored group、证据、QA、相关模块和稳定锚点；focused profile 只有在显式完整投影契约下才能进入统一 reader。英文内容分区使用自身可见标题作为 accessible name，问答深链先展开目标并在响应式布局提交后复核定位。renderer 迁移不得改写内容 owner、日期或关闭尚未完成的本地化延期。每批同时验证中文与英文、嵌套 Hash、Back / Forward、移动端、折叠集合深链复位、可聚焦横滚表格和唯一页面外壳。
 
 以上检查验证结构和数据完整性，不能替代对术语准确性、论证边界、云服务价值与客户回答质量的人工审阅。

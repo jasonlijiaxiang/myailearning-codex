@@ -726,10 +726,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/llm", "/modules/data-engineering"]) {
+  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/llm", "/modules/data-engineering"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 9, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 12, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -785,6 +785,9 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.doesNotMatch(revealHashSource, /scrollHashTargetIntoView/, "Hash 事件处理器不能在目标面板提交前滚动");
   assert.match(readerSource, /pendingHashReveal\.mode !== activeMode[\s\S]*scrollHashTargetIntoView\(hash\)[\s\S]*queueMicrotask/, "统一 reader 必须在目标模式提交后立即定位并清理请求");
   assert.match(readerSource, /event\.preventDefault\(\);[\s\S]*window\.history\.pushState\(window\.history\.state/, "统一 reader 必须接管所属锚点并保留 Back 历史");
+  assert.match(readerSource, /window\.history\.replaceState\(window\.history\.state/, "切换阅读任务清理 Hash 时不得丢失路由器 history state");
+  assert.match(readerSource, /target instanceof HTMLDetailsElement\) target\.open = true/, "问答深链必须展开目标 disclosure");
+  assert.match(readerSource, /revealTarget\(\);[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*revealTarget\(\);[\s\S]*requestAnimationFrame\(revealTarget\)/, "响应式布局提交后必须双帧复核深链位置");
   assert.match(qaInteractionSource, /target\.hidden = false;[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*target\.scrollIntoView[\s\S]*requestAnimationFrame\(\(\) => target\.scrollIntoView/, "折叠集合中的问答深链必须在展开提交后再次稳定定位");
   assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "英文目录计数必须处理单复数");
   assert.match(heroSource, /mobileMenu: "模块导航菜单"/, "中文移动菜单名称必须保留在本地化契约中");
@@ -844,6 +847,42 @@ test("standard brief modules preserve their authored content in the unified read
       zhQuestionCount: 7,
       englishTableCount: 0,
       requiredEnglishIds: ["principles", "cloud-connections", "decision-veadk-or-google-adk", "deep-state-and-memory", "qa-veadk-application-entry-choice"],
+    },
+    {
+      slug: "agentkit",
+      zhTitleId: "agentkit-title",
+      enTitleId: "agentkit-english-title",
+      zhPrimerId: "agentkit-extension-primer-title",
+      enPrimerId: "agentkit-english-primer-title",
+      zhMechanism: /data-knowledge-view="application-runtime-lifecycle"/,
+      enMechanism: /data-knowledge-view="application-runtime-lifecycle"/,
+      zhQuestionCount: 7,
+      englishTableCount: 0,
+      requiredEnglishIds: ["principles", "cloud-connections", "deep-dependencies-to-outcome", "cloud-pending-load", "qa-agentkit-operating-evidence", "evidence-agentkit-cloud-evidence-pending"],
+    },
+    {
+      slug: "evaluation",
+      zhTitleId: "evaluation-title",
+      enTitleId: "evaluation-english-title",
+      zhPrimerId: "evaluation-extension-primer-title",
+      enPrimerId: "evaluation-english-primer-title",
+      zhMechanism: /data-knowledge-view="evaluation-flywheel"/,
+      enMechanism: /data-knowledge-view="evaluation-flywheel"/,
+      zhQuestionCount: 11,
+      englishTableCount: 4,
+      requiredEnglishIds: ["evaluation-flywheel", "evaluation-curriculum", "evaluation-benchmark-atlas", "evaluation-score-diagnostics", "evaluation-result-contract", "evaluation-cloud", "qa-nondeterministic-score-reporting", "evidence-offline-deployed-evidence"],
+    },
+    {
+      slug: "ai-governance",
+      zhTitleId: "ai-governance-title",
+      enTitleId: "ai-governance-english-title",
+      zhPrimerId: "ai-governance-extension-primer-title",
+      enPrimerId: "ai-governance-english-primer-title",
+      zhMechanism: /data-knowledge-view="governance-assurance-loop"/,
+      enMechanism: /data-knowledge-view="governance-assurance-loop"/,
+      zhQuestionCount: 15,
+      englishTableCount: 3,
+      requiredEnglishIds: ["governance-critical-boundary", "governance-decision-private-deployment", "governance-obligation-labeling", "qa-eu-ai-act-timeline-freshness", "qa-china-algorithm-filing-triage", "evidence-eu-amendment-timeline"],
     },
     {
       slug: "llm",
@@ -906,6 +945,12 @@ test("standard brief modules preserve their authored content in the unified read
     for (const question of englishModule.qa) {
       assert.match(enHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `${moduleCase.slug} must preserve ${question.id}`);
     }
+    for (const id of ["decisions", "principle", "study-guide", "curriculum", "deep-dive", "cloud", "evidence", "qa", "related-modules"]) {
+      assert.match(enHtml, new RegExp(`<section aria-labelledby="${id}-section-title"[^>]*id="${id}"`), `${moduleCase.slug} #${id} must own an accessible heading`);
+      assert.equal((enHtml.match(new RegExp(`id="${id}-section-title"`, "g")) ?? []).length, 1, `${moduleCase.slug} #${id} heading ID must be unique`);
+    }
+    const englishIds = [...enHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+    assert.equal(new Set(englishIds).size, englishIds.length, `${moduleCase.slug} English reader must not duplicate DOM IDs`);
   }
 });
 

@@ -833,7 +833,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
   }
-  assert.deepEqual(unifiedBriefModuleSlugs, ["model-landscape", "multimodal", "veadk", "llm", "data-engineering"]);
+  assert.deepEqual(unifiedBriefModuleSlugs, ["model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "llm", "data-engineering"]);
   for (const slug of unifiedBriefModuleSlugs) {
     const config = getUnifiedBriefModuleConfig(slug);
     assert.ok(config, `${slug} must have a Chinese unified-reader config`);
@@ -842,7 +842,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
     assert.deepEqual(config.directories.field.map((item) => item.id), ["evidence", "cloud", "qa", "related-modules"]);
     assert.equal(config.facts.length, 4);
   }
-  for (const slug of ["model-landscape", "multimodal", "llm", "data-engineering", "ai-agent", "mcp", "a2a", "veadk"]) {
+  for (const slug of ["model-landscape", "multimodal", "llm", "data-engineering", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance"]) {
     assert.match(enModulePage, new RegExp(`(?:^|\\n)  (?:"${slug}"|${slug}): \\{`), `English unified reader config must include ${slug}`);
   }
   assert.match(enModulePage, /export const englishUnifiedReaderSlugs = Object\.freeze\(Object\.keys\(englishUnifiedReaderConfigs\)\)/);

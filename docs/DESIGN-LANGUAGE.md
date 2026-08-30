@@ -150,12 +150,13 @@
 | --- | --- | --- | --- |
 | 全站基础 Token | `app/globals.css` | 定义 `--fb-*`、字体、间距、圆角、动效 | 在模块 CSS 再建 `:root` 或覆盖 `--fb-chrome-*` |
 | 共享 Header / Hero | `UnifiedModuleScaffold` + `UnifiedModuleHero` + `unified-module-reader.module.css` | 使用 `--fb-chrome-*`，完整声明每个文字角色 | 模块用 `.page a`、`.page h1`、裸 `header/nav` 改变它的颜色或字体 |
-| 阅读任务与目录 | `DenseModuleReadingModes` + 共享样式 | 统一模式语义、Hash、键盘和移动入口 | 模块复制 Tab、目录控制器或另建一套移动导航 |
+| 阅读任务与目录 | `DenseModuleReadingModes` + 共享样式 | 统一模式语义、Hash、键盘和移动入口；保留浏览器 state，展开折叠深链并在响应式重排后复核定位 | 模块复制 Tab、目录控制器或另建一套移动导航 |
+| 英文内容分区 | `EnglishModulePage` 的共享 section renderer | 每个 section 用可见 H2 的稳定 ID 提供 accessible name | 只依赖视觉标题，或为单一模块另加隐藏标题和私有 ID |
 | 模块正文 | 模块组件与局部 CSS Module | 定义 `--mcp-*`、`--a2a-*` 等内容语义色，设计独有机制图 | 穿透 `[data-module-hero="unified"]`，或用 `!important` 抢共享外壳 |
 
 CSS Module 只会哈希类名，不会阻止 `.page a` 命中后代。`UnifiedModuleScaffold` 因此把 Header / Hero 放在模块正文根之前，两者是兄弟节点；`.page`、`.reader` 等模块选择器只包住正文。共享样式再为每个文字角色直接指定颜色、字体、字号、字重、行高和字距。级联顺序不再参与模块间的一致性判断。
 
-共享 `brief` 路由通过不可变的模块配置显式接入统一 reader；首批为 LLM 与 Data Engineering。配置只声明 Hero 决策事实、目录和 authored group 映射，正文、稳定锚点、独有机制视图与来源仍由各模块内容 owner 维护。新增批次不得在路由里累积 slug 分支，也不得增加模块专属 Header、Tab 或 CSS 补丁。
+共享 `brief` 路由通过不可变的模块配置显式接入统一 reader；当前已接入 Model Landscape、Multimodal、VeADK、AgentKit、Evaluation、AI Governance、LLM 与 Data Engineering。配置只声明 Hero 决策事实、目录和 authored group 映射，正文、稳定锚点、独有机制视图与来源仍由各模块内容 owner 维护。新增批次不得在路由里累积 slug 分支，也不得增加模块专属 Header、Tab 或 CSS 补丁。
 
 ## 7. 页面家族的应用
 

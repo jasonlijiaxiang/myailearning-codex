@@ -327,6 +327,16 @@ test("unified deep links and comparison tables keep their accessibility ownershi
   assert.match(readerSource, /const directoryIds = new Set\(directories\[modeId\]\.map\(\(item\) => item\.id\)\)/);
   assert.match(readerSource, /while \(current\)[\s\S]*current = current\.parentElement/);
   assert.match(readerSource, /setActiveAnchor\(directoryAnchorForTarget\(targetId, nextMode, directoryByMode\) \?\? targetId\)/);
+  assert.match(readerSource, /target instanceof HTMLDetailsElement\) target\.open = true/);
+  assert.match(readerSource, /window\.history\.replaceState\(window\.history\.state/);
+  assert.match(readerSource, /requestAnimationFrame\(\(\) => \{[\s\S]*revealTarget\(\);[\s\S]*requestAnimationFrame\(revealTarget\)/);
+  assert.match(englishSource, /const headingId = `\$\{group\.id\}-section-title`/);
+  assert.match(englishSource, /<section aria-labelledby=\{headingId\}[^>]*id=\{group\.id\}/);
+  assert.match(englishSource, /<h2 id=\{headingId\}>/);
+  for (const sectionId of ["evidence", "qa", "related-modules"]) {
+    assert.match(englishSource, new RegExp(`<section aria-labelledby="${sectionId}-section-title"[^>]*id="${sectionId}"`));
+    assert.match(englishSource, new RegExp(`<h2 id="${sectionId}-section-title">`));
+  }
   assert.match(englishSource, /<div className="tableWrap" role="region" aria-label=\{tableLabel\} tabIndex=\{0\}>/);
   assert.match(englishSource, /<table><caption className="srOnly">\{tableLabel\}<\/caption>/);
   assert.match(englishSource, /<th scope="col"/);
