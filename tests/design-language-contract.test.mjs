@@ -7,6 +7,8 @@ const sharedHeroUrl = new URL("../app/unified-module-reader.module.css", import.
 const sharedHeroComponentUrl = new URL("../app/unified-module-hero.tsx", import.meta.url);
 const sharedChineseModuleUrl = new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url);
 const unifiedBriefComponentUrl = new URL("../app/unified-brief-module-page.tsx", import.meta.url);
+const denseReaderComponentUrl = new URL("../app/dense-module-reading-modes.tsx", import.meta.url);
+const englishModuleComponentUrl = new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url);
 const designLanguageUrl = new URL("../docs/DESIGN-LANGUAGE.md", import.meta.url);
 const appUrl = new URL("../app/", import.meta.url);
 
@@ -310,4 +312,19 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
     assert.doesNotMatch(source, /--fb-[a-z0-9-]+\s*:/, `${entry} 不得以内联样式覆盖全站基础 Token`);
   }
   assert.ok(scaffoldEntries.length >= 5, "当前迁移批次必须包含共享 brief wrapper 及既有专用模块接入点");
+});
+
+test("unified deep links and English comparison tables keep their accessibility ownership", async () => {
+  const [readerSource, englishSource] = await Promise.all([
+    readFile(denseReaderComponentUrl, "utf8"),
+    readFile(englishModuleComponentUrl, "utf8"),
+  ]);
+  assert.match(readerSource, /function directoryAnchorForTarget\(/);
+  assert.match(readerSource, /const directoryIds = new Set\(directories\[modeId\]\.map\(\(item\) => item\.id\)\)/);
+  assert.match(readerSource, /while \(current\)[\s\S]*current = current\.parentElement/);
+  assert.match(readerSource, /setActiveAnchor\(directoryAnchorForTarget\(targetId, nextMode, directoryByMode\) \?\? targetId\)/);
+  assert.match(englishSource, /<div className="tableWrap" role="region" aria-label=\{tableLabel\} tabIndex=\{0\}>/);
+  assert.match(englishSource, /<table><caption className="srOnly">\{tableLabel\}<\/caption>/);
+  assert.match(englishSource, /<th scope="col"/);
+  assert.match(englishSource, /<th scope="row"/);
 });

@@ -826,14 +826,14 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.match(promptZh, /promptEnglishPath/);
   assert.doesNotMatch(enHome, />English pilot</i);
   assert.match(enShared, /EnglishModulePage/);
-  assert.match(enShared, /\["llm", "data-engineering"\]\.includes\(slug\)/, "English shared route must opt the first brief batch into the unified reader");
+  assert.match(enShared, /englishUnifiedReaderSlugs\.includes\(slug\)/, "English shared route must consume the centralized unified-reader registry");
   assert.match(enRag, /EnglishModulePage[^>]*reader="unified"/, "English RAG must opt into the shared task-led reader");
   assert.match(enModulePage, /DenseModuleReadingModes/);
   assert.match(enModulePage, /locale="en"/);
   for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
   }
-  assert.deepEqual(unifiedBriefModuleSlugs, ["llm", "data-engineering"]);
+  assert.deepEqual(unifiedBriefModuleSlugs, ["model-landscape", "llm", "data-engineering"]);
   for (const slug of unifiedBriefModuleSlugs) {
     const config = getUnifiedBriefModuleConfig(slug);
     assert.ok(config, `${slug} must have a Chinese unified-reader config`);
@@ -842,9 +842,11 @@ test("English routes and all Chinese module page families expose reciprocal lang
     assert.deepEqual(config.directories.field.map((item) => item.id), ["evidence", "cloud", "qa", "related-modules"]);
     assert.equal(config.facts.length, 4);
   }
-  for (const slug of ["llm", "data-engineering"]) {
+  for (const slug of ["model-landscape", "llm", "data-engineering", "ai-agent", "mcp"]) {
     assert.match(enModulePage, new RegExp(`(?:^|\\n)  (?:"${slug}"|${slug}): \\{`), `English unified reader config must include ${slug}`);
   }
+  assert.match(enModulePage, /export const englishUnifiedReaderSlugs = Object\.freeze\(Object\.keys\(englishUnifiedReaderConfigs\)\)/);
+  assert.match(enModulePage, /mcp: \{[\s\S]*completeFocusedProjection: true/, "MCP must render its complete authored English projection");
   assert.match(enModulePage, /englishSourceCopy/, "English module pages must render localized source labels");
   assert.doesNotMatch(enModulePage, /sourceLedger\[evidence\.sourceId\]\?\.(?:kind|shortTitle)/, "English QA evidence must not render Chinese canonical labels");
 });

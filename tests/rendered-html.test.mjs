@@ -390,7 +390,7 @@ test("English decision tools preserve canonical facts without exposing Chinese r
   assert.match(radarHtml, /captured[\s\S]{0,80}01:18:07 UTC/i);
   assert.doesNotMatch(radarHtml, /configuration\.。|snapshot\.\./);
   assert.match(radarHtml, /href="\/en\/references#source-intelligence-index"/);
-  assert.match(radarHtml, /href="\/en\/modules\/model-landscape#qa-1"/);
+  assert.match(radarHtml, /href="\/en\/modules\/model-landscape#qa-contextual-model-choice"/);
   assert.match(radarHtml, /href="\/model-radar"[^>]*hrefLang="zh-CN"/);
 
   assert.match(chineseRadarHtml, /Artificial Analysis · [\s\S]{0,80}v4\.1\.1/);
@@ -726,10 +726,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/llm", "/modules/data-engineering"]) {
+  for (const requiredPath of ["/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/llm", "/modules/data-engineering"]) {
     assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
   }
-  assert.ok(paths.length >= 6, "共享阅读壳迁移批次不得静默缩小");
+  assert.ok(paths.length >= 7, "共享阅读壳迁移批次不得静默缩小");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -771,6 +771,9 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.match(readerSource, /aria-current=\{activeId === item\.id \? "location"/);
   assert.match(readerSource, /IntersectionObserver/);
   assert.match(readerSource, /closest<HTMLElement>\("\[data-reading-mode\]"\)/, "嵌套深链必须自动识别所属阅读面板");
+  assert.match(readerSource, /function directoryAnchorForTarget\(/, "嵌套深链必须解析到最近的目录所有者");
+  assert.match(readerSource, /while \(current\)[\s\S]*directoryIds\.has\(current\.id\)[\s\S]*current = current\.parentElement/, "目录所有者解析必须沿真实 DOM 祖先向上查找");
+  assert.match(readerSource, /setActiveAnchor\(directoryAnchorForTarget\(targetId, nextMode, directoryByMode\) \?\? targetId\)/, "嵌套深链必须高亮所属目录项而不是不存在的叶子项");
   assert.match(readerSource, /data-reading-mode=\{mode\.id\}/, "每个阅读面板必须声明稳定所属模式");
   assert.match(readerSource, /target\.startsWith\("qa-"\) \? "field"/);
   assert.match(readerSource, /setActiveMode\(defaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "清空 hash 时必须恢复默认阅读任务");
@@ -800,8 +803,18 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
 });
 
-test("LLM and Data Engineering preserve their authored content in the unified brief reader", async () => {
+test("standard brief modules preserve their authored content in the unified reader", async () => {
   const cases = [
+    {
+      slug: "model-landscape",
+      zhTitleId: "model-landscape-title",
+      enTitleId: "model-landscape-english-title",
+      zhPrimerId: "model-landscape-extension-primer-title",
+      enPrimerId: "model-landscape-english-primer-title",
+      zhMechanism: /data-knowledge-view="selection-coordinate"/,
+      enMechanism: /data-knowledge-view="selection-coordinate"/,
+      zhQuestionCount: 15,
+    },
     {
       slug: "llm",
       zhTitleId: "llm-title",
@@ -853,9 +866,65 @@ test("LLM and Data Engineering preserve their authored content in the unified br
     assert.match(enHtml, new RegExp(`href="/en/references\\?module=${moduleCase.slug}"`));
     assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, moduleCase.zhQuestionCount);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
+    assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
     for (const question of englishModule.qa) {
       assert.match(enHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `${moduleCase.slug} must preserve ${question.id}`);
     }
+  }
+});
+
+test("AI Agent and MCP preserve complete authored packs in the unified English reader", async () => {
+  const cases = [
+    {
+      slug: "ai-agent",
+      zhPath: "/modules/ai-agent",
+      enPrimerId: "ai-agent-english-primer-title",
+      groupIds: [
+        "agent-adoption-decision",
+        "agent-operating-model",
+        "agent-harness-engineering",
+        "agent-control-architecture",
+        "agent-production-runtime",
+        "agent-interoperability",
+        "agent-memory-poisoning",
+        "agent-low-code-choice",
+        "agent-cloud-evaluation",
+      ],
+      evidenceCount: 6,
+      questionCount: 28,
+      tableCount: 6,
+    },
+    {
+      slug: "mcp",
+      zhPath: "/modules/mcp",
+      enPrimerId: "mcp-english-primer-title",
+      groupIds: ["decisions", "principle", "study-guide", "curriculum", "deep-dive", "cloud"],
+      evidenceCount: 5,
+      questionCount: 15,
+      tableCount: 5,
+    },
+  ];
+
+  for (const moduleCase of cases) {
+    const [zhHtml, enHtml] = await Promise.all([
+      renderHtml(moduleCase.zhPath),
+      renderHtml(`/en/modules/${moduleCase.slug}`),
+    ]);
+    for (const [locale, html] of [["zh", zhHtml], ["en", enHtml]]) {
+      assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} 缺少共享 Hero`);
+      assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} 缺少共享 reader`);
+      assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只有一个主内容目标`);
+      assert.equal((html.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} ${moduleCase.slug} 必须完整渲染三种阅读模式`);
+      assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} 不得保留旧版 topbar`);
+    }
+    assert.match(enHtml, new RegExp(`id="${moduleCase.enPrimerId}"`));
+    for (const id of [...moduleCase.groupIds, "evidence", "qa", "related-modules"]) {
+      assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} 必须完整保留 #${id}`);
+    }
+    assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, moduleCase.evidenceCount);
+    assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, moduleCase.questionCount);
+    assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, moduleCase.tableCount);
+    assert.equal((enHtml.match(/<caption class="srOnly">/g) ?? []).length, moduleCase.tableCount);
   }
 });
 
