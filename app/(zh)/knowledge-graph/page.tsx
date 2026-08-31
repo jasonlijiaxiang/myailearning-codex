@@ -7,7 +7,6 @@ import {
   graphModules,
   graphRelations,
   graphRelationTypes,
-  graphScalePolicy,
   graphTerms,
 } from "../../knowledge-graph/graph-data.mjs";
 import { KnowledgeConstellation } from "../../knowledge-graph/design-2/knowledge-constellation";
@@ -56,7 +55,6 @@ export default function KnowledgeGraphPage() {
         terms={graphTerms}
         relations={graphRelations}
         relationTypes={graphRelationTypes}
-        scalePolicy={graphScalePolicy}
       />
 
       <footer className={styles.footer}>

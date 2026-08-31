@@ -588,43 +588,74 @@ const specialPrimerLayouts: Record<string, EnglishPrimer["layout"]> = {
   llm: "stack",
   "fine-tuning": "lifecycle",
 };
-const specialPrimerStepCounts: Record<string, number> = {
-  "solution-patterns": 6,
-  rag: 4,
-  "ai-agent": 4,
-  security: 5,
-  llm: 6,
-  "fine-tuning": 6,
-};
 const specialPrimerTermIds: Record<string, string[]> = {
   "solution-patterns": ["poc", "sla", "tco", "rag", "ai-agent"],
   "prompt-engineering": ["prompt-engineering", "context-engineering", "tools-schema", "structured-outputs", "prompt-injection"],
 };
 
-function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): EnglishPrimer {
-  let layout = specialPrimerLayouts[module.slug];
-  let stepCount = specialPrimerStepCounts[module.slug];
-  let canonicalTermIds: string[] | undefined;
-  if (!layout) {
-    const canonicalView = requireModuleExtensionView(module.slug) as { layout: EnglishPrimer["layout"]; steps: unknown[]; termIds?: string[] };
-    layout = canonicalView.layout;
-    stepCount = canonicalView.steps.length;
-    canonicalTermIds = canonicalView.termIds;
-  }
+// A primer is a semantic projection, not the first N cards in a section.  The
+// complete material remains in the reader below; these IDs identify the
+// mechanism a learner should hold in mind before entering it.  Adding or
+// reordering other material therefore cannot silently change the primer.
+const derivedPrimerStepIds: Record<string, readonly string[]> = {
+  "solution-patterns": [
+    "solution-principle-outcome-unit",
+    "solution-principle-constraint-envelope",
+    "solution-principle-minimum-loop",
+    "solution-principle-responsibility-architecture",
+    "solution-principle-evidence-stage",
+    "solution-principle-operations-economics-exit",
+  ],
+  "model-landscape": ["selection-task-capability", "selection-quality-risk", "selection-serving-constraints", "selection-lifecycle"],
+  rag: ["mechanism-retrieval", "mechanism-augmentation", "mechanism-generation"],
+  "ai-agent": ["agent-loop-perceive", "agent-loop-reason", "agent-loop-act", "agent-loop-observe", "agent-loop-continue-stop"],
+  multimodal: ["inspection-task-contract", "inspection-capture-gate", "inspection-route-align", "inspection-ground-handoff", "inspection-degrade"],
+  mcp: ["principle-host-client-server", "principle-tools-resources-prompts", "principle-versioned-lifecycle", "principle-transport-trust-boundary", "principle-mcp-function-calling"],
+  a2a: ["task-submit-accept", "task-work-progress", "task-input-authorization", "task-terminal-state", "task-deliver-verify-artifact"],
+  veadk: ["principle-upstream-contract", "principle-tool-proposal", "principle-state-separation", "principle-adapter-boundary"],
+  agentkit: ["principle-artifact-before-runtime", "principle-binding-not-connection", "principle-externalize-state", "principle-platform-evidence"],
+  evaluation: ["refund-decision-estimand", "refund-freeze-unit", "refund-sample-slice", "refund-grade-validly", "refund-repeat-decide", "refund-handoff"],
+  "ai-governance": ["governance-principle-use", "governance-principle-tier-classification", "governance-principle-impact", "governance-principle-conditions", "governance-principle-change"],
+  security: ["security-path-loss", "security-path-admission", "security-path-retrieval", "security-path-proposal", "security-path-authorize"],
+  "ai-gateway": ["gateway-unified-access", "gateway-credential-isolation", "gateway-policy-routing", "gateway-traffic-cost", "gateway-safety-audit", "gateway-end-to-end-telemetry"],
+  "ai-ops": ["principle-task-contract", "principle-configuration-bundle", "principle-layered-testing", "principle-controlled-release", "principle-end-to-end-trace", "principle-incident-stop", "principle-governed-improvement"],
+  "prompt-engineering": ["claim-baseline", "claim-minimum-call", "claim-context-manifest", "claim-validate-authorize", "claim-release-bundle"],
+  "llm-training": ["principle-data-preparation", "principle-pretraining", "principle-sft", "principle-preference", "principle-evaluation"],
+  "llm-inference": ["principle-autoregressive", "principle-prefill-decode", "principle-kv-cache", "principle-continuous-batching", "principle-inference-optimization", "principle-distributed-inference"],
+  "ai-infra-platform": ["principle-device-claim", "principle-gang-queue", "principle-sharing-isolation", "principle-environment-reproducibility", "principle-failure-recovery", "principle-serving-observability"],
+  "ai-infra-compute": ["principle-workload-sizing", "principle-compute-precision", "principle-memory-hierarchy", "principle-scale-up", "principle-scale-out", "principle-storage-power-tco"],
+};
 
-  const primarySection = module.sections.find((section) => /(?:principle|architecture|operating-model|flywheel|lifecycle|threat|blueprint|coordinate|context|protocol-model|policy-data-plane)/.test(section.id)) ?? module.sections[0];
-  const orderedSections = [primarySection, ...module.sections.filter((section) => section !== primarySection)];
-  const primaryItems = orderedSections.flatMap((section) => section.blocks.flatMap((block) => block.items));
+function selectPrimerItems(module: EnglishModule, itemIds: readonly string[], label: string) {
+  const byId = new Map(module.sections.flatMap((section) => section.blocks.flatMap((block) => block.items).map((item) => [item.id, item])));
+  if (new Set(itemIds).size !== itemIds.length) throw new Error(`${module.slug} ${label} repeats a content item`);
+  return itemIds.map((itemId) => {
+    const item = byId.get(itemId);
+    if (!item) throw new Error(`${module.slug} ${label} references an unknown content item: ${itemId}`);
+    return item;
+  });
+}
+
+function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): EnglishPrimer {
+  // Dedicated primers carry their own layout and do not need a generic
+  // extension view.  Loading one here would make those otherwise complete
+  // readers fail during SSR simply because no generic view is registered.
+  const canonicalView = specialPrimerLayouts[module.slug]
+    ? null
+    : requireModuleExtensionView(module.slug) as { layout: EnglishPrimer["layout"]; termIds?: string[] };
+  const layout = specialPrimerLayouts[module.slug] ?? canonicalView?.layout;
+  if (!layout) throw new Error(`${module.slug} needs a primer layout`);
+  const primarySection = module.sections.find((section) => /(?:principle|architecture|operating-model|flywheel|lifecycle|threat|blueprint|coordinate|context|protocol-model|policy-data-plane)/.test(section.id));
+  if (!primarySection) throw new Error(`${module.slug} needs a semantic mechanism section for its primer`);
+  const stepIds = derivedPrimerStepIds[module.slug];
+  if (!stepIds?.length) throw new Error(`${module.slug} needs explicit primer step IDs rather than a positional projection`);
+  const steps = selectPrimerItems(module, stepIds, "primer steps");
   const decisionSection = module.sections.find((section) => /(?:decision|choice|when-to-use|release-evidence)/.test(section.id));
   const decisionItems = decisionSection?.blocks.flatMap((block) => block.items) ?? [];
-  const explicitTermIds = specialPrimerTermIds[module.slug] ?? canonicalTermIds;
-  const termIds = explicitTermIds?.filter((termId) => module.terms[termId]) ?? Object.entries(module.terms)
-    .sort(([, left], [, right]) => Number(Boolean(right.abbr)) - Number(Boolean(left.abbr)))
-    .slice(0, 5)
-    .map(([termId]) => termId);
-  const fallbackChecks = primaryItems.slice(0, 3).map((item) => ({ title: item.title, detail: item.decision ?? item.boundary ?? item.body ?? "Validate this stage against the customer workload." }));
+  const explicitTermIds = specialPrimerTermIds[module.slug] ?? canonicalView?.termIds;
+  const termIds = explicitTermIds?.filter((termId) => module.terms[termId]) ?? Object.keys(module.terms);
+  const checkItems = decisionItems.length ? decisionItems : steps;
   const visibleGroups = selectVisibleEnglishSectionGroups(module);
-  const focusedReadingTarget = visibleGroups.find((group) => /(?:production|deep)/.test(group.id))?.id ?? visibleGroups[0]?.id ?? "evidence";
 
   return {
     id: knowledgeView,
@@ -633,18 +664,20 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
     title: primarySection.title,
     intro: primarySection.lead ?? module.position,
     termIds,
-    steps: primaryItems.slice(0, stepCount).map((item, index) => ({
+    steps: steps.map((item, index) => ({
       code: String(index + 1).padStart(2, "0"),
       label: item.subtitle ?? primarySection.eyebrow,
       title: item.title,
       detail: item.body ?? item.cells?.join(" · ") ?? "Establish the mechanism, owner, and observable output for this stage.",
       signal: item.decision ?? item.boundary ?? "Define a testable decision signal before implementation.",
     })),
-    checks: (decisionItems.length ? decisionItems.slice(0, 3).map((item) => ({ title: item.title, detail: item.body ?? item.decision ?? item.boundary ?? "Validate this choice against the customer context." })) : fallbackChecks),
+    checks: checkItems.map((item) => ({ title: item.title, detail: item.body ?? item.decision ?? item.boundary ?? "Validate this choice against the customer context." })),
     application: module.position,
-    links: getPublishedModule(module.slug)?.readingProfile === "focused"
-      ? [{ href: `#${focusedReadingTarget}`, label: "Follow the production argument" }, { href: "#evidence", label: "Review evidence limits" }, { href: "#qa", label: "Prepare customer questions" }]
-      : module.sections.slice(0, 3).map((section) => ({ href: `#${section.id}`, label: `Review ${section.title}` })),
+    links: [
+      ...visibleGroups.map((group) => ({ href: `#${group.id}`, label: `Review ${group.label}` })),
+      { href: "#evidence", label: "Review evidence limits" },
+      { href: "#qa", label: "Prepare customer questions" },
+    ],
   };
 }
 

@@ -42,8 +42,8 @@ export default async function EnglishQuestionsPage({ searchParams }: { searchPar
     ? englishQuestions.filter((item) => item.moduleSlug === selectedModule.slug).map(directoryItem)
     : allItems;
   const scopeLead = selectedModule
-    ? `This view lists all ${items.length} questions for ${selectedModule.title}, each with a concise answer. Focused module pages show a shorter selection.`
-    : `This directory lists all ${items.length} questions in the fieldbook, each with a concise answer. Focused module pages show a shorter selection.`;
+    ? `This view lists all ${items.length} questions for ${selectedModule.title}, each with a concise answer. Module pages place the same question pack beside its mechanism and evidence.`
+    : `This directory lists all ${items.length} questions in the fieldbook, each with a concise answer. Module pages place each question beside its mechanism and evidence.`;
 
   return (
     <main lang="en" className="fieldbookTheme questionDirectoryPage">

@@ -187,8 +187,10 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
   const extensionView = getChineseModuleExtensionView(currentModule.canonicalSlug) ?? undefined;
   const primerOwnsPrincipleId = ["decision-blueprint", "mcp-host-server-boundary", "latency-capacity-map"].includes(publication.knowledgeView ?? "");
-  const primerDecisionCount = primerOwnsPrincipleId ? 4 : 0;
-  const remainingDecisions = brief.decisions.slice(primerDecisionCount);
+  // The primer summarizes a mechanism; it does not consume the first N
+  // decisions. Keep the complete decision ledger available regardless of
+  // content order or how many decisions the module needs.
+  const remainingDecisions = brief.decisions;
   const pageClassName = `fieldbookTheme modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`;
   const unifiedConfig = getUnifiedBriefModuleConfig(currentModule.canonicalSlug);
   if (!unifiedConfig) throw new Error(`Missing unified reader configuration for published brief: ${currentModule.canonicalSlug}`);

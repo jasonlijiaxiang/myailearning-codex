@@ -431,12 +431,10 @@ export function ModuleEvidenceGrid({
 export function ModuleQaList({
   items,
   sourceLedger,
-  initialLimit = 8,
   directoryHref,
 }: {
   items: readonly QaItem[];
   sourceLedger: SourceLedger;
-  initialLimit?: number;
   directoryHref?: string;
 }) {
   if (items.length === 0) return null;
@@ -444,7 +442,6 @@ export function ModuleQaList({
   return (
     <QaFilterShell
       directoryHref={directoryHref}
-      initialLimit={initialLimit}
       items={items.map((item) => ({ tag: item.tag, text: `${item.q} ${item.a} ${item.depth} ${item.ask}` }))}
     >
       <div className="qaList">

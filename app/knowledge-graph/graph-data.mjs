@@ -49,11 +49,7 @@ export const graphModuleCoverage = Object.freeze(graphModules.map((module) => {
 }));
 
 export const graphOverviewPolicy = Object.freeze({
-  minSharedTerms: 2,
-  maxConnections: 24,
-  minimumRelatedTerms: 5,
-  minimumPrimaryTerms: 2,
-  maxModulesPerLayerRow: 5,
+  requiresSharedTerm: true,
 });
 
 export const graphOverviewLinks = Object.freeze((() => {
@@ -65,7 +61,7 @@ export const graphOverviewLinks = Object.freeze((() => {
       const termIds = graphTerms
         .filter((term) => term.moduleIds.includes(from.id) && term.moduleIds.includes(to.id))
         .map((term) => term.id);
-      if (termIds.length < graphOverviewPolicy.minSharedTerms) continue;
+      if (!termIds.length) continue;
       links.push(Object.freeze({
         id: `${from.id}:shared-terms:${to.id}`,
         from: from.id,
@@ -76,13 +72,10 @@ export const graphOverviewLinks = Object.freeze((() => {
     }
   }
   return links
-    .sort((left, right) => right.sharedTermCount - left.sharedTermCount || left.id.localeCompare(right.id))
-    .slice(0, graphOverviewPolicy.maxConnections);
+    .sort((left, right) => right.sharedTermCount - left.sharedTermCount || left.id.localeCompare(right.id));
 })());
 
 export const graphScalePolicy = Object.freeze({
-  maxActiveNodes: 24,
-  maxActiveEdges: 32,
   highDegreeWarning: 20,
 });
 

@@ -373,9 +373,18 @@ async function hasProjectFile(projectRoot, relativePath) {
   }
 }
 
-export async function loadLocalizationProject(projectRoot, { moduleSlugs = null, englishReferenceScope = "module" } = {}) {
+export async function loadLocalizationProject(projectRoot, {
+  moduleSlugs = null,
+  englishReferenceScope = "module",
+  // This exists solely to reconstruct a baseline made before the current
+  // complete-reader projection. Production callers use the complete default.
+  readerProjection = "complete",
+} = {}) {
   if (!["module", "directory"].includes(englishReferenceScope)) {
     throw new Error(`englishReferenceScope must be "module" or "directory"; received ${englishReferenceScope}`);
+  }
+  if (!["complete", "legacy-focused"].includes(readerProjection)) {
+    throw new Error(`readerProjection must be "complete" or "legacy-focused"; received ${readerProjection}`);
   }
   const [publicationModule, contentModule, briefModule, curriculumModule, learningModule, terminologyModule, referenceModule, englishModule, englishDatesModule, englishOutlineModule, extensionModule, chineseExtensionModule, knowledgeMapModule] = await Promise.all([
     importFrom(projectRoot, "app/module-publication.mjs"),
@@ -441,7 +450,10 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
       extensionView: chineseExtensionView,
       canonicalModules: Object.fromEntries(relatedModuleSlugs.map((moduleSlug) => [moduleSlug, knowledgeMapModule.getModuleBySlug(moduleSlug)])),
     };
-    const focused = publication.readingProfile === "focused";
+    // `legacy-focused` is never a reader setting. It lets provenance checks
+    // reproduce a pre-contract baseline whose hash deliberately described the
+    // former focused projection.
+    const legacyFocused = readerProjection === "legacy-focused" && publication.readingProfile === "focused";
     const sourceIds = collectSourceIds(core);
     const relevantClaims = claims.items.filter((claim) => claim.sourceIds?.some((sourceId) => sourceIds.has(sourceId)));
     for (const claim of relevantClaims) for (const sourceId of claim.sourceIds ?? []) sourceIds.add(sourceId);
@@ -454,7 +466,7 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
         sharedRendererHash: chineseRendererHash,
         rendererDependencyFiles: zhRendererFiles,
         questionIds: (brief?.qa ?? []).map((question, index) => question.id ?? `qa-${index + 1}`),
-        evidenceCardIds: (focused ? (brief?.evidenceCards ?? []).slice(0, 4) : (brief?.evidenceCards ?? [])).map((card, index) => card.id ?? `evidence-${index + 1}`),
+        evidenceCardIds: (legacyFocused ? (brief?.evidenceCards ?? []).slice(0, 4) : (brief?.evidenceCards ?? [])).map((card, index) => card.id ?? `evidence-${index + 1}`),
       },
     };
 
@@ -462,15 +474,21 @@ export async function loadLocalizationProject(projectRoot, { moduleSlugs = null,
     const englishSourceIds = collectSourceIds(english);
     const sectionGroups = englishOutlineModule.buildEnglishSectionGroups(english);
     const hasSharedEnglishSelection = typeof englishOutlineModule.selectVisibleEnglishSectionGroups === "function";
-    const visibleSectionGroups = hasSharedEnglishSelection
-      ? englishOutlineModule.selectVisibleEnglishSectionGroups(english, sectionGroups)
-      : (focused ? sectionGroups.filter((group) => group.role === "cloud" || ["decision", "deep"].includes(group.role)) : sectionGroups);
-    const visibleQuestions = hasSharedEnglishSelection
-      ? englishOutlineModule.selectVisibleEnglishQuestions(english)
-      : (focused ? english.qa.slice(0, 5) : english.qa);
-    const visibleEvidenceCards = hasSharedEnglishSelection
-      ? englishOutlineModule.selectVisibleEnglishEvidenceCards(english)
-      : (focused ? english.evidenceCards.slice(0, 4) : english.evidenceCards);
+    const visibleSectionGroups = legacyFocused
+      ? sectionGroups.filter((group) => group.role === "cloud" || ["decision", "deep"].includes(group.role))
+      : hasSharedEnglishSelection
+        ? englishOutlineModule.selectVisibleEnglishSectionGroups(english, sectionGroups)
+        : sectionGroups;
+    const visibleQuestions = legacyFocused
+      ? english.qa.slice(0, 5)
+      : hasSharedEnglishSelection
+        ? englishOutlineModule.selectVisibleEnglishQuestions(english)
+        : english.qa;
+    const visibleEvidenceCards = legacyFocused
+      ? english.evidenceCards.slice(0, 4)
+      : hasSharedEnglishSelection
+        ? englishOutlineModule.selectVisibleEnglishEvidenceCards(english)
+        : english.evidenceCards;
     const canonicalModuleSlugs = [...new Set([slug, ...(english.related ?? [])])];
     const englishPublication = {
       slug: publication.slug,

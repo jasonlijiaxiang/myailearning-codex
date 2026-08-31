@@ -31,8 +31,8 @@ const graphCopy = {
     term: "术语",
     noResults: "没有找到匹配的模块或术语。",
     chooseModule: "选择模块",
-    scopePrefix: "聚焦显示",
-    scopeSuffix: "条一跳关系；未显示不代表没有联系。",
+    scopePrefix: "当前显示",
+    scopeSuffix: "条明确的一跳关系。",
     layerRail: "知识层与模块",
     closeRail: "关闭模块列表",
     edgeSuffix: "条一跳关系",
@@ -67,7 +67,7 @@ const graphCopy = {
     noResults: "No matching module or term was found.",
     chooseModule: "Choose a module",
     scopePrefix: "Showing",
-    scopeSuffix: "direct relationships; omitted nodes may still be related.",
+    scopeSuffix: "explicit direct relationships.",
     layerRail: "Knowledge layers and modules",
     closeRail: "Close module list",
     edgeSuffix: "direct relationships",
@@ -138,7 +138,6 @@ export function KnowledgeConstellation({
   terms,
   relations,
   relationTypes,
-  scalePolicy,
   language = "zh",
 }: {
   layers: readonly GraphLayer[];
@@ -146,7 +145,6 @@ export function KnowledgeConstellation({
   terms: readonly GraphTerm[];
   relations: readonly Relation[];
   relationTypes: Readonly<Record<string, GraphRelationType>>;
-  scalePolicy: Readonly<{ maxActiveNodes: number; maxActiveEdges: number }>;
   language?: keyof typeof graphCopy;
 }) {
   const copy = graphCopy[language];
@@ -211,7 +209,7 @@ export function KnowledgeConstellation({
     const termMatches = terms.flatMap((term) => `${term.zh} ${term.en} ${term.abbr ?? ""} ${term.description}`.toLocaleLowerCase(locale).includes(deferredQuery)
       ? [{ kind: "term" as const, id: term.id, title: term.zh, subtitle: term.abbr ?? term.en }]
       : []);
-    return [...moduleMatches, ...termMatches].slice(0, 10);
+    return [...moduleMatches, ...termMatches];
   }, [deferredQuery, locale, modules, terms]);
 
   const neighbors = useMemo<Neighbor[]>(() => {
@@ -235,7 +233,7 @@ export function KnowledgeConstellation({
               ? `${moduleById.get(focus.id)?.zh} 是“${term.zh}”的主要归属模块。`
               : `${moduleById.get(focus.id)?.zh} 在局部判断中使用“${term.zh}”；主要解释位于“${owner?.zh ?? "其归属模块"}”。`,
         }];
-      }).slice(0, scalePolicy.maxActiveNodes - 1);
+      });
     }
     const selected = termById.get(focus.id);
     if (!selected) return [];
@@ -265,8 +263,8 @@ export function KnowledgeConstellation({
         : relation.explanation;
       return [{ key: `term:${id}:${relation.type}`, kind: "term", id, title: term.abbr ?? term.zh, subtitle: term.abbr ? term.zh : term.en, relationType: relation.type, explanation }];
     });
-    return [...moduleNeighbors, ...semanticNeighbors].slice(0, scalePolicy.maxActiveNodes - 1);
-  }, [focus, language, moduleById, relationTypes, relations, scalePolicy.maxActiveNodes, termById, terms]);
+    return [...moduleNeighbors, ...semanticNeighbors];
+  }, [focus, language, moduleById, relationTypes, relations, termById, terms]);
 
   const points = useMemo<Point[]>(() => neighbors.map((neighbor, index) => {
     const count = neighbors.length;
@@ -291,7 +289,7 @@ export function KnowledgeConstellation({
   const selectedDescription = selectedModule?.summary ?? selectedTerm?.description ?? "";
   const primaryModule = selectedModule ?? moduleById.get(selectedTerm?.primaryModuleId ?? "");
   const selectedModuleTitle = selectedModule ? splitModuleTitle(selectedModule.zh) : null;
-  const activeEdgeCount = Math.min(points.length, scalePolicy.maxActiveEdges);
+  const activeEdgeCount = points.length;
 
   return (
     <section className={`${styles.explorer} ${motionPaused ? styles.paused : ""}`} aria-label={copy.graphAria}>
@@ -338,7 +336,7 @@ export function KnowledgeConstellation({
               <svg className={styles.edges} viewBox="0 0 1000 700" role="img" aria-label={`${selectedTitle}: ${activeEdgeCount} ${copy.edgeSuffix}`}>
                 <title>{`${selectedTitle} ${copy.edgeTitle}`}</title>
                 <desc>{copy.edgeDescription}</desc>
-                {points.slice(0, scalePolicy.maxActiveEdges).map((point) => (
+                {points.map((point) => (
                   <g key={point.key} className={styles[`edge_${point.relationType}`] ?? ""}>
                     <path d={edgePath(point)} />
                     <circle className={styles.particle} r="3"><animateMotion dur={`${(2.2 + (point.x % 4) * .25).toFixed(2)}s`} repeatCount="indefinite" path={edgePath(point)} /></circle>

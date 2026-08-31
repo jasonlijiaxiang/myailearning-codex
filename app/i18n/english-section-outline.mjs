@@ -10,7 +10,9 @@ export const sharedSectionRoles = Object.freeze({
 });
 
 export const sharedSectionRoleOrder = Object.freeze(["learning", "curriculum", "principle", "decision", "deep", "cloud"]);
-export const focusedSectionRoleOrder = Object.freeze(["principle", "decision", "deep", "cloud"]);
+// Kept as a public compatibility export. A focused visual treatment must not
+// silently become a content projection that drops the learning map.
+export const focusedSectionRoleOrder = sharedSectionRoleOrder;
 export const focusedEnglishModuleSlugs = Object.freeze(
   publishedModules.filter((module) => module.readingProfile === "focused").map((module) => module.slug),
 );
@@ -45,9 +47,7 @@ export function buildEnglishSectionGroups(module, { completeFocusedProjection = 
     grouped.set(role, [...(grouped.get(role) ?? []), section]);
   }
 
-  const roleOrder = focusedEnglishModuleSlugs.includes(module.slug) && !completeFocusedProjection
-    ? focusedSectionRoleOrder
-    : sharedSectionRoleOrder;
+  const roleOrder = sharedSectionRoleOrder;
   return roleOrder.flatMap((role) => {
     const sections = grouped.get(role);
     if (!sections?.length) return [];
@@ -62,14 +62,13 @@ export function buildEnglishSectionGroups(module, { completeFocusedProjection = 
 }
 
 export function selectVisibleEnglishSectionGroups(module, sectionGroups = buildEnglishSectionGroups(module)) {
-  if (!usesFocusedEnglishPreview(module)) return sectionGroups;
-  return sectionGroups.filter((group) => group.role === "cloud" || ["decision", "deep"].includes(group.role));
+  return sectionGroups;
 }
 
 export function selectVisibleEnglishEvidenceCards(module) {
-  return usesFocusedEnglishPreview(module) ? module.evidenceCards.slice(0, 4) : module.evidenceCards;
+  return module.evidenceCards;
 }
 
 export function selectVisibleEnglishQuestions(module) {
-  return usesFocusedEnglishPreview(module) ? module.qa.slice(0, 5) : module.qa;
+  return module.qa;
 }

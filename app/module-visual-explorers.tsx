@@ -42,6 +42,12 @@ const lifecycleBranchLabels: Record<string, [string, string]> = {
   "predictive-model-lifecycle": ["漂移调查", "回滚 / 重新训练"],
 };
 
+const controlPlaneStepCodesByViewId = {
+  "mcp-host-server-boundary": new Set(["CLIENT", "SERVER"]),
+  "gateway-policy-data-plane": new Set(["POLICY"]),
+  "scheduler-control-plane": new Set(["ADMIT", "PLACE"]),
+} as const;
+
 function StepButton({
   step,
   selected,
@@ -140,15 +146,16 @@ function LoopCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
 }
 
 function ControlCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
-  const policySteps = view.steps.length > 2 ? view.steps.slice(1, -1) : view.steps;
+  const policyStepCodes = controlPlaneStepCodesByViewId[view.id as keyof typeof controlPlaneStepCodesByViewId];
+  if (!policyStepCodes) throw new Error(`Missing control-plane step mapping for ${view.id}`);
+  const policySteps = view.steps
+    .map((step, index) => ({ step, index }))
+    .filter(({ step }) => policyStepCodes.has(step.code));
   return (
     <div className="visualControlCanvas" role="group" aria-label={locale === "en" ? `${view.title} control and execution planes` : `${view.title}的控制面与执行面`}>
       <section className="controlPolicyPlane" style={{ "--control-policy-count": Math.max(policySteps.length, 1) } as CSSProperties}>
         <header><strong>{locale === "en" ? "Policy & control plane" : "策略与控制面"}</strong><span>{locale === "en" ? "Version, quota, identity, priority, and rollback" : "版本、配额、身份、优先级与回滚"}</span></header>
-        {policySteps.map((step) => {
-          const index = view.steps.indexOf(step);
-          return <StepButton key={step.code} step={step} selected={active === index} onClick={() => onSelect(index)} />;
-        })}
+        {policySteps.map(({ step, index }) => <StepButton key={step.code} step={step} selected={active === index} onClick={() => onSelect(index)} />)}
       </section>
       <div className="controlPlaneLink" aria-hidden="true"><span>{locale === "en" ? "Policy down" : "策略下发"}</span><i>↓</i><span>{locale === "en" ? "Evidence up" : "证据回传"}</span></div>
       <section className="controlDataPlane" data-step-count={view.steps.length} style={{ "--control-step-count": view.steps.length } as CSSProperties}>

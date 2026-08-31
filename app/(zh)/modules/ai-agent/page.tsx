@@ -245,10 +245,10 @@ const agentChapters = [
 ] as const;
 
 const releaseAcceptanceGates = [
-  { name: "端到端任务成功率", check: "由权威业务终态判定，阈值由业务 Owner 签字。" },
-  { name: "关键步骤完成率", check: "关键动作单独设门，不能被总体平均掩盖。" },
-  { name: "策略违规 = 0", check: "命中策略就暂停，不用总体成功率抵消。" },
-  { name: "高风险误执行 = 0", check: "资金、生产变更和对外发送单独计数。" },
+  { name: "端到端任务成功率", check: "由权威业务终态判定，阈值由业务 Owner 签字。", releaseBlocking: true },
+  { name: "关键步骤完成率", check: "关键动作单独设门，不能被总体平均掩盖。", releaseBlocking: true },
+  { name: "策略违规 = 0", check: "命中策略就暂停，不用总体成功率抵消。", releaseBlocking: true },
+  { name: "高风险误执行 = 0", check: "资金、生产变更和对外发送单独计数。", releaseBlocking: true },
   { name: "人工接管率", check: "同时检查接管是否及时、是否真正解决问题。" },
   { name: "P95 / 完成时长", check: "按任务类型和风险分层，不用平均响应时间代替。" },
   { name: "每个成功任务成本", check: "计入失败重试、工具调用和人工处理。" },
@@ -314,7 +314,10 @@ export default function AgentModulePage() {
             criticalBoundary="工具调用意图、工具执行成功和业务完成是三件事；身份、授权、真实动作、停止与最终验收必须留在确定性控制层。"
             directories={{
               quick: [{ id: "agent-principle", label: "是否需要 Agent", eyebrow: "采用边界" }],
-              learn: agentChapters.slice(1, 7),
+              // `agent-principle` is intentionally in Quick; every other
+              // learning anchor remains discoverable here, independent of
+              // its position or the number of chapters the module needs.
+              learn: agentChapters.filter((chapter) => chapter.id !== "agent-principle"),
               field: [
                 { id: "cloud-opportunities", label: "云能力与责任", eyebrow: "交付边界" },
                 { id: "evidence", label: "证据与适用范围", eyebrow: "来源核验" },
@@ -571,7 +574,7 @@ export default function AgentModulePage() {
               <article><span>CONTROLLED WRITE</span><h4>受控副作用</h4><p>只开放可逆或低风险写入，验证审批绑定、幂等、重复消息、结果未知、部分成功、补偿和恢复。</p></article>
               <article><span>OPERATIONS</span><h4>灰度与运营交接</h4><p>按风险分别验收成功率、接管率、P95 和成功任务成本；通过当前检查后再扩大自治，不预设固定天数。</p></article>
             </div>
-            <div className="gates"><h4>建议的通过 / 暂停条件</h4><dl className={agentStyles.releaseGateLedger}>{releaseAcceptanceGates.map((gate, index) => <div className={index < 2 ? agentStyles.releaseGatePrimary : undefined} key={gate.name}><dt><span>{String(index + 1).padStart(2, "0")}</span>{gate.name}</dt><dd>{gate.check}</dd></div>)}</dl><p>前两项是上线硬门：端到端结果和关键步骤都达到签字阈值后，才继续检查安全、运营、性能与成本。具体数值按业务风险、现有人工表现与 PoC 共同决定；总体平均不能掩盖高风险场景失败。</p></div>
+            <div className="gates"><h4>建议的通过 / 暂停条件</h4><dl className={agentStyles.releaseGateLedger}>{releaseAcceptanceGates.map((gate, index) => <div className={gate.releaseBlocking ? agentStyles.releaseGatePrimary : undefined} key={gate.name}><dt><span>{String(index + 1).padStart(2, "0")}</span>{gate.name}</dt><dd>{gate.check}</dd></div>)}</dl><p>带“上线硬门”标识的条件各自按业务风险和签字阈值执行；任何策略违规或高风险误执行都应暂停。运营、性能、成本与恢复证据也要与场景接受条件一致；总体平均不能掩盖高风险场景失败。</p></div>
             <div className="architectureNotes">
               <p><strong>价值侧</strong>：只计算经权威终态验证的周期缩短、返工减少、首次材料完整率提升和可释放人工。</p>
               <p><strong>完整 TCO</strong>：模型、检索、工具、平台、评估、人工接管、运营、安全与残余风险共同计入；不使用通用 ROI 数字替代客户基线。</p>

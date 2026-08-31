@@ -538,7 +538,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
             { n: "02", title: "委托 Agent", body: "代表谁发起、哪个租户、哪个 Skill、什么任务与数据范围。" },
             { n: "03", title: "远端 Agent", body: "验证调用方，接受受限委托，并为自己的内部执行负责。" },
             { n: "04", title: "资源服务器", body: "对具体资源和动作做最终授权；OAuth2 / mTLS 不能替代资源级策略。" },
-          ].map((step, index) => <div key={step.n}><article><span>{step.n}</span><h3>{step.title}</h3><p>{step.body}</p></article>{index < 3 ? <FlowArrow /> : null}</div>)}
+          ].map((step, index, steps) => <div key={step.n}><article><span>{step.n}</span><h3>{step.title}</h3><p>{step.body}</p></article>{index < steps.length - 1 ? <FlowArrow /> : null}</div>)}
         </div>
         <div className={styles.scopeLedger}>
           <strong>一份可撤销委托至少绑定</strong>

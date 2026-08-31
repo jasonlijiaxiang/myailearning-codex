@@ -8,7 +8,6 @@ import {
   englishGraphModules,
   englishGraphRelations,
   englishGraphRelationTypes,
-  englishGraphScalePolicy,
   englishGraphTerms,
 } from "../../../i18n/en/graph-data.mjs";
 import { KnowledgeConstellation } from "../../../knowledge-graph/design-2/knowledge-constellation";
@@ -55,7 +54,6 @@ export default function EnglishKnowledgeGraphPage() {
         terms={englishGraphTerms}
         relations={englishGraphRelations}
         relationTypes={englishGraphRelationTypes}
-        scalePolicy={englishGraphScalePolicy}
         language="en"
       />
 

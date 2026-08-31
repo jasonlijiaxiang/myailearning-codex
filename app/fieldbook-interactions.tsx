@@ -36,12 +36,6 @@ export type ExplorerStructureGuide = {
   link: string;
 };
 
-export type ExplorerResultLimit = {
-  initial: number;
-  showAll: string;
-  showLess: string;
-};
-
 type SearchLaunchLabels = {
   ariaLabel: string;
   label: string;
@@ -139,7 +133,6 @@ export function ModuleExplorer({
   locale = "zh-CN",
   questionsHref = "/questions",
   structureGuide,
-  resultLimit,
 }: {
   modules: ExplorerModule[];
   knowledgeEntries?: KnowledgeSearchEntry[];
@@ -147,12 +140,9 @@ export function ModuleExplorer({
   locale?: string;
   questionsHref?: string;
   structureGuide?: ExplorerStructureGuide;
-  resultLimit?: ExplorerResultLimit;
 }) {
   const [query, setQuery] = useState("");
   const [layer, setLayer] = useState("all");
-  const [showAll, setShowAll] = useState(false);
-  const resultGridId = useId();
   const searchRef = useRef<HTMLInputElement>(null);
   const layers = useMemo(() => {
     const seen = new Map<string, string>();
@@ -173,12 +163,9 @@ export function ModuleExplorer({
     const normalized = query.trim().toLocaleLowerCase(locale);
     if (!normalized) return [];
     return knowledgeEntries
-      .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase(locale).includes(normalized))
-      .slice(0, 12);
+      .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase(locale).includes(normalized));
   }, [knowledgeEntries, locale, query]);
-  const visibleRows = useMemo(() => balanceGridRows(visible, resultLimit ? 2 : 3), [resultLimit, visible]);
-  const visibleIndexBySlug = useMemo(() => new Map(visible.map((item, index) => [item.slug, index])), [visible]);
-  const isVisuallyLimited = Boolean(resultLimit && !showAll && !query.trim() && layer === "all" && visible.length > resultLimit.initial);
+  const visibleRows = useMemo(() => balanceGridRows(visible, 3), [visible]);
   const knowledgeMatchRows = useMemo(() => balanceGridRows(knowledgeMatches, 2), [knowledgeMatches]);
 
   useEffect(() => {
@@ -267,13 +254,11 @@ export function ModuleExplorer({
         </div>
       ) : null}
 
-      <div id={resultGridId} className="moduleResultGrid" data-count={visible.length} data-odd={visible.length % 2 === 1 ? "true" : "false"} data-collapsed={isVisuallyLimited ? "true" : "false"}>
+      <div className="moduleResultGrid" data-count={visible.length} data-odd={visible.length % 2 === 1 ? "true" : "false"}>
         {visibleRows.flatMap((row) => row.map((item) => {
-          const resultIndex = visibleIndexBySlug.get(item.slug) ?? 0;
           return (
             <Link
               className="moduleResult"
-              hidden={Boolean(resultLimit && isVisuallyLimited && resultIndex >= resultLimit.initial)}
               href={item.href}
               key={item.slug}
               style={{ "--result-span": gridSpan(row.length) } as CSSProperties}
@@ -287,13 +272,6 @@ export function ModuleExplorer({
           );
         }))}
       </div>
-      {resultLimit && !query.trim() && layer === "all" && visible.length > resultLimit.initial ? (
-        <div className="moduleExplorerMore">
-          <button type="button" aria-controls={resultGridId} aria-expanded={showAll} onClick={() => setShowAll((current) => !current)}>
-            {showAll ? resultLimit.showLess : resultLimit.showAll} <span aria-hidden="true">{showAll ? "↑" : "→"}</span>
-          </button>
-        </div>
-      ) : null}
       {visible.length === 0 ? <div className="emptySearch"><strong>{labels.emptyTitle}</strong><p>{labels.emptyBody}</p></div> : null}
     </section>
   );
@@ -434,43 +412,36 @@ export function SystemLens({ title, lead, panels }: { title: string; lead: strin
 export function QaFilterShell({
   items,
   children,
-  initialLimit = 8,
   directoryHref,
 }: {
   items: ReadonlyArray<{ tag: string; text: string }>;
   children: ReactNode;
-  initialLimit?: number;
   directoryHref?: string;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("all");
-  const [showAll, setShowAll] = useState(false);
   const uniqueTags = useMemo(() => [...new Set(items.map((item) => item.tag))], [items]);
   const matchingCount = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase("zh-CN");
     return items.filter((item) => (tag === "all" || item.tag === tag) && (!normalized || item.text.toLocaleLowerCase("zh-CN").includes(normalized))).length;
   }, [items, query, tag]);
-  const isBrowsingAll = tag === "all" && query.trim() === "";
-  const isLimited = isBrowsingAll && !showAll && matchingCount > initialLimit;
-  const displayedCount = isLimited ? initialLimit : matchingCount;
+  const displayedCount = matchingCount;
 
   useEffect(() => {
     const details = [...(rootRef.current?.querySelectorAll<HTMLDetailsElement>("details[data-qa-tag]") ?? [])];
     const normalized = query.trim().toLocaleLowerCase("zh-CN");
-    details.forEach((item, index) => {
+    details.forEach((item) => {
       const text = item.textContent?.toLocaleLowerCase("zh-CN") ?? "";
       const matches = (tag === "all" || item.dataset.qaTag === tag) && (!normalized || text.includes(normalized));
-      const withinInitialSet = !isBrowsingAll || showAll || index < initialLimit;
-      item.hidden = !matches || !withinInitialSet;
+      item.hidden = !matches;
     });
-  }, [initialLimit, isBrowsingAll, query, showAll, tag]);
+  }, [query, tag]);
 
   useEffect(() => {
     const revealTarget = () => {
       const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
       if (!(target instanceof HTMLDetailsElement) || !target.dataset.qaTag) return;
-      setShowAll(true);
       target.hidden = false;
       target.open = true;
       window.requestAnimationFrame(() => {
@@ -484,7 +455,7 @@ export function QaFilterShell({
   }, []);
 
   return (
-    <div className="qaExplorer" data-expanded={showAll ? "true" : "false"} ref={rootRef}>
+    <div className="qaExplorer" ref={rootRef}>
       <div className="qaToolbar">
         <label><span>搜索客户问题</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="输入关键词，如：成本、权限、准确率……" /></label>
         <div className="qaTagFilters" aria-label="按问题类型筛选">
@@ -495,12 +466,9 @@ export function QaFilterShell({
       </div>
       {children}
       {matchingCount === 0 && <div className="emptySearch"><strong>没有匹配的问题</strong><p>清除筛选，或换一个更短的关键词。</p></div>}
-      {(items.length > initialLimit || directoryHref) ? (
+      {directoryHref ? (
         <div className="qaCollectionActions">
-          {items.length > initialLimit && isBrowsingAll ? (
-            <button type="button" onClick={() => setShowAll((value) => !value)}>{showAll ? "收起完整题库" : `展开本模块全部 ${items.length} 题`}</button>
-          ) : null}
-          {directoryHref ? <Link href={directoryHref}>到问题库继续筛选 <span>↗</span></Link> : null}
+          <Link href={directoryHref}>到问题库继续筛选 <span>↗</span></Link>
         </div>
       ) : null}
     </div>

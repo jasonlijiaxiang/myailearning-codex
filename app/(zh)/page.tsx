@@ -266,7 +266,6 @@ export default function Home() {
             href: "/knowledge-graph",
             link: "查看模块关系",
           }}
-          resultLimit={{ initial: 8, showAll: `查看全部 ${moduleCount} 个模块`, showLess: "收起模块目录" }}
         />
       </div>
 

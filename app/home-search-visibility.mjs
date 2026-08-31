@@ -1,21 +1,13 @@
-import { getPublishedModule } from "./module-publication.mjs";
-
-export const focusedQuestionPreviewCount = 5;
-
-export function hasFocusedSearchProfile(slug) {
-  return getPublishedModule(slug)?.readingProfile === "focused";
+// Search is a discovery surface, not a lesson plan.  Do not make a question,
+// lab, or mechanism disappear merely because its module uses a focused reader.
+export function searchableQuestions(_slug, questions, _locale = "zh") {
+  return questions;
 }
 
-export function searchableQuestions(slug, questions, locale = "zh") {
-  const publication = getPublishedModule(slug);
-  const usesFocusedBriefRoute = publication?.readingProfile === "focused" && (locale === "en" || publication.routeKind === "brief");
-  return usesFocusedBriefRoute ? questions.slice(0, focusedQuestionPreviewCount) : questions;
+export function exposesLongFormSearchSections(_slug) {
+  return true;
 }
 
-export function exposesLongFormSearchSections(slug) {
-  return !hasFocusedSearchProfile(slug);
-}
-
-export function searchableEnglishSectionGroups(slug, groups) {
-  return hasFocusedSearchProfile(slug) ? groups.filter((group) => ["decision", "deep"].includes(group.role)) : groups;
+export function searchableEnglishSectionGroups(_slug, groups) {
+  return groups;
 }

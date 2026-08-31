@@ -209,7 +209,7 @@ const solutionScenarioAtlas = [
 ];
 
 export function SolutionPatternPrimer({ brief, showCriticalBoundary = true }: { brief?: FocusedBrief; showCriticalBoundary?: boolean }) {
-  const decisionRows = brief?.decisions.slice(0, 4) ?? [];
+  const decisionRows = brief?.decisions ?? [];
   return (
     <section className="pilotPrimer pilotPrimer--solution focusedNarrative focusedNarrative--decision" id="principle" data-knowledge-view="decision-blueprint" data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="solution-pattern-primer-title">
       <header className="pilotPrimerHeader">
@@ -301,7 +301,7 @@ function McpFocusedPrimer({ brief, view = requireModuleExtensionView("mcp") as E
       <section className="focusedDecisionLedger" aria-labelledby="mcp-decision-title">
         <header><p className="kicker">ADOPTION CHECK</p><h3 id="mcp-decision-title">哪些条件不成立时，不要急着引入 MCP</h3></header>
         <div className="focusedDecisionRows">
-          {brief.decisions.slice(0, 4).map((item, index) => <article key={item.question}><span>{String(index + 1).padStart(2, "0")}</span><div><h4>{item.question}</h4><p>{item.signal}</p></div><div><strong>{item.recommendation}</strong><small>{item.boundary}</small></div></article>)}
+          {brief.decisions.map((item, index) => <article key={item.question}><span>{String(index + 1).padStart(2, "0")}</span><div><h4>{item.question}</h4><p>{item.signal}</p></div><div><strong>{item.recommendation}</strong><small>{item.boundary}</small></div></article>)}
         </div>
       </section>
       <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside>
@@ -311,7 +311,7 @@ function McpFocusedPrimer({ brief, view = requireModuleExtensionView("mcp") as E
 }
 
 function InferenceFocusedPrimer({ brief, view = requireModuleExtensionView("llm-inference") as ExtensionView }: { brief: FocusedBrief; view?: ExtensionView }) {
-  const diagnosticRows = brief.decisions.slice(0, 4);
+  const diagnosticRows = brief.decisions;
   return (
     <section className="pilotPrimer focusedNarrative focusedNarrative--diagnostic" id="principle" data-knowledge-view={view.id} data-quality-section="principle" aria-label="INTERACTIVE SYSTEM VIEW" aria-labelledby="inference-focused-title">
       <header className="pilotPrimerHeader">
