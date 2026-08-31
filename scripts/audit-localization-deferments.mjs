@@ -525,8 +525,13 @@ export async function loadProjectAtCommit(commit, expectedFilesBySlug = {}) {
     const project = await loadArchivedLocalizationProject(directory, {
       moduleSlugs: moduleSlugs.length ? moduleSlugs : null,
       // Before the contract module existed, stored English baselines were
-      // created with the original full-reference-directory scope.
-      ...(archivedContractIsPresent ? {} : { englishReferenceScope: "directory" }),
+      // created with the original full-reference-directory scope and its
+      // then-current focused reader projection. This compatibility mode is
+      // used only while reconstructing history, never by live readers.
+      ...(archivedContractIsPresent ? {} : {
+        englishReferenceScope: "directory",
+        readerProjection: "legacy-focused",
+      }),
     });
     assertCanonicalRendererFileLists(project, expectedFilesBySlug);
     return project;
