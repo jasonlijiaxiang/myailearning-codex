@@ -14,7 +14,7 @@ const baseModuleLearningContent = Object.freeze({
   ...governanceMlopsLearning,
   ...agentPlatformLearning,
   "solution-patterns": {
-    outcomes: ["把业务目标、当前基线、权威终态和约束写成可验收契约", "用需求门选择最小充分闭环并分配八层责任", "设计能输出 Go、Hold、No-Go 或 Exit 的阶段证据", "用完整成本、单位达标结果、运营责任和退出条件共同决定投资", ...applicationFinopsLearning["ai-finops"].outcomes],
+    outcomes: ["把业务目标、当前基线、权威终态和约束写成可验收契约", "用需求门选择最小充分闭环并分配八层责任", "设计能输出 Go、Hold、No-Go 或 Exit 的阶段证据", "用完整成本、单位达标结果、运营责任和退出条件共同决定投资"],
     route: [
       { title: "冻结结果、基线与约束包络", learn: "识别用户、当前流程、权威终态、不可接受损失以及质量、风险、SLO、恢复、成本和迁移约束。", checkpoint: "能写出不依赖模型名称且可对照现状的成功定义。" },
       { title: "选择最小充分闭环", learn: "从无 AI、规则和单次模型开始，只为证据、动作、动态路径、互操作或共享治理缺口增加能力。", checkpoint: "能解释每个组件的必要条件与移除后果。" },
@@ -25,13 +25,12 @@ const baseModuleLearningContent = Object.freeze({
     ],
     labs: [
       { title: "把模糊需求改写成最小闭环契约", scenario: "客户说“想做一个企业 AI 助手”，但没有现状基线、权威终态、约束或失败责任。", tasks: ["冻结三类目标用户的当前流程、成本、成功与不可接受损失", "把质量、时延、权限、恢复、成本和迁移写成场景化约束", "从无 AI、规则和单次模型开始，为每个拟增组件做必要性与移除测试"], deliverable: "一页结果—约束—最小闭环契约与暂停条件", acceptance: "任何评审者都能据此判断为什么需要每个组件以及什么证据会停止 PoC。", sourceIds: ["nist-genai-profile", "anthropic-effective-agents", "finops-unit-economics"] },
-      { title: "比较方案的全部成本", scenario: "两个候选方案的模型单价不同，但集成、人工复核和失败补偿成本未知。", tasks: ["分别估算技术资源、工程运营和业务失败成本", "标出必须通过客户数据实测的未知量", "为流量增长和质量下降各做一次敏感性分析"], deliverable: "包含假设、区间和重测触发器的 TCO 对比", acceptance: "结论不会因只替换模型单价就反转，未知量均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
+      { title: "把全成本、运营与退出写进同一决策包", scenario: "两个候选方案的模型单价不同，但集成、人工复核、失败补偿、迁移和停止成本未知。", tasks: ["画出技术资源、工程运营、人工处理和业务失败的成本边界及 Owner", "按同一质量门比较每个达标任务的成本，并标出必须用客户数据验证的未知量", "为流量变化、质量退化、迁移和停止分别写出敏感区间与重测或退出触发器"], deliverable: "包含假设、区间、责任、重测与退出条件的 TCO 决策包", acceptance: "结论不会因只替换模型单价就反转；未知量、运营责任和退出路径均有验证计划。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv", "finops-unit-economics"] },
       { title: "设计一条客服问题解决闭环", scenario: "客户希望机器人减少人工量，但当前只统计回复次数，并准备默认加入 RAG 与 Agent。", tasks: ["由 CRM 或工单状态区分真正解决、转人工、放弃、错误承诺和返工", "只为授权知识引入 RAG，为业务查询与受限动作使用确定性工作流，把动态例外交给有界 Agent 与人工", "定义解决率、关键错误、P95、接管、恢复和每解决一单的完整成本"], deliverable: "客服最小闭环、八层责任图与阶段验收表", acceptance: "每项能力都有必要性、Owner 和退出条件，高风险问题不会被自动处理，结果由权威系统确认。", sourceIds: ["ragas", "nist-genai-profile", "anthropic-effective-agents", "finops-unit-economics"] },
       { title: "为 ChatBI 加上语义与执行护栏", scenario: "管理层希望用自然语言查询经营指标，但多个部门的口径不一致。", tasks: ["选定五个有权威定义的指标", "限制只读数据域、查询成本和允许操作", "设计结果校验、引用、人工确认和错误回退"], deliverable: "语义层边界、查询流程与反例测试集", acceptance: "相同问题不会因自由生成 SQL 得到不同业务口径，模型不能写入或越权读取数据。", sourceIds: ["nist-zero-trust", "nist-genai-profile"] },
       { title: "签订客户责任四角与资产交接", scenario: "客户希望项目“全包”，但数据、接口、口径、评估样本和审批人员都没有指定。", tasks: ["为业务决策、数据与 IT、知识运营、安全合规四类角色定义可交付物与签字线", "把 PoC 的成功、失败、停止指标和资产交接写进一页契约", "区分可替换件与客户沉淀资产，并明确退出时哪些资产可带走"], deliverable: "客户责任矩阵、PoC 契约和资产交接清单", acceptance: "任一角色缺失都会被明确标记为风险；PoC 结论不依赖单个 Demo 或口头承诺。", sourceIds: ["nist-genai-profile", "nist-zero-trust", "finops-unit-economics"] },
       { title: "演练中国交付上线证据包", scenario: "客户准备在国内发布一个会生成内容的 AI 助手，希望快速上线。", tasks: ["按受众、主体、部署方式、模型来源和数据流完成分诊", "把内容标识、日志、申诉、人工复核和事件处置映射为控制与证据", "列出需要法律、安全和业务复核的未决项并设置复核人"], deliverable: "中国交付分诊表、义务—控制—证据映射和上线证据包", acceptance: "不出现“已合规”结论；每个义务都有证据产物、负责人和复核日期。", sourceIds: ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-genai-profile"] },
       { title: "验证保险理赔初审蓝图", scenario: "跨地区团队希望 AI 自动处理理赔材料并给出赔付结论。", tasks: ["冻结业务结果、AI 允许与禁止动作、权威业务系统和人工 owner", "沿材料接收、质量检查、证据提取、初审建议、人工决定和申诉设计流程", "为每种失败模式定义证据、人工接管、事件和退出路径"], deliverable: "理赔初审场景合同、控制矩阵和验收集", acceptance: "AI 不自动核赔、拒赔、确定金额或付款；行业法规与阈值由专业审查确认后才进入生产。", sourceIds: ["nist-genai-profile", "nist-ai-800-3", "finops-unit-economics"] },
-      ...applicationFinopsLearning["ai-finops"].labs,
     ],
   },
   "model-landscape": {
@@ -52,9 +51,9 @@ const baseModuleLearningContent = Object.freeze({
     outcomes: ["从业务证据缺口判断是否需要多模态", "用客户困难切片比较专用、原生与混合路线", "让观察与结论回跳到页面、区域、时间段或说话人", "在证据不足时安全降级，并把 RAG、Agent、安全、评估与运行责任交给正确模块"],
     route: [
       { title: "先定义任务与证据", learn: "写清业务终态、不可接受漏检和纯文本基线会丢失的布局、图像、声音或时序信息。", checkpoint: "能说明为什么需要某种模态，而不是泛称多模态。" },
-      { title: "再建立采集与失真地图", learn: "沿采集、解析、表示、对齐、时序和推断定位信息损失。", checkpoint: "能把错误定位到具体层，并为不可读输入设置质量门。" },
+      { title: "再建立采集、失真与困难切片地图", learn: "沿采集、解析、表示、对齐、时序和推断定位信息损失，并用模糊、扫描、表格、低清图、口音、噪声、短暂视频事件和跨模态关系验证它。", checkpoint: "能把错误定位到具体层，并为不可读输入设置质量门，而不是把所有失败归因给模型。" },
       { title: "比较路线而非套公式", learn: "在同一客户任务和门槛下比较专用、原生与混合路线。", checkpoint: "路线选择同时展示任务成功、严重失败、证据坐标、P95、成本和人工复核。" },
-      { title: "最后设计证据与交接", learn: "保留原始坐标，证据不足时降级；只在需要知识或动作时接入 RAG 或 Agent。", checkpoint: "回答、审核和修正能回到原始证据，模型不能自行扩大权限。" },
+      { title: "最后设计证据回看、降级与交接", learn: "保留页面、区域、时间段或说话人坐标；证据不足时重传、专用解析或人工复核，只在需要知识或动作时接入 RAG 或 Agent。", checkpoint: "高影响结论能回到原始证据；看不清时不会继续猜，模型也不能自行扩大权限。" },
     ],
     labs: [
       { title: "设计一条可核验的现场巡检链", scenario: "设备巡检同时包含照片、铭牌、短视频、语音说明和表单，系统要给出异常结论并引用原始证据。", tasks: ["定义质量门、证据坐标和不可接受漏检", "比较 OCR/文档解析、原生 VLM 与混合路线", "把带坐标观察交给可选 RAG，并为创建工单设置独立 Agent 授权"], deliverable: "巡检证据链、路线矩阵与降级图", acceptance: "每个结论可回跳；路线来自客户困难切片，RAG、Agent 和人工责任没有混入模型能力。", sourceIds: ["docling-report", "pp-ocrv5-2026", "longvideobench-2024", "nist-genai-profile"] },
@@ -91,9 +90,9 @@ const baseModuleLearningContent = Object.freeze({
     outcomes: ["用对象 × 生命周期二维地图定位每项证据", "把决定、目标量、完整候选版本和行动规则写成评估契约", "组合代码、校准后的 Judge 与人工裁决", "报告关键切片、不确定性与硬门，并把风险批准和发布执行交给正确 Owner"],
     route: [
       { title: "先定义决策而不是分数", learn: "明确评估要支持选型、发布、诊断还是运营。", checkpoint: "每个指标都能对应一个可执行决策。" },
-      { title: "冻结对象、样本与量尺", learn: "记录完整版本元组，按场景、风险、难度和失败模式分层，校准代码、Judge 与人工。", checkpoint: "能重放被测候选，并说明结果描述固定题集还是外推相似任务。" },
-      { title: "重复运行并形成决定", learn: "报告逐样本、关键切片、严重失败、样本量与不确定性，先执行不可补偿硬门。", checkpoint: "Go、Hold、No-Go 或补做建议不依赖最好一次或单一平均分。" },
-      { title: "治理反馈与责任交接", learn: "AI Ops 采集生产证据；确认失败经脱敏、去重和裁决后进入下一版回归集。", checkpoint: "能区分评估建议、发布执行、风险例外和机制修复。" },
+      { title: "冻结对象、样本、量尺与行动规则", learn: "记录完整候选版本、目标人群、样本与切片、评分器、环境、预算、重复条件、基线和行动规则，按场景、风险、难度和失败模式校准代码、Judge 与人工。", checkpoint: "未参与开发的人能重放候选，并说明结果描述固定题集还是外推相似任务。" },
+      { title: "重复运行、报告不确定性并形成决定", learn: "报告逐样本、关键切片、严重失败、样本量、波动与未决边界，先执行不可补偿硬门。", checkpoint: "Go、Hold、No-Go 或补做建议不依赖最好一次或单一平均分，也不把未校准分歧藏进总分。" },
+      { title: "治理生产反馈并分派责任", learn: "AI Ops 采集生产证据；确认失败经脱敏、去重和裁决后进入下一版回归集，再将评估建议、风险例外、发布执行和机制修复交给对应 Owner。", checkpoint: "能说明哪些结论由 Evaluation 提供、哪些必须由 Governance、AI Ops 或业务 Owner 执行。" },
     ],
     labs: [
       { title: "为退款 Agent 写一份评估契约", scenario: "候选 Agent 会解释政策、调用订单工具并提交退款；团队需要决定是否交给 AI Ops 做有限放量。", tasks: ["冻结 Agent、模型、Prompt、工具、策略、环境和预算版本", "按正常、边界、越权、工具故障和高价值退款分层任务", "用代码验证权限与业务终态，用 Judge 评开放说明并以人工样本校准", "重复运行并预先定义硬门与 Go/Hold/No-Go 规则"], deliverable: "版本化评估契约、逐切片结果、不确定性与发布建议", acceptance: "错误退款和越权不能被平均分抵消；Evaluation 不执行灰度、回滚或风险例外。", sourceIds: ["anthropic-agent-evals", "llm-as-judge-2023", "nist-ai-800-3"] },
@@ -131,9 +130,10 @@ const baseModuleLearningContent = Object.freeze({
   "ai-ops": {
     outcomes: [...applicationFinopsLearning["ai-application-engineering"].outcomes, "把一次 AI 任务串成端到端 Trace", "连接离线验收与在线质量巡检", "识别数据、模型和系统漂移", "建立可回滚的发布与事故响应闭环"],
     route: [
-      { title: "先定义任务与发布单元", learn: "绑定模型、Prompt、数据、工具、编排、策略、环境和负责人。", checkpoint: "任一输出都能回到完整配置和业务成功定义。" },
-      { title: "再建立评估与任务级遥测", learn: "分层验证候选版本，并记录输入类别、检索、模型、工具、成本、错误和业务终态。", checkpoint: "能从一次失败反查完整调用链而不过度收集原文。" },
-      { title: "最后闭环发布、事故与改进", learn: "用影子、灰度、回滚、Kill Switch、业务恢复和已裁决样本管理变化。", checkpoint: "任何线上变更都能定位、停止、回放、恢复和复盘。" },
+      { title: "冻结任务、发布单元与业务终态", learn: "绑定模型、Prompt、数据、工具、编排、策略、环境、负责人和权威业务状态。", checkpoint: "任一输出都能回到完整配置和可验收的业务成功定义。" },
+      { title: "建立可归因且受控的观测证据", learn: "分层验证候选版本；为输入类别、检索、模型、工具、成本、错误和业务终态定义最小必要字段、采样、脱敏、访问与保留。", checkpoint: "能从一次失败反查完整调用链，而不会因默认保存原文扩大敏感数据暴露。" },
+      { title: "用质量证据发布并及时止损", learn: "把离线验收、影子、灰度、回滚与 Kill Switch 绑定到发布单元和风险切片。", checkpoint: "每次线上变更都有可回放证据、放量条件和停止路径。" },
+      { title: "从技术恢复完成业务恢复与复盘", learn: "追踪外部副作用和客户影响，核对权威状态；将裁决后的失败样本带回下一轮回归。", checkpoint: "技术恢复、业务恢复和防复发证据各自可核验，不把线上信号直接当真值。" },
     ],
     labs: [
       ...applicationFinopsLearning["ai-application-engineering"].labs,
@@ -174,8 +174,9 @@ const baseModuleLearningContent = Object.freeze({
     outcomes: ["理解数据、预训练、SFT、偏好优化与评估的关系", "写出可恢复的版本化训练 Run 合同", "把并行、通信、Checkpoint 与有效训练时间连接起来", "判断从头训练、继续预训练或微调的投资边界"],
     route: [
       { title: "先理解学习阶段", learn: "区分通用模式学习、指令示范和偏好目标。", checkpoint: "能说明每阶段需要什么数据、优化目标和评估。" },
-      { title: "再冻结训练 Run 合同", learn: "绑定基础权重、Tokenizer、数据快照与配比、目标、优化器、精度、并行拓扑、环境、停止规则和评估版本。", checkpoint: "任何候选与恢复点都能回到同一份 运行配置记录。" },
+      { title: "建立可重放训练谱系", learn: "绑定基础权重、代码、Tokenizer、数据快照与配比、目标、优化器、精度、随机状态、并行拓扑、Checkpoint、环境、停止规则和评估版本；恢复后核验状态连续。", checkpoint: "任何候选与恢复点都能回到同一份 Run manifest、数据位置和训练条件。" },
       { title: "再选择分布式执行方案", learn: "分析显存构成、数据质量、并行、通信、I/O 和故障损失。", checkpoint: "不会把参数量、GPU 数或短时利用率当成有效进度保证。" },
+      { title: "用有效进度验收集群", learn: "同时观察计算、通信、I/O、失败、恢复和合格模型产出。", checkpoint: "不再用 GPU 小时或瞬时利用率代替训练结果。" },
       { title: "最后管理恢复与候选门", learn: "验证 Checkpoint 完成、状态连续性、容差内复现和阶段评估。", checkpoint: "能报告有效训练时间、状态缺口、恢复证据和候选结论。" },
     ],
     labs: [
@@ -198,9 +199,10 @@ const baseModuleLearningContent = Object.freeze({
   "data-engineering": {
     outcomes: ["把 AI 数据当作有权威来源、用途、稳定身份和生命周期的数据产品", "理解解析、清洗、版本裁决、同步、派生与策略传播", "建立可分层的数据质量、血缘、隔离与单位成本证据", "设计新增、替换、撤权、删除、例外和反馈回流闭环"],
     route: [
-      { title: "先建立来源、用途与裁决权", learn: "记录所有者、权威系统、版本或有效期、策略引用、允许用途和冲突裁决人。", checkpoint: "能判断哪个副本权威、哪些是派生物，谁有权处理冲突。" },
-      { title: "重新建立可验证的数据管道", learn: "把接入、解析、清洗、版本、派生、发布和质量检查拆成可观测阶段。", checkpoint: "静默损坏、未裁决冲突和隔离项不会进入下游。" },
-      { title: "最后管理派生状态与反馈", learn: "传播替换、撤权、删除、例外、血缘和失败样本，避免只修 Prompt。", checkpoint: "一次源数据变化能追到所有受影响资产和当前状态。" },
+      { title: "冻结来源、用途与裁决权", learn: "记录所有者、权威系统、版本或有效期、策略引用、允许用途和冲突裁决人。", checkpoint: "能判断哪个副本权威、哪些是派生物，谁有权处理冲突。" },
+      { title: "建立可验证的数据管道", learn: "把接入、解析、清洗、版本、派生、发布和质量检查拆成可观测阶段。", checkpoint: "静默损坏、未裁决冲突和隔离项不会进入下游。" },
+      { title: "按用途发布可验证的数据制品", learn: "从同一血缘派生 RAG、评估或训练制品，并分别绑定许可、标签、更新与泄漏边界。", checkpoint: "用途不同的数据制品不被默认混用，发布版本可被独立核验。" },
+      { title: "证明变更传播并让反馈回流", learn: "对替换、撤权、删除、例外和失败样本执行全链对账、重放与血缘回溯，避免只修 Prompt。", checkpoint: "一次源数据变化能追到所有受影响资产和当前状态。" },
     ],
     labs: [
       { title: "建立文档管道验收集", scenario: "客户资料跨年份、模板、语言和扫描质量，解析结果偶发错表。", tasks: ["按版式与质量分层抽样", "定义文本、结构、表格、页码和元数据指标", "为静默错误设置人工抽检与阻断"], deliverable: "管道黄金集与阶段质量门", acceptance: "不是只看 OCR 字符准确率，关键表格和证据位置可复核。", sourceIds: ["docling-report", "pp-ocr-2020"] },
@@ -228,7 +230,8 @@ const baseModuleLearningContent = Object.freeze({
     route: [
       { title: "先刻画工作负载", learn: "记录模型、精度、上下文、批量、并行、数据和 SLO。", checkpoint: "能说明训练与推理为何需要不同资源曲线。" },
       { title: "再定位约束层", learn: "用计算、HBM、紧耦合互联域、跨域网络、存储、设施和故障域逐层排查。", checkpoint: "不会用峰值 FLOPS、卡数或单次基准替代端到端证据。" },
-      { title: "最后验证供给与经济性", learn: "比较采购、租用、API、异构与可交付周期。", checkpoint: "TCO 包含软件适配、空闲、故障和容量风险。" },
+      { title: "在同质量包络下长跑、扩展与恢复", learn: "覆盖冷启动、稳态、峰值、数据供给、扩展、故障和恢复，并记录不可外推条件。", checkpoint: "硬件比较不依赖短时缓存后的峰值或单一运行阶段。" },
+      { title: "以供给约束和单位达标结果完成决策", learn: "比较采购、租用、API、异构、可交付周期、软件适配、闲置、能耗和人员责任。", checkpoint: "TCO 和推荐结果都回到同一质量门下的业务单位。" },
     ],
     labs: [
       { title: "完成一份算力工作负载包络", scenario: "客户只提供模型参数量和预计 GPU 卡数，希望直接报价。", tasks: ["补齐模型版本、训练/推理、精度、数据或上下文、并发、质量、SLO、增长和恢复", "分开估算权重、激活、梯度、优化器、KV Cache、工作区和余量", "列出紧耦合互联、跨域网络、存储、故障域、供电和散热验证项"], deliverable: "工作负载包络与待测假设清单", acceptance: "任何容量数字都能追溯到同口径负载和质量门，训练与服务不会混用同一估算。", sourceIds: ["roofline-2009", "mlperf-training", "mlperf-inference-datacenter", "vllm-2023"] },

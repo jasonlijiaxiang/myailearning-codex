@@ -239,7 +239,7 @@ export const agentPlatformLearning = freeze({
       { title: "适配 AgentKit App", learn: "冻结入口和依赖，并设计本地与云端两套验收。", checkpoint: "不会把应用适配写成已完成云部署。" },
     ],
     labs: [
-      { title: "建立 Session 持久化与隔离实验", scenario: "用 3 个用户、每人 2 个 Session 构造隔离矩阵，并在进程重启前后写入随机标记。这个规模只为让正反例清楚，不用于容量估算。", tasks: ["配置 SQLite 短期记忆并生成无个人含义的随机标记", "验证同会话、换会话、换用户和重启", "查询事件并记录 app/user/session 三元组、后端与时间"], deliverable: "Session 隔离矩阵、事件查询和生产后端差距清单", acceptance: "所有正反例符合声明作用域，并明确单机结果不能外推多实例。", sourceIds: [veadkSources.memory, veadkSources.runner] },
+      { title: "建立 Session 持久化与隔离实验", scenario: "构造覆盖同/跨用户、同/跨会话与进程重启正反例的最小隔离矩阵，并写入无个人含义的随机标记；样本规模由风险与所需证据决定，不用于容量估算。", tasks: ["配置 SQLite 短期记忆并生成无个人含义的随机标记", "验证同会话、换会话、换用户和重启", "查询事件并记录 app/user/session 三元组、后端与时间"], deliverable: "Session 隔离矩阵、事件查询和生产后端差距清单", acceptance: "所有正反例符合声明作用域，并明确单机结果不能外推多实例。", sourceIds: [veadkSources.memory, veadkSources.runner] },
       { title: "分析 Tool Event 与上下文预算", scenario: "一次任务可能多次调用搜索或业务 Tool，历史和结果持续进入上下文。", tasks: ["触发至少一次 Tool Call 与 Tool Result", "比较调用前后上下文、时延和事件", "设计结果截断、最大调用数、压缩和切分策略"], deliverable: "执行序列、上下文预算和治理决策记录", acceptance: "能区分已观察的事件与尚待实现的生产策略。", sourceIds: [veadkSources.runner, veadkSources.tools] },
     ],
   }),
@@ -254,7 +254,7 @@ export const agentPlatformLearning = freeze({
     ],
     labs: [
       { title: "建立 AgentKit App 与 Memory 本地验收", scenario: "一个可运行 Agent 需要形成稳定应用入口并连接独立 Memory。", tasks: ["冻结入口、依赖和非敏感配置合同", "分别检查健康、Agent 调用和直接 Memory 查询", "设计同用户跨 Session 与不同用户负例"], deliverable: "应用接口合同、Memory 分层检查表和云端待办", acceptance: "本地结论只覆盖 App 合同，不宣称 Runtime 已上线。", sourceIds: [veadkSources.integration, agentkitSources.memory, agentkitSources.config] },
-      { title: "设计 Runtime 发布验收", scenario: "本地 App 尚未形成云端部署、Trace、负载和恢复证据。演示方案可准备 50 条云端回归、并发 1/10 两个负载档和一次 Runtime 故障演练；数字由正式 SLO 替换。", tasks: ["运行 build/deploy 或 launch 并记录镜像摘要与 Runtime 版本", "执行云端模型、Tool、Session、Memory、身份和网络回归", "收集平台遥测和质量评测，用外部压力工具生成负载，演练故障、恢复与回退并对照 SLO"], deliverable: "云端回归、Trace、负载曲线、恢复记录与 Go/Hold/No-Go 建议", acceptance: "任务成功与 P95 达到目标，权限负例正确，错误预算消耗在策略范围内，恢复满足 RTO，且回退可用后才允许放量。", sourceIds: [agentkitSources.commands, agentkitSources.runtime, agentkitSources.overview] },
+      { title: "设计 Runtime 发布验收", scenario: "本地 App 尚未形成云端部署、Trace、负载和恢复证据。演示方案应按正式 SLO、风险和目标负载确定最小回归集、负载条件与故障演练范围，而非继承课程固定数字。", tasks: ["运行 build/deploy 或 launch 并记录镜像摘要与 Runtime 版本", "执行云端模型、Tool、Session、Memory、身份和网络回归", "收集平台遥测和质量评测，用外部压力工具生成与目标负载相称的压力，演练故障、恢复与回退并对照 SLO"], deliverable: "云端回归、Trace、负载曲线、恢复记录与 Go/Hold/No-Go 建议", acceptance: "任务成功与 P95 达到目标，权限负例正确，错误预算消耗在策略范围内，恢复满足 RTO，且回退可用后才允许放量。", sourceIds: [agentkitSources.commands, agentkitSources.runtime, agentkitSources.overview] },
     ],
   }),
 });

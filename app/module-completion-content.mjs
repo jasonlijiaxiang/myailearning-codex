@@ -58,12 +58,8 @@ export const completionLearning = Object.freeze({
     ]),
   }),
   multimodal: Object.freeze({
-    route: freezeItems([
-      { title: "按信息损失建立困难切片", learn: "分开检查模糊、扫描、表格、低清图、口音、噪声、短暂视频事件和跨模态关系。", checkpoint: "能说明错误发生在采集、解析、对齐、时序还是推断。" },
-      { title: "验证证据回看与安全降级", learn: "要求结论回到页面、区域、时间段或说话人；证据不足时重传、专用解析或人工复核。", checkpoint: "高影响结论不依赖模型自述，也不会在看不清时继续猜。" },
-    ]),
     labs: freezeLabs([
-      { title: "建立现场巡检错误分层报告", scenario: "工程师上传设备照片、铭牌、短视频、语音说明和巡检表，系统要生成异常结论与维修建议。", tasks: ["为每种媒体定义质量门和原始证据坐标", "比较专用、原生与混合路线的解析、对齐、时序和结论失败", "为证据不足、成本超限和高风险结论设计降级"], deliverable: "巡检证据链、错误分层与路线建议", acceptance: "每条结论可回看原始证据；路线建议来自困难切片，并明确 RAG、Agent 与人工的责任交接。", sourceIds: ["docling-report", "pp-ocrv5-2026", "longvideobench-2024", "nist-genai-profile"] },
+      { title: "处理一份跨模态证据冲突工单", scenario: "现场质量 Owner 收到一份已采集的异常工单：照片看似正常，铭牌 OCR 指向另一型号，短视频里的声响又支持故障判断。输入包括原始文件、采集时间与现有结论。", tasks: ["把每项相互冲突的观察标回页面、区域、时间段或音频片段，并标出缺失证据", "区分可由重新解析解决的冲突、需要补采的冲突和必须交给领域人员裁决的冲突", "写出维修建议能否继续、谁补采、何时关闭工单的决定规则"], deliverable: "证据冲突台账、补采清单与人工裁决记录", acceptance: "每个待解决结论都有原始坐标、处理 Owner 和状态；证据冲突未消除时，系统不会创建自动维修动作或把推测写成结论。", sourceIds: ["docling-report", "pp-ocrv5-2026", "longvideobench-2024", "nist-genai-profile"] },
     ]),
   }),
   mcp: Object.freeze({
@@ -81,16 +77,12 @@ export const completionLearning = Object.freeze({
       { title: "验证采用收益", learn: "把 A2A 与 API、事件、工作流和内部多 Agent 编排放在同一问题下比较。", checkpoint: "只有独立 Agent 协作确有价值时才增加协议。" },
     ]),
     labs: freezeLabs([
-      { title: "设计跨团队 Agent 委托契约", scenario: "理赔受理 Agent 向跨区域专业 Agent 询问即时问题或委托一项需要数小时完成的材料核验。", tasks: ["定义 Agent Card、Message | Task 响应、身份、预算和可选 Artifact", "验证 SUBMITTED、WORKING、INPUT_REQUIRED、AUTH_REQUIRED 与四个终态", "演练超时、重复委托、取消、部分产物和人工接管"], deliverable: "A2A 双路径契约、长任务状态机与恢复图", acceptance: "直接 Message 与 Task 均可处理；协议状态、业务结果、责任人和副作用恢复分别明确。", sourceIds: ["a2a-concepts", "a2a-specification", "a2a-release-1-0-1", "nist-genai-profile"] },
+      { title: "验收一次外部 Agent 的版本变更", scenario: "合作方提交新的 Agent Card 与接入包，声称兼容现有材料分类服务。集成 Owner 拿到旧版与新版 Card、捕获的 Message/Task 交互记录，以及对方的回退联系人。", tasks: ["逐项比对能力声明、输入输出、身份要求、Artifact 访问条件和版本兼容承诺", "用受控样本重放即时 Message 与持久 Task，记录客户端实际收到的响应、状态和产物访问结果", "把不兼容、未知状态、权限扩大和回退失败分别写成阻断项或限用条件"], deliverable: "互操作回归包、准入决定与版本回退责任单", acceptance: "每项兼容结论能回到 Card 差异或捕获记录，并有双方 Owner；不能解释的状态或权限变化会阻断接入，不以“协议可连通”代替业务准入。", sourceIds: ["a2a-concepts", "a2a-specification", "a2a-release-1-0-1", "nist-genai-profile"] },
     ]),
   }),
   evaluation: Object.freeze({
-    route: freezeItems([
-      { title: "冻结完整评估契约", learn: "记录决定、候选版本、目标人群、样本切片、评分器、重复条件、基线和行动规则。", checkpoint: "未参与开发的人能理解结果测了什么、适用于谁和怎样重放。" },
-      { title: "报告不确定性并移交责任", learn: "展示逐样本、关键切片、严重失败和未决边界，再把建议交给 AI Ops、Governance 与模块 Owner。", checkpoint: "能区分评估建议、风险批准和发布执行三类责任。" },
-    ]),
     labs: freezeLabs([
-      { title: "校准一次退款 Agent 的评估契约", scenario: "候选 Agent 会解释退款政策、调用订单工具并提交退款，开放说明没有唯一措辞，但业务终态和权限可验证。", tasks: ["冻结 Agent、模型、Prompt、工具、策略、环境和预算版本", "用代码验证权限与退款终态，用 Judge 评开放解释，并以人工样本校准", "重复运行高价值、越权、边界和工具故障切片，写出硬门与不确定性"], deliverable: "评估契约、量表、逐切片结果与 Go/Hold/No-Go 建议", acceptance: "代码、Judge 与人工边界清楚；结果不以平均分覆盖越权或错误退款，且不替代 AI Ops 的灰度与回滚。", sourceIds: ["anthropic-agent-evals", "llm-as-judge-2023", "nist-ai-800-3"] },
+      { title: "校准评分器并裁决分歧样本", scenario: "一轮候选评估已经结束。代码检查全部通过，但 Judge 与人工复核在少数高影响解释上得出不同结论。Evaluation Owner 的输入是冻结的运行记录、盲样本和分歧列表。", tasks: ["让独立复核者在不知道候选身份的条件下重判分歧样本，记录量表条目而非只给总分", "逐条裁决代码、Judge 与人工各自能证明什么，并标明不能可靠评分的情况", "更新评分器提示、量表和样本归属；把调参样本与下一轮留出样本分开"], deliverable: "评分器校准记录、分歧样本台账与下一轮量尺版本", acceptance: "每个关键分歧都有裁决人、依据、量尺版本和样本去向；尚未校准的评分项不能支撑发布建议，也不能被平均分掩盖。", sourceIds: ["anthropic-agent-evals", "llm-as-judge-2023", "nist-ai-800-3"] },
     ]),
   }),
   "ai-gateway": Object.freeze({
@@ -103,19 +95,11 @@ export const completionLearning = Object.freeze({
     ]),
   }),
   "ai-ops": Object.freeze({
-    route: freezeItems([
-      { title: "先治理观测数据", learn: "为 Prompt、响应、工具结果和业务事件定义采样、脱敏、访问与保留。", checkpoint: "观测既能归因，也不默认扩大敏感数据暴露。" },
-      { title: "验证业务恢复", learn: "从告警止损继续追踪技术恢复、外部副作用和客户影响。", checkpoint: "服务恢复与业务恢复都有独立证据。" },
-    ]),
     labs: freezeLabs([
       { title: "编写 AI 事故运行手册", scenario: "Agent 出现越权工具调用，团队需要立即止损并恢复服务。", tasks: ["定义按模型、Prompt、工具、租户和动作风险分层的开关", "指定证据保留、负责人、通知和业务状态核对", "用事故样本完成回放、受限恢复与逐级放量"], deliverable: "AI 事故处置与恢复手册", acceptance: "每个阶段都有执行人、进入条件、退出条件和业务确认。", sourceIds: ["nist-genai-profile", "nist-zero-trust", "opentelemetry-genai-semconv"] },
     ]),
   }),
   "llm-training": Object.freeze({
-    route: freezeItems([
-      { title: "建立实验谱系", learn: "绑定数据、代码、Tokenizer、超参数、并行、环境、Checkpoint 和评估。", checkpoint: "任何候选模型都能追到完整训练条件。" },
-      { title: "用有效进度验收集群", learn: "同时观察计算、通信、I/O、失败、恢复和合格模型产出。", checkpoint: "不再用 GPU 小时或瞬时利用率代替训练结果。" },
-    ]),
     labs: freezeLabs([
       { title: "复盘一次长训练中断", scenario: "多节点训练在中途故障后从 Checkpoint 恢复，但最终结果异常。", tasks: ["核对数据游标、随机状态、优化器、调度器和拓扑", "比较恢复前后 Loss、吞吐和未见任务表现", "补齐 Checkpoint 周期、校验和恢复演练"], deliverable: "训练恢复一致性报告", acceptance: "能证明训练状态连续，或明确必须回退到哪个可信点。", sourceIds: ["torchsnapshot-checkpoint", "checkfreq-2021"] },
     ]),
@@ -130,10 +114,6 @@ export const completionLearning = Object.freeze({
     ]),
   }),
   "data-engineering": Object.freeze({
-    route: freezeItems([
-      { title: "按用途发布数据版本", learn: "为 RAG、评估与训练分别定义许可、更新、标签和泄漏边界。", checkpoint: "共享血缘但不混用用途不同的数据制品。" },
-      { title: "证明变化已传播", learn: "对新增、修改、撤权和删除执行全链对账与失败重放。", checkpoint: "源系统变化能在约定时间内到达所有派生层。" },
-    ]),
     labs: freezeLabs([
       { title: "排查一次知识更新未生效", scenario: "源文档已修订并标记旧版失效，但 RAG 仍引用旧版本。", tasks: ["沿连接、解析、清洗裁决、派生身份、索引、缓存和回答版本逐层对账", "区分事件遗漏、失败隔离、错误权威状态、别名切换和缓存问题", "设计重放、全量校验、负向查询和完成证明"], deliverable: "数据变化传播诊断图", acceptance: "能定位旧版本停留层，并证明当前版本发布、旧版撤回和保留例外都可验证。", sourceIds: ["nist-zero-trust", "w3c-prov-o", "openlineage-spec"] },
     ]),
@@ -147,10 +127,6 @@ export const completionLearning = Object.freeze({
     ]),
   }),
   "ai-infra-compute": Object.freeze({
-    route: freezeItems([
-      { title: "建立端到端长跑", learn: "覆盖模型加载、稳态、峰值、数据供给、故障和恢复。", checkpoint: "硬件比较不依赖短时缓存后的峰值。" },
-      { title: "按达标结果核算成本", learn: "把质量、持续性能、闲置、能耗、软件适配和人员纳入比较。", checkpoint: "采购、云租用和 API 使用同一业务单位评估。" },
-    ]),
     labs: freezeLabs([
       { title: "验证一条算力瓶颈假设", scenario: "增加加速器后训练有效进度几乎没有提升。", tasks: ["冻结同质量工作负载并采集计算、HBM、紧耦合互联、跨域网络、数据与 Checkpoint 指标", "用单设备、单互联域与跨域对照定位最窄层", "调整一个主要变量并进行长跑、扩展曲线和故障恢复复测"], deliverable: "算力瓶颈与单位达标结果成本报告", acceptance: "结论能区分计算、内存、通信、I/O、设施和恢复开销，并给出不可外推条件。", sourceIds: ["roofline-2009", "megatron-3d-parallelism-2021", "mlperf-storage-v2", "finops-unit-economics"] },
     ]),
