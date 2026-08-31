@@ -14,6 +14,109 @@ const boundary = (id, title, body) => ({
   items: [{ id, title, body }],
 });
 
+const keyOf = (item, key, label) => {
+  const value = typeof key === "function" ? key(item) : item?.[key];
+  if (typeof value !== "string" || !value.trim()) {
+    throw new Error(`${label} is missing a stable identity`);
+  }
+  return value;
+};
+
+const indexUnique = (items, key, label) => {
+  if (!Array.isArray(items)) throw new Error(`${label} must be an array`);
+  const indexed = new Map();
+  for (const item of items) {
+    const value = keyOf(item, key, label);
+    if (indexed.has(value)) throw new Error(`${label} repeats ${value}`);
+    indexed.set(value, item);
+  }
+  return indexed;
+};
+
+const resolveCompleteProjection = ({
+  canonicalItems,
+  canonicalKey,
+  englishItems,
+  englishKey,
+  canonicalKeyByEnglishKey,
+  label,
+}) => {
+  const canonicalByKey = indexUnique(canonicalItems, canonicalKey, `${label} canonical`);
+  const englishByKey = indexUnique(englishItems, englishKey, `${label} English`);
+  const resolved = new Map();
+  const claimedCanonicalKeys = new Set();
+
+  for (const [englishIdentity, canonicalIdentity] of Object.entries(canonicalKeyByEnglishKey)) {
+    if (!englishByKey.has(englishIdentity)) {
+      throw new Error(`${label} maps unknown English identity ${englishIdentity}`);
+    }
+    if (!canonicalByKey.has(canonicalIdentity)) {
+      throw new Error(`${label} maps ${englishIdentity} to unknown canonical identity ${canonicalIdentity}`);
+    }
+    if (claimedCanonicalKeys.has(canonicalIdentity)) {
+      throw new Error(`${label} maps canonical identity ${canonicalIdentity} more than once`);
+    }
+    claimedCanonicalKeys.add(canonicalIdentity);
+    resolved.set(englishIdentity, canonicalByKey.get(canonicalIdentity));
+  }
+
+  for (const englishIdentity of englishByKey.keys()) {
+    if (!resolved.has(englishIdentity)) throw new Error(`${label} leaves English identity ${englishIdentity} unmapped`);
+  }
+  for (const canonicalIdentity of canonicalByKey.keys()) {
+    if (!claimedCanonicalKeys.has(canonicalIdentity)) throw new Error(`${label} leaves canonical identity ${canonicalIdentity} unmapped`);
+  }
+  return resolved;
+};
+
+const assertSameIdentities = (left, right, label) => {
+  for (const identity of left.keys()) {
+    if (!right.has(identity)) throw new Error(`${label} is missing ${identity}`);
+  }
+  for (const identity of right.keys()) {
+    if (!left.has(identity)) throw new Error(`${label} has unexpected ${identity}`);
+  }
+};
+
+const canonicalDeepDivesByTitle = indexUnique(canonicalDeepDives, "title", "RAG deep dives");
+const canonicalLabsByTitle = indexUnique(canonicalLearningContent.labs, "title", "RAG learning labs");
+const ragDeepDiveCanonicalTitlesById = Object.freeze({
+  "deep-query-policy": "这次请求应该回答、追问还是停下",
+  "deep-lifecycle-consistency": "知识变化只有传播到最终回答，才算在 RAG 中生效",
+  "deep-evidence-compiler": "把 Top-K 整理成可以逐条核对的回答",
+  "deep-offline-handoff": "一份文档什么时候才算 RAG 可用",
+});
+const ragDeepDiveEnglishBlockTitlesById = Object.freeze({
+  "deep-query-policy": "Control online query planning without turning every request into an Agent loop",
+  "deep-lifecycle-consistency": "Treat additions, changes, deletions, and access revocation as separate consistency paths",
+  "deep-evidence-compiler": "Compile evidence at claim level",
+  "deep-offline-handoff": "Accept the offline evidence handoff before exposing an index",
+});
+const ragLabCanonicalTitlesById = Object.freeze({
+  "learning-lab-data-readiness": "完成一次 RAG 数据就绪审阅",
+  "learning-lab-retrieval-routes": "比较四条检索路线",
+  "learning-lab-risk-trace": "演练高风险回答并还原 Trace",
+  "learning-lab-economics-decision": "把 RAG PoC 结论写成经济决定",
+});
+
+const canonicalSourceIdsFor = (canonicalByTitle, canonicalTitle, label) => {
+  const canonical = canonicalByTitle.get(canonicalTitle);
+  if (!canonical) throw new Error(`${label} is not mapped to a canonical title`);
+  if (!Array.isArray(canonical.sourceIds)) throw new Error(`${label} has no canonical source IDs`);
+  return canonical.sourceIds;
+};
+
+const deepDiveSourceIds = (id) => canonicalSourceIdsFor(
+  canonicalDeepDivesByTitle,
+  ragDeepDiveCanonicalTitlesById[id],
+  `RAG deep dive ${id}`,
+);
+const labSourceIds = (id) => canonicalSourceIdsFor(
+  canonicalLabsByTitle,
+  ragLabCanonicalTitlesById[id],
+  `RAG learning lab ${id}`,
+);
+
 const terms = Object.freeze({
   rag: {
     name: "Retrieval-Augmented Generation",
@@ -363,31 +466,31 @@ const sectionDrafts = [
     lead: "Production readiness is not another RAG pattern. It is the set of lifecycle and control obligations that make the same evidence contract survive query complexity, source change, revocation, component migration, load, and incident recovery.",
     blocks: [
       steps("Control online query planning without turning every request into an Agent loop", "Preserve the original request, extract hard constraints, choose a deterministic route first, and add rewriting, decomposition, or iteration only when it creates measurable evidence value.", [
-        { id: "deep-query-preserve-original", title: "Preserve the original question", subtitle: "Preserve Original Query", body: "Store the user's wording together with identity, conversation, and time so that model numbers, negation, dates, and qualifications remain recoverable.", decision: "Keep every rewrite alongside the original and compare its contribution in the trace.", boundary: "A generated rewrite is not new user authorization and cannot overwrite business constraints.", sourceIds: canonicalDeepDives[2].sourceIds },
-        { id: "deep-query-classify-risk", title: "Classify intent and risk", subtitle: "Classify Intent and Risk", body: "Distinguish exact lookup, semantic explanation, relationship synthesis, structured query, and no-retrieval cases, and assign an answer-risk level.", decision: "Use keyword or structured retrieval for exact identifiers; reserve planning for genuinely complex questions.", boundary: "Misclassification routes the request to the wrong source.", sourceIds: canonicalDeepDives[2].sourceIds },
-        { id: "deep-query-hard-filters", title: "Extract hard filters", subtitle: "Extract Hard Filters", body: "Turn tenant, region, product version, effective date, document type, and caller identity into deterministic filters.", decision: "Validate filters in the application rather than hiding them in natural-language instructions.", boundary: "Overly strict filters lose recall; loose filters can disclose data or mix versions.", sourceIds: canonicalDeepDives[2].sourceIds },
-        { id: "deep-query-route-retrieval", title: "Route retrieval", subtitle: "Route Retrieval", body: "Choose among keyword, vector, SQL, graph, API, or no retrieval, with a budget and stopping rule for each route.", decision: "Establish a single-route baseline before using real failures to justify combinations.", boundary: "More retrievers add latency, cost, and failure paths; they do not automatically add accuracy.", sourceIds: canonicalDeepDives[2].sourceIds },
-        { id: "deep-query-rewrite-decompose", title: "Rewrite or decompose only when needed", subtitle: "Rewrite or Decompose", body: "Split multi-intent requests and consider query expansion or HyDE for a measured semantic gap, recording the incremental hit from every subquery.", decision: "Enable this only for clearly complex slices and validate candidate recall and task success.", boundary: "A HyDE hypothetical document may hallucinate; it can help locate real evidence but is not evidence itself.", sourceIds: canonicalDeepDives[2].sourceIds },
+        { id: "deep-query-preserve-original", title: "Preserve the original question", subtitle: "Preserve Original Query", body: "Store the user's wording together with identity, conversation, and time so that model numbers, negation, dates, and qualifications remain recoverable.", decision: "Keep every rewrite alongside the original and compare its contribution in the trace.", boundary: "A generated rewrite is not new user authorization and cannot overwrite business constraints.", sourceIds: deepDiveSourceIds("deep-query-policy") },
+        { id: "deep-query-classify-risk", title: "Classify intent and risk", subtitle: "Classify Intent and Risk", body: "Distinguish exact lookup, semantic explanation, relationship synthesis, structured query, and no-retrieval cases, and assign an answer-risk level.", decision: "Use keyword or structured retrieval for exact identifiers; reserve planning for genuinely complex questions.", boundary: "Misclassification routes the request to the wrong source.", sourceIds: deepDiveSourceIds("deep-query-policy") },
+        { id: "deep-query-hard-filters", title: "Extract hard filters", subtitle: "Extract Hard Filters", body: "Turn tenant, region, product version, effective date, document type, and caller identity into deterministic filters.", decision: "Validate filters in the application rather than hiding them in natural-language instructions.", boundary: "Overly strict filters lose recall; loose filters can disclose data or mix versions.", sourceIds: deepDiveSourceIds("deep-query-policy") },
+        { id: "deep-query-route-retrieval", title: "Route retrieval", subtitle: "Route Retrieval", body: "Choose among keyword, vector, SQL, graph, API, or no retrieval, with a budget and stopping rule for each route.", decision: "Establish a single-route baseline before using real failures to justify combinations.", boundary: "More retrievers add latency, cost, and failure paths; they do not automatically add accuracy.", sourceIds: deepDiveSourceIds("deep-query-policy") },
+        { id: "deep-query-rewrite-decompose", title: "Rewrite or decompose only when needed", subtitle: "Rewrite or Decompose", body: "Split multi-intent requests and consider query expansion or HyDE for a measured semantic gap, recording the incremental hit from every subquery.", decision: "Enable this only for clearly complex slices and validate candidate recall and task success.", boundary: "A HyDE hypothetical document may hallucinate; it can help locate real evidence but is not evidence itself.", sourceIds: deepDiveSourceIds("deep-query-policy") },
       ]),
       steps("Treat additions, changes, deletions, and access revocation as separate consistency paths", "A successful synchronization job does not prove that obsolete or unauthorized content is absent. Validate every change through parsed artifacts, indexes, caches, access state, citations, and the final answer.", [
-        { id: "deep-lifecycle-version-source", title: "Version the source", subtitle: "Version the Source", body: "Store source_version, valid_from, valid_to, supersedes, indexed_at, and acl_version on the evidence unit.", decision: "Define the authoritative version and conflict policy before setting a synchronization interval.", boundary: "A modification timestamp cannot fully represent business effectivity and access changes.", sourceIds: canonicalDeepDives[1].sourceIds },
-        { id: "deep-lifecycle-change-events", title: "Propagate change events", subtitle: "Propagate Change Events", body: "Use change data capture, object events, or scheduled jobs to distinguish additions, changes, deletions, and ACL updates.", decision: "Give each change type a target, failure queue, and accountable owner.", boundary: "Some ACL changes do not update content timestamps and can bypass ordinary high-water-mark detection.", sourceIds: canonicalDeepDives[1].sourceIds },
-        { id: "deep-lifecycle-rebuild-artifacts", title: "Rebuild index artifacts", subtitle: "Rebuild Index Artifacts", body: "Version parsing, chunking, embeddings, and indexes. Keep the previous serviceable version during failure and isolate partial output.", decision: "After the job finishes, sample content, coordinates, permissions, and versions.", boundary: "Resetting or rerunning a job does not necessarily remove orphaned documents that disappeared from the source.", sourceIds: canonicalDeepDives[1].sourceIds },
-        { id: "deep-lifecycle-delete-invalidate", title: "Delete and invalidate", subtitle: "Delete and Invalidate", body: "Use tombstones or explicit deletion to remove vector and sparse-index entries, summaries, answer caches, and access snapshots.", decision: "Treat deletion and access revocation as higher-priority negative acceptance paths than ordinary additions.", boundary: "Deleting a source file before notifying the index can leave an orphan that is difficult to trace.", sourceIds: canonicalDeepDives[1].sourceIds },
-        { id: "deep-lifecycle-consistency-probe", title: "Run an end-to-end consistency probe", subtitle: "Consistency Probe", body: "Continuously query deleted, revoked, and superseded examples to prove that text, metadata, and cached answers are no longer returned.", decision: "Measure the target at the final result under a real user identity, not at the job-status screen.", boundary: "Probes and logs must also comply with sensitive-data and retention policies.", sourceIds: canonicalDeepDives[1].sourceIds },
+        { id: "deep-lifecycle-version-source", title: "Version the source", subtitle: "Version the Source", body: "Store source_version, valid_from, valid_to, supersedes, indexed_at, and acl_version on the evidence unit.", decision: "Define the authoritative version and conflict policy before setting a synchronization interval.", boundary: "A modification timestamp cannot fully represent business effectivity and access changes.", sourceIds: deepDiveSourceIds("deep-lifecycle-consistency") },
+        { id: "deep-lifecycle-change-events", title: "Propagate change events", subtitle: "Propagate Change Events", body: "Use change data capture, object events, or scheduled jobs to distinguish additions, changes, deletions, and ACL updates.", decision: "Give each change type a target, failure queue, and accountable owner.", boundary: "Some ACL changes do not update content timestamps and can bypass ordinary high-water-mark detection.", sourceIds: deepDiveSourceIds("deep-lifecycle-consistency") },
+        { id: "deep-lifecycle-rebuild-artifacts", title: "Rebuild index artifacts", subtitle: "Rebuild Index Artifacts", body: "Version parsing, chunking, embeddings, and indexes. Keep the previous serviceable version during failure and isolate partial output.", decision: "After the job finishes, sample content, coordinates, permissions, and versions.", boundary: "Resetting or rerunning a job does not necessarily remove orphaned documents that disappeared from the source.", sourceIds: deepDiveSourceIds("deep-lifecycle-consistency") },
+        { id: "deep-lifecycle-delete-invalidate", title: "Delete and invalidate", subtitle: "Delete and Invalidate", body: "Use tombstones or explicit deletion to remove vector and sparse-index entries, summaries, answer caches, and access snapshots.", decision: "Treat deletion and access revocation as higher-priority negative acceptance paths than ordinary additions.", boundary: "Deleting a source file before notifying the index can leave an orphan that is difficult to trace.", sourceIds: deepDiveSourceIds("deep-lifecycle-consistency") },
+        { id: "deep-lifecycle-consistency-probe", title: "Run an end-to-end consistency probe", subtitle: "Consistency Probe", body: "Continuously query deleted, revoked, and superseded examples to prove that text, metadata, and cached answers are no longer returned.", decision: "Measure the target at the final result under a real user identity, not at the job-status screen.", boundary: "Probes and logs must also comply with sensitive-data and retention policies.", sourceIds: deepDiveSourceIds("deep-lifecycle-consistency") },
       ]),
       table("Compile evidence at claim level", "The context is not a bag of passages. It is a versioned decision object containing current, accessible evidence that can support specific claims.", ["Object", "Mechanism", "Acceptance question", "Failure mode"], [
-        { id: "deep-evidence-object", title: "Evidence object", cells: ["Carry source ID, original coordinates, version, validity, ACL, authority, and extraction method.", "Can every answer fragment return reliably to the original?", "A link without version and coordinates cannot prove what was available at the time."], sourceIds: canonicalDeepDives[3].sourceIds },
-        { id: "deep-evidence-conflict-set", title: "Conflict set", cells: ["Group versions, regions, or terms that address the same subject and decide whether to select, present, or abstain by scope.", "Has the customer defined the authoritative source and conflict owner?", "Passing conflicting passages to the model transfers the decision to stochastic generation."], sourceIds: canonicalDeepDives[3].sourceIds },
-        { id: "deep-evidence-claim-attribution", title: "Claim attribution", cells: ["Split the answer into verifiable claims, bind direct evidence to each one, and measure citation correctness separately from coverage.", "Does every material number, deadline, and conclusion have direct support?", "A related document does not necessarily support the whole answer."], sourceIds: canonicalDeepDives[3].sourceIds },
-        { id: "deep-evidence-scope-abstain", title: "Qualify or abstain", cells: ["When evidence is insufficient, stale, conflicting, or unauthorized, narrow the answer, state uncertainty, or escalate.", "Which claims require evidence and which may be labeled professional judgment?", "Adding links after generation is decoration, not an auditable evidence chain."], sourceIds: canonicalDeepDives[3].sourceIds },
+        { id: "deep-evidence-object", title: "Evidence object", cells: ["Carry source ID, original coordinates, version, validity, ACL, authority, and extraction method.", "Can every answer fragment return reliably to the original?", "A link without version and coordinates cannot prove what was available at the time."], sourceIds: deepDiveSourceIds("deep-evidence-compiler") },
+        { id: "deep-evidence-conflict-set", title: "Conflict set", cells: ["Group versions, regions, or terms that address the same subject and decide whether to select, present, or abstain by scope.", "Has the customer defined the authoritative source and conflict owner?", "Passing conflicting passages to the model transfers the decision to stochastic generation."], sourceIds: deepDiveSourceIds("deep-evidence-compiler") },
+        { id: "deep-evidence-claim-attribution", title: "Claim attribution", cells: ["Split the answer into verifiable claims, bind direct evidence to each one, and measure citation correctness separately from coverage.", "Does every material number, deadline, and conclusion have direct support?", "A related document does not necessarily support the whole answer."], sourceIds: deepDiveSourceIds("deep-evidence-compiler") },
+        { id: "deep-evidence-scope-abstain", title: "Qualify or abstain", cells: ["When evidence is insufficient, stale, conflicting, or unauthorized, narrow the answer, state uncertainty, or escalate.", "Which claims require evidence and which may be labeled professional judgment?", "Adding links after generation is decoration, not an auditable evidence chain."], sourceIds: deepDiveSourceIds("deep-evidence-compiler") },
       ]),
       cards("Accept the offline evidence handoff before exposing an index", "Data Engineering owns connection, parsing, cleaning, deduplication, and change propagation. RAG accepts the handoff only when each evidence object can be found, verified at the source, authorized, updated, and withdrawn.", [
-        { id: "deep-migration-stable-snapshot", title: "Receive an authoritative snapshot", subtitle: "Authority and Scope", body: "Require a stable source ID, original version, effective scope, owner, license or use boundary, ACL, and processing version.", decision: "Block material that lacks an authoritative source, applicable version, or permitted-use boundary.", boundary: "A RAG intake check does not replace source-system governance or content approval.", sourceIds: canonicalDeepDives[0].sourceIds },
-        { id: "deep-migration-dual-index", title: "Build evidence objects", subtitle: "Identity and Coordinates", body: "Carry original coordinates, parent relationships, version, validity, ACL, authority, and extraction method with every retrievable unit.", decision: "Define the minimum evidence object before comparing parsers, chunkers, embedding models, or indexes.", boundary: "Text and a vector without source identity and version are not auditable evidence.", sourceIds: canonicalDeepDives[0].sourceIds },
-        { id: "deep-migration-shadow", title: "Choose units and representations", subtitle: "Structure and Retrieval", body: "Use clauses, headings, tables, or other business structure to create understandable units, then build sparse, dense, or structured representations as the task requires.", decision: "Compare recall, noise, citation location, and context cost on real questions rather than copying a universal chunk value.", boundary: "Chunking cannot repair source conflicts, incorrect extraction, or missing permissions.", sourceIds: canonicalDeepDives[0].sourceIds },
-        { id: "deep-migration-cutover", title: "Publish filterable candidates", subtitle: "Deterministic Policy Fields", body: "Retain tenant, identity, region, product version, effective date, and document type as deterministic filters before candidates reach the online chain.", decision: "Prove that reference evidence survives authorized filtering and disappears for prohibited identities.", boundary: "Natural-language instructions cannot replace retrieval-layer access and version controls.", sourceIds: canonicalDeepDives[0].sourceIds },
-        { id: "deep-migration-negative-verification", title: "Pass the offline gate", subtitle: "Positive and Negative Evidence", body: "Use questions with reference evidence, source coordinates, versions, and identities to test extraction, Candidate Recall@K, citation return, and unauthorized negatives.", decision: "Release material only when authorized identities find valid evidence reliably and prohibited identities do not.", boundary: "A green job, expected document count, or completed vector write is not proof that RAG is ready.", sourceIds: canonicalDeepDives[0].sourceIds },
+        { id: "deep-migration-stable-snapshot", title: "Receive an authoritative snapshot", subtitle: "Authority and Scope", body: "Require a stable source ID, original version, effective scope, owner, license or use boundary, ACL, and processing version.", decision: "Block material that lacks an authoritative source, applicable version, or permitted-use boundary.", boundary: "A RAG intake check does not replace source-system governance or content approval.", sourceIds: deepDiveSourceIds("deep-offline-handoff") },
+        { id: "deep-migration-dual-index", title: "Build evidence objects", subtitle: "Identity and Coordinates", body: "Carry original coordinates, parent relationships, version, validity, ACL, authority, and extraction method with every retrievable unit.", decision: "Define the minimum evidence object before comparing parsers, chunkers, embedding models, or indexes.", boundary: "Text and a vector without source identity and version are not auditable evidence.", sourceIds: deepDiveSourceIds("deep-offline-handoff") },
+        { id: "deep-migration-shadow", title: "Choose units and representations", subtitle: "Structure and Retrieval", body: "Use clauses, headings, tables, or other business structure to create understandable units, then build sparse, dense, or structured representations as the task requires.", decision: "Compare recall, noise, citation location, and context cost on real questions rather than copying a universal chunk value.", boundary: "Chunking cannot repair source conflicts, incorrect extraction, or missing permissions.", sourceIds: deepDiveSourceIds("deep-offline-handoff") },
+        { id: "deep-migration-cutover", title: "Publish filterable candidates", subtitle: "Deterministic Policy Fields", body: "Retain tenant, identity, region, product version, effective date, and document type as deterministic filters before candidates reach the online chain.", decision: "Prove that reference evidence survives authorized filtering and disappears for prohibited identities.", boundary: "Natural-language instructions cannot replace retrieval-layer access and version controls.", sourceIds: deepDiveSourceIds("deep-offline-handoff") },
+        { id: "deep-migration-negative-verification", title: "Pass the offline gate", subtitle: "Positive and Negative Evidence", body: "Use questions with reference evidence, source coordinates, versions, and identities to test extraction, Candidate Recall@K, citation return, and unauthorized negatives.", decision: "Release material only when authorized identities find valid evidence reliably and prohibited identities do not.", boundary: "A green job, expected document count, or completed vector write is not proof that RAG is ready.", sourceIds: deepDiveSourceIds("deep-offline-handoff") },
       ]),
       cards("Cross-cutting controls that every production release must carry", "Attach these controls to both lifecycles and verify them again on every material component, data, policy, or routing change.", [
         { id: "production-control-identity", title: "Identity and authorization", body: "Resolve the current subject and authoritative policy before protected evidence is returned; carry the decision through candidate generation, reranking, caches, citations, and logs.", decision: "Negative tests must show zero unauthorized disclosure for the agreed risk boundary.", boundary: "Prompts and post-generation filtering are not access-control systems.", sourceIds: ["nist-zero-trust", "owasp-vector-weaknesses"] },
@@ -420,10 +523,10 @@ const sectionDrafts = [
         { id: "learning-route-production-handoff", title: "Form the production handoff decision", body: "Package the RAG trace, quality slices, P95, cost per successful outcome, security and lifecycle gates, stop conditions, and remaining hypotheses.", decision: "Checkpoint: the decision states Go, Repair, or Stop and names every cross-module owner." },
       ]),
       cards("Practice labs", "Run the labs with customer-like material, identities, questions, and constraints. The deliverable and acceptance statement matter more than completing the implementation.", [
-        { id: "learning-lab-data-readiness", title: "Review RAG data readiness", subtitle: "Portal, PDF, scan, and permission sources", body: "Sample authority, version, scope, license, owner, ACL, text, tables, coordinates, stable IDs, evidence-unit relationships, and negative access cases.", decision: "Deliverable: an evidence-handoff checklist, reference questions, and a blocking-issue report.", boundary: "Accept only when every passed item has source, version, identity, and query proof; return parsing or governance defects to Data Engineering or Security.", sourceIds: canonicalLearningContent.labs[0].sourceIds },
-        { id: "learning-lab-retrieval-routes", title: "Compare four retrieval routes", subtitle: "Exact terms, semantic variation, and compound constraints", body: "Freeze reference-evidence questions, then compare sparse, dense, hybrid, and hybrid-plus-reranker candidates for Recall@K, final evidence coverage, P95, and incremental value.", decision: "Deliverable: a route experiment table and recommendation by query slice.", boundary: "Accept only when failure distribution and incremental evidence justify the route; reranking cannot conceal missing candidates.", sourceIds: canonicalLearningContent.labs[1].sourceIds },
-        { id: "learning-lab-risk-trace", title: "Exercise a high-risk answer and reconstruct its trace", subtitle: "Unauthorized, obsolete, conflicting, absent, and malicious evidence", body: "Record the query plan, candidates, filter reasons, reranked order, final evidence, versions, answer action, material claims, citations, and escalation outcome.", decision: "Deliverable: a RAG risk case set, one complete trace, and an ownership report.", boundary: "Accept only when every claim returns to valid evidence, unauthorized content stays out of candidates, and fluent generation cannot conceal insufficient support.", sourceIds: canonicalLearningContent.labs[2].sourceIds },
-        { id: "learning-lab-economics-decision", title: "Turn the PoC into an economic decision", subtitle: "Demo quality is not an approval", body: "Freeze the current workflow and compare task success, handling time, human work, retrieval, answer action, citations, P95, risk slices, offline processing, online serving, retries, and escalation.", decision: "Deliverable: a Go / Repair / Stop package and a list of ROI hypotheses for the scenario and FinOps owners.", boundary: "Accept only when cost per successful outcome retains quality and risk gates; local RAG economics do not prove complete ROI.", sourceIds: canonicalLearningContent.labs[3].sourceIds },
+        { id: "learning-lab-data-readiness", title: "Review RAG data readiness", subtitle: "Portal, PDF, scan, and permission sources", body: "Sample authority, version, scope, license, owner, ACL, text, tables, coordinates, stable IDs, evidence-unit relationships, and negative access cases.", decision: "Deliverable: an evidence-handoff checklist, reference questions, and a blocking-issue report.", boundary: "Accept only when every passed item has source, version, identity, and query proof; return parsing or governance defects to Data Engineering or Security.", sourceIds: labSourceIds("learning-lab-data-readiness") },
+        { id: "learning-lab-retrieval-routes", title: "Compare four retrieval routes", subtitle: "Exact terms, semantic variation, and compound constraints", body: "Freeze reference-evidence questions, then compare sparse, dense, hybrid, and hybrid-plus-reranker candidates for Recall@K, final evidence coverage, P95, and incremental value.", decision: "Deliverable: a route experiment table and recommendation by query slice.", boundary: "Accept only when failure distribution and incremental evidence justify the route; reranking cannot conceal missing candidates.", sourceIds: labSourceIds("learning-lab-retrieval-routes") },
+        { id: "learning-lab-risk-trace", title: "Exercise a high-risk answer and reconstruct its trace", subtitle: "Unauthorized, obsolete, conflicting, absent, and malicious evidence", body: "Record the query plan, candidates, filter reasons, reranked order, final evidence, versions, answer action, material claims, citations, and escalation outcome.", decision: "Deliverable: a RAG risk case set, one complete trace, and an ownership report.", boundary: "Accept only when every claim returns to valid evidence, unauthorized content stays out of candidates, and fluent generation cannot conceal insufficient support.", sourceIds: labSourceIds("learning-lab-risk-trace") },
+        { id: "learning-lab-economics-decision", title: "Turn the PoC into an economic decision", subtitle: "Demo quality is not an approval", body: "Freeze the current workflow and compare task success, handling time, human work, retrieval, answer action, citations, P95, risk slices, offline processing, online serving, retries, and escalation.", decision: "Deliverable: a Go / Repair / Stop package and a list of ROI hypotheses for the scenario and FinOps owners.", boundary: "Accept only when cost per successful outcome retains quality and risk gates; local RAG economics do not prove complete ROI.", sourceIds: labSourceIds("learning-lab-economics-decision") },
       ]),
       cards("Eight artifacts for an end-to-end RAG decision", "Use the artifacts as living operating records. They should remain useful when a parser, embedding model, index, reranker, generator, policy, or cloud service changes.", [
         { id: "deliverable-adoption-brief", title: "Adoption and baseline brief", body: "Business task, users, current workflow, task and risk slices, volume, handling time, escalation, error cost, desired outcome, decision owner, and no-go conditions.", decision: "Answers: why consider RAG at all?" },
@@ -512,19 +615,35 @@ const sectionOrder = Object.freeze([
   "rag-evidence-practice",
   "rag-customer-question-guide",
 ]);
+const independentDepthBlockTitlesInReadingOrder = Object.freeze([
+  "Accept the offline evidence handoff before exposing an index",
+  "Treat additions, changes, deletions, and access revocation as separate consistency paths",
+  "Control online query planning without turning every request into an Agent loop",
+  "Compile evidence at claim level",
+  "Cross-cutting controls that every production release must carry",
+]);
 const sectionById = new Map(sectionDrafts.map((section) => [section.id, section]));
-const sections = sectionOrder.map((sectionId) => {
+const orderedSections = sectionOrder.map((sectionId) => {
   const section = sectionById.get(sectionId);
   if (!section) throw new Error(`Missing RAG English section: ${sectionId}`);
   if (sectionId === "rag-independent-depth") {
-    const [onlinePolicy, offlineConsistency, evidenceCompiler, offlineHandoff, crossCuttingControls] = section.blocks;
-    return { ...section, blocks: [offlineHandoff, offlineConsistency, onlinePolicy, evidenceCompiler, crossCuttingControls] };
+    const blocksByTitle = indexUnique(section.blocks, "title", "RAG independent-depth blocks");
+    const orderedBlocks = independentDepthBlockTitlesInReadingOrder.map((title) => {
+      const block = blocksByTitle.get(title);
+      if (!block) throw new Error(`Missing RAG independent-depth block: ${title}`);
+      return block;
+    });
+    const orderedTitles = new Set(independentDepthBlockTitlesInReadingOrder);
+    const unclassifiedBlocks = section.blocks.filter((block) => !orderedTitles.has(block.title));
+    return { ...section, blocks: [...orderedBlocks, ...unclassifiedBlocks] };
   }
   return section;
 });
-if (sectionById.size !== sectionOrder.length) {
-  throw new Error("RAG English section order does not include every authored section");
-}
+const orderedSectionIds = new Set(sectionOrder);
+const sections = [
+  ...orderedSections,
+  ...sectionDrafts.filter((section) => !orderedSectionIds.has(section.id)),
+];
 
 const qaCopy = [
   {
@@ -535,10 +654,10 @@ const qaCopy = [
     ask: "How large and volatile is the usable corpus, who sees different material, which claims need a source, and where does the current direct-context or search route fail?",
     tag: "Adoption decision",
     basis: "Long-context research + RAG mechanism + customer baseline",
-    supports: [
-      "Reports position-sensitive use of long context in specific tasks and models; it does not establish that RAG is universally superior.",
-      "Establishes the combination of parametric memory and externally retrieved memory in the original RAG formulation; it does not define enterprise access or lifecycle controls.",
-    ],
+    supports: {
+      "lost-middle": "Reports position-sensitive use of long context in specific tasks and models; it does not establish that RAG is universally superior.",
+      "rag-original-2020": "Establishes the combination of parametric memory and externally retrieved memory in the original RAG formulation; it does not define enterprise access or lifecycle controls.",
+    },
   },
   {
     id: "rag-vs-fine-tuning",
@@ -548,10 +667,10 @@ const qaCopy = [
     ask: "Is the changing requirement factual evidence or response behavior, how often does it change, and must individual facts be cited and withdrawn?",
     tag: "Adoption decision",
     basis: "Task-specific research + modular system boundary",
-    supports: [
-      "Supports the reported retrieval comparison for new-fact injection within the paper's setting, not a universal rejection of fine-tuning.",
-      "Demonstrates a modular route in which retrieval can evolve around a frozen black-box language model.",
-    ],
+    supports: {
+      "fine-tuning-or-retrieval": "Supports the reported retrieval comparison for new-fact injection within the paper's setting, not a universal rejection of fine-tuning.",
+      "replug-2024": "Demonstrates a modular route in which retrieval can evolve around a frozen black-box language model.",
+    },
   },
   {
     id: "vector-database-required",
@@ -561,11 +680,11 @@ const qaCopy = [
     ask: "Are users finding paraphrases, exact facts, or filtered records, and which real questions defeat the current search and database paths?",
     tag: "Adoption decision",
     basis: "Sparse, dense, and approximate-retrieval mechanisms",
-    supports: [
-      "Supports the term-based ranking mechanism behind a sparse retrieval baseline.",
-      "Compares sparse and dense retrieval across heterogeneous datasets and supports retaining multiple baselines; it does not select a winner for the customer corpus.",
-      "Supports the recall, search-cost, and resource trade-offs of a common approximate nearest-neighbor index.",
-    ],
+    supports: {
+      "bm25-book": "Supports the term-based ranking mechanism behind a sparse retrieval baseline.",
+      "beir-2021": "Compares sparse and dense retrieval across heterogeneous datasets and supports retaining multiple baselines; it does not select a winner for the customer corpus.",
+      "hnsw-2016": "Supports the recall, search-cost, and resource trade-offs of a common approximate nearest-neighbor index.",
+    },
   },
   {
     id: "managed-vs-composable",
@@ -575,12 +694,12 @@ const qaCopy = [
     ask: "Which stages truly require customization, which responsibilities will the team operate for years, and do the candidates meet the target region, network, access, and withdrawal requirements?",
     tag: "Adoption decision",
     basis: "Official product mechanisms + responsibility analysis",
-    supports: [
-      "Documents one managed synchronization mechanism for additions, changes, and deletions; connector and governance coverage remain product-specific.",
-      "Documents document-level access capability in one managed search service; current scope and lifecycle limits require verification.",
-      "Documents one product-specific index-alias mechanism for controlled cutover and rollback.",
-      "Supports explicit governance, measurement, and management of generative-AI risk; it does not transfer accountability to a managed service.",
-    ],
+    supports: {
+      "aws-bedrock-kb-sync": "Documents one managed synchronization mechanism for additions, changes, and deletions; connector and governance coverage remain product-specific.",
+      "azure-search-document-acl": "Documents document-level access capability in one managed search service; current scope and lifecycle limits require verification.",
+      "azure-search-index-alias": "Documents one product-specific index-alias mechanism for controlled cutover and rollback.",
+      "nist-genai-profile": "Supports explicit governance, measurement, and management of generative-AI risk; it does not transfer accountability to a managed service.",
+    },
   },
   {
     id: "agent-mcp-a2a-boundary",
@@ -590,12 +709,12 @@ const qaCopy = [
     ask: "Why is one deterministic retrieval pass insufficient: do we need adaptive planning, standardized capability access, or durable task delegation between independent Agents?",
     tag: "Adoption decision",
     basis: "Modular RAG + Agent adoption guidance + official protocol models",
-    supports: [
-      "Supports selecting advanced or modular RAG components by task rather than treating complexity as a universal upgrade.",
-      "Distinguishes predefined workflows from model-directed Agents and recommends beginning with the simplest effective design.",
-      "Defines MCP host, client, server, and capability-exchange boundaries; it does not say that every RAG application needs the protocol.",
-      "Defines tasks, messages, parts, and artifacts for collaboration between independent Agents; it does not apply to ordinary single-pass retrieval.",
-    ],
+    supports: {
+      "rag-survey": "Supports selecting advanced or modular RAG components by task rather than treating complexity as a universal upgrade.",
+      "anthropic-effective-agents": "Distinguishes predefined workflows from model-directed Agents and recommends beginning with the simplest effective design.",
+      "mcp-architecture": "Defines MCP host, client, server, and capability-exchange boundaries; it does not say that every RAG application needs the protocol.",
+      "a2a-concepts": "Defines tasks, messages, parts, and artifacts for collaboration between independent Agents; it does not apply to ordinary single-pass retrieval.",
+    },
   },
   {
     id: "pdf-scans-tables-images",
@@ -605,11 +724,11 @@ const qaCopy = [
     ask: "What proportion is digital, scanned, tabular, or visual, what evidence does each type contain, and how precisely must a citation return to the source?",
     tag: "Offline evidence",
     basis: "Document parsing, OCR, and visual-retrieval research",
-    supports: [
-      "Supports layout-aware conversion and table recovery; successful parsing alone does not establish downstream RAG quality.",
-      "Supports an OCR pipeline based on detection, direction classification, and recognition; results do not cover arbitrary scan quality.",
-      "Supports page-image multi-vector retrieval; quality and cost still require validation on the customer corpus.",
-    ],
+    supports: {
+      "docling-report": "Supports layout-aware conversion and table recovery; successful parsing alone does not establish downstream RAG quality.",
+      "pp-ocr-2020": "Supports an OCR pipeline based on detection, direction classification, and recognition; results do not cover arbitrary scan quality.",
+      "colpali-2025": "Supports page-image multi-vector retrieval; quality and cost still require validation on the customer corpus.",
+    },
   },
   {
     id: "chunk-size-overlap",
@@ -619,11 +738,11 @@ const qaCopy = [
     ask: "Does the supporting evidence usually fit in a sentence, clause, table, or several sections, and must citations resolve to an exact page or region?",
     tag: "Offline evidence",
     basis: "Task-specific research + customer-corpus experiment",
-    supports: [
-      "Shows that chunking changes performance in a particular code-RAG task; its settings are not portable to every corpus.",
-      "Supports treating chunking and pre-retrieval augmentation as separately designed RAG stages.",
-      "Supports testing position effects in long contexts; it does not prove that larger chunks are more reliable.",
-    ],
+    supports: {
+      "chunking-study": "Shows that chunking changes performance in a particular code-RAG task; its settings are not portable to every corpus.",
+      "rag-survey": "Supports treating chunking and pre-retrieval augmentation as separately designed RAG stages.",
+      "lost-middle": "Supports testing position effects in long contexts; it does not prove that larger chunks are more reliable.",
+    },
   },
   {
     id: "chunk-metadata-parent-page-version",
@@ -633,11 +752,11 @@ const qaCopy = [
     ask: "Does the content system provide stable IDs, versions, effective dates, owners, and ACLs, and must citations resolve to a document, page, or table cell?",
     tag: "Offline evidence",
     basis: "Document structure + lifecycle and risk governance",
-    supports: [
-      "Supports preserving layout, structure, and tables as a technical basis for source coordinates.",
-      "Supports the distinct lifecycle of indexed content and why reset or rerun does not replace update and deletion design.",
-      "Supports governance of provenance, validity, and lifecycle; the exact metadata schema remains an engineering decision.",
-    ],
+    supports: {
+      "docling-report": "Supports preserving layout, structure, and tables as a technical basis for source coordinates.",
+      "azure-search-indexer-lifecycle": "Supports the distinct lifecycle of indexed content and why reset or rerun does not replace update and deletion design.",
+      "nist-genai-profile": "Supports governance of provenance, validity, and lifecycle; the exact metadata schema remains an engineering decision.",
+    },
   },
   {
     id: "structured-data-vectorization",
@@ -647,11 +766,11 @@ const qaCopy = [
     ask: "Is the user asking for a definition or a calculation, where is the authoritative metric contract, and are a semantic layer, row and column access, audit, and read-only execution available?",
     tag: "Offline evidence",
     basis: "Modular RAG + data and risk governance",
-    supports: [
-      "Supports routing different retrieval and augmentation components by task rather than vectorizing every data source.",
-      "Supports governance of data validity and output risk; SQL controls remain an application and data responsibility.",
-      "Supports claim-level evidence coverage; a structured result should preserve query, time, and authoritative source.",
-    ],
+    supports: {
+      "rag-survey": "Supports routing different retrieval and augmentation components by task rather than vectorizing every data source.",
+      "nist-genai-profile": "Supports governance of data validity and output risk; SQL controls remain an application and data responsibility.",
+      "alce-2023": "Supports claim-level evidence coverage; a structured result should preserve query, time, and authoritative source.",
+    },
   },
   {
     id: "cross-language-retrieval",
@@ -661,11 +780,11 @@ const qaCopy = [
     ask: "Which languages do users and sources use, which terms must not be translated, and should the answer display the original evidence alongside a localized explanation?",
     tag: "Offline evidence",
     basis: "Cross-language retrieval dataset + modular retrieval + claim-level citation",
-    supports: [
-      "Provides bilingual and multilingual datasets in which query and relevant-document languages differ; it does not predict enterprise-domain performance.",
-      "Supports composing query-processing, retrieval, and augmentation components by task; it supplies no universal cross-language winner.",
-      "Supports direct evidence for material claims; translation does not remove the need to return to the original source.",
-    ],
+    supports: {
+      "clirmatrix-2020": "Provides bilingual and multilingual datasets in which query and relevant-document languages differ; it does not predict enterprise-domain performance.",
+      "rag-survey": "Supports composing query-processing, retrieval, and augmentation components by task; it supplies no universal cross-language winner.",
+      "alce-2023": "Supports direct evidence for material claims; translation does not remove the need to return to the original source.",
+    },
   },
   {
     id: "source-update-freshness",
@@ -675,11 +794,11 @@ const qaCopy = [
     ask: "How quickly must each change type take effect, and which overdue changes require the application to block the answer or escalate?",
     tag: "Offline evidence",
     basis: "Official synchronization behavior + zero-trust principle + customer service objective",
-    supports: [
-      "Documents propagation of additions, changes, and deletions through one managed synchronization process.",
-      "Documents separate reset, run, rebuild, deletion, orphan, and ACL-change behaviors in one indexing service.",
-      "Supports authorization at each resource access rather than trust in an obsolete access snapshot.",
-    ],
+    supports: {
+      "aws-bedrock-kb-sync": "Documents propagation of additions, changes, and deletions through one managed synchronization process.",
+      "azure-search-indexer-lifecycle": "Documents separate reset, run, rebuild, deletion, orphan, and ACL-change behaviors in one indexing service.",
+      "nist-zero-trust": "Supports authorization at each resource access rather than trust in an obsolete access snapshot.",
+    },
   },
   {
     id: "department-customer-access-control",
@@ -689,11 +808,11 @@ const qaCopy = [
     ask: "Which system is authoritative for permissions, what isolation granularity is required, how quickly must revocation propagate, and how do caches distinguish identity?",
     tag: "Offline evidence",
     basis: "Zero-trust principle + retrieval-security boundary + product mechanism",
-    supports: [
-      "Supports authentication and authorization before resource access rather than implicit trust.",
-      "Supports fine-grained access control, isolation, source validation, and retrieval logging for vector and embedding systems.",
-      "Documents one managed document-level access capability; its current scope and lifecycle limitations remain product-specific.",
-    ],
+    supports: {
+      "nist-zero-trust": "Supports authentication and authorization before resource access rather than implicit trust.",
+      "owasp-vector-weaknesses": "Supports fine-grained access control, isolation, source validation, and retrieval logging for vector and embedding systems.",
+      "azure-search-document-acl": "Documents one managed document-level access capability; its current scope and lifecycle limitations remain product-specific.",
+    },
   },
   {
     id: "malicious-instructions-in-documents",
@@ -703,10 +822,10 @@ const qaCopy = [
     ask: "Does the system only answer, who can write to each source, and what is the most privileged tool or business state that malicious evidence could influence?",
     tag: "Offline evidence",
     basis: "Community security guidance + local RAG control boundary",
-    supports: [
-      "Directly supports that retrieval or fine-tuning does not completely eliminate prompt injection.",
-      "Supports poisoning, cross-context leakage, access-control, and source-validation risks in vector and embedding systems.",
-    ],
+    supports: {
+      "owasp-prompt-injection": "Directly supports that retrieval or fine-tuning does not completely eliminate prompt injection.",
+      "owasp-vector-weaknesses": "Supports poisoning, cross-context leakage, access-control, and source-validation risks in vector and embedding systems.",
+    },
   },
   {
     id: "component-model-stack-selection",
@@ -716,13 +835,13 @@ const qaCopy = [
     ask: "Which job is failing now, what local metric and hard constraint accepts each job, and what data and migration work does replacement require?",
     tag: "Online retrieval",
     basis: "Modular research + staged retrieval and evaluation",
-    supports: [
-      "Supports document conversion and structure recovery as a distinct technical responsibility; it does not establish answer quality.",
-      "Shows that embedding performance varies across task families and languages; the benchmark does not replace retrieval testing on the target corpus.",
-      "Supports a second-stage query–passage ranking model and its candidate-set boundary.",
-      "Supports decoupling an external retriever from a frozen black-box language model.",
-      "Supports separate automated dimensions for context and answer quality; evaluator outputs still require human calibration.",
-    ],
+    supports: {
+      "docling-report": "Supports document conversion and structure recovery as a distinct technical responsibility; it does not establish answer quality.",
+      "mteb-2023": "Shows that embedding performance varies across task families and languages; the benchmark does not replace retrieval testing on the target corpus.",
+      "bert-reranker": "Supports a second-stage query–passage ranking model and its candidate-set boundary.",
+      "replug-2024": "Supports decoupling an external retriever from a frozen black-box language model.",
+      "ragas": "Supports separate automated dimensions for context and answer quality; evaluator outputs still require human calibration.",
+    },
   },
   {
     id: "hybrid-rrf-reranker",
@@ -732,12 +851,12 @@ const qaCopy = [
     ask: "Are failures caused by missed exact terms, missed semantic variants, or reference evidence that is retrieved but ranks outside the final context?",
     tag: "Online retrieval",
     basis: "Sparse, dense, and two-stage ranking research + customer experiment",
-    supports: [
-      "Supports term-based sparse ranking as the exact-signal route.",
-      "Supports dense candidate retrieval and dataset-bounded recall measurement.",
-      "Introduces rank-position fusion without assuming that different retrievers share a score scale; its reported comparisons remain dataset-bound.",
-      "Supports joint query–passage ranking after candidate discovery and its inability to recover absent evidence.",
-    ],
+    supports: {
+      "bm25-book": "Supports term-based sparse ranking as the exact-signal route.",
+      "dpr-2020": "Supports dense candidate retrieval and dataset-bounded recall measurement.",
+      "rrf-2009": "Introduces rank-position fusion without assuming that different retrievers share a score scale; its reported comparisons remain dataset-bound.",
+      "bert-reranker": "Supports joint query–passage ranking after candidate discovery and its inability to recover absent evidence.",
+    },
   },
   {
     id: "document-exists-no-answer",
@@ -747,11 +866,11 @@ const qaCopy = [
     ask: "Can the customer provide failed questions across major tasks and risks, with the correct document, passage, version, and access identity?",
     tag: "Online retrieval",
     basis: "Stage-specific research metrics + local failure diagnosis",
-    supports: [
-      "Supports measuring candidate retrieval separately through top-K passage accuracy.",
-      "Supports finer ranking within an existing candidate set, not recovery outside it.",
-      "Supports separating context relevance and answer faithfulness during RAG evaluation.",
-    ],
+    supports: {
+      "dpr-2020": "Supports measuring candidate retrieval separately through top-K passage accuracy.",
+      "bert-reranker": "Supports finer ranking within an existing candidate set, not recovery outside it.",
+      "ragas": "Supports separating context relevance and answer faithfulness during RAG evaluation.",
+    },
   },
   {
     id: "agentic-retrieval-query-decomposition",
@@ -761,11 +880,11 @@ const qaCopy = [
     ask: "Which real tasks require multiple sources or steps, and which identifiers, dates, negations, or business constraints must survive every rewrite?",
     tag: "Online retrieval",
     basis: "Query-planning research + product-specific mechanisms",
-    supports: [
-      "Supports hypothetical-document embeddings as a retrieval aid; the generated hypothetical document is not answer evidence.",
-      "Documents one preview query-rewrite capability and warns that exact unique terms can be lost.",
-      "Documents optional query decomposition and the possibility of additional query activity; it does not guarantee better answers.",
-    ],
+    supports: {
+      "hyde-2023": "Supports hypothetical-document embeddings as a retrieval aid; the generated hypothetical document is not answer evidence.",
+      "azure-search-query-rewrite": "Documents one preview query-rewrite capability and warns that exact unique terms can be lost.",
+      "aws-bedrock-query-decomposition": "Documents optional query decomposition and the possibility of additional query activity; it does not guarantee better answers.",
+    },
   },
   {
     id: "multi-turn-conversation-retrieval",
@@ -775,11 +894,11 @@ const qaCopy = [
     ask: "Which conditions should persist across turns, which must be reconfirmed, and can history cross a user, tenant, or permission change?",
     tag: "Online retrieval",
     basis: "Modular query processing + original-query preservation + zero-trust boundary",
-    supports: [
-      "Supports modular query-processing and retrieval components; it does not make conversation summaries authoritative.",
-      "Documents preserving the original query while producing alternatives; product behavior remains specific to that capability.",
-      "Supports re-evaluating identity and authorization at resource access rather than inheriting a prior decision.",
-    ],
+    supports: {
+      "rag-survey": "Supports modular query-processing and retrieval components; it does not make conversation summaries authoritative.",
+      "azure-search-query-rewrite": "Documents preserving the original query while producing alternatives; product behavior remains specific to that capability.",
+      "nist-zero-trust": "Supports re-evaluating identity and authorization at resource access rather than inheriting a prior decision.",
+    },
   },
   {
     id: "evidence-insufficient-answer-action",
@@ -789,11 +908,11 @@ const qaCopy = [
     ask: "Which conditions can only the user supply, what evidence supports a complete or partial answer, and which tasks require abstention or human review regardless of fluency?",
     tag: "Evidence-grounded answer",
     basis: "Retrieval self-reflection research + claim-level citation + risk governance",
-    supports: [
-      "Supports on-demand retrieval and reflection as research mechanisms; it does not make a conventional system self-governing.",
-      "Supports checking direct claim support and citation coverage separately.",
-      "Supports risk-context measurement and management; application-specific answer thresholds remain the operator's responsibility.",
-    ],
+    supports: {
+      "self-rag": "Supports on-demand retrieval and reflection as research mechanisms; it does not make a conventional system self-governing.",
+      "alce-2023": "Supports checking direct claim support and citation coverage separately.",
+      "nist-genai-profile": "Supports risk-context measurement and management; application-specific answer thresholds remain the operator's responsibility.",
+    },
   },
   {
     id: "retrieved-right-document-still-wrong",
@@ -803,11 +922,11 @@ const qaCopy = [
     ask: "Which source governs, who resolves conflicting versions, when may the application qualify or abstain, and which answers need accountable review?",
     tag: "Evidence-grounded answer",
     basis: "RAG evaluation dimensions + risk boundary",
-    supports: [
-      "Supports evaluating context relevance, answer relevance, and faithfulness as distinct dimensions.",
-      "Supports evidence and generation reflection in a research system; it does not mean conventional RAG self-checks automatically.",
-      "Supports continuing governance and management beyond a single model metric.",
-    ],
+    supports: {
+      "ragas": "Supports evaluating context relevance, answer relevance, and faithfulness as distinct dimensions.",
+      "self-rag": "Supports evidence and generation reflection in a research system; it does not mean conventional RAG self-checks automatically.",
+      "nist-genai-profile": "Supports continuing governance and management beyond a single model metric.",
+    },
   },
   {
     id: "citations-trust-compliance",
@@ -817,10 +936,10 @@ const qaCopy = [
     ask: "Which claims require direct evidence, who selects the governing version, and can every citation return to an original location the current user may access?",
     tag: "Evidence-grounded answer",
     basis: "Peer-reviewed citation evaluation + risk governance",
-    supports: [
-      "Supports evaluating citation correctness separately from material-claim coverage.",
-      "Supports continuing governance of provenance, validity, transparency, and generative-AI risk.",
-    ],
+    supports: {
+      "alce-2023": "Supports evaluating citation correctness separately from material-claim coverage.",
+      "nist-genai-profile": "Supports continuing governance of provenance, validity, transparency, and generative-AI risk.",
+    },
   },
   {
     id: "graphrag-everywhere",
@@ -830,10 +949,10 @@ const qaCopy = [
     ask: "What share of real questions requires cross-document synthesis, who validates entities and relationships, and how will graphs and summaries follow source and access changes?",
     tag: "Evidence-grounded answer",
     basis: "Primary GraphRAG paper + RAG architecture survey",
-    supports: [
-      "Supports entity graphs, communities, and community summaries for corpus-wide synthesis questions.",
-      "Supports selecting advanced or modular RAG by problem rather than treating complexity as a universal upgrade.",
-    ],
+    supports: {
+      "graphrag": "Supports entity graphs, communities, and community summaries for corpus-wide synthesis questions.",
+      "rag-survey": "Supports selecting advanced or modular RAG by problem rather than treating complexity as a universal upgrade.",
+    },
   },
   {
     id: "prove-rag-beyond-demo",
@@ -843,12 +962,12 @@ const qaCopy = [
     ask: "Where will real tasks come from, who adjudicates evidence and outcomes, which failures are automatic no-go conditions, and what production decision should the PoC change?",
     tag: "Local acceptance",
     basis: "Retrieval, answer, and citation evaluation + risk gate + business baseline",
-    supports: [
-      "Supports independent top-K candidate-retrieval measurement.",
-      "Supports separate automated dimensions for context and answer quality.",
-      "Supports checking claim-level citation correctness and completeness.",
-      "Supports risk-context measurement, management, and continued monitoring.",
-    ],
+    supports: {
+      "dpr-2020": "Supports independent top-K candidate-retrieval measurement.",
+      "ragas": "Supports separate automated dimensions for context and answer quality.",
+      "alce-2023": "Supports checking claim-level citation correctness and completeness.",
+      "nist-genai-profile": "Supports risk-context measurement, management, and continued monitoring.",
+    },
   },
   {
     id: "production-quality-regression",
@@ -858,11 +977,11 @@ const qaCopy = [
     ask: "When did degradation begin, which users and tasks are affected, and can each failure be reconstructed to candidates, policy decisions, final evidence, and the full component version matrix?",
     tag: "Local acceptance",
     basis: "Continuous RAG evaluation + standard telemetry + AI operations boundary",
-    supports: [
-      "Supports separate measurement of context relevance, answer relevance, and faithfulness.",
-      "Supports evolving telemetry conventions for retrieval and generative-AI operations; project-specific quality fields remain necessary.",
-      "Supports continuing post-deployment measurement and management of risk.",
-    ],
+    supports: {
+      "ragas": "Supports separate measurement of context relevance, answer relevance, and faithfulness.",
+      "opentelemetry-genai-semconv": "Supports evolving telemetry conventions for retrieval and generative-AI operations; project-specific quality fields remain necessary.",
+      "nist-genai-profile": "Supports continuing post-deployment measurement and management of risk.",
+    },
   },
   {
     id: "latency-and-cost",
@@ -872,19 +991,74 @@ const qaCopy = [
     ask: "Which tasks require what P95, which stages add no incremental evidence, and what are document change, query volume, success, retry, and human-escalation rates?",
     tag: "Local acceptance",
     basis: "Hybrid retrieval and multi-passage research + standard telemetry + unit-economics boundary",
-    supports: [
-      "Provides a vendor experiment for hybrid retrieval and reranking under one configuration; it supplies no universal cost threshold.",
-      "Supports multi-passage evidence aggregation in a particular task; it does not define a universal passage count.",
-      "Supports recording generative-AI call and usage attributes; business cost fields remain project-defined.",
-      "Supports connecting technology cost to value through unit economics; it does not provide a universal RAG ROI.",
-    ],
+    supports: {
+      "contextual-retrieval": "Provides a vendor experiment for hybrid retrieval and reranking under one configuration; it supplies no universal cost threshold.",
+      "fid-2021": "Supports multi-passage evidence aggregation in a particular task; it does not define a universal passage count.",
+      "opentelemetry-genai-semconv": "Supports recording generative-AI call and usage attributes; business cost fields remain project-defined.",
+      "finops-unit-economics": "Supports connecting technology cost to value through unit economics; it does not provide a universal RAG ROI.",
+    },
   },
 ];
-const qa = Object.freeze(qaCopy.map((copy, index) => {
-  const canonical = canonicalQa[index];
-  if (!canonical || copy.supports.length !== canonical.evidence.length) {
-    throw new Error(`RAG English QA evidence mismatch at ${copy.id}`);
+const ragQaCanonicalQuestionsById = Object.freeze({
+  "long-context-vs-rag": "上下文窗口已经很长，为什么还需要 RAG？",
+  "rag-vs-fine-tuning": "RAG 和微调怎么选？",
+  "vector-database-required": "做 RAG 一定要向量数据库吗？",
+  "managed-vs-composable": "RAG 应该选择托管云服务，还是自己拼搜索、向量库和编排？",
+  "agent-mcp-a2a-boundary": "一个企业 RAG 是否还需要 Agent、MCP 或 A2A？",
+  "pdf-scans-tables-images": "PDF、扫描件、表格和图片很多，RAG 还能做好吗？",
+  "chunk-size-overlap": "Chunk 大小和重叠比例应该设多少？",
+  "chunk-metadata-parent-page-version": "为什么 Chunk 还要保存父子关系、页码、版本和元数据？",
+  "structured-data-vectorization": "数据库里的指标和交易数据，能不能直接切块后放进向量库？",
+  "cross-language-retrieval": "用户用中文提问、证据主要是英文时，跨语言检索应该怎样设计？",
+  "source-update-freshness": "源文档更新后，多久能在回答中生效？",
+  "department-customer-access-control": "不同部门、不同客户的数据权限如何保证？",
+  "malicious-instructions-in-documents": "RAG 系统会不会被文档里的恶意指令攻击？",
+  "component-model-stack-selection": "解析、Embedding、Reranker、生成和评估模型，应该怎样组合选型？",
+  "hybrid-rrf-reranker": "Hybrid Search、RRF 和 Reranker 各自解决什么问题？",
+  "document-exists-no-answer": "为什么系统明明有文档，还是答不到？",
+  "agentic-retrieval-query-decomposition": "开启 Agentic Retrieval 或查询分解后，是不是一定更准确？",
+  "multi-turn-conversation-retrieval": "多轮会话中的历史问题和答案，应该怎样参与下一轮检索？",
+  "evidence-insufficient-answer-action": "证据不足时，系统应该追问、继续检索、限定回答还是拒答？",
+  "retrieved-right-document-still-wrong": "RAG 检到了正确文档，为什么仍可能答错？RAG 能消除幻觉吗？",
+  "citations-trust-compliance": "答案已经带出处，是否就可以认定可信或合规？",
+  "graphrag-everywhere": "GraphRAG 是不是向量 RAG 的升级版，所有知识库都应该上？",
+  "prove-rag-beyond-demo": "如何证明 RAG 的效果，而不是做一个漂亮 Demo？",
+  "production-quality-regression": "RAG 上线几个月后效果变差，应该怎样排查？",
+  "latency-and-cost": "怎样控制延迟和成本？",
+});
+const supportTextBySourceId = (copy) => {
+  if (!copy.supports || Array.isArray(copy.supports)) {
+    throw new Error(`RAG English QA ${copy.id} must key support text by source ID`);
   }
+  const supportEntries = indexUnique(
+    Object.entries(copy.supports).map(([sourceId, support]) => ({ sourceId, support })),
+    "sourceId",
+    `RAG English QA ${copy.id} support entries`,
+  );
+  const supports = new Map();
+  for (const [sourceId, entry] of supportEntries) {
+    const { support } = entry;
+    if (typeof support !== "string" || !support.trim()) {
+      throw new Error(`RAG English QA ${copy.id} has no support text for ${sourceId}`);
+    }
+    supports.set(sourceId, support);
+  }
+  return supports;
+};
+
+const canonicalQaByEnglishId = resolveCompleteProjection({
+  canonicalItems: canonicalQa,
+  canonicalKey: "q",
+  englishItems: qaCopy,
+  englishKey: "id",
+  canonicalKeyByEnglishKey: ragQaCanonicalQuestionsById,
+  label: "RAG QA",
+});
+const qa = Object.freeze(qaCopy.map((copy) => {
+  const canonical = canonicalQaByEnglishId.get(copy.id);
+  const canonicalEvidenceBySourceId = indexUnique(canonical.evidence, "sourceId", `RAG QA ${copy.id} evidence`);
+  const supportsBySourceId = supportTextBySourceId(copy);
+  assertSameIdentities(canonicalEvidenceBySourceId, supportsBySourceId, `RAG QA ${copy.id} evidence sources`);
   return Object.freeze({
     id: copy.id,
     q: copy.q,
@@ -893,7 +1067,7 @@ const qa = Object.freeze(qaCopy.map((copy, index) => {
     ask: copy.ask,
     tag: copy.tag,
     basis: copy.basis,
-    evidence: Object.freeze(canonical.evidence.map((item, evidenceIndex) => Object.freeze({ sourceId: item.sourceId, supports: copy.supports[evidenceIndex] }))),
+    evidence: Object.freeze(canonical.evidence.map((item) => Object.freeze({ sourceId: item.sourceId, supports: supportsBySourceId.get(item.sourceId) }))),
     ...(canonical.addedAt ? { addedAt: canonical.addedAt } : {}),
   });
 }));
@@ -908,35 +1082,109 @@ const evidenceCopy = [
   { id: "deletion-not-reset", metric: "Delete ≠ reset", title: "Knowledge freshness is end-to-end state", finding: "Azure documentation states that reset/run does not automatically remove orphaned documents and that some ACL changes can bypass ordinary high-water-mark detection.", boundary: "This is a product-specific boundary. It supports deletion and revocation acceptance tests but does not establish the behavior of other services." },
 ];
 
-const evidenceCards = Object.freeze(evidenceCopy.map((copy, index) => Object.freeze({
-  ...copy,
-  sourceId: canonicalEvidenceCards[index].sourceId,
-  ...(canonicalEvidenceCards[index].accent ? { accent: true } : {}),
-})));
+const ragEvidenceSourceIdsById = Object.freeze({
+  "dpr-top-20-improvement": "dpr-2020",
+  "ragas-three-dimensions": "ragas",
+  "contextual-retrieval-failure-rate": "contextual-retrieval",
+  "replug-black-box-route": "replug-2024",
+  "long-context-position-sensitivity": "lost-middle",
+  "claim-level-citation-quality": "alce-2023",
+  "deletion-not-reset": "azure-search-indexer-lifecycle",
+});
+const canonicalEvidenceByEnglishId = resolveCompleteProjection({
+  canonicalItems: canonicalEvidenceCards,
+  canonicalKey: "sourceId",
+  englishItems: evidenceCopy,
+  englishKey: "id",
+  canonicalKeyByEnglishKey: ragEvidenceSourceIdsById,
+  label: "RAG evidence cards",
+});
+const evidenceCards = Object.freeze(evidenceCopy.map((copy) => {
+  const canonical = canonicalEvidenceByEnglishId.get(copy.id);
+  return Object.freeze({
+    ...copy,
+    sourceId: canonical.sourceId,
+    ...(canonical.accent ? { accent: true } : {}),
+  });
+}));
 
 const usedSourceIds = new Set([
   ...canonicalQa.flatMap((item) => item.evidence.map((entry) => entry.sourceId)),
   ...canonicalDeepDives.flatMap((item) => item.sourceIds),
   ...canonicalEvidenceCards.map((item) => item.sourceId),
 ]);
-if (canonicalQa.length !== qaCopy.length || canonicalEvidenceCards.length !== evidenceCopy.length || canonicalDeepDives.length !== 4) {
-  throw new Error("RAG English content no longer matches the canonical content cardinality");
-}
+const deepDiveEnglishBlocksByTitle = indexUnique(
+  Object.entries(ragDeepDiveEnglishBlockTitlesById).map(([id, title]) => ({ id, title })),
+  "title",
+  "RAG deep-dive English block titles",
+);
+const deepDiveSection = sections.find((section) => section.id === "rag-independent-depth");
+if (!deepDiveSection) throw new Error("RAG English deep-dive section is missing");
+const deepDiveEnglishItems = deepDiveSection.blocks
+  .filter((block) => deepDiveEnglishBlocksByTitle.has(block.title))
+  .map((block) => ({ id: deepDiveEnglishBlocksByTitle.get(block.title).id }));
+resolveCompleteProjection({
+  canonicalItems: canonicalDeepDives,
+  canonicalKey: "title",
+  englishItems: deepDiveEnglishItems,
+  englishKey: "id",
+  canonicalKeyByEnglishKey: ragDeepDiveCanonicalTitlesById,
+  label: "RAG deep dives",
+});
+
+const ragOutcomeCanonicalValuesById = Object.freeze({
+  "learning-outcome-adoption": "判断一个业务问题是否需要 RAG，并写清有据回答、限定回答与拒答的边界",
+  "learning-outcome-evidence-handoff": "交给 RAG 的资料是否能检索、定位、授权、更新和撤回",
+  "learning-outcome-component-selection": "用真实问题选择切片、关键词、Embedding、Reranker 与生成模型，而不是按产品类别堆组件",
+  "learning-outcome-diagnosis": "沿候选召回、最终上下文和主张引用定位失败，并留下足以复现的 RAG Trace",
+  "learning-outcome-release-decision": "用质量、风险、时延和单位达标回答成本决定 PoC 是上线、整改还是停止",
+});
+const ragRouteCanonicalTitlesById = Object.freeze({
+  "learning-route-adoption": "明确采用边界",
+  "learning-route-offline-handoff": "建立离线证据交接",
+  "learning-route-retrieval-baseline": "建立检索与模型基线",
+  "learning-route-answer-policy": "设计在线回答决策",
+  "learning-route-local-acceptance": "完成 RAG 局部验收",
+  "learning-route-production-handoff": "形成生产交接决定",
+});
 const learningSection = sections.find((section) => section.id === "rag-evidence-practice");
-const [learningOutcomes, learningRoute, learningLabs] = learningSection?.blocks ?? [];
-if (
-  canonicalLearningContent.outcomes.length !== 5
-  || canonicalLearningContent.route.length !== 6
-  || canonicalLearningContent.labs.length !== 4
-  || learningOutcomes?.items.length !== canonicalLearningContent.outcomes.length
-  || learningRoute?.items.length !== canonicalLearningContent.route.length
-  || learningLabs?.items.length !== canonicalLearningContent.labs.length
-) {
-  throw new Error("RAG English learning path no longer matches the canonical 5/6/4 structure");
+if (!learningSection) throw new Error("RAG English learning section is missing");
+const learningBlocksByTitle = indexUnique(learningSection.blocks, "title", "RAG English learning blocks");
+const learningOutcomes = learningBlocksByTitle.get("Learning outcomes");
+const learningRoute = learningBlocksByTitle.get("Recommended learning route");
+const learningLabs = learningBlocksByTitle.get("Practice labs");
+if (!learningOutcomes || !learningRoute || !learningLabs) {
+  throw new Error("RAG English learning blocks are incomplete");
 }
-if (usedSourceIds.size !== expectedSourceIds.length || expectedSourceIds.some((sourceId) => !usedSourceIds.has(sourceId))) {
-  throw new Error("RAG English source notes do not match the canonical source set");
-}
+resolveCompleteProjection({
+  canonicalItems: canonicalLearningContent.outcomes,
+  canonicalKey: (outcome) => outcome,
+  englishItems: learningOutcomes.items,
+  englishKey: "id",
+  canonicalKeyByEnglishKey: ragOutcomeCanonicalValuesById,
+  label: "RAG learning outcomes",
+});
+resolveCompleteProjection({
+  canonicalItems: canonicalLearningContent.route,
+  canonicalKey: "title",
+  englishItems: learningRoute.items,
+  englishKey: "id",
+  canonicalKeyByEnglishKey: ragRouteCanonicalTitlesById,
+  label: "RAG learning route",
+});
+resolveCompleteProjection({
+  canonicalItems: canonicalLearningContent.labs,
+  canonicalKey: "title",
+  englishItems: learningLabs.items,
+  englishKey: "id",
+  canonicalKeyByEnglishKey: ragLabCanonicalTitlesById,
+  label: "RAG learning labs",
+});
+assertSameIdentities(
+  new Map([...usedSourceIds].map((sourceId) => [sourceId, true])),
+  new Map(expectedSourceIds.map((sourceId) => [sourceId, true])),
+  "RAG English source notes",
+);
 
 export const englishModule = Object.freeze({
   slug: "rag",
