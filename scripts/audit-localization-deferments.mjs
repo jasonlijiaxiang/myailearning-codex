@@ -113,37 +113,101 @@ function isChineseRendererProjectionObjectId(objectId) {
       || objectId.endsWith("/renderedProjection/sharedRendererHash"));
 }
 
-function chineseRendererProjectionState(state) {
+function isChineseEvidenceCardProjectionObjectId(objectId) {
+  return /\/renderedProjection\/evidenceCardIds\/(?:\$order|\d{3})$/.test(objectId);
+}
+
+function isRuntimeChineseProjectionObjectId(objectId, { includeEvidenceCardProjection = false } = {}) {
+  return isChineseRendererProjectionObjectId(objectId)
+    || (includeEvidenceCardProjection && isChineseEvidenceCardProjectionObjectId(objectId));
+}
+
+function chineseEvidenceCardProjectionEntries(state) {
+  return Object.entries(state.zhObjects)
+    .flatMap(([objectId, object]) => {
+      const match = objectId.match(/\/renderedProjection\/evidenceCardIds\/(\d{3})$/);
+      return match ? [[Number(match[1]), object.hash]] : [];
+    })
+    .sort(([left], [right]) => left - right);
+}
+
+// A complete-reader shell may reveal cards that were already authored but
+// hidden by an older focused projection. This is intentionally narrower than
+// a generic content change: the old ordered projection must remain intact and
+// the implementation may only append new card slots.
+export function hasAppendOnlyEvidenceCardProjectionDelta(before, after) {
+  const delta = diffObjectCatalogs(before.zhObjects, after.zhObjects);
+  const evidenceDelta = delta.filter(({ objectId }) => isChineseEvidenceCardProjectionObjectId(objectId));
+  if (!evidenceDelta.length) return false;
+  if (evidenceDelta.some(({ objectId, changeKind }) => (
+    objectId.endsWith("/$order")
+      ? changeKind !== "modified"
+      : changeKind !== "added"
+  ))) return false;
+
+  const beforeEntries = chineseEvidenceCardProjectionEntries(before);
+  const afterEntries = chineseEvidenceCardProjectionEntries(after);
+  if (!beforeEntries.every(([index], expected) => index === expected)) return false;
+  if (!afterEntries.every(([index], expected) => index === expected)) return false;
+  if (afterEntries.length <= beforeEntries.length) return false;
+  return beforeEntries.every(([index, hash]) => afterEntries[index]?.[1] === hash);
+}
+
+function evidenceCardProjectionDelta(before, after) {
+  return diffObjectCatalogs(before.zhObjects, after.zhObjects)
+    .filter(({ objectId }) => isChineseEvidenceCardProjectionObjectId(objectId));
+}
+
+function hasOnlyEvidenceCardProjectionDelta(before, after) {
+  const delta = diffObjectCatalogs(before.zhObjects, after.zhObjects);
+  return delta.length > 0
+    && delta.every(({ objectId }) => isChineseEvidenceCardProjectionObjectId(objectId))
+    && hasAppendOnlyEvidenceCardProjectionDelta(before, after);
+}
+
+// Compare the commit's full reader against the same commit reconstructed with
+// the former focused projection. A document-shell record may claim an evidence
+// expansion only when that exact, append-only delta accounts for the live
+// change; it cannot use the declaration to smuggle in authored content.
+function completeReaderEvidenceProjectionDelta(before, implementationLegacy, implementationComplete) {
+  if (!hasOnlyChineseRendererProjectionDelta(before, implementationLegacy)) return null;
+  if (!hasOnlyEvidenceCardProjectionDelta(implementationLegacy, implementationComplete)) return null;
+  const expected = evidenceCardProjectionDelta(implementationLegacy, implementationComplete);
+  const actual = evidenceCardProjectionDelta(before, implementationComplete);
+  return compareAffectedObjects(actual, expected) ? expected : null;
+}
+
+function chineseRendererProjectionState(state, options) {
   return {
     zhObjects: Object.fromEntries(Object.entries(state.zhObjects)
-      .filter(([objectId]) => isChineseRendererProjectionObjectId(objectId))
+      .filter(([objectId]) => isRuntimeChineseProjectionObjectId(objectId, options))
       .sort(([left], [right]) => left.localeCompare(right))),
     zhRendererFiles: [...state.zhRendererFiles],
   };
 }
 
-export function sameChineseRendererProjectionState(left, right) {
-  return same(chineseRendererProjectionState(left), chineseRendererProjectionState(right));
+export function sameChineseRendererProjectionState(left, right, options) {
+  return same(chineseRendererProjectionState(left, options), chineseRendererProjectionState(right, options));
 }
 
-export function matchesRegisteredDeferredChineseProjection(registry, slug, expectedState, actualState) {
+export function matchesRegisteredDeferredChineseProjection(registry, slug, expectedState, actualState, options) {
   const active = (registry.deferments ?? [])
     .filter((deferment) => deferment.moduleSlug === slug && deferment.status !== "closed");
   if (active.length !== 1) return false;
 
   const actualProjectionDelta = diffObjectCatalogs(expectedState.zhObjects, actualState.zhObjects)
-    .filter(({ objectId }) => isChineseRendererProjectionObjectId(objectId));
+    .filter(({ objectId }) => isRuntimeChineseProjectionObjectId(objectId, options));
   const registeredProjectionDelta = active[0].affectedObjects
-    .filter(({ objectId }) => isChineseRendererProjectionObjectId(objectId));
+    .filter(({ objectId }) => isRuntimeChineseProjectionObjectId(objectId, options));
   return actualProjectionDelta.length > 0
     && compareAffectedObjects(actualProjectionDelta, registeredProjectionDelta);
 }
 
-export function withRuntimeChineseBaseline(baseline, runtimeState) {
+export function withRuntimeChineseBaseline(baseline, runtimeState, options) {
   const baselineObjects = Object.entries(baseline.zhObjects)
-    .filter(([objectId]) => !isChineseRendererProjectionObjectId(objectId));
+    .filter(([objectId]) => !isRuntimeChineseProjectionObjectId(objectId, options));
   const runtimeProjectionObjects = Object.entries(runtimeState.zhObjects)
-    .filter(([objectId]) => isChineseRendererProjectionObjectId(objectId));
+    .filter(([objectId]) => isRuntimeChineseProjectionObjectId(objectId, options));
   return {
     ...baseline,
     zhObjects: Object.fromEntries([...baselineObjects, ...runtimeProjectionObjects]
@@ -160,12 +224,13 @@ export function rebaseActiveDefermentRendererProjection(registry, currentProject
     const runtimeOverlay = runtimeOverlays.get(deferment.moduleSlug);
     if (!baseline || !current || !runtimeOverlay) continue;
 
-    const runtimeBaseline = withRuntimeChineseBaseline(baseline, runtimeOverlay.state);
+    const projectionOptions = { includeEvidenceCardProjection: runtimeOverlay.includeEvidenceCardProjection };
+    const runtimeBaseline = withRuntimeChineseBaseline(baseline, runtimeOverlay.state, projectionOptions);
     const rebasedDelta = diffObjectCatalogs(runtimeBaseline.zhObjects, current.zhObjects);
     const registeredContentDelta = deferment.affectedObjects
-      .filter(({ objectId }) => !isChineseRendererProjectionObjectId(objectId));
+      .filter(({ objectId }) => !isRuntimeChineseProjectionObjectId(objectId, projectionOptions));
     const rebasedContentDelta = rebasedDelta
-      .filter(({ objectId }) => !isChineseRendererProjectionObjectId(objectId));
+      .filter(({ objectId }) => !isRuntimeChineseProjectionObjectId(objectId, projectionOptions));
     if (!compareAffectedObjects(registeredContentDelta, rebasedContentDelta)) {
       throw new Error(`${deferment.defermentId}: runtime maintenance cannot change the registered Chinese authored-content delta`);
     }
@@ -173,9 +238,9 @@ export function rebaseActiveDefermentRendererProjection(registry, currentProject
   }
 }
 
-export function hasOnlyChineseRendererProjectionDelta(before, after) {
+export function hasOnlyChineseRendererProjectionDelta(before, after, options) {
   const delta = diffObjectCatalogs(before.zhObjects, after.zhObjects);
-  return delta.length > 0 && delta.every(({ objectId }) => isChineseRendererProjectionObjectId(objectId));
+  return delta.length > 0 && delta.every(({ objectId }) => isRuntimeChineseProjectionObjectId(objectId, options));
 }
 
 function withRuntimeEnglishBaseline(baseline, runtimeState) {
@@ -392,7 +457,9 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     // maintenance. Its post-state still carries the document-shell Chinese
     // renderer projection, even though its own kind is english-renderer.
     const chineseBaseline = runtimeOverlay
-      ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state)
+      ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state, {
+        includeEvidenceCardProjection: runtimeOverlay.includeEvidenceCardProjection,
+      })
       : baseline;
 
     for (const [reviewId, expectedFile] of Object.entries(baseline.reviewFiles)) {
@@ -499,7 +566,7 @@ export function assertCanonicalRendererFileLists(project, expectedFilesBySlug) {
   }
 }
 
-export async function loadProjectAtCommit(commit, expectedFilesBySlug = {}) {
+export async function loadProjectAtCommit(commit, expectedFilesBySlug = {}, loaderOptions = {}) {
   const directory = await mkdtemp(path.join(os.tmpdir(), "kb-localization-baseline-"));
   try {
     const archive = execFileSync("git", ["archive", "--format=tar", commit], { cwd: root, maxBuffer: 64 * 1024 * 1024 });
@@ -532,6 +599,7 @@ export async function loadProjectAtCommit(commit, expectedFilesBySlug = {}) {
         englishReferenceScope: "directory",
         readerProjection: "legacy-focused",
       }),
+      ...loaderOptions,
     });
     assertCanonicalRendererFileLists(project, expectedFilesBySlug);
     return project;
@@ -692,9 +760,12 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
         continue;
       }
 
-      const [beforeProject, implementationProject] = await Promise.all([
+      const [beforeProject, implementationProject, implementationLegacyProject] = await Promise.all([
         loadProjectAtCommit(maintenance.baseCommit),
         loadProjectAtCommit(maintenance.implementationCommit),
+        documentShell && maintenance.contentProjectionChangeSlugs.length
+          ? loadProjectAtCommit(maintenance.implementationCommit, {}, { readerProjection: "legacy-focused" })
+          : null,
       ]);
       const derivedAffected = derivedAffectedModuleSlugs(beforeProject, implementationProject, maintenance.changedRendererFiles, {
         kind: maintenance.kind,
@@ -704,6 +775,18 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           ? `${label}: affectedModuleSlugs must exactly match the English module source paths`
           : `${label}: affectedModuleSlugs must exactly match the renderer dependency closure`);
         continue;
+      }
+
+      const expectedContentProjectionDeltas = new Map();
+      if (implementationLegacyProject) {
+        for (const slug of maintenance.contentProjectionChangeSlugs) {
+          const expected = completeReaderEvidenceProjectionDelta(
+            beforeProject.modules[slug],
+            implementationLegacyProject.modules[slug],
+            implementationProject.modules[slug],
+          );
+          if (expected?.length) expectedContentProjectionDeltas.set(slug, expected);
+        }
       }
 
       let baseRegistry = null;
@@ -721,14 +804,16 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           overlays.delete(slug);
           continue;
         }
-        const expectedBefore = overlays.get(slug)?.state ?? baseline;
+        const priorOverlay = overlays.get(slug);
+        const expectedBefore = priorOverlay?.state ?? baseline;
+        const projectionOptions = { includeEvidenceCardProjection: Boolean(priorOverlay?.includeEvidenceCardProjection) };
         if (!sameEnglishRuntimeState(before, expectedBefore)) {
           failures.push(`${label}: ${slug} base commit does not match the registered English baseline or prior runtime maintenance`);
           continue;
         }
-        if (!sameChineseRendererProjectionState(before, expectedBefore)) {
+        if (!sameChineseRendererProjectionState(before, expectedBefore, projectionOptions)) {
           baseRegistry ??= localizationRegistryAtCommit(maintenance.baseCommit);
-          if (!matchesRegisteredDeferredChineseProjection(baseRegistry, slug, expectedBefore, before)) {
+          if (!matchesRegisteredDeferredChineseProjection(baseRegistry, slug, expectedBefore, before, projectionOptions)) {
             failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer projection`);
             continue;
           }
@@ -742,19 +827,45 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
             failures.push(`${label}: ${slug} english-source-refactor must change only enAuthoredHash while preserving English effective/review/renderer/date/review files`);
             continue;
           }
-          overlays.set(slug, { maintenanceId: maintenance.maintenanceId, kind: maintenance.kind, state: after });
+          overlays.set(slug, {
+            maintenanceId: maintenance.maintenanceId,
+            kind: maintenance.kind,
+            state: after,
+            includeEvidenceCardProjection: projectionOptions.includeEvidenceCardProjection,
+          });
           continue;
         }
         if (documentShell) {
+          const contentProjectionDelta = evidenceCardProjectionDelta(before, after);
+          const declaresContentProjection = maintenance.contentProjectionChangeSlugs.includes(slug);
+          const expectedContentProjectionDelta = expectedContentProjectionDeltas.get(slug);
+          if (contentProjectionDelta.length && !declaresContentProjection) {
+            failures.push(`${label}: ${slug} changes a Chinese content projection without declaring it`);
+            continue;
+          }
+          if (contentProjectionDelta.length && !expectedContentProjectionDelta) {
+            failures.push(`${label}: ${slug} cannot prove its declared evidence projection is the complete-reader delta`);
+            continue;
+          }
+          if (expectedContentProjectionDelta && !compareAffectedObjects(contentProjectionDelta, expectedContentProjectionDelta)) {
+            failures.push(`${label}: ${slug} does not match the complete-reader evidence projection declared by its implementation`);
+            continue;
+          }
+          if (contentProjectionDelta.length && !hasAppendOnlyEvidenceCardProjectionDelta(before, after)) {
+            failures.push(`${label}: ${slug} may only append previously hidden evidence-card projection entries`);
+            continue;
+          }
+          const includeEvidenceCardProjection = Boolean(contentProjectionDelta.length);
           if (sameChineseRuntimeState(before, after)) {
             // One shared file can enter every English renderer closure while
             // entering only a subset of Chinese renderer closures.
-          } else if (!hasOnlyChineseRendererProjectionDelta(before, after)) {
+          } else if (!hasOnlyChineseRendererProjectionDelta(before, after, { includeEvidenceCardProjection })) {
             failures.push(`${label}: ${slug} changes Chinese reader content outside its renderer projection`);
             continue;
           } else {
             documentShellChangedChineseProjection = true;
           }
+          projectionOptions.includeEvidenceCardProjection ||= includeEvidenceCardProjection;
         } else if (!sameChineseRuntimeState(before, after)) {
           failures.push(`${label}: ${slug} changes Chinese renderer state; record a document-shell maintenance instead`);
           continue;
@@ -767,7 +878,12 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
           failures.push(`${label}: ${slug} has no effective English renderer change`);
           continue;
         }
-        overlays.set(slug, { maintenanceId: maintenance.maintenanceId, kind: maintenance.kind, state: after });
+        overlays.set(slug, {
+          maintenanceId: maintenance.maintenanceId,
+          kind: maintenance.kind,
+          state: after,
+          includeEvidenceCardProjection: projectionOptions.includeEvidenceCardProjection,
+        });
       }
       if (documentShell && !documentShellChangedChineseProjection) {
         failures.push(`${label}: document-shell maintenance has no Chinese renderer projection change`);
@@ -830,6 +946,23 @@ export function resolveRuntimeMaintenanceImplementationCommit(explicitImplementa
   return { baseCommit, implementationCommit };
 }
 
+async function detectCompleteReaderContentProjectionSlugs({ beforeProject, implementationProject, implementationCommit, affectedModuleSlugs }) {
+  const implementationLegacyProject = await loadProjectAtCommit(implementationCommit, {}, { readerProjection: "legacy-focused" });
+  const detected = [];
+  for (const slug of affectedModuleSlugs) {
+    const legacy = implementationLegacyProject.modules[slug];
+    const complete = implementationProject.modules[slug];
+    const actualEvidenceDelta = evidenceCardProjectionDelta(beforeProject.modules[slug], complete);
+    if (!actualEvidenceDelta.length) continue;
+    const expected = completeReaderEvidenceProjectionDelta(beforeProject.modules[slug], legacy, complete);
+    if (!expected?.length || !compareAffectedObjects(actualEvidenceDelta, expected)) {
+      throw new Error(`${slug}: --record-runtime-maintenance may only expose the exact append-only evidence-card delta from the complete reader`);
+    }
+    detected.push(slug);
+  }
+  return sorted(detected);
+}
+
 async function recordRuntimeMaintenance({ registry, schema, reviewSchema, currentProject, candidateIds }) {
   const recordIndex = process.argv.indexOf("--record-runtime-maintenance");
   const maintenanceId = process.argv[recordIndex + 1];
@@ -869,6 +1002,17 @@ async function recordRuntimeMaintenance({ registry, schema, reviewSchema, curren
     throw new Error(kind === "english-source-refactor"
       ? "--record-runtime-maintenance found no affected English module source closure"
       : "--record-runtime-maintenance found no affected English module renderer closure");
+  }
+  if (kind === "document-shell") {
+    const detectedContentProjectionSlugs = await detectCompleteReaderContentProjectionSlugs({
+      beforeProject,
+      implementationProject,
+      implementationCommit,
+      affectedModuleSlugs,
+    });
+    if (!same(detectedContentProjectionSlugs, contentProjectionChangeSlugs)) {
+      throw new Error(`--content-projection must exactly match the append-only complete-reader projection delta: ${detectedContentProjectionSlugs.join(", ") || "none"}`);
+    }
   }
 
   const candidateRegistry = structuredClone(registry);

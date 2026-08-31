@@ -96,7 +96,9 @@ function makeDeferredFixture(slug = "solution-patterns") {
   deferment.baselineReviewIds = [...baseline.reviewSetIds];
   const runtimeOverlay = runtimeOverlays.get(slug);
   const effectiveZhBaseline = runtimeOverlay
-    ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state).zhObjects
+    ? withRuntimeChineseBaseline(baseline, runtimeOverlay.state, {
+      includeEvidenceCardProjection: runtimeOverlay.includeEvidenceCardProjection,
+    }).zhObjects
     : baseline.zhObjects;
   deferment.affectedObjects = diffObjectCatalogs(effectiveZhBaseline, moduleState.zhObjects);
   for (const field of ["englishCandidate", "closedAt", "promotedCommit", "closureReviewIds", "closureReceipt"]) delete deferment[field];
