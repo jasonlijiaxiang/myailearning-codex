@@ -167,6 +167,9 @@ export function DenseModuleReadingModes({
   const copy = readerCopyByLocale[locale];
   const readingModes = copy.modes;
   const [activeMode, setActiveMode] = useState<ReadingModeId>(defaultMode);
+  // The server render is the no-JavaScript reading path. Keep every mode in
+  // that document, then collapse inactive panels only after enhancement.
+  const [isEnhanced, setIsEnhanced] = useState(false);
   const [activeAnchor, setActiveAnchor] = useState<string | undefined>();
   const [pendingHashReveal, setPendingHashReveal] = useState<{
     hash: string;
@@ -184,6 +187,11 @@ export function DenseModuleReadingModes({
   const activeDefinition = readingModes.find((mode) => mode.id === activeMode) ?? readingModes[0];
   const activeDirectory = directoryByMode[activeMode];
   const displayedActiveAnchor = activeDirectory.some((item) => item.id === activeAnchor) ? activeAnchor : activeDirectory[0]?.id;
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setIsEnhanced(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const revealHash = useCallback((hash: string) => {
     if (!hash.replace(/^#/, "")) {
@@ -340,7 +348,7 @@ export function DenseModuleReadingModes({
             <div
               aria-labelledby={`${tabsId}-${mode.id}-tab`}
               className={`moduleModePanel moduleModePanel--${mode.id} ${styles.panel}`}
-              hidden={activeMode !== mode.id}
+              hidden={isEnhanced && activeMode !== mode.id}
               id={`${tabsId}-${mode.id}`}
               key={mode.id}
               role="tabpanel"

@@ -6,21 +6,18 @@ import { notFound } from "next/navigation";
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../../knowledge-map.mjs";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { requireModuleBrief } from "../../../module-brief-content.mjs";
-import { CriticalBoundary, ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleHeroMetrics, ModuleLearningStudio, ModuleQaList, ModuleSectionHeader, ModuleUpdatedAt } from "../../../module-content-components";
+import { ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleLearningStudio, ModuleQaList, ModuleSectionHeader, ModuleUpdatedAt } from "../../../module-content-components";
 import type { DeepDiveBlock, ModuleCurriculumContent, ModuleLearningContent } from "../../../module-content-components";
 import { requireModuleCurriculum } from "../../../module-curriculum-content.mjs";
 import { requireModuleLearning } from "../../../module-learning-content.mjs";
-import { ReadingProgress } from "../../../fieldbook-interactions";
 import { ModuleDecisionWorkbench } from "../../../module-decision-workbench";
 import { getChineseModuleExtensionView } from "../../../module-extension-views-zh.mjs";
 import { getPublishedModule, hasDedicatedModule } from "../../../module-publication.mjs";
-import { ModuleReadingModes } from "../../../module-reading-modes";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { requireTerm } from "../../../terminology.mjs";
 import { SharedModulePrimer } from "../../../module-pilot-views";
-import { englishModulePath } from "../../../i18n/locale-config.mjs";
 import { getUnifiedBriefModuleConfig } from "../../../unified-brief-module-config.mjs";
-import { UnifiedBriefModulePage } from "../../../unified-brief-module-page";
+import { buildBriefModuleDirectories, UnifiedBriefModulePage } from "../../../unified-brief-module-page";
 
 type ModulePageProps = { params: Promise<{ slug: string }> };
 
@@ -161,6 +158,17 @@ export default async function ModulePage({ params }: ModulePageProps) {
     const { InferenceModulePage } = await import("../../../inference-module-page");
     return <InferenceModulePage />;
   }
+  // Static routes own MCP and A2A, but historical aliases still resolve through
+  // this dynamic route. Preserve their canonical specialized reader instead of
+  // treating their absence from the generic presentation config as an error.
+  if (currentModule.canonicalSlug === "mcp") {
+    const { McpModuleExperience } = await import("../../../mcp-module-experience");
+    return <McpModuleExperience />;
+  }
+  if (currentModule.canonicalSlug === "a2a") {
+    const { A2AModuleExperience } = await import("../../../a2a-module-experience");
+    return <A2AModuleExperience />;
+  }
   if (hasDedicatedModule(currentModule.canonicalSlug)) notFound();
 
   const brief = requireModuleBrief(currentModule.canonicalSlug) as ModuleBrief;
@@ -177,19 +185,23 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const hasDeepDives = Boolean(brief.deepDives?.length);
   const usesDenseReadingProfile = publication.visualProfile === "dense-reading";
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
-  const englishPath = englishModulePath(currentModule.canonicalSlug);
   const extensionView = getChineseModuleExtensionView(currentModule.canonicalSlug) ?? undefined;
   const primerOwnsPrincipleId = ["decision-blueprint", "mcp-host-server-boundary", "latency-capacity-map"].includes(publication.knowledgeView ?? "");
   const primerDecisionCount = primerOwnsPrincipleId ? 4 : 0;
   const remainingDecisions = brief.decisions.slice(primerDecisionCount);
   const pageClassName = `fieldbookTheme modulePage moduleBriefPage${usesDenseReadingProfile ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`;
   const unifiedConfig = getUnifiedBriefModuleConfig(currentModule.canonicalSlug);
-  const primer = <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} showCriticalBoundary={!unifiedConfig} />;
-  const decisionSection = (showCriticalBoundary: boolean) => remainingDecisions.length ? (
+  if (!unifiedConfig) throw new Error(`Missing unified reader configuration for published brief: ${currentModule.canonicalSlug}`);
+  const directories = buildBriefModuleDirectories({
+    hasDeepDives,
+    mechanismId: unifiedConfig.mechanismId,
+    primer: unifiedConfig.primer,
+  });
+  const primer = <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} showCriticalBoundary={false} />;
+  const decisionSection = remainingDecisions.length ? (
     <section className="subsection moduleBriefSection" id="decisions" data-quality-section="decisions">
       <ModuleSectionHeader code="Q1" title="方案判断" />
       <ModuleDecisionWorkbench decisions={remainingDecisions} moduleName={currentModule.zh} />
-      {showCriticalBoundary && !usesFocusedReadingProfile ? <CriticalBoundary>{brief.criticalBoundary}</CriticalBoundary> : null}
     </section>
   ) : null;
   const learnContent = (
@@ -256,69 +268,30 @@ export default async function ModulePage({ params }: ModulePageProps) {
   );
   const pageFooter = <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>;
 
-  if (unifiedConfig) {
-    return (
-      <UnifiedBriefModulePage
-        className={pageClassName}
-        contentAriaLabel={`${currentModule.zh}核心内容`}
-        criticalBoundary={brief.criticalBoundary}
-        directories={unifiedConfig.directories}
-        field={fieldContent}
-        footer={pageFooter}
-        hero={{
-          anchorId: "top",
-          titleId: publication.titleId,
-          shortTitle: unifiedConfig.shortTitle,
-          zhTitle: currentModule.zh,
-          enTitle: currentModule.en,
-          definition: brief.definition,
-          position: brief.position,
-          slug: currentModule.canonicalSlug,
-          questionCount: brief.qa.length,
-          evidenceCount: brief.evidenceCards.length,
-          facts: unifiedConfig.facts,
-        }}
-        learn={learnContent}
-        moduleName={currentModule.zh}
-        quick={<>{primer}{decisionSection(false)}</>}
-      />
-    );
-  }
-
   return (
-    <main className={pageClassName}>
-      <ReadingProgress />
-      <header className="modulePageHero moduleBriefHero" id="top">
-        <nav className="topbar" aria-label="模块导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页"><span>Cloud × AI / Presales Fieldbook</span></Link>
-          <div className="toplinks"><a href="#module-reading">选择阅读方式</a><Link href={`/questions?module=${currentModule.canonicalSlug}`}>本模块问答</Link><Link href="/glossary">术语库</Link><Link href="/references">来源</Link>{englishPath ? <Link href={englishPath} hrefLang="en" lang="en" prefetch={false}>English</Link> : null}</div>
-        </nav>
-        <div id="main-content" className="skipTarget" tabIndex={-1} />
-        <div className="moduleBriefHeader">
-          {!usesFocusedReadingProfile ? <p className="eyebrow">MODULE {currentModule.layerNo} · {currentModule.layerEn}</p> : null}
-          <h1 className="moduleHeroTitle" id={publication.titleId}>{currentModule.zh}<span>{currentModule.en}</span></h1>
-          <p className="moduleBriefDefinition">{brief.definition}</p>
-          <p className="moduleBriefPosition">{brief.position}</p>
-          <ModuleHeroMetrics
-            sectionCount={3}
-            questionCount={brief.qa.length}
-            evidenceCount={brief.evidenceCards.length}
-            labels={{ ariaLabel: "模块内容概览", sections: "阅读方式", sectionUnit: "种", questions: "问题库", questionUnit: "题", evidence: "证据卡", evidenceUnit: "张" }}
-          />
-        </div>
-      </header>
-
-      <ModuleReadingModes
-        moduleName={currentModule.zh}
-        hashGroups={primerOwnsPrincipleId
-          ? { quick: ["principle", "decisions"], learn: ["mechanism-summary"] }
-          : { quick: ["decisions"], learn: ["principle"] }}
-        quick={<>{primer}{decisionSection(true)}</>}
-        learn={learnContent}
-        field={fieldContent}
-      />
-
-      {pageFooter}
-    </main>
+    <UnifiedBriefModulePage
+      className={pageClassName}
+      contentAriaLabel={`${currentModule.zh}核心内容`}
+      criticalBoundary={brief.criticalBoundary}
+      directories={directories}
+      field={fieldContent}
+      footer={pageFooter}
+      hero={{
+        anchorId: "top",
+        titleId: publication.titleId,
+        shortTitle: unifiedConfig.shortTitle,
+        zhTitle: currentModule.zh,
+        enTitle: currentModule.en,
+        definition: brief.definition,
+        position: brief.position,
+        slug: currentModule.canonicalSlug,
+        questionCount: brief.qa.length,
+        evidenceCount: brief.evidenceCards.length,
+        facts: unifiedConfig.facts,
+      }}
+      learn={learnContent}
+      moduleName={currentModule.zh}
+      quick={<>{primer}{decisionSection}</>}
+    />
   );
 }

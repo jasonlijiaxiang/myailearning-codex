@@ -1,29 +1,9 @@
-function freezeDirectory(items) {
-  return Object.freeze(items.map((item) => Object.freeze(item)));
-}
-
 function defineConfig({ facts, mechanismId = "principle", primer, shortTitle }) {
-  const quick = freezeDirectory([
-    primer,
-    { id: "decisions", label: "方案判断", eyebrow: "明确责任转交" },
-  ]);
-  const learn = freezeDirectory([
-    { id: mechanismId, label: "机制速览", eyebrow: "建立工作模型" },
-    { id: "study-guide", label: "学习与练习", eyebrow: "形成可复核产物" },
-    { id: "curriculum", label: "知识地图", eyebrow: "补齐理论版图" },
-    { id: "deep-dive", label: "工程深挖", eyebrow: "定位失败与边界" },
-  ]);
-  const field = freezeDirectory([
-    { id: "evidence", label: "证据与边界", eyebrow: "说明来源能证明什么" },
-    { id: "cloud", label: "云能力与责任", eyebrow: "连接交付与验收" },
-    { id: "qa", label: "客户问题", eyebrow: "带边界回答" },
-    { id: "related-modules", label: "相关模块", eyebrow: "查看上下游主题" },
-  ]);
-
   return Object.freeze({
     shortTitle,
     facts: Object.freeze(facts.map((fact) => Object.freeze(fact))),
-    directories: Object.freeze({ quick, learn, field }),
+    mechanismId,
+    primer: Object.freeze(primer),
   });
 }
 
@@ -200,8 +180,6 @@ const configs = Object.freeze({
     ],
   }),
 });
-
-export const unifiedBriefModuleSlugs = Object.freeze(Object.keys(configs));
 
 export function getUnifiedBriefModuleConfig(slug) {
   return configs[slug] ?? null;
