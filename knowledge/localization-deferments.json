@@ -331,6 +331,13 @@
       "recordedAt": "2026-08-31",
       "decisionId": "module-reading-modes-2026-08-24",
       "summary": "English renderer maintenance erm-batch08-unified-readers-2026-08-31: Added the AI compute and infrastructure platform reader configurations to the shared English projection while preserving their complete authored mechanisms, evidence, questions, stable hashes, and accessibility without changing authored module data, metadata, sources, or publication dates."
+    },
+    {
+      "receiptId": "receipt-unified-reader-runtime-accessibility-2026-08-31",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-31",
+      "decisionId": "DEC-UNIFIED-READER-RUNTIME-ACCESSIBILITY-2026-08-31",
+      "summary": "English renderer maintenance erm-unified-reader-runtime-accessibility-2026-08-31: Unified reader no-JavaScript accessibility, fail-closed generic routing, and directory runtime hardening."
     }
   ],
   "moduleBaselines": {
@@ -41454,6 +41461,51 @@
       ],
       "metadataScope": "none",
       "summary": "Added the AI compute and infrastructure platform reader configurations to the shared English projection while preserving their complete authored mechanisms, evidence, questions, stable hashes, and accessibility without changing authored module data, metadata, sources, or publication dates."
+    },
+    {
+      "maintenanceId": "erm-unified-reader-runtime-accessibility-2026-08-31",
+      "status": "applied",
+      "kind": "document-shell",
+      "decisionId": "DEC-UNIFIED-READER-RUNTIME-ACCESSIBILITY-2026-08-31",
+      "recordedAt": "2026-08-31",
+      "baseCommit": "7253ea35ecaaa84a404b8cbc229a5fa5745c36c3",
+      "implementationCommit": "9106021ace731fbb237cbe7a9da826639b5f8845",
+      "receiptId": "receipt-unified-reader-runtime-accessibility-2026-08-31",
+      "changedRendererFiles": [
+        "app/(zh)/modules/[slug]/page.tsx",
+        "app/dense-module-reading-modes.tsx",
+        "app/module-reading-modes.tsx",
+        "app/unified-brief-module-config.mjs",
+        "app/unified-brief-module-page.tsx"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "agentkit",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns",
+        "veadk"
+      ],
+      "contentProjectionChangeSlugs": [],
+      "metadataScope": "none",
+      "summary": "Unified reader no-JavaScript accessibility, fail-closed generic routing, and directory runtime hardening."
     }
   ],
   "deferments": [
