@@ -667,3 +667,31 @@
   .inferenceStudio *::before,
   .inferenceStudio *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* Release floor: field interpretation and authored learning explanations. */
+.inferenceFieldOverview p,
+.inferenceFieldSection > header p,
+.inferenceMechanismIndex :is(h3, p, strong),
+.inferenceDecisionGuide summary strong,
+.inferenceDecisionGuide details p,
+.inferenceBoundarySection blockquote :is(strong, p),
+.inferenceFieldContent .focusedCloudRows :is(h3, p),
+.inspectorMetric > p,
+.caseNarrative :is(p, li),
+.caseAction li,
+.caseAcceptance,
+.capacityConclusion :is(p, li),
+.chapterBrief > p,
+.chapterBrief dd,
+.learningOutcomeList li,
+.learningStart p,
+.learningFullRoute p,
+.learningLabList dd,
+.capacityExperiment form > p,
+.capacityMetricCards p { font-size: 16px; }
+
+/* Explicit secondary field and evidence aids retain a readable minimum. */
+.inferenceFieldIntro span,
+.inferenceDecisionGuide details b,
+.inferenceFieldContent .focusedCloudRows small,
+.inferenceFigureNote { font-size: 14px; }

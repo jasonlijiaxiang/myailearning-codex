@@ -3310,3 +3310,62 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
     grid-column: 1;
   }
 }
+
+/*
+ * Release floor: decision evidence, curriculum content and interactive
+ * explanations remain readable knowledge body at every viewport.
+ */
+.fieldbookTheme.modulePage .moduleDecisionWorkbench > header p,
+.fieldbookTheme.modulePage .moduleDecisionCanvas dd,
+.fieldbookTheme.modulePage .qaBasisNote,
+.fieldbookTheme.modulePage .qaNextQuestion,
+.curriculumChapter summary > strong,
+.curriculumChapterBody dd,
+.relationDetail :is(p, strong),
+.diagnosticPath :is(p, strong),
+.diagnosticBoundary,
+.relationMatrix tbody :is(th, td),
+.relationMatrixFocus,
+.deepDiveEditorialChecklist :is(strong, em),
+.relationSequence button strong,
+.relationScenario button strong,
+.relationDiagnostic nav button strong,
+.knowledgeStepDetail > :is(p, strong),
+.ragSharedControls p,
+.agentAuthorityFlow article p,
+.agentRiskSelector output strong,
+.llmStageDetail p,
+.llmStageDetail > strong,
+.llmAttentionLens > div strong,
+.llmAttentionLens > p,
+.securitySourceSinkPath li > small,
+.securityBarrierDetail > :is(p, strong),
+.tuningRouteDecision article > p,
+.tuningRouteDecision dd,
+.tuningReleasePath button small,
+.cloudIntro p,
+.solutionBundles p:not(.miniLabel) { font-size: 16px; }
+
+/* Source and navigation support may be secondary, but never microcopy. */
+.fieldbookTheme.modulePage .qaBasisList small,
+.fieldbookTheme.modulePage .focusedCloudRows small,
+.solutionBundles small,
+.fieldbookTheme.modulePage .moduleModeGuide dd { font-size: 14px; }
+
+/*
+ * The focused solution reader keeps a desktop directory through 1180px, so its
+ * article column is narrower than the viewport. Collapse its wide decision
+ * diagrams before their fixed content tracks can widen the document.
+ */
+@media (min-width: 901px) and (max-width: 1180px) {
+  .solutionDecisionLoop ol { grid-template-columns: repeat(2,minmax(0,1fr)); row-gap: 16px; }
+  .solutionDecisionLoop li { grid-column: auto; }
+  .solutionDecisionLoop li > i,
+  .solutionFeedbackPaths { display: none; }
+  .solutionStageDetail { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 18px; }
+  .solutionStageDetail > p:last-child { grid-column: 1 / -1; }
+  .solutionCapabilityMatrixHead,
+  .solutionCapabilityMatrixRow { grid-template-columns: minmax(0,.45fr) minmax(0,1fr) minmax(0,1.1fr); gap: 14px; }
+  .solutionCapabilityMatrixHead span:nth-child(3),
+  .solutionCapabilityMatrixRow p:nth-child(3) { display: none; }
+}

@@ -8,6 +8,13 @@ const sharedHeroComponentUrl = new URL("../app/unified-module-hero.tsx", import.
 const sharedChineseModuleUrl = new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url);
 const unifiedBriefComponentUrl = new URL("../app/unified-brief-module-page.tsx", import.meta.url);
 const denseReaderComponentUrl = new URL("../app/dense-module-reading-modes.tsx", import.meta.url);
+const denseReaderStylesUrl = new URL("../app/dense-module-reading-modes.module.css", import.meta.url);
+const fieldbookV2StylesUrl = new URL("../app/fieldbook-v2.css", import.meta.url);
+const fieldbookV3StylesUrl = new URL("../app/fieldbook-v3.css", import.meta.url);
+const agentReaderStylesUrl = new URL("../app/agent-dense-reader.module.css", import.meta.url);
+const mcpStylesUrl = new URL("../app/mcp-module-experience.module.css", import.meta.url);
+const a2aStylesUrl = new URL("../app/a2a-module-experience.module.css", import.meta.url);
+const inferenceStylesUrl = new URL("../app/inference-studio.css", import.meta.url);
 const englishModuleComponentUrl = new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url);
 const qaInteractionComponentUrl = new URL("../app/fieldbook-interactions.tsx", import.meta.url);
 const a2aComponentUrl = new URL("../app/a2a-module-experience.tsx", import.meta.url);
@@ -129,6 +136,14 @@ function assertRole(rules, selector, contract) {
       assert.ok(normalizedAllowed.includes(actualValue), `${selector} 的 ${property} 不得漂移为 ${actualValue}`);
     }
   }
+}
+
+function assertFinalFontSize(rules, selector, expected) {
+  const matches = rules.filter((rule) => rule.selector === selector);
+  assert.ok(matches.length > 0, `缺少字号发布门槛：${selector}`);
+  const values = matches.flatMap((rule) => rule.declarations.get("font-size") ?? []);
+  assert.ok(values.length > 0, `${selector} 必须直接声明 font-size`);
+  assert.equal(values.at(-1), expected, `${selector} 的最终字号必须为 ${expected}`);
 }
 
 test("shared visual tokens have one owner and one documented meaning", async () => {
@@ -287,13 +302,15 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
   assert.ok(heroIndex > 0 && contentIndex > heroIndex, "共享 Hero 必须是模块内容根的前置兄弟节点");
   assert.match(componentSource, /<main[^>]+id="main-content"[^>]+data-module-content="unified"/s);
   assert.doesNotMatch(componentSource, /--fb-[a-z0-9-]+\s*:/, "共享组件不得按模块内联覆盖全站基础 Token");
-  const chineseUnifiedBranchStart = sharedChineseSource.indexOf("if (unifiedConfig)");
-  const chineseLegacyBranchStart = sharedChineseSource.indexOf("\n  return (\n    <main", chineseUnifiedBranchStart);
-  assert.ok(chineseUnifiedBranchStart > 0 && chineseLegacyBranchStart > chineseUnifiedBranchStart, "中文混合 brief renderer 必须保持可识别的统一与旧版分支边界");
-  assert.match(sharedChineseSource.slice(chineseUnifiedBranchStart, chineseLegacyBranchStart), /<UnifiedBriefModulePage\b/);
-  assert.doesNotMatch(sharedChineseSource.slice(chineseUnifiedBranchStart, chineseLegacyBranchStart), /<ReadingProgress\b/, "中文统一分支不得复制旧版页面外壳");
+  assert.match(sharedChineseSource, /if \(!unifiedConfig\) throw new Error\(`Missing unified reader configuration for published brief:/);
+  assert.match(sharedChineseSource, /const directories = buildBriefModuleDirectories\(/);
+  assert.match(sharedChineseSource, /return \(\s*<UnifiedBriefModulePage\b/s);
+  assert.doesNotMatch(sharedChineseSource, /\bModuleReadingModes\b/, "中文 brief route 不得保留旧阅读器回退");
+  assert.doesNotMatch(sharedChineseSource, /<ReadingProgress\b/, "中文 brief route 不得复制旧版页面外壳");
+  assert.doesNotMatch(sharedChineseSource, /<main\b/, "中文 brief route 必须无条件交给共享页面外壳");
   assert.match(unifiedBriefSource, /<UnifiedModuleScaffold\b/);
   assert.match(unifiedBriefSource, /<DenseModuleReadingModes\b/);
+  assert.match(unifiedBriefSource, /hasDeepDives \? \[\{ id: "deep-dive"/, "目录只能在真实深挖存在时列出工程深挖入口");
   assert.doesNotMatch(unifiedBriefSource, /<UnifiedModuleHero\b|<ReadingProgress\b/, "共享 brief wrapper 不得拆开共享页面边界");
 
   const sourceEntries = appEntries.filter((entry) => /\.(?:tsx|jsx)$/.test(entry) && entry !== "unified-module-hero.tsx");
@@ -315,6 +332,49 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
     assert.doesNotMatch(source, /--fb-[a-z0-9-]+\s*:/, `${entry} 不得以内联样式覆盖全站基础 Token`);
   }
   assert.ok(scaffoldEntries.length >= 5, "当前迁移批次必须包含共享 brief wrapper 及既有专用模块接入点");
+});
+
+test("knowledge prose keeps its release typography floor across every module family", async () => {
+  const [denseReader, fieldbookV2, fieldbookV3, agentReader, mcp, a2a, inference] = await Promise.all([
+    readFile(denseReaderStylesUrl, "utf8"),
+    readFile(fieldbookV2StylesUrl, "utf8"),
+    readFile(fieldbookV3StylesUrl, "utf8"),
+    readFile(agentReaderStylesUrl, "utf8"),
+    readFile(mcpStylesUrl, "utf8"),
+    readFile(a2aStylesUrl, "utf8"),
+    readFile(inferenceStylesUrl, "utf8"),
+  ]);
+
+  const sixteenPixelKnowledge = [
+    [cssRules(denseReader), ".boundary p"],
+    [cssRules(fieldbookV2), ".briefPrinciples strong"],
+    [cssRules(fieldbookV3), ".fieldbookTheme.modulePage .qaBasisNote"],
+    [cssRules(agentReader), ".reader :global(:is(.tableWrap, .cloudTable) table)"],
+    [cssRules(agentReader), ".knowledgeDigest"],
+    [cssRules(mcp), ".qaAsk"],
+    [cssRules(mcp), ".cloudRow > *"],
+    [cssRules(mcp), ".cloudRow > strong"],
+    [cssRules(a2a), ".fieldQuestions details p"],
+    [cssRules(a2a), ".bindingTable tbody :is(th, td)"],
+    [cssRules(inference), ".inferenceDecisionGuide details p"],
+    [cssRules(inference), ".chapterBrief > p"],
+  ];
+  for (const [rules, selector] of sixteenPixelKnowledge) assertFinalFontSize(rules, selector, "16px");
+
+  const fourteenPixelSupport = [
+    [cssRules(fieldbookV3), ".fieldbookTheme.modulePage .qaBasisList small"],
+    [cssRules(agentReader), ".reader :global(.mechanicGrid small)"],
+    [cssRules(mcp), ".sourceList article a"],
+    [cssRules(a2a), ".fieldRail :is(dd, p, li, nav a)"],
+    [cssRules(inference), ".inferenceFieldContent .focusedCloudRows small"],
+  ];
+  for (const [rules, selector] of fourteenPixelSupport) assertFinalFontSize(rules, selector, "14px");
+
+  assert.match(
+    fieldbookV3,
+    /@media \(min-width: 901px\) and \(max-width: 1180px\) \{[\s\S]*?\.solutionDecisionLoop ol \{ grid-template-columns: repeat\(2,minmax\(0,1fr\)\);[\s\S]*?\.solutionCapabilityMatrixRow \{ grid-template-columns: minmax\(0,\.45fr\) minmax\(0,1fr\) minmax\(0,1\.1fr\);/,
+    "聚焦方案页必须在保留目录的中等宽度先重排宽轨内容，不能扩展整个文档",
+  );
 });
 
 test("unified deep links and comparison tables keep their accessibility ownership", async () => {

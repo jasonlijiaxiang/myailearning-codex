@@ -1342,3 +1342,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
   .tuningEvidenceChecks { grid-template-columns: 1fr; }
   .securityRiskAtlas article:last-child { grid-column: 1; }
 }
+
+/* Release floor: concepts and learning-route decisions are knowledge body. */
+.briefPrinciples strong,
+.learningRoute li strong { font-size: 16px; }

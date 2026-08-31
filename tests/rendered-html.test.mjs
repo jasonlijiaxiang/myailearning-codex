@@ -476,7 +476,7 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
     renderHtml("/modules/evaluation"),
     readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/module-reading-modes.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/dense-module-reading-modes.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
@@ -749,6 +749,11 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
     assert.match(html, /建模型/);
     assert.match(html, /带证据/);
     assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
+    const readerPanels = [...html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bmoduleModePanel\b[^"]*")(?=[^>]*\bdata-reading-mode="(?:quick|learn|field)")[^>]*>/g)].map(([tag]) => tag);
+    assert.equal(readerPanels.length, 3, `${paths[index]} SSR 必须输出三种阅读面板`);
+    for (const panel of readerPanels) {
+      assert.doesNotMatch(panel, /\shidden(?:\s|=|>)/i, `${paths[index]} 无 JavaScript 时不得隐藏阅读内容`);
+    }
   }
 
   const [ragRoute, agentRoute, mcpRoute, a2aRoute, promptRoute, readerSource, qaInteractionSource, heroSource, relationSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
@@ -771,6 +776,9 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
     assert.match(routeSource, /DenseModuleReadingModes/);
   }
   assert.match(readerSource, /aria-current=\{activeId === item\.id \? "location"/);
+  assert.match(readerSource, /const \[isEnhanced, setIsEnhanced\] = useState\(false\);/);
+  assert.match(readerSource, /useEffect\(\(\) => \{\s*const frame = window\.requestAnimationFrame\(\(\) => setIsEnhanced\(true\)\);[\s\S]*window\.cancelAnimationFrame\(frame\);\s*\}, \[\]\);/);
+  assert.match(readerSource, /hidden=\{isEnhanced && activeMode !== mode\.id\}/);
   assert.match(readerSource, /IntersectionObserver/);
   assert.match(readerSource, /closest<HTMLElement>\("\[data-reading-mode\]"\)/, "嵌套深链必须自动识别所属阅读面板");
   assert.match(readerSource, /function directoryAnchorForTarget\(/, "嵌套深链必须解析到最近的目录所有者");
@@ -2566,7 +2574,7 @@ test("public page shells expose one real skip target after navigation without de
     assert.doesNotMatch(source, /V2\.0/, `${relativePath} 不得显示装饰性维护版本号`);
   }
 
-  assert.equal(pagesWithTopbar.length, 16, "传统公开页面壳必须全部进入 skip-link 回归范围");
+  assert.equal(pagesWithTopbar.length, 15, "仍自行拥有传统 topbar 的公开页面壳必须全部进入 skip-link 回归范围");
   const unifiedHero = await readFile(new URL("unified-module-hero.tsx", appRoot), "utf8");
   assert.equal((unifiedHero.match(/id="main-content"/g) ?? []).length, 1, "共享模块 Hero 必须只有一个主内容跳转目标");
   assert.ok(unifiedHero.indexOf('id="main-content"') > unifiedHero.indexOf("</nav>"), "共享模块 Hero 的跳转目标必须位于导航之后");

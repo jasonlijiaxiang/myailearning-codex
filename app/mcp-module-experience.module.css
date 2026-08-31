@@ -468,3 +468,39 @@
 @media (prefers-reduced-motion: reduce) {
   .page { scroll-behavior: auto; }
 }
+
+/* Release floor: MCP explanations, Q&A and comparison bodies are knowledge body. */
+.boundaryBar p,
+.sectionHeader p,
+.termLedger :is(strong, p),
+.protocolPrimer > *,
+.decisionWorkbench > article :is(p, strong),
+.deepDive > header p,
+.deepDiveRow > :is(div, p),
+.versionCompare p,
+.fullBoundary,
+.principleGrid :is(p, strong),
+.outcomes li,
+.routeSteps :is(p, strong),
+.curriculumIntro p,
+.chapter > header > strong,
+.chapterBoundary,
+.mechanismDisclosure > p,
+.mechanismDisclosure li,
+.qaLead,
+.qaAsk,
+.labGrid > article > p,
+.labGrid dd,
+.evidenceGrid > article > p,
+.cloudRow > *,
+.cloudRow > strong,
+.lifecycleGrid strong,
+.lifecycleTasks li { font-size: 16px; }
+
+/* Source and reference context stays readable without competing with body copy. */
+.sourceList article :is(strong, p),
+.sourceList article a,
+.contextRail section p,
+.mechanismDisclosure > strong,
+.deepDiveHead strong,
+.cloudHead strong { font-size: 14px; }

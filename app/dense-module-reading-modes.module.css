@@ -110,3 +110,6 @@
   .mobileDirectory a { min-height: 58px; padding: 9px 8px; }
   .panels :global([id]) { scroll-margin-top: 78px; }
 }
+
+/* Release floor: a boundary statement is knowledge body, not reader chrome. */
+.boundary p { font-size: 16px; }

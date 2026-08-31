@@ -22,7 +22,7 @@ import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { getPublishedModule, hasDedicatedModule, publishedModuleSlugs } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
 import { terminology } from "../app/terminology.mjs";
-import { getUnifiedBriefModuleConfig, unifiedBriefModuleSlugs } from "../app/unified-brief-module-config.mjs";
+import { getUnifiedBriefModuleConfig } from "../app/unified-brief-module-config.mjs";
 import { loadPromotedProjects, loadRuntimeMaintenanceOverlays, validateLocalizationRegistry } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import { loadLocalizationProject } from "../scripts/lib/localization-contract.mjs";
@@ -816,7 +816,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
     readFile(new URL("../app/(en)/en/modules/rag/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8"),
   ]);
-  assert.match(sharedZh, /englishModulePath/);
+  assert.match(sharedZh, /UnifiedBriefModulePage/);
   assert.match(ragZh, /UnifiedModuleScaffold/);
   assert.doesNotMatch(ragZh, /<nav className="topbar"|<ReadingProgress\b/, "RAG must not duplicate the shared page shell");
   assert.match(agentZh, /UnifiedModuleScaffold/);
@@ -834,15 +834,6 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.match(enModulePage, /locale="en"/);
   for (const groupId of ["concept-map", "when-to-use", "rag-principle", "architecture", "retrieval-basics", "production-rag", "choice", "rag-independent-depth", "poc", "rag-variants", "rag-evidence-practice", "cloud-opportunities", "rag-customer-question-guide"]) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
-  }
-  assert.deepEqual(unifiedBriefModuleSlugs, ["solution-patterns", "model-landscape", "multimodal", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "llm", "fine-tuning", "llm-training", "data-engineering", "ai-infra-compute", "ai-infra-platform"]);
-  for (const slug of unifiedBriefModuleSlugs) {
-    const config = getUnifiedBriefModuleConfig(slug);
-    assert.ok(config, `${slug} must have a Chinese unified-reader config`);
-    assert.deepEqual(config.directories.quick.map((item) => item.id).slice(1), ["decisions"]);
-    assert.deepEqual(config.directories.learn.map((item) => item.id), [slug === "solution-patterns" ? "mechanism-summary" : "principle", "study-guide", "curriculum", "deep-dive"]);
-    assert.deepEqual(config.directories.field.map((item) => item.id), ["evidence", "cloud", "qa", "related-modules"]);
-    assert.equal(config.facts.length, 4);
   }
   const batch07ChineseReaders = {
     "fine-tuning": {
@@ -869,7 +860,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   for (const [slug, expected] of Object.entries(batch07ChineseReaders)) {
     const config = getUnifiedBriefModuleConfig(slug);
     assert.equal(config.shortTitle, expected.shortTitle);
-    assert.deepEqual(config.directories.quick[0], expected.primer);
+    assert.deepEqual(config.primer, expected.primer);
     assert.deepEqual(config.facts, expected.facts);
   }
   const batch08ChineseReaders = {
@@ -897,7 +888,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   for (const [slug, expected] of Object.entries(batch08ChineseReaders)) {
     const config = getUnifiedBriefModuleConfig(slug);
     assert.equal(config.shortTitle, expected.shortTitle);
-    assert.deepEqual(config.directories.quick[0], expected.primer);
+    assert.deepEqual(config.primer, expected.primer);
     assert.deepEqual(config.facts, expected.facts);
   }
   for (const slug of ["solution-patterns", "model-landscape", "multimodal", "llm", "fine-tuning", "llm-training", "llm-inference", "data-engineering", "ai-infra-compute", "ai-infra-platform", "ai-agent", "mcp", "a2a", "veadk", "agentkit", "evaluation", "ai-governance", "security", "ai-gateway", "ai-ops", "predictive-ai-mlops", "prompt-engineering"]) {
