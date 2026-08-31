@@ -352,6 +352,13 @@
       "recordedAt": "2026-08-31",
       "decisionId": "DEC-COMPLETE-READER-PROJECTION-2026-08-31",
       "summary": "English renderer maintenance erm-complete-reader-projection-2026-08-31: Removed positional and fixed-capacity reader projections so every published mechanism, decision, evidence card, question, module, and graph relation remains discoverable while focused views retain their reading structure."
+    },
+    {
+      "receiptId": "receipt-english-source-identity-2026-08-31",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-08-31",
+      "decisionId": "DEC-ENGLISH-SOURCE-IDENTITY-2026-08-31",
+      "summary": "English source refactor maintenance erm-english-source-identity-2026-08-31: Replaced order-dependent English canonical projections with stable identity mappings while preserving all English rendered content, review scope, dates, and reader dependencies."
     }
   ],
   "moduleBaselines": {
@@ -41655,6 +41662,27 @@
       ],
       "metadataScope": "none",
       "summary": "Removed positional and fixed-capacity reader projections so every published mechanism, decision, evidence card, question, module, and graph relation remains discoverable while focused views retain their reading structure."
+    },
+    {
+      "maintenanceId": "erm-english-source-identity-2026-08-31",
+      "status": "applied",
+      "kind": "english-source-refactor",
+      "decisionId": "DEC-ENGLISH-SOURCE-IDENTITY-2026-08-31",
+      "recordedAt": "2026-08-31",
+      "baseCommit": "96bfecd345c7ce41f099a60184c483a63e195550",
+      "implementationCommit": "a502e19519b3e2e78b07e77620963ee6cbb46a7e",
+      "receiptId": "receipt-english-source-identity-2026-08-31",
+      "changedRendererFiles": [
+        "app/i18n/en/modules/prompt-engineering.mjs",
+        "app/i18n/en/modules/rag.mjs"
+      ],
+      "affectedModuleSlugs": [
+        "prompt-engineering",
+        "rag"
+      ],
+      "contentProjectionChangeSlugs": [],
+      "metadataScope": "none",
+      "summary": "Replaced order-dependent English canonical projections with stable identity mappings while preserving all English rendered content, review scope, dates, and reader dependencies."
     }
   ],
   "deferments": [
