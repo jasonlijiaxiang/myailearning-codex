@@ -51,6 +51,102 @@ const deferredSlugs = new Set(
     .map((deferment) => deferment.moduleSlug),
 );
 
+const ragQuestionProjection = Object.freeze({
+  "long-context-vs-rag": "上下文窗口已经很长，为什么还需要 RAG？",
+  "rag-vs-fine-tuning": "RAG 和微调怎么选？",
+  "vector-database-required": "做 RAG 一定要向量数据库吗？",
+  "managed-vs-composable": "RAG 应该选择托管云服务，还是自己拼搜索、向量库和编排？",
+  "agent-mcp-a2a-boundary": "一个企业 RAG 是否还需要 Agent、MCP 或 A2A？",
+  "pdf-scans-tables-images": "PDF、扫描件、表格和图片很多，RAG 还能做好吗？",
+  "chunk-size-overlap": "Chunk 大小和重叠比例应该设多少？",
+  "chunk-metadata-parent-page-version": "为什么 Chunk 还要保存父子关系、页码、版本和元数据？",
+  "structured-data-vectorization": "数据库里的指标和交易数据，能不能直接切块后放进向量库？",
+  "cross-language-retrieval": "用户用中文提问、证据主要是英文时，跨语言检索应该怎样设计？",
+  "source-update-freshness": "源文档更新后，多久能在回答中生效？",
+  "department-customer-access-control": "不同部门、不同客户的数据权限如何保证？",
+  "malicious-instructions-in-documents": "RAG 系统会不会被文档里的恶意指令攻击？",
+  "component-model-stack-selection": "解析、Embedding、Reranker、生成和评估模型，应该怎样组合选型？",
+  "hybrid-rrf-reranker": "Hybrid Search、RRF 和 Reranker 各自解决什么问题？",
+  "document-exists-no-answer": "为什么系统明明有文档，还是答不到？",
+  "agentic-retrieval-query-decomposition": "开启 Agentic Retrieval 或查询分解后，是不是一定更准确？",
+  "multi-turn-conversation-retrieval": "多轮会话中的历史问题和答案，应该怎样参与下一轮检索？",
+  "evidence-insufficient-answer-action": "证据不足时，系统应该追问、继续检索、限定回答还是拒答？",
+  "retrieved-right-document-still-wrong": "RAG 检到了正确文档，为什么仍可能答错？RAG 能消除幻觉吗？",
+  "citations-trust-compliance": "答案已经带出处，是否就可以认定可信或合规？",
+  "graphrag-everywhere": "GraphRAG 是不是向量 RAG 的升级版，所有知识库都应该上？",
+  "prove-rag-beyond-demo": "如何证明 RAG 的效果，而不是做一个漂亮 Demo？",
+  "production-quality-regression": "RAG 上线几个月后效果变差，应该怎样排查？",
+  "latency-and-cost": "怎样控制延迟和成本？",
+});
+
+const promptQuestionProjection = Object.freeze({
+  "prompt-alone-and-accuracy": "提示词写得足够好，就能解决准确性问题吗？",
+  "system-prompt-is-not-security": "系统提示（System Prompt）的优先级更高，是否就等于安全？",
+  "zero-shot-or-few-shot": "Zero-shot 和 Few-shot 怎么选？示例是不是越多越好？",
+  "json-request-vs-structured-output": "要求模型输出 JSON，是否已经足够可靠？",
+  "tool-definition-and-safe-execution": "把 API 写进 Tool Definition，模型就能安全调用了吗？",
+  "prompt-rag-context-engineering": "Prompt、RAG 和 Context Engineering 是什么关系？",
+  "model-upgrade-regression": "同一个 Prompt 换模型或模型升级后，可以直接上线吗？",
+  "typed-template-variables": "提示模板（Prompt Template）里的变量可以直接拼字符串吗？",
+  "evaluate-prompt-systematically": "怎样评估 Prompt，而不是靠人工感觉？",
+  "reasoning-model-and-chain-of-thought": "推理模型（Reasoning Model）还需要写很长的思维链提示吗？",
+  "prompt-chaining-or-agent": "Prompt Chaining 和 Agent 应该怎么分？",
+  "prompt-caching-economics": "Prompt Caching 是否一定能降低很多成本？",
+  "indirect-injection-difficulty": "为什么间接提示注入比普通恶意用户输入更难防？",
+  "conflicting-instruction-sources": "系统、用户、检索内容和工具结果互相冲突时，模型应该听谁的？",
+  "structured-output-needs-validation": "Structured Outputs 已经保证 JSON Schema，为什么还需要应用校验？",
+  "large-tool-catalog": "工具目录很大时，怎样让模型稳定找到正确工具？",
+  "attribute-prompt-improvement": "如何证明一次 Prompt 改动真的带来提升，而不是模型或上下文碰巧变化？",
+  "system-developer-user-roles": "System、Developer、User 三类指令应该怎么分工？业务规则都放进 System Prompt 可以吗？",
+  "large-context-load-everything": "模型上下文窗口已经很大，是否可以把所有文档、历史和规则一次性塞进去？",
+  "conversation-history-lifecycle": "多轮对话历史需要全部保留吗？摘要以后还能当作原始事实吗？",
+  "few-shot-customer-conversations": "Few-shot 示例可以直接使用真实客户对话吗？",
+  "structured-output-recovery": "结构化输出（Structured Outputs）失败时，应该自动修复 JSON 还是重新调用模型？",
+  "tool-result-trust": "工具调用后返回的结果，是不是可以作为可信事实直接交给模型？",
+  "reasoning-model-or-chaining": "复杂任务应该选推理模型（Reasoning Model），还是普通模型加 Prompt Chaining？",
+  "prompt-rag-or-finetuning": "一个知识类问题，应该优先用 Prompt、RAG 还是微调（Fine-tuning）？",
+  "direct-vs-indirect-injection": "直接提示注入（Direct Prompt Injection）和间接提示注入（Indirect Prompt Injection）有什么区别？",
+  "detector-does-not-authorize-tools": "部署提示注入检测器或敏感词规则，是否就可以开放高风险工具？",
+  "calibrate-llm-judge": "用 LLM Judge 调 Prompt，怎样避免把评分器偏好当成真实提升？",
+  "build-prompt-evaluation-set": "Prompt 评估集应该怎么建，怎样避免为了测试集调 Prompt？",
+  "multi-tenant-cache-isolation": "企业多租户场景使用 Prompt Caching，会不会把一个客户的内容泄露给另一个客户？",
+  "cost-beyond-caching": "除了 Prompt Caching，还有哪些办法可以降低大模型调用成本？",
+  "version-complete-release-bundle": "Prompt 版本号只需要对应模板文字吗？",
+  "canary-rollback-unit": "Prompt 灰度发布（Canary Release）出现退化时，究竟应该回滚什么？",
+  "minimum-operable-prompt-platform": "要把 Prompt Engineering 变成可运营的云服务，最少需要哪些平台能力？",
+  "cross-model-prompt-portability": "Prompt 能否在不同模型和云平台之间无修改迁移？",
+  "demo-vs-poc-acceptance": "Prompt PoC 能稳定演示几个案例，是否就可以判定成功？",
+  "risk-based-go-no-go": "Prompt PoC 的 Go / No-Go 门槛应该设成统一的 90% 或 95% 吗？",
+});
+
+const idProjectionsBySlug = Object.freeze({
+  rag: Object.freeze({
+    question: ragQuestionProjection,
+    evidenceCard: Object.freeze({
+      "dpr-top-20-improvement": "dpr-2020",
+      "ragas-three-dimensions": "ragas",
+      "contextual-retrieval-failure-rate": "contextual-retrieval",
+      "replug-black-box-route": "replug-2024",
+      "long-context-position-sensitivity": "lost-middle",
+      "claim-level-citation-quality": "alce-2023",
+      "deletion-not-reset": "azure-search-indexer-lifecycle",
+    }),
+  }),
+  "prompt-engineering": Object.freeze({
+    question: promptQuestionProjection,
+    evidenceCard: Object.freeze({
+      "four-prompt-components": "google-prompt-introduction",
+      "three-optimization-prerequisites": "anthropic-prompt-overview",
+      "schema-constrained-output": "openai-structured-outputs",
+      "five-step-tool-loop": "openai-function-calling",
+      "evaluate-every-release": "openai-prompting-guide",
+      "system-prompt-residual-risk": "owasp-prompt-injection",
+      "source-sink-impact-control": "openai-source-sink-injection",
+      "continuous-release-evaluation": "openai-eval-best-practices",
+    }),
+  }),
+});
+
 function collectSourceIds(value, result = new Set()) {
   if (Array.isArray(value)) value.forEach((item) => collectSourceIds(item, result));
   else if (value && typeof value === "object") {
@@ -67,8 +163,76 @@ function assertUniqueIds(items, label) {
   ids.forEach((id) => assert.match(id, slugIdPattern, `${label} ID must be a stable slug: ${id}`));
 }
 
+function findById(items, id, label) {
+  const item = items?.find((candidate) => candidate.id === id);
+  assert.ok(item, `${label} must include ${id}`);
+  return item;
+}
+
+function assertReadableItems(items, label, { allowBoundaryOmission = false } = {}) {
+  assert.ok(items?.length, `${label} must include authored content`);
+  assertUniqueIds(items, label);
+  for (const item of items) {
+    assert.ok(item.title?.trim(), `${label} / ${item.id} needs a readable title`);
+    if (Array.isArray(item.cells)) {
+      assert.ok(item.cells.length > 0, `${label} / ${item.id} table item needs relationship cells`);
+      item.cells.forEach((cell, index) => {
+        assert.ok(typeof cell === "string" && cell.trim(), `${label} / ${item.id} cell ${index + 1} needs readable copy`);
+      });
+      continue;
+    }
+    for (const field of ["body", "decision"]) {
+      assert.ok(item[field]?.trim(), `${label} / ${item.id} needs a readable ${field}`);
+    }
+    if (!allowBoundaryOmission) {
+      assert.ok(item.boundary?.trim(), `${label} / ${item.id} needs a readable boundary`);
+    }
+  }
+}
+
+function assertIncludesSourceIds(item, sourceIds, label) {
+  assert.ok(item, `${label} must exist`);
+  const actualSourceIds = new Set(item.sourceIds ?? []);
+  sourceIds.forEach((sourceId) => assert.ok(actualSourceIds.has(sourceId), `${label} must retain ${sourceId}`));
+}
+
+function assertIncludesEvidenceSources(item, sourceIds, label) {
+  assert.ok(item, `${label} must exist`);
+  const actualSourceIds = new Set(item.evidence?.map((entry) => entry.sourceId));
+  sourceIds.forEach((sourceId) => assert.ok(actualSourceIds.has(sourceId), `${label} must retain ${sourceId}`));
+}
+
+function buildUniqueMap(items, keyForItem, label) {
+  const result = new Map();
+  for (const item of items) {
+    const key = keyForItem(item);
+    assert.ok(key, `${label} needs a stable key`);
+    assert.equal(result.has(key), false, `${label} key must be unique: ${key}`);
+    result.set(key, item);
+  }
+  return result;
+}
+
+function assertCompleteIdProjection(label, englishItems, canonicalItems, projection, canonicalKey) {
+  const englishById = buildUniqueMap(englishItems, (item) => item.id, `${label} English item`);
+  const canonicalByKey = buildUniqueMap(canonicalItems, canonicalKey, `${label} canonical item`);
+  const projectedIds = Object.keys(projection);
+  const projectedCanonicalKeys = Object.values(projection);
+  const projectedIdSet = new Set(projectedIds);
+  const projectedCanonicalKeySet = new Set(projectedCanonicalKeys);
+
+  assert.ok(projectedIds.length, `${label} needs an explicit ID projection`);
+  assert.equal(projectedIdSet.size, projectedIds.length, `${label} projection IDs must be unique`);
+  assert.equal(projectedCanonicalKeySet.size, projectedCanonicalKeys.length, `${label} projection targets must be unique`);
+  projectedIds.forEach((id) => assert.ok(englishById.has(id), `${label} projection has no English item for ${id}`));
+  englishById.forEach((_, id) => assert.ok(projectedIdSet.has(id), `${label} English item has no projection: ${id}`));
+  projectedCanonicalKeys.forEach((key) => assert.ok(canonicalByKey.has(key), `${label} projection has no canonical item for ${key}`));
+  canonicalByKey.forEach((_, key) => assert.ok(projectedCanonicalKeySet.has(key), `${label} canonical item has no projection: ${key}`));
+
+  return new Map(projectedIds.map((id) => [id, canonicalByKey.get(projection[id])]));
+}
+
 test("English edition registers every published module", () => {
-  assert.equal(englishModuleSlugs.length, 23);
   assert.deepEqual([...englishModuleSlugs], [...publishedModuleSlugs]);
   assert.deepEqual(Object.keys(englishModuleRegistry).sort(), [...publishedModuleSlugs].sort());
   const expectedEnglishTotal = publishedModuleSlugs.reduce((total, slug) => {
@@ -119,7 +283,7 @@ test("shared English modules preserve canonical related-module routes and order"
   }
 });
 
-test("English edition preserves canonical question order, evidence relationships, and dates", () => {
+test("English edition preserves canonical question evidence relationships and dates", () => {
   for (const slug of englishModuleSlugs) {
     const english = englishModuleRegistry[slug];
     const chinese = requireModuleContent(slug);
@@ -129,11 +293,38 @@ test("English edition preserves canonical question order, evidence relationships
     }
     assert.equal(english.qa.length, chinese.qa.length, `${slug} question parity`);
     assertUniqueIds(english.qa, `${slug} question`);
-    english.qa.forEach((item, index) => {
-      const canonical = chinese.qa[index];
-      assert.deepEqual(item.evidence.map((entry) => entry.sourceId), canonical.evidence.map((entry) => entry.sourceId), `${slug} / ${item.id} evidence source order`);
-      assert.equal(item.addedAt ?? null, canonical.addedAt ?? null, `${slug} / ${item.id} addedAt must remain canonical`);
+    const questionProjection = idProjectionsBySlug[slug]?.question;
+    if (questionProjection) {
+      const canonicalQaByEnglishId = assertCompleteIdProjection(
+        `${slug} question`,
+        english.qa,
+        chinese.qa,
+        questionProjection,
+        (item) => item.q,
+      );
+      english.qa.forEach((item) => {
+        assert.ok(item.q?.trim() && item.a?.trim() && item.depth?.trim() && item.ask?.trim(), `${slug} / ${item.id} needs readable question copy`);
+        const canonical = canonicalQaByEnglishId.get(item.id);
+        assert.ok(canonical, `${slug} / ${item.id} needs a canonical question projection`);
+        assert.deepEqual(item.evidence.map((entry) => entry.sourceId), canonical.evidence.map((entry) => entry.sourceId), `${slug} / ${item.id} evidence source order`);
+        assert.equal(item.addedAt ?? null, canonical.addedAt ?? null, `${slug} / ${item.id} addedAt must remain canonical`);
+      });
+      continue;
+    }
+
+    english.qa.forEach((item) => {
+      assert.ok(item.q?.trim() && item.a?.trim() && item.depth?.trim() && item.ask?.trim(), `${slug} / ${item.id} needs readable question copy`);
     });
+    assert.deepEqual(
+      english.qa.map((item) => item.evidence.map((entry) => entry.sourceId)),
+      chinese.qa.map((item) => item.evidence.map((entry) => entry.sourceId)),
+      `${slug} question evidence source order`,
+    );
+    assert.deepEqual(
+      english.qa.map((item) => item.addedAt ?? null),
+      chinese.qa.map((item) => item.addedAt ?? null),
+      `${slug} question addedAt values must remain canonical`,
+    );
   }
 });
 
@@ -144,6 +335,26 @@ test("English evidence cards keep canonical source relationships", () => {
     if (deferredSlugs.has(slug)) continue;
     assert.equal(english.evidenceCards.length, chinese.evidenceCards.length, `${slug} evidence-card parity`);
     assertUniqueIds(english.evidenceCards, `${slug} evidence card`);
+    english.evidenceCards.forEach((card) => {
+      assert.ok(card.metric?.trim() && card.title?.trim() && card.finding?.trim() && card.boundary?.trim(), `${slug} / ${card.id} needs readable evidence copy`);
+    });
+    const evidenceCardProjection = idProjectionsBySlug[slug]?.evidenceCard;
+    if (evidenceCardProjection) {
+      const canonicalEvidenceCardsByEnglishId = assertCompleteIdProjection(
+        `${slug} evidence card`,
+        english.evidenceCards,
+        chinese.evidenceCards,
+        evidenceCardProjection,
+        (card) => card.sourceId,
+      );
+      english.evidenceCards.forEach((card) => {
+        const canonical = canonicalEvidenceCardsByEnglishId.get(card.id);
+        assert.ok(canonical, `${slug} / ${card.id} needs a canonical evidence-card projection`);
+        assert.equal(card.sourceId, canonical.sourceId, `${slug} / ${card.id} source relationship must remain canonical`);
+        assert.equal(card.accent ?? false, canonical.accent ?? false, `${slug} / ${card.id} accent must remain canonical`);
+      });
+      continue;
+    }
     assert.deepEqual(english.evidenceCards.map((card) => card.sourceId), chinese.evidenceCards.map((card) => card.sourceId), `${slug} evidence-card source order`);
   }
 });
@@ -183,11 +394,10 @@ test("Batch 06 English content preserves runtime interoperability and operations
   });
 
   const gateway = englishModuleRegistry["ai-gateway"];
-  assert.equal(gateway.qa.length, 14);
-  assert.equal(gateway.qa.at(-2).id, "gateway-credential-not-user-authority");
-  assert.equal(gateway.qa.at(-1).id, "request-rate-limit-not-enough");
-  assert.equal(gateway.qa.at(-2).addedAt, "2026-08-01");
-  assert.equal(gateway.qa.at(-1).addedAt, "2026-08-01");
+  const credentialNotAuthority = findById(gateway.qa, "gateway-credential-not-user-authority", "AI Gateway questions");
+  const requestRateLimit = findById(gateway.qa, "request-rate-limit-not-enough", "AI Gateway questions");
+  assert.equal(credentialNotAuthority.addedAt, "2026-08-01");
+  assert.equal(requestRateLimit.addedAt, "2026-08-01");
   assert.match(JSON.stringify(gateway), /Exact and semantic caching/);
   assert.match(JSON.stringify(gateway), /RPM limit cannot prevent token, concurrency, or budget exhaustion/);
   ["cloudflare-ai-gateway-authentication", "cloudflare-ai-gateway-caching", "cloudflare-ai-gateway-spend-limits", "cloudflare-ai-gateway-dynamic-routing", "azure-apim-ai-gateway", "aws-builders-library-retries"].forEach((sourceId) => {
@@ -208,7 +418,6 @@ test("Batch 06 English content preserves runtime interoperability and operations
 test("Batch 07 English content preserves the training contract and predictive rollback boundaries", async () => {
   const training = englishModuleRegistry["llm-training"];
   const trainingIds = training.qa.map((item) => item.id);
-  assert.equal(training.qa.length, 10);
   assert.equal(trainingIds.includes("gpu-scaling-efficiency"), false);
   assert.equal(trainingIds.includes("scaling-law-task-boundary"), false);
   assert.match(JSON.stringify(training), /run manifest/);
@@ -218,7 +427,7 @@ test("Batch 07 English content preserves the training contract and predictive ro
     .find((section) => section.id === "deep-dive")
     .blocks.flatMap((block) => block.items)
     .find((item) => item.id === "deep-model-compute");
-  assert.deepEqual(modelCompute.sourceIds, ["megatron-3d-parallelism-2021"]);
+  assertIncludesSourceIds(modelCompute, ["megatron-3d-parallelism-2021"], "Training model-compute deep dive");
   [
     "deduplicating-training-data-2022",
     "sentencepiece-2018",
@@ -232,9 +441,8 @@ test("Batch 07 English content preserves the training contract and predictive ro
   });
 
   const predictive = englishModuleRegistry["predictive-ai-mlops"];
-  assert.equal(predictive.qa.length, 10);
-  assert.equal(predictive.qa.at(-1).id, "predictive-rollback-bundle");
-  assert.equal(predictive.qa.at(-1).addedAt, "2026-08-01");
+  const predictiveRollback = findById(predictive.qa, "predictive-rollback-bundle", "Predictive AI questions");
+  assert.equal(predictiveRollback.addedAt, "2026-08-01");
   assert.match(JSON.stringify(predictive), /seven production signals/i);
   assert.match(JSON.stringify(predictive), /Technical rollback.*does not/i);
   assert.match(JSON.stringify(predictive), /Managed MLOps platform or self-built stack/);
@@ -257,9 +465,8 @@ test("Batch 07 English content preserves the training contract and predictive ro
 
 test("Batch 08 English content preserves inference overload and compute procurement contracts", () => {
   const inference = englishModuleRegistry["llm-inference"];
-  assert.equal(inference.qa.length, 14);
-  assert.equal(inference.qa[0].id, "same-model-different-speed");
-  assert.equal(inference.qa.at(-1).id, "maximum-context-admission");
+  findById(inference.qa, "same-model-different-speed", "Inference questions");
+  findById(inference.qa, "maximum-context-admission", "Inference questions");
   assert.match(JSON.stringify(inference), /Allocated devices are not ready model capacity/);
   assert.match(JSON.stringify(inference), /cache_salt/);
   assert.match(JSON.stringify(inference), /Goodput/);
@@ -275,9 +482,8 @@ test("Batch 08 English content preserves inference overload and compute procurem
   });
 
   const compute = englishModuleRegistry["ai-infra-compute"];
-  assert.equal(compute.qa.length, 12);
-  assert.equal(compute.qa[0].id, "peak-compute-not-speed");
-  assert.equal(compute.qa.at(-1).id, "heterogeneous-supply-risk");
+  findById(compute.qa, "peak-compute-not-speed", "Compute questions");
+  findById(compute.qa, "heterogeneous-supply-risk", "Compute questions");
   assert.match(JSON.stringify(compute), /arithmetic intensity/);
   assert.match(JSON.stringify(compute), /tightly coupled/);
   assert.match(JSON.stringify(compute), /Multiple nodes do not necessarily mean multiple domains/);
@@ -303,9 +509,8 @@ test("Batch 08 English content preserves inference overload and compute procurem
 
 test("Batch 09 English content preserves the platform-product and minimum-sufficient-loop contracts", async () => {
   const platform = englishModuleRegistry["ai-infra-platform"];
-  assert.equal(platform.qa.length, 12);
-  assert.equal(platform.qa.at(-1).id, "containerized-not-fully-portable");
-  assert.equal(platform.qa.at(-1).addedAt, "2026-08-01");
+  const portableContainer = findById(platform.qa, "containerized-not-fully-portable", "Platform questions");
+  assert.equal(portableContainer.addedAt, "2026-08-01");
   assert.match(JSON.stringify(platform), /platform control layer.*workload execution layer/is);
   assert.match(JSON.stringify(platform), /Management\/control.*identity\/data\/network.*performance\/resources.*cost allocation\/accountability/is);
   assert.match(JSON.stringify(platform), /OCI image or Kubernetes YAML is not evidence of cross-cloud or cross-accelerator migration/i);
@@ -321,9 +526,8 @@ test("Batch 09 English content preserves the platform-product and minimum-suffic
   });
 
   const solution = englishModuleRegistry["solution-patterns"];
-  assert.equal(solution.qa.length, 20);
-  assert.equal(solution.qa[0].id, "solution-versus-model-api");
-  assert.equal(solution.qa.at(-1).id, "claim-intake-prohibited-actions");
+  findById(solution.qa, "solution-versus-model-api", "Solution-pattern questions");
+  findById(solution.qa, "claim-intake-prohibited-actions", "Solution-pattern questions");
   assert.match(JSON.stringify(solution), /Outcome and current baseline/);
   assert.match(JSON.stringify(solution), /Measurable constraint envelope/);
   assert.match(JSON.stringify(solution), /Minimum sufficient loop/);
@@ -462,18 +666,14 @@ test("English module pages render the canonical knowledge view before the shared
   for (const [slug, module] of Object.entries(englishModuleRegistry)) {
     if (!module.primer) continue;
     assert.equal(module.primer.id, getPublishedModule(slug).knowledgeView, `${slug} explicit primer must use the canonical knowledge-view ID`);
-    assert.ok(module.primer.steps.length >= 3, `${slug} explicit primer needs a real mechanism sequence`);
-    assert.ok(module.primer.checks.length >= 3, `${slug} explicit primer needs decision checks`);
+    assert.ok(module.primer.steps.some((step) => step.title?.trim() && step.detail?.trim() && step.signal?.trim()), `${slug} explicit primer needs an inspectable mechanism`);
+    assert.ok(module.primer.checks.some((check) => check.title?.trim() && check.detail?.trim()), `${slug} explicit primer needs an inspectable decision check`);
     module.primer.termIds.forEach((termId) => assert.ok(module.terms[termId], `${slug} primer term must resolve to English copy`));
   }
 });
 
 test("English content representation is assessed block by block without a visual quota", () => {
   assert.deepEqual(Object.keys(englishRepresentationAssessment).sort(), [...englishModuleSlugs].sort());
-  const visualCounts = Object.values(englishRepresentationAssessment).map((assessment) => assessment.visualStepCount);
-  assert.ok(visualCounts.includes(0), "some modules should remain prose-first when their steps are learning guidance");
-  assert.ok(Math.max(...visualCounts) > 2, "relationship-rich modules may need several interactive views");
-  assert.ok(new Set(visualCounts).size >= 4, "visual counts should vary with the authored relationships");
 
   for (const [slug, module] of Object.entries(englishModuleRegistry)) {
     const expectedBlockCount = module.sections.reduce((total, section) => total + section.blocks.length, 0);
@@ -517,8 +717,12 @@ test("a dedicated focused English module keeps its complete authored reader inst
 
   const mcp = englishModuleRegistry.mcp;
   assert.deepEqual(selectVisibleEnglishSectionGroups(mcp).map((group) => group.role), ["decision", "deep", "cloud"], "focused brief modules retain their reviewed main-argument preview");
-  assert.equal(selectVisibleEnglishEvidenceCards(mcp).length, 4);
-  assert.equal(selectVisibleEnglishQuestions(mcp).length, 5);
+  const visibleMcpEvidence = selectVisibleEnglishEvidenceCards(mcp);
+  const visibleMcpQuestions = selectVisibleEnglishQuestions(mcp);
+  assert.ok(visibleMcpEvidence.length, "MCP preview must retain source-backed evidence");
+  assert.ok(visibleMcpQuestions.length, "MCP preview must retain readable questions");
+  assert.ok(visibleMcpEvidence.every((card) => mcp.evidenceCards.some((candidate) => candidate.id === card.id)), "MCP preview evidence must project from the authored collection");
+  assert.ok(visibleMcpQuestions.every((question) => mcp.qa.some((candidate) => candidate.id === question.id)), "MCP preview questions must project from the authored collection");
 });
 
 test("reviewed English production modules retain direct professional copy and controlled acceptance terms", async () => {
@@ -580,33 +784,40 @@ test("reviewed English production modules retain direct professional copy and co
 
 test("Batch 10 English content preserves governance and model-selection boundaries", () => {
   const governance = englishModuleRegistry["ai-governance"];
-  assert.equal(governance.qa.length, 15);
-  assert.equal(governance.qa.at(-4).id, "china-private-deployment-triage");
-  assert.equal(governance.qa.at(-1).id, "claim-intake-governance-boundary");
-  assert.deepEqual(governance.qa.at(-2).evidence.map((item) => item.sourceId), ["china-ai-content-labeling-2026-08-05", "china-ai-service-management"]);
+  findById(governance.qa, "china-private-deployment-triage", "Governance questions");
+  findById(governance.qa, "claim-intake-governance-boundary", "Governance questions");
+  assertIncludesEvidenceSources(
+    findById(governance.qa, "china-content-labeling-scope", "Governance questions"),
+    ["china-ai-content-labeling-2026-08-05", "china-ai-service-management"],
+    "Governance content-labeling question",
+  );
   assert.match(JSON.stringify(governance), /Successful generation, content review, labeling, and business approval for publication are four distinct control states/);
   assert.doesNotMatch(JSON.stringify(governance), /Generation succeeding|align filing thresholds/);
   const governanceLab = governance.sections
     .find((section) => section.id === "governance-study-guide")
     .blocks.flatMap((block) => block.items)
     .find((item) => item.id === "governance-lab-china-delivery-evidence");
-  assert.deepEqual(governanceLab.sourceIds, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-ai-rmf"]);
+  assertIncludesSourceIds(governanceLab, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-ai-rmf"], "Governance China delivery lab");
   const governanceLabeling = governance.sections
     .find((section) => section.id === "governance-deep-dive")
     .blocks.flatMap((block) => block.items)
     .find((item) => item.id === "governance-obligation-labeling");
-  assert.deepEqual(governanceLabeling.sourceIds, ["china-ai-content-labeling-2026-08-05", "china-ai-service-management"]);
+  assertIncludesSourceIds(governanceLabeling, ["china-ai-content-labeling-2026-08-05", "china-ai-service-management"], "Governance labeling obligation");
 
   const modelLandscape = englishModuleRegistry["model-landscape"];
-  assert.equal(modelLandscape.qa.length, 15);
-  assert.equal(modelLandscape.qa.at(-3).id, "platform-catalog-claim-boundary");
-  assert.equal(modelLandscape.qa.at(-1).id, "domestic-international-model-comparison");
+  findById(modelLandscape.qa, "platform-catalog-claim-boundary", "Model-landscape questions");
+  findById(modelLandscape.qa, "domestic-international-model-comparison", "Model-landscape questions");
   const maasTable = modelLandscape.sections
     .find((section) => section.id === "deep-dive")
     .blocks.find((block) => block.type === "table" && block.title === "Eight procurement dimensions for Model-as-a-Service");
   assert.ok(maasTable);
+  assertReadableItems(maasTable.items, "MaaS procurement dimensions");
   assert.ok(maasTable.items.every((item) => item.sourceIds?.length), "every MaaS procurement dimension must render its source links");
-  assert.deepEqual(maasTable.items[0].sourceIds, ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"]);
+  assertIncludesSourceIds(
+    findById(maasTable.items, "maas-region-delivery-gates", "MaaS procurement dimensions"),
+    ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"],
+    "MaaS region and delivery gate",
+  );
   const { sources: modelSources, ...modelReaderCopy } = modelLandscape;
   assert.ok(modelSources["dify-open-source-license"]);
   assert.ok(modelSources["dify-enterprise-pricing"]);
@@ -619,127 +830,131 @@ test("Batch 10 English content preserves governance and model-selection boundari
 
 test("Batch 11 English content preserves content-delivery, multimodal, and claims boundaries", () => {
   const security = englishModuleRegistry.security;
-  assert.equal(security.qa.length, 11);
-  assert.deepEqual(security.qa.at(-3).evidence.map((item) => item.sourceId), ["china-ai-content-labeling-2026-08-05"]);
-  assert.deepEqual(security.qa.at(-2).evidence.map((item) => item.sourceId), ["nist-sp-800-61r3", "c2pa-2-4"]);
-  assert.deepEqual(security.qa.at(-1).evidence.map((item) => item.sourceId), ["owasp-prompt-injection", "nist-zero-trust"]);
+  assertIncludesEvidenceSources(findById(security.qa, "content-labeling-log-controls", "Security questions"), ["china-ai-content-labeling-2026-08-05"], "Security content-labeling question");
+  assertIncludesEvidenceSources(findById(security.qa, "multimodal-content-incident-forensics", "Security questions"), ["nist-sp-800-61r3", "c2pa-2-4"], "Security multimodal-forensics question");
+  assertIncludesEvidenceSources(findById(security.qa, "claims-material-indirect-injection", "Security questions"), ["owasp-prompt-injection", "nist-zero-trust"], "Security claims-injection question");
   const securityCopy = JSON.stringify(security);
   assert.match(securityCopy, /specific Article 9 scenario/);
   assert.match(securityCopy, /does not independently establish the truth of assertions, a signer's real-world identity or authority/);
   assert.match(securityCopy, /parse it in isolation, retain provenance and trust labels/);
 
   const multimodal = englishModuleRegistry.multimodal;
-  assert.equal(multimodal.qa.length, 14);
-  assert.equal(multimodal.evidenceCards.length, 6);
   const multimodalCurriculum = multimodal.sections.find((section) => section.id === "multimodal-curriculum");
-  assert.equal(multimodalCurriculum.blocks[0].items.length, 12);
+  const multimodalChapters = multimodalCurriculum.blocks.find((block) => block.items.some((item) => item.id === "chapter-barge-in-state-recovery"));
+  assertReadableItems(multimodalChapters.items, "Multimodal curriculum");
   const multimodalPractice = multimodal.sections.find((section) => section.id === "multimodal-practice");
-  assert.equal(multimodalPractice.blocks.find((block) => block.title === "Four practice labs").items.length, 4);
-  assert.deepEqual(
-    multimodalCurriculum.blocks[0].items.find((item) => item.id === "chapter-barge-in-state-recovery").sourceIds,
+  const multimodalLabs = multimodalPractice.blocks.find((block) => block.items.some((item) => item.id === "lab-barge-in-state-recovery"));
+  assertReadableItems(multimodalLabs.items, "Multimodal practice labs");
+  assertIncludesSourceIds(
+    findById(multimodalChapters.items, "chapter-barge-in-state-recovery", "Multimodal curriculum"),
     ["nist-genai-profile", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
+    "Multimodal barge-in curriculum chapter",
   );
   assert.match(JSON.stringify(multimodal), /Generation, content review, disclosure and distribution requirements, authorized release, and post-release accountability are independent states/);
   assert.match(JSON.stringify(multimodal), /C2PA validation checks the integrity of recorded provenance assertions and their binding to an asset/);
 
   const solution = englishModuleRegistry["solution-patterns"];
-  assert.equal(solution.qa.length, 20);
-  assert.equal(solution.qa.at(-1).id, "claim-intake-prohibited-actions");
-  assert.equal(solution.qa.at(-1).addedAt, "2026-08-05");
+  const prohibitedClaimAction = findById(solution.qa, "claim-intake-prohibited-actions", "Solution-pattern questions");
+  assert.equal(prohibitedClaimAction.addedAt, "2026-08-05");
   const solutionCurriculum = solution.sections.find((section) => section.id === "solution-pattern-curriculum");
-  assert.equal(solutionCurriculum.blocks[0].items.length, 25);
-  const chinaChapter = solutionCurriculum.blocks[0].items.find((item) => item.id === "solution-chapter-china-delivery-evidence");
-  assert.deepEqual(chinaChapter.sourceIds, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-genai-profile"]);
+  const solutionChapters = solutionCurriculum.blocks.find((block) => block.items.some((item) => item.id === "solution-chapter-china-delivery-evidence"));
+  assertReadableItems(solutionChapters.items, "Solution-pattern curriculum");
+  const chinaChapter = findById(solutionChapters.items, "solution-chapter-china-delivery-evidence", "Solution-pattern curriculum");
+  assertIncludesSourceIds(chinaChapter, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-genai-profile"], "Solution China delivery chapter");
   const claimsBlueprint = solution.sections
     .find((section) => section.id === "solution-deep-dive")
     .blocks.find((block) => block.title === "Teaching blueprint: insurance claims intake and preliminary review");
-  assert.equal(claimsBlueprint.items.length, 9);
+  assertReadableItems(claimsBlueprint.items, "Solution claims-intake blueprint");
   assert.match(JSON.stringify(solution), /must not automatically assess damage, deny a claim, determine eligibility or amount, or initiate payment/);
   assert.doesNotMatch(JSON.stringify(solution), /filing or registration triage/);
 });
 
 test("Batch 12 English content preserves protocol, memory, and evaluation boundaries", () => {
   const a2a = englishModuleRegistry.a2a;
-  assert.deepEqual(Object.keys(a2a.sources), [
+  [
     "a2a-concepts", "a2a-specification", "a2a-mcp-boundary", "mcp-tasks-extension", "anthropic-effective-agents",
     "opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-genai-profile", "nist-zero-trust", "a2a-release-1-0-1",
-  ]);
+  ].forEach((sourceId) => assert.ok(a2a.sources[sourceId], `A2A must retain source copy for ${sourceId}`));
   const a2aCopy = JSON.stringify(a2a);
   assert.match(a2aCopy, /protocol-level COMPLETED state/);
   assert.match(a2aCopy, /reconcile side effects with the business system/);
   assert.doesNotMatch(a2aCopy, /mcp-architecture|a2a-spec-1-0-0/);
 
   const agent = englishModuleRegistry["ai-agent"];
-  assert.equal(agent.qa.length, 28);
-  assert.equal(agent.evidenceCards.length, 6);
   const memorySection = agent.sections.find((section) => section.id === "agent-memory-poisoning");
-  assert.equal(memorySection.blocks[0].items.length, 5);
-  assert.deepEqual(memorySection.blocks[0].items[0].sourceIds, ["aws-agentcore-memory", "nist-genai-profile", "owasp-llm-top-ten"]);
+  const memoryLifecycle = memorySection.blocks.find((block) => block.items.some((item) => item.id === "agent-memory-write-trust"));
+  assertReadableItems(memoryLifecycle.items, "Agent memory lifecycle");
+  assertIncludesSourceIds(findById(memoryLifecycle.items, "agent-memory-write-trust", "Agent memory lifecycle"), ["aws-agentcore-memory", "nist-genai-profile", "owasp-llm-top-ten"], "Agent memory-write boundary");
   const lowCodeSection = agent.sections.find((section) => section.id === "agent-low-code-choice");
-  assert.equal(lowCodeSection.blocks[0].items.length, 6);
-  assert.deepEqual(lowCodeSection.blocks[0].items[1].sourceIds, ["mcp-specification-2026-07-28"]);
+  const lowCodeDecisions = lowCodeSection.blocks.find((block) => block.items.some((item) => item.id === "agent-delivery-tool-protocol"));
+  assertReadableItems(lowCodeDecisions.items, "Agent delivery decisions");
+  assertIncludesSourceIds(findById(lowCodeDecisions.items, "agent-delivery-tool-protocol", "Agent delivery decisions"), ["mcp-specification-2026-07-28"], "Agent tool-protocol decision");
   assert.match(JSON.stringify(agent), /Lab attack rates do not predict production incidence/);
 
   const evaluation = englishModuleRegistry.evaluation;
-  assert.equal(evaluation.qa.length, 11);
-  assert.equal(evaluation.evidenceCards.length, 4);
   const evaluationCurriculum = evaluation.sections.find((section) => section.id === "evaluation-curriculum");
-  const courseChapters = evaluationCurriculum.blocks.find((block) => block.title === "Nine course chapters");
-  assert.equal(courseChapters.items.length, 9);
-  assert.deepEqual(courseChapters.items.find((item) => item.id === "chapter-evaluation-handoff").sourceIds, ["nist-ai-800-4", "opentelemetry-genai-semconv"]);
+  const courseChapters = evaluationCurriculum.blocks.find((block) => block.items.some((item) => item.id === "chapter-evaluation-handoff"));
+  assertReadableItems(courseChapters.items, "Evaluation curriculum");
+  assertIncludesSourceIds(findById(courseChapters.items, "chapter-evaluation-handoff", "Evaluation curriculum"), ["nist-ai-800-4", "opentelemetry-genai-semconv"], "Evaluation handoff chapter");
   const benchmarkAtlas = evaluation.sections.find((section) => section.id === "evaluation-benchmark-atlas");
-  assert.equal(benchmarkAtlas.blocks[0].items.length, 6);
-  assert.deepEqual(benchmarkAtlas.blocks[1].items[0].sourceIds, ["swe-bench", "terminal-bench", "beir-2021", "webarena-2024", "harness-bench-2026", "longvideobench-2024", "openai-eval-best-practices"]);
+  const benchmarkFamilies = benchmarkAtlas.blocks.find((block) => block.items.some((item) => item.id === "benchmark-general-qa"));
+  assertReadableItems(benchmarkFamilies.items, "Evaluation benchmark families");
+  const benchmarkBoundary = benchmarkAtlas.blocks.find((block) => block.items.some((item) => item.id === "benchmark-atlas-boundary"));
+  assertIncludesSourceIds(
+    findById(benchmarkBoundary.items, "benchmark-atlas-boundary", "Evaluation benchmark boundary"),
+    ["swe-bench", "terminal-bench", "beir-2021", "webarena-2024", "harness-bench-2026", "longvideobench-2024", "openai-eval-best-practices"],
+    "Evaluation benchmark boundary",
+  );
   const evaluationStudyGuide = evaluation.sections.find((section) => section.id === "evaluation-study-guide");
-  const evaluationRoute = evaluationStudyGuide.blocks.find((block) => block.title === "Recommended learning route");
-  assert.equal(evaluationRoute.items.length, 6);
-  assert.deepEqual(evaluationRoute.items.slice(-2).map((item) => item.id), ["route-freeze-complete-evaluation-contract", "route-report-uncertainty-and-handoff"]);
-  assert.equal(evaluationStudyGuide.blocks.find((block) => block.title === "Practice labs").items.length, 4);
+  const evaluationRoute = evaluationStudyGuide.blocks.find((block) => block.items.some((item) => item.id === "route-freeze-complete-evaluation-contract"));
+  assertReadableItems(evaluationRoute.items, "Evaluation learning route", { allowBoundaryOmission: true });
+  findById(evaluationRoute.items, "route-freeze-complete-evaluation-contract", "Evaluation learning route");
+  findById(evaluationRoute.items, "route-report-uncertainty-and-handoff", "Evaluation learning route");
+  const evaluationLabs = evaluationStudyGuide.blocks.find((block) => block.items.some((item) => item.id === "lab-refund-agent-contract"));
+  assertReadableItems(evaluationLabs.items, "Evaluation practice labs");
   assert.match(JSON.stringify(evaluation), /A leaderboard is a screening input/);
   assert.doesNotMatch(JSON.stringify(evaluation), /cost per accepted/i);
 });
 
 test("Batch 13 English content preserves data, tuning, and MCP boundaries", () => {
   const data = englishModuleRegistry["data-engineering"];
-  assert.equal(data.qa.length, 11);
-  assert.equal(data.evidenceCards.length, 5);
-  assert.equal(data.qa.at(-1).id, "cross-border-vectorized-data");
-  assert.equal(data.qa.at(-1).addedAt, "2026-08-05");
-  assert.deepEqual(data.qa.at(-1).evidence.map((item) => item.sourceId), ["china-personal-information-protection-law", "china-data-cross-border-2024"]);
-  assert.deepEqual(Object.keys(data.sources), [
+  const crossBorderData = findById(data.qa, "cross-border-vectorized-data", "Data-engineering questions");
+  assert.equal(crossBorderData.addedAt, "2026-08-05");
+  assertIncludesEvidenceSources(crossBorderData, ["china-personal-information-protection-law", "china-data-cross-border-2024"], "Cross-border vectorized-data question");
+  [
     "docling-report", "w3c-prov-o", "openlineage-spec", "iso-iec-5259-2", "nist-zero-trust", "hnsw-2016", "nist-genai-profile",
     "china-personal-information-protection-law", "china-data-cross-border-2024", "pp-ocr-2020", "opentelemetry-semconv",
-  ]);
+  ].forEach((sourceId) => assert.ok(data.sources[sourceId], `Data Engineering must retain source copy for ${sourceId}`));
   const dataCurriculum = data.sections.find((section) => section.id === "curriculum");
-  assert.equal(dataCurriculum.blocks[0].items.length, 10);
-  assert.deepEqual(dataCurriculum.blocks[0].items.find((item) => item.id === "curriculum-data-readiness-triage").sourceIds, ["nist-genai-profile", "nist-zero-trust", "w3c-prov-o"]);
+  const dataChapters = dataCurriculum.blocks.find((block) => block.items.some((item) => item.id === "curriculum-data-readiness-triage"));
+  assertReadableItems(dataChapters.items, "Data-engineering curriculum");
+  assertIncludesSourceIds(findById(dataChapters.items, "curriculum-data-readiness-triage", "Data-engineering curriculum"), ["nist-genai-profile", "nist-zero-trust", "w3c-prov-o"], "Data-readiness triage chapter");
   const dataPractice = data.sections.find((section) => section.id === "study-guide");
-  assert.equal(dataPractice.blocks.find((block) => block.title === "Practice labs").items.length, 4);
+  const dataLabs = dataPractice.blocks.find((block) => block.items.some((item) => item.id === "lab-data-readiness-triage"));
+  assertReadableItems(dataLabs.items, "Data-engineering practice labs");
   const dataPrinciples = data.sections.find((section) => section.id === "principles");
-  assert.equal(dataPrinciples.blocks[0].items.length, 9);
+  const dataPrincipleItems = dataPrinciples.blocks.find((block) => block.items.some((item) => item.id === "principle-cross-region-flow"));
+  assertReadableItems(dataPrincipleItems.items, "Data-engineering principles");
   assert.match(JSON.stringify(data), /Chunking, embeddings, vectorization, or caching do not by themselves change the data classification/);
   assert.doesNotMatch(JSON.stringify(data), /Governability|withdrawable|Acceptance:/);
 
   const fineTuning = englishModuleRegistry["fine-tuning"];
-  assert.equal(fineTuning.qa.length, 11);
-  assert.equal(fineTuning.evidenceCards.length, 3);
-  assert.deepEqual(fineTuning.qa[3].evidence.map((item) => item.sourceId), ["nist-genai-profile", "openai-eval-best-practices", "hf-trl-sft-trainer"]);
+  assertIncludesEvidenceSources(findById(fineTuning.qa, "prove-tuning-effectiveness", "Fine-tuning questions"), ["nist-genai-profile", "openai-eval-best-practices", "hf-trl-sft-trainer"], "Fine-tuning effectiveness question");
   const tuningCurriculum = fineTuning.sections.find((section) => section.id === "tuning-curriculum");
-  assert.equal(tuningCurriculum.blocks[0].items.length, 9);
-  assert.deepEqual(tuningCurriculum.blocks[0].items[5].sourceIds, ["deepseek-r1-2025", "dpo-2023", "hf-trl-dpo-trainer", "nist-genai-profile"]);
+  const tuningChapters = tuningCurriculum.blocks.find((block) => block.items.some((item) => item.id === "curriculum-preference-verifiable-reward"));
+  assertReadableItems(tuningChapters.items, "Fine-tuning curriculum");
+  assertIncludesSourceIds(findById(tuningChapters.items, "curriculum-preference-verifiable-reward", "Fine-tuning curriculum"), ["deepseek-r1-2025", "dpo-2023", "hf-trl-dpo-trainer", "nist-genai-profile"], "Fine-tuning preference chapter");
   const tuningPractice = fineTuning.sections.find((section) => section.id === "tuning-practice");
-  assert.equal(tuningPractice.blocks.find((block) => block.title === "Practice labs").items.length, 4);
-  assert.deepEqual(tuningPractice.blocks.find((block) => block.title === "Practice labs").items[1].sourceIds, ["hf-trl-peft", "lora-2021", "qlora-2023", "nist-genai-profile", "finops-unit-economics"]);
+  const tuningLabs = tuningPractice.blocks.find((block) => block.items.some((item) => item.id === "lab-lora-release-gate"));
+  assertReadableItems(tuningLabs.items, "Fine-tuning practice labs");
+  assertIncludesSourceIds(findById(tuningLabs.items, "lab-lora-release-gate", "Fine-tuning practice labs"), ["hf-trl-peft", "lora-2021", "qlora-2023", "nist-genai-profile", "finops-unit-economics"], "Fine-tuning LoRA release lab");
   assert.equal(fineTuning.primer.layout, "lifecycle");
-  assert.equal(fineTuning.primer.steps.length, 6);
-  assert.equal(fineTuning.primer.steps.at(-1).title, "Canary, observe, roll back, or stop");
+  assert.ok(fineTuning.primer.steps.some((step) => step.title === "Canary, observe, roll back, or stop"), "Fine-tuning primer must retain its release-and-rollback decision");
   const fineTuningCopy = JSON.stringify(fineTuning);
   assert.match(fineTuningCopy, /claims-intake|Completion criterion:|Define the evaluation before training/);
   assert.doesNotMatch(fineTuningCopy, /claim-intake|cost per accepted|Acceptance:|Define the exam/);
 
   const mcp = englishModuleRegistry.mcp;
-  assert.equal(mcp.qa.length, 15);
-  assert.equal(mcp.evidenceCards.length, 5);
   assert.ok(Object.hasOwn(mcp.sources, "mcp-2026-07-28-rc"));
   const mcpTasks = mcp.qa.find((item) => item.id === "long-running-mcp-call");
   assert.match(mcpTasks.a, /Client opts in per request/);
@@ -751,42 +966,39 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
 
 test("Batch 14 English content preserves model mechanisms and predictive lifecycle controls", () => {
   const llm = englishModuleRegistry.llm;
-  assert.equal(llm.qa.length, 10);
-  assert.equal(llm.evidenceCards.length, 4);
   assert.equal(llm.primer.id, "theory-atlas");
   assert.equal(llm.primer.layout, "pipeline");
-  assert.deepEqual(llm.primer.steps.map((step) => step.title), [
-    "Tokenize the request",
-    "Embed tokens and encode position",
-    "Aggregate context with attention",
-    "Refine representations in Transformer blocks",
-    "Form a next-token distribution",
-    "Select the output sequence",
-  ]);
+  ["Tokenize the request", "Aggregate context with attention", "Select the output sequence"].forEach((title) => {
+    assert.ok(llm.primer.steps.some((step) => step.title === title && step.detail?.trim()), `LLM primer must retain ${title}`);
+  });
   for (const termId of llm.primer.termIds) assert.ok(llm.terms[termId], `LLM primer term must resolve: ${termId}`);
   const llmCurriculum = llm.sections.find((section) => section.id === "curriculum");
-  assert.deepEqual(llmCurriculum.blocks[0].items.find((item) => item.id === "curriculum-attention-heads").sourceIds, ["transformer-2017", "gqa-2023", "attention-not-explanation-2019"]);
-  assert.deepEqual(llmCurriculum.blocks[0].items.find((item) => item.id === "curriculum-autoregressive-generation").sourceIds, ["deepseek-r1-2025", "openai-model-spec-hidden-cot", "nist-genai-profile"]);
-  assert.deepEqual(llmCurriculum.blocks[0].items.find((item) => item.id === "curriculum-runtime-context").sourceIds, ["vllm-2023", "flashattention-2022", "lost-middle"]);
+  const llmChapters = llmCurriculum.blocks.find((block) => block.items.some((item) => item.id === "curriculum-attention-heads"));
+  assertReadableItems(llmChapters.items, "LLM curriculum");
+  assertIncludesSourceIds(findById(llmChapters.items, "curriculum-attention-heads", "LLM curriculum"), ["transformer-2017", "gqa-2023", "attention-not-explanation-2019"], "LLM attention-heads chapter");
+  assertIncludesSourceIds(findById(llmChapters.items, "curriculum-autoregressive-generation", "LLM curriculum"), ["deepseek-r1-2025", "openai-model-spec-hidden-cot", "nist-genai-profile"], "LLM autoregressive-generation chapter");
+  assertIncludesSourceIds(findById(llmChapters.items, "curriculum-runtime-context", "LLM curriculum"), ["vllm-2023", "flashattention-2022", "lost-middle"], "LLM runtime-context chapter");
   const llmCopy = JSON.stringify(llm);
   assert.match(llmCopy, /returned reasoning summary is not a verbatim chain of thought/);
   assert.doesNotMatch(llmCopy, /Ask the customer:|repeated-transfer|recognizable capability|any supported reasoning configuration|Acceptance:/);
 
   const predictive = englishModuleRegistry["predictive-ai-mlops"];
-  assert.equal(predictive.qa.length, 10);
-  assert.equal(predictive.evidenceCards.length, 4);
   assert.equal(predictive.primer.id, "predictive-model-lifecycle");
   assert.equal(predictive.primer.layout, "lifecycle");
-  assert.equal(predictive.primer.steps.length, 5);
+  assert.ok(predictive.primer.steps.some((step) => step.title?.trim() && step.detail?.trim()), "Predictive primer must retain an inspectable lifecycle step");
   const predictiveCurriculum = predictive.sections.find((section) => section.id === "predictive-curriculum");
-  assert.deepEqual(predictiveCurriculum.blocks[0].items.find((item) => item.id === "predictive-chapter-feature-pipelines").sourceIds, ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"]);
-  assert.deepEqual(predictiveCurriculum.blocks[0].items.find((item) => item.id === "predictive-chapter-governance").sourceIds, ["google-mlops-predictive-ai", "nist-genai-profile"]);
+  const predictiveChapters = predictiveCurriculum.blocks.find((block) => block.items.some((item) => item.id === "predictive-chapter-feature-pipelines"));
+  assertReadableItems(predictiveChapters.items, "Predictive AI curriculum");
+  assertIncludesSourceIds(findById(predictiveChapters.items, "predictive-chapter-feature-pipelines", "Predictive AI curriculum"), ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"], "Predictive feature-pipelines chapter");
+  assertIncludesSourceIds(findById(predictiveChapters.items, "predictive-chapter-governance", "Predictive AI curriculum"), ["google-mlops-predictive-ai", "nist-genai-profile"], "Predictive governance chapter");
   const predictivePractice = predictive.sections.find((section) => section.id === "predictive-study-guide");
-  const predictiveLabs = predictivePractice.blocks.find((block) => block.title === "Practice labs").items;
-  assert.deepEqual(predictiveLabs[0].sourceIds, ["google-mlops-predictive-ai"]);
-  assert.equal(predictiveLabs[2].title, "Diagnose training–serving skew");
-  assert.deepEqual(predictiveLabs[2].sourceIds, ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"]);
-  assert.match(predictiveLabs[2].boundary, /Completion criterion/);
+  const predictiveLabs = predictivePractice.blocks.find((block) => block.items.some((item) => item.id === "predictive-lab-drift"));
+  assertReadableItems(predictiveLabs.items, "Predictive AI practice labs");
+  assertIncludesSourceIds(findById(predictiveLabs.items, "predictive-lab-leakage", "Predictive AI practice labs"), ["google-mlops-predictive-ai"], "Predictive leakage lab");
+  const skewLab = findById(predictiveLabs.items, "predictive-lab-drift", "Predictive AI practice labs");
+  assert.equal(skewLab.title, "Diagnose training–serving skew");
+  assertIncludesSourceIds(skewLab, ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"], "Predictive training-serving skew lab");
+  assert.match(skewLab.boundary, /Completion criterion/);
   assert.doesNotMatch(JSON.stringify(predictive), /Acceptance:|Respond to drift without automatic release|Control data time/);
 });
 

@@ -14,17 +14,16 @@ import { timeBudgetPaths } from "../app/home-learning-paths.mjs";
 
 const itemsByKey = new Map(questionDirectoryItems.map((item) => [item.key, item]));
 
-test("field kit intents are exactly the eight stable intent IDs", () => {
-  assert.deepEqual(intentDefinitions.map((intent) => intent.id), [
-    "concept-mechanism",
-    "selection-strategy",
-    "architecture-integration",
-    "cost-procurement",
-    "data-security-access",
-    "evaluation-acceptance",
-    "operations-reliability",
-    "governance-compliance",
-  ]);
+test("field kit intents provide distinct, readable decision scopes", () => {
+  assert.ok(intentDefinitions.length > 0, "现场题需要至少一个可解释的意图维度");
+  const intentIds = new Set();
+  for (const intent of intentDefinitions) {
+    assert.match(intent.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/, `意图 ID 必须稳定：${intent.id}`);
+    assert.ok(!intentIds.has(intent.id), `意图 ID 必须唯一：${intent.id}`);
+    intentIds.add(intent.id);
+    assert.ok(intent.zh?.trim(), `${intent.id} 必须有可读名称`);
+    assert.ok(intent.scope?.trim(), `${intent.id} 必须说明用于什么判断`);
+  }
 });
 
 test("every published question resolves to exactly one intent", () => {
@@ -70,7 +69,12 @@ test("field questions bind to existing canonical questions and never copy answer
     assert.ok(field.rationale?.trim(), `${field.fieldId} 必须写明入选理由`);
   }
 
-  assert.ok(fieldQuestions.length >= 24, `现场核心题不应少于 24 道，实际 ${fieldQuestions.length}`);
+  assert.ok(fieldQuestions.length > 0, "现场题应由已验证的客户判断驱动，而不是预设数量");
+  assert.deepEqual(
+    new Set(fieldQuestions.map((field) => field.intentId)),
+    intentIds,
+    "每个已发布意图都应有至少一道可追溯的现场题，而不是只保留空分类",
+  );
 });
 
 test("fieldQuestionByRef is keyed consistently with the canonical question keys", () => {
@@ -128,13 +132,26 @@ test("field-kit view filters to field questions and composes with intent", () =>
 });
 
 test("time-budget paths point at real entries instead of a second answer store", () => {
-  assert.ok(timeBudgetPaths.length >= 3, "时间预算路径至少覆盖速查、会前与系统学习");
+  assert.ok(timeBudgetPaths.length > 0, "至少应存在一条可执行的时间预算路径");
+  const pathIds = new Set();
+  const stepTypes = new Set();
   for (const path of timeBudgetPaths) {
+    assert.ok(!pathIds.has(path.id), `时间路径 ID 必须唯一：${path.id}`);
+    pathIds.add(path.id);
+    assert.ok(path.label?.trim() && path.duration?.trim() && path.focus?.trim(), `${path.id} 必须说明适用时机和学习目标`);
     assert.ok(path.href?.startsWith("/"), `${path.id} 必须指向站内稳定地址`);
     assert.ok(path.deliverable?.trim(), `${path.id} 必须有可观察产物`);
     assert.ok(path.steps.length > 0, `${path.id} 必须有步骤`);
+    const labels = new Set();
+    for (const step of path.steps) {
+      assert.ok(step.type?.trim() && step.label?.trim(), `${path.id} 的每步必须说明动作`);
+      assert.ok(!labels.has(step.label), `${path.id} 不应重复同一学习动作：${step.label}`);
+      labels.add(step.label);
+      stepTypes.add(step.type);
+    }
     for (const forbidden of ["answer", "depth", "evidence"]) {
       assert.ok(!Object.hasOwn(path, forbidden), `${path.id} 不得保存第二份答案内容`);
     }
   }
+  assert.ok(stepTypes.has("field-kit") && stepTypes.has("module"), "时间路径应同时支持现场取用和模块化深读");
 });

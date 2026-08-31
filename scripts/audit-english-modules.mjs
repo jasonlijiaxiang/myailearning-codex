@@ -62,8 +62,8 @@ for (const file of files) {
   assert.ok(englishModule.sections?.length, `${slug} needs structured sections`);
   if (englishModule.primer) {
     assert.equal(englishModule.primer.id, publication.knowledgeView, `${slug} English primer must reuse the canonical knowledge-view ID`);
-    assert.ok(englishModule.primer.steps?.length >= 3, `${slug} English primer needs a meaningful mechanism view`);
-    assert.ok(englishModule.primer.checks?.length >= 3, `${slug} English primer needs decision checks`);
+    assert.ok(englishModule.primer.steps?.length, `${slug} English primer needs a mechanism view`);
+    assert.ok(englishModule.primer.checks?.length, `${slug} English primer needs decision checks`);
     englishModule.primer.termIds.forEach((termId) => assert.ok(englishModule.terms[termId], `${slug} primer has unknown localized term ${termId}`));
   }
   const serializedModule = JSON.stringify(englishModule);

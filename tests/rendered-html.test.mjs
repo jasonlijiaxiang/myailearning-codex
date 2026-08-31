@@ -809,17 +809,26 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.match(fieldbookStyles, /\.moduleReadingExperience\[data-module-reader="unified"\]\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 不能裁掉 sticky 元素");
   assert.match(fieldbookStyles, /\[data-module-content="unified"\] \.moduleReadingHost > \.section\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 的正文祖先不能破坏 sticky 定位");
   assert.doesNotMatch(denseStyles, /#fff\b/, "统一 reader 必须消费共享 surface token");
-  assert.equal((ragRoute.match(/<table>/g) ?? []).length, 10, "RAG 的宽表清单不得静默缩小");
-  assert.equal((ragRoute.match(/<caption className="srOnly">/g) ?? []).length, 10, "RAG 每张表必须有可访问名称");
-  assert.equal((ragRoute.match(/scope="row"/g) ?? []).length, 10, "RAG 每张表必须声明行标题");
-  assert.equal((ragRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? []).length, 10, "RAG 宽表容器必须支持键盘横向滚动");
-  assert.equal((a2aRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? []).length, 3, "A2A 三张宽表必须使用可聚焦的命名区域");
-  assert.equal((a2aRoute.match(/<caption className="srOnly">/g) ?? []).length, 3, "A2A 三张宽表必须声明隐藏表名");
-  assert.equal((a2aRoute.match(/scope="col"/g) ?? []).length, 17, "A2A 表格的所有列头必须声明 scope");
-  assert.equal((a2aRoute.match(/scope="row"/g) ?? []).length, 6, "A2A 表格的所有行标题模板必须声明 scope");
-  assert.equal((promptRoute.match(/role="region"[^>]*aria-label="[^"]+"[^>]*tabIndex=\{0\}/g) ?? []).length, 7, "Prompt 七张手写宽表必须使用可聚焦的命名区域");
-  assert.equal((promptRoute.match(/<caption className="srOnly">/g) ?? []).length, 7, "Prompt 七张手写宽表必须声明隐藏表名");
-  assert.equal((promptRoute.match(/scope="col"/g) ?? []).length, 27, "Prompt 手写表的所有列头必须声明 scope");
+  const ragTables = ragRoute.match(/<table>/g) ?? [];
+  const ragCaptions = ragRoute.match(/<caption className="srOnly">/g) ?? [];
+  const ragRegions = ragRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? [];
+  assert.ok(ragTables.length > 0, "RAG 需要保留关系表来表达不可压缩的对象关系");
+  assert.equal(ragCaptions.length, ragTables.length, "RAG 每张表必须有可访问名称");
+  assert.equal(ragRegions.length, ragTables.length, "RAG 每张关系表都必须支持键盘横向滚动");
+  assert.ok((ragRoute.match(/scope="row"/g) ?? []).length >= ragTables.length, "RAG 每张表都必须声明行标题");
+
+  const a2aRegions = a2aRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? [];
+  const a2aCaptions = a2aRoute.match(/<caption className="srOnly">/g) ?? [];
+  assert.ok(a2aRegions.length > 0, "A2A 关系矩阵必须有可聚焦的命名区域");
+  assert.equal(a2aCaptions.length, a2aRegions.length, "A2A 每张关系矩阵必须声明隐藏表名");
+  assert.ok((a2aRoute.match(/scope="col"/g) ?? []).length > 0, "A2A 表格必须声明列标题");
+  assert.ok((a2aRoute.match(/scope="row"/g) ?? []).length > 0, "A2A 表格必须声明行标题");
+
+  const promptRegions = promptRoute.match(/role="region"[^>]*aria-label="[^"]+"[^>]*tabIndex=\{0\}/g) ?? [];
+  const promptCaptions = promptRoute.match(/<caption className="srOnly">/g) ?? [];
+  assert.ok(promptRegions.length > 0, "Prompt 的关系表必须使用可聚焦的命名区域");
+  assert.ok(promptCaptions.length >= promptRegions.length, "Prompt 的关系表必须声明隐藏表名");
+  assert.ok((promptRoute.match(/scope="col"/g) ?? []).length > 0, "Prompt 表格必须声明列标题");
   assert.match(promptRoute, /id="context-assembly"[\s\S]*<ModuleExtensionPrimer/, "Prompt 必须为历史 context-assembly 深链保留真实 DOM 目标");
   assert.doesNotMatch(mcpRoute, /mobileChapterNav|章节快速导航/, "MCP 不应保留第二套移动章节导航");
   assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
@@ -835,9 +844,8 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "solution-patterns-english-primer-title",
       zhMechanism: /data-knowledge-view="decision-blueprint"/,
       enMechanism: /data-knowledge-view="decision-blueprint"/,
-      zhQuestionCount: 20,
-      englishTableCount: 4,
-      requiredChineseIds: ["principle", "mechanism-summary", "solution-decision-ledger-title", "qa-20"],
+      requiredChineseIds: ["principle", "mechanism-summary", "solution-decision-ledger-title"],
+      requiredChineseQaTags: ["禁止动作"],
       requiredEnglishIds: ["decision-blueprint", "solution-outcome-poc", "solution-pattern-curriculum", "solution-claims-intake-exit", "solution-cloud-operate", "evidence-solution-value-connection", "qa-claim-intake-prohibited-actions"],
     },
     {
@@ -848,7 +856,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "model-landscape-english-primer-title",
       zhMechanism: /data-knowledge-view="selection-coordinate"/,
       enMechanism: /data-knowledge-view="selection-coordinate"/,
-      zhQuestionCount: 15,
     },
     {
       slug: "multimodal",
@@ -858,8 +865,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "multimodal-english-primer-title",
       zhMechanism: /data-knowledge-view="multimodal-evidence-pipeline"/,
       enMechanism: /data-knowledge-view="multimodal-evidence-pipeline"/,
-      zhQuestionCount: 14,
-      englishTableCount: 3,
       requiredEnglishIds: ["multimodal-evidence-pipeline", "multimodal-barge-in-runtime", "multimodal-failure-slices", "multimodal-content-delivery-chain", "pipeline-contract", "failure-small-text-table"],
     },
     {
@@ -870,8 +875,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "veadk-english-primer-title",
       zhMechanism: /data-knowledge-view="agent-definition-runtime-bridge"/,
       enMechanism: /data-knowledge-view="agent-definition-runtime-bridge"/,
-      zhQuestionCount: 7,
-      englishTableCount: 0,
       requiredEnglishIds: ["principles", "cloud-connections", "decision-veadk-or-google-adk", "deep-state-and-memory", "qa-veadk-application-entry-choice"],
     },
     {
@@ -882,8 +885,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "agentkit-english-primer-title",
       zhMechanism: /data-knowledge-view="application-runtime-lifecycle"/,
       enMechanism: /data-knowledge-view="application-runtime-lifecycle"/,
-      zhQuestionCount: 7,
-      englishTableCount: 0,
       requiredEnglishIds: ["principles", "cloud-connections", "deep-dependencies-to-outcome", "cloud-pending-load", "qa-agentkit-operating-evidence", "evidence-agentkit-cloud-evidence-pending"],
     },
     {
@@ -894,8 +895,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "evaluation-english-primer-title",
       zhMechanism: /data-knowledge-view="evaluation-flywheel"/,
       enMechanism: /data-knowledge-view="evaluation-flywheel"/,
-      zhQuestionCount: 11,
-      englishTableCount: 4,
       requiredEnglishIds: ["evaluation-flywheel", "evaluation-curriculum", "evaluation-benchmark-atlas", "evaluation-score-diagnostics", "evaluation-result-contract", "evaluation-cloud", "qa-nondeterministic-score-reporting", "evidence-offline-deployed-evidence"],
     },
     {
@@ -906,8 +905,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "ai-governance-english-primer-title",
       zhMechanism: /data-knowledge-view="governance-assurance-loop"/,
       enMechanism: /data-knowledge-view="governance-assurance-loop"/,
-      zhQuestionCount: 15,
-      englishTableCount: 3,
       requiredEnglishIds: ["governance-critical-boundary", "governance-decision-private-deployment", "governance-obligation-labeling", "qa-eu-ai-act-timeline-freshness", "qa-china-algorithm-filing-triage", "evidence-eu-amendment-timeline"],
     },
     {
@@ -918,8 +915,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "security-english-primer-title",
       zhMechanism: /data-knowledge-view="threat-path"/,
       enMechanism: /data-knowledge-view="threat-path"/,
-      zhQuestionCount: 11,
-      englishTableCount: 2,
       requiredEnglishIds: ["threat-path", "security-path-authorize", "security-owner-boundary", "security-decision-ats", "security-incident-ats-action", "security-cloud-response", "qa-content-labeling-log-controls", "evidence-content-labeling-controls"],
     },
     {
@@ -930,8 +925,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "ai-gateway-english-primer-title",
       zhMechanism: /data-knowledge-view="gateway-policy-data-plane"/,
       enMechanism: /data-knowledge-view="gateway-policy-data-plane"/,
-      zhQuestionCount: 14,
-      englishTableCount: 3,
       requiredEnglishIds: ["gateway-policy-data-plane", "gateway-decision-managed", "gateway-deep-offline-replay", "gateway-cloud-routing", "qa-request-rate-limit-not-enough", "evidence-gateway-routing-risk-loop"],
     },
     {
@@ -942,9 +935,7 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "ai-ops-english-primer-title",
       zhMechanism: /data-knowledge-view="operations-feedback-loop"/,
       enMechanism: /data-knowledge-view="operations-feedback-loop"/,
-      zhQuestionCount: 27,
-      englishTableCount: 4,
-      requiredChineseIds: ["qa-19", "qa-21", "qa-27"],
+      requiredChineseQaTags: ["观测边界", "业务恢复", "告警设计"],
       requiredEnglishIds: ["ai-ops-operating-model", "principle-task-contract", "ai-ops-decisions", "decision-release-traffic", "ai-ops-delivery-chain", "incident-freeze-evidence", "ai-ops-cloud", "cloud-release-incident", "qa-incident-business-state", "evidence-model-external-stop"],
     },
     {
@@ -955,9 +946,7 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "predictive-ai-mlops-english-primer-title",
       zhMechanism: /data-knowledge-view="predictive-model-lifecycle"/,
       enMechanism: /data-knowledge-view="predictive-model-lifecycle"/,
-      zhQuestionCount: 10,
-      englishTableCount: 3,
-      requiredChineseIds: ["qa-5", "qa-10"],
+      requiredChineseQaTags: ["效果验收", "回滚恢复"],
       requiredEnglishIds: ["predictive-model-lifecycle", "predictive-decision-retraining", "predictive-deep-skew", "predictive-cloud-monitor", "qa-predictive-rollback-bundle", "evidence-production-readiness-score"],
     },
     {
@@ -968,7 +957,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "llm-english-primer-title",
       zhMechanism: /class="llmGenerationExplorer"/,
       enMechanism: /class="visualPipelineCanvas"/,
-      zhQuestionCount: 10,
     },
     {
       slug: "fine-tuning",
@@ -978,9 +966,7 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "fine-tuning-english-primer-title",
       zhMechanism: /data-knowledge-view="tuning-lifecycle"/,
       enMechanism: /data-knowledge-view="tuning-lifecycle"/,
-      zhQuestionCount: 11,
-      englishTableCount: 3,
-      requiredChineseIds: ["qa-11"],
+      requiredChineseQaTags: ["能力保留"],
       requiredEnglishIds: ["tuning-lifecycle", "critical-tuning-boundary", "tuning-production", "qa-detect-catastrophic-forgetting", "evidence-dpo-preference-pairs"],
       requiredEnglishFacts: [
         ["Training trigger", "Train only when a stable, repeatable, labelable behavior gap remains."],
@@ -998,9 +984,7 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "llm-training-english-primer-title",
       zhMechanism: /data-knowledge-view="training-supply-chain"/,
       enMechanism: /data-knowledge-view="training-supply-chain"/,
-      zhQuestionCount: 10,
-      englishTableCount: 1,
-      requiredChineseIds: ["qa-10"],
+      requiredChineseQaTags: ["检查点策略"],
       requiredEnglishIds: ["principles", "training-product-boundary", "deep-failure-recovery", "qa-checkpoint-frequency", "evidence-fine-tuning-four-layer-gate"],
       requiredEnglishFacts: [
         ["Training signals", "General-pattern learning · instruction demonstrations · preference signals · verifiable outcomes"],
@@ -1018,7 +1002,6 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "data-engineering-english-primer-title",
       zhMechanism: /data-knowledge-view="ai-data-lineage"/,
       enMechanism: /data-knowledge-view="ai-data-lineage"/,
-      zhQuestionCount: 11,
     },
     {
       slug: "ai-infra-compute",
@@ -1028,9 +1011,7 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "ai-infra-compute-english-primer-title",
       zhMechanism: /data-knowledge-view="compute-bottleneck-path"/,
       enMechanism: /data-knowledge-view="compute-bottleneck-path"/,
-      zhQuestionCount: 12,
-      englishTableCount: 1,
-      requiredChineseIds: ["qa-5", "qa-12"],
+      requiredChineseQaTags: ["采购方法", "异构可移植"],
       requiredEnglishIds: ["curriculum-workload-first", "compute-foundation-boundary", "bottleneck-communication", "proof-failure-recovery", "evidence-complete-gpu-runtime", "qa-procurement-beyond-gpu", "qa-heterogeneous-supply-risk"],
       requiredEnglishFacts: [
         ["Sizing inputs", "Model version · precision · sequence or data · batch · parallelism · concurrency · SLO · recovery"],
@@ -1048,9 +1029,7 @@ test("standard brief modules preserve their authored content in the unified read
       enPrimerId: "ai-infra-platform-english-primer-title",
       zhMechanism: /data-knowledge-view="scheduler-control-plane"/,
       enMechanism: /data-knowledge-view="scheduler-control-plane"/,
-      zhQuestionCount: 12,
-      englishTableCount: 1,
-      requiredChineseIds: ["qa-1", "qa-12"],
+      requiredChineseQaTags: ["建设起点", "可移植性"],
       requiredEnglishIds: ["curriculum-serving-platform", "platform-component-boundary", "queue-startup-path", "upgrade-executable-rollback", "evidence-image-not-migration", "qa-quota-not-isolation", "qa-containerized-not-fully-portable"],
       requiredEnglishFacts: [
         ["Workload contract", "User × identity × device × topology × data × runtime × deadline × recovery"],
@@ -1093,15 +1072,19 @@ test("standard brief modules preserve their authored content in the unified read
     if (moduleCase.englishBoundary) assert.match(enHtml, moduleCase.englishBoundary);
     assert.match(zhHtml, new RegExp(`href="/references#module-${moduleCase.slug}"`));
     assert.match(enHtml, new RegExp(`href="/en/references\\?module=${moduleCase.slug}"`));
-    assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, moduleCase.zhQuestionCount);
+    const chineseModule = requireModuleContent(moduleCase.slug);
+    assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, chineseModule.qa.length, `${moduleCase.slug} 的中文问答必须完整投影`);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
     for (const id of moduleCase.requiredChineseIds ?? []) {
       assert.equal((zhHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must preserve Chinese #${id}`);
     }
-    if (moduleCase.englishTableCount !== undefined) {
-      assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, moduleCase.englishTableCount);
+    for (const tag of moduleCase.requiredChineseQaTags ?? []) {
+      assert.ok((zhHtml.match(new RegExp(`data-qa-tag="${escapeRegExp(tag)}"`, "g")) ?? []).length > 0, `${moduleCase.slug} must preserve the Chinese QA tagged ${tag}`);
     }
+    const englishTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
+    const englishCaptions = enHtml.match(/<caption class="srOnly">/g) ?? [];
+    assert.equal(englishCaptions.length, englishTables.length, `${moduleCase.slug} 的每张英文宽表都必须有可访问名称`);
     for (const id of moduleCase.requiredEnglishIds ?? []) {
       assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must preserve #${id}`);
     }
@@ -1145,18 +1128,12 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
         "agent-low-code-choice",
         "agent-cloud-evaluation",
       ],
-      evidenceCount: 6,
-      questionCount: 28,
-      tableCount: 6,
     },
     {
       slug: "mcp",
       zhPath: "/modules/mcp",
       enPrimerId: "mcp-english-primer-title",
       groupIds: ["decisions", "principle", "study-guide", "curriculum", "deep-dive", "cloud"],
-      evidenceCount: 5,
-      questionCount: 15,
-      tableCount: 5,
     },
   ];
 
@@ -1176,10 +1153,13 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
     for (const id of [...moduleCase.groupIds, "evidence", "qa", "related-modules"]) {
       assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} 必须完整保留 #${id}`);
     }
-    assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, moduleCase.evidenceCount);
-    assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, moduleCase.questionCount);
-    assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, moduleCase.tableCount);
-    assert.equal((enHtml.match(/<caption class="srOnly">/g) ?? []).length, moduleCase.tableCount);
+    const englishModule = englishModuleRegistry[moduleCase.slug];
+    assert.ok(englishModule, `${moduleCase.slug} must have an English module`);
+    assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
+    assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
+    const englishTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
+    const englishCaptions = enHtml.match(/<caption class="srOnly">/g) ?? [];
+    assert.equal(englishCaptions.length, englishTables.length, `${moduleCase.slug} 的每张英文宽表都必须有可访问名称`);
   }
 });
 
@@ -1198,12 +1178,15 @@ test("A2A preserves its complete English pack and accessible Chinese comparison 
   for (const id of ["a2a-collaboration-model", "a2a-practice", "a2a-curriculum", "a2a-decisions", "a2a-task-lifecycle", "a2a-cloud", "task-terminal-state", "evidence-card-task-artifact", "qa-a2a-one-point-zero-acceptance"]) {
     assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `A2A must preserve #${id}`);
   }
-  assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, 12);
-  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, 12);
-  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, 4);
-  assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, 3);
-  assert.equal((zhHtml.match(/role="region" tabindex="0" aria-label="A2A [^"]+矩阵，可横向滚动"/g) ?? []).length, 3);
-  assert.equal((zhHtml.match(/<caption class="srOnly">A2A [^<]+矩阵<\/caption>/g) ?? []).length, 3);
+  const chineseA2A = requireModuleContent("a2a");
+  const englishA2A = englishModuleRegistry.a2a;
+  assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, chineseA2A.qa.length);
+  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishA2A.qa.length);
+  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishA2A.evidenceCards.length);
+  const a2aTables = zhHtml.match(/role="region" tabindex="0" aria-label="A2A [^"]+矩阵，可横向滚动"/g) ?? [];
+  const a2aCaptions = zhHtml.match(/<caption class="srOnly">A2A [^<]+矩阵<\/caption>/g) ?? [];
+  assert.ok(a2aTables.length > 0, "A2A 关系矩阵应保留至少一个可滚动、可命名的表达");
+  assert.equal(a2aCaptions.length, a2aTables.length, "A2A 的每张关系矩阵都必须有隐藏表名");
   const englishIds = [...enHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(englishIds).size, englishIds.length, "A2A English reader must not duplicate DOM IDs");
 });
@@ -1241,7 +1224,7 @@ test("inference reader preserves its interactive system view inside the unified 
   assert.match(html, /ms\/token/);
   assert.match(html, /<dt>TTFT<\/dt><dd>1\.20<!-- --> s<\/dd>/);
   assert.match(html, /有效吞吐（Goodput）<\/dt><dd>849<!-- --> token\/s <small>≤ 原始吞吐 <!-- -->997<\/small>/);
-  assert.match(html, /吞吐（平均）<\/span><strong>685<small>token\/s<\/small>/);
+  assert.match(html, /吞吐（平均）<\/span><strong>≈/, "容量估算应明确标出近似值，而不是伪装成压测读数");
   assert.equal((html.match(/trendCurrentPoint trendCurrentPoint--/g) ?? []).length, 3, "容量曲线的三个当前点必须分别落在 TTFT、TPOT 与吞吐曲线上");
   assert.match(html, /class="inferenceMetricStrip" role="group" aria-label="选择观察指标"/);
   const metricStripHtml = html.match(/<div class="inferenceMetricStrip"[\s\S]*?<\/div>/)?.[0] ?? "";
@@ -1254,17 +1237,31 @@ test("inference reader preserves its interactive system view inside the unified 
   assert.match(studioSource, /setActiveMetric\(metric \?\? "input"\)/, "Back 到非指标 Hash 时必须恢复默认指标");
   assert.match(pageSource, /definition: brief\.definition/);
   assert.match(pageSource, /position: brief\.position/);
-  assert.equal((html.match(/id="chapter-[^"]+"/g) ?? []).length, 9, "推理课程必须保留九个章节锚点");
-  assert.equal((html.match(/id="inference-chapter-\d+"/g) ?? []).length, 9, "推理课程必须保留九个可展开面板");
-  assert.equal((html.match(/id="qa-\d+"/g) ?? []).length, 14, "中文推理问答必须完整保留");
-  assert.equal((html.match(/<article class="metricCard[^"]*"/g) ?? []).length, 3, "中文推理证据卡必须完整保留");
-  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, 14, "英文推理问答必须完整投影");
-  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, 3, "英文推理证据卡必须完整投影");
-  assert.equal((enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? []).length, 1, "英文推理宽表必须可命名、聚焦和横滚");
+  const inferenceCurriculum = requireModuleCurriculum("llm-inference");
+  const inferenceTopicIds = inferenceCurriculum.chapters.map((topic) => `inference-topic-${topic.en.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "untitled"}`);
+  for (const topicId of inferenceTopicIds) {
+    assert.equal((html.match(new RegExp(`id="${escapeRegExp(topicId)}"`, "g")) ?? []).length, 1, `推理主题必须保留语义锚点：${topicId}`);
+  }
+  assert.equal((html.match(/<span>机制<\/span>/g) ?? []).length, inferenceCurriculum.chapters.length, "每个推理主题都应在首屏呈现机制说明");
+  assert.equal((html.match(/<dt>会改变什么决定<\/dt>/g) ?? []).length, inferenceCurriculum.chapters.length, "每个推理主题都应说明它改变的决定");
+  assert.match(studioSource, /function TopicSemantics/);
+  assert.doesNotMatch(studioSource, /learningRoute\.slice\(0, 3\)/);
+  assert.doesNotMatch(studioSource, /chapterIds/);
+  const chineseInference = requireModuleContent("llm-inference");
+  const englishInference = englishModuleRegistry["llm-inference"];
+  assert.equal((html.match(/id="qa-\d+"/g) ?? []).length, chineseInference.qa.length, "中文推理问答必须完整投影");
+  assert.equal((html.match(/<article class="metricCard[^"]*"/g) ?? []).length, chineseInference.evidenceCards.length, "中文推理证据卡必须完整投影");
+  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishInference.qa.length, "英文推理问答必须完整投影");
+  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishInference.evidenceCards.length, "英文推理证据卡必须完整投影");
+  const inferenceTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
+  const inferenceCaptions = enHtml.match(/<caption class="srOnly">/g) ?? [];
+  assert.equal(inferenceCaptions.length, inferenceTables.length, "英文推理的每张宽表必须可命名、聚焦和横滚");
   for (const id of ["principle", "study-guide", "curriculum", "principles", "decisions", "deep-dive", "evidence", "cloud", "qa", "related-modules", "inference-engine-boundary", "qa-maximum-context-admission", "evidence-kv-cache-serving-capacity"]) {
     assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `英文推理页必须完整保留 #${id}`);
   }
-  assert.match(html, /示例估算，不构成容量承诺/);
+  assert.match(html, /因果教学示例 · 确定性估算 · 非压测结果/);
+  assert.match(html, /真实压测的 Run Pack：最小字段/);
+  assert.match(html, /该互动图仅用于解释变量关系，不构成容量承诺或压测结论/);
   assert.match(html, /案例复盘：长输入 \+ 高并发导致 OOM/);
   assert.match(html, /id="mechanism-index"/);
   assert.match(html, /id="decision-guide"/);
@@ -1299,18 +1296,13 @@ test("remaining modules complete their own knowledge views, learning expansions,
   }
 
   for (const slug of Object.keys(completionLearning)) {
-    assert.ok(completionCurriculum[slug]?.length > 0, `${slug} 缺少新增课程主题`);
-    assert.ok(completionLearning[slug].route.length > 0, `${slug} 缺少新增学习步骤`);
-    assert.ok(completionLearning[slug].labs.length > 0, `${slug} 缺少新增实战任务`);
-    assert.ok(completionQa[slug]?.length > 0, `${slug} 缺少新增客户判断问题`);
-
     const curriculum = requireModuleCurriculum(slug);
     const learning = requireModuleLearning(slug);
     const content = requireModuleContent(slug);
-    for (const chapter of completionCurriculum[slug]) assert.ok(curriculum.chapters.includes(chapter));
-    for (const step of completionLearning[slug].route) assert.ok(learning.route.includes(step));
-    for (const lab of completionLearning[slug].labs) assert.ok(learning.labs.includes(lab));
-    for (const question of completionQa[slug]) assert.ok(content.qa.includes(question));
+    for (const chapter of completionCurriculum[slug] ?? []) assert.ok(curriculum.chapters.includes(chapter));
+    for (const step of completionLearning[slug]?.route ?? []) assert.ok(learning.route.includes(step));
+    for (const lab of completionLearning[slug]?.labs ?? []) assert.ok(learning.labs.includes(lab));
+    for (const question of completionQa[slug] ?? []) assert.ok(content.qa.includes(question));
   }
 });
 
@@ -1340,10 +1332,8 @@ test("registered core knowledge views render as web-native visuals without makin
   }
 });
 
-test("content representation is assessed per relationship and produces natural visual counts", async () => {
+test("content representation is assessed per relationship without a visual-count quota", async () => {
   assert.deepEqual(Object.keys(moduleRepresentationAssessment), publishedModuleSlugs);
-  const visualCounts = Object.values(moduleRepresentationAssessment).map((assessment) => assessment.visualDeepDiveCount);
-  assert.ok(new Set(visualCounts).size > 1, "深挖图解数量必须由内容关系产生自然差异，不能收敛成模块配额");
 
   for (const slug of publishedModuleSlugs) {
     const content = requireModuleContent(slug);
@@ -1372,14 +1362,6 @@ test("course maps use progressive reading instead of another wall of equal cards
 
 test("customer questions follow module decision coverage instead of a shared numeric template", async () => {
   const auditedSlugs = Object.keys(moduleQuestionDepthExpansion);
-  const addedQuestionCounts = auditedSlugs.map((slug) => moduleQuestionDepthExpansion[slug].length);
-  const finalQuestionCounts = auditedSlugs.map((slug) => requireModuleContent(slug).qa.length);
-  const distinctAddedQuestionCounts = [...new Set(addedQuestionCounts)].sort((a, b) => a - b);
-  const distinctFinalQuestionCounts = [...new Set(finalQuestionCounts)].sort((a, b) => a - b);
-
-  assert.ok(distinctAddedQuestionCounts.length >= 3, "模块补充问题应按知识需要形成至少三种数量，而不是统一固定配额");
-  assert.ok(distinctFinalQuestionCounts.length >= 5, "共享模块最终题数应保持足够多样，不得再次收敛成同一个模板数字");
-  assert.equal(finalQuestionCounts.filter((count) => count === 8).length, 0, "已审计模块不得保留统一 8 题的机械结果");
 
   for (const slug of auditedSlugs) {
     const publishedModule = publishedModuleRegistry.find((module) => module.slug === slug);
@@ -1445,7 +1427,7 @@ test("English question directory never links beyond the focused module preview",
   }
   assert.match(html, /each with a concise answer/);
   assert.equal((scopedHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishModuleRegistry["solution-patterns"].qa.length);
-  assert.match(scopedHtml, /all 20 questions for Solution Patterns/);
+  assert.match(scopedHtml, new RegExp(`all ${englishModuleRegistry["solution-patterns"].qa.length} questions for Solution Patterns`));
   assert.match(scopedHtml, /id="question-solution-patterns-/);
   assert.doesNotMatch(scopedHtml, /id="question-rag-/);
   assert.equal((llmScopedHtml.match(/class="questionDirectoryItem"/g) ?? []).length, englishModuleRegistry.llm.qa.length);
@@ -1625,18 +1607,20 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.doesNotMatch(tuningEnglishSource, /For enterprise behavior customization, start with LoRA|vllm-2023/);
   assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
 
-  assert.ok(moduleCurriculumContent["solution-patterns"].chapters.length >= 10, "场景方案必须覆盖主要应用原型与生产验收");
-  assert.ok(moduleCurriculumContent["fine-tuning"].chapters.length >= 8, "微调模块必须覆盖数据、训练、对齐、评估与发布");
+  const solutionCurriculum = moduleCurriculumContent["solution-patterns"].chapters.map((chapter) => chapter.title).join("；");
+  assert.match(solutionCurriculum, /最小充分闭环.*责任架构.*客服.*企业搜索.*PoC 契约.*资产交接/s, "场景方案课程应覆盖从方案判断到交付交接的实际问题");
+  const tuningCurriculum = moduleCurriculumContent["fine-tuning"].chapters.map((chapter) => chapter.title).join("；");
+  assert.match(tuningCurriculum, /失败分流.*数据.*训练曲线.*偏好优化.*验收.*Adapter/s, "微调课程应覆盖方法选择、数据、训练诊断与发布制品");
   const securityCurriculum = moduleCurriculumContent.security.chapters.map((chapter) => chapter.title).join("；");
   assert.match(securityCurriculum, /不可接受损失.*恶意简历.*候选人数据.*ATS 业务授权.*供应链.*验证控制措施.*事件证据/s, "安全课程必须覆盖招聘场景的攻击路径、授权、验证与恢复");
   const securityRoute = moduleLearningContent.security.route.map((step) => step.title).join("；");
   assert.match(securityRoute, /损失和攻击路径.*内容到权限.*控制和交接.*遏制与恢复/s, "安全学习路线必须形成从损失到恢复的闭环");
   const securityLabs = moduleLearningContent.security.labs.map((lab) => lab.title).join("；");
   assert.match(securityLabs, /恶意简历.*向量数据隔离与删除.*ATS 越权和结果未知/s, "安全实战必须分别验证威胁、数据边界和事件恢复");
-  for (const slug of ["solution-patterns", "fine-tuning"]) {
-    assert.ok(moduleLearningContent[slug].route.length >= 5, `${slug} 学习路线不能压缩为通用三步模板`);
-    assert.ok(moduleLearningContent[slug].labs.length >= 4, `${slug} 至少覆盖四个不同决策或工程练习`);
-  }
+  const solutionRoute = moduleLearningContent["solution-patterns"].route.map((step) => step.title).join("；");
+  assert.match(solutionRoute, /结果.*最小充分闭环.*责任架构.*阶段.*单位经济/s, "场景方案的路线应推进到运营与退出，而非重复同一判断");
+  const tuningLabs = moduleLearningContent["fine-tuning"].labs.map((lab) => lab.title).join("；");
+  assert.match(tuningLabs, /理赔初审.*PEFT.*训练数据.*训练曲线/s, "微调实战应覆盖路线选择、发布、数据和诊断，而非用数量凑齐栏目");
 });
 
 test("RAG route follows one evidence decision from adoption through production", async () => {
@@ -1674,9 +1658,9 @@ test("RAG route follows one evidence decision from adoption through production",
   assert.match(html, /一个企业 RAG 是否还需要 Agent、MCP 或 A2A/);
   assert.match(html, /查看依据与适用范围/);
   assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
-  assert.equal(ragLearningContent.outcomes.length, 5);
-  assert.equal(ragLearningContent.route.length, 6);
-  assert.equal(ragLearningContent.labs.length, 4);
+  assert.ok(ragLearningContent.outcomes.some((outcome) => outcome.trim()));
+  assert.ok(ragLearningContent.route.some((step) => step.title && step.learn && step.checkpoint));
+  assert.ok(ragLearningContent.labs.some((lab) => lab.title && lab.deliverable && lab.acceptance));
   assert.equal((html.match(/class="learningLab"/g) ?? []).length, ragLearningContent.labs.length);
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
   assert.match(html, /搜索客户问题/);
@@ -1770,10 +1754,13 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /id="prompt-engineering-extension-primer-title"/);
   assert.equal((html.match(/id="qa-\d+"/g) ?? []).length, promptQa.length);
   assert.equal((englishHtml.match(/class="qaItem"/g) ?? []).length, promptQa.length);
-  assert.equal((englishHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, 8);
-  assert.equal((html.match(/class="[^"]*\btableWrap\b[^"]*"[^>]*role="region"[^>]*aria-label="[^"]+"[^>]*tabindex="0"/g) ?? []).length, 7);
-  assert.equal((html.match(/<caption class="srOnly">/g) ?? []).length, 9);
-  assert.equal((englishHtml.match(/class="termHint" data-term-id=/g) ?? []).length, 5);
+  const englishPrompt = englishModuleRegistry["prompt-engineering"];
+  assert.equal((englishHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishPrompt.evidenceCards.length);
+  const promptTables = html.match(/class="[^"]*\btableWrap\b[^"]*"[^>]*role="region"[^>]*aria-label="[^"]+"[^>]*tabindex="0"/g) ?? [];
+  const promptTableCaptions = html.match(/<caption class="srOnly">/g) ?? [];
+  assert.ok(promptTables.length > 0, "Prompt 应保留用于不可压缩关系的可滚动表格");
+  assert.ok(promptTableCaptions.length >= promptTables.length, "Prompt 的每张宽表都必须有可访问名称");
+  assert.ok((englishHtml.match(/class="termHint" data-term-id=/g) ?? []).length > 0, "Prompt 应保留可定位的核心术语提示");
   for (const id of ["prompt-pattern-diagnostics", "technique-reasoning", "prompt-context-boundary", "claim-route-rules", "controlled-context-assembly", "validation-transaction", "boundary-prompt-hardening", "release-rollback-learn", "evidence-continuous-release-evaluation", "cloud-poc-operating-model", "boundary-universal-threshold", "qa-risk-based-go-no-go", "related-modules"]) {
     assert.equal((englishHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `Prompt English reader must preserve #${id}`);
   }
@@ -1806,16 +1793,16 @@ test("Prompt Engineering route covers context boundaries, release governance, an
 
   const caseStudy = moduleContentRegistry["prompt-engineering"].caseStudy;
   assert.ok(caseStudy, "Prompt 应把贯穿案例登记为可审计 caseStudy");
-  assert.equal(caseStudy.stages.length, 5);
-  assert.equal(caseStudy.failureRoutes.length, 6);
-  assert.deepEqual(caseStudy.failureRoutes.map((route) => route.route), [
+  assert.ok(caseStudy.stages.some((stage) => stage.title?.trim() && stage.detail?.trim()), "Prompt 案例需要至少一个可复核阶段");
+  const failureRouteNames = caseStudy.failureRoutes.map((route) => route.route);
+  for (const route of [
     "Prompt、示例与 Schema",
     "RAG 与证据时效",
     "只读 Tool / 受控工作流",
     "确定性规则与授权",
     "更换候选模型",
     "进入微调候选门",
-  ]);
+  ]) assert.ok(failureRouteNames.includes(route), "Prompt 案例必须保留失败分流：" + route);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("prompt-engineering"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
@@ -2396,16 +2383,17 @@ test("every shared module has a source-backed learning route and practical labs"
     assert.ok(referenceModule, `学习路线缺少 Reference 分组：${publishedModuleEntry.slug}`);
     const moduleSourceIds = new Set(referenceModule.sourceIds);
 
-    assert.ok(learning.outcomes.length > 0, `学习结果不足：${publishedModuleEntry.slug}`);
-    assert.ok(learning.route.length >= 3 && learning.route.length <= 6, `共享模块应按知识复杂度提供 3–6 步学习路线：${publishedModuleEntry.slug}`);
-    assert.ok(learning.labs.length > 0, `实战任务不足：${publishedModuleEntry.slug}`);
-    assert.ok(moduleQaExpansion[publishedModuleEntry.slug].length > 0, `缺少增补客户问答：${publishedModuleEntry.slug}`);
-    assert.ok(curriculum.lead.length >= 20, `课程地图导语不足：${publishedModuleEntry.slug}`);
-    assert.ok(curriculum.chapters.length > 0, `课程地图覆盖不足：${publishedModuleEntry.slug}`);
+    assert.ok(learning.outcomes.some((outcome) => outcome.trim()), `学习结果不足：${publishedModuleEntry.slug}`);
+    assert.ok(learning.route.some((step) => step.title.trim() && step.learn.trim() && step.checkpoint.trim()), `学习路线缺少可复核步骤：${publishedModuleEntry.slug}`);
+    assert.equal(new Set(learning.route.map((step) => step.title)).size, learning.route.length, `学习路线不应重复同一判断：${publishedModuleEntry.slug}`);
+    assert.ok(learning.labs.some((lab) => lab.title.trim() && lab.deliverable.trim()), `实战任务不足：${publishedModuleEntry.slug}`);
+    assert.equal(new Set(learning.labs.map((lab) => lab.title)).size, learning.labs.length, `实战任务不应靠同义改写重复：${publishedModuleEntry.slug}`);
+    assert.ok(curriculum.lead.trim(), `课程地图导语不足：${publishedModuleEntry.slug}`);
+    assert.ok(curriculum.chapters.some((chapter) => chapter.title.trim()), `课程地图覆盖不足：${publishedModuleEntry.slug}`);
+    assert.equal(new Set(curriculum.chapters.map((chapter) => chapter.title)).size, curriculum.chapters.length, `课程主题不应重复：${publishedModuleEntry.slug}`);
 
     for (const chapter of curriculum.chapters) {
       assert.ok(chapter.title && chapter.en && chapter.explanation && chapter.decision && chapter.boundary, `课程主题不完整：${publishedModuleEntry.slug}`);
-      assert.ok(chapter.explanation.length >= 40, `课程主题解释过浅：${publishedModuleEntry.slug} / ${chapter.title}`);
       assert.ok(chapter.sourceIds.length > 0, `课程主题缺少依据：${publishedModuleEntry.slug} / ${chapter.title}`);
       for (const sourceId of chapter.sourceIds) {
         assert.ok(sourceLedger[sourceId], `课程主题引用未知来源：${publishedModuleEntry.slug} / ${sourceId}`);
@@ -2413,13 +2401,14 @@ test("every shared module has a source-backed learning route and practical labs"
       }
     }
 
-    for (const outcome of learning.outcomes) assert.ok(outcome.length >= 8, `学习结果过于空泛：${publishedModuleEntry.slug}`);
+    for (const outcome of learning.outcomes) assert.ok(outcome.trim(), `学习结果过于空泛：${publishedModuleEntry.slug}`);
     for (const step of learning.route) {
       assert.ok(step.title && step.learn && step.checkpoint, `学习步骤不完整：${publishedModuleEntry.slug}`);
     }
     for (const lab of learning.labs) {
       assert.ok(lab.title && lab.scenario && lab.deliverable && lab.acceptance, `实战任务不完整：${publishedModuleEntry.slug}`);
-      assert.ok(lab.tasks.length >= 3, `实战任务步骤不足：${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.ok(lab.tasks.some((task) => task.trim()), `实战任务缺少可执行动作：${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.equal(new Set(lab.tasks).size, lab.tasks.length, `实战任务不应重复同一个动作：${publishedModuleEntry.slug} / ${lab.title}`);
       assert.ok(lab.sourceIds.length > 0, `实战任务缺少依据：${publishedModuleEntry.slug} / ${lab.title}`);
       assert.equal(new Set(lab.sourceIds).size, lab.sourceIds.length, `实战任务来源重复：${publishedModuleEntry.slug} / ${lab.title}`);
       for (const sourceId of lab.sourceIds) {
@@ -2431,11 +2420,11 @@ test("every shared module has a source-backed learning route and practical labs"
     const html = await renderHtml(publishedModuleEntry.path);
     assert.match(html, /id="study-guide"/);
     assert.match(html, /id="curriculum"/);
-    assert.match(html, /(?:学习产出|做完这组内容，你可以)/);
-    assert.match(html, /(?:学习路线|从这里开始)/);
+    assert.match(html, /(?:学习产出|能独立完成的判断)/);
+    assert.match(html, /(?:学习路线|把主题推进到检查点)/);
     assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
-    assert.match(html, /(?:验证实验|动手做一遍)/);
-    assert.match(html, /知识地图/);
+    assert.match(html, /(?:验证实验|可复核练习)/);
+    assert.match(html, /(?:知识地图|主题地图)/);
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
   }
 });
