@@ -40,6 +40,37 @@ function assertUniqueIds(items, label) {
   ids.forEach((id) => assert.match(id, slugPattern, `${label} ID must be a stable slug: ${id}`));
 }
 
+function assertReadablePrimerItems(items, fields, label) {
+  assert.ok(items?.length, `${label} must include authored content`);
+  const titles = new Set();
+  for (const item of items) {
+    assert.ok(item.title?.trim(), `${label} needs a readable title`);
+    assert.ok(!titles.has(item.title), `${label} titles must be unique: ${item.title}`);
+    titles.add(item.title);
+    for (const field of fields) {
+      assert.ok(item[field]?.trim(), `${label} / ${item.title} needs a readable ${field}`);
+    }
+  }
+}
+
+function multiset(values) {
+  return [...values.reduce((counts, value) => {
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+    return counts;
+  }, new Map()).entries()].sort(([left], [right]) => left.localeCompare(right));
+}
+
+function questionEvidenceSignature(item) {
+  return JSON.stringify({
+    addedAt: item.addedAt ?? null,
+    sourceIds: item.evidence.map((entry) => entry.sourceId).sort(),
+  });
+}
+
+function evidenceCardSignature(card) {
+  return card.sourceId;
+}
+
 const files = (await readdir(modulesDirectory)).filter((name) => name.endsWith(".mjs")).sort();
 const discoveredSlugs = files.map((name) => name.slice(0, -4));
 const unknownSlugs = discoveredSlugs.filter((slug) => !publishedModuleSlugs.includes(slug));
@@ -62,8 +93,8 @@ for (const file of files) {
   assert.ok(englishModule.sections?.length, `${slug} needs structured sections`);
   if (englishModule.primer) {
     assert.equal(englishModule.primer.id, publication.knowledgeView, `${slug} English primer must reuse the canonical knowledge-view ID`);
-    assert.ok(englishModule.primer.steps?.length, `${slug} English primer needs a mechanism view`);
-    assert.ok(englishModule.primer.checks?.length, `${slug} English primer needs decision checks`);
+    assertReadablePrimerItems(englishModule.primer.steps, ["detail", "signal"], `${slug} English primer mechanisms`);
+    assertReadablePrimerItems(englishModule.primer.checks, ["detail"], `${slug} English primer decision checks`);
     englishModule.primer.termIds.forEach((termId) => assert.ok(englishModule.terms[termId], `${slug} primer has unknown localized term ${termId}`));
   }
   const serializedModule = JSON.stringify(englishModule);
@@ -78,14 +109,16 @@ for (const file of files) {
   assertUniqueIds(englishModule.qa, `${slug} question`);
   assertUniqueIds(englishModule.evidenceCards, `${slug} evidence card`);
   if (!deferredSlugs.has(slug)) {
-    assert.equal(englishModule.qa.length, canonical.qa.length, `${slug} question count`);
-    englishModule.qa.forEach((item, index) => {
-      const canonicalItem = canonical.qa[index];
-      assert.deepEqual(item.evidence.map((entry) => entry.sourceId), canonicalItem.evidence.map((entry) => entry.sourceId), `${slug} / ${item.id} evidence order`);
-      assert.equal(item.addedAt ?? null, canonicalItem.addedAt ?? null, `${slug} / ${item.id} addedAt`);
-    });
-    assert.equal(englishModule.evidenceCards.length, canonical.evidenceCards.length, `${slug} evidence-card count`);
-    assert.deepEqual(englishModule.evidenceCards.map((card) => card.sourceId), canonical.evidenceCards.map((card) => card.sourceId), `${slug} evidence-card source order`);
+    assert.deepEqual(
+      multiset(englishModule.qa.map(questionEvidenceSignature)),
+      multiset(canonical.qa.map(questionEvidenceSignature)),
+      `${slug} question evidence/date relationships`,
+    );
+    assert.deepEqual(
+      multiset(englishModule.evidenceCards.map(evidenceCardSignature)),
+      multiset(canonical.evidenceCards.map(evidenceCardSignature)),
+      `${slug} evidence-card source relationships`,
+    );
   }
 
   assertUniqueIds(englishModule.sections, `${slug} section`);

@@ -10,7 +10,7 @@
 
 ## 2. 核心不变量
 
-1. `app/i18n/en/**` 的 authored 文件哈希保持基线。
+1. `app/i18n/en/**` 的 authored 文件哈希保持基线；唯一例外是已登记为 `english-source-refactor` 的、逐模块可重建的等价源码重构。它只能改变对应英文模块文件的字节哈希，不能改变读者可见内容或审校范围。
 2. 英文模块、真实英文日期、实际渲染使用的模块路由属性与共享来源元数据共同形成 module effective 哈希，并保持基线。
 3. 未延期模块的中文完整状态、英文状态和历史审校文件都必须与模块基线一致。
 4. 延期模块的当前中文对象差异必须与登记表逐项、逐哈希完全相同；漏登记和伪登记都失败。
@@ -56,7 +56,12 @@
 
 新增对象必须是 `baselineHash=null/currentHash=sha256`；删除对象相反；修改对象必须有两个不同的完整 SHA-256。语义检查在 schema 之上执行这些条件与实际差异的集合相等验证。
 
-`runtimeMaintenances` 仅记录英文 reader runtime 的受控维护，不改变任何模块 baseline 或 deferment 状态。每条记录都固定：前一提交、实现提交、对应 receipt、实现提交中准确变更的 renderer 文件（以及唯一允许的 visible-projection contract 文件 `scripts/lib/localization-contract.mjs`）、由真实 import closure 推导的受影响模块、明确的可见投影模块和 metadata 范围。`scripts/audit-localization-deferments.mjs --record-runtime-maintenance …` 只能在干净的实现提交上执行；审计会从父提交与实现提交的 archive 重建状态，要求英文 authored/review/date 和历史 review files 完全不变，并且只能更新实际 renderer closure/effective hash。它不能将 `deferred` 转为 `ready-for-english-review` 或 `closed`。
+`runtimeMaintenances` 仅记录可重建的受控维护，不改变任何模块 baseline 或 deferment 状态。每条记录都固定：前一提交、实现提交、对应 receipt、实现提交中准确变更的文件、由真实 import closure（或英文模块源码路径）推导的受影响模块、明确的可见投影模块和 metadata 范围。文件清单必须与该实现提交的完整 diff 精确相等；其中可以包含 CSS 作为呈现变更的 provenance，但 CSS 不会被当成语义哈希输入或凭空扩张模块闭包。
+
+- `english-renderer` 与 `document-shell` 保持既有规则：英文 authored/review/date 与历史 review files 完全不变，只能更新实际 renderer closure/effective hash；`document-shell` 才能记录受控的中文 renderer 投影变化。
+- `english-source-refactor` 只允许精确变更 `app/i18n/en/modules/<slug>.mjs`。受影响 slug 由这些路径推导，不能手填扩大范围；每个 slug 都必须让 `enAuthoredHash` 真正改变，同时 `enEffectiveHash`、`enReviewHash`、`enRendererFiles`、`englishUpdatedAt`、历史 `reviewFiles` 与完整中文状态逐项不变。它不能声明 visible content projection 或 metadata 变化，因此不能把任何可见英文内容更新伪装为 runtime maintenance。
+
+`scripts/audit-localization-deferments.mjs --record-runtime-maintenance …` 只能在干净工作区执行。默认把 `HEAD` 当实现提交；当实现提交 C 已经在其后只有契约工具提交的干净 `HEAD` 中时，可显式传入 `--implementation-commit <C 的完整 SHA>`。C 必须是当前 `HEAD` 的祖先，并与其解析出的前一提交构成直接父子实现对；审计始终从该父提交和 C 的 archive 重建，并继续要求精确文件与 provenance 相符。它不能将 `deferred` 转为 `ready-for-english-review` 或 `closed`。
 
 ## 5. 状态机
 
@@ -85,9 +90,9 @@
 - 中文 `updatedAt` 继续只在 `app/module-publication.mjs` 维护。
 - 英文页面读取 `app/english-update-dates.mjs` 的逐模块真实日期；中文更新不刷新英文日期。
 - 共享来源的既有 ID 不做静默内容替换。需要刷新且只供本轮中文内容使用时，新建带核验日期的 sourceId，保留英文引用的旧 ID 与元数据。
-- 英文 module effective 哈希只包含英文模块页实际读取的来源字段，不纳入纯中文说明；renderer gate 从该模块真实 wrapper 与布局出发递归解析本地可见组件闭包，并覆盖交互、深挖关系、可视化、判断辅助代码和可见投影，防止“英文数据没改、模块页却变了”的漏报。
+- 英文 module effective 哈希只包含英文模块页实际读取的来源字段，不纳入纯中文说明；renderer gate 从该模块真实 wrapper 与布局出发递归解析本地可见组件闭包，并覆盖交互、深挖关系、可视化、判断辅助代码和可见投影，防止“英文数据没改、模块页却变了”的漏报。若只是维护不可见的源码组织，仍须以 `english-source-refactor` 证明 effective/review 状态完全不变，不能跳过记录。
 - 中文完整状态同样从该模块真实入口递归解析本地可见组件闭包：brief 页使用 `[slug]` 入口，RAG、Agent 与提示词工程使用各自 dedicated 入口和 flagship lab；不把未执行的通用入口误算给专用页。每个基线与候选固化当时的精确文件清单，但历史重建不能盲信该清单：审计必须在声明提交中使用 `module-renderer-dependencies/v1` resolver 重算 canonical 闭包并逐项相等，拒绝缩短清单、绝对路径、`..`、非法扩展、符号链接和项目外文件。未来 resolver 演进必须新增契约版本并显式迁移，不能静默改写 v1 语义。CSS-only 呈现变化不纳入语义哈希，继续由构建、渲染与真实浏览器回归约束。
-- 共享英文页面、布局或 metadata 改动会影响英文 effective hash 时，不能手改 21 个 module baseline，也不能把 `shared-runtime-decoupling` 当通配豁免。先把只含 runtime 文件的实现提交 C 形成干净工作区，再以 `--record-runtime-maintenance` 写入子提交 D；D 的 audit 必须继续输出 `DEFERRED/NOT_ALIGNED`，而已对齐模块会明确输出 `ALIGNED/RUNTIME-MAINTAINED`。后续实际英文内容漂移仍须走四阶段审校和候选/关闭状态机。
+- 共享英文页面、布局或 metadata 改动会影响英文 effective hash 时，不能手改 21 个 module baseline，也不能把 `shared-runtime-decoupling` 当通配豁免。先把只含 runtime 文件的实现提交 C 形成干净工作区，再以 `--record-runtime-maintenance` 写入子提交 D；D 的 audit 必须继续输出 `DEFERRED/NOT_ALIGNED`，而已对齐模块会明确输出 `ALIGNED/RUNTIME-MAINTAINED`。若 C 后只补交了契约工具文件，D 可用 `--implementation-commit C` 保持实现 provenance 指向 C，而不是把工具提交误记为 renderer 实现。后续实际英文内容漂移仍须走四阶段审校和候选/关闭状态机。
 
 ## 7. 审校记录规则
 
@@ -111,7 +116,7 @@
 - 任何自动写 PASS 的尝试。
 - 从每个声明 Git 提交重建并核对模块基线。
 - 中英文逐模块 renderer import 闭包、dedicated/brief 入口隔离、间接组件变更、基线固化文件清单、可见 QA/evidence/section 投影与全局英文来源视图。
-- runtime maintenance 的 receipt、直接父提交、准确变更文件、derived affected closure、内容/日期漂移拒绝、后续 drift 拒绝，以及 runtime overlay 不改变其覆盖模块的活动 deferment 状态。
+- runtime maintenance 的 receipt、直接父提交、准确变更文件（含 CSS provenance）、derived affected closure、内容/日期漂移拒绝、后续 drift 拒绝，以及 runtime overlay 不改变其覆盖模块的活动 deferment 状态；`english-source-refactor` 还必须验证路径推导的 slug、author hash 的真实变化及所有 effective/review/date/中文状态的不变性。
 - 行级 `ALIGNED` 与 `DEFERRED/NOT_ALIGNED` 输出，避免子串假阳性。
 
 日常 `npm run check` 必须继续运行完整英文审计、本地化审计、构建与渲染测试；不得关闭或放宽这些检查来获得绿色结果。发布候选还必须在已推送精确提交上运行远端 provenance 门。

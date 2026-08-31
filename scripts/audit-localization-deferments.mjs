@@ -92,6 +92,21 @@ function sameChineseRuntimeState(left, right) {
     && same(left.zhRendererFiles, right.zhRendererFiles);
 }
 
+function sameChineseModuleState(left, right) {
+  return left.zhReviewHash === right.zhReviewHash
+    && sameChineseRuntimeState(left, right);
+}
+
+export function hasOnlyEnglishSourceRefactorDelta(before, after) {
+  return before.enAuthoredHash !== after.enAuthoredHash
+    && before.enEffectiveHash === after.enEffectiveHash
+    && before.enReviewHash === after.enReviewHash
+    && same(before.enRendererFiles, after.enRendererFiles)
+    && before.englishUpdatedAt === after.englishUpdatedAt
+    && same(before.reviewFiles, after.reviewFiles)
+    && sameChineseModuleState(before, after);
+}
+
 function isChineseRendererProjectionObjectId(objectId) {
   return objectId.startsWith("/module:")
     && (objectId.includes("/renderedProjection/rendererDependencyFiles/")
@@ -257,6 +272,22 @@ export function validateLocalizationRegistry(registry, currentProject, { candida
     }
     for (const slug of maintenance.contentProjectionChangeSlugs) {
       if (!maintenance.affectedModuleSlugs.includes(slug)) fail(`${maintenance.maintenanceId}: content projection module ${slug} is not affected`);
+    }
+    if (maintenance.kind === "english-source-refactor") {
+      try {
+        const derived = deriveEnglishSourceRefactorModuleSlugs(publishedSlugs, maintenance.changedRendererFiles);
+        if (!same(derived, sorted(maintenance.affectedModuleSlugs))) {
+          fail(`${maintenance.maintenanceId}: affectedModuleSlugs must exactly match the English module source paths`);
+        }
+      } catch (error) {
+        fail(`${maintenance.maintenanceId}: ${error.message}`);
+      }
+      if (maintenance.contentProjectionChangeSlugs.length) {
+        fail(`${maintenance.maintenanceId}: english-source-refactor cannot declare content projection changes`);
+      }
+      if (maintenance.metadataScope !== "none") {
+        fail(`${maintenance.maintenanceId}: english-source-refactor must use metadataScope none`);
+      }
     }
   }
 
@@ -582,8 +613,33 @@ function localizationRegistryAtCommit(commit) {
 }
 
 const effectiveHashContractFiles = new Set(["scripts/lib/localization-contract.mjs"]);
+const englishSourceRefactorFilePattern = /^app\/i18n\/en\/modules\/([a-z0-9][a-z0-9-]*)\.mjs$/;
 
-export function derivedAffectedModuleSlugs(beforeProject, implementationProject, changedRendererFiles) {
+export function deriveEnglishSourceRefactorModuleSlugs(publishedModuleSlugs, changedFiles) {
+  const published = new Set(publishedModuleSlugs);
+  const slugs = [];
+  for (const file of changedFiles) {
+    const match = englishSourceRefactorFilePattern.exec(file);
+    if (!match) {
+      throw new Error(`english-source-refactor may only change app/i18n/en/modules/<slug>.mjs; received ${file}`);
+    }
+    const slug = match[1];
+    if (!published.has(slug)) {
+      throw new Error(`english-source-refactor references an unpublished module source: ${file}`);
+    }
+    slugs.push(slug);
+  }
+  if (!slugs.length) throw new Error("english-source-refactor requires at least one English module source file");
+  if (new Set(slugs).size !== slugs.length) {
+    throw new Error("english-source-refactor may list each English module source only once");
+  }
+  return sorted(slugs);
+}
+
+export function derivedAffectedModuleSlugs(beforeProject, implementationProject, changedRendererFiles, { kind = "english-renderer" } = {}) {
+  if (kind === "english-source-refactor") {
+    return deriveEnglishSourceRefactorModuleSlugs(beforeProject.publishedModuleSlugs, changedRendererFiles);
+  }
   if (changedRendererFiles.some((file) => effectiveHashContractFiles.has(file))) {
     return [...beforeProject.publishedModuleSlugs].sort();
   }
@@ -609,6 +665,7 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
   for (const maintenance of records) {
     const label = maintenance.maintenanceId ?? "runtime-maintenance";
     const documentShell = maintenance.kind === "document-shell";
+    const englishSourceRefactor = maintenance.kind === "english-source-refactor";
     let documentShellChangedChineseProjection = false;
     if (knownMaintenanceIds.has(maintenance.maintenanceId)) {
       failures.push(`duplicate runtime maintenance ID ${maintenance.maintenanceId}`);
@@ -634,9 +691,13 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
         loadProjectAtCommit(maintenance.baseCommit),
         loadProjectAtCommit(maintenance.implementationCommit),
       ]);
-      const derivedAffected = derivedAffectedModuleSlugs(beforeProject, implementationProject, maintenance.changedRendererFiles);
+      const derivedAffected = derivedAffectedModuleSlugs(beforeProject, implementationProject, maintenance.changedRendererFiles, {
+        kind: maintenance.kind,
+      });
       if (!same(derivedAffected, sorted(maintenance.affectedModuleSlugs))) {
-        failures.push(`${label}: affectedModuleSlugs must exactly match the renderer dependency closure`);
+        failures.push(englishSourceRefactor
+          ? `${label}: affectedModuleSlugs must exactly match the English module source paths`
+          : `${label}: affectedModuleSlugs must exactly match the renderer dependency closure`);
         continue;
       }
 
@@ -666,6 +727,18 @@ export async function loadRuntimeMaintenanceOverlays(registry, { requireRemote =
             failures.push(`${label}: ${slug} base commit does not match the registered Chinese renderer projection`);
             continue;
           }
+        }
+        if (englishSourceRefactor) {
+          if (!sameChineseModuleState(before, after)) {
+            failures.push(`${label}: ${slug} english-source-refactor changes Chinese state`);
+            continue;
+          }
+          if (!hasOnlyEnglishSourceRefactorDelta(before, after)) {
+            failures.push(`${label}: ${slug} english-source-refactor must change only enAuthoredHash while preserving English effective/review/renderer/date/review files`);
+            continue;
+          }
+          overlays.set(slug, { maintenanceId: maintenance.maintenanceId, kind: maintenance.kind, state: after });
+          continue;
         }
         if (documentShell) {
           if (sameChineseRuntimeState(before, after)) {
@@ -736,8 +809,20 @@ function cliCsv(flag, options) {
 
 function assertRuntimeMaintenanceCheckoutClean(statusOutput) {
   if (statusOutput.trim()) {
-    throw new Error("--record-runtime-maintenance requires a clean working tree so the renderer state is exactly attributable to HEAD");
+    throw new Error("--record-runtime-maintenance requires a clean working tree so the recorded state is fully committed");
   }
+}
+
+export function resolveRuntimeMaintenanceImplementationCommit(explicitImplementationCommit) {
+  const implementationCommit = explicitImplementationCommit
+    ?? execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+  assertCommitAvailable(implementationCommit, "--implementation-commit", { requireRemote: false });
+  const baseCommit = commitParent(implementationCommit);
+  assertCommitAvailable(baseCommit, "--implementation-commit parent", { requireRemote: false });
+  if (!isAncestor(baseCommit, implementationCommit) || commitParent(implementationCommit) !== baseCommit) {
+    throw new Error("--implementation-commit must form a direct-parent implementation pair");
+  }
+  return { baseCommit, implementationCommit };
 }
 
 async function recordRuntimeMaintenance({ registry, schema, reviewSchema, currentProject, candidateIds }) {
@@ -752,15 +837,21 @@ async function recordRuntimeMaintenance({ registry, schema, reviewSchema, curren
   const metadataScope = cliValue("--metadata-scope") ?? "none";
   const contentProjectionChangeSlugs = cliCsv("--content-projection");
   const declaredFiles = cliCsv("--files", { required: true });
+  const explicitImplementationCommit = cliValue("--implementation-commit");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(recordedAt)) throw new Error("--recorded-at requires YYYY-MM-DD");
-  if (!new Set(["english-renderer", "document-shell"]).has(kind)) {
-    throw new Error("--kind must be english-renderer or document-shell");
+  if (!new Set(["english-renderer", "document-shell", "english-source-refactor"]).has(kind)) {
+    throw new Error("--kind must be english-renderer, document-shell, or english-source-refactor");
+  }
+  if (kind === "english-source-refactor" && contentProjectionChangeSlugs.length) {
+    throw new Error("english-source-refactor cannot declare --content-projection");
+  }
+  if (kind === "english-source-refactor" && metadataScope !== "none") {
+    throw new Error("english-source-refactor requires --metadata-scope none");
   }
 
   const worktreeStatus = execFileSync("git", ["status", "--porcelain=v1", "--untracked-files=normal"], { cwd: root, encoding: "utf8" });
   assertRuntimeMaintenanceCheckoutClean(worktreeStatus);
-  const implementationCommit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
-  const baseCommit = commitParent(implementationCommit);
+  const { baseCommit, implementationCommit } = resolveRuntimeMaintenanceImplementationCommit(explicitImplementationCommit);
   const actualChangedFiles = changedFilesBetween(baseCommit, implementationCommit);
   if (!same(actualChangedFiles, declaredFiles)) throw new Error("--files must exactly match the implementation commit diff");
 
@@ -768,16 +859,23 @@ async function recordRuntimeMaintenance({ registry, schema, reviewSchema, curren
     loadProjectAtCommit(baseCommit),
     loadProjectAtCommit(implementationCommit),
   ]);
-  const affectedModuleSlugs = derivedAffectedModuleSlugs(beforeProject, implementationProject, declaredFiles);
-  if (!affectedModuleSlugs.length) throw new Error("--record-runtime-maintenance found no affected English module renderer closure");
+  const affectedModuleSlugs = derivedAffectedModuleSlugs(beforeProject, implementationProject, declaredFiles, { kind });
+  if (!affectedModuleSlugs.length) {
+    throw new Error(kind === "english-source-refactor"
+      ? "--record-runtime-maintenance found no affected English module source closure"
+      : "--record-runtime-maintenance found no affected English module renderer closure");
+  }
 
   const candidateRegistry = structuredClone(registry);
+  const receiptSummaryPrefix = kind === "english-source-refactor"
+    ? "English source refactor maintenance"
+    : "English renderer maintenance";
   candidateRegistry.receipts.push({
     receiptId,
     kind: "runtime-maintenance",
     recordedAt,
     decisionId,
-    summary: `English renderer maintenance ${maintenanceId}: ${summary}`,
+    summary: `${receiptSummaryPrefix} ${maintenanceId}: ${summary}`,
   });
   candidateRegistry.runtimeMaintenances.push({
     maintenanceId,

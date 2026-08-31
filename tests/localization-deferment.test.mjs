@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { getPublishedModule, publishedModules, publishedModuleSlugs } from "../app/module-publication.mjs";
-import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, hasOnlyChineseRendererProjectionDelta, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, matchesRegisteredDeferredChineseProjection, promotedBaselineFromCommittedState, rebaseActiveDefermentRendererProjection, sameChineseRendererProjectionState, validateLocalizationRegistry, withRuntimeChineseBaseline } from "../scripts/audit-localization-deferments.mjs";
+import { assertCanonicalRendererFileLists, assertPromotionCheckoutClean, derivedAffectedModuleSlugs, deriveEnglishSourceRefactorModuleSlugs, hasOnlyChineseRendererProjectionDelta, hasOnlyEnglishSourceRefactorDelta, loadProjectAtCommit, loadPromotedProjects, loadRuntimeMaintenanceOverlays, matchesRegisteredDeferredChineseProjection, promotedBaselineFromCommittedState, rebaseActiveDefermentRendererProjection, resolveRuntimeMaintenanceImplementationCommit, sameChineseRendererProjectionState, validateLocalizationRegistry, withRuntimeChineseBaseline } from "../scripts/audit-localization-deferments.mjs";
 import { assertJsonSchema, validateJsonSchema } from "../scripts/lib/json-schema-lite.mjs";
 import {
   chineseRendererEntryFiles,
@@ -54,6 +54,24 @@ function registryThroughRuntimeMaintenance(maintenanceId) {
   assert.notEqual(maintenanceIndex, -1, `runtime maintenance ${maintenanceId} must exist`);
   candidateRegistry.runtimeMaintenances = candidateRegistry.runtimeMaintenances.slice(0, maintenanceIndex + 1);
   return candidateRegistry;
+}
+
+function expectedLiveRuntimeMaintenances(candidateRegistry = registry) {
+  const expected = new Map();
+  for (const maintenance of candidateRegistry.runtimeMaintenances) {
+    for (const slug of maintenance.affectedModuleSlugs) {
+      const baseline = candidateRegistry.moduleBaselines[slug];
+      if (!baseline) continue;
+      const promotedPastMaintenance = spawnSync(
+        "git",
+        ["merge-base", "--is-ancestor", maintenance.implementationCommit, baseline.enBaselineCommit],
+        { cwd: projectRoot },
+      ).status === 0;
+      if (promotedPastMaintenance) expected.delete(slug);
+      else expected.set(slug, maintenance);
+    }
+  }
+  return expected;
 }
 
 function makeDeferredFixture(slug = "solution-patterns") {
@@ -411,6 +429,42 @@ test("runtime maintenance records cannot masquerade as locale-gate receipts", ()
   assert.match(validate(mutated).failures.join("\n"), /receipt must be runtime-maintenance/);
 });
 
+test("runtime maintenance schema keeps CSS changes in the exact provenance record", () => {
+  const cssProvenance = structuredClone(registry);
+  cssProvenance.runtimeMaintenances[0].changedRendererFiles = ["app/fieldbook-v3.css"];
+  assert.doesNotThrow(() => assertJsonSchema(cssProvenance, schema, "localization registry"));
+});
+
+test("english-source-refactor records are limited to exact module source paths", () => {
+  const refactor = structuredClone(registry.runtimeMaintenances.at(-1));
+  refactor.maintenanceId = "erm-test-english-source-refactor";
+  refactor.kind = "english-source-refactor";
+  refactor.changedRendererFiles = ["app/i18n/en/modules/rag.mjs"];
+  refactor.affectedModuleSlugs = ["rag"];
+  refactor.contentProjectionChangeSlugs = [];
+  refactor.metadataScope = "none";
+
+  const valid = structuredClone(registry);
+  valid.runtimeMaintenances.push(refactor);
+  assert.doesNotThrow(() => assertJsonSchema(valid, schema, "localization registry"));
+  assert.doesNotMatch(validate(valid).failures.join("\n"), /english-source-refactor/);
+
+  const wrongPath = structuredClone(valid);
+  wrongPath.runtimeMaintenances.at(-1).changedRendererFiles = ["app/i18n/en/registry.mjs"];
+  assert.throws(() => assertJsonSchema(wrongPath, schema, "localization registry"), /does not match/);
+  assert.match(validate(wrongPath).failures.join("\n"), /may only change app\/i18n\/en\/modules/);
+
+  const wrongProjection = structuredClone(valid);
+  wrongProjection.runtimeMaintenances.at(-1).contentProjectionChangeSlugs = ["rag"];
+  assert.throws(() => assertJsonSchema(wrongProjection, schema, "localization registry"), /matches a forbidden schema/);
+  assert.match(validate(wrongProjection).failures.join("\n"), /cannot declare content projection changes/);
+
+  const wrongMetadataScope = structuredClone(valid);
+  wrongMetadataScope.runtimeMaintenances.at(-1).metadataScope = "rag";
+  assert.throws(() => assertJsonSchema(wrongMetadataScope, schema, "localization registry"), /must equal "none"/);
+  assert.match(validate(wrongMetadataScope).failures.join("\n"), /must use metadataScope none/);
+});
+
 test("a later runtime maintenance may supersede an earlier overlay for the same module", () => {
   const chained = structuredClone(registry);
   chained.runtimeMaintenances.push({
@@ -425,13 +479,17 @@ test("a later runtime maintenance may supersede an earlier overlay for the same 
 test("the latest runtime maintenance retains the complete prior document-shell chain", () => {
   const result = validate(registry, currentProject, { runtimeOverlays });
   const latestDocumentShell = registry.runtimeMaintenances.filter((item) => item.kind === "document-shell").at(-1);
-  const latestMaintenance = registry.runtimeMaintenances.at(-1);
+  const expectedLiveMaintenances = expectedLiveRuntimeMaintenances();
   assert.ok(latestDocumentShell, "the registry must contain a document-shell maintenance");
-  assert.ok(latestMaintenance, "the registry must contain a runtime maintenance");
   assert.deepEqual(result.failures, []);
-  assert.ok(registry.runtimeMaintenances.indexOf(latestDocumentShell) <= registry.runtimeMaintenances.indexOf(latestMaintenance));
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.kind === latestMaintenance.kind));
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === latestMaintenance.maintenanceId));
+  assert.ok(registry.runtimeMaintenances.indexOf(latestDocumentShell) < registry.runtimeMaintenances.length);
+  assert.deepEqual([...runtimeOverlays.keys()].sort(), [...expectedLiveMaintenances.keys()].sort());
+  for (const [slug, overlay] of runtimeOverlays) {
+    const expected = expectedLiveMaintenances.get(slug);
+    assert.ok(expected, `${slug} must retain a latest live runtime maintenance`);
+    assert.equal(overlay.maintenanceId, expected.maintenanceId);
+    assert.equal(overlay.kind, expected.kind);
+  }
 });
 
 test("a document-shell overlay preserves an active deferment's exact authored-content delta", () => {
@@ -552,6 +610,40 @@ test("an effective-hash contract change covers every English module", () => {
   assert.deepEqual(derived, [...publishedModuleSlugs].sort());
 });
 
+test("english-source-refactor derives its module closure and preserves every non-authored state", () => {
+  const sourceFiles = [
+    "app/i18n/en/modules/prompt-engineering.mjs",
+    "app/i18n/en/modules/rag.mjs",
+  ];
+  assert.deepEqual(
+    deriveEnglishSourceRefactorModuleSlugs(publishedModuleSlugs, sourceFiles),
+    ["prompt-engineering", "rag"],
+  );
+  assert.deepEqual(
+    derivedAffectedModuleSlugs(currentProject, currentProject, sourceFiles, { kind: "english-source-refactor" }),
+    ["prompt-engineering", "rag"],
+  );
+  assert.throws(
+    () => deriveEnglishSourceRefactorModuleSlugs(publishedModuleSlugs, ["app/i18n/en/registry.mjs"]),
+    /may only change app\/i18n\/en\/modules/,
+  );
+  assert.throws(
+    () => deriveEnglishSourceRefactorModuleSlugs(publishedModuleSlugs, ["app/i18n/en/modules/not-published.mjs"]),
+    /unpublished module source/,
+  );
+
+  const before = structuredClone(currentProject.modules.rag);
+  const after = structuredClone(before);
+  after.enAuthoredHash = before.enAuthoredHash === fullHashA ? fullHashB : fullHashA;
+  assert.equal(hasOnlyEnglishSourceRefactorDelta(before, after), true);
+
+  after.enEffectiveHash = before.enEffectiveHash === fullHashA ? fullHashB : fullHashA;
+  assert.equal(hasOnlyEnglishSourceRefactorDelta(before, after), false, "a visible English effective change is not a source-only refactor");
+  after.enEffectiveHash = before.enEffectiveHash;
+  after.zhReviewHash = before.zhReviewHash === fullHashA ? fullHashB : fullHashA;
+  assert.equal(hasOnlyEnglishSourceRefactorDelta(before, after), false, "Chinese review state must remain exact");
+});
+
 test("an active deferment records the exact live object delta", () => {
   const { candidateRegistry, candidateProject, deferment, priorAffectedObjectCount } = makeDeferredFixture();
   const activeSlugs = candidateRegistry.deferments.filter((item) => item.status !== "closed").map((item) => item.moduleSlug);
@@ -576,14 +668,14 @@ test("runtime-maintenance chain preserves the verified document shell and Englis
   assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.maintenanceId === "erm-english-language-switch-2026-08-10"));
   assert.ok([...languageSwitchRuntime.overlays.values()].every((overlay) => overlay.kind === "english-renderer"));
 
-  const latestRuntimeMaintenance = registry.runtimeMaintenances.at(-1);
-  const expectedLiveOverlaySlugs = publishedModuleSlugs.filter((slug) => spawnSync(
-    "git",
-    ["merge-base", "--is-ancestor", latestRuntimeMaintenance.implementationCommit, registry.moduleBaselines[slug].enBaselineCommit],
-    { cwd: projectRoot },
-  ).status !== 0).sort();
-  assert.deepEqual([...runtimeOverlays.keys()].sort(), expectedLiveOverlaySlugs);
-  assert.ok([...runtimeOverlays.values()].every((overlay) => overlay.maintenanceId === latestRuntimeMaintenance.maintenanceId));
+  const expectedLiveMaintenances = expectedLiveRuntimeMaintenances();
+  assert.deepEqual([...runtimeOverlays.keys()].sort(), [...expectedLiveMaintenances.keys()].sort());
+  for (const [slug, overlay] of runtimeOverlays) {
+    const expected = expectedLiveMaintenances.get(slug);
+    assert.ok(expected, `${slug} must retain a latest live runtime maintenance`);
+    assert.equal(overlay.maintenanceId, expected.maintenanceId);
+    assert.equal(overlay.kind, expected.kind);
+  }
 
   const driftedProject = structuredClone(currentProject);
   driftedProject.modules.rag.enEffectiveHash = fullHashA;
@@ -981,6 +1073,17 @@ test("baseline promotion refuses an uncommitted checkout", () => {
       reviewIds: registry.moduleBaselines.rag.reviewSetIds,
     }),
     /does not match the committed HEAD provenance/,
+  );
+});
+
+test("runtime recorder accepts an explicit ancestor implementation commit with its direct parent", () => {
+  const implementationCommit = execFileSync("git", ["rev-parse", "HEAD^"], { cwd: projectRoot, encoding: "utf8" }).trim();
+  const expectedBaseCommit = execFileSync("git", ["rev-parse", "HEAD^^"], { cwd: projectRoot, encoding: "utf8" }).trim();
+  const resolved = resolveRuntimeMaintenanceImplementationCommit(implementationCommit);
+  assert.deepEqual(resolved, { baseCommit: expectedBaseCommit, implementationCommit });
+  assert.throws(
+    () => resolveRuntimeMaintenanceImplementationCommit("a".repeat(40)),
+    /does not exist locally|not an ancestor of HEAD/,
   );
 });
 
