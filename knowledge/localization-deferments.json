@@ -48871,11 +48871,87 @@
       ],
       "affectedObjects": [
         {
+          "objectId": "/module:solution-patterns/brief/cloudHooks/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "currentHash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/cloudHooks/007",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:849e305d1d1d74d59b8c7bbe310d8597ec0ef2e76a889b0aee173b3148e285c6",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/decisions/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "currentHash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/decisions/012",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9d5b8d5c086a2071b2d8fa9e53af504638f6230792b53c738cabd08080827cf0",
+          "currentHash": "sha256:291de04e51f47daa89b65a6df2624a1531c1606d1b3ae4a4342e5558db19ccf2",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/decisions/013",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:291de04e51f47daa89b65a6df2624a1531c1606d1b3ae4a4342e5558db19ccf2",
+          "currentHash": "sha256:991ad8cdcfbeac283233c1f934e66ec90bf3abd95271baf8c76d15b5cbab4581",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/decisions/014",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:991ad8cdcfbeac283233c1f934e66ec90bf3abd95271baf8c76d15b5cbab4581",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:solution-patterns/brief/deepDiveLead",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:49315ac80a7aa6080f19699108a30ae18e4b4952b81eb3e51dba1d3c187bac17",
           "currentHash": "sha256:451946dd66c065ec4297fd53d54d287d37df49f0ce6e4d3edbdec153753610bf",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/deepDives/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/deepDives/004",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:91939d3064a4c692cd85245334375d82c173efdd3ccceeea2832a3b61c01a356",
+          "currentHash": null,
+          "sourceIds": [
+            "finops-ai-category",
+            "finops-ai-overview",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/definition",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b319cef208bdcb18fef86564486823f8765f6f524821b6a7f3831946337a343f",
+          "currentHash": "sha256:2bdf7c37912c82f2851e17a36594dce1430668c3ff1d46657f52ac1dc7ecda83",
           "sourceIds": []
         },
         {
@@ -48887,6 +48963,14 @@
           "sourceIds": [
             "anthropic-effective-agents"
           ]
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/principles/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "currentHash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "sourceIds": []
         },
         {
           "objectId": "/module:solution-patterns/brief/principles/000",
@@ -48905,6 +48989,50 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:solution-patterns/brief/principles/008",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9c9897f0e05908adbb1ade7d80344a6e1fd542e272b2348caa762323c000b55f",
+          "currentHash": "sha256:28cd5ce63c8e7d6ada4d941a192616b5d8c910c2321ac80b8ae293feee0f368b",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/principles/009",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:84562862871f2c7c1f5996bc5ee7b2c13ec81566e610e16e49ef5c93a04819cd",
+          "currentHash": "sha256:5a7373ded3a8bfbcba3317dc744f89cd563c6c990dc49eb813f6df1cea72e525",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/brief/principles/010",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:743e3a473277c4e82002128791777c6a1beb27b080a153a2fc66f3b5e2677500",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/content/deepDives/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/content/deepDives/004",
+          "objectType": "content",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:91939d3064a4c692cd85245334375d82c173efdd3ccceeea2832a3b61c01a356",
+          "currentHash": null,
+          "sourceIds": [
+            "finops-ai-category",
+            "finops-ai-overview",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
           "objectId": "/module:solution-patterns/content/evidenceCards/000",
           "objectType": "content",
           "changeKind": "modified",
@@ -48913,6 +49041,99 @@
           "sourceIds": [
             "anthropic-effective-agents"
           ]
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/labs/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "currentHash": "sha256:a7c3793abe7e4c2914354a01f8f9b574d6b3d3c55c4889b5bc4e95e9ccce8a10",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/labs/001",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:01389b7eeb8545ffa51c006363ad4a1648dddfcb3bbbe9a9b0a82d1e08ee0ee0",
+          "currentHash": "sha256:9bbdc9b222846780deff155bb979dc996b6ee25b298115dd2415a82ad8a8aa7e",
+          "sourceIds": [
+            "finops-unit-economics",
+            "nist-genai-profile",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/labs/007",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:70f64d7cfceb4447ce909d7fedf7ffb81ab4c8879d43330dad1228fb195f513d",
+          "currentHash": null,
+          "sourceIds": [
+            "finops-ai-category",
+            "finops-framework"
+          ]
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/labs/008",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:f593c0b6e206bb8eb5bfcf306fa0a1ec97d73298d2c919c328bde617bfc58e98",
+          "currentHash": null,
+          "sourceIds": [
+            "finops-ai-category",
+            "finops-framework"
+          ]
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/labs/009",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:ace534253c36696012fc7d6feca938a75d08b3c579338090bda821005d72162d",
+          "currentHash": null,
+          "sourceIds": [
+            "finops-ai-category",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/outcomes/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/outcomes/004",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:315399ab8c972c20beacdfd4e1d42e7b6f540749258c8b045f5355b4df1a8dc0",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/outcomes/005",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:ed8a9f73578eb141b8a1211106f9288da64d19a7af745e091da6e9885fe5834d",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/outcomes/006",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:b96eaeb8fbeba8ca39298aefeb45a0392a3c07561baa90f2a635c4494f4ab975",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/learning/outcomes/007",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:aaca471bea7ed39c8d7ecff914e12260a6735479bf51d0e26a324029b5dbf0a3",
+          "currentHash": null,
+          "sourceIds": []
         },
         {
           "objectId": "/module:solution-patterns/publication/contentContract/cloud/000",
@@ -48944,6 +49165,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:solution-patterns/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -49636,6 +49865,59 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:multimodal/learning/labs/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a0383b213990563d42fae9ba9109eba4974cd8ca889c8a87f1074b527a7d9fae",
+          "currentHash": "sha256:8be2393e8ff204f53100fb858bc5d979b9a994c6c16db7be4c5c8dd15c126865",
+          "sourceIds": [
+            "docling-report",
+            "longvideobench-2024",
+            "nist-genai-profile",
+            "pp-ocrv5-2026"
+          ]
+        },
+        {
+          "objectId": "/module:multimodal/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:multimodal/learning/route/001",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b4f07e52fd59bcc9211301ad8d034d1024bff37908d1f7f0ba7494ab42b37317",
+          "currentHash": "sha256:b0242e56920b3cfae859bca7e45661c4301f9d8469d12c55e0685067fa84b15f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:multimodal/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2521ecc8421b6f4663572b4dea79d356ffb6345587b191580c79fef208dd6e5d",
+          "currentHash": "sha256:48abce4a8b31a40930deef8abc0756d2a8c7a6c01786db5dfc33ca6cbe6c9f87",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:multimodal/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:004c74ac33f5f0f53372aedbad3aac068189e58466a7fee6cf7c7fd2c46456b8",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:multimodal/learning/route/005",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:0b5a744d9969ade780db3e1abcab05de76831101a89ec1890fa68dabd90f072e",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:multimodal/publication/contentContract/boundary/000",
           "objectType": "publication",
           "changeKind": "modified",
@@ -49673,6 +49955,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:multimodal/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -50015,6 +50305,14 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:mcp/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:mcp/sources/mcp-2026-07-28-rc",
           "objectType": "sources",
           "changeKind": "modified",
@@ -50227,6 +50525,19 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:a2a/learning/labs/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0cdad1426fbfe6c3e9d20289e7ac1a9a3c6be68d14891c89c5d20eb3d5b8b9c2",
+          "currentHash": "sha256:131b5572b095a38e5f411bedccb7a70a63d6ecfe242f83a2036083a51149d686",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-release-1-0-1",
+            "a2a-specification",
+            "nist-genai-profile"
+          ]
+        },
+        {
           "objectId": "/module:a2a/publication/contentContract/boundary/000",
           "objectType": "publication",
           "changeKind": "modified",
@@ -50264,6 +50575,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -50417,7 +50736,7 @@
           "objectType": "learning",
           "changeKind": "modified",
           "baselineHash": "sha256:d0fe02ca65e1bdf80d6cb55190ef7fb1b81e420dcd68be1290d1d9743df145ba",
-          "currentHash": "sha256:34d293b5ab0c9d89092457941750f983ba30720e44fc310e26c89a4a332f180a",
+          "currentHash": "sha256:4d85c50f9affdc1518dec4f1b335ea7291fd2310606e395c90967f0032851f70",
           "sourceIds": [
             "veadk-runner-source-2026-08-15",
             "veadk-short-term-memory-2026-08-15"
@@ -50461,6 +50780,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:veadk/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0f51a5c292f3ec742d866da608deab270ce0e0dd4626b2302658c9412132132b",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -50623,7 +50950,7 @@
           "objectType": "learning",
           "changeKind": "modified",
           "baselineHash": "sha256:1efb356d4dbcd3a1c730e601efc6a35f1f2d01fe36edd8d49b8ec8fc4e910dc0",
-          "currentHash": "sha256:cfecafa690dc3462424d34f7b6c9ece317cf1aefcccb3d4f33145d5bf967edd2",
+          "currentHash": "sha256:f9deb9dcf4e55e4730ac9e51a0bc51d33a0034895f0cf43a3ae3a31bc3d4d0a4",
           "sourceIds": [
             "agentkit-cli-commands-2026-08-15",
             "agentkit-platform-overview-2026-08-15",
@@ -50668,6 +50995,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:agentkit/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0f51a5c292f3ec742d866da608deab270ce0e0dd4626b2302658c9412132132b",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -50813,6 +51148,66 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:evaluation/learning/labs/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3c92f3e7bdc038905c3cf9cc7c1ceca245eb8dd26848239b014eb994137e037e",
+          "currentHash": "sha256:5cf521f8726d8ea6b3b953ae7bd882d5ceb12d411853ea8bfe61bf1c4b16ad5e",
+          "sourceIds": [
+            "anthropic-agent-evals",
+            "llm-as-judge-2023",
+            "nist-ai-800-3"
+          ]
+        },
+        {
+          "objectId": "/module:evaluation/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:evaluation/learning/route/001",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4d811142267ad6637af32215e3d77ae1e2c030e4ba340c15b283fe35e1941390",
+          "currentHash": "sha256:3773b837077363fc9f42b56793caeb7387d6ef12307556773f1053cd423ecc39",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:evaluation/learning/route/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:77fb91e4df958553bc65302c5cf437faa0233715747711572f86542f29459c00",
+          "currentHash": "sha256:d1e93344af9635fc105a4385807d9cf126e08495992983c9ff772237363dc982",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:evaluation/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:613cf898ffb53aa85a5b3ca1ee2369ad5d2d1b7767c1241b4a502d7f59af2a95",
+          "currentHash": "sha256:40b5c9e97e1dbf7256d44b7e78c3fc99976ebf6c140c1236611f88d5fa5658db",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:evaluation/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:1b34842576c3e25402a5f04b5c86f86e79f75a0ef8da5d71392616ca855f773c",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:evaluation/learning/route/005",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:5f1cbecbc11ee02569b06bf15f47747701983dda20eb20fa5e74c2ca1bf7d34b",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:evaluation/publication/contentContract/boundary/000",
           "objectType": "publication",
           "changeKind": "modified",
@@ -50850,6 +51245,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:evaluation/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -51528,24 +51931,193 @@
       ],
       "affectedObjects": [
         {
+          "objectId": "/module:ai-ops/brief/cloudHooks/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "currentHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/cloudHooks/001",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:35954b1ecce6941f1275525bec206d7a906c5c172fabe7723e1e1a764533eaa1",
+          "currentHash": "sha256:e248b50def913ebcd6df951df9f6ac7974c66d2e0f60bfa4216b3d8fc73d7c68",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/cloudHooks/002",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:ae40a0037554876cffe8c905addb3ab480b495429dc9b922410854b97d632c61",
+          "currentHash": "sha256:76763437d14f1a3211914e4ede47850c04fdb01ee8001b7f968e62d5c7ad4317",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/cloudHooks/003",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9fc59e3b4c0a928091035044938f0afa9c80017c2d8000e8aaaa7477a82a796b",
+          "currentHash": "sha256:e23f99e0149c8f6f3e64e6e24357413728020fd348ead0f6900fca782789bad7",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/cloudHooks/004",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:76763437d14f1a3211914e4ede47850c04fdb01ee8001b7f968e62d5c7ad4317",
+          "currentHash": "sha256:f7aaa57b06111c18760a06da1ac2ec3cc7c1b3d2abe932da33499c620c47c73b",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/cloudHooks/005",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:d012bdc59b8942391baad34b777a5cdf9814abeb32e516a73a9998928acdd8db",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/cloudHooks/006",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:e23f99e0149c8f6f3e64e6e24357413728020fd348ead0f6900fca782789bad7",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/cloudHooks/007",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:f7aaa57b06111c18760a06da1ac2ec3cc7c1b3d2abe932da33499c620c47c73b",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/criticalBoundary",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:46d7d4ca6b8fb07df6efb01b2960510378a23e78cc5b934c60d4596b8ead931b",
+          "currentHash": "sha256:de188ab15ca2e055bf14f50ac0c4d759a94c69f1465cee7ceec0ce267669b0fe",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/decisions/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "currentHash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/decisions/002",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:328a4ea72b30f0320da7b28851a92330bccfb35bfa7b3d3d5fcf006cfbf3b8d2",
+          "currentHash": "sha256:eb55fc779019b5909d77b2b07b90a3e0b28d2e8fc49796748ce3e7fbccb426ba",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-ops/brief/decisions/008",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:899db9156bbdbc6fc869bc11a073a1f403c6f802ee12ddc3754a18523fc691c1",
-          "currentHash": "sha256:a214d03ed31bea1436bf98541c4c639318864b13c63e2b0af09c2507b4ff47d5",
+          "currentHash": "sha256:9384bae47de1727b5a1413d92b3a563641252670c6329a74fe5fdd665a5a5014",
           "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/decisions/009",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:9384bae47de1727b5a1413d92b3a563641252670c6329a74fe5fdd665a5a5014",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/deepDiveLead",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7135311df0a41b7796835947206b1c7e9e24023d60e4db2f03928342ac0e2325",
+          "currentHash": "sha256:f77a210747f0c31e1b2c8f2a8be5e7fe63db6ccc6da6d015ca4effcc2d6d395d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/deepDiveTitle",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a06af1d72f4918bfd1488b44c5c38835eba093f21402bd687616c4d6bcfea35c",
+          "currentHash": "sha256:f81e8d35db18a24175b97d5d5b31124bc1cc7e4725ab7acf75397803fda7301c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/deepDives/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "currentHash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/deepDives/000",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:468e0b1fc9e1a66867fab05952ab9585e2e985a5e6cd46905be7338da2625646",
+          "currentHash": "sha256:6ba49dbccaa2c8322b92dcd61450e5ce19792f414de43d04c718a29195f6e33c",
+          "sourceIds": [
+            "aws-genai-lifecycle",
+            "azure-foundation-model-lifecycle",
+            "azure-genaiops",
+            "google-genai-app-lifecycle"
+          ]
+        },
+        {
+          "objectId": "/module:ai-ops/brief/deepDives/001",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6ba49dbccaa2c8322b92dcd61450e5ce19792f414de43d04c718a29195f6e33c",
+          "currentHash": "sha256:96d566f2d8d1f32dab627b95840e64b0929b06db15335a7856431d9e57d16ea6",
+          "sourceIds": [
+            "azure-foundation-model-lifecycle",
+            "azure-genaiops",
+            "google-genai-app-lifecycle",
+            "nist-genai-profile",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
         },
         {
           "objectId": "/module:ai-ops/brief/deepDives/002",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:66c4f2990944851d69a0a5a16c65b74ab3cdfb63b7c179d9575ce61981fd461c",
-          "currentHash": "sha256:96d566f2d8d1f32dab627b95840e64b0929b06db15335a7856431d9e57d16ea6",
+          "currentHash": "sha256:722ee2f818eaecb0b9c4fd51fc81ef23808c1b2be90e48d2d748ec3e6524e464",
           "sourceIds": [
             "nist-genai-profile",
             "nist-zero-trust",
+            "openai-eval-best-practices",
             "opentelemetry-genai-semconv"
           ]
+        },
+        {
+          "objectId": "/module:ai-ops/brief/deepDives/003",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:722ee2f818eaecb0b9c4fd51fc81ef23808c1b2be90e48d2d748ec3e6524e464",
+          "currentHash": null,
+          "sourceIds": [
+            "nist-genai-profile",
+            "openai-eval-best-practices",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:ai-ops/brief/definition",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7bf06c40b6be1b52cea0e23a4b8d05227944510d0909a6c8f86b720c299024b5",
+          "currentHash": "sha256:4c2429d2fda5a596b0eeaf0e60ae9290135b91e04b35eb36a07a658ca4dfc8f5",
+          "sourceIds": []
         },
         {
           "objectId": "/module:ai-ops/brief/evidenceCards/005",
@@ -51568,6 +52140,14 @@
           ]
         },
         {
+          "objectId": "/module:ai-ops/brief/position",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:18caa45dd86fbbc59fa27453619562ac7bac48160f60d073f510012b105213a5",
+          "currentHash": "sha256:4c969bec74ece01f58d6e648a47ca049d128281b513b01b6f3e0aa2c28bbbac8",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-ops/brief/principleTitle",
           "objectType": "brief",
           "changeKind": "modified",
@@ -51576,30 +52156,151 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:ai-ops/brief/principles/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7861861f1344999672a1802b279bf03aa2d152c96916bca5c74a622717c621ed",
+          "currentHash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/003",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6196a0cd42f21083c4c6a85d1a50eeb38667a0c2628be0b9a100c3af2c6c1d37",
+          "currentHash": "sha256:6eb60b95db769cc60f137dd048f5d5956d6350017102f101e51cd6db7b01e47c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/004",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4d58eeb8d48b11444b72dbe9d28c69f03dc7a90baf262a74d447db84364574d8",
+          "currentHash": "sha256:075a10b17d6b66058070db91536e7059005f94224017ce05b0f32eb0380251bc",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-ops/brief/principles/005",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:7f69366fbdd5f33cff1360c468448cdb48fc45e8372b4f85cb5090156748cf19",
-          "currentHash": "sha256:75206b2fc79308f1b4f9e34663817aa4214170e0dc0a90eb595971865c1698fc",
+          "currentHash": "sha256:5a21e426cb1f79064b2b70a79f791c147448df8f0beeae3e548d9f7e07ee0f2f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/006",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:075a10b17d6b66058070db91536e7059005f94224017ce05b0f32eb0380251bc",
+          "currentHash": "sha256:28911aa3bc72683f7627b3b9e94c5232abaf16b7b0a6480677ce08ce47a08708",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/007",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5a21e426cb1f79064b2b70a79f791c147448df8f0beeae3e548d9f7e07ee0f2f",
+          "currentHash": "sha256:c394e9722f8d267429ce27a8d1899d0b926ce3864fc839b2850bb921868c6f03",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/008",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:28911aa3bc72683f7627b3b9e94c5232abaf16b7b0a6480677ce08ce47a08708",
+          "currentHash": "sha256:f791615722afc6e4a8e25815e0fbdab50e44368f6608025820c4ba2a16b409b5",
           "sourceIds": []
         },
         {
           "objectId": "/module:ai-ops/brief/principles/009",
           "objectType": "brief",
-          "changeKind": "modified",
+          "changeKind": "deleted",
           "baselineHash": "sha256:c48c0af309b762f28701c6d087183634c62c9788a604cac1e662c3fece6b8594",
-          "currentHash": "sha256:5a3734ed57b22b2463b27146aa0f6ee916c777cc6b769237eb23e979d7f2e1bc",
+          "currentHash": null,
           "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/010",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:f791615722afc6e4a8e25815e0fbdab50e44368f6608025820c4ba2a16b409b5",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/011",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:28cd5ce63c8e7d6ada4d941a192616b5d8c910c2321ac80b8ae293feee0f368b",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/brief/principles/012",
+          "objectType": "brief",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:5a7373ded3a8bfbcba3317dc744f89cd563c6c990dc49eb813f6df1cea72e525",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/content/deepDives/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "currentHash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/content/deepDives/000",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:468e0b1fc9e1a66867fab05952ab9585e2e985a5e6cd46905be7338da2625646",
+          "currentHash": "sha256:6ba49dbccaa2c8322b92dcd61450e5ce19792f414de43d04c718a29195f6e33c",
+          "sourceIds": [
+            "aws-genai-lifecycle",
+            "azure-foundation-model-lifecycle",
+            "azure-genaiops",
+            "google-genai-app-lifecycle"
+          ]
+        },
+        {
+          "objectId": "/module:ai-ops/content/deepDives/001",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6ba49dbccaa2c8322b92dcd61450e5ce19792f414de43d04c718a29195f6e33c",
+          "currentHash": "sha256:96d566f2d8d1f32dab627b95840e64b0929b06db15335a7856431d9e57d16ea6",
+          "sourceIds": [
+            "azure-foundation-model-lifecycle",
+            "azure-genaiops",
+            "google-genai-app-lifecycle",
+            "nist-genai-profile",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
         },
         {
           "objectId": "/module:ai-ops/content/deepDives/002",
           "objectType": "content",
           "changeKind": "modified",
           "baselineHash": "sha256:66c4f2990944851d69a0a5a16c65b74ab3cdfb63b7c179d9575ce61981fd461c",
-          "currentHash": "sha256:96d566f2d8d1f32dab627b95840e64b0929b06db15335a7856431d9e57d16ea6",
+          "currentHash": "sha256:722ee2f818eaecb0b9c4fd51fc81ef23808c1b2be90e48d2d748ec3e6524e464",
           "sourceIds": [
             "nist-genai-profile",
             "nist-zero-trust",
+            "openai-eval-best-practices",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:ai-ops/content/deepDives/003",
+          "objectType": "content",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:722ee2f818eaecb0b9c4fd51fc81ef23808c1b2be90e48d2d748ec3e6524e464",
+          "currentHash": null,
+          "sourceIds": [
+            "nist-genai-profile",
+            "openai-eval-best-practices",
             "opentelemetry-genai-semconv"
           ]
         },
@@ -51629,6 +52330,54 @@
           "changeKind": "modified",
           "baselineHash": "sha256:507d4cfb2de7d7318c020c7ee11a0d8b596478146946d0f07d2934b33f754342",
           "currentHash": "sha256:ba3661edeac0584864c3e5330c369b34beacc7572af324b4ca4e560078066915",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/learning/route/000",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b68961900f44a8e33e88b1d0f0a9474b6fb5240df0f755347167b09af43d8d96",
+          "currentHash": "sha256:5cb5e9f6e1eb28c07a4e7d25a5fa8660b01b3378af205998400c522a6014a41f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/learning/route/001",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a2bb088fab713a2fe2a67a14e464b7effc0ff56050197fccf9ac05a53dd8b391",
+          "currentHash": "sha256:afa6795ab3d4a74d125ca432292ca08aee256fd9dc6629ac16d51244d663c6f1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/learning/route/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:357739a5479efa0ba1efe0ad5397288a0effe5450854d484371cc19f3aca6ffb",
+          "currentHash": "sha256:ad5a45d6ffa23a50b0a4962bf2893852045c90c6f7fa054b2560c56d3f802da2",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:72d7cf782f0072d82930aa648142f67c6a66967e9fde1c77a82dfc5c136ded3a",
+          "currentHash": "sha256:3c98e602d06a60eeb80ec4dcca373de7cd42a09a92112f43d9f678f66d9906a9",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:c2ad46e77458c20d81d744845344a8900f3cf9a5920ceabb59456d1c1c97cdf4",
+          "currentHash": null,
           "sourceIds": []
         },
         {
@@ -51669,6 +52418,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-ops/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -52607,6 +53364,46 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:llm-training/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "currentHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:llm-training/learning/route/001",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7cd0503f2cc86c0b0692c4b07320bca64ad71b14a09339b78c445f48dc1a2d5e",
+          "currentHash": "sha256:f160fa619a3bcd66eeccf1878a2dc92e6057ee8f4d6b6326ce2332dde30cbb05",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:llm-training/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:822b1be4115b31a3bebe4cb7bd09001fcba0260ca5705f83d9e46c0b30b001a3",
+          "currentHash": "sha256:68420f9aebe60083f61e16e18f71be1d9b66075007c47640225cbf6ccf4a39ce",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:llm-training/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b97342346df259b544a2f79b6385be22c98ee9d3d5bb37ad00f24b673ebed63f",
+          "currentHash": "sha256:822b1be4115b31a3bebe4cb7bd09001fcba0260ca5705f83d9e46c0b30b001a3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:llm-training/learning/route/005",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:68420f9aebe60083f61e16e18f71be1d9b66075007c47640225cbf6ccf4a39ce",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:llm-training/publication/contentContract/boundary/000",
           "objectType": "publication",
           "changeKind": "modified",
@@ -52644,6 +53441,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:llm-training/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -52846,6 +53651,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:llm-inference/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -53061,6 +53874,54 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:data-engineering/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:data-engineering/learning/route/000",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c16eb0f246b534d9758906d4ded963ad99a38317f3c2b4e744af7816ac0d1718",
+          "currentHash": "sha256:50f42156292869c1092da9a97e49d7237c029d7215ed5876983f3e2bda7f351f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:data-engineering/learning/route/001",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:02495fe5bbe9da7ac4399e67dcf45947ae2e200c16639d96a561948eab99783c",
+          "currentHash": "sha256:73b944b616978224dba92645b019be5962ebb79db363925eee04216ffadf3c2c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:data-engineering/learning/route/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:eeced72517a20866beb7854965f122f0e4ff56335bc9ab9a23c8b91336d11833",
+          "currentHash": "sha256:e32c86746ffc311cf9b577aa25e4cccae502068962feb74a29da3c2ba2748789",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:data-engineering/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:eb79896bf98c196c7d77110d7c4115fd3e4144b776a76585df98c7d69e096173",
+          "currentHash": "sha256:f57b6b526b61fdaab732111722149c9fdd6264643c210241625da44e3f9d99e5",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:data-engineering/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:27662f7a751ff980f7448e44b2f2af8bd2e7b13d35d60cd460baee23ad6d929c",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:data-engineering/publication/contentContract/boundary/000",
           "objectType": "publication",
           "changeKind": "modified",
@@ -53098,6 +53959,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:data-engineering/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6e392071622ab807e8679b38b29b570b2e2bdf7f960cd9370c903fbfd7800f29",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
@@ -53517,6 +54386,38 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:ai-infra-compute/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-infra-compute/learning/route/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a9ce8c7e2f4a20bf3ed3896b05d5d9c5a9ed2d66cb4800c7e370d639113a17fc",
+          "currentHash": "sha256:b91c01d84f839b70cfe15864e284c7900018edd2debf8cf743878f6d01c67618",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-infra-compute/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e366d8b64a0be8baeb992dcbcb641fe5da2372f135cc071853216191936c6066",
+          "currentHash": "sha256:59f0d66d6d8ff5f7266747f16336c19ee173fe669c04535fd2b499ab853760b3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-infra-compute/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "deleted",
+          "baselineHash": "sha256:3f9e429880be5131cbf28de771db98b635bc2d8c686fc788795e7d30b1a50428",
+          "currentHash": null,
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-infra-compute/publication/contentContract/boundary/000",
           "objectType": "publication",
           "changeKind": "modified",
@@ -53554,6 +54455,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
           "currentHash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-infra-compute/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
+          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
           "sourceIds": []
         }
       ],
