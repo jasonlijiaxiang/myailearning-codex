@@ -112,8 +112,8 @@
 
 .primary { min-width: 0; }
 .modeContent { min-width: 0; }
-.sectionBand, .deepDive, .learningRoute, .curriculumIntro, .labs, .fieldQa, .evidenceSection, .cloudSection, .lifecycleSection { padding: 26px clamp(20px, 2.35vw, 38px); border-bottom: 1px solid var(--mcp-line); scroll-margin-top: 176px; }
-.sectionBand:nth-child(even), .evidenceSection, .lifecycleSection { background: #fbfcfe; }
+.sectionBand, .deepDive, .learningRoute, .curriculumIntro, .deepDiveSection, .protocolDossier, .labs, .fieldQa, .evidenceSection, .cloudSection, .lifecycleSection { padding: 26px clamp(20px, 2.35vw, 38px); border-bottom: 1px solid var(--mcp-line); scroll-margin-top: 176px; }
+.sectionBand:nth-child(even), .protocolDossier, .evidenceSection, .lifecycleSection { background: #fbfcfe; }
 
 .sectionHeader { margin-bottom: 18px; display: grid; grid-template-columns: 48px minmax(0,1fr); gap: 12px; align-items: start; }
 .sectionHeader > span { width: 38px; height: 38px; border: 1px solid var(--mcp-line-strong); display: grid; place-items: center; color: var(--mcp-blue); font-size: 12px; font-weight: 900; }
@@ -164,16 +164,6 @@
 .deepDiveRow > div small { color: var(--mcp-muted); font-size: 11px; }
 .riskCell { color: #9f342f; background: var(--mcp-risk-soft); }
 
-.versionCompare { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--mcp-line-strong); }
-.versionCompare article { padding: 18px 20px; }
-.versionCompare article + article { border-left: 1px solid var(--mcp-line-strong); }
-.versionCompare article > span { color: var(--mcp-muted); font-size: 12px; font-weight: 800; }
-.versionCompare h3 { margin: 3px 0 8px; font-size: 22px; }
-.versionCompare p { margin: 0; font-size: 14.5px; line-height: 1.58; }
-.currentVersion { background: var(--mcp-accent-soft); box-shadow: inset 4px 0 0 var(--mcp-accent); }
-.fullBoundary { margin: 12px 0 0; padding: 10px 13px; border-left: 4px solid var(--mcp-risk); background: var(--mcp-risk-soft); color: #8f312c; font-size: 14px; }
-.fullBoundary strong { margin-right: 10px; }
-
 .principleGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid var(--mcp-line-strong); border-left: 1px solid var(--mcp-line-strong); }
 .principleGrid article { min-width: 0; padding: 17px 18px; border-right: 1px solid var(--mcp-line-strong); border-bottom: 1px solid var(--mcp-line-strong); display: grid; grid-template-columns: 30px minmax(0,1fr); align-content: start; }
 .principleGrid article:last-child:nth-child(odd) { grid-column: 1 / -1; }
@@ -182,6 +172,9 @@
 .principleGrid small { color: var(--mcp-muted); font-size: 11px; }
 .principleGrid p { margin: 8px 0; font-size: 14px; line-height: 1.58; }
 .principleGrid strong { font-size: 13.5px; line-height: 1.55; }
+.learnLink { margin: 14px 0 0; }
+.learnLink a { color: var(--mcp-blue); font-size: 13px; font-weight: 800; text-decoration: none; }
+.learnLink a:hover { text-decoration: underline; }
 
 .sourceDisclosure { margin-top: 12px; border-top: 1px dashed var(--mcp-line-strong); }
 .sourceDisclosure > summary, .mechanismDisclosure > summary { min-height: 42px; padding: 10px 30px 9px 0; cursor: pointer; color: var(--mcp-blue); list-style: none; position: relative; font-size: 13px; font-weight: 800; }
@@ -237,19 +230,36 @@
 .chapter > header h2 { margin: 0; font-family: var(--font-serif), "Songti SC", serif; font-size: clamp(24px,2vw,29px); line-height: 1.3; }
 .chapter > header small { color: var(--mcp-muted); font-size: 11px; }
 .chapter > header > strong { padding: 9px 12px; border-left: 4px solid var(--mcp-accent); background: var(--mcp-accent-soft); font-size: 14px; line-height: 1.55; }
+.chapterMechanism { margin: 16px 0 0 68px; font-size: 15px; line-height: 1.68; }
+.chapterMechanism strong { display: block; margin-bottom: 5px; color: var(--mcp-blue); font-size: 11px; letter-spacing: .05em; }
 .chapterBoundary { margin: 14px 0 0 68px; padding: 9px 12px; border-left: 4px solid var(--mcp-risk); background: var(--mcp-risk-soft); color: #8f312c; font-size: 13.5px; }
 .chapterBoundary strong { margin-right: 10px; }
-.chapter > .mechanismDisclosure, .chapter > .sourceDisclosure { margin-left: 68px; }
+.chapter > .sourceDisclosure { margin-left: 68px; }
 .mechanismDisclosure { margin-top: 10px; border-top: 1px dashed var(--mcp-line-strong); }
 .mechanismDisclosure > p { margin: 0 0 12px; font-size: 15px; line-height: 1.65; }
 .mechanismDisclosure > strong { display: block; margin-bottom: 10px; color: var(--mcp-muted); font-size: 12px; }
 .mechanismDisclosure ol { margin: 0 0 12px; padding-left: 22px; }
 .mechanismDisclosure li { margin: 5px 0; font-size: 14px; }
-.chapterSupplements { margin: 18px 0 0 68px; }
-.chapterSupplements .deepDive { padding-inline: 0; border: 1px solid var(--mcp-line); }
-.chapterSupplements .deepDive > header, .chapterSupplements .deepDive > .sourceDisclosure { margin-inline: 18px; }
-.chapterSupplements .deepDiveTable { border-inline: 0; }
 .chapterQaGrid { margin-top: 14px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+
+.deepDiveSection { background: #fff; }
+.deepDiveSection > .deepDive { padding: 24px 0; border-bottom: 1px solid var(--mcp-line); }
+.deepDiveSection > .deepDive:last-child { border-bottom: 0; }
+
+.protocolDossier { background: #f7fbf0; }
+.dossierGrid { display: grid; grid-template-columns: 1.1fr 1.1fr .9fr; gap: 12px; }
+.dossierGrid > article { min-width: 0; padding: 16px; border: 1px solid var(--mcp-line-strong); background: #fff; }
+.dossierGrid > article > header { display: grid; grid-template-columns: 32px minmax(0,1fr); gap: 8px; }
+.dossierGrid > article > header > span { color: var(--mcp-blue); font-size: 11px; font-weight: 900; }
+.dossierGrid h3 { margin: 0; font-size: 16px; line-height: 1.42; }
+.dossierGrid header p { margin: 5px 0 0; color: var(--mcp-muted); font-size: 13px; line-height: 1.55; }
+.dossierGrid pre { min-height: 264px; margin: 14px 0; padding: 13px; overflow: auto; border: 1px solid #d6e0eb; background: #f4f8fc; color: #12395f; font: 12px/1.58 var(--font-geist-mono), ui-monospace, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.dossierGrid code { font: inherit; }
+.dossierGrid dl { margin: 14px 0; display: grid; gap: 1px; background: var(--mcp-line); }
+.dossierGrid dl div { padding: 10px 11px; background: #fff; }
+.dossierGrid dt { color: var(--mcp-muted); font-size: 11px; font-weight: 900; }
+.dossierGrid dd { margin: 4px 0 0; font-size: 13px; line-height: 1.55; }
+.dossierRule { margin: 0; padding: 10px 11px; border-left: 3px solid var(--mcp-accent-dark); background: var(--mcp-accent-soft); font-size: 13px; line-height: 1.58; }
 
 .qaPreview { min-width: 0; padding: 16px 17px; border: 1px solid var(--mcp-line-strong); background: #fff; scroll-margin-top: 176px; }
 .qaPreview > header { display: grid; grid-template-columns: 38px minmax(0,1fr); gap: 8px; }
@@ -269,6 +279,8 @@
 .labGrid h3 { margin: 0; font-size: 18px; line-height: 1.4; }
 .labGrid > article > p { margin: 12px 0; font-size: 14px; }
 .labGrid > article > p strong { margin-right: 8px; color: var(--mcp-muted); }
+.labTasks { margin: 0 0 13px; padding-left: 21px; }
+.labTasks li { margin: 6px 0; font-size: 13px; line-height: 1.55; }
 .labGrid dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--mcp-line); }
 .labGrid dl div { padding: 10px 11px; background: #fff; }
 .labGrid dt { color: var(--mcp-muted); font-size: 12.5px; font-weight: 900; }
@@ -309,15 +321,6 @@
 .cloudRow > p:last-child { background: var(--mcp-blue-soft); }
 
 .lifecycleSection { padding-bottom: 36px; }
-.lifecycleGrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1px; background: var(--mcp-line); border: 1px solid var(--mcp-line); }
-.lifecycleGrid article { padding: 13px 14px; background: #fff; }
-.lifecycleGrid span { display: block; color: var(--mcp-muted); font-size: 10.5px; font-weight: 900; }
-.lifecycleGrid strong { display: block; margin-top: 4px; font-size: 14px; line-height: 1.55; }
-.lifecycleAcceptance { border-left: 4px solid var(--mcp-accent); background: var(--mcp-accent-soft) !important; }
-.lifecycleTasks { margin: 12px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid var(--mcp-line-strong); }
-.lifecycleTasks li { padding: 12px 13px; border-right: 1px solid var(--mcp-line); display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 7px; font-size: 13px; line-height: 1.52; }
-.lifecycleTasks li:last-child { border-right: 0; }
-.lifecycleTasks span { color: var(--mcp-blue); font-size: 12px; font-weight: 900; }
 
 .skipTarget { scroll-margin-top: 84px; }
 .relatedLinks { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border: 1px solid var(--mcp-line); }
@@ -349,6 +352,8 @@
   .protocolPrimer > * { border-right: 0; border-bottom: 1px solid var(--mcp-line); }
   .protocolPrimer > *:last-child { border-bottom: 0; }
   .chapter > header { grid-template-columns: 54px minmax(220px,.8fr) minmax(300px,1.2fr); }
+  .dossierGrid { grid-template-columns: 1fr 1fr; }
+  .dossierGrid > article:last-child { grid-column: 1 / -1; }
 }
 
 @media (max-width: 899px) {
@@ -356,7 +361,7 @@
   .stickyControls { top: 56px; }
   .modeTabs button span { display: none; }
   .boundaryBar { grid-template-columns: 96px minmax(0,1fr); }
-  .sectionBand, .deepDive, .learningRoute, .curriculumIntro, .labs, .fieldQa, .evidenceSection, .cloudSection, .lifecycleSection { padding-inline: 22px; }
+  .sectionBand, .deepDive, .learningRoute, .curriculumIntro, .deepDiveSection, .protocolDossier, .labs, .fieldQa, .evidenceSection, .cloudSection, .lifecycleSection { padding-inline: 22px; }
   .decisionWorkbench { grid-template-columns: 1fr; }
   .decisionWorkbench nav { grid-template-columns: 1fr 1fr; border-right: 0; border-bottom: 1px solid var(--mcp-line-strong); }
   .decisionWorkbench nav button:nth-child(odd) { border-right: 1px solid var(--mcp-line); }
@@ -377,10 +382,11 @@
   .routeSteps article:nth-of-type(odd) { border-left: 1px solid var(--mcp-line); }
   .chapter > header { grid-template-columns: 52px minmax(0,1fr); }
   .chapter > header > strong { grid-column: 2; }
-  .chapterBoundary, .chapter > .mechanismDisclosure, .chapter > .sourceDisclosure, .chapterSupplements { margin-left: 66px; }
+  .chapterMechanism, .chapterBoundary, .chapter > .sourceDisclosure { margin-left: 66px; }
   .chapterQaGrid, .fieldQaList { grid-template-columns: 1fr; }
   .qaTabs { grid-template-columns: repeat(5,minmax(115px,1fr)); overflow-x: auto; }
-  .labGrid, .evidenceGrid { grid-template-columns: 1fr; }
+  .labGrid, .evidenceGrid, .dossierGrid { grid-template-columns: 1fr; }
+  .dossierGrid > article:last-child { grid-column: auto; }
   .evidenceGrid > article:last-child:nth-child(odd) { grid-column: auto; }
   .cloudHead { display: none; }
   .cloudRow { margin-bottom: 10px; border: 1px solid var(--mcp-line-strong); grid-template-columns: 1fr 1fr; }
@@ -392,9 +398,6 @@
   .cloudRow > :nth-child(2)::before { content: "云服务与能力"; }
   .cloudRow > :nth-child(3)::before { content: "交付价值"; }
   .cloudRow > :nth-child(4)::before { content: "现场追问"; }
-  .lifecycleTasks { grid-template-columns: 1fr; }
-  .lifecycleTasks li { border-right: 0; border-bottom: 1px solid var(--mcp-line); }
-  .lifecycleTasks li:last-child { border-bottom: 0; }
 }
 
 @media (max-width: 719px) {
@@ -425,7 +428,7 @@
   .boundaryBar p { font-size: 12.5px; }
   .primary { border-inline: 0; }
   .stickyControls { position: relative; top: auto; }
-  .sectionBand, .deepDive, .learningRoute, .curriculumIntro, .labs, .fieldQa, .evidenceSection, .cloudSection, .lifecycleSection { padding: 22px 16px; scroll-margin-top: 108px; }
+  .sectionBand, .deepDive, .learningRoute, .curriculumIntro, .deepDiveSection, .protocolDossier, .labs, .fieldQa, .evidenceSection, .cloudSection, .lifecycleSection { padding: 22px 16px; scroll-margin-top: 108px; }
   .sectionHeader { grid-template-columns: 40px minmax(0,1fr); }
   .sectionHeader > span { width: 34px; height: 34px; }
   .sectionHeader h2 { font-size: 25px; }
@@ -436,8 +439,6 @@
   .deepDive > header h3 { font-size: 24px; }
   .deepDiveRow { grid-template-columns: 1fr; }
   .deepDiveRow > p { grid-column: 1 / -1; border-right: 0; }
-  .versionCompare { grid-template-columns: 1fr; }
-  .versionCompare article + article { border-top: 1px solid var(--mcp-line-strong); border-left: 0; }
   .principleGrid, .sourceList { grid-template-columns: 1fr; }
   .termLedger { grid-template-columns: 1fr; }
   .termLedger article, .termLedger article:nth-child(3n) { border-right: 0; border-top: 1px solid var(--mcp-line); }
@@ -452,12 +453,10 @@
   .chapter > header > span { width: 38px; height: 38px; }
   .chapter > header h2 { font-size: 23px; }
   .chapter > header > strong { padding: 9px 10px; font-size: 13.5px; }
-  .chapterBoundary, .chapter > .mechanismDisclosure, .chapter > .sourceDisclosure, .chapterSupplements { margin-left: 0; }
-  .chapterBoundary { margin-top: 12px; }
-  .chapterSupplements .deepDive { margin-inline: -16px; }
-  .chapterSupplements .deepDive > header, .chapterSupplements .deepDive > .sourceDisclosure { margin-inline: 16px; }
+  .chapterMechanism, .chapterBoundary, .chapter > .sourceDisclosure { margin-left: 0; }
+  .chapterMechanism, .chapterBoundary { margin-top: 12px; }
   .qaPreview { padding: 15px; }
-  .labGrid dl, .lifecycleGrid { grid-template-columns: 1fr; }
+  .labGrid dl { grid-template-columns: 1fr; }
   .qaTabs { margin-inline: -16px; padding-inline: 10px; }
   .evidenceGrid { border-left: 0; }
   .evidenceGrid > article { padding-inline: 0; border-right: 0; }
@@ -477,25 +476,24 @@
 .decisionWorkbench > article :is(p, strong),
 .deepDive > header p,
 .deepDiveRow > :is(div, p),
-.versionCompare p,
-.fullBoundary,
 .principleGrid :is(p, strong),
 .outcomes li,
 .routeSteps :is(p, strong),
 .curriculumIntro p,
 .chapter > header > strong,
+.chapterMechanism,
 .chapterBoundary,
 .mechanismDisclosure > p,
 .mechanismDisclosure li,
 .qaLead,
 .qaAsk,
 .labGrid > article > p,
+.labTasks li,
 .labGrid dd,
+.dossierGrid :is(header p, dd, .dossierRule),
 .evidenceGrid > article > p,
 .cloudRow > *,
-.cloudRow > strong,
-.lifecycleGrid strong,
-.lifecycleTasks li { font-size: 16px; }
+.cloudRow > strong { font-size: 16px; }
 
 /* Source and reference context stays readable without competing with body copy. */
 .sourceList article :is(strong, p),

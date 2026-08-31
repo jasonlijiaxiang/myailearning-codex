@@ -272,7 +272,7 @@
   background: var(--a2a-lime-soft);
   scroll-margin-top: 88px;
 }
-.studyGuide header span, .curriculumDisclosure > summary span { color: #68803a; font-size: 10px; font-weight: 800; letter-spacing: .13em; }
+.studyGuide header span, .curriculumHeader > span { color: #68803a; font-size: 10px; font-weight: 800; letter-spacing: .13em; }
 .studyGuide header h2 { margin: 5px 0 0; font-family: var(--font-serif), serif; font-size: clamp(26px, 2.1vw, 34px); font-weight: 500; line-height: 1.2; }
 .studyGuide > h3 { margin: 0; padding-top: 3px; font-size: 14px; }
 .learningOutcomes { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; border: 1px solid var(--a2a-line-strong); background: white; }
@@ -287,13 +287,9 @@
 .learningRoute strong { margin-top: 8px; display: block; color: #42616d; font-size: 10px; line-height: 1.5; }
 
 .curriculumAtlas { padding: 18px clamp(28px, 3.5vw, 48px); border-bottom: 1px solid var(--a2a-line-strong); scroll-margin-top: 88px; }
-.curriculumDisclosure { border: 1px solid var(--a2a-line-strong); background: white; }
-.curriculumDisclosure > summary { min-height: 56px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 24px; cursor: pointer; }
-.curriculumDisclosure > summary strong { font-size: 13px; text-align: right; }
-.curriculumDisclosure[open] > summary { border-bottom: 1px solid var(--a2a-line); background: var(--a2a-lime-soft); }
-.curriculumDisclosure > p { margin: 0; padding: 18px 22px 0; color: var(--a2a-muted); font-size: 13px; }
-.curriculumDisclosure > :global(.curriculumAtlas) { padding: 18px 22px 24px; }
-.curriculumDisclosure :global(.curriculumAtlasLead) { display: none; }
+.curriculumHeader { padding: 8px 22px 0; }
+.curriculumHeader h2 { margin: 4px 0 0; font-family: var(--font-serif), serif; font-size: clamp(24px, 2vw, 31px); font-weight: 500; line-height: 1.2; }
+.curriculumAtlas > :global(.curriculumAtlas) { padding: 14px 22px 24px; }
 
 .learnLead {
   padding: clamp(30px, 3vw, 44px);
@@ -476,6 +472,10 @@
 .labList dl div { padding: 9px 0; border-top: 1px solid var(--a2a-line); }
 .labList dt { color: var(--a2a-muted); font-size: 10px; font-weight: 800; }
 .labList dd { margin: 3px 0 0; font-size: 11px; }
+.labSources { margin-top: 14px; padding-top: 10px; display: flex; flex-wrap: wrap; gap: 7px 10px; border-top: 1px solid var(--a2a-line); align-items: center; }
+.labSources > span { color: var(--a2a-muted); font-size: 10px; font-weight: 800; }
+.labSources a { color: var(--a2a-ink-2); font-size: 11px; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.labSources a:hover { color: #42616d; }
 
 .fieldLead {
   padding: clamp(28px, 2.7vw, 40px);
@@ -697,10 +697,9 @@
   .learningRoute p { font-size: 13px; }
   .learningRoute strong { font-size: 12px; }
   .curriculumAtlas { padding: 12px 18px; }
-  .curriculumDisclosure > summary { padding: 13px; display: grid; justify-content: stretch; gap: 4px; }
-  .curriculumDisclosure > summary strong { font-size: 13px; text-align: left; }
-  .curriculumDisclosure > p { padding: 15px 15px 0; font-size: 14px; }
-  .curriculumDisclosure > :global(.curriculumAtlas) { padding: 14px 15px 18px; }
+  .curriculumHeader { padding: 5px 15px 0; }
+  .curriculumHeader h2 { font-size: 26px; }
+  .curriculumAtlas > :global(.curriculumAtlas) { padding: 14px 15px 18px; }
   .learnLead, .chapter { padding: 28px 18px; }
   .learnLead > div { grid-template-columns: 1fr 1fr; }
   .learnLead > div span { min-height: 48px; border-bottom: 1px solid rgba(255, 255, 255, .22); font-size: 11px; }
@@ -819,7 +818,7 @@
 .acceptanceStrip p,
 .learningOutcomes li,
 .learningRoute :is(p, strong),
-.curriculumDisclosure > p,
+.curriculumAtlas :global(.curriculumAtlasLead),
 .sectionHeader strong,
 .comparisonTable .tableRow span,
 .cardAnatomy dd,
@@ -842,6 +841,7 @@
 .reviewQuestions,
 .labList > article :is(p, ol),
 .labList dd,
+.labSources a,
 .fieldLead li :is(strong, span),
 .fieldChecklist :is(h3, p),
 .fieldQuestions summary strong,

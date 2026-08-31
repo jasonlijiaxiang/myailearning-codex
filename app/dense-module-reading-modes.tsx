@@ -35,7 +35,7 @@ const readerCopyByLocale: Record<UnifiedModuleLocale, {
   "zh-CN": {
     modes: [
       { id: "quick", label: "10 分钟速查", eyebrow: "做判断", outcome: "用采用条件、机制主线和硬边界完成第一次方案判断。" },
-      { id: "learn", label: "系统学习", eyebrow: "建模型", outcome: "按章节掌握对象、机制、失败模式、工程控制与验证实验。" },
+      { id: "learn", label: "系统学习", eyebrow: "建模型", outcome: "沿真正影响判断的主题，建立对象、机制、失败模式、工程控制与验证方法。" },
       { id: "field", label: "现场查证", eyebrow: "带证据", outcome: "用问答、证据与责任清单回答客户，并说明来源和适用范围。" },
     ],
     readingTask: "当前阅读任务",

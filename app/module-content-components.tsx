@@ -307,11 +307,13 @@ export function ModuleCurriculumAtlas({
                 <h3>{chapter.title}</h3>
                 <p>{chapter.en}</p>
               </div>
-              <strong>{chapter.decision}</strong>
+              <div className="curriculumCore">
+                <p className="curriculumEssence">{chapter.explanation}</p>
+                <strong className="curriculumDecision">{chapter.decision}</strong>
+              </div>
               <i aria-hidden="true" />
             </summary>
             <div className="curriculumChapterBody">
-              <p className="curriculumExplanation">{chapter.explanation}</p>
               <dl>
                 <div><dt>适用范围</dt><dd>{chapter.boundary}</dd></div>
               </dl>
@@ -336,7 +338,7 @@ export function ModuleLearningStudio({
       <div className="learningOutcomes" aria-labelledby="learning-outcomes-title">
         <div className="learningStudioHeading">
           <p className="miniLabel">LEARNING OUTCOMES</p>
-          <h3 id="learning-outcomes-title">做完这组内容，你可以</h3>
+          <h3 id="learning-outcomes-title">能独立完成的判断</h3>
         </div>
         <ol>
           {content.outcomes.map((outcome, index) => (
@@ -347,9 +349,8 @@ export function ModuleLearningStudio({
 
       <div className="learningRoute" aria-labelledby="learning-route-title">
         <div className="learningStudioHeading">
-          <p className="miniLabel">RECOMMENDED ROUTE</p>
-          <h3 id="learning-route-title">从这里开始</h3>
-          <p>检查点看的是能否做出判断，而不是读到了第几章。</p>
+          <p className="miniLabel">ACTION PATH</p>
+          <h3 id="learning-route-title">把主题推进到检查点</h3>
         </div>
         <ol>
           {content.route.map((step, index) => (
@@ -363,14 +364,13 @@ export function ModuleLearningStudio({
 
       <div className="learningLabs" aria-labelledby="learning-labs-title">
         <div className="learningStudioHeading">
-          <p className="miniLabel">PRACTICE LABS</p>
-          <h3 id="learning-labs-title">动手做一遍</h3>
-          <p>练习围绕生产问题组织，结果可以直接进入方案评审、PoC 或复盘。</p>
+          <p className="miniLabel">REVIEWABLE PRACTICE</p>
+          <h3 id="learning-labs-title">可复核练习</h3>
         </div>
         <BalancedGrid className="learningLabGrid" maxColumns={2}>
-          {content.labs.map((lab, index) => (
+          {content.labs.map((lab) => (
             <article className="learningLab" key={lab.title}>
-              <header><span>LAB {String(index + 1).padStart(2, "0")}</span><h4>{lab.title}</h4></header>
+              <header><span>练习</span><h4>{lab.title}</h4></header>
               <p className="learningLabScenario"><strong>情境</strong>{lab.scenario}</p>
               <ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
               <dl>

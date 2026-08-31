@@ -24,9 +24,9 @@ export function buildBriefModuleDirectories({
       { id: "decisions", label: "方案判断", eyebrow: "明确责任转交" },
     ],
     learn: [
-      { id: mechanismId, label: "机制速览", eyebrow: "建立工作模型" },
-      { id: "study-guide", label: "学习与练习", eyebrow: "形成可复核产物" },
-      { id: "curriculum", label: "知识地图", eyebrow: "补齐理论版图" },
+      { id: mechanismId, label: "工作机制", eyebrow: "建立工作模型" },
+      { id: "curriculum", label: "主题地图", eyebrow: "解释判断与边界" },
+      { id: "study-guide", label: "可复核练习", eyebrow: "形成评审产物" },
       ...(hasDeepDives ? [{ id: "deep-dive", label: "工程深挖", eyebrow: "定位失败与边界" }] : []),
     ],
     field: [

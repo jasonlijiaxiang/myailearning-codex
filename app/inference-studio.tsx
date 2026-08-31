@@ -82,18 +82,6 @@ const quickOutputTokens = 32;
 
 const quickMetricHashes = metricDefinitions.map((metric) => `metric-${metric.id}`);
 
-const chapterIds = [
-  "chapter-workload",
-  "chapter-runtime-memory",
-  "chapter-scheduling",
-  "chapter-engines",
-  "chapter-quantization",
-  "chapter-speculative",
-  "chapter-disaggregated",
-  "chapter-production",
-  "chapter-release",
-] as const;
-
 const inferenceDirectories = {
   quick: [
     { id: "principle", label: "延迟与容量地图", eyebrow: "拆开时间账与显存账" },
@@ -122,6 +110,19 @@ const inferenceChapters = [
   ...inferenceDirectories.learn,
   ...inferenceDirectories.field,
 ] as const;
+
+type LearningArtifactKind = "request-lifecycle" | "capacity-estimate";
+
+function topicAnchorId(topic: CurriculumChapter) {
+  const slug = topic.en.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return `inference-topic-${slug || "untitled"}`;
+}
+
+function learningArtifactFor(topic: CurriculumChapter): LearningArtifactKind | null {
+  if (topic.en === "Workload & Request Lifecycle") return "request-lifecycle";
+  if (topic.en === "Runtime Memory") return "capacity-estimate";
+  return null;
+}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -391,7 +392,8 @@ function SingleRequestDiagram() {
 
 type CapacityInputs = { inputTokens: number; concurrency: number; outputTokens: number };
 
-function capacityMetrics(run: CapacityInputs) {
+// Deliberately deterministic: this is a teaching model for causal direction, not a benchmark model.
+function estimateCapacityMetrics(run: CapacityInputs) {
   const inputPower = Math.log2(run.inputTokens / 1024);
   const outputPower = Math.log2(run.outputTokens / 128);
   const pressure = Math.sqrt(run.concurrency / 32);
@@ -413,12 +415,12 @@ function CapacityExperiment() {
   const [concurrency, setConcurrency] = useState(32);
   const [outputTokens, setOutputTokens] = useState(512);
   const [run, setRun] = useState({ inputTokens: 8192, concurrency: 32, outputTokens: 512, revision: 0 });
-  const result = useMemo(() => capacityMetrics(run), [run]);
+  const result = useMemo(() => estimateCapacityMetrics(run), [run]);
   const trend = useMemo(() => {
     const concurrencySamples = [...new Set([1, 8, 16, 32, 48, 64, 96, 128, run.concurrency])].sort((a, b) => a - b);
     const samples = concurrencySamples.map((sampleConcurrency) => ({
       concurrency: sampleConcurrency,
-      result: capacityMetrics({ ...run, concurrency: sampleConcurrency }),
+      result: estimateCapacityMetrics({ ...run, concurrency: sampleConcurrency }),
     }));
     const project = (key: "ttft" | "tpot" | "throughput", top: number, bottom: number) => {
       const values = samples.map((sample) => sample.result[key]);
@@ -444,31 +446,32 @@ function CapacityExperiment() {
   }, [run]);
 
   function executeExperiment() {
-    setRun({ inputTokens, concurrency, outputTokens, revision: run.revision + 1 });
+    setRun((current) => ({ inputTokens, concurrency, outputTokens, revision: current.revision + 1 }));
   }
 
   return (
     <div className="capacityExperiment" id="capacity-experiment">
       <form onSubmit={(event) => { event.preventDefault(); executeExperiment(); }}>
-        <h4>实验输入</h4>
-        <label>模型<select defaultValue="qwen"><option value="qwen">Qwen2.5-7B-Instruct · BF16 示例</option></select></label>
+        <p className="capacityTeachingLabel">因果教学示例 · 确定性估算 · 非压测结果</p>
+        <h4>容量关系估算器</h4>
+        <label>教学标称配置<select defaultValue="qwen"><option value="qwen">Qwen2.5-7B-Instruct · BF16 · 单卡 64 GB</option></select></label>
         <fieldset><legend>输入长度（Token）</legend><div>{inputOptions.map((input) => <button aria-pressed={inputTokens === input.tokens} key={input.label} onClick={() => setInputTokens(input.tokens)} type="button">{input.label}</button>)}</div></fieldset>
         <label className="capacityRange">并发（请求数）<output>{concurrency}</output><input aria-label="并发请求数" max="128" min="1" onChange={(event) => setConcurrency(Number(event.target.value))} step="1" type="range" value={concurrency}/><span><small>1</small><small>32</small><small>64</small><small>128</small></span></label>
         <fieldset><legend>输出长度（Token）</legend><div>{outputOptions.map((output) => <button aria-pressed={outputTokens === output} key={output} onClick={() => setOutputTokens(output)} type="button">{output >= 1024 ? `${output / 1024}K` : output}</button>)}</div></fieldset>
-        <button className="runExperiment" type="submit">运行实验</button>
-        <p>示例环境：单卡 64 GB、BF16、固定模型与引擎。结果只用来观察指标之间的变化。</p>
+        <button className="runExperiment" type="submit">更新示例估算</button>
+        <p>只模拟“输入、输出和并发升高会怎样挤压排队、时间和显存”的方向关系；它不读取模型、引擎或硬件，因此不能替代压测。</p>
       </form>
       <section className="capacityResults" aria-live="polite">
-        <header><h4>实验结果</h4><span>{run.inputTokens / 1024}K 输入 · {run.concurrency} 并发 · 输出 {run.outputTokens}</span></header>
+        <header><h4>估算输出</h4><span>{run.inputTokens / 1024}K 输入 · {run.concurrency} 并发 · 输出 {run.outputTokens}</span></header>
         <div className="capacityMetricCards">
-          <article><span>TTFT（P95）</span><strong>{result.ttft.toFixed(2)}<small>s</small></strong><p>排队 + Prefill</p></article>
-          <article><span>TPOT（平均）</span><strong>{result.tpot.toFixed(1)}<small>ms/token</small></strong><p>持续生成速度</p></article>
-          <article><span>吞吐（平均）</span><strong>{result.throughput}<small>token/s</small></strong><p>聚合输出速度</p></article>
-          <article><span>显存占用</span><strong>{result.memory.toFixed(1)}<small>/ 64 GB</small></strong><p>{Math.round((result.memory / 64) * 100)}% 估算</p></article>
+          <article><span>TTFT（P95）</span><strong>≈ {result.ttft.toFixed(2)}<small>s</small></strong><p>排队 + Prefill</p></article>
+          <article><span>TPOT（平均）</span><strong>≈ {result.tpot.toFixed(1)}<small>ms/token</small></strong><p>持续生成速度</p></article>
+          <article><span>吞吐（平均）</span><strong>≈ {result.throughput}<small>token/s</small></strong><p>聚合输出速度</p></article>
+          <article><span>显存占用</span><strong>≈ {result.memory.toFixed(1)}<small>/ 64 GB</small></strong><p>{Math.round((result.memory / 64) * 100)}% 教学估算</p></article>
         </div>
         <figure className="capacityTrend">
-          <figcaption><strong>延迟与吞吐趋势</strong><span>当前点：并发 {run.concurrency}</span></figcaption>
-          <svg role="img" aria-label="随着并发变化的 TTFT、TPOT 与吞吐示意曲线" viewBox="0 0 660 250">
+          <figcaption><strong>因果趋势示意</strong><span>当前点：并发 {run.concurrency}</span></figcaption>
+          <svg role="img" aria-label="教学估算中，随着并发变化的 TTFT、TPOT 与吞吐趋势" viewBox="0 0 660 250">
             <g className="chartGrid"><path d="M54 28H620M54 78H620M54 128H620M54 178H620M54 228H620"/><path d="M54 28V228M166 28V228M278 28V228M390 28V228M502 28V228M620 28V228"/></g>
             <path className="trendTtft" d={trend.path.ttft}/>
             <path className="trendTpot" d={trend.path.tpot}/>
@@ -484,12 +487,44 @@ function CapacityExperiment() {
         </figure>
       </section>
       <aside className={`capacityConclusion${result.unsafe ? " isUnsafe" : ""}`}>
-        <header><span>{result.unsafe ? "!" : "✓"}</span><h4>示例容量判断</h4></header>
+        <header><span>{result.unsafe ? "!" : "✓"}</span><h4>教学示例判断</h4></header>
         <p>{result.unsafe ? "当前组合越过示例安全线，应先降低并发、缩短输入或分池，再重新验证。" : "当前组合仍在示例安全线内，但上线前仍需用真实流量完成稳态、突发和故障测试。"}</p>
         <h5>建议</h5><ul><li>以 P95 / P99 与拒绝率确定并发上限</li><li>按输入长度和优先级分层准入</li><li>记录模型、模板、引擎、硬件与日期</li></ul>
+        <section className="capacityRunPack" aria-labelledby="capacity-run-pack-title">
+          <h5 id="capacity-run-pack-title">真实压测的 Run Pack：最小字段</h5>
+          <p>每次曲线都带上这一组记录，才可以跨版本、机器或负载比较。</p>
+          <dl>
+            <div><dt>工作负载</dt><dd>模型与版本、Tokenizer / 模板、输入与输出分布、到达率、优先级和质量门槛。</dd></div>
+            <div><dt>运行环境</dt><dd>镜像、引擎与参数、量化、GPU / CPU / 内存、网络，以及测试日期。</dd></div>
+            <div><dt>执行方法</dt><dd>预热、持续时长、并发与准入策略、稳态 / 突发 / 故障切片。</dd></div>
+            <div><dt>结果与失败</dt><dd>请求量、接受 / 拒绝、TTFT / TPOT / 端到端分位数、Goodput、OOM、超时、重试和恢复时间。</dd></div>
+          </dl>
+        </section>
         <a href="#deep-dive">查看容量报告要素</a>
-        <small>示例估算，不构成容量承诺</small>
+        <small>该互动图仅用于解释变量关系，不构成容量承诺或压测结论。</small>
       </aside>
+    </div>
+  );
+}
+
+function TopicArtifact({ kind }: { kind: LearningArtifactKind }) {
+  if (kind === "request-lifecycle") return <SingleRequestDiagram />;
+  return <CapacityExperiment />;
+}
+
+function TopicSemantics({ followsArtifact, topic, sourceTitles }: {
+  followsArtifact: boolean;
+  topic: CurriculumChapter;
+  sourceTitles: Readonly<Record<string, string>>;
+}) {
+  return (
+    <div className={`chapterBrief${followsArtifact ? " chapterBrief--afterArtifact" : ""}`}>
+      <div className="chapterMechanism"><span>机制</span><p>{topic.explanation}</p></div>
+      <dl>
+        <div><dt>会改变什么决定</dt><dd>{topic.decision}</dd></div>
+        <div><dt>适用边界</dt><dd>{topic.boundary}</dd></div>
+      </dl>
+      <LearningSourceLinks sourceIds={topic.sourceIds} sourceTitles={sourceTitles}/>
     </div>
   );
 }
@@ -507,16 +542,17 @@ function LearningPanel({
   learningRoute: readonly LearningStep[];
   sourceTitles: Readonly<Record<string, string>>;
 }) {
-  const [openChapters, setOpenChapters] = useState<Set<number>>(() => new Set([0, 1]));
-  const route = learningRoute.slice(0, 3);
+  const [openChapters, setOpenChapters] = useState<Set<number>>(() => new Set(curriculum.chapters.map((_, index) => index)));
+  const topicIds = useMemo(() => curriculum.chapters.map(topicAnchorId), [curriculum.chapters]);
+  const capacityTopicIndex = useMemo(
+    () => curriculum.chapters.findIndex((topic) => learningArtifactFor(topic) === "capacity-estimate"),
+    [curriculum.chapters],
+  );
 
   useEffect(() => {
     const revealLinkedChapter = () => {
       const hash = window.location.hash.replace(/^#/, "");
-      const linkedIndex = chapterIds.indexOf(hash as (typeof chapterIds)[number]);
-      const panelMatch = /^inference-chapter-(\d+)$/.exec(hash);
-      const panelIndex = panelMatch ? Number(panelMatch[1]) : -1;
-      const chapterIndex = hash === "capacity-experiment" ? 1 : panelIndex >= 0 ? panelIndex : linkedIndex;
+      const chapterIndex = hash === "capacity-experiment" ? capacityTopicIndex : topicIds.indexOf(hash);
       if (chapterIndex < 0 || chapterIndex >= curriculum.chapters.length) return;
       setOpenChapters((current) => new Set([...current, chapterIndex]));
       window.requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }));
@@ -524,7 +560,7 @@ function LearningPanel({
     revealLinkedChapter();
     window.addEventListener("hashchange", revealLinkedChapter);
     return () => window.removeEventListener("hashchange", revealLinkedChapter);
-  }, [curriculum.chapters.length]);
+  }, [capacityTopicIndex, curriculum.chapters.length, topicIds]);
 
   function toggleChapter(index: number) {
     setOpenChapters((current) => {
@@ -539,24 +575,21 @@ function LearningPanel({
     <div className="inferenceLearning" id="study-guide">
       <section className="learningRoute" aria-labelledby="learning-route-title">
         <h2 id="learning-route-title">学习路线</h2>
-        <ol>{route.map((step, index) => <li className={index === 0 ? "isActive" : undefined} key={step.title}><span>{index + 1}</span><div><strong>{index === 0 ? "读懂单请求" : index === 1 ? "理解多请求竞争" : "完成容量实验"}</strong><small>{index === 2 ? "得到容量曲线与过载处置" : step.checkpoint}</small></div></li>)}</ol>
+        <ol>{learningRoute.map((step, index) => <li className={index === 0 ? "isActive" : undefined} key={step.title}><span>{index + 1}</span><div><strong>{step.title}</strong><small>{step.learn}</small><em>检查：{step.checkpoint}</em></div></li>)}</ol>
       </section>
-      <section className="learningChapters" id="curriculum" aria-label="系统学习章节">
+      <section className="learningChapters" id="curriculum" aria-label="系统学习主题">
         {curriculum.chapters.map((chapter, index) => {
           const open = openChapters.has(index);
+          const topicId = topicIds[index];
+          const artifact = learningArtifactFor(chapter);
           return (
-            <article className={open ? "isOpen" : undefined} id={chapterIds[index]} key={chapter.title}>
-              <button aria-expanded={open} aria-controls={`inference-chapter-${index}`} onClick={() => toggleChapter(index)} type="button">
-                <span>第 {index + 1} 章</span><strong>{index === 0 ? "Prefill、Decode 与 KV Cache" : index === 1 ? "实验：输入长度 × 并发容量实验" : chapter.title}</strong><small>{chapter.en}</small><i aria-hidden="true">⌄</i>
+            <article className={open ? "isOpen" : undefined} id={topicId} key={chapter.title}>
+              <button aria-expanded={open} aria-controls={`${topicId}-content`} onClick={() => toggleChapter(index)} type="button">
+                <span>主题</span><strong>{chapter.title}</strong><small>{chapter.en}</small><i aria-hidden="true">⌄</i>
               </button>
-              <div hidden={!open} id={`inference-chapter-${index}`}>
-                {index === 0 ? <><SingleRequestDiagram /><LearningSourceLinks sourceIds={chapter.sourceIds} sourceTitles={sourceTitles}/></> : index === 1 ? <><CapacityExperiment /><LearningSourceLinks sourceIds={chapter.sourceIds} sourceTitles={sourceTitles}/></> : (
-                  <div className="chapterBrief">
-                    <p>{chapter.explanation}</p>
-                    <dl><div><dt>会改变什么决定</dt><dd>{chapter.decision}</dd></div><div><dt>适用边界</dt><dd>{chapter.boundary}</dd></div></dl>
-                    <LearningSourceLinks sourceIds={chapter.sourceIds} sourceTitles={sourceTitles}/>
-                  </div>
-                )}
+              <div hidden={!open} id={`${topicId}-content`}>
+                {artifact ? <TopicArtifact kind={artifact}/> : null}
+                <TopicSemantics followsArtifact={Boolean(artifact)} sourceTitles={sourceTitles} topic={chapter}/>
               </div>
             </article>
           );
@@ -565,8 +598,7 @@ function LearningPanel({
       <section className="inferenceLearningPractice" id="practice">
         <header><p>学习结果</p><h2>做完这组内容，你可以</h2></header>
         <ul className="learningOutcomeList">{learningOutcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul>
-        <div className="learningStart"><h2>从这里开始</h2><p>先用默认负载跑一遍知识地图，再替换成客户的模型、长度分布和 SLO。</p></div>
-        <ol className="learningFullRoute">{learningRoute.map((step, index) => <li key={step.title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{step.title}</h3><p>{step.learn}</p><strong>检查：{step.checkpoint}</strong></div></li>)}</ol>
+        <div className="learningStart"><h2>把示例变成证据</h2><p>先用估算器理解变量方向；随后将目标模型、请求切片、硬件和 SLO 写进 Run Pack，在真实压测里验证曲线、失败与恢复。</p></div>
         <div className="learningLabList">
           <h2>动手做一遍</h2>
           {learningLabs.map((lab, index) => <article key={lab.title}>
@@ -585,6 +617,7 @@ export function InferenceStudio({ criticalBoundary, curriculum, field, learningL
   const [inspectorOpen, setInspectorOpen] = useState(true);
   const inspectorCloseButtonRef = useRef<HTMLButtonElement | null>(null);
   const inspectorOpenButtonRef = useRef<HTMLButtonElement | null>(null);
+  const learningTopicHashes = useMemo(() => curriculum.chapters.map(topicAnchorId), [curriculum.chapters]);
 
   useEffect(() => {
     const selectMetricFromHash = () => {
@@ -651,7 +684,7 @@ export function InferenceStudio({ criticalBoundary, curriculum, field, learningL
         directories={inferenceDirectories}
         hashGroups={{
           quick: ["principle", "latency-heatmap", "request-timeline", "selected-metric", "oom-case", ...quickMetricHashes],
-          learn: ["study-guide", "curriculum", "capacity-experiment", "practice", ...chapterIds],
+          learn: ["study-guide", "curriculum", "capacity-experiment", "practice", ...learningTopicHashes],
           field: ["field-guide", "mechanism-index", "decision-guide", "deep-dive", "evidence", "boundary", "cloud", "qa", "related-modules"],
         }}
         readerId="module-reading"

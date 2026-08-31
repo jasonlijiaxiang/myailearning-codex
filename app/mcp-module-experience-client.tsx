@@ -1,6 +1,6 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
@@ -115,7 +115,8 @@ export type McpExperienceData = {
   sources: Record<string, SourceInfo>;
 };
 
-type QaCategory = "version" | "authorization" | "supply" | "failure" | "tasks";
+type QaCategory = string;
+type QaGroup = { id: QaCategory; label: string; tags: readonly string[]; items: Array<{ item: QaItem; index: number }> };
 
 function ModuleUpdatedAt({ value }: { value?: string }) {
   const label = formatModuleUpdatedAt(value);
@@ -134,6 +135,23 @@ const QA_CATEGORIES: ReadonlyArray<{ id: QaCategory; label: string; tags: readon
   { id: "failure", label: "错误与结果", tags: ["错误语义", "结果注入"] },
   { id: "tasks", label: "长任务", tags: ["长任务"] },
 ];
+
+function groupFieldQuestions(questions: readonly QaItem[]): QaGroup[] {
+  const configuredGroups = QA_CATEGORIES.map((category) => ({ ...category, items: [] as Array<{ item: QaItem; index: number }> }));
+  const fallback: QaGroup = { id: "other", label: "其他已发布问题", tags: [], items: [] };
+  const renderedIndexes = new Set<number>();
+
+  questions.forEach((item, index) => {
+    const matches = configuredGroups.filter((candidate) => candidate.tags.includes(item.tag));
+    if (matches.length > 1) throw new Error(`MCP question tag ${item.tag} belongs to more than one field group`);
+    const group = matches[0] ?? fallback;
+    group.items.push({ item, index });
+    renderedIndexes.add(index);
+  });
+
+  if (renderedIndexes.size !== questions.length) throw new Error("Every published MCP question must render once");
+  return [...configuredGroups.filter((group) => group.items.length > 0), ...(fallback.items.length > 0 ? [fallback] : [])];
+}
 
 function scrollHashTargetIntoView(hash: string) {
   const target = document.getElementById(hash.replace(/^#/, ""));
@@ -240,10 +258,6 @@ function DeepDiveView({ block, sources }: { block: DeepDiveBlock; sources: Recor
 function QuickView({ data }: { data: McpExperienceData }) {
   const [selectedDecision, setSelectedDecision] = useState(0);
   const decision = data.decisions[selectedDecision];
-  const versionChapter = data.curriculum.chapters[2];
-  const versionMarker = "；2025-11-25";
-  const [currentVersionText, oldVersionRemainder] = versionChapter.explanation.split(versionMarker);
-  const oldVersionText = oldVersionRemainder ? `2025-11-25${oldVersionRemainder}` : versionChapter.explanation;
 
   return (
     <div className={styles.modeContent}>
@@ -279,36 +293,77 @@ function QuickView({ data }: { data: McpExperienceData }) {
       </section>
       </div>
 
-      <section className={styles.sectionBand} id="mcp-version">
-        <header className={styles.sectionHeader}><span>02</span><div><h2>{versionChapter.title}</h2><p>{versionChapter.decision}</p></div></header>
-        <div className={styles.versionCompare}>
-          <article className={styles.currentVersion}><span>当前正式版</span><h3>2026-07-28</h3><p>{currentVersionText}</p></article>
-          <article><span>旧版迁移对照</span><h3>2025-11-25</h3><p>{oldVersionText}</p></article>
-        </div>
-        <p className={styles.fullBoundary}><strong>不能混用</strong>{versionChapter.boundary}</p>
-        <SourceDisclosure sourceIds={versionChapter.sourceIds} sources={data.sources} label="查看双版本依据" />
-      </section>
-
       <section className={styles.sectionBand} id="mcp-principles">
-        <header className={styles.sectionHeader}><span>03</span><div><h2>{data.principleTitle}</h2><p>速查只保留决策句；完整机制与来源进入系统学习。</p></div></header>
+        <header className={styles.sectionHeader}><span>02</span><div><h2>{data.principleTitle}</h2><p>速查只保留决策句；机制、版本和来源在系统学习中按主题展开。</p></div></header>
         <div className={styles.principleGrid}>
           {data.principles.map((item, index) => (
             <article key={item.zh}><span>{String(index + 1).padStart(2, "0")}</span><h3>{item.zh}</h3><small>{item.en}</small><p>{item.decision}</p></article>
           ))}
         </div>
+        <p className={styles.learnLink}><Link href="#mcp-chapter-3">版本、初始化与能力发现：进入系统学习查看迁移判断与依据 →</Link></p>
       </section>
     </div>
   );
 }
 
-function ChapterSupplements({ chapterNo, data }: { chapterNo: number; data: McpExperienceData }) {
-  const deepDive = chapterNo === 2 ? data.deepDives[1] : chapterNo === 4 ? data.deepDives[2] : chapterNo === 5 ? data.deepDives[0] : undefined;
-
-  if (!deepDive) return null;
+function McpToolContractDossier({ sources }: { sources: Record<string, SourceInfo> }) {
   return (
-    <div className={styles.chapterSupplements}>
-      <div data-adaptive-visual={chapterNo === 5 ? "sequence" : "matrix"}><DeepDiveView block={deepDive} sources={data.sources} /></div>
-    </div>
+    <section className={styles.protocolDossier} id="mcp-contract-dossier" data-quality-section="protocol-dossier">
+      <header className={styles.sectionHeader}>
+        <span>例</span>
+        <div><h2>把一个 API 变成可验收的 MCP Tool</h2><p>以只读工单查询为贯穿案例。下面是教学用契约，不是可直接复制的企业授权方案；实际字段、身份和错误语义由 Server 与权威业务系统共同定义。</p></div>
+      </header>
+      <div className={styles.dossierGrid}>
+        <article>
+          <header><span>01</span><div><h3>先让模型看见可检查的输入合同</h3><p>Tool 的名称、用途和 JSON Schema 是发现与调用的边界；只读提示不是授权本身。</p></div></header>
+          <pre aria-label="教学 Tool 定义示例"><code>{`{
+  "name": "ticket.get",
+  "description": "Read one ticket by its authoritative ID.",
+  "inputSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "ticketId": { "type": "string", "pattern": "^INC-\\\\d+$" }
+    },
+    "required": ["ticketId"]
+  },
+  "annotations": { "readOnlyHint": true }
+}`}</code></pre>
+          <p className={styles.dossierRule}><strong>验收：</strong>用无效 ID、额外字段和越权租户各跑一次，记录 Schema 拒绝、授权拒绝和可关联的请求 ID。</p>
+        </article>
+        <article>
+          <header><span>02</span><div><h3>再把一次调用和一次回读分开</h3><p>MCP 表达调用和结果结构；调用方仍需将用户、租户与最小 scope 交给确定性授权链，工单系统保留权威状态与审计。</p></div></header>
+          <pre aria-label="教学 tools call 示例"><code>{`{
+  "jsonrpc": "2.0",
+  "id": "req-7",
+  "method": "tools/call",
+  "params": {
+    "name": "ticket.get",
+    "arguments": { "ticketId": "INC-1042" }
+  }
+}
+
+// 结果示意：content 给人读，structuredContent 给应用校验。
+{ "result": {
+  "content": [{ "type": "text", "text": "INC-1042 is open" }],
+  "structuredContent": { "ticketId": "INC-1042", "status": "open" },
+  "isError": false
+} }`}</code></pre>
+          <p className={styles.dossierRule}><strong>验收：</strong>客户端把结构化结果与权威工单记录的 ID、状态、更新时间对齐；自然语言摘要不能单独作为业务事实。</p>
+        </article>
+        <article>
+          <header><span>03</span><div><h3>为“结果未知”准备恢复记录</h3><p>超时不等于未执行。写入类 Tool 必须由业务系统的幂等键、回读和补偿语义收口；不要把一段通用错误码当成所有 Server 的恢复契约。</p></div></header>
+          <dl>
+            <div><dt>输入不合规</dt><dd>停止调用；保存 Schema 校验结果与请求关联键。</dd></div>
+            <div><dt>身份或 scope 不足</dt><dd>不升级模型权限；由授权系统给出拒绝证据与申请路径。</dd></div>
+            <div><dt>下游超时</dt><dd>保留关联键，先查权威状态，再决定恢复、重试或人工接管。</dd></div>
+            <div><dt>内容含不可信指令</dt><dd>按数据处理，不提升为 Host 指令；高风险动作重新确认并走业务控制。</dd></div>
+          </dl>
+          <p className={styles.dossierRule}><strong>最小交付：</strong>Tool Schema、一次调用捕获、授权/资源回读记录、失败处置表与各项 Owner。</p>
+        </article>
+      </div>
+      <SourceDisclosure sourceIds={["mcp-tools-2026-07-28", "mcp-authorization", "mcp-security"]} sources={sources} label="查看本示例的协议与安全依据" />
+    </section>
   );
 }
 
@@ -329,7 +384,7 @@ function LearnView({ data }: { data: McpExperienceData }) {
       </section>
 
       <section className={styles.curriculumIntro} id="curriculum" data-quality-section="curriculum">
-        <h2>{data.curriculum.chapters.length} 章完整知识地图</h2><p>{data.curriculum.lead}</p>
+        <h2>主题地图</h2><p>{data.curriculum.lead}</p>
       </section>
       <div className={styles.chapterList}>
         {data.curriculum.chapters.map((chapter, index) => {
@@ -341,26 +396,30 @@ function LearnView({ data }: { data: McpExperienceData }) {
                 <div><h2>{chapter.title}</h2><small>{chapter.en}</small></div>
                 <strong>{chapter.decision}</strong>
               </header>
+              <p className={styles.chapterMechanism}><strong>工作机制</strong>{chapter.explanation}</p>
               <p className={styles.chapterBoundary}><strong>适用边界</strong>{chapter.boundary}</p>
-              <details className={styles.mechanismDisclosure} open={chapterNo === 6 || chapterNo === 7}>
-                <summary>展开工作机制与版本差异</summary><p>{chapter.explanation}</p>
-              </details>
-              <ChapterSupplements chapterNo={chapterNo} data={data} />
               <SourceDisclosure sourceIds={chapter.sourceIds} sources={data.sources} label="查看本章依据" />
             </article>
           );
         })}
       </div>
 
+      <section className={styles.deepDiveSection} id="mcp-relationships" data-quality-section="protocol-relationships">
+        <header className={styles.sectionHeader}><span>关</span><div><h2>把主题连成一次真实调用</h2><p>这三张关系图分别回答：控制权在哪里、部署如何改变信任边界、远程 Tool 调用如何留下可追溯证据。</p></div></header>
+        {data.deepDives.map((block) => <DeepDiveView block={block} key={block.title} sources={data.sources} />)}
+      </section>
+
+      <McpToolContractDossier sources={data.sources} />
+
       <section className={styles.labs} id="mcp-labs">
-        <header className={styles.sectionHeader}><span>LAB</span><div><h2>验证实验 · {data.learning.labs.length} 项</h2><p>每项实验都给出情境、任务、交付物和通过标准，可直接进入 PoC 计划。</p></div></header>
+        <header className={styles.sectionHeader}><span>LAB</span><div><h2>可复核练习</h2><p>每项练习都有情境、任务、交付物和通过标准，可直接进入 PoC 计划。</p></div></header>
         <div className={styles.labGrid}>
           {data.learning.labs.map((lab, index) => (
             <article key={lab.title}>
               <header><span>LAB {String(index + 1).padStart(2, "0")}</span><h3>{lab.title}</h3></header>
               <p><strong>情境</strong>{lab.scenario}</p>
+              <ol className={styles.labTasks}>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
               <dl><div><dt>产物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div></dl>
-              <details className={styles.mechanismDisclosure}><summary>展开实验任务</summary><ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol></details>
               <SourceDisclosure sourceIds={lab.sourceIds} sources={data.sources} label="查看实验依据" />
             </article>
           ))}
@@ -371,15 +430,17 @@ function LearnView({ data }: { data: McpExperienceData }) {
 }
 
 function FieldQa({ data }: { data: McpExperienceData }) {
-  const [category, setCategory] = useState<QaCategory>("version");
+  const groups = useMemo(() => groupFieldQuestions(data.qa), [data.qa]);
+  const [category, setCategory] = useState<QaCategory>(() => groups[0]?.id ?? "");
   const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
+  const activeCategory = groups.some((group) => group.id === category) ? category : (groups[0]?.id ?? "");
 
   useEffect(() => {
     const syncCategory = () => {
       const match = window.location.hash.match(/^#qa-(\d+)$/);
       if (!match) return;
       const item = data.qa[Number(match[1]) - 1];
-      const group = item ? QA_CATEGORIES.find((candidate) => candidate.tags.includes(item.tag)) : null;
+      const group = item ? groups.find((candidate) => candidate.items.some(({ index }) => index === Number(match[1]) - 1)) : null;
       if (group) {
         setCategory(group.id);
         window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
@@ -390,35 +451,34 @@ function FieldQa({ data }: { data: McpExperienceData }) {
     syncCategory();
     window.addEventListener("hashchange", syncCategory);
     return () => window.removeEventListener("hashchange", syncCategory);
-  }, [data.qa]);
+  }, [data.qa, groups]);
 
   const moveCategory = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
     let nextIndex = index;
-    if (event.key === "ArrowLeft") nextIndex = (index - 1 + QA_CATEGORIES.length) % QA_CATEGORIES.length;
-    if (event.key === "ArrowRight") nextIndex = (index + 1) % QA_CATEGORIES.length;
+    if (groups.length === 0) return;
+    if (event.key === "ArrowLeft") nextIndex = (index - 1 + groups.length) % groups.length;
+    if (event.key === "ArrowRight") nextIndex = (index + 1) % groups.length;
     if (event.key === "Home") nextIndex = 0;
-    if (event.key === "End") nextIndex = QA_CATEGORIES.length - 1;
-    setCategory(QA_CATEGORIES[nextIndex].id);
+    if (event.key === "End") nextIndex = groups.length - 1;
+    setCategory(groups[nextIndex].id);
     tabsRef.current[nextIndex]?.focus();
   };
 
   return (
     <section className={styles.fieldQa} id="qa" data-quality-section="qa">
       <span className={styles.anchorAlias} id="mcp-field-qa" />
-      <header className={styles.sectionHeader}><span>01</span><div><h2>客户问题 · {data.qa.length} 题 · {QA_CATEGORIES.length} 类入口</h2><p>短答案先给结论，技术机制、追问和证据继续展开。<Link href="/questions?module=mcp">搜索客户问题</Link></p></div></header>
+      <header className={styles.sectionHeader}><span>01</span><div><h2>客户问题</h2><p>短答案先给结论，技术机制、追问和证据继续展开。<Link href="/questions?module=mcp">搜索客户问题</Link></p></div></header>
       <div className={styles.qaTabs} role="tablist" aria-label="现场问答分类">
-        {QA_CATEGORIES.map((item, index) => {
-          const count = data.qa.filter((qa) => item.tags.includes(qa.tag)).length;
-          return <button aria-controls={`mcp-qa-panel-${item.id}`} aria-selected={category === item.id} id={`mcp-qa-tab-${item.id}`} key={item.id} onClick={() => setCategory(item.id)} onKeyDown={(event) => moveCategory(event, index)} ref={(node) => { tabsRef.current[index] = node; }} role="tab" tabIndex={category === item.id ? 0 : -1} type="button"><strong>{item.label}</strong><span>{count}</span></button>;
+        {groups.map((item, index) => {
+          return <button aria-controls={`mcp-qa-panel-${item.id}`} aria-selected={activeCategory === item.id} id={`mcp-qa-tab-${item.id}`} key={item.id} onClick={() => setCategory(item.id)} onKeyDown={(event) => moveCategory(event, index)} ref={(node) => { tabsRef.current[index] = node; }} role="tab" tabIndex={activeCategory === item.id ? 0 : -1} type="button"><strong>{item.label}</strong><span>{item.items.length}</span></button>;
         })}
       </div>
-      {QA_CATEGORIES.map((group) => {
-        const items = data.qa.map((item, index) => ({ item, index })).filter(({ item }) => group.tags.includes(item.tag));
+      {groups.map((group) => {
         return (
-          <div aria-labelledby={`mcp-qa-tab-${group.id}`} className={styles.fieldQaList} hidden={category !== group.id} id={`mcp-qa-panel-${group.id}`} key={group.id} role="tabpanel" tabIndex={0}>
-            {items.map(({ item, index }) => <QaPreview anchorId={`qa-${index + 1}`} item={item} index={index} key={item.q} sources={data.sources} />)}
+          <div aria-labelledby={`mcp-qa-tab-${group.id}`} className={styles.fieldQaList} hidden={activeCategory !== group.id} id={`mcp-qa-panel-${group.id}`} key={group.id} role="tabpanel" tabIndex={0}>
+            {group.items.map(({ item, index }) => <QaPreview anchorId={`qa-${index + 1}`} item={item} index={index} key={item.q} sources={data.sources} />)}
           </div>
         );
       })}
@@ -427,15 +487,13 @@ function FieldQa({ data }: { data: McpExperienceData }) {
 }
 
 function FieldView({ data }: { data: McpExperienceData }) {
-  const lifecycleStep = data.learning.route[4];
-  const enterpriseLab = data.learning.labs[3];
   return (
     <div className={styles.modeContent}>
       <FieldQa data={data} />
 
       <section className={styles.evidenceSection} id="evidence" data-quality-section="evidence">
         <span className={styles.anchorAlias} id="mcp-field-evidence" />
-        <header className={styles.sectionHeader}><span>02</span><div><h2>五张证据卡：结论和适用边界同时看</h2><p>来源链接只是入口，证据能说明什么、不能说明什么必须常显。</p></div></header>
+        <header className={styles.sectionHeader}><span>02</span><div><h2>证据卡：结论和适用边界同时看</h2><p>来源链接只是入口，证据能说明什么、不能说明什么必须常显。</p></div></header>
         <div className={styles.evidenceGrid}>
           {data.evidenceCards.map((card, index) => {
             const source = data.sources[card.sourceId];
@@ -460,20 +518,8 @@ function FieldView({ data }: { data: McpExperienceData }) {
         </div>
       </section>
 
-      <section className={styles.lifecycleSection} id="mcp-field-lifecycle">
-        <header className={styles.sectionHeader}><span>04</span><div><h2>{lifecycleStep.title}</h2><p>{lifecycleStep.learn}</p></div></header>
-        <div className={styles.lifecycleGrid}>
-          <article><span>掌握检查</span><strong>{lifecycleStep.checkpoint}</strong></article>
-          <article><span>企业评审情境</span><strong>{enterpriseLab.scenario}</strong></article>
-          <article><span>评审产物</span><strong>{enterpriseLab.deliverable}</strong></article>
-          <article className={styles.lifecycleAcceptance}><span>通过标准</span><strong>{enterpriseLab.acceptance}</strong></article>
-        </div>
-        <ol className={styles.lifecycleTasks}>{enterpriseLab.tasks.map((task, index) => <li key={task}><span>{String(index + 1).padStart(2, "0")}</span>{task}</li>)}</ol>
-        <SourceDisclosure sourceIds={enterpriseLab.sourceIds} sources={data.sources} label="查看目录与下线依据" />
-      </section>
-
       <section className={styles.lifecycleSection} id="related-modules" data-quality-section="related-modules" aria-labelledby="mcp-related-title">
-        <header className={styles.sectionHeader}><span>05</span><div><h2 id="mcp-related-title">相关模块</h2><p>Agent 负责 Run 与工具控制，A2A 负责独立 Agent 委派；Security 和 AI Gateway 分别补齐身份安全与共享策略入口。</p></div></header>
+        <header className={styles.sectionHeader}><span>04</span><div><h2 id="mcp-related-title">相关模块</h2><p>Agent 负责 Run 与工具控制，A2A 负责独立 Agent 委派；Security 和 AI Gateway 分别补齐身份安全与共享策略入口。</p></div></header>
         <nav className={styles.relatedLinks} aria-label="MCP 相关模块">
           <Link href="/modules/ai-agent">Agent · 任务运行与工具控制</Link>
           <Link href="/modules/a2a">A2A · 独立 Agent 委派</Link>
@@ -489,7 +535,9 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
   const learnDirectory = [
     { id: "study-guide", label: "学习产出与路线", eyebrow: "先定检查点" },
     ...data.curriculum.chapters.map((chapter, index) => ({ id: `mcp-chapter-${index + 1}`, label: chapter.title, eyebrow: chapter.en })),
-    { id: "mcp-labs", label: `${data.learning.labs.length} 项验证实验`, eyebrow: "按结果验收" },
+    { id: "mcp-relationships", label: "调用关系图", eyebrow: "控制、信任与证据" },
+    { id: "mcp-contract-dossier", label: "Tool 契约示例", eyebrow: "从 Schema 到回读" },
+    { id: "mcp-labs", label: "可复核练习", eyebrow: "按结果验收" },
   ];
 
   return (
@@ -521,23 +569,21 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
         directories={{
           quick: [
             { id: "mcp-decisions", label: "采用与选型", eyebrow: "四方责任" },
-            { id: "mcp-version", label: "双版本边界", eyebrow: "当前与旧版" },
-            { id: "mcp-principles", label: "五条工作原则", eyebrow: "决策速查" },
+            { id: "mcp-principles", label: "工作原则", eyebrow: "决策速查" },
           ],
           learn: learnDirectory,
           field: [
-            { id: "qa", label: `${data.qa.length} 题现场问答`, eyebrow: "分类回答" },
-            { id: "evidence", label: `${data.evidenceCards.length} 张证据卡`, eyebrow: "来源与范围" },
+            { id: "qa", label: "现场问答", eyebrow: "分类回答" },
+            { id: "evidence", label: "证据与范围", eyebrow: "来源与范围" },
             { id: "cloud", label: "云能力与责任", eyebrow: "交付矩阵" },
-            { id: "mcp-field-lifecycle", label: "目录与下线", eyebrow: "退役检查" },
             { id: "related-modules", label: "相关模块", eyebrow: "责任连接" },
           ],
         }}
         field={<FieldView data={data} />}
         hashGroups={{
-          quick: ["principle", "mcp-decisions", "mcp-version", "mcp-principles"],
-          learn: ["study-guide", "curriculum", ...data.curriculum.chapters.map((_, index) => `mcp-chapter-${index + 1}`), "mcp-labs"],
-          field: ["qa", "mcp-field-qa", "evidence", "mcp-field-evidence", "cloud", "mcp-field-cloud", "mcp-field-lifecycle", "related-modules"],
+          quick: ["principle", "mcp-decisions", "mcp-principles"],
+          learn: ["study-guide", "curriculum", ...data.curriculum.chapters.map((_, index) => `mcp-chapter-${index + 1}`), "mcp-relationships", "mcp-contract-dossier", "mcp-labs"],
+          field: ["qa", "mcp-field-qa", "evidence", "mcp-field-evidence", "cloud", "mcp-field-cloud", "related-modules"],
         }}
         learn={<LearnView data={data} />}
         moduleName="MCP · 模型上下文协议"
@@ -545,7 +591,7 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
         readerId="mcp-reading"
       />
 
-      <footer className={styles.footer}><strong>MCP · 模型上下文协议</strong><p>{data.curriculum.chapters.length} 章完整学习与现场查证<ModuleUpdatedAt value={data.module.updatedAt ?? undefined} /></p><a href="#mcp-reading">返回阅读任务 ↑</a></footer>
+      <footer className={styles.footer}><strong>MCP · 模型上下文协议</strong><p>主题学习、协议工件与现场查证<ModuleUpdatedAt value={data.module.updatedAt ?? undefined} /></p><a href="#mcp-reading">返回阅读任务 ↑</a></footer>
     </UnifiedModuleScaffold>
   );
 }

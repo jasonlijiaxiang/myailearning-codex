@@ -305,6 +305,7 @@
 .learningRoute li div { position: relative; z-index: 2; width: fit-content; padding: 1px 14px 0 0; display: grid; background: #fff; }
 .learningRoute li strong { font-size: 11px; }
 .learningRoute li small { max-width: 200px; color: var(--if-muted); font-size: 9px; }
+.learningRoute li em { max-width: 200px; margin-top: 3px; color: #718397; font-size: 8px; font-style: normal; line-height: 1.45; }
 .learningChapters { max-width: 1220px; margin-top: 18px; border-top: 3px solid var(--if-lime); }
 .learningChapters > article { border: 1px solid var(--if-line); border-top: 0; scroll-margin-top: 70px; }
 .learningChapters > article > button { width: 100%; min-height: 49px; padding: 10px 14px; display: grid; grid-template-columns: 58px auto minmax(0,1fr) 20px; gap: 12px; align-items: center; border: 0; background: #fff; color: var(--if-ink); text-align: left; cursor: pointer; }
@@ -337,6 +338,7 @@
 .capacityExperiment > * { min-width: 0; padding: 13px; }
 .capacityExperiment > * + * { border-left: 1px solid var(--if-line); }
 .capacityExperiment h4 { margin: 0 0 9px; font-size: 11px; }
+.capacityTeachingLabel { margin: 0 0 7px; color: #537820; font-size: 9px; font-weight: 850; letter-spacing: .06em; }
 .capacityExperiment form > label { display: grid; gap: 4px; margin-bottom: 10px; color: #536a7e; font-size: 9px; }
 .capacityExperiment select { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--if-line); background: #fff; color: var(--if-ink); font-size: 9px; }
 .capacityExperiment fieldset { margin: 0 0 10px; padding: 0; border: 0; }
@@ -387,10 +389,18 @@
 .capacityConclusion li { color: #536a7e; font-size: 9px; line-height: 1.55; }
 .capacityConclusion h5 { margin: 12px 0 3px; font-size: 9px; }
 .capacityConclusion ul { margin: 0; padding-left: 15px; }
+.capacityRunPack { margin-top: 14px; padding-top: 11px; border-top: 1px solid var(--if-line); }
+.capacityRunPack > p { margin: 0 0 9px; }
+.capacityRunPack dl { margin: 0; }
+.capacityRunPack dl > div { padding: 7px 0; border-top: 1px solid #e3eaed; }
+.capacityRunPack dt { color: #718397; font-size: 8px; font-weight: 850; }
+.capacityRunPack dd { margin: 3px 0 0; color: #536a7e; font-size: 9px; line-height: 1.5; }
 .capacityConclusion > a { min-height: 31px; margin-top: 12px; display: grid; place-items: center; border: 1px solid #8bad3b; font-size: 9px; font-weight: 750; text-decoration: none; }
 .capacityConclusion > small { display: block; margin-top: 8px; color: var(--if-muted); font-size: 8px; text-align: center; }
 .chapterBrief { padding: 18px 12px !important; display: grid; grid-template-columns: minmax(0,1fr) minmax(360px,1.2fr); gap: 16px 28px; }
-.chapterBrief > p { margin: 0; color: #435c70; font-size: 12px; line-height: 1.7; }
+.chapterBrief--afterArtifact { margin-top: 14px; padding-top: 18px !important; border-top: 1px solid var(--if-line); }
+.chapterMechanism > span { color: #718397; font-size: 9px; font-weight: 850; }
+.chapterMechanism > p { margin: 4px 0 0; color: #435c70; font-size: 12px; line-height: 1.7; }
 .chapterBrief dl { margin: 0; }
 .chapterBrief dl > div { padding: 0 0 8px 13px; border-left: 2px solid var(--if-line); }
 .chapterBrief dl > div + div { margin-top: 10px; border-left-color: var(--if-lime); }
@@ -618,12 +628,14 @@
   .memoryTrendFigure { grid-row: 2; }
   .learningRoute { overflow: hidden; }
   .learningRoute h2 { font-size: 20px; }
-  .learningRoute ol { grid-template-columns: 1fr; gap: 12px; }
+  .fieldbookTheme.modulePage.inferenceStudio .learningRoute ol,
+  .inferenceContentScope .learningRoute ol { grid-template-columns: 1fr; gap: 12px; }
   .fieldbookTheme.modulePage.inferenceStudio .learningRoute > ol > li:not(:last-child)::after,
   .inferenceContentScope .learningRoute > ol > li:not(:last-child)::after { top: 30px; right: auto; bottom: -12px; left: 15px; width: 1px; height: auto; }
   .learningRoute li div { width: auto; }
   .learningRoute li strong { font-size: 13px; }
   .learningRoute li small { font-size: 10px; }
+  .learningRoute li em { font-size: 10px; }
   .learningChapters { margin-top: 22px; }
   .learningChapters > article > button { min-height: 62px; padding: 10px; grid-template-columns: 50px minmax(0,1fr) 18px; gap: 8px; }
   .learningChapters > article > button > strong { font-size: 13px; }
@@ -681,7 +693,8 @@
 .caseAction li,
 .caseAcceptance,
 .capacityConclusion :is(p, li),
-.chapterBrief > p,
+.capacityRunPack dd,
+.chapterMechanism > p,
 .chapterBrief dd,
 .learningOutcomeList li,
 .learningStart p,

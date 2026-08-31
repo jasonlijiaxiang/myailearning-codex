@@ -66,7 +66,7 @@ const chapters = [
   { id: "a2a-chapter-8", label: "身份与授权", eyebrow: "四段身份链" },
   { id: "a2a-chapter-9", label: "追踪与 Artifact", eyebrow: "证据和三层验收" },
   { id: "a2a-chapter-10", label: "拓扑与采用边界", eyebrow: "不为协议拆系统" },
-  { id: "a2a-chapter-11", label: "三个验证实验", eyebrow: "用结果决定采用" },
+  { id: "a2a-chapter-11", label: "验证实验", eyebrow: "用结果决定采用" },
 ] as const satisfies readonly DenseChapterLink[];
 
 const taskStates = [
@@ -94,31 +94,92 @@ const bindingRows = [
   { binding: "gRPC", interface: "supportedInterfaces[]", direct: "Unary Message", task: "Task RPC / 状态", stream: "Server streaming", cancel: "CancelTask RPC", error: "gRPC status + A2A 语义", auth: "通道身份 + 资源授权" },
 ] as const;
 
+type FieldQuestion = {
+  item: SourceQa;
+  sourceIndex: number;
+};
+
+type FieldQuestionGroup = {
+  code: string;
+  title: string;
+  questions: readonly FieldQuestion[];
+};
+
+type FieldGroupDefinition = {
+  code: string;
+  title: string;
+  tags: readonly string[];
+};
+
 const fieldGroupDefinitions = [
-  { code: "A", title: "发现与连接", qaIndices: [0, 8, 11] },
-  { code: "B", title: "任务与产物", qaIndices: [2, 5, 10] },
-  { code: "C", title: "安全与责任", qaIndices: [3, 6, 9] },
-  { code: "D", title: "运营与采用", qaIndices: [1, 4, 7] },
-] as const;
+  { code: "A", title: "发现与连接", tags: ["协议边界", "架构选择", "采用判断", "发现信任"] },
+  { code: "B", title: "任务、交付与恢复", tags: ["可靠性", "故障恢复", "取消语义", "产物验收"] },
+  { code: "C", title: "安全与责任", tags: ["审计与可观测", "跨域委托"] },
+  { code: "D", title: "运营与采用", tags: ["协作拓扑"] },
+] as const satisfies readonly FieldGroupDefinition[];
+
+function groupFieldQuestions(qa: readonly SourceQa[]): readonly FieldQuestionGroup[] {
+  const tagToGroup = new Map<string, string>();
+  const groupsByCode = new Map<string, { code: string; title: string; questions: FieldQuestion[] }>(
+    fieldGroupDefinitions.map((group) => [group.code, {
+      code: group.code,
+      title: group.title,
+      questions: [] as FieldQuestion[],
+    }]),
+  );
+  const unclassified: FieldQuestion[] = [];
+
+  for (const group of fieldGroupDefinitions) {
+    for (const tag of group.tags) {
+      if (tagToGroup.has(tag)) {
+        throw new Error(`A2A field-question tag is assigned to more than one group: ${tag}`);
+      }
+      tagToGroup.set(tag, group.code);
+    }
+  }
+
+  qa.forEach((item, sourceIndex) => {
+    const group = groupsByCode.get(tagToGroup.get(item.tag) ?? "");
+    const question = { item, sourceIndex };
+
+    if (group) {
+      group.questions.push(question);
+    } else {
+      unclassified.push(question);
+    }
+  });
+
+  const populatedGroups = [...groupsByCode.values()]
+    .filter((group) => group.questions.length > 0)
+    .map((group) => ({ ...group, questions: Object.freeze([...group.questions]) }));
+
+  return unclassified.length > 0
+    ? [...populatedGroups, { code: "补充", title: "其他已发布问题", questions: Object.freeze(unclassified) }]
+    : populatedGroups;
+}
 
 function loadA2ASourceContent() {
   const brief = requireModuleBrief("a2a") as A2ASourceBrief;
   const curriculum = requireModuleCurriculum("a2a") as A2ASourceCurriculum;
   const learning = requireModuleLearning("a2a") as A2ASourceLearning;
-  const fieldQuestionIndices = fieldGroupDefinitions.flatMap((group) => group.qaIndices);
-  const uniqueQuestionIndices = new Set(fieldQuestionIndices);
+  const fieldQuestionGroups = groupFieldQuestions(brief.qa);
+  const renderedQuestions = fieldQuestionGroups.flatMap((group) => group.questions);
+  const renderedQuestionIndices = renderedQuestions.map((question) => question.sourceIndex);
 
-  if (brief.qa.length !== 12 || fieldQuestionIndices.length !== 12 || uniqueQuestionIndices.size !== 12) {
-    throw new Error("A2A source contract changed: review the four field-question groups before publishing.");
+  if (!brief.qa.length || renderedQuestionIndices.length !== brief.qa.length || new Set(renderedQuestionIndices).size !== renderedQuestionIndices.length || renderedQuestions.some(({ item, sourceIndex }) => brief.qa[sourceIndex] !== item)) {
+    throw new Error("A2A source contract changed: every published question must appear in one field-question group.");
   }
-  if (brief.evidenceCards.length !== 4) {
-    throw new Error("A2A source contract changed: review the evidence ledger before publishing.");
+  if (!brief.evidenceCards.length) {
+    throw new Error("A2A source contract changed: the evidence ledger needs at least one published record.");
   }
-  if (curriculum.chapters.length !== 9 || learning.labs.length !== 3 || chapters.length !== 11) {
-    throw new Error("A2A source contract changed: review the 11-chapter presentation and three labs before publishing.");
+  if (!curriculum.chapters.length || !learning.labs.length || !chapters.length) {
+    throw new Error("A2A source contract changed: the learning view needs topic, practice, and navigation content.");
+  }
+  if (learning.labs.some((lab) => lab.sourceIds.length === 0 || lab.sourceIds.some((sourceId) => !sourceLedger[sourceId]))) {
+    throw new Error("A2A source contract changed: every published practice needs resolvable source evidence.");
   }
 
-  return { qa: brief.qa, evidenceCards: brief.evidenceCards, curriculum, learning };
+  return { qa: brief.qa, evidenceCards: brief.evidenceCards, curriculum, learning, fieldQuestionGroups };
 }
 
 const sources = [
@@ -159,6 +220,29 @@ function Boundary({ title, children }: { title: string; children: React.ReactNod
       <strong>{title}</strong>
       <p>{children}</p>
     </aside>
+  );
+}
+
+function LabSourceLinks({ sourceIds }: { sourceIds: readonly string[] }) {
+  const references = [...new Set(sourceIds)].map((sourceId) => {
+    const source = sourceLedger[sourceId];
+
+    if (!source) {
+      throw new Error(`Unknown A2A lab sourceId: ${sourceId}`);
+    }
+
+    return { sourceId, title: source.shortTitle };
+  });
+
+  if (references.length === 0) return null;
+
+  return (
+    <nav className={styles.labSources} aria-label="本练习依据">
+      <span>本练习依据</span>
+      {references.map((source) => (
+        <Link href={`/references#source-${source.sourceId}`} key={source.sourceId}>{source.title} ↗</Link>
+      ))}
+    </nav>
   );
 }
 
@@ -269,21 +353,21 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
       </section>
 
       <section className={styles.curriculumAtlas} id="curriculum" data-quality-section="curriculum">
-        <details className={styles.curriculumDisclosure}>
-          <summary><span>9 TOPICS → 11-CHAPTER ROUTE</span><strong>知识地图 · 查看原始 9 主题与 11 章主线的映射</strong></summary>
-          <p>{curriculum.lead}</p>
-          <ModuleCurriculumAtlas content={curriculum} sourceLedger={sourceLedger} />
-        </details>
+        <header className={styles.curriculumHeader}>
+          <span>REFERENCE MAP</span>
+          <h2>原始主题与本页学习主线</h2>
+        </header>
+        <ModuleCurriculumAtlas content={curriculum} sourceLedger={sourceLedger} />
       </section>
 
       <section className={styles.learnLead}>
-        <p>LEARNING ROUTE · 11 章</p>
+        <p>LEARNING SPINE</p>
         <h2>以同一跨域任务为主线，固定 Agent Card、Message / Task 分叉、九个 TaskState、恢复策略、身份链和三层验收</h2>
         <div>
-          <span>01–04 · 建立对象模型</span>
-          <span>05–07 · 运行与恢复</span>
-          <span>08–09 · 信任与证据</span>
-          <span>10–11 · 采用与实验</span>
+          <span>对象模型</span>
+          <span>运行与恢复</span>
+          <span>信任与证据</span>
+          <span>采用与实验</span>
         </div>
       </section>
 
@@ -507,15 +591,16 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
       </section>
 
       <section className={styles.chapter} id="a2a-chapter-11">
-        <SectionHeader number="11" eyebrow="LABS" title={`动手做一遍 · ${learning.labs.length} 个验证实验`} lead="不以网络连通验收，而以恢复、边界和交付证据决定采用。" />
+        <SectionHeader number="11" eyebrow="PRACTICE" title="动手验证交付契约" lead="不以网络连通验收，而以恢复、边界和交付证据决定采用。" />
         <div className={styles.labList}>
-          {learning.labs.map((lab, index) => (
+          {learning.labs.map((lab) => (
             <article key={lab.title}>
-              <span>LAB {String(index + 1).padStart(2, "0")} · SOURCE-LED</span>
+              <span>验证练习 · 可追溯依据</span>
               <h3>{lab.title}</h3>
               <p>{lab.scenario}</p>
               <ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
               <dl><div><dt>产物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过</dt><dd>{lab.acceptance}</dd></div></dl>
+              <LabSourceLinks sourceIds={lab.sourceIds} />
             </article>
           ))}
         </div>
@@ -525,7 +610,13 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
   );
 }
 
-function FieldView({ qa, evidenceCards }: { qa: readonly SourceQa[]; evidenceCards: readonly SourceEvidenceCard[] }) {
+function FieldView({
+  evidenceCards,
+  questionGroups,
+}: {
+  evidenceCards: readonly SourceEvidenceCard[];
+  questionGroups: readonly FieldQuestionGroup[];
+}) {
   return (
     <div className={styles.fieldView}>
       <section className={styles.fieldLead}>
@@ -548,14 +639,13 @@ function FieldView({ qa, evidenceCards }: { qa: readonly SourceQa[]; evidenceCar
           </section>
 
           <section className={styles.fieldQuestions} id="qa" aria-labelledby="field-questions-title" data-quality-section="qa">
-            <header className={styles.compactHeader}><span>12 QUESTIONS · 4 GROUPS</span><h2 id="field-questions-title">客户问题 · 现场入口</h2><p>每道题都带“怎么核验”和“什么算证据”。</p></header>
-            {fieldGroupDefinitions.map((group) => (
+            <header className={styles.compactHeader}><span>FIELD QUESTIONS</span><h2 id="field-questions-title">客户问题 · 现场入口</h2><p>每道题都带“怎么核验”和“什么算证据”。</p></header>
+            {questionGroups.map((group) => (
               <section key={group.code}>
                 <header><span>{group.code}</span><h3>{group.title}</h3></header>
-                {group.qaIndices.map((qaIndex, index) => {
-                  const item = qa[qaIndex];
+                {group.questions.map(({ item, sourceIndex }, index) => {
                   return (
-                  <details id={`qa-${qaIndex + 1}`} key={item.q} open={index === 0}>
+                  <details id={`qa-${sourceIndex + 1}`} key={`qa-${sourceIndex}`} open={index === 0}>
                     <summary><span>{group.code}{index + 1}</span><strong>{item.q}</strong><QuestionAddedAt value={item.addedAt} /></summary>
                     <div><p><b>结论</b>{item.a}</p><p><b>现场补问</b>{item.ask}</p><p><b>深挖</b>{item.depth}</p><p><b>依据</b>{item.basis} · {item.evidence.map((evidence) => evidence.supports).join("；")}</p></div>
                   </details>
@@ -691,13 +781,13 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
           learn: chapters,
           field: [
             { id: "field-checklist-title", label: "现场核验顺序", eyebrow: "可执行 Runbook" },
-            { id: "qa", label: `${sourceContent.qa.length} 题客户问题`, eyebrow: "四类入口" },
+            { id: "qa", label: `${sourceContent.qa.length} 题客户问题`, eyebrow: "按主题核验" },
             { id: "evidence", label: `${sourceContent.evidenceCards.length} 张证据卡`, eyebrow: "来源与范围" },
             { id: "cloud", label: "云能力与责任", eyebrow: "交付矩阵" },
             { id: "related-modules", label: "相关模块", eyebrow: "责任连接" },
           ],
         }}
-        field={<FieldView qa={sourceContent.qa} evidenceCards={sourceContent.evidenceCards} />}
+        field={<FieldView evidenceCards={sourceContent.evidenceCards} questionGroups={sourceContent.fieldQuestionGroups} />}
         hashGroups={{
           quick: ["principle", "a2a-handoff-title", "quick-boundary-title"],
           learn: ["study-guide", "curriculum", ...chapters.map((chapter) => chapter.id)],
