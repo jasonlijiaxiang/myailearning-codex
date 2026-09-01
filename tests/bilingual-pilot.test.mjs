@@ -992,7 +992,12 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
   assertReadableItems(dataLabs.items, "Data-engineering practice labs");
   const dataPrinciples = data.sections.find((section) => section.id === "principles");
   const dataPrincipleItems = dataPrinciples.blocks.find((block) => block.items.some((item) => item.id === "principle-cross-region-flow"));
-  assertReadableItems(dataPrincipleItems.items, "Data-engineering principles");
+  assertReadableItems(dataPrincipleItems.items, "Data-engineering principles", { allowBoundaryOmission: true });
+  const dataResponsibilityBoundary = dataPrinciples.blocks.find((block) => block.items.some((item) => item.id === "data-engineering-boundary"));
+  const dataResponsibilityItem = findById(dataResponsibilityBoundary.items, "data-engineering-boundary", "Data-engineering responsibility boundary");
+  assert.ok(dataResponsibilityItem.title?.trim(), "Data-engineering responsibility handoff needs a readable title");
+  assert.ok(dataResponsibilityItem.body?.trim(), "Data-engineering responsibility handoff needs readable body copy");
+  assert.ok(dataResponsibilityItem.boundary?.trim(), "Data-engineering responsibility handoff needs a readable boundary");
   assert.match(JSON.stringify(data), /Chunking, embeddings, vectorization, or caching do not by themselves change the data classification/);
   assert.doesNotMatch(JSON.stringify(data), /Governability|withdrawable|Acceptance:/);
 
