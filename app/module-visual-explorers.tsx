@@ -22,6 +22,9 @@ export type ExtensionView = {
   title: string;
   steps: VisualStep[];
   checks: VisualCheck[];
+  // The control canvas cannot infer this split from a view ID or a step's
+  // display order. View data declares the semantic control-plane steps.
+  controlPlaneStepCodes?: readonly string[];
 };
 
 type StepCanvasProps = {
@@ -41,12 +44,6 @@ const lifecycleBranchLabels: Record<string, [string, string]> = {
   "delegated-task-lifecycle": ["取消 / 超时", "恢复 / 人工接管"],
   "predictive-model-lifecycle": ["漂移调查", "回滚 / 重新训练"],
 };
-
-const controlPlaneStepCodesByViewId = {
-  "mcp-host-server-boundary": new Set(["CLIENT", "SERVER"]),
-  "gateway-policy-data-plane": new Set(["POLICY"]),
-  "scheduler-control-plane": new Set(["ADMIT", "PLACE"]),
-} as const;
 
 function StepButton({
   step,
@@ -146,8 +143,12 @@ function LoopCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
 }
 
 function ControlCanvas({ view, active, onSelect, locale }: StepCanvasProps) {
-  const policyStepCodes = controlPlaneStepCodesByViewId[view.id as keyof typeof controlPlaneStepCodesByViewId];
-  if (!policyStepCodes) throw new Error(`Missing control-plane step mapping for ${view.id}`);
+  const policyStepCodes = new Set(view.controlPlaneStepCodes ?? []);
+  if (!policyStepCodes.size) throw new Error(`Missing semantic control-plane steps for ${view.id}`);
+  const unknownPolicyStepCodes = [...policyStepCodes].filter((code) => !view.steps.some((step) => step.code === code));
+  if (unknownPolicyStepCodes.length) {
+    throw new Error(`Unknown semantic control-plane steps for ${view.id}: ${unknownPolicyStepCodes.join(", ")}`);
+  }
   const policySteps = view.steps
     .map((step, index) => ({ step, index }))
     .filter(({ step }) => policyStepCodes.has(step.code));

@@ -194,10 +194,10 @@ export const glossaryGroups = Object.freeze([
 ]);
 
 export const homepageTermGroups = Object.freeze([
-  Object.freeze({ label: "模型与推理", termIds: Object.freeze(["llm", "token", "transformer", "attention", "kv-cache", "moe"]) }),
-  Object.freeze({ label: "应用与上下文", termIds: Object.freeze(["rag", "ai-agent", "harness", "prompt-engineering", "context-engineering", "multimodal"]) }),
-  Object.freeze({ label: "协议与平台", termIds: Object.freeze(["mcp", "a2a", "api", "ai-gateway", "tool-calling"]) }),
-  Object.freeze({ label: "治理与交付", termIds: Object.freeze(["evaluation", "ai-application-engineering", "ai-governance", "observability", "ai-finops", "tco"]) }),
+  Object.freeze({ label: "模型与推理", en: "Models & inference", termIds: Object.freeze(["llm", "token", "transformer", "attention", "kv-cache", "moe"]) }),
+  Object.freeze({ label: "应用与上下文", en: "Applications & context", termIds: Object.freeze(["rag", "ai-agent", "harness", "prompt-engineering", "context-engineering", "multimodal"]) }),
+  Object.freeze({ label: "协议与平台", en: "Protocols & platform", termIds: Object.freeze(["mcp", "a2a", "api", "ai-gateway", "tool-calling"]) }),
+  Object.freeze({ label: "治理与交付", en: "Governance & delivery", termIds: Object.freeze(["evaluation", "ai-application-engineering", "ai-governance", "observability", "ai-finops", "tco"]) }),
 ]);
 
 export const glossaryTermIds = Object.freeze(glossaryGroups.flatMap((group) => group.termIds));

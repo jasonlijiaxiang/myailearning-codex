@@ -5,7 +5,7 @@ import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useId, useM
 import styles from "./dense-module-reading-modes.module.css";
 import type { UnifiedModuleLocale } from "./unified-module-hero";
 
-export type ReadingModeId = "quick" | "learn" | "field";
+export type ReadingModeId = string;
 
 export type DenseChapterLink = {
   id: string;
@@ -13,17 +13,15 @@ export type DenseChapterLink = {
   eyebrow?: string;
 };
 
-type ReadingModeDefinition = {
+export type DenseReadingMode = {
   id: ReadingModeId;
   label: string;
   eyebrow: string;
   outcome: string;
 };
 
-const readingModeIds = ["quick", "learn", "field"] as const;
-
 const readerCopyByLocale: Record<UnifiedModuleLocale, {
-  modes: readonly ReadingModeDefinition[];
+  modes: readonly DenseReadingMode[];
   readingTask: string;
   readingModes: string;
   boundaryAria: string;
@@ -67,30 +65,31 @@ type ModeMap<T> = Partial<Record<ReadingModeId, T>>;
 function modeForHash(
   hash: string,
   hashGroups: ModeMap<readonly string[]> | undefined,
-  directories: Record<ReadingModeId, readonly DenseChapterLink[]>,
+  directories: ModeMap<readonly DenseChapterLink[]>,
+  readingModeIds: readonly ReadingModeId[],
 ) {
   const target = hash.replace(/^#/, "");
   if (!target) return null;
 
   for (const modeId of readingModeIds) {
     if (hashGroups?.[modeId]?.includes(target)) return modeId;
-    if (directories[modeId].some((item) => item.id === target)) return modeId;
+    if (directories[modeId]?.some((item) => item.id === target)) return modeId;
   }
 
   const containingPanel = typeof document === "undefined"
     ? null
     : document.getElementById(target)?.closest<HTMLElement>("[data-reading-mode]")?.dataset.readingMode;
-  if (readingModeIds.some((modeId) => modeId === containingPanel)) return containingPanel as ReadingModeId;
+  if (containingPanel && readingModeIds.includes(containingPanel)) return containingPanel;
 
-  return target.startsWith("qa-") ? "field" : null;
+  return target.startsWith("qa-") && readingModeIds.includes("field") ? "field" : null;
 }
 
 function directoryAnchorForTarget(
   targetId: string,
   modeId: ReadingModeId,
-  directories: Record<ReadingModeId, readonly DenseChapterLink[]>,
+  directories: ModeMap<readonly DenseChapterLink[]>,
 ) {
-  const directoryIds = new Set(directories[modeId].map((item) => item.id));
+  const directoryIds = new Set((directories[modeId] ?? []).map((item) => item.id));
   if (directoryIds.has(targetId)) return targetId;
   if (typeof document === "undefined") return undefined;
 
@@ -144,6 +143,8 @@ export function DenseModuleReadingModes({
   quick,
   learn,
   field,
+  modeDefinitions,
+  modePanels,
   defaultMode = "quick",
   hashGroups,
   criticalBoundary,
@@ -154,9 +155,16 @@ export function DenseModuleReadingModes({
   moduleName: string;
   chapters: readonly DenseChapterLink[];
   directories?: ModeMap<readonly DenseChapterLink[]>;
-  quick: ReactNode;
-  learn: ReactNode;
-  field: ReactNode;
+  quick?: ReactNode;
+  learn?: ReactNode;
+  field?: ReactNode;
+  /**
+   * A module may declare only the reading tasks that make its argument more
+   * usable. Omitting this keeps the established three-task preset.
+   */
+  modeDefinitions?: readonly DenseReadingMode[];
+  /** Content keyed by the declared task IDs when a module uses a custom set. */
+  modePanels?: ModeMap<ReactNode>;
   defaultMode?: ReadingModeId;
   hashGroups?: ModeMap<readonly string[]>;
   criticalBoundary?: string;
@@ -165,8 +173,13 @@ export function DenseModuleReadingModes({
   locale?: UnifiedModuleLocale;
 }) {
   const copy = readerCopyByLocale[locale];
-  const readingModes = copy.modes;
-  const [activeMode, setActiveMode] = useState<ReadingModeId>(defaultMode);
+  const readingModes = useMemo(() => modeDefinitions?.length ? modeDefinitions : copy.modes, [copy.modes, modeDefinitions]);
+  const firstReadingMode = readingModes[0];
+  if (!firstReadingMode) throw new Error("A module reader needs at least one declared reading task.");
+  const modeIds = useMemo(() => readingModes.map((mode) => mode.id), [readingModes]);
+  if (new Set(modeIds).size !== modeIds.length) throw new Error("A module reader cannot reuse a reading-task ID.");
+  const resolvedDefaultMode = modeIds.includes(defaultMode) ? defaultMode : firstReadingMode.id;
+  const [requestedMode, setActiveMode] = useState<ReadingModeId>(resolvedDefaultMode);
   // The server render is the no-JavaScript reading path. Keep every mode in
   // that document, then collapse inactive panels only after enhancement.
   const [isEnhanced, setIsEnhanced] = useState(false);
@@ -179,13 +192,15 @@ export function DenseModuleReadingModes({
   const tabsId = useId();
   const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
   const hashRevealRequestRef = useRef(0);
-  const directoryByMode = useMemo<Record<ReadingModeId, readonly DenseChapterLink[]>>(() => ({
-    quick: directories?.quick ?? chapters,
-    learn: directories?.learn ?? chapters,
-    field: directories?.field ?? chapters,
-  }), [chapters, directories]);
-  const activeDefinition = readingModes.find((mode) => mode.id === activeMode) ?? readingModes[0];
-  const activeDirectory = directoryByMode[activeMode];
+  const directoryByMode = useMemo<ModeMap<readonly DenseChapterLink[]>>(() => Object.fromEntries(
+    readingModes.map((mode) => [mode.id, directories?.[mode.id] ?? chapters]),
+  ), [chapters, directories, readingModes]);
+  // A reader may receive a revised task declaration during client navigation.
+  // Keep the requested choice in state, but always render a declared task;
+  // this avoids a corrective effect (and a transient empty tab state).
+  const activeMode = modeIds.includes(requestedMode) ? requestedMode : resolvedDefaultMode;
+  const activeDefinition = readingModes.find((mode) => mode.id === activeMode) ?? firstReadingMode;
+  const activeDirectory = directoryByMode[activeMode] ?? chapters;
   const displayedActiveAnchor = activeDirectory.some((item) => item.id === activeAnchor) ? activeAnchor : activeDirectory[0]?.id;
 
   useEffect(() => {
@@ -195,12 +210,12 @@ export function DenseModuleReadingModes({
 
   const revealHash = useCallback((hash: string) => {
     if (!hash.replace(/^#/, "")) {
-      setActiveMode(defaultMode);
+      setActiveMode(resolvedDefaultMode);
       setActiveAnchor(undefined);
       setPendingHashReveal(null);
       return;
     }
-    const nextMode = modeForHash(hash, hashGroups, directoryByMode);
+    const nextMode = modeForHash(hash, hashGroups, directoryByMode, modeIds);
     if (!nextMode) {
       setPendingHashReveal(null);
       return;
@@ -213,7 +228,7 @@ export function DenseModuleReadingModes({
       mode: nextMode,
       requestId: ++hashRevealRequestRef.current,
     });
-  }, [defaultMode, directoryByMode, hashGroups]);
+  }, [directoryByMode, hashGroups, modeIds, resolvedDefaultMode]);
 
   useEffect(() => {
     const handleHashChange = () => revealHash(window.location.hash);
@@ -227,7 +242,7 @@ export function DenseModuleReadingModes({
         || event.altKey
         || anchor?.target === "_blank"
         || !anchor?.hash
-        || !modeForHash(anchor.hash, hashGroups, directoryByMode)
+        || !modeForHash(anchor.hash, hashGroups, directoryByMode, modeIds)
       ) return;
       event.preventDefault();
       if (window.location.hash !== anchor.hash) {
@@ -242,7 +257,7 @@ export function DenseModuleReadingModes({
       window.removeEventListener("hashchange", handleHashChange);
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [directoryByMode, hashGroups, revealHash]);
+  }, [directoryByMode, hashGroups, modeIds, revealHash]);
 
   useEffect(() => {
     if (!pendingHashReveal || pendingHashReveal.mode !== activeMode) return;
@@ -287,7 +302,11 @@ export function DenseModuleReadingModes({
     tabsRef.current[nextIndex]?.focus();
   }
 
-  const panels: Record<ReadingModeId, ReactNode> = { quick, learn, field };
+  const panels: ModeMap<ReactNode> = modePanels ?? { quick, learn, field };
+  const missingPanelIds = readingModes
+    .filter((mode) => !Object.prototype.hasOwnProperty.call(panels, mode.id) || panels[mode.id] === undefined)
+    .map((mode) => mode.id);
+  if (missingPanelIds.length) throw new Error(`A module reader is missing content for: ${missingPanelIds.join(", ")}`);
   const currentOutcome = modeDescriptions?.[activeMode] ?? activeDefinition.outcome;
 
   return (

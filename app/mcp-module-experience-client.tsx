@@ -300,7 +300,7 @@ function QuickView({ data }: { data: McpExperienceData }) {
             <article key={item.zh}><span>{String(index + 1).padStart(2, "0")}</span><h3>{item.zh}</h3><small>{item.en}</small><p>{item.decision}</p></article>
           ))}
         </div>
-        <p className={styles.learnLink}><Link href="#mcp-chapter-3">版本、初始化与能力发现：进入系统学习查看迁移判断与依据 →</Link></p>
+        <p className={styles.learnLink}><Link href="#curriculum">版本、初始化与能力发现：进入系统学习的主题地图查看迁移判断与依据 →</Link></p>
       </section>
     </div>
   );
@@ -432,6 +432,7 @@ function LearnView({ data }: { data: McpExperienceData }) {
 function FieldQa({ data }: { data: McpExperienceData }) {
   const groups = useMemo(() => groupFieldQuestions(data.qa), [data.qa]);
   const [category, setCategory] = useState<QaCategory>(() => groups[0]?.id ?? "");
+  const [isEnhanced, setIsEnhanced] = useState(false);
   const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
   const activeCategory = groups.some((group) => group.id === category) ? category : (groups[0]?.id ?? "");
 
@@ -452,6 +453,11 @@ function FieldQa({ data }: { data: McpExperienceData }) {
     window.addEventListener("hashchange", syncCategory);
     return () => window.removeEventListener("hashchange", syncCategory);
   }, [data.qa, groups]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setIsEnhanced(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const moveCategory = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
@@ -477,7 +483,7 @@ function FieldQa({ data }: { data: McpExperienceData }) {
       </div>
       {groups.map((group) => {
         return (
-          <div aria-labelledby={`mcp-qa-tab-${group.id}`} className={styles.fieldQaList} hidden={activeCategory !== group.id} id={`mcp-qa-panel-${group.id}`} key={group.id} role="tabpanel" tabIndex={0}>
+          <div aria-labelledby={`mcp-qa-tab-${group.id}`} className={styles.fieldQaList} hidden={isEnhanced && activeCategory !== group.id} id={`mcp-qa-panel-${group.id}`} key={group.id} role="tabpanel" tabIndex={0}>
             {group.items.map(({ item, index }) => <QaPreview anchorId={`qa-${index + 1}`} item={item} index={index} key={item.q} sources={data.sources} />)}
           </div>
         );

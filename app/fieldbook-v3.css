@@ -877,10 +877,10 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .solutionFeedbackPaths { display: none; }
   .solutionStageDetail { margin-top: 24px; grid-template-columns: minmax(220px,.8fr) minmax(300px,1.2fr); }
   .solutionStageDetail > p:last-child { grid-column: 1 / -1; }
-  .solutionCapabilityMatrixHead,
-  .solutionCapabilityMatrixRow { grid-template-columns: minmax(130px,.45fr) minmax(220px,1fr) minmax(250px,1.1fr); }
-  .solutionCapabilityMatrixHead span:nth-child(3),
-  .solutionCapabilityMatrixRow p:nth-child(3) { display: none; }
+  .solutionCapabilityMatrixHead { display: none; }
+  .solutionCapabilityMatrixRow { grid-template-columns: 1fr; gap: 9px; }
+  .solutionCapabilityMatrixRow p { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 12px; }
+  .solutionCapabilityMatrixRow p::before { content: attr(data-label); color: #58705f; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
   .mcpArchitectureCanvas { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: auto; gap: 12px; }
   .mcpUserNode { grid-column: 1 / -1; max-width: 340px; }
   .mcpArchitectureBand--application,
@@ -999,7 +999,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .solutionStageDetail > div:nth-child(2) { padding-left: 16px; }
   .solutionCapabilityMatrixHead { display: none; }
   .solutionCapabilityMatrixRow { padding: 20px 0; grid-template-columns: 1fr; gap: 9px; }
-  .solutionCapabilityMatrixRow p:nth-child(3) { display: block; }
+  .solutionCapabilityMatrixRow p:nth-child(3) { display: grid; }
   .mcpArchitectureCanvas { min-height: 0; padding-top: 20px; grid-template-columns: 1fr; }
   .mcpUserNode,
   .mcpArchitectureBand--application,
@@ -1121,7 +1121,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .fieldbookTheme.modulePage .moduleModeTabs {
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
 }
 .fieldbookTheme.modulePage .moduleModeTabs button {
   min-width: 0;
@@ -1319,7 +1319,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 
 @media (max-width: 720px) {
   .fieldbookTheme.modulePage .moduleReadingExperience { width: 100%; margin: 12px 0 0; border-inline: 0; border-radius: 0; }
-  .fieldbookTheme.modulePage .moduleModeTabs { grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: hidden; }
+  .fieldbookTheme.modulePage .moduleModeTabs { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); overflow: visible; }
   .fieldbookTheme.modulePage .moduleModeTabs button { min-height: 70px; padding: 12px 10px; grid-template-columns: 22px minmax(0, 1fr); gap: 2px 5px; }
   .fieldbookTheme.modulePage .moduleModeTabs button strong { font-size: 12px; }
   .fieldbookTheme.modulePage .moduleModeTabs button small { display: none; }
@@ -3361,8 +3361,8 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .solutionFeedbackPaths { display: none; }
   .solutionStageDetail { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 18px; }
   .solutionStageDetail > p:last-child { grid-column: 1 / -1; }
-  .solutionCapabilityMatrixHead,
-  .solutionCapabilityMatrixRow { grid-template-columns: minmax(0,.45fr) minmax(0,1fr) minmax(0,1.1fr); gap: 14px; }
-  .solutionCapabilityMatrixHead span:nth-child(3),
-  .solutionCapabilityMatrixRow p:nth-child(3) { display: none; }
+  .solutionCapabilityMatrixHead { display: none; }
+  .solutionCapabilityMatrixRow { grid-template-columns: 1fr; gap: 9px; }
+  .solutionCapabilityMatrixRow p { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 12px; }
+  .solutionCapabilityMatrixRow p::before { content: attr(data-label); color: #58705f; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
 }

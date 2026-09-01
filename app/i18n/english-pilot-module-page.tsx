@@ -56,6 +56,8 @@ type EnglishSectionGroup = {
   eyebrow: string;
   sections: EnglishSection[];
 };
+type EnglishReaderModeId = "quick" | "learn" | "field";
+const englishReaderModeIds: readonly EnglishReaderModeId[] = ["quick", "learn", "field"];
 type EnglishPrimer = {
   id: string;
   layout: "spectrum" | "pipeline" | "boundary" | "lifecycle" | "loop" | "control" | "stack" | "topology";
@@ -64,6 +66,7 @@ type EnglishPrimer = {
   intro: string;
   termIds: string[];
   steps: Array<{ code: string; label: string; title: string; detail: string; signal: string }>;
+  controlPlaneStepCodes?: string[];
   checks: Array<{ title: string; detail: string }>;
   application: string;
   links: Array<{ href: string; label: string }>;
@@ -557,6 +560,7 @@ function EnglishModulePrimer({ module, primer }: { module: EnglishModule; primer
     id: primer.id,
     layout: primer.layout,
     title: primer.title,
+    controlPlaneStepCodes: primer.controlPlaneStepCodes,
     steps: primer.steps.map((step) => ({
       code: step.code,
       title: step.title,
@@ -626,6 +630,17 @@ const derivedPrimerStepIds: Record<string, readonly string[]> = {
   "ai-infra-compute": ["principle-workload-sizing", "principle-compute-precision", "principle-memory-hierarchy", "principle-scale-up", "principle-scale-out", "principle-storage-power-tco"],
 };
 
+// Control-plane membership is a projection of stable authored item IDs, never
+// the display position assigned to a primer step. This keeps an added or
+// reordered learning item from changing which controls the visual represents.
+const controlPlanePrimerStepIds: Record<string, readonly string[]> = {
+  "ai-agent": ["agent-loop-act", "agent-loop-continue-stop"],
+  mcp: ["principle-host-client-server"],
+  security: ["security-path-authorize"],
+  "ai-gateway": ["gateway-policy-routing", "gateway-traffic-cost", "gateway-safety-audit"],
+  "ai-infra-platform": ["principle-gang-queue", "principle-sharing-isolation"],
+};
+
 function selectPrimerItems(module: EnglishModule, itemIds: readonly string[], label: string) {
   const byId = new Map(module.sections.flatMap((section) => section.blocks.flatMap((block) => block.items).map((item) => [item.id, item])));
   if (new Set(itemIds).size !== itemIds.length) throw new Error(`${module.slug} ${label} repeats a content item`);
@@ -650,6 +665,16 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
   const stepIds = derivedPrimerStepIds[module.slug];
   if (!stepIds?.length) throw new Error(`${module.slug} needs explicit primer step IDs rather than a positional projection`);
   const steps = selectPrimerItems(module, stepIds, "primer steps");
+  const controlPlaneItemIds = controlPlanePrimerStepIds[module.slug] ?? [];
+  const stepIdSet = new Set(stepIds);
+  const invalidControlPlaneItemIds = controlPlaneItemIds.filter((itemId) => !stepIdSet.has(itemId));
+  if (invalidControlPlaneItemIds.length) {
+    throw new Error(`${module.slug} control-plane projection references a non-primer item: ${invalidControlPlaneItemIds.join(", ")}`);
+  }
+  if ((layout === "control" || layout === "boundary") && !controlPlaneItemIds.length) {
+    throw new Error(`${module.slug} needs explicit semantic control-plane item IDs`);
+  }
+  const controlPlaneItemIdSet = new Set(controlPlaneItemIds);
   const decisionSection = module.sections.find((section) => /(?:decision|choice|when-to-use|release-evidence)/.test(section.id));
   const decisionItems = decisionSection?.blocks.flatMap((block) => block.items) ?? [];
   const explicitTermIds = specialPrimerTermIds[module.slug] ?? canonicalView?.termIds;
@@ -671,6 +696,13 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
       detail: item.body ?? item.cells?.join(" · ") ?? "Establish the mechanism, owner, and observable output for this stage.",
       signal: item.decision ?? item.boundary ?? "Define a testable decision signal before implementation.",
     })),
+    ...(controlPlaneItemIds.length
+      ? {
+          controlPlaneStepCodes: steps.flatMap((item, index) => (
+            controlPlaneItemIdSet.has(item.id) ? [String(index + 1).padStart(2, "0")] : []
+          )),
+        }
+      : {}),
     checks: checkItems.map((item) => ({ title: item.title, detail: item.body ?? item.decision ?? item.boundary ?? "Validate this choice against the customer context." })),
     application: module.position,
     links: [
@@ -729,15 +761,25 @@ function EditorialStepList({ block }: { block: ContentBlock }) {
   );
 }
 
+function readerBlockTitle(block: ContentBlock, sectionId: string) {
+  if (sectionId.endsWith("-curriculum")
+    && block.type === "cards"
+    && /\bchapters$/i.test(block.title ?? "")) {
+    return "Course map";
+  }
+  return block.title;
+}
+
 function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId: string }) {
+  const title = readerBlockTitle(block, sectionId);
   const legacyAnchors = block.items.flatMap((item) => item.legacyIds ?? []).map((legacyId) => <span className="anchorAlias" id={legacyId} aria-hidden="true" key={legacyId} />);
   if (block.type === "boundary") {
     return (
       <aside className="callout" data-importance="critical">
         {legacyAnchors}
-        <div className="calloutTitle"><span>High-impact limitation</span><h3>{block.title ?? "Critical boundary"}</h3><small>Verify before you commit</small></div>
+        <div className="calloutTitle"><span>High-impact limitation</span><h3>{title ?? "Critical boundary"}</h3><small>Verify before you commit</small></div>
         {block.intro ? <p>{block.intro}</p> : null}
-        {block.items.map((item) => <CardItem item={item} headingLevel={block.title ? 4 : 3} key={item.id} />)}
+        {block.items.map((item) => <CardItem item={item} headingLevel={title ? 4 : 3} key={item.id} />)}
       </aside>
     );
   }
@@ -746,11 +788,11 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
     const columns = block.columns ?? ["Topic", "Mechanism", "Decision", "Boundary"];
     const explicitCellCount = Math.max(0, ...block.items.map((item) => item.cells?.length ?? 0));
     const renderedColumns = explicitCellCount > 0 && columns.length === explicitCellCount ? ["Topic", ...columns] : columns;
-    const tableLabel = block.title ?? `${sectionId} comparison`;
+    const tableLabel = title ?? `${sectionId} comparison`;
     return (
       <div className="tableWrap" role="region" aria-label={tableLabel} tabIndex={0}>
         {legacyAnchors}
-        {block.title ? <h3>{block.title}</h3> : null}
+        {title ? <h3>{title}</h3> : null}
         {block.intro ? <p>{block.intro}</p> : null}
         <table><caption className="srOnly">{tableLabel}</caption><thead><tr>{renderedColumns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr></thead><tbody>
           {block.items.map((item) => {
@@ -768,7 +810,7 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
       return (
         <div>
           {legacyAnchors}
-          {block.title ? <h3>{block.title}</h3> : null}
+          {title ? <h3>{title}</h3> : null}
           {block.intro ? <p>{block.intro}</p> : null}
           <EditorialStepList block={block} />
         </div>
@@ -777,13 +819,13 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
     return (
       <div>
         {legacyAnchors}
-        {block.title ? <h3>{block.title}</h3> : null}
+        {title ? <h3>{title}</h3> : null}
         {block.intro ? <p>{block.intro}</p> : null}
         <DeepDiveRelationView
           locale="en"
           block={{
             kind: "sequence",
-            title: block.title ?? "Process",
+            title: title ?? "Process",
             items: block.items.map((item) => ({
               id: item.id,
               name: item.title,
@@ -803,11 +845,11 @@ function ContentBlockView({ block, sectionId }: { block: ContentBlock; sectionId
   return (
     <div>
       {legacyAnchors}
-      {block.title ? <h3>{block.title}</h3> : null}
+      {title ? <h3>{title}</h3> : null}
       {block.intro ? <p>{block.intro}</p> : null}
       <div className="balancedGrid deepDiveCards deepDiveCards--scenario" data-count={block.items.length} data-odd={block.items.length % 2 === 1 ? "true" : "false"}>
         {rows.flatMap((row) => row.map((item) => (
-          <div className="balancedGridCell" key={item.id} style={{ "--balanced-span": gridSpan(row.length) } as CSSProperties}><CardItem item={item} headingLevel={block.title ? 4 : 3} /></div>
+          <div className="balancedGridCell" key={item.id} style={{ "--balanced-span": gridSpan(row.length) } as CSSProperties}><CardItem item={item} headingLevel={title ? 4 : 3} /></div>
         )))}
       </div>
     </div>
@@ -845,19 +887,16 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   const primer = publication.knowledgeView ? module.primer ?? deriveEnglishPrimer(module, publication.knowledgeView) : null;
   const unifiedConfig = reader === "unified" ? englishUnifiedReaderConfigs[module.slug] : undefined;
   const completeFocusedProjection = Boolean(unifiedConfig?.completeFocusedProjection);
-  const sectionGroups = buildEnglishSectionGroups(module, { completeFocusedProjection }) as EnglishSectionGroup[];
+  const sectionGroups = buildEnglishSectionGroups(module) as EnglishSectionGroup[];
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
   const visibleSectionGroups = completeFocusedProjection
     ? sectionGroups
     : selectVisibleEnglishSectionGroups(module, sectionGroups) as EnglishSectionGroup[];
-  const cloudGroups = visibleSectionGroups.filter((group) => group.role === "cloud");
-  const visibleMainGroups = visibleSectionGroups.filter((group) => group.role !== "cloud");
   const visibleEvidenceCards = completeFocusedProjection ? module.evidenceCards : selectVisibleEnglishEvidenceCards(module);
   const visibleQuestions = completeFocusedProjection ? module.qa : selectVisibleEnglishQuestions(module);
   const contentReadingSections: ReadingSection[] = [
-    ...visibleMainGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
+    ...visibleSectionGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "evidence", label: "Evidence and limits", eyebrow: "Know what sources prove" },
-    ...cloudGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "qa", label: "Customer questions", eyebrow: "Use in customer conversations" },
   ];
   const relatedReadingSection: ReadingSection = { id: "related-modules", label: "Related modules", eyebrow: "Build connections" };
@@ -918,44 +957,85 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
     if (!primer) throw new Error(`The unified English ${module.slug} reader requires its architecture primer.`);
 
     const groupById = new Map(visibleSectionGroups.map((group) => [group.id, group]));
-    const assignedGroupIds = [...unifiedConfig.groupIds.quick, ...unifiedConfig.groupIds.learn, ...unifiedConfig.groupIds.field];
-    const assignedGroupIdSet = new Set<string>(assignedGroupIds);
-    const duplicateGroupIds = assignedGroupIds.filter((groupId, index) => assignedGroupIds.indexOf(groupId) !== index);
-    const unknownGroupIds = assignedGroupIds.filter((groupId) => !groupById.has(groupId));
-    const missingGroupIds = visibleSectionGroups.map((group) => group.id).filter((groupId) => !assignedGroupIdSet.has(groupId));
     const visibleGroupIds = visibleSectionGroups.map((group) => group.id);
     const duplicateVisibleGroupIds = visibleGroupIds.filter((groupId, index) => visibleGroupIds.indexOf(groupId) !== index);
     const reservedIds = new Set([primer.id, `${module.slug}-english-primer-title`, "evidence", "qa", "related-modules"]);
-    const conflictingGroupIds = assignedGroupIds.filter((groupId) => reservedIds.has(groupId));
-    if (duplicateVisibleGroupIds.length || duplicateGroupIds.length || unknownGroupIds.length || missingGroupIds.length || conflictingGroupIds.length) {
-      throw new Error(`English ${module.slug} unified reader group contract mismatch: duplicate-visible=${duplicateVisibleGroupIds.join(",") || "none"}; duplicate-config=${duplicateGroupIds.join(",") || "none"}; unknown=${unknownGroupIds.join(",") || "none"}; missing=${missingGroupIds.join(",") || "none"}; reserved=${conflictingGroupIds.join(",") || "none"}`);
+    const configuredModeByGroupId = new Map<string, EnglishReaderModeId>();
+    const duplicateConfiguredGroupIds: string[] = [];
+    for (const mode of englishReaderModeIds) {
+      for (const groupId of unifiedConfig.groupIds[mode]) {
+        if (configuredModeByGroupId.has(groupId)) duplicateConfiguredGroupIds.push(groupId);
+        else configuredModeByGroupId.set(groupId, mode);
+      }
+    }
+    const conflictingGroupIds = [...configuredModeByGroupId.keys()].filter((groupId) => reservedIds.has(groupId));
+    if (duplicateVisibleGroupIds.length || duplicateConfiguredGroupIds.length || conflictingGroupIds.length) {
+      throw new Error(`English ${module.slug} unified reader group identity mismatch: duplicate-visible=${duplicateVisibleGroupIds.join(",") || "none"}; duplicate-config=${duplicateConfiguredGroupIds.join(",") || "none"}; reserved=${conflictingGroupIds.join(",") || "none"}`);
     }
 
+    // Reader configuration can choose a reading task for a known group, but it
+    // never defines which sections exist. New or repeated authored groups fall
+    // back to Systematic study and stay in authored order rather than making a
+    // module fail because it does not match a six-role template.
+    const groupIdsByMode: Record<EnglishReaderModeId, string[]> = { quick: [], learn: [], field: [] };
+    for (const group of visibleSectionGroups) {
+      groupIdsByMode[configuredModeByGroupId.get(group.id) ?? "learn"].push(group.id);
+    }
     const renderUnifiedGroups = (groupIds: readonly string[], startNumber: number) => groupIds.map((groupId, index) => {
       const group = groupById.get(groupId);
-      if (!group) throw new Error(`English ${module.slug} unified reader references an unknown group: ${groupId}`);
+      if (!group) return null;
       return <EnglishSectionGroupView group={group} number={startNumber + index} key={group.id} />;
     });
     const quickStart = 2;
-    const learnStart = quickStart + unifiedConfig.groupIds.quick.length;
-    const fieldBase = learnStart + unifiedConfig.groupIds.learn.length;
-    const quickGroups = renderUnifiedGroups(unifiedConfig.groupIds.quick, quickStart);
-    const learnGroups = renderUnifiedGroups(unifiedConfig.groupIds.learn, learnStart);
+    const learnStart = quickStart + groupIdsByMode.quick.length;
+    const fieldBase = learnStart + groupIdsByMode.learn.length;
+    const quickGroups = renderUnifiedGroups(groupIdsByMode.quick, quickStart);
+    const learnGroups = renderUnifiedGroups(groupIdsByMode.learn, learnStart);
     const fieldGroupStart = unifiedConfig.fieldGroupsBeforeEvidence ? fieldBase : fieldBase + 1;
-    const fieldGroups = renderUnifiedGroups(unifiedConfig.groupIds.field, fieldGroupStart);
+    const fieldGroups = renderUnifiedGroups(groupIdsByMode.field, fieldGroupStart);
     const evidenceNumber = unifiedConfig.fieldGroupsBeforeEvidence
-      ? fieldBase + unifiedConfig.groupIds.field.length
+      ? fieldBase + groupIdsByMode.field.length
       : fieldBase;
-    const qaNumber = fieldBase + unifiedConfig.groupIds.field.length + 1;
+    const qaNumber = fieldBase + groupIdsByMode.field.length + 1;
     const relatedNumber = qaNumber + 1;
     const fieldContent = unifiedConfig.fieldGroupsBeforeEvidence
       ? <>{fieldGroups}{renderEvidenceSection(evidenceNumber)}{renderQaSection(qaNumber)}{renderRelatedSection(relatedNumber)}</>
       : <>{renderEvidenceSection(evidenceNumber)}{fieldGroups}{renderQaSection(qaNumber)}{renderRelatedSection(relatedNumber)}</>;
-    const chapters = [
-      ...unifiedConfig.directories.quick,
-      ...unifiedConfig.directories.learn,
-      ...unifiedConfig.directories.field,
-    ];
+    const configuredDirectoryEntries = new Map(
+      englishReaderModeIds.flatMap((mode) => unifiedConfig.directories[mode].map((entry) => [entry.id, entry] as const)),
+    );
+    const directoryEntryForGroup = (groupId: string): DenseChapterLink => {
+      const group = groupById.get(groupId);
+      return configuredDirectoryEntries.get(groupId) ?? {
+        id: groupId,
+        label: group?.label ?? groupId,
+        eyebrow: group?.eyebrow,
+      };
+    };
+    const configuredEntry = (id: string, fallback: DenseChapterLink): DenseChapterLink => configuredDirectoryEntries.get(id) ?? fallback;
+    const primerEntry = configuredDirectoryEntries.get(`${module.slug}-english-primer-title`)
+      ?? configuredEntry(primer.id, { id: `${module.slug}-english-primer-title`, label: "Primer", eyebrow: "Start with the model" });
+    const directories = {
+      quick: [
+        primerEntry,
+        ...groupIdsByMode.quick.map(directoryEntryForGroup),
+      ],
+      learn: groupIdsByMode.learn.map(directoryEntryForGroup),
+      field: unifiedConfig.fieldGroupsBeforeEvidence
+        ? [
+          ...groupIdsByMode.field.map(directoryEntryForGroup),
+          configuredEntry("evidence", { id: "evidence", label: "Evidence and limits", eyebrow: "State what sources prove" }),
+          configuredEntry("qa", { id: "qa", label: "Customer questions", eyebrow: "Answer with boundaries" }),
+          configuredEntry("related-modules", { id: "related-modules", label: "Related modules", eyebrow: "Explore adjacent topics" }),
+        ]
+        : [
+          configuredEntry("evidence", { id: "evidence", label: "Evidence and limits", eyebrow: "State what sources prove" }),
+          ...groupIdsByMode.field.map(directoryEntryForGroup),
+          configuredEntry("qa", { id: "qa", label: "Customer questions", eyebrow: "Answer with boundaries" }),
+          configuredEntry("related-modules", { id: "related-modules", label: "Related modules", eyebrow: "Explore adjacent topics" }),
+        ],
+    } satisfies EnglishUnifiedReaderConfig["directories"];
+    const chapters = [...directories.quick, ...directories.learn, ...directories.field];
 
     return (
       <UnifiedModuleScaffold
@@ -982,9 +1062,9 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
               <DenseModuleReadingModes
                 chapters={chapters}
                 criticalBoundary={unifiedConfig.criticalBoundary}
-                directories={unifiedConfig.directories}
+                directories={directories}
                 field={fieldContent}
-                hashGroups={unifiedConfig.groupIds}
+                hashGroups={groupIdsByMode}
                 learn={<>{learnGroups}</>}
                 locale="en"
                 moduleName={module.title}
@@ -1033,14 +1113,12 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
           {primer ? <EnglishModulePrimer module={module} primer={primer} /> : null}
           {!usesFocusedReadingProfile ? renderRelatedSection(1) : null}
 
-          {visibleMainGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}
+          {visibleSectionGroups.map((group, index) => <EnglishSectionGroupView group={group} number={index + 2} key={group.id} />)}
 
-          {renderEvidenceSection(visibleMainGroups.length + 2)}
+          {renderEvidenceSection(visibleSectionGroups.length + 2)}
 
-          {cloudGroups.map((group, index) => <EnglishSectionGroupView group={group} number={visibleMainGroups.length + index + 3} key={group.id} />)}
-
-          {renderQaSection(visibleMainGroups.length + cloudGroups.length + 3)}
-          {usesFocusedReadingProfile ? renderRelatedSection(visibleMainGroups.length + cloudGroups.length + 4) : null}
+          {renderQaSection(visibleSectionGroups.length + 3)}
+          {usesFocusedReadingProfile ? renderRelatedSection(visibleSectionGroups.length + 4) : null}
         </div>
       </div>
 

@@ -216,7 +216,7 @@ export default function Home() {
           </figure>
 
           <aside className="heroDecisionPanel" aria-label="知识库可以帮助完成的任务">
-            <h2 className="srOnly">三种阅读深度</h2>
+            <h2 className="srOnly">按不同任务进入知识库</h2>
             <ol>
               <li><span>快速了解</span><div><strong>先看结论与边界</strong><p>快速确认这是什么、何时适用，以及下一步该问什么。</p></div></li>
               <li><span>深入理解</span><div><strong>理清系统机制</strong><p>沿处理流程理解机制和责任边界。</p></div></li>

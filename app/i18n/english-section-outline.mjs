@@ -9,9 +9,9 @@ export const sharedSectionRoles = Object.freeze({
   cloud: Object.freeze({ id: "cloud", label: "Cloud connections", eyebrow: "Map to available services" }),
 });
 
-export const sharedSectionRoleOrder = Object.freeze(["learning", "curriculum", "principle", "decision", "deep", "cloud"]);
-// Kept as a public compatibility export. A focused visual treatment must not
-// silently become a content projection that drops the learning map.
+// Kept as public compatibility exports for callers that need the vocabulary
+// of roles. They never prescribe a reader order or a required section set.
+export const sharedSectionRoleOrder = Object.freeze(Object.keys(sharedSectionRoles));
 export const focusedSectionRoleOrder = sharedSectionRoleOrder;
 export const focusedEnglishModuleSlugs = Object.freeze(
   publishedModules.filter((module) => module.readingProfile === "focused").map((module) => module.slug),
@@ -30,7 +30,7 @@ export function classifySharedSection(section) {
   return "deep";
 }
 
-export function buildEnglishSectionGroups(module, { completeFocusedProjection = false } = {}) {
+export function buildEnglishSectionGroups(module) {
   if (hasDedicatedModule(module.slug)) {
     return module.sections.map((section) => ({
       role: "authored",
@@ -41,23 +41,47 @@ export function buildEnglishSectionGroups(module, { completeFocusedProjection = 
     }));
   }
 
-  const grouped = new Map();
+  const grouped = [];
   for (const section of module.sections) {
     const role = classifySharedSection(section);
-    grouped.set(role, [...(grouped.get(role) ?? []), section]);
+    const previous = grouped.at(-1);
+    if (previous?.role === role) {
+      previous.sections.push(section);
+      continue;
+    }
+    const sharedRole = sharedSectionRoles[role];
+    grouped.push({
+      role,
+      label: sharedRole.label,
+      eyebrow: sharedRole.eyebrow,
+      sections: [section],
+    });
   }
 
-  const roleOrder = sharedSectionRoleOrder;
-  return roleOrder.flatMap((role) => {
-    const sections = grouped.get(role);
-    if (!sections?.length) return [];
-    const sharedRole = sharedSectionRoles[role];
-    return [{
-      role,
-      ...sharedRole,
-      label: role === "deep" && sections.length === 1 ? sections[0].title : sharedRole.label,
-      sections,
-    }];
+  // A role anchor may be safely owned by a group only when an authored
+  // section outside that group does not already use it. This preserves an
+  // authored section's public anchor while still letting a same-group section
+  // be represented by the outer group container.
+  const authoredSectionIds = new Set(module.sections.map((section) => section.id));
+  const allocatedIds = new Set();
+  return grouped.map((group) => {
+    const ownSectionIds = new Set(group.sections.map((section) => section.id));
+    const baseId = sharedSectionRoles[group.role].id;
+    let suffix = 1;
+    let id = baseId;
+    while (
+      allocatedIds.has(id)
+      || (authoredSectionIds.has(id) && !ownSectionIds.has(id))
+    ) {
+      suffix += 1;
+      id = `${baseId}-${suffix}`;
+    }
+    allocatedIds.add(id);
+    return {
+      ...group,
+      id,
+      label: group.role === "deep" && group.sections.length === 1 ? group.sections[0].title : group.label,
+    };
   });
 }
 

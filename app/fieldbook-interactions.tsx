@@ -88,7 +88,7 @@ const defaultModuleExplorerLabels: ModuleExplorerLabels = {
   clear: "清除筛选",
   knowledgeAria: "知识内容搜索结果",
   knowledgeHeading: "直接进入知识内容",
-  showingPrefix: "显示前",
+  showingPrefix: "显示",
   showingSuffix: "条匹配",
   emptyTitle: "没有直接匹配的模块",
   emptyBody: "换一个业务问题或清除知识层筛选。",

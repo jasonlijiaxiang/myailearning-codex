@@ -1,13 +1,19 @@
 import type { ReactNode } from "react";
 
-import { DenseModuleReadingModes, type DenseChapterLink } from "./dense-module-reading-modes";
+import {
+  DenseModuleReadingModes,
+  type DenseChapterLink,
+  type DenseReadingMode,
+  type ReadingModeId,
+} from "./dense-module-reading-modes";
 import { UnifiedModuleScaffold, type UnifiedModuleHeroProps } from "./unified-module-hero";
 
-type DirectorySet = {
-  quick: readonly DenseChapterLink[];
-  learn: readonly DenseChapterLink[];
-  field: readonly DenseChapterLink[];
-};
+/**
+ * A directory reflects the tasks a module actually needs to support. The
+ * familiar quick / learn / field keys are a reusable preset, not a contract
+ * that every future module has to fill.
+ */
+export type DirectorySet = Partial<Record<ReadingModeId, readonly DenseChapterLink[]>>;
 
 export function buildBriefModuleDirectories({
   hasDeepDives,
@@ -42,11 +48,15 @@ export function UnifiedBriefModulePage({
   className,
   contentAriaLabel,
   criticalBoundary,
+  defaultMode,
   directories,
   field,
   footer,
+  hashGroups,
   hero,
   learn,
+  modeDefinitions,
+  modePanels,
   moduleName,
   quick,
 }: {
@@ -54,14 +64,18 @@ export function UnifiedBriefModulePage({
   contentAriaLabel: string;
   criticalBoundary: string;
   directories: DirectorySet;
-  field: ReactNode;
+  defaultMode?: ReadingModeId;
+  field?: ReactNode;
   footer: ReactNode;
+  hashGroups?: Partial<Record<ReadingModeId, readonly string[]>>;
   hero: UnifiedModuleHeroProps;
-  learn: ReactNode;
+  learn?: ReactNode;
+  modeDefinitions?: readonly DenseReadingMode[];
+  modePanels?: Partial<Record<ReadingModeId, ReactNode>>;
   moduleName: string;
-  quick: ReactNode;
+  quick?: ReactNode;
 }) {
-  const chapters = [...directories.quick, ...directories.learn, ...directories.field];
+  const chapters = Object.values(directories).flatMap((directory) => directory ?? []);
 
   return (
     <UnifiedModuleScaffold className={className} hero={hero}>
@@ -72,9 +86,13 @@ export function UnifiedBriefModulePage({
             <DenseModuleReadingModes
               chapters={chapters}
               criticalBoundary={criticalBoundary}
+              defaultMode={defaultMode}
               directories={directories}
               field={field}
+              hashGroups={hashGroups}
               learn={learn}
+              modeDefinitions={modeDefinitions}
+              modePanels={modePanels}
               moduleName={moduleName}
               quick={quick}
               readerId="module-reading"

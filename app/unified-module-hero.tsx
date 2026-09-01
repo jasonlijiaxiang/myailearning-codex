@@ -132,7 +132,6 @@ export function UnifiedModuleHero({
           <p className={styles.definition}>{definition}</p>
           <p className={styles.position}>{position}</p>
           <ModuleHeroMetrics
-            sectionCount={3}
             questionCount={questionCount}
             evidenceCount={evidenceCount}
             labels={copy.metrics}

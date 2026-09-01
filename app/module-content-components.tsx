@@ -91,7 +91,7 @@ export function ModuleHeroMetrics({
     evidenceUnit: "张",
   },
 }: {
-  sectionCount: number;
+  sectionCount?: number;
   questionCount: number;
   evidenceCount: number;
   labels?: {
@@ -106,7 +106,7 @@ export function ModuleHeroMetrics({
 }) {
   return (
     <dl className="moduleHeroMetrics" aria-label={labels.ariaLabel}>
-      <div><dt>{labels.sections}</dt><dd><strong>{sectionCount}</strong>{labels.sectionUnit ? <span>{labels.sectionUnit}</span> : null}</dd></div>
+      {sectionCount === undefined ? null : <div><dt>{labels.sections}</dt><dd><strong>{sectionCount}</strong>{labels.sectionUnit ? <span>{labels.sectionUnit}</span> : null}</dd></div>}
       <div><dt>{labels.questions}</dt><dd><strong>{questionCount}</strong>{labels.questionUnit ? <span>{labels.questionUnit}</span> : null}</dd></div>
       <div><dt>{labels.evidence}</dt><dd><strong>{evidenceCount}</strong>{labels.evidenceUnit ? <span>{labels.evidenceUnit}</span> : null}</dd></div>
     </dl>

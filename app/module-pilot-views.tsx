@@ -66,7 +66,7 @@ export function RagArchitecturePrimer() {
         <p>RAG 的采用理由不是“有一个向量库”，而是业务回答需要当前、授权、可追溯并能撤回的外部证据；离线链负责生产证据，在线链负责决定怎样使用证据。</p>
       </header>
       <section className="focusedDecisionLedger" aria-labelledby="rag-adoption-title">
-        <header><p className="kicker">ADOPTION CHECK</p><h3 id="rag-adoption-title">四个条件没有回答清楚时，不要急着选模型</h3><p>这些问题共同形成业务基线、证据责任和上线责任。任何一项无法验证，都应先停在调研或小范围实验。</p></header>
+        <header><p className="kicker">ADOPTION CHECK</p><h3 id="rag-adoption-title">采用条件没有回答清楚时，不要急着选模型</h3><p>这些问题共同形成业务基线、证据责任和上线责任。任何一项无法验证，都应先停在调研或小范围实验。</p></header>
         <div className="focusedDecisionRows">
           {ragAdoptionChecks.map((item, index) => (
             <article key={item.question}>
@@ -80,7 +80,7 @@ export function RagArchitecturePrimer() {
       <RagDualChainExplorer offline={ragKnowledgeSteps} online={ragServingSteps} />
       <TermHintRow label="RAG 关键术语" termIds={["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"]} />
       <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>向量检索只是候选发现手段之一。RAG 的交付对象是整条证据链：资料可用、候选可找、证据可编排、回答可核验、变化可撤回。</p></aside>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用四个采用问题建立基线与责任，再沿离线和在线生命周期逐段定义产物、失败、指标和验收；只有出现真实错误时才增加复杂度。</p><nav aria-label="RAG 深入阅读"><a href="#evidence-contract">定义证据契约</a><a href="#model-selection">准备模型选型</a><a href="#production">决定是否上线</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用采用问题建立基线与责任，再沿离线和在线生命周期逐段定义产物、失败、指标和验收；只有出现真实错误时才增加复杂度。</p><nav aria-label="RAG 深入阅读"><a href="#evidence-contract">定义证据契约</a><a href="#model-selection">准备模型选型</a><a href="#production">决定是否上线</a></nav></footer>
     </section>
   );
 }
@@ -127,7 +127,7 @@ export function AgentControlPrimer() {
         <p>以跨区域理赔材料补件与初审为主案例：确定性流程是骨架，Agent 只处理会随新证据改变路径的局部；身份、授权、真实动作与最终赔付责任始终留在模型外。</p>
       </header>
       <section className="focusedDecisionLedger" aria-labelledby="agent-adoption-title">
-        <header><p className="kicker">ADOPTION CHECK</p><h3 id="agent-adoption-title">四道门决定是 Workflow、LLM 步骤还是 Agent</h3><p>先回答业务基线、动态性、可验证控制和完整经济性。任何一项说不清，都应停在确定性方案或受限实验。</p></header>
+        <header><p className="kicker">ADOPTION CHECK</p><h3 id="agent-adoption-title">这些判断决定是 Workflow、LLM 步骤还是 Agent</h3><p>先回答业务基线、动态性、可验证控制和完整经济性。任何一项说不清，都应停在确定性方案或受限实验。</p></header>
         <div className="focusedDecisionRows">
           {agentAdoptionChecks.map((item, index) => (
             <article key={item.question}>
@@ -231,9 +231,9 @@ export function SolutionPatternPrimer({ brief, showCriticalBoundary = true }: { 
           {solutionCapabilityChoices.map((item) => (
             <div className="solutionCapabilityMatrixRow" role="row" key={item.en}>
               <strong role="rowheader"><span>{item.verb}</span>{item.title}</strong>
-              <p role="cell">{item.when}</p>
-              <p role="cell">{item.choice}</p>
-              <p role="cell">{item.boundary}</p>
+              <p role="cell" aria-label={`什么时候需要：${item.when}`} data-label="什么时候需要">{item.when}</p>
+              <p role="cell" aria-label={`常见选择：${item.choice}`} data-label="常见选择">{item.choice}</p>
+              <p role="cell" aria-label={`不可忽略的边界：${item.boundary}`} data-label="不可忽略的边界">{item.boundary}</p>
             </div>
           ))}
         </div>

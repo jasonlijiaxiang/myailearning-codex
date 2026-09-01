@@ -105,8 +105,8 @@ const explorerLabels = {
   emptyBody: "Try a different customer problem or clear the layer filter.",
 };
 
-const englishHomepageTermGroups = homepageTermGroups.map((group, index) => ({
-  label: ["Models & inference", "Applications & context", "Protocols & platform", "Governance & delivery"][index],
+const englishHomepageTermGroups = homepageTermGroups.map((group) => ({
+  label: group.en,
   termIds: group.termIds,
 }));
 
@@ -223,7 +223,7 @@ export default function EnglishHome() {
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="heroGrid heroGridV2">
           <div className="heroCopy"><p className="kicker">EVIDENCE-BACKED FIELD GUIDE</p><h1>Turn complex AI technology into decisions customers can act on</h1><p className="heroLead">This technical fieldbook connects system principles and architecture with failure analysis, cloud capabilities, acceptance evidence, and answers for customer conversations. Use it for focused study or during a presales meeting.</p><KnowledgeSearchLaunch labels={searchLabels} /><div className="heroActions"><a className="textButton" href="#learning-paths">Follow a mission-based path <span>→</span></a><a className="textButton" href="#map">Browse the knowledge map <span>→</span></a></div></div>
-          <aside className="heroDecisionPanel" aria-label="Ways to use the fieldbook"><h2>Use the same knowledge at three reading depths</h2><ol><li><span>30 sec</span><div><strong>Get the decision first</strong><p>See the definition, use case, critical boundary, and next discovery question immediately.</p></div></li><li><span>10 min</span><div><strong>Understand the system</strong><p>Follow inputs, processing, outputs, failure points, and control responsibilities.</p></div></li><li><span>Meeting</span><div><strong>Search questions and verify</strong><p>Move from a customer question to the short answer, deeper reasoning, and primary evidence.</p></div></li></ol><div className="heroDecisionFoot"><strong>{englishModuleCount}</strong><span>independent modules</span><strong>{layerCount}</strong><span>knowledge layers</span></div></aside>
+          <aside className="heroDecisionPanel" aria-label="Ways to use the fieldbook"><h2>Use the same knowledge for different reading tasks</h2><ol><li><span>30 sec</span><div><strong>Get the decision first</strong><p>See the definition, use case, critical boundary, and next discovery question immediately.</p></div></li><li><span>10 min</span><div><strong>Understand the system</strong><p>Follow inputs, processing, outputs, failure points, and control responsibilities.</p></div></li><li><span>Meeting</span><div><strong>Search questions and verify</strong><p>Move from a customer question to the short answer, deeper reasoning, and primary evidence.</p></div></li></ol><div className="heroDecisionFoot"><strong>{englishModuleCount}</strong><span>independent modules</span><strong>{layerCount}</strong><span>knowledge layers</span></div></aside>
         </div>
       </header>
 
@@ -237,7 +237,7 @@ export default function EnglishHome() {
       </section>
 
       <section className="fieldbookPromise" aria-labelledby="english-reading-depth-title">
-        <div className="promiseIntro"><p className="kicker">READING EXPERIENCE</p><h2 id="english-reading-depth-title">One fieldbook, three reading depths</h2></div>
+        <div className="promiseIntro"><p className="kicker">READING EXPERIENCE</p><h2 id="english-reading-depth-title">One fieldbook, different reading tasks</h2></div>
         <div className="promiseGrid">
           <article><span>30 sec</span><h3>Reach a defensible judgment</h3><p>Start with the definition, customer problem, recommended direction, and boundary that must not be crossed.</p></article>
           <article><span>10 min</span><h3>Understand why the system works this way</h3><p>Connect the mechanism, data flow, control owner, operating evidence, and common failure modes.</p></article>

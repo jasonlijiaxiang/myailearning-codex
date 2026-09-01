@@ -52,6 +52,7 @@ export const moduleExtensionViews = Object.freeze({
   mcp: Object.freeze({
     id: "mcp-host-server-boundary",
     layout: "boundary",
+    controlPlaneStepCodes: Object.freeze(["CLIENT", "SERVER"]),
     eyebrow: "HOST–SERVER BOUNDARY",
     title: "MCP 统一能力交换，不接管业务授权",
     intro: "协议让 Host 发现和调用 Server 提供的工具、资源与提示；身份、同意、业务权限和动作后果仍由协议外的确定性系统承担。",
@@ -182,6 +183,7 @@ export const moduleExtensionViews = Object.freeze({
   "ai-gateway": Object.freeze({
     id: "gateway-policy-data-plane",
     layout: "control",
+    controlPlaneStepCodes: Object.freeze(["POLICY"]),
     eyebrow: "POLICY & DATA PLANE",
     title: "AI 网关把跨模型控制集中到一条可审计请求路径",
     intro: "统一入口的价值不是多转发一跳，而是让身份、路由、预算、安全与遥测使用同一策略版本，并保留到最终业务结果的关联。",
@@ -335,6 +337,7 @@ export const moduleExtensionViews = Object.freeze({
   "ai-infra-platform": Object.freeze({
     id: "scheduler-control-plane",
     layout: "control",
+    controlPlaneStepCodes: Object.freeze(["ADMIT", "PLACE"]),
     eyebrow: "PLATFORM CONTROL & EXECUTION",
     title: "平台把自助契约变成可恢复、可解释的运行路径",
     intro: "平台控制层维护能力、策略与期望状态，工作负载执行层完成 Notebook、训练、批处理和模型服务；两层通过准入、放置、运行证据与恢复契约连接。",

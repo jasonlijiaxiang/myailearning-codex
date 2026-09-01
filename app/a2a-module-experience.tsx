@@ -585,7 +585,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
           ].map((row) => <article key={row.choice}><h3>{row.choice}</h3><dl><div><dt>采用信号</dt><dd>{row.signal}</dd></div><div><dt>新增成本</dt><dd>{row.cost}</dd></div><div><dt>边界</dt><dd>{row.boundary}</dd></div></dl></article>)}
         </div>
         <details className={styles.detailBlock} open>
-          <summary>采用评审的六个固定问题</summary>
+          <summary>采用评审要回答的问题</summary>
           <ol className={styles.reviewQuestions}><li>对端是否独立部署和升级？</li><li>是否跨所有权或信任域？</li><li>是否需要耐久 Task 与恢复？</li><li>双方怎样定义 SLO、取消、错误和升级？</li><li>身份、数据和 Artifact 是否可跨域治理？</li><li>本地工作流、MCP/API 或队列为什么不够？</li></ol>
         </details>
       </section>

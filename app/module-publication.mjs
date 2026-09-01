@@ -219,11 +219,14 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
         customer: Object.freeze(["客户高频问题与深度回答"]),
       }
     : {
-        principle: Object.freeze(["机制速览"]),
-        mechanism: Object.freeze(["方案判断"]),
-        boundary: Object.freeze([focusedReadingModules.has(slug) ? "重要边界" : "需要单独验证"]),
-        cloud: Object.freeze(["云能力与责任"]),
-        customer: Object.freeze(["客户问题"]),
+        // Shared readers may phrase these headings differently for the task at
+        // hand. Keep the publication contract on stable semantic landmarks
+        // rather than forcing every module to repeat display copy.
+        principle: Object.freeze(['data-quality-section="principle"']),
+        mechanism: Object.freeze(["data-knowledge-view"]),
+        boundary: Object.freeze(['data-importance="critical"']),
+        cloud: Object.freeze(['data-quality-section="cloud"']),
+        customer: Object.freeze(['data-quality-section="qa"']),
       }),
 })));
 
