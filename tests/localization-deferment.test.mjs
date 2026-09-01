@@ -713,6 +713,15 @@ test("runtime maintenance cannot relabel a document shell as an English-only ren
   assert.match(readerResult.failures.join("\n"), /document-shell maintenance has no Chinese renderer projection change/);
 });
 
+test("localization snapshots preserve stable semantic content while excluding control-plane membership codes", () => {
+  for (const [slug, moduleState] of Object.entries(currentProject.modules)) {
+    const objectIds = Object.keys(moduleState.zhObjects);
+    assert.ok(objectIds.some((objectId) => objectId.includes("/publication/contentContract/")), `${slug} must retain stable semantic content gates`);
+    assert.equal(objectIds.some((objectId) => objectId.includes("/extensionView/controlPlaneStepCodes/")), false, `${slug} control-plane membership codes are not translatable copy`);
+    assert.ok(objectIds.some((objectId) => objectId.includes("/publication/titleId")), `${slug} must retain real publication content in the localization snapshot`);
+  }
+});
+
 test("candidate review scope covers the complete Chinese effective state", () => {
   for (const moduleState of Object.values(currentProject.modules)) {
     assert.equal(moduleState.zhReviewHash, moduleState.zhStateHash);

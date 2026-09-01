@@ -50,7 +50,7 @@
 - `app/module-publication.mjs` 是正式发布模块的唯一状态与内容契约入口；首页入口、专用路由和测试名单必须从它派生，不得分别硬编码。
 - `app/module-content-registry.mjs` 统一登记已发布模块的客户问答与证据数据；新增正式模块时必须同步注册，不能在测试里另建模块名单。
 - 专业术语在 `app/terminology.mjs` 维护稳定中英名称。未来英文版共享概念 ID 和来源关系，但英文文案必须独立撰写、独立专业校对。
-- 新建或进入全面呈现重构的中文模块，其全局导航、Hero 与三种阅读模式必须使用共享 `UnifiedModuleScaffold`、`UnifiedModuleHero` 和 `DenseModuleReadingModes`；标题、重要边界和动态卡片继续优先使用 `moduleHeroTitle`、`CriticalBoundary`、`BalancedGrid` 与 `balanceRows`，不得为单个模块复制 Header / Tab / 目录控制器，或增加固定数量布局与模块 ID CSS 补丁。
+- 新建或进入全面呈现重构的中文模块，必须通过共享 `UnifiedModuleScaffold`、`UnifiedModuleHero` 和 `DenseModuleReadingModes` 提供全局导航、Hero 与按内容和读者任务决定的一个或多个阅读视图；标题、重要边界和动态卡片继续优先使用 `moduleHeroTitle`、`CriticalBoundary`、`BalancedGrid` 与 `balanceRows`，不得为单个模块复制 Header / Tab / 目录控制器，或增加固定数量布局与模块 ID CSS 补丁。
 - 共享 Header / Hero 的颜色、字体与交互状态只由 `globals.css` 的 `--fb-chrome-*`、`--fb-font-*` 和 `unified-module-reader.module.css` 管理。模块 CSS 不得覆盖这些 Token，不得用 `.page a` 等页面根裸标签规则重置共享外壳，也不得穿透 `data-module-hero="unified"`；新增系统性视觉问题时必须同步更新 `tests/design-language-contract.test.mjs`。
 - 知识页面默认匿名可读，不引入 Login、个人会话或用户状态依赖；本仓库是源文件与必要资产的唯一事实源，不依赖临时目录、本机绝对路径或部署产物。
 - 图、卡、表、案例、问答和来源均按知识需要决定数量；不为排版凑数，也不以交付包大小为理由删减概念、边界或证据。
@@ -59,7 +59,7 @@
 ## 模块批次打磨
 
 - 批次计划只维护在 `knowledge/module-polish/plan.json`，并由 `npm run module:polish:validate` 与 `app/module-publication.mjs` 的实时模块集合校验；它只负责调度，不得成为第二份模块注册表。
-- 启动下一批前运行 `npm run module:polish -- prepare next`；恢复未完成批次先运行 `status`，再按已有批次 ID 继续。每批并行模块不超过三个，具体数量由复杂度和共享文件冲突决定。
+- 启动下一批前运行 `npm run module:polish -- prepare next`；恢复未完成批次先运行 `status`，再按已有批次 ID 继续。每批的模块范围与并行度由复杂度、共享文件冲突和可用审查能力决定，不设数字硬上限。
 - 模块 Sub-agent 默认只读，分别返回机制、边界、证据、重复项、双语和文件影响工作包；公开正文、共享注册表、术语、Reference、Claims、测试、审校记录、Git 与 Sites 只由批次主 Agent 串行整合。
 - 同一批次必须冻结 Git 基线、计划摘要和关键文件摘要；工作区存在未纳入本批次的改动、基线漂移、来源冲突、责任归属不清或稳定 ID/日期异常时立即暂停，不得自动 stash、reset、覆盖或扩展范围。
 - 每批依次通过并行只读研究、证据门、单写者整合、独立英文审查、定向验证和全量门禁。上一批未进入已完成进度前，不启动下一批写入。

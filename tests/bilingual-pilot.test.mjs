@@ -9,12 +9,9 @@ import { englishModuleRegistry, englishQuestions, englishSourceCopy, englishTerm
 import { englishRepresentationAssessment } from "../app/i18n/english-representation-assessment.mjs";
 import {
   buildEnglishSectionGroups,
-  focusedEnglishModuleSlugs,
-  focusedSectionRoleOrder,
   selectVisibleEnglishEvidenceCards,
   selectVisibleEnglishQuestions,
   selectVisibleEnglishSectionGroups,
-  sharedSectionRoleOrder,
 } from "../app/i18n/english-section-outline.mjs";
 import { englishModuleSlugs } from "../app/i18n/locale-config.mjs";
 import { moduleBriefs } from "../app/module-brief-content.mjs";
@@ -726,41 +723,45 @@ test("English module pages render the canonical knowledge view before the shared
 test("English content representation is assessed block by block without a visual quota", () => {
   assert.deepEqual(Object.keys(englishRepresentationAssessment).sort(), [...englishModuleSlugs].sort());
 
-  for (const [slug, module] of Object.entries(englishModuleRegistry)) {
-    const expectedBlockCount = module.sections.reduce((total, section) => total + section.blocks.length, 0);
+  for (const [slug, englishModule] of Object.entries(englishModuleRegistry)) {
+    const expectedBlockCount = englishModule.sections.reduce((total, section) => total + section.blocks.length, 0);
     const assessment = englishRepresentationAssessment[slug];
     assert.equal(assessment.blocks.length, expectedBlockCount, `${slug} must assess every English content block`);
     assert.equal(
       assessment.blocks.filter((block) => block.representation === "editorial-steps").length,
-      module.sections.flatMap((section) => section.blocks).filter((block) => block.type === "steps").length - assessment.visualStepCount,
+      englishModule.sections.flatMap((section) => section.blocks).filter((block) => block.type === "steps").length - assessment.visualStepCount,
       `${slug} must keep non-relational step content as readable prose`,
     );
   }
 });
 
-test("shared English sidebars preserve the canonical reading-role order", async () => {
+test("shared English readers preserve every authored section in authored order without a role quota", async () => {
   for (const slug of englishModuleSlugs.filter((moduleSlug) => !hasDedicatedModule(moduleSlug))) {
-    const roles = buildEnglishSectionGroups(englishModuleRegistry[slug]).map((group) => group.role);
-    const expectedRoles = focusedEnglishModuleSlugs.includes(slug) ? focusedSectionRoleOrder : sharedSectionRoleOrder;
-    let previousRoleIndex = -1;
-    for (const role of expectedRoles) {
-      const roleIndex = roles.indexOf(role);
-      assert.ok(roleIndex >= 0, `${slug} must retain the ${role} reading role`);
-      assert.ok(roleIndex > previousRoleIndex, `${slug} must preserve the canonical reading-role order`);
-      previousRoleIndex = roleIndex;
+    const englishModule = englishModuleRegistry[slug];
+    const groups = buildEnglishSectionGroups(englishModule);
+    assert.deepEqual(
+      groups.flatMap((group) => group.sections).map((section) => section.id),
+      englishModule.sections.map((section) => section.id),
+      `${slug} must retain every authored section in its authored order`,
+    );
+    assert.equal(new Set(groups.map((group) => group.id)).size, groups.length, `${slug} needs stable, non-duplicated reader anchors`);
+    for (const group of groups) {
+      assert.ok(group.label.trim(), `${slug} group ${group.id} needs a readable label`);
+      assert.ok(group.eyebrow.trim(), `${slug} group ${group.id} needs readable context`);
     }
   }
 
   const mcpGroups = buildEnglishSectionGroups(englishModuleRegistry.mcp);
-  const mcpGroupsByRole = buildUniqueMap(mcpGroups, (group) => group.role, "MCP reading group");
-  for (const role of ["principle", "decision", "deep", "cloud"]) {
-    const group = mcpGroupsByRole.get(role);
-    assert.ok(group?.label?.trim(), `MCP ${role} reading group needs a readable label`);
-  }
+  assert.deepEqual(
+    mcpGroups.flatMap((group) => group.sections).map((section) => section.id),
+    englishModuleRegistry.mcp.sections.map((section) => section.id),
+    "MCP must not lose or reorder authored argument sections",
+  );
 
   const englishModulePage = await readFile(new URL("../app/i18n/english-pilot-module-page.tsx", import.meta.url), "utf8");
-  assert.ok(englishModulePage.indexOf("visibleMainGroups.map") < englishModulePage.indexOf('id="evidence"'), "main reading roles must render before evidence");
-  assert.ok(englishModulePage.indexOf('id="evidence"') < englishModulePage.lastIndexOf("cloudGroups.map"), "evidence must render before cloud connections");
+  assert.ok(englishModulePage.indexOf("visibleSectionGroups.map") < englishModulePage.indexOf('id="evidence"'), "authored reading groups must render before evidence");
+  assert.doesNotMatch(englishModulePage, /visibleMainGroups|cloudGroups/, "reader must not reorder content around a fixed cloud role");
+  assert.match(englishModulePage, /configuredModeByGroupId\.get\(group\.id\) \?\? "learn"/, "unconfigured authored groups must remain readable in Systematic study");
 });
 
 test("a dedicated focused English module keeps its complete authored reader instead of a preview", () => {
@@ -772,10 +773,6 @@ test("a dedicated focused English module keeps its complete authored reader inst
 
   const mcp = englishModuleRegistry.mcp;
   const visibleMcpGroups = selectVisibleEnglishSectionGroups(mcp);
-  const visibleMcpRoles = visibleMcpGroups.map((group) => group.role);
-  for (const role of ["decision", "deep", "cloud"]) {
-    assert.ok(visibleMcpRoles.includes(role), `MCP preview must retain its ${role} argument`);
-  }
   const authoredMcpGroupIds = new Set(buildEnglishSectionGroups(mcp).map((group) => group.id));
   assert.ok(visibleMcpGroups.every((group) => authoredMcpGroupIds.has(group.id)), "MCP preview groups must project from the authored reader");
   const visibleMcpEvidence = selectVisibleEnglishEvidenceCards(mcp);

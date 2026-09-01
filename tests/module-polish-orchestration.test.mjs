@@ -281,14 +281,23 @@ test("module polish plan covers every live module exactly once", async () => {
   );
 });
 
-test("batch order is contiguous, dependency-safe, and capped at three modules", async () => {
-  const plan = await readJson("knowledge/module-polish/plan.json");
+test("batch order is contiguous and dependency-safe", async () => {
+  const [plan, schema] = await Promise.all([
+    readJson("knowledge/module-polish/plan.json"),
+    readJson("knowledge/schemas/module-polish-plan.schema.json"),
+  ]);
   const batchIds = new Set(plan.batches.map((batch) => batch.id));
+
+  assert.equal(
+    schema.properties.batches.items.properties.modules.maxItems,
+    undefined,
+    "module-polish batches must not impose an arbitrary module-count cap",
+  );
 
   assert.equal(batchIds.size, plan.batches.length, "batch IDs must be unique");
   plan.batches.forEach((batch, index) => {
     assert.equal(batch.order, index, `batch ${batch.id} must retain contiguous order`);
-    assert.ok(batch.modules.length >= 1 && batch.modules.length <= 3, `${batch.id} must contain one to three modules`);
+    assert.ok(batch.modules.length >= 1, `${batch.id} must contain at least one module`);
 
     if (index === 0) {
       assert.deepEqual(batch.dependsOn, [], "the calibration batch must not depend on another batch");
@@ -363,6 +372,36 @@ test("the live CLI validates the repository plan", async () => {
     result.stdout.trim(),
     `module-polish valid: ${plan.batches.length} batches, ${moduleCount} modules`,
   );
+});
+
+test("validate permits a batch with more than three modules when sequencing and coverage are valid", async (t) => {
+  const fixtureRoot = await createFixture(t);
+  const planPath = path.join(fixtureRoot, "knowledge/module-polish/plan.json");
+  const progressPath = path.join(fixtureRoot, "knowledge/module-polish/progress.json");
+  const [planSource, progressSource] = await Promise.all([
+    readFile(planPath, "utf8"),
+    readFile(progressPath, "utf8"),
+  ]);
+  const plan = JSON.parse(planSource);
+  const progress = JSON.parse(progressSource);
+
+  plan.batches[1].modules.push("evaluation", "mcp");
+  progress.batches[1].modules.push(
+    { slug: "evaluation", status: "planned", note: null },
+    { slug: "mcp", status: "planned", note: null },
+  );
+  await Promise.all([
+    writeJson(planPath, plan),
+    writeJson(progressPath, progress),
+    writeFile(
+      path.join(fixtureRoot, "app/module-publication.mjs"),
+      'export const publishedModuleSlugs = Object.freeze(["rag", "llm", "data-engineering", "evaluation", "mcp"]);\n',
+    ),
+  ]);
+
+  const result = runCli(fixtureRoot, ["validate"]);
+  assertSucceeded(result, "validate a four-module batch");
+  assert.equal(result.stdout.trim(), "module-polish valid: 2 batches, 5 modules");
 });
 
 test("validate refuses a plan reached through a symlink", async (t) => {

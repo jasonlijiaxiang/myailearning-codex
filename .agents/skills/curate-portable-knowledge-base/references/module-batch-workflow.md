@@ -37,7 +37,9 @@ required deployment.
 
 ## 4. Per-module read-only analysts
 
-Inside the batch task, spawn one bounded analyst per module, subject to concurrency.
+Inside the batch task, scope one bounded analyst per module where independent
+analysis is useful. Choose the module and analyst count from complexity,
+shared-file conflicts, and review capacity; never impose a numeric batch cap.
 Analysts may inspect the repository and browse primary sources, but must not edit,
 stage, commit, push, deploy, create worktrees, or own task state.
 

@@ -373,6 +373,27 @@ async function hasProjectFile(projectRoot, relativePath) {
   }
 }
 
+function localizationPublicationView(publication) {
+  if (publication.routeKind === "dedicated") return publication;
+  return {
+    ...publication,
+    contentContract: {
+      principle: ["机制速览"],
+      mechanism: ["方案判断"],
+      boundary: [publication.readingProfile === "focused" ? "重要边界" : "需要单独验证"],
+      cloud: ["云能力与责任"],
+      customer: ["客户问题"],
+    },
+  };
+}
+
+function localizationExtensionView(extensionView) {
+  if (!extensionView) return extensionView;
+  const localizedExtensionView = { ...extensionView };
+  delete localizedExtensionView.controlPlaneStepCodes;
+  return localizedExtensionView;
+}
+
 export async function loadLocalizationProject(projectRoot, {
   moduleSlugs = null,
   englishReferenceScope = "module",
@@ -439,15 +460,18 @@ export async function loadLocalizationProject(projectRoot, {
     const relatedModuleSlugs = [...new Set([slug, ...(brief?.relatedSlugs ?? [])])];
     const sharedExtensionView = extensionModule.moduleExtensionViews[slug] ?? null;
     const chineseExtensionView = chineseExtensionModule?.getChineseModuleExtensionView?.(slug) ?? sharedExtensionView;
+    const localizedPublication = localizationPublicationView(publication);
+    const localizedSharedExtensionView = localizationExtensionView(sharedExtensionView);
+    const localizedChineseExtensionView = localizationExtensionView(chineseExtensionView);
     const core = {
-      publication,
+      publication: localizedPublication,
       content,
       brief,
       curriculum,
       learning,
       terms,
       referenceModule: referenceModuleView,
-      extensionView: chineseExtensionView,
+      extensionView: localizedChineseExtensionView,
       canonicalModules: Object.fromEntries(relatedModuleSlugs.map((moduleSlug) => [moduleSlug, knowledgeMapModule.getModuleBySlug(moduleSlug)])),
     };
     // `legacy-focused` is never a reader setting. It lets provenance checks
@@ -491,12 +515,12 @@ export async function loadLocalizationProject(projectRoot, {
         : english.evidenceCards;
     const canonicalModuleSlugs = [...new Set([slug, ...(english.related ?? [])])];
     const englishPublication = {
-      slug: publication.slug,
-      path: publication.path,
-      routeKind: publication.routeKind,
-      visualProfile: publication.visualProfile,
-      readingProfile: publication.readingProfile ?? null,
-      knowledgeView: publication.knowledgeView ?? null,
+      slug: localizedPublication.slug,
+      path: localizedPublication.path,
+      routeKind: localizedPublication.routeKind,
+      visualProfile: localizedPublication.visualProfile,
+      readingProfile: localizedPublication.readingProfile ?? null,
+      knowledgeView: localizedPublication.knowledgeView ?? null,
     };
     const englishUpdatedAt = englishDatesModule?.getEnglishUpdatedAt(slug) ?? publication.updatedAt ?? null;
     const englishEffective = {
@@ -507,7 +531,7 @@ export async function loadLocalizationProject(projectRoot, {
       ...(sharedEnglishReferenceHash ? { sharedReferenceDirectoryHash: sharedEnglishReferenceHash } : {}),
       sharedRendererHash: englishRendererHash,
       rendererDependencyFiles: enRendererFiles,
-      extensionView: sharedExtensionView,
+      extensionView: localizedSharedExtensionView,
       canonicalModules: Object.fromEntries(canonicalModuleSlugs.map((moduleSlug) => [moduleSlug, knowledgeMapModule.getModuleBySlug(moduleSlug)])),
       visibleProjection: {
         sectionGroupIds: visibleSectionGroups.map((group) => group.id),

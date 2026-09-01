@@ -10,7 +10,7 @@
 - `validationMode`：`teaching-blueprint`
 - 场景版本：`s4-claim-intake-blueprint-v1`（冻结于 4A receipt）
 - 前置 receipt：`stage-4a`
-- 处理模块：Solution Patterns（主蓝图）、AI Governance、Security（最多三个模块）
+- 处理模块：Solution Patterns（主蓝图）、AI Governance、Security（本批范围）
 
 ## 2. 主蓝图
 

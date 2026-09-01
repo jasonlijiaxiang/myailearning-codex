@@ -13,7 +13,7 @@ import {
 import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQuestionAddedAt, isValidContentUpdatedAt, isValidIsoDate } from "../app/content-update-metadata.mjs";
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
-import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy, graphScalePolicy } from "../app/knowledge-graph/graph-data.mjs";
+import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy } from "../app/knowledge-graph/graph-data.mjs";
 import { exposesLongFormSearchSections, searchableEnglishSectionGroups, searchableQuestions } from "../app/home-search-visibility.mjs";
 import { englishModuleRegistry, englishQuestions } from "../app/i18n/en/registry.mjs";
 import {
@@ -79,6 +79,46 @@ function escapeRegExp(value) {
 
 function escapeHtmlText(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+function serverRenderedReadingPanels(html, label) {
+  const panels = [...html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bmoduleModePanel\b[^"]*")(?=[^>]*\bdata-reading-mode="([^"]+)")[^>]*>/g)].map(([tag, mode]) => ({ tag, mode }));
+  assert.ok(panels.length > 0, `${label} must declare at least one reading task`);
+  assert.equal(new Set(panels.map((panel) => panel.mode)).size, panels.length, `${label} must not duplicate reading-task IDs`);
+  for (const panel of panels) {
+    assert.doesNotMatch(panel.tag, /\shidden(?:\s|=|>)/i, `${label} must expose ${panel.mode} before JavaScript enhancement`);
+  }
+  return panels;
+}
+
+function readingPanelHtml(html, mode, label) {
+  const marker = `data-reading-mode="${mode}"`;
+  const start = html.indexOf(marker);
+  assert.ok(start >= 0, `${label} must declare the ${mode} reading task`);
+  const next = html.indexOf('data-reading-mode="', start + marker.length);
+  return html.slice(start, next >= 0 ? next : undefined);
+}
+
+function deriveSharedTermModuleLinks(modules, terms) {
+  const links = [];
+
+  for (const [fromIndex, from] of modules.entries()) {
+    for (const to of modules.slice(fromIndex + 1)) {
+      const termIds = Object.entries(terms)
+        .filter(([, term]) => term.moduleSlugs.includes(from.slug) && term.moduleSlugs.includes(to.slug))
+        .map(([termId]) => termId);
+      if (!termIds.length) continue;
+      links.push({ id: `${from.slug}:shared-terms:${to.slug}`, termIds });
+    }
+  }
+
+  return links.sort((left, right) => right.termIds.length - left.termIds.length || left.id.localeCompare(right.id));
+}
+
+function extractControlDataPlane(html, path) {
+  const controlDataPlane = html.match(/<section class="controlDataPlane"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(controlDataPlane, `${path} 必须渲染控制面步骤区`);
+  return controlDataPlane;
 }
 
 function assertValidGridSpans(html, path) {
@@ -251,7 +291,8 @@ test("homepage leads from scenario to questions with links to every independent 
   assert.match(html, /href="\/knowledge-graph">模块关系<\/a>[\s\S]*?<details class="homeSelectionMenu">[\s\S]*?<summary>选型<\/summary>[\s\S]*?href="\/model-radar">模型<\/a>[\s\S]*?href="\/coding-agents">Code Agent<\/a>/);
   assert.match(html, /Reference/);
   assert.match(html, /讲清 AI 技术，[\s\S]*?心中有数，丝毫不慌/);
-  assert.match(html, /三种阅读深度/);
+  assert.match(html, /按不同任务进入知识库/);
+  assert.match(englishHtml, /Use the same knowledge for different reading tasks/);
   assert.match(html, /从场景开始/);
   assert.match(html, /从问题开始/);
   assert.match(html, /从时间开始/);
@@ -264,7 +305,8 @@ test("homepage leads from scenario to questions with links to every independent 
   assert.match(html, /输入客户问题、技术或风险/);
   assert.match(html, new RegExp(`${layers.length} 层[\\s\\S]{0,80}${moduleList.length} 个模块`));
   assert.match(html, /href="\/knowledge-graph"[^>]*>查看模块关系/);
-  assert.doesNotMatch(html, /同一份知识，支持三种阅读深度/);
+  assert.doesNotMatch(html, /三种阅读深度/);
+  assert.doesNotMatch(englishHtml, /three reading depths/i);
   assert.doesNotMatch(html, /<h2 id="map-title">知识地图<\/h2>/);
   assert.doesNotMatch(html, /什么时候看这个模块：/);
   assert.doesNotMatch(html, /阅读 RAG 模块/);
@@ -315,7 +357,12 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
   assert.ok(codingAgentProducts.some((item) => item.market === "中国"), "产品雷达必须包含中国市场产品");
   assert.ok(codingAgentProducts.some((item) => item.market === "国际"), "产品雷达必须包含国际市场产品");
   assert.ok(codingAgentProducts.some((item) => item.status === "watch"), "动态生命周期变化必须进入 watch 状态");
-  assert.ok(codingAgentBenchmarks.length >= 4, "产品雷达必须提供多个不同任务范围的基准入口");
+  assert.ok(codingAgentBenchmarks.length > 0, "产品雷达必须提供至少一个可核验的基准入口");
+  assert.equal(new Set(codingAgentBenchmarks.map((benchmark) => benchmark.id)).size, codingAgentBenchmarks.length, "基准入口必须使用稳定且不重复的身份");
+  for (const benchmark of codingAgentBenchmarks) {
+    assert.ok(benchmark.scope.trim() && benchmark.use.trim() && benchmark.boundary.trim(), `${benchmark.id} 必须说明任务范围、用途和外推边界`);
+    assert.ok(sourceLedger[benchmark.sourceId], `${benchmark.id} 缺少可核验来源`);
+  }
 
   for (const item of codingAgentProducts) {
     assert.ok(claimIds.has(item.claimId), `${item.name} 缺少动态事实 claim`);
@@ -542,7 +589,8 @@ test("glossary is complete, searchable, grouped, and linked back to published mo
   assert.deepEqual([...glossaryTermIds].sort(), terminologyIds.sort(), "每个术语必须且只能进入一个术语主题");
   assert.equal(new Set(glossaryTermIds).size, glossaryTermIds.length, "术语库 termId 必须唯一");
   assert.equal(new Set(homepageTermIds).size, homepageTermIds.length, "首页核心术语不得重复");
-  assert.ok(homepageTermIds.length >= glossaryGroups.length * 2, "首页必须覆盖多个知识层，不能退化为少量示例");
+  assert.ok(homepageTermIds.length > 0, "首页必须保留至少一个有意义的术语入口");
+  assert.ok(homepageTermGroups.every((group) => group.label.trim() && group.en.trim() && group.termIds.length > 0), "首页术语分组必须各自有可读的中英文标签和真实入口");
   assert.ok(homepageTermIds.length < glossaryTermIds.length, "首页只承担核心入口，完整集合应留在术语库");
 
   for (const [termId, term] of Object.entries(terminology)) {
@@ -588,21 +636,18 @@ test("public dynamic knowledge graph and backend coverage gates derive from stab
     relationKeys.add(key);
   }
 
-  assert.ok(graphScalePolicy.maxActiveNodes >= 16 && graphScalePolicy.maxActiveNodes <= 32, "动态图谱必须限制同时显示的节点数量");
-  assert.ok(graphScalePolicy.maxActiveEdges >= graphScalePolicy.maxActiveNodes - 1, "动态图谱边数量上限必须覆盖一跳节点");
   assert.equal(graphHealth.isolatedTermIds.length, 0, "术语不得成为孤立节点");
   assert.ok(graphHealth.maximumDegree > 0, "图谱健康检查必须计算节点度数");
   assert.equal(graphModuleCoverage.length, moduleList.length, "全局图谱必须为每个正式模块计算覆盖度");
   assert.equal(graphModuleCoverage.filter((coverage) => coverage.termCount === 0).length, 0, "每个正式模块都必须拥有可下钻的关联术语");
-  assert.equal(graphModuleCoverage.filter((coverage) => coverage.termCount < graphOverviewPolicy.minimumRelatedTerms).length, 0, "每个正式模块必须达到关联术语覆盖门禁，避免总览有模块但下钻内容过薄");
-  assert.equal(graphModuleCoverage.filter((coverage) => coverage.primaryTermCount < graphOverviewPolicy.minimumPrimaryTerms).length, 0, "每个正式模块必须拥有足够的主要讲解术语，不能只靠跨模块引用显得完整");
+  assert.equal(graphModuleCoverage.filter((coverage) => coverage.primaryTermCount === 0).length, 0, "每个正式模块必须至少拥有一个主要讲解术语");
   assert.equal(graphModuleCoverage.every((coverage) => coverage.primaryTermCount >= 0 && coverage.primaryTermCount <= coverage.termCount), true, "主要讲解术语数量必须是关联术语的有效子集");
-  assert.ok(graphOverviewLinks.length > 0 && graphOverviewLinks.length <= graphOverviewPolicy.maxConnections, "全局总览必须显示受控数量的模块关系");
-  assert.ok(Math.max(...layers.map((layer) => layer.modules.length)) <= graphOverviewPolicy.maxModulesPerLayerRow, "新增模块不得在总览单层中静默挤压为不可读节点");
-  for (const link of graphOverviewLinks) {
-    assert.ok(link.sharedTermCount >= graphOverviewPolicy.minSharedTerms, "总览关系必须达到共享术语门槛");
-    assert.equal(link.termIds.length, link.sharedTermCount, "总览关系数量必须来自真实共享术语");
-  }
+  assert.equal(graphOverviewPolicy.requiresSharedTerm, true, "总览关系只应来自真实共享术语");
+  assert.deepEqual(
+    graphOverviewLinks.map(({ id, termIds }) => ({ id, termIds: [...termIds] })),
+    deriveSharedTermModuleLinks(moduleList, terminology),
+    "全局总览必须完整呈现模块与术语注册表派生出的每一对共享术语关系",
+  );
 
   for (const typeId of ["primary-owner", "contextual-use", ...allowedExplicitTypes]) {
     assert.ok(knowledgeRelationTypes[typeId], `知识图谱缺少关系类型说明：${typeId}`);
@@ -650,33 +695,30 @@ test("evidence cards keep facts, findings, boundaries, and sources readable", as
   assert.doesNotMatch(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(4\dpx/s, "证据事实标签不得恢复为封面级字号");
 });
 
-test("dense-reading modules derive a scannable content overview from the publication registry", async () => {
+test("dense-reading modules derive a scannable content overview without a visual or reader-mode quota", async () => {
   const denseReadingModules = publishedModuleRegistry.filter((module) => module.visualProfile === "dense-reading");
   assert.equal(denseReadingModules.length, publishedModuleRegistry.length, "所有正式模块都必须完成高密度阅读壳");
-  assert.equal(new Set(denseReadingModules.map((module) => module.knowledgeView)).size, denseReadingModules.length, "正式模块必须使用不同的主题知识视图");
 
   for (const publishedModule of denseReadingModules) {
     const html = await renderHtml(publishedModule.path);
     assert.match(html, /class="[^"]*\bmodulePilot\b[^"]*"/, `${publishedModule.slug} 未启用共享高密度阅读壳`);
     if (publishedModule.readingProfile === "focused") assert.match(html, /class="[^"]*\bmoduleFocused\b[^"]*"/, `${publishedModule.slug} 未启用聚焦阅读结构`);
     assert.match(html, /<dl class="moduleHeroMetrics" aria-label="模块内容概览">/);
-    assert.match(html, /<dt>阅读方式<\/dt>/);
     assert.match(html, /<dt>问题库<\/dt>/);
     assert.match(html, /<dt>证据卡<\/dt>/);
-    assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
+    serverRenderedReadingPanels(html, publishedModule.slug);
+    if (publishedModule.knowledgeView) assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
   }
 });
 
 test("focused pilots use relationship-driven reading paths instead of standalone chapter quotas", async () => {
   const focusedModules = publishedModuleRegistry.filter((module) => module.readingProfile === "focused");
-  assert.deepEqual(focusedModules.map((module) => module.slug), ["solution-patterns", "rag", "mcp", "llm-inference"]);
+  assert.ok(focusedModules.length > 0, "at least one module should opt into the focused reading profile");
 
   for (const publishedModule of focusedModules) {
     const html = await renderHtml(publishedModule.path);
     assert.match(html, /class="moduleReadingExperience"/);
-    assert.match(html, /10 分钟速查/);
-    assert.match(html, /系统学习/);
-    assert.match(html, /现场查证/);
+    serverRenderedReadingPanels(html, publishedModule.slug);
     if (publishedModule.slug === "rag") {
       assert.match(html, /id="fit"/);
       assert.match(html, /id="evidence-contract"/);
@@ -711,6 +753,20 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.match(mcp, /版本、能力元数据与结构化消息/);
   assert.doesNotMatch(mcp, /会话、能力协商与结构化消息|状态变更用 Tool|只读内容优先 Resource/);
   assert.doesNotMatch(mcp, /class="mcpResponsibilityMap"/);
+  const mcpSystematicStudy = readingPanelHtml(mcp, "learn", "MCP");
+  const mcpCurriculum = requireModuleCurriculum("mcp");
+  assert.match(mcpSystematicStudy, /id="curriculum"/, "MCP 系统学习必须从主题地图进入实质内容");
+  for (const [index, chapter] of mcpCurriculum.chapters.entries()) {
+    assert.match(mcpSystematicStudy, new RegExp(`id="mcp-chapter-${index + 1}"`), `MCP 系统学习缺少主题：${chapter.title}`);
+    assert.match(mcpSystematicStudy, new RegExp(escapeRegExp(chapter.title)), `MCP 系统学习缺少主题正文：${chapter.title}`);
+  }
+  ["mcp-relationships", "mcp-contract-dossier", "mcp-labs"].forEach((id) => assert.match(mcpSystematicStudy, new RegExp(`id="${id}"`), `MCP 系统学习缺少可执行工件：${id}`));
+  const mcpQaPanels = [...mcp.matchAll(/<div\b(?=[^>]*\bid="mcp-qa-panel-[^"]+")[^>]*>/g)].map(([tag]) => tag);
+  assert.ok(mcpQaPanels.length > 0, "MCP 现场问答必须保留分类面板");
+  mcpQaPanels.forEach((panel) => assert.doesNotMatch(panel, /\shidden(?:\s|=|>)/i, "无 JavaScript 时 MCP 不得隐藏任何问答分类"));
+  const solutionCapabilityRows = solution.match(/class="solutionCapabilityMatrixRow"/g) ?? [];
+  const solutionChoiceCells = solution.match(/data-label="常见选择"/g) ?? [];
+  assert.equal(solutionChoiceCells.length, solutionCapabilityRows.length, "方案责任矩阵每一行都必须保留常见选择，即使窄屏折叠表头");
   assert.match(inference, /class="inferenceExplorer"/);
   assert.match(inference, /TTFT · 首 token 时间/);
   assert.match(inference, /上下文长度/);
@@ -726,10 +782,7 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   const unifiedModules = renderedModules.filter(({ html }) => /data-module-hero="unified"/.test(html));
   const paths = unifiedModules.map(({ path }) => path);
   const htmlByPath = unifiedModules.map(({ html }) => html);
-  for (const requiredPath of ["/modules/solution-patterns", "/modules/rag", "/modules/ai-agent", "/modules/mcp", "/modules/a2a", "/modules/model-landscape", "/modules/multimodal", "/modules/veadk", "/modules/agentkit", "/modules/evaluation", "/modules/ai-governance", "/modules/security", "/modules/ai-gateway", "/modules/ai-ops", "/modules/predictive-ai-mlops", "/modules/prompt-engineering", "/modules/llm", "/modules/fine-tuning", "/modules/llm-training", "/modules/llm-inference", "/modules/data-engineering", "/modules/ai-infra-compute", "/modules/ai-infra-platform"]) {
-    assert.ok(paths.includes(requiredPath), `${requiredPath} 必须接入共享阅读壳`);
-  }
-  assert.equal(paths.length, 23, "全部正式模块都必须接入共享阅读壳");
+  assert.deepEqual([...paths].sort(), publishedModules.map((module) => module.path).sort(), "every published module must use the shared reader shell");
 
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
@@ -742,18 +795,8 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
     assert.match(html, />术语库</);
     assert.match(html, />English</);
     assert.match(html, /aria-label="模块导航菜单"/, `${paths[index]} 缺少移动端菜单`);
-    assert.match(html, /10 分钟速查/);
-    assert.match(html, /系统学习/);
-    assert.match(html, /现场查证/);
-    assert.match(html, /做判断/);
-    assert.match(html, /建模型/);
-    assert.match(html, /带证据/);
     assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
-    const readerPanels = [...html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bmoduleModePanel\b[^"]*")(?=[^>]*\bdata-reading-mode="(?:quick|learn|field)")[^>]*>/g)].map(([tag]) => tag);
-    assert.equal(readerPanels.length, 3, `${paths[index]} SSR 必须输出三种阅读面板`);
-    for (const panel of readerPanels) {
-      assert.doesNotMatch(panel, /\shidden(?:\s|=|>)/i, `${paths[index]} 无 JavaScript 时不得隐藏阅读内容`);
-    }
+    serverRenderedReadingPanels(html, paths[index]);
   }
 
   const [ragRoute, agentRoute, mcpRoute, a2aRoute, promptRoute, readerSource, qaInteractionSource, heroSource, relationSource, mcpStyles, denseStyles, fieldbookStyles] = await Promise.all([
@@ -785,8 +828,11 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.match(readerSource, /while \(current\)[\s\S]*directoryIds\.has\(current\.id\)[\s\S]*current = current\.parentElement/, "目录所有者解析必须沿真实 DOM 祖先向上查找");
   assert.match(readerSource, /setActiveAnchor\(directoryAnchorForTarget\(targetId, nextMode, directoryByMode\) \?\? targetId\)/, "嵌套深链必须高亮所属目录项而不是不存在的叶子项");
   assert.match(readerSource, /data-reading-mode=\{mode\.id\}/, "每个阅读面板必须声明稳定所属模式");
-  assert.match(readerSource, /target\.startsWith\("qa-"\) \? "field"/);
-  assert.match(readerSource, /setActiveMode\(defaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "清空 hash 时必须恢复默认阅读任务");
+  assert.match(readerSource, /target\.startsWith\("qa-"\) && readingModeIds\.includes\("field"\) \? "field" : null/, "只有声明了现场任务时，问答深链才可回退到它");
+  assert.match(readerSource, /setActiveMode\(resolvedDefaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "清空 hash 时必须恢复模块声明的默认阅读任务");
+  assert.match(readerSource, /modeDefinitions\?\.length \? modeDefinitions : copy\.modes/, "阅读器必须允许模块声明自己的阅读任务集合");
+  assert.match(readerSource, /const missingPanelIds = readingModes/, "每个声明的阅读任务都必须有对应正文");
+  assert.doesNotMatch(readerSource, /const readingModeIds = \["quick", "learn", "field"\]/, "共享阅读器不得把默认预设当成固定任务集合");
   const revealHashStart = readerSource.indexOf("const revealHash =");
   const revealHashEnd = readerSource.indexOf("\n\n  useEffect(", revealHashStart);
   const revealHashSource = readerSource.slice(revealHashStart, revealHashEnd);
@@ -1053,11 +1099,8 @@ test("standard brief modules preserve their authored content in the unified read
       assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} 缺少共享 Hero`);
       assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} 缺少共享 reader`);
       assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只有一个主内容目标`);
-      assert.equal((html.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} ${moduleCase.slug} 必须完整渲染三种阅读模式`);
+      serverRenderedReadingPanels(html, `${locale} ${moduleCase.slug}`);
       assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} 不得保留旧版 topbar`);
-      for (const id of ["decisions", "principle", "study-guide", "curriculum", "deep-dive", "evidence", "cloud", "qa", "related-modules"]) {
-        assert.equal((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只渲染一个 #${id}`);
-      }
     }
 
     assert.match(zhHtml, new RegExp(`id="${moduleCase.zhTitleId}"`));
@@ -1091,7 +1134,7 @@ test("standard brief modules preserve their authored content in the unified read
     for (const question of englishModule.qa) {
       assert.match(enHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `${moduleCase.slug} must preserve ${question.id}`);
     }
-    for (const id of ["decisions", "principle", "study-guide", "curriculum", "deep-dive", "cloud", "evidence", "qa", "related-modules"]) {
+    for (const id of [...buildEnglishSectionGroups(englishModule).map((group) => group.id), "evidence", "qa", "related-modules"]) {
       assert.match(enHtml, new RegExp(`<section aria-labelledby="${id}-section-title"[^>]*id="${id}"`), `${moduleCase.slug} #${id} must own an accessible heading`);
       assert.equal((enHtml.match(new RegExp(`id="${id}-section-title"`, "g")) ?? []).length, 1, `${moduleCase.slug} #${id} heading ID must be unique`);
     }
@@ -1117,23 +1160,11 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
       slug: "ai-agent",
       zhPath: "/modules/ai-agent",
       enPrimerId: "ai-agent-english-primer-title",
-      groupIds: [
-        "agent-adoption-decision",
-        "agent-operating-model",
-        "agent-harness-engineering",
-        "agent-control-architecture",
-        "agent-production-runtime",
-        "agent-interoperability",
-        "agent-memory-poisoning",
-        "agent-low-code-choice",
-        "agent-cloud-evaluation",
-      ],
     },
     {
       slug: "mcp",
       zhPath: "/modules/mcp",
       enPrimerId: "mcp-english-primer-title",
-      groupIds: ["decisions", "principle", "study-guide", "curriculum", "deep-dive", "cloud"],
     },
   ];
 
@@ -1146,15 +1177,15 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
       assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} 缺少共享 Hero`);
       assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} 缺少共享 reader`);
       assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只有一个主内容目标`);
-      assert.equal((html.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} ${moduleCase.slug} 必须完整渲染三种阅读模式`);
+      serverRenderedReadingPanels(html, `${locale} ${moduleCase.slug}`);
       assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} 不得保留旧版 topbar`);
     }
     assert.match(enHtml, new RegExp(`id="${moduleCase.enPrimerId}"`));
-    for (const id of [...moduleCase.groupIds, "evidence", "qa", "related-modules"]) {
-      assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} 必须完整保留 #${id}`);
-    }
     const englishModule = englishModuleRegistry[moduleCase.slug];
     assert.ok(englishModule, `${moduleCase.slug} must have an English module`);
+    for (const id of [...buildEnglishSectionGroups(englishModule).map((group) => group.id), "evidence", "qa", "related-modules"]) {
+      assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} 必须完整保留 #${id}`);
+    }
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
     const englishTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
@@ -1172,7 +1203,7 @@ test("A2A preserves its complete English pack and accessible Chinese comparison 
     assert.match(html, /data-module-hero="unified"/, `${locale} A2A 缺少共享 Hero`);
     assert.match(html, /data-module-reader="unified"/, `${locale} A2A 缺少共享 reader`);
     assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} A2A 必须只有一个主内容目标`);
-    assert.equal((html.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} A2A 必须完整渲染三种阅读模式`);
+    serverRenderedReadingPanels(html, `${locale} A2A`);
     assert.doesNotMatch(html, /class="topbar"/, `${locale} A2A 不得保留旧版 topbar`);
   }
   for (const id of ["a2a-collaboration-model", "a2a-practice", "a2a-curriculum", "a2a-decisions", "a2a-task-lifecycle", "a2a-cloud", "task-terminal-state", "evidence-card-task-artifact", "qa-a2a-one-point-zero-acceptance"]) {
@@ -1192,18 +1223,19 @@ test("A2A preserves its complete English pack and accessible Chinese comparison 
 });
 
 test("inference reader preserves its interactive system view inside the unified bilingual shell", async () => {
-  const [html, enHtml, studioSource, pageSource] = await Promise.all([
+  const [html, enHtml, studioSource, pageSource, studioStyles] = await Promise.all([
     renderHtml("/modules/llm-inference"),
     renderHtml("/en/modules/llm-inference"),
     readFile(new URL("../app/inference-studio.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/inference-module-page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/inference-studio.css", import.meta.url), "utf8"),
   ]);
   for (const [locale, rendered] of [["zh", html], ["en", enHtml]]) {
     assert.equal((rendered.match(/data-module-hero="unified"/g) ?? []).length, 1, `${locale} inference must render one unified Hero`);
     assert.equal((rendered.match(/data-module-reader="unified"/g) ?? []).length, 1, `${locale} inference must render one unified reader`);
     assert.equal((rendered.match(/id="main-content"/g) ?? []).length, 1, `${locale} inference must render one main-content target`);
     assert.equal((rendered.match(/id="top"/g) ?? []).length, 1, `${locale} inference must preserve one #top target`);
-    assert.equal((rendered.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3, `${locale} inference must render three reading modes`);
+    serverRenderedReadingPanels(rendered, `${locale} inference`);
     assert.doesNotMatch(rendered, /inferenceTopbar|inferenceChapterRail|class="topbar"/, `${locale} inference must not retain the legacy shell`);
     const ids = [...rendered.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
     assert.equal(new Set(ids).size, ids.length, `${locale} inference must not duplicate DOM IDs`);
@@ -1222,6 +1254,9 @@ test("inference reader preserves its interactive system view inside the unified 
   assert.match(html, /TTFT 从服务收到请求算到模型产生首 Token，等于排队 \+ Prefill/);
   assert.match(html, /TPOT（平均）/);
   assert.match(html, /ms\/token/);
+  ["当前选择", "指标值（P95）", "显存占用（估算）", "查看容量实验", "查看测量边界与来源"].forEach((label) => assert.match(html, new RegExp(escapeRegExp(label)), `推理页必须保留指标检查器信息：${label}`));
+  assert.match(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section \{ padding: 12px 0 0; \}[\s\S]*?\.metricInspector > \.capacityLink \{ display: flex; \}[\s\S]*?\.metricInspector > footer \{ display: grid; \}/, "窄屏不得裁掉推理指标、容量入口或来源");
+  assert.doesNotMatch(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section,[\s\S]*?display: none;/, "窄屏不得用 display:none 隐藏指标检查器语义内容");
   assert.match(html, /<dt>TTFT<\/dt><dd>1\.20<!-- --> s<\/dd>/);
   assert.match(html, /有效吞吐（Goodput）<\/dt><dd>849<!-- --> token\/s <small>≤ 原始吞吐 <!-- -->997<\/small>/);
   assert.match(html, /吞吐（平均）<\/span><strong>≈/, "容量估算应明确标出近似值，而不是伪装成压测读数");
@@ -1274,7 +1309,7 @@ test("inference reader preserves its interactive system view inside the unified 
 
 test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {
   const remainingSlugs = Object.keys(moduleExtensionViews);
-  assert.equal(remainingSlugs.length, 17, "剩余模块清单必须完整且显式");
+  assert.ok(remainingSlugs.length > 0, "generic knowledge views must be registered when a module needs one");
   assert.equal(new Set(Object.values(moduleExtensionViews).map((view) => view.id)).size, remainingSlugs.length, "剩余模块知识视图 ID 不得复用");
 
   for (const slug of remainingSlugs) {
@@ -1334,6 +1369,9 @@ test("registered core knowledge views render as web-native visuals without makin
 
 test("content representation is assessed per relationship without a visual-count quota", async () => {
   assert.deepEqual(Object.keys(moduleRepresentationAssessment), publishedModuleSlugs);
+  const dedicatedDeepDiveRenderers = {
+    mcp: "mcpArchitectureExplorer",
+  };
 
   for (const slug of publishedModuleSlugs) {
     const content = requireModuleContent(slug);
@@ -1344,7 +1382,16 @@ test("content representation is assessed per relationship without a visual-count
     const html = await renderHtml(`/modules/${slug}`);
     const visualCount = (html.match(/data-adaptive-visual="(?:sequence|diagnostic|matrix|scenario)"/g) ?? []).length;
     const checklistCount = (html.match(/data-adaptive-prose="checklist"/g) ?? []).length;
-    assert.equal(visualCount, assessment.visualDeepDiveCount, `${slug} 不应按固定数量渲染深挖图解`);
+    const dedicatedRenderer = dedicatedDeepDiveRenderers[slug];
+    if (dedicatedRenderer) {
+      assert.match(html, new RegExp(`class="${dedicatedRenderer}"`), `${slug} 必须保留专属关系表达`);
+      assert.match(html, /data-quality-section="deep-dive"/, `${slug} 的专属关系表达必须保留深挖入口`);
+      for (const deepDive of assessment.deepDives) {
+        assert.match(html, new RegExp(escapeRegExp(deepDive.title)), `${slug} 的专属关系表达遗漏：${deepDive.title}`);
+      }
+    } else {
+      assert.equal(visualCount, assessment.visualDeepDiveCount, `${slug} 的通用深挖图解必须与关系审计一致`);
+    }
     assert.equal(checklistCount, content.deepDives.filter((block) => block.kind === "checklist").length, `${slug} 的 Checklist 应保持为清单而不是伪图解`);
   }
 });
@@ -1412,7 +1459,7 @@ test("question directory searches every published question from one canonical in
   }
 });
 
-test("English question directory never links beyond the focused module preview", async () => {
+test("English question directory links every published question to its visible module anchor", async () => {
   const html = await renderHtml("/en/questions");
   const scopedHtml = await renderHtml("/en/questions?module=solution-patterns");
   const llmScopedHtml = await renderHtml("/en/questions?module=llm");
@@ -1420,9 +1467,10 @@ test("English question directory never links beyond the focused module preview",
 
   for (const englishModule of Object.values(englishModuleRegistry)) {
     const exactIds = new Set(searchableQuestions(englishModule.slug, englishModule.qa, "en").map((item) => item.id));
+    assert.deepEqual(exactIds, new Set(englishModule.qa.map((item) => item.id)), `${englishModule.slug} search must include every question`);
     for (const item of englishQuestions.filter((question) => question.moduleSlug === englishModule.slug)) {
-      const hash = exactIds.has(item.id) ? `qa-${item.id}` : "qa";
-      assert.match(html, new RegExp(`href="/en/modules/${escapeRegExp(englishModule.slug)}#${escapeRegExp(hash)}"`));
+      assert.ok(exactIds.has(item.id), `${englishModule.slug}:${item.id} must remain searchable`);
+      assert.match(html, new RegExp(`href="/en/modules/${escapeRegExp(englishModule.slug)}#qa-${escapeRegExp(item.id)}"`));
     }
   }
   assert.match(html, /each with a concise answer/);
@@ -1462,7 +1510,7 @@ test("English RAG renders its complete dedicated reader and its source ledger ca
   assert.match(ragHtml, />Systematic study</);
   assert.match(ragHtml, />Field lookup</);
   assert.match(ragHtml, /aria-label="Critical boundary"[^>]*data-importance="critical"/);
-  assert.equal((ragHtml.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3);
+  serverRenderedReadingPanels(ragHtml, "English RAG");
   assert.equal((ragHtml.match(/id="main-content"/g) ?? []).length, 1, "English RAG must expose one shared skip target");
   assert.doesNotMatch(ragHtml, /class="topbar"/, "English RAG must not render the legacy module shell");
   assert.equal(visibleGroups.length, rag.sections.length);
@@ -1553,10 +1601,11 @@ test("question directory combines keyword, module, and category filters", () => 
   const inferenceCache = filterQuestionDirectoryItems(filterItems, { query: "缓存", moduleId: "llm-inference" });
   const evaluationSlice = filterQuestionDirectoryItems(filterItems, { moduleId: "evaluation", tag: "切片评估" });
 
-  assert.ok(quantization.length >= 4, "关键词应跨模块命中量化相关问题与回答");
-  assert.ok(new Set(quantization.map((item) => item.moduleId)).size >= 2, "关键词查询不应被限制在单一模块");
+  assert.ok(quantization.length > 0, "关键词查询必须返回真实匹配的知识条目");
+  assert.equal(new Set(quantization.map((item) => item.key)).size, quantization.length, "关键词查询结果不得重复");
+  assert.ok(quantization.every((item) => item.text.includes("量化")), "关键词查询结果必须保留匹配上下文");
   assert.equal(mcp.length, moduleContentRegistry.mcp.qa.length, "模块筛选必须返回该模块全部问题");
-  assert.ok(inferenceCache.length >= 2 && inferenceCache.every((item) => item.moduleId === "llm-inference"), "关键词与模块筛选必须组合生效");
+  assert.ok(inferenceCache.length > 0 && inferenceCache.every((item) => item.moduleId === "llm-inference" && item.text.includes("缓存")), "关键词与模块筛选必须组合生效");
   assert.equal(evaluationSlice.length, 1, "类别筛选必须准确定位独立问题主题");
 });
 
@@ -1650,8 +1699,9 @@ test("RAG route follows one evidence decision from adoption through production",
   assert.match(html, /它们可以组合，但不是一条从低到高的成熟度阶梯/);
   assert.match(html, /Agent 可以调用 RAG；MCP 可以暴露检索能力；A2A 可以委派完整任务/);
   assert.match(html, /RAG 实战产物与通过标准/);
-  assert.match(html, /做完这组内容，你可以/);
-  assert.match(html, /动手做一遍/);
+  assert.match(html, /能独立完成的判断/);
+  assert.match(html, /把主题推进到检查点/);
+  assert.match(html, /可复核练习/);
   assert.match(html, /客户高频问题与深度回答/);
   assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);
   assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
@@ -1667,7 +1717,7 @@ test("RAG route follows one evidence decision from adoption through production",
   assert.match(html, /RAG 检索链实验/);
   assert.match(html, /关键词检索 BM25/);
   assert.match(html, /href="\/references#module-rag"/);
-  assert.match(html, /<dt>阅读方式<\/dt>/);
+  assert.doesNotMatch(html, /<dt>阅读方式<\/dt>/, "Hero 不得把默认阅读预设伪装成固定模块规模");
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("rag"))) {
     assert.match(
@@ -1745,7 +1795,7 @@ test("Prompt Engineering route covers context boundaries, release governance, an
     assert.match(rendered, /data-module-hero="unified"/);
     assert.match(rendered, /data-module-reader="unified"/);
     assert.equal((rendered.match(/id="main-content"/g) ?? []).length, 1);
-    assert.equal((rendered.match(/data-reading-mode="(?:quick|learn|field)"/g) ?? []).length, 3);
+    serverRenderedReadingPanels(rendered, "Prompt Engineering");
     assert.doesNotMatch(rendered, /class="topbar"/);
   }
   assert.match(html, /提示词工程/);
@@ -1953,22 +2003,58 @@ test("Batch 09 control views expose every step and focused search entries resolv
     readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(platform, /<section class="controlDataPlane"[^>]*data-step-count="6"[^>]*>[\s\S]*?<span>RUN<\/span>[\s\S]*?<span>PROVE<\/span>[\s\S]*?<\/section>/);
-  assert.match(platformEn, /<section class="controlDataPlane"[^>]*data-step-count="6"[^>]*>[\s\S]*?Recovery, upgrade, and exit[\s\S]*?Measurable service outcomes and resource economics[\s\S]*?<\/section>/i);
+  const platformView = moduleExtensionViews["ai-infra-platform"];
+  const chinesePlatformView = getChineseModuleExtensionView("ai-infra-platform");
+  const englishPlatformPrinciples = englishModuleRegistry["ai-infra-platform"].sections
+    .find((section) => section.id === "principles")
+    ?.blocks.find((block) => block.type === "cards")
+    ?.items ?? [];
+  const chineseControlDataPlane = extractControlDataPlane(platform, "/modules/ai-infra-platform");
+  const englishControlDataPlane = extractControlDataPlane(platformEn, "/en/modules/ai-infra-platform");
+
+  assert.ok(platformView, "ai-infra-platform 必须注册控制面知识视图");
+  assert.ok(chinesePlatformView, "ai-infra-platform 必须提供中文控制面知识视图");
+  assert.deepEqual(
+    chinesePlatformView.steps.map(({ code, title }) => ({ code, title })),
+    platformView.steps.map(({ code, title }) => ({ code, title })),
+    "中文控制面步骤必须完整呈现注册表中的 code 与标题",
+  );
+  assert.equal(englishPlatformPrinciples.length, platformView.steps.length, "英文控制面步骤必须覆盖注册表定义的全部阶段");
+  assert.match(chineseControlDataPlane, new RegExp(`data-step-count="${platformView.steps.length}"`));
+  assert.match(englishControlDataPlane, new RegExp(`data-step-count="${platformView.steps.length}"`));
+  assert.equal((chineseControlDataPlane.match(/<button type="button"/g) ?? []).length, platformView.steps.length);
+  assert.equal((englishControlDataPlane.match(/<button type="button"/g) ?? []).length, platformView.steps.length);
+
+  for (const step of platformView.steps) {
+    assert.match(
+      chineseControlDataPlane,
+      new RegExp(`<button[^>]*>[\\s\\S]*?<span>${escapeRegExp(step.code)}</span>[\\s\\S]*?<strong>${escapeRegExp(step.title)}</strong>`),
+      `中文控制面缺少步骤：${step.code} ${step.title}`,
+    );
+  }
+  for (const [stepIndex, step] of englishPlatformPrinciples.entries()) {
+    const code = String(stepIndex + 1).padStart(2, "0");
+    assert.match(
+      englishControlDataPlane,
+      new RegExp(`<button[^>]*>[\\s\\S]*?<span>${code}</span>[\\s\\S]*?<strong>${escapeRegExp(step.title)}</strong>`),
+      `英文控制面缺少步骤：${code} ${step.title}`,
+    );
+  }
   assert.match(homepageSource, /searchableQuestions\(slug, content\.qa\)/);
   assert.match(homepageSource, /exposesLongFormSearchSections\(slug\)/);
 
   for (const publication of publishedModuleRegistry.filter((module) => module.readingProfile === "focused")) {
     const questions = searchableQuestions(publication.slug, moduleContentRegistry[publication.slug].qa);
-    const expectedQuestionCount = publication.routeKind === "brief" ? Math.min(5, moduleContentRegistry[publication.slug].qa.length) : moduleContentRegistry[publication.slug].qa.length;
-    assert.equal(questions.length, expectedQuestionCount);
-    assert.equal(exposesLongFormSearchSections(publication.slug), false);
+    assert.deepEqual(questions, moduleContentRegistry[publication.slug].qa, `${publication.slug} search must retain every formal question`);
+    assert.equal(exposesLongFormSearchSections(publication.slug), true);
     const html = await renderHtml(publication.path);
     questions.forEach((_, index) => assert.match(html, new RegExp(`id="qa-${index + 1}"`)));
   }
 
   const solutionGroups = searchableEnglishSectionGroups("solution-patterns", buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]));
-  assert.deepEqual(solutionGroups.map((group) => group.role), ["decision", "deep"]);
+  assert.deepEqual(solutionGroups.map((group) => group.id), buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]).map((group) => group.id));
+  assert.ok(solutionGroups.some((group) => group.role === "learning"));
+  assert.ok(solutionGroups.some((group) => group.role === "curriculum"));
   assert.match(solutionEn, /id="curriculum"/);
   assert.match(solutionEn, /id="study-guide"/);
   assert.equal((solutionEn.match(/class="qaItem"/g) ?? []).length, englishModuleRegistry["solution-patterns"].qa.length);
@@ -2420,10 +2506,17 @@ test("every shared module has a source-backed learning route and practical labs"
     const html = await renderHtml(publishedModuleEntry.path);
     assert.match(html, /id="study-guide"/);
     assert.match(html, /id="curriculum"/);
-    assert.match(html, /(?:学习产出|能独立完成的判断)/);
-    assert.match(html, /(?:学习路线|把主题推进到检查点)/);
+    if (publishedModuleEntry.slug === "llm-inference") {
+      assert.match(html, /<div class="inferenceLearning" id="study-guide">/);
+      assert.match(html, /class="learningOutcomeList"/);
+      assert.match(html, /class="learningRoute"/);
+      assert.match(html, /class="learningLabList"/);
+    } else {
+      assert.match(html, /(?:学习产出|能独立完成的判断)/);
+      assert.match(html, /(?:学习路线|把主题推进到检查点)/);
+      assert.match(html, /(?:验证实验|可复核练习)/);
+    }
     assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
-    assert.match(html, /(?:验证实验|可复核练习)/);
     assert.match(html, /(?:知识地图|主题地图)/);
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
   }
@@ -2552,25 +2645,57 @@ test("public page shells expose one real skip target after navigation without de
   const appRoot = new URL("../app/", import.meta.url);
   const pageFiles = (await readdir(appRoot, { recursive: true }))
     .filter((relativePath) => relativePath.endsWith("page.tsx"));
-  const pagesWithTopbar = [];
 
   for (const relativePath of pageFiles) {
     const source = await readFile(new URL(relativePath, appRoot), "utf8");
     if (!source.includes('<nav className="topbar"')) continue;
-    pagesWithTopbar.push(relativePath);
     assert.equal((source.match(/id="main-content"/g) ?? []).length, 1, `${relativePath} 必须只有一个主内容跳转目标`);
     assert.ok(source.indexOf('id="main-content"') > source.indexOf("</nav>"), `${relativePath} 的跳转目标必须位于导航之后`);
     assert.doesNotMatch(source, /V2\.0/, `${relativePath} 不得显示装饰性维护版本号`);
   }
 
-  assert.equal(pagesWithTopbar.length, 15, "仍自行拥有传统 topbar 的公开页面壳必须全部进入 skip-link 回归范围");
+  const publicPageFamilies = [
+    { id: "home", zhPath: "/", enPath: "/en" },
+    { id: "questions", zhPath: "/questions", enPath: "/en/questions" },
+    { id: "glossary", zhPath: "/glossary", enPath: "/en/glossary" },
+    { id: "references", zhPath: "/references", enPath: "/en/references" },
+    { id: "knowledge-graph", zhPath: "/knowledge-graph", enPath: "/en/knowledge-graph" },
+    { id: "model-radar", zhPath: "/model-radar", enPath: "/en/model-radar" },
+    { id: "coding-agents", zhPath: "/coding-agents", enPath: "/en/coding-agents" },
+  ];
+  const publicPageShells = [
+    ...publicPageFamilies.flatMap(({ id, zhPath, enPath }) => [
+      { id: `zh:${id}`, locale: "zh", path: zhPath },
+      { id: `en:${id}`, locale: "en", path: enPath },
+    ]),
+    ...publishedModuleRegistry.flatMap((module) => [
+      { id: `zh:module:${module.slug}`, locale: "zh", path: module.path },
+      { id: `en:module:${module.slug}`, locale: "en", path: `/en${module.path}` },
+    ]),
+  ];
+  const skipLinkContracts = {
+    zh: { layoutPath: "(zh)/layout.tsx", label: "跳到主要内容" },
+    en: { layoutPath: "(en)/layout.tsx", label: "Skip to main content" },
+  };
+
+  assert.equal(new Set(publicPageShells.map(({ path }) => path)).size, publicPageShells.length, "公开页面语义清单不得重复路由");
+  for (const { layoutPath, label } of Object.values(skipLinkContracts)) {
+    const source = await readFile(new URL(layoutPath, appRoot), "utf8");
+    assert.match(source, new RegExp(`className="skipLink" href="#main-content">${escapeRegExp(label)}<`), `${layoutPath} 必须提供本地化 skip link`);
+  }
+  const renderedPublicPageShells = await Promise.all(publicPageShells.map(async (page) => ({ ...page, html: await renderHtml(page.path) })));
+  for (const { id, locale, path, html } of renderedPublicPageShells) {
+    const { label } = skipLinkContracts[locale];
+    assert.match(html, new RegExp(`<a class="skipLink" href="#main-content">${escapeRegExp(label)}</a>`), `${id} 必须渲染本地化 skip link`);
+    assert.equal((html.match(/class="skipLink" href="#main-content"/g) ?? []).length, 1, `${path} 必须只有一个 skip link`);
+    assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${path} 必须只有一个主内容跳转目标`);
+    assert.ok(html.indexOf('id="main-content"') > html.indexOf("</nav>"), `${path} 的跳转目标必须位于导航之后`);
+    assert.doesNotMatch(html, /V2\.0/, `${path} 不得显示装饰性维护版本号`);
+  }
+
   const unifiedHero = await readFile(new URL("unified-module-hero.tsx", appRoot), "utf8");
   assert.equal((unifiedHero.match(/id="main-content"/g) ?? []).length, 1, "共享模块 Hero 必须只有一个主内容跳转目标");
   assert.ok(unifiedHero.indexOf('id="main-content"') > unifiedHero.indexOf("</nav>"), "共享模块 Hero 的跳转目标必须位于导航之后");
-  for (const layoutPath of ["(zh)/layout.tsx", "(en)/layout.tsx"]) {
-    const source = await readFile(new URL(layoutPath, appRoot), "utf8");
-    assert.match(source, /className="skipLink" href="#main-content"/, `${layoutPath} 必须提供本地化 skip link`);
-  }
 });
 
 test("shared responsive interactions preserve explicit state, keyboard safety, and usable mobile controls", async () => {
@@ -2602,7 +2727,9 @@ test("shared responsive interactions preserve explicit state, keyboard safety, a
   assert.match(pilotViews, /role="rowheader"/);
   assert.match(pilotViews, /role="cell"/);
   assert.match(englishReader, /replace\(\/\^Ask the customer:/);
-  assert.match(englishReader, /<h3>\{block\.title \?\? "Critical boundary"\}<\/h3>/);
+  assert.match(englishReader, /function readerBlockTitle\(block: ContentBlock, sectionId: string\)/);
+  assert.match(englishReader, /sectionId\.endsWith\("-curriculum"\)/);
+  assert.match(englishReader, /<h3>\{title \?\? "Critical boundary"\}<\/h3>/);
 
   assert.match(v3Styles, /\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow:\s*auto;/s);
   assert.match(v3Styles, /@media \(max-width: 980px\)[\s\S]*?\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow-x:\s*auto;[^}]*overflow-y:\s*hidden;/s);

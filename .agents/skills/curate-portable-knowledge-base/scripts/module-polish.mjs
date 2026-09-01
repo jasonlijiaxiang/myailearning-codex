@@ -329,8 +329,8 @@ function validatePlanShape(plan) {
       `Batch ${batch.id} must depend only on the immediately preceding batch.`,
     );
     assert(
-      Array.isArray(batch.modules) && batch.modules.length > 0 && batch.modules.length <= 3,
-      `Batch ${batch.id} must contain between one and three modules.`,
+      Array.isArray(batch.modules) && batch.modules.length > 0,
+      `Batch ${batch.id} must contain at least one module.`,
     );
     for (const slug of batch.modules) {
       assert(typeof slug === "string" && /^[a-z0-9-]+$/.test(slug), `Invalid module slug: ${slug}`);

@@ -31,15 +31,15 @@
 
 ### 2.3 注册表与展示配置的边界
 
-`app/module-publication.mjs` 仍是唯一的正式发布注册表，决定模块身份、路径和发布范围。`app/unified-brief-module-config.mjs` 仅是通用阅读器的展示投影：短标题、四项 Hero 判断、Primer 目录项和机制锚点。
+`app/module-publication.mjs` 仍是唯一的正式发布注册表，决定模块身份、路径和发布范围。`app/unified-brief-module-config.mjs` 仅是通用阅读器的展示投影：短标题、按模块需要呈现的 Hero 判断、Primer 目录项和机制锚点。
 
 展示配置不导出并行 slug 名单，也不能成为发布入口、内容所有者或隐式路由白名单。通用路由通过正式模块解析 canonical slug，并对缺失展示配置失败关闭；新增模块必须先进入 `publishedModules`，再补齐其阅读器展示投影。
 
 ### 2.4 无 JavaScript 时仍可连续阅读
 
-`DenseModuleReadingModes` 的服务端初始 HTML 同时包含 `quick`、`learn`、`field` 三个面板。浏览器完成客户端增强后，才在下一帧按当前模式折叠非活动面板；Tab、Hash、目录、高亮、Back / Forward 和受控定位仍由同一 reader 接管。
+`DenseModuleReadingModes` 的服务端初始 HTML 同时包含模块声明的全部阅读任务面板。`quick`、`learn`、`field` 是可复用预设，而不是每个模块必须拥有的固定集合。浏览器完成客户端增强后，才在下一帧按当前任务折叠非活动面板；Tab、Hash、目录、高亮、Back / Forward 和受控定位仍由同一 reader 接管。
 
-这使禁用 JavaScript、脚本延迟或 hydration 尚未完成时，读者仍能从服务器返回的正文连续获取三种阅读内容。渲染回归会检查每个正式路由的三个面板在初始 HTML 中均未带 `hidden`。
+这使禁用 JavaScript、脚本延迟或 hydration 尚未完成时，读者仍能从服务器返回的正文连续获取该模块声明的全部阅读内容。渲染回归会检查每个正式路由的全部任务面板在初始 HTML 中均未带 `hidden`。
 
 ### 2.5 正文字号收口
 
@@ -58,7 +58,7 @@ CSS 变更必须同时覆盖桌面与窄屏的最终生效规则，不能只提�
 
 本轮实现必须由以下检查证明，而不能只依赖源码搜索：
 
-1. `tests/rendered-html.test.mjs` 从真实服务端渲染验证 23/23 正式模块均有唯一共享 Hero、正文根和 unified reader，并验证三种模式在 SSR 初始 HTML 都可读。
+1. `tests/rendered-html.test.mjs` 从真实服务端渲染验证全部正式模块均有唯一共享 Hero、正文根和 unified reader，并验证每个模块声明的任务面板在 SSR 初始 HTML 都可读。
 2. `tests/design-language-contract.test.mjs` 验证通用中文路由失败关闭、目录派生、没有旧 reader 分支，以及共享 reader 的渐进增强语义。
 3. `tests/bilingual-pilot.test.mjs` 保持中英文入口和 renderer 责任边界，不把本轮 runtime 变化误判为英文正文变更。
 4. 定向 lint、构建和最终 `npm run check` 必须通过；本轮已通过最终全量门禁，单次构建只作为过程证据，不能替代该门禁。
@@ -79,7 +79,7 @@ CSS 变更必须同时覆盖桌面与窄屏的最终生效规则，不能只提�
 - [x] `origin/main` 的 23 个正式中文模块已处于统一阅读器迁移基线。
 - [x] 通用路由已移除旧 reader 回退，并以缺失配置失败关闭。
 - [x] 通用目录已根据展示配置和真实 `deepDives` 条件派生。
-- [x] 服务端初始 HTML 保留三种阅读内容，客户端再渐进折叠。
+- [x] 服务端初始 HTML 保留模块声明的全部阅读内容，客户端再渐进折叠。
 - [x] 专用页面与共享正文的 16px / 14px 可读性下限完成并通过真实视口复核。
 - [x] 定向测试、`npm run check`、浏览器 QA 和代码审查完成。
 - [x] 实现与不可变 runtime-maintenance receipt 已提交。
