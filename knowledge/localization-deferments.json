@@ -10418,16 +10418,16 @@
       }
     },
     "mcp": {
-      "zhBaselineCommit": "4b633d33267a91219c009568bcbf84ff39f1902d",
-      "enBaselineCommit": "4b633d33267a91219c009568bcbf84ff39f1902d",
+      "zhBaselineCommit": "5b4c4b9dc661e7a1c31335f0a8f85a92c57bd2f4",
+      "enBaselineCommit": "5b4c4b9dc661e7a1c31335f0a8f85a92c57bd2f4",
       "reviewSetIds": [
-        "br-mcp-2026-08-10-ultra-exception",
-        "br-mcp-2026-08-10-xhigh-author",
-        "br-mcp-2026-08-10-xhigh-language",
-        "br-mcp-2026-08-10-xhigh-semantic"
+        "br-mcp-2026-09-04-ultra-exception",
+        "br-mcp-2026-09-04-xhigh-author",
+        "br-mcp-2026-09-04-xhigh-language",
+        "br-mcp-2026-09-04-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
-      "zhStateHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
+      "zhReviewHash": "sha256:599a1a398870dde64e01eba327e6d423a9379f1bc63171e210585dea2262434d",
+      "zhStateHash": "sha256:599a1a398870dde64e01eba327e6d423a9379f1bc63171e210585dea2262434d",
       "zhObjects": {
         "/module:mcp/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -10455,7 +10455,7 @@
           "sourceIds": []
         },
         "/module:mcp/brief/criticalBoundary": {
-          "hash": "sha256:55cf7190e4a92e071fb992950a899b181c67fb8bd9da41dc8c72af5229c85439",
+          "hash": "sha256:659bb535c3593a4986e2b3ccef5acf8591a593fe0e2452e125b6372afa0eb2c8",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -10490,27 +10490,27 @@
           "sourceIds": []
         },
         "/module:mcp/brief/decisions/005": {
-          "hash": "sha256:7c3c554a685ac231f7976d04dafa3d2b1c52c26512d732c513c852f0515bf5e3",
+          "hash": "sha256:d967ac49541223afc4f1827eb46f057c7f0bdc0078bba0262dd59f3830702646",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/decisions/006": {
-          "hash": "sha256:1ca757ec2e772104b7e627962c08daa9a31442c61ece6f3ec873e08de29c0b4a",
+          "hash": "sha256:92d2c1ead8317d3a662edae03f53299bb1ae13b72cba0855e0f9e3d59416b35e",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/deepDiveLead": {
-          "hash": "sha256:eeb5a703e86a219c04b42c60ab27f3f26126bd99e3fcdc05fae4db627923aa7a",
+          "hash": "sha256:8fe8cd84357f7a91747f3a9a109be5abe124e4ba19c94add82e8c808a38835b2",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/deepDives/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "brief-order",
           "sourceIds": []
         },
         "/module:mcp/brief/deepDives/000": {
-          "hash": "sha256:936f10f8751e3c2f7f9e6828d2c8babd87c20789cee5e9945ca6b2b0f55a103d",
+          "hash": "sha256:ce9719e92e3c633d872686f6aae4512ee1385f6a47083083751fc63036d88d66",
           "objectType": "brief",
           "sourceIds": [
             "mcp-architecture",
@@ -10523,7 +10523,7 @@
           ]
         },
         "/module:mcp/brief/deepDives/001": {
-          "hash": "sha256:7b4f4fdadcaa29c44654b1bb97e0f7df8ce7e349044a3a1b7bfc8a4afb42d7bf",
+          "hash": "sha256:278df76fb87433f289a059060f151db45a612c30036a194df05ea5658066b1d1",
           "objectType": "brief",
           "sourceIds": [
             "mcp-prompts-2026-07-28",
@@ -10532,7 +10532,7 @@
           ]
         },
         "/module:mcp/brief/deepDives/002": {
-          "hash": "sha256:627fafb0ec8438c5e8fb606f1fe2e106263da465bf6b207ad0a2474906ce5c02",
+          "hash": "sha256:2fc24dc4bd731d29d8d5027ccc123013cab18575d77c0b91d311e072b838ffe9",
           "objectType": "brief",
           "sourceIds": [
             "mcp-authorization",
@@ -10540,18 +10540,30 @@
             "owasp-prompt-injection"
           ]
         },
+        "/module:mcp/brief/deepDives/003": {
+          "hash": "sha256:00690dbda9e6638f95be3d9aa0ec6745dace0247afea3a75ccfe755de3cdcdc7",
+          "objectType": "brief",
+          "sourceIds": [
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-mrtr-2026-07-28",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
         "/module:mcp/brief/deepDiveTitle": {
-          "hash": "sha256:268013b24eec8f768d72f3a48d27489655a62767967c3bf82f4409cf60bf14e9",
+          "hash": "sha256:1e6d1ce7fa95460adfe7910549a694b4044f6b353e174e07e70001bfe805e0b1",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/definition": {
-          "hash": "sha256:5f40aa5f701ba0a9801516f85bd2bd4bd46b0fb1ff2722c80ea5ff95b2694168",
+          "hash": "sha256:9b288104518e4b907e33fb477fcb14c870c6d0fb13000c85d62ab745247daffd",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/evidenceCards/$order": {
-          "hash": "sha256:49fd80d2db002eb6db61439841c4cbe8559cf957ba0f6cc7339ed89792bb3006",
+          "hash": "sha256:fc57f809c149b2dc91933c8ef183a45bc51a7e3484009aeb54c8bb6d3e461fca",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -10570,14 +10582,14 @@
           ]
         },
         "/module:mcp/brief/evidenceCards/002": {
-          "hash": "sha256:5e61ce4bf958b8a3fffbe33abd00f2b9a75153a216e2a6ac5096171aa7f397d1",
+          "hash": "sha256:e409ea803c38df9c0f2c36554207db2ab87634d7252f30c465a76a472395e4ff",
           "objectType": "brief",
           "sourceIds": [
             "mcp-changelog-2026-07-28"
           ]
         },
         "/module:mcp/brief/evidenceCards/003": {
-          "hash": "sha256:5373149b3bd7ede67d57f1a7aed386a08e2d4db3cf5ac98f82030075108fd7c9",
+          "hash": "sha256:bcc8807d75efaf6fd244e0fc3f5057aa9c8629f87c625e374e2d546ea9a788e2",
           "objectType": "brief",
           "sourceIds": [
             "mcp-security"
@@ -10590,8 +10602,15 @@
             "mcp-authorization"
           ]
         },
+        "/module:mcp/brief/evidenceCards/005": {
+          "hash": "sha256:3350b341b1291def269744eb79f862d44801c47c00a93b4c5ae3df862421354f",
+          "objectType": "brief",
+          "sourceIds": [
+            "mcp-mrtr-2026-07-28"
+          ]
+        },
         "/module:mcp/brief/position": {
-          "hash": "sha256:8b1eeb76315ac9cc189dd80370bba8f07f3c54458d60a4d4e68367c19e2aae1b",
+          "hash": "sha256:a112c19c645ccce51baebcfd8521177a18a2891c5e513a30cd0d934352f1899c",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -10601,42 +10620,47 @@
           "sourceIds": []
         },
         "/module:mcp/brief/principles/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "objectType": "brief-order",
           "sourceIds": []
         },
         "/module:mcp/brief/principles/000": {
-          "hash": "sha256:363363ce2a78060452adf4cef1fa8d27066c8c178eccdd0a97b85e64556afb83",
+          "hash": "sha256:9a870de6e46c5fa6ee860155944ab3b954673ac79e7163fe73836cd1d2e07093",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/principles/001": {
-          "hash": "sha256:76ede06c8532bb4d12e8c02ffd3748ce7c1a557d0b4795f096c8cd12a2f591d1",
+          "hash": "sha256:21c944e8a8624f7bd0540cdf6aa4c5979ab7d8c0afff98c7efcde4a70efba33f",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/principles/002": {
-          "hash": "sha256:2d3e695e73c1e6d2f65249f90e524bd90acdece77982cf846fba0c4528be24ae",
+          "hash": "sha256:90a7b466b1d71377ad2e129df5a032d6bf5c932aeede5885f3e38069d301e953",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/principles/003": {
-          "hash": "sha256:99186c5d413595254e5b63855a3dba57348ce744c9fb8fe07213a18b84b9cf39",
+          "hash": "sha256:4baf04712951529b551d61620a9077a12136d0382676152d5545407d41284b10",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/principles/004": {
-          "hash": "sha256:88d60121cb001e2dbba6aa800824e2e96ad7f55000ee65edec8817ae385e82f3",
+          "hash": "sha256:ad4ac75e89e4a6ed5f9a88d8df39142d6f027ace4cd12c22a304d1a2f805612f",
+          "objectType": "brief",
+          "sourceIds": []
+        },
+        "/module:mcp/brief/principles/005": {
+          "hash": "sha256:8f78e2e982593c78ba46197d437645fddc41a462a7d518da814a62fb9b87c7b6",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/principleTitle": {
-          "hash": "sha256:33fa3457ce0ed5cfaf49ed18c506d00c0b0704642cafaeeca0e6093decd2e30f",
+          "hash": "sha256:c022bb606e12ab2a22ef61b927c606a20d24b72731e43cff8adace89ba6ef5c1",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:mcp/brief/qa/$order": {
-          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "hash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -10673,7 +10697,7 @@
           ]
         },
         "/module:mcp/brief/qa/004": {
-          "hash": "sha256:dbb76bfb1a78af0cacc7493b7dd6ae092aac8e05f5ed22ab437d3fa9c95fac4e",
+          "hash": "sha256:e1e059abecec0d983014596f3c1efb8e274b91646633ebcb8d2dc8fd181fdd88",
           "objectType": "brief",
           "sourceIds": [
             "mcp-changelog-2026-07-28",
@@ -10683,6 +10707,14 @@
           ]
         },
         "/module:mcp/brief/qa/005": {
+          "hash": "sha256:52a35a77f8821e1c5f37b5d5847d26bd69d10c87d808b3d222fb091a274a7d4e",
+          "objectType": "brief",
+          "sourceIds": [
+            "mcp-mrtr-2026-07-28",
+            "mcp-tasks-extension"
+          ]
+        },
+        "/module:mcp/brief/qa/006": {
           "hash": "sha256:e98b13785da4089bd20560f61f815c105eca2f31746240fc8c0e02e7a36c88f2",
           "objectType": "brief",
           "sourceIds": [
@@ -10690,7 +10722,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/brief/qa/006": {
+        "/module:mcp/brief/qa/007": {
           "hash": "sha256:803492b54fbff372bfa81e3cb5108211f185f168158701fb06132d7d92893beb",
           "objectType": "brief",
           "sourceIds": [
@@ -10698,7 +10730,7 @@
             "opentelemetry-genai-semconv"
           ]
         },
-        "/module:mcp/brief/qa/007": {
+        "/module:mcp/brief/qa/008": {
           "hash": "sha256:2b4f57183d09c9461bfb845033bdbcfec4073b3e491bf49726329383eb094922",
           "objectType": "brief",
           "sourceIds": [
@@ -10706,7 +10738,7 @@
             "opentelemetry-genai-semconv"
           ]
         },
-        "/module:mcp/brief/qa/008": {
+        "/module:mcp/brief/qa/009": {
           "hash": "sha256:65d4dec93d5e13071e38f89a60be14d8c43b7b589ed7b39a3388b43bf9f04fa1",
           "objectType": "brief",
           "sourceIds": [
@@ -10714,7 +10746,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/brief/qa/009": {
+        "/module:mcp/brief/qa/010": {
           "hash": "sha256:a48fc88bd9ec15cb508659dc72e30bd2a3e940f75a838afe75d4f13f2165aa3e",
           "objectType": "brief",
           "sourceIds": [
@@ -10722,7 +10754,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/brief/qa/010": {
+        "/module:mcp/brief/qa/011": {
           "hash": "sha256:4ada3422976a029258149b8e1536474ac2754ca731bc8e844c406774d0baf129",
           "objectType": "brief",
           "sourceIds": [
@@ -10730,7 +10762,7 @@
             "opentelemetry-genai-semconv"
           ]
         },
-        "/module:mcp/brief/qa/011": {
+        "/module:mcp/brief/qa/012": {
           "hash": "sha256:23ddd3369cccdf8c004d1f8a4e4d77d5805889283f693a9bf26b985bb1ed3d78",
           "objectType": "brief",
           "sourceIds": [
@@ -10738,7 +10770,7 @@
             "mcp-security"
           ]
         },
-        "/module:mcp/brief/qa/012": {
+        "/module:mcp/brief/qa/013": {
           "hash": "sha256:e9ab3be73ac7bb02805c3e00472244485c472dfea8fe5dc7d9262e1f0e674b0a",
           "objectType": "brief",
           "sourceIds": [
@@ -10748,7 +10780,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/brief/qa/013": {
+        "/module:mcp/brief/qa/014": {
           "hash": "sha256:a0b10149405109be3eb2595c8c084b8fbaeb20c7cab9d5d00836c83df6157f6e",
           "objectType": "brief",
           "sourceIds": [
@@ -10756,8 +10788,8 @@
             "owasp-prompt-injection"
           ]
         },
-        "/module:mcp/brief/qa/014": {
-          "hash": "sha256:7e8ad6c1b77c433b232ceb2d5b7b612d94ca455c53ccd6bae5176ab3b5148490",
+        "/module:mcp/brief/qa/015": {
+          "hash": "sha256:8ba8c72a1d6944d337cef92485ca7251087ac2b985e85c143488b9fdb927370e",
           "objectType": "brief",
           "sourceIds": [
             "a2a-spec-1-0-0",
@@ -10845,7 +10877,7 @@
           ]
         },
         "/module:mcp/claims/001": {
-          "hash": "sha256:4e82d08656c51c4c4373ba59a1f2516839fc0fa6ca7d24acbab11dcf8d1c2d80",
+          "hash": "sha256:e62f7cf2b1bae479e7c3dcd41f86d49cbd29723d87b559e63243f44e7d0ccbc0",
           "objectType": "claims",
           "sourceIds": [
             "mcp-2026-07-28-rc",
@@ -10880,12 +10912,12 @@
           ]
         },
         "/module:mcp/content/deepDives/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "content-order",
           "sourceIds": []
         },
         "/module:mcp/content/deepDives/000": {
-          "hash": "sha256:936f10f8751e3c2f7f9e6828d2c8babd87c20789cee5e9945ca6b2b0f55a103d",
+          "hash": "sha256:ce9719e92e3c633d872686f6aae4512ee1385f6a47083083751fc63036d88d66",
           "objectType": "content",
           "sourceIds": [
             "mcp-architecture",
@@ -10898,7 +10930,7 @@
           ]
         },
         "/module:mcp/content/deepDives/001": {
-          "hash": "sha256:7b4f4fdadcaa29c44654b1bb97e0f7df8ce7e349044a3a1b7bfc8a4afb42d7bf",
+          "hash": "sha256:278df76fb87433f289a059060f151db45a612c30036a194df05ea5658066b1d1",
           "objectType": "content",
           "sourceIds": [
             "mcp-prompts-2026-07-28",
@@ -10907,7 +10939,7 @@
           ]
         },
         "/module:mcp/content/deepDives/002": {
-          "hash": "sha256:627fafb0ec8438c5e8fb606f1fe2e106263da465bf6b207ad0a2474906ce5c02",
+          "hash": "sha256:2fc24dc4bd731d29d8d5027ccc123013cab18575d77c0b91d311e072b838ffe9",
           "objectType": "content",
           "sourceIds": [
             "mcp-authorization",
@@ -10915,8 +10947,20 @@
             "owasp-prompt-injection"
           ]
         },
+        "/module:mcp/content/deepDives/003": {
+          "hash": "sha256:00690dbda9e6638f95be3d9aa0ec6745dace0247afea3a75ccfe755de3cdcdc7",
+          "objectType": "content",
+          "sourceIds": [
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-mrtr-2026-07-28",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
         "/module:mcp/content/evidenceCards/$order": {
-          "hash": "sha256:49fd80d2db002eb6db61439841c4cbe8559cf957ba0f6cc7339ed89792bb3006",
+          "hash": "sha256:fc57f809c149b2dc91933c8ef183a45bc51a7e3484009aeb54c8bb6d3e461fca",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -10935,14 +10979,14 @@
           ]
         },
         "/module:mcp/content/evidenceCards/002": {
-          "hash": "sha256:5e61ce4bf958b8a3fffbe33abd00f2b9a75153a216e2a6ac5096171aa7f397d1",
+          "hash": "sha256:e409ea803c38df9c0f2c36554207db2ab87634d7252f30c465a76a472395e4ff",
           "objectType": "content",
           "sourceIds": [
             "mcp-changelog-2026-07-28"
           ]
         },
         "/module:mcp/content/evidenceCards/003": {
-          "hash": "sha256:5373149b3bd7ede67d57f1a7aed386a08e2d4db3cf5ac98f82030075108fd7c9",
+          "hash": "sha256:bcc8807d75efaf6fd244e0fc3f5057aa9c8629f87c625e374e2d546ea9a788e2",
           "objectType": "content",
           "sourceIds": [
             "mcp-security"
@@ -10955,8 +10999,15 @@
             "mcp-authorization"
           ]
         },
+        "/module:mcp/content/evidenceCards/005": {
+          "hash": "sha256:3350b341b1291def269744eb79f862d44801c47c00a93b4c5ae3df862421354f",
+          "objectType": "content",
+          "sourceIds": [
+            "mcp-mrtr-2026-07-28"
+          ]
+        },
         "/module:mcp/content/qa/$order": {
-          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "hash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -10993,7 +11044,7 @@
           ]
         },
         "/module:mcp/content/qa/004": {
-          "hash": "sha256:dbb76bfb1a78af0cacc7493b7dd6ae092aac8e05f5ed22ab437d3fa9c95fac4e",
+          "hash": "sha256:e1e059abecec0d983014596f3c1efb8e274b91646633ebcb8d2dc8fd181fdd88",
           "objectType": "content",
           "sourceIds": [
             "mcp-changelog-2026-07-28",
@@ -11003,6 +11054,14 @@
           ]
         },
         "/module:mcp/content/qa/005": {
+          "hash": "sha256:52a35a77f8821e1c5f37b5d5847d26bd69d10c87d808b3d222fb091a274a7d4e",
+          "objectType": "content",
+          "sourceIds": [
+            "mcp-mrtr-2026-07-28",
+            "mcp-tasks-extension"
+          ]
+        },
+        "/module:mcp/content/qa/006": {
           "hash": "sha256:e98b13785da4089bd20560f61f815c105eca2f31746240fc8c0e02e7a36c88f2",
           "objectType": "content",
           "sourceIds": [
@@ -11010,7 +11069,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/content/qa/006": {
+        "/module:mcp/content/qa/007": {
           "hash": "sha256:803492b54fbff372bfa81e3cb5108211f185f168158701fb06132d7d92893beb",
           "objectType": "content",
           "sourceIds": [
@@ -11018,7 +11077,7 @@
             "opentelemetry-genai-semconv"
           ]
         },
-        "/module:mcp/content/qa/007": {
+        "/module:mcp/content/qa/008": {
           "hash": "sha256:2b4f57183d09c9461bfb845033bdbcfec4073b3e491bf49726329383eb094922",
           "objectType": "content",
           "sourceIds": [
@@ -11026,7 +11085,7 @@
             "opentelemetry-genai-semconv"
           ]
         },
-        "/module:mcp/content/qa/008": {
+        "/module:mcp/content/qa/009": {
           "hash": "sha256:65d4dec93d5e13071e38f89a60be14d8c43b7b589ed7b39a3388b43bf9f04fa1",
           "objectType": "content",
           "sourceIds": [
@@ -11034,7 +11093,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/content/qa/009": {
+        "/module:mcp/content/qa/010": {
           "hash": "sha256:a48fc88bd9ec15cb508659dc72e30bd2a3e940f75a838afe75d4f13f2165aa3e",
           "objectType": "content",
           "sourceIds": [
@@ -11042,7 +11101,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/content/qa/010": {
+        "/module:mcp/content/qa/011": {
           "hash": "sha256:4ada3422976a029258149b8e1536474ac2754ca731bc8e844c406774d0baf129",
           "objectType": "content",
           "sourceIds": [
@@ -11050,7 +11109,7 @@
             "opentelemetry-genai-semconv"
           ]
         },
-        "/module:mcp/content/qa/011": {
+        "/module:mcp/content/qa/012": {
           "hash": "sha256:23ddd3369cccdf8c004d1f8a4e4d77d5805889283f693a9bf26b985bb1ed3d78",
           "objectType": "content",
           "sourceIds": [
@@ -11058,7 +11117,7 @@
             "mcp-security"
           ]
         },
-        "/module:mcp/content/qa/012": {
+        "/module:mcp/content/qa/013": {
           "hash": "sha256:e9ab3be73ac7bb02805c3e00472244485c472dfea8fe5dc7d9262e1f0e674b0a",
           "objectType": "content",
           "sourceIds": [
@@ -11068,7 +11127,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/content/qa/013": {
+        "/module:mcp/content/qa/014": {
           "hash": "sha256:a0b10149405109be3eb2595c8c084b8fbaeb20c7cab9d5d00836c83df6157f6e",
           "objectType": "content",
           "sourceIds": [
@@ -11076,8 +11135,8 @@
             "owasp-prompt-injection"
           ]
         },
-        "/module:mcp/content/qa/014": {
-          "hash": "sha256:7e8ad6c1b77c433b232ceb2d5b7b612d94ca455c53ccd6bae5176ab3b5148490",
+        "/module:mcp/content/qa/015": {
+          "hash": "sha256:8ba8c72a1d6944d337cef92485ca7251087ac2b985e85c143488b9fdb927370e",
           "objectType": "content",
           "sourceIds": [
             "a2a-spec-1-0-0",
@@ -11086,7 +11145,7 @@
           ]
         },
         "/module:mcp/curriculum/chapters/$order": {
-          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
@@ -11109,7 +11168,7 @@
           ]
         },
         "/module:mcp/curriculum/chapters/002": {
-          "hash": "sha256:b89389802a8f5a6811c65c08a1a9cd28171c0dd8598205163ef1d9d75b667d56",
+          "hash": "sha256:978d63afefabb51c05b1e0123f982a85b9f6fced0cf0840ac7074cb5097e3d19",
           "objectType": "curriculum",
           "sourceIds": [
             "mcp-changelog-2026-07-28",
@@ -11127,7 +11186,7 @@
           ]
         },
         "/module:mcp/curriculum/chapters/004": {
-          "hash": "sha256:bc07256f3b2afb986d83e0d7567e1d6ededf2e23333d32244cb547b7e2322278",
+          "hash": "sha256:46b1be84466a50e7172d7d45a8a8766cf88dcfab113bb3f568b508257c4aa226",
           "objectType": "curriculum",
           "sourceIds": [
             "mcp-authorization",
@@ -11136,16 +11195,28 @@
           ]
         },
         "/module:mcp/curriculum/chapters/005": {
-          "hash": "sha256:b69014d77e4e9179a9414a59a9b2d418e19fa555599e2127b776648a6eb75a33",
+          "hash": "sha256:4b25db88a5b14f7533b93567d3193f66106550906aa410e1f545b85096828db0",
           "objectType": "curriculum",
           "sourceIds": [
             "mcp-authorization",
             "mcp-elicitation-2025-11-25",
+            "mcp-mrtr-2026-07-28",
             "mcp-specification-2026-07-28"
           ]
         },
         "/module:mcp/curriculum/chapters/006": {
-          "hash": "sha256:a8b6d8f826a336980b8f219f04c6fe566cec7c74111305ea426252f593498e70",
+          "hash": "sha256:767c7d2f323572cc9426221f4d158113a708fde3bdbd6838d11b8c8db9207bd5",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
+        "/module:mcp/curriculum/chapters/007": {
+          "hash": "sha256:9767fe1654c80ca73edd844a9024971fb18f22ebc656f0da4b71d8a8b463576d",
           "objectType": "curriculum",
           "sourceIds": [
             "a2a-spec-1-0-0",
@@ -11153,7 +11224,7 @@
             "mcp-tasks-extension"
           ]
         },
-        "/module:mcp/curriculum/chapters/007": {
+        "/module:mcp/curriculum/chapters/008": {
           "hash": "sha256:d43ad6b6a0d3c6d3b8cab74f476004771baeb90176671227a04736e62d7e1da4",
           "objectType": "curriculum",
           "sourceIds": [
@@ -11161,7 +11232,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:mcp/curriculum/chapters/008": {
+        "/module:mcp/curriculum/chapters/009": {
           "hash": "sha256:668b9e553f82f9391b4383f2fea13cfc1cd565a80a4f99346c0e1a006acb9be3",
           "objectType": "curriculum",
           "sourceIds": [
@@ -11250,7 +11321,7 @@
           "sourceIds": []
         },
         "/module:mcp/extensionView/steps/001": {
-          "hash": "sha256:b3f73953fbaebddfd8c2e9f784f43d5627150ad90c7a8ec94dae85d2b797aeef",
+          "hash": "sha256:c405895b1009ce7ae70e944caadc27f3ea5c0b5ed3d8eac2387e4b815ee5805f",
           "objectType": "extensionView",
           "sourceIds": []
         },
@@ -11290,12 +11361,12 @@
           "sourceIds": []
         },
         "/module:mcp/extensionView/title": {
-          "hash": "sha256:ab1868e361fe703fe4376bcfc8741c1b80f39da823043deabaa01e02da909270",
+          "hash": "sha256:b03df2f64876f783328f9233ca1d6a2beb571ff4ec2d0ed57faa9bd696e3d895",
           "objectType": "extensionView",
           "sourceIds": []
         },
         "/module:mcp/learning/labs/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -11327,6 +11398,16 @@
           ]
         },
         "/module:mcp/learning/labs/003": {
+          "hash": "sha256:46646acdcd001f7c7ccda094874c66fe3f5787bdcbfc1e84b1be834c35deb934",
+          "objectType": "learning",
+          "sourceIds": [
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-mrtr-2026-07-28",
+            "nist-zero-trust"
+          ]
+        },
+        "/module:mcp/learning/labs/004": {
           "hash": "sha256:5224c154fb02d65ee15d7c8e0b9f202fd05e1db6f53f97743300d0f12ad88ad7",
           "objectType": "learning",
           "sourceIds": [
@@ -11351,12 +11432,12 @@
           "sourceIds": []
         },
         "/module:mcp/learning/outcomes/002": {
-          "hash": "sha256:5b4468f7977169022387d55dda03ab0c2ad262db28d7c43a6c28a414aa7af63d",
+          "hash": "sha256:9490f20014ad4c9863c812d4dfd9ff83e5e2c5879f02654a3d9e8522d8d3a661",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:mcp/learning/outcomes/003": {
-          "hash": "sha256:5b5ce534d320ad57a10d3cea18b7f72237765ff8beb369e189d416fe960bcf6e",
+          "hash": "sha256:27563e53bc6f55c2ed431e73c8237022612777254c2b42aa9117edd0366b424e",
           "objectType": "learning",
           "sourceIds": []
         },
@@ -11366,7 +11447,7 @@
           "sourceIds": []
         },
         "/module:mcp/learning/route/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -11381,16 +11462,21 @@
           "sourceIds": []
         },
         "/module:mcp/learning/route/002": {
-          "hash": "sha256:208463dc19f72e8efef0e2be6c674daa0460973ef45786afe5e3191b4118e7b6",
+          "hash": "sha256:024576b4c63a88c3a8cb371a65d304ac0f959fd711a0334ff666b12f47b6208d",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:mcp/learning/route/003": {
-          "hash": "sha256:efe66bf6057beaf9dd4c889e0fc175c1a677626d922b5e2145080353c09730cd",
+          "hash": "sha256:e4a1192569ea7b76bb82de17a6a91fba56a227db8f810382947b5c8bcf8f24d3",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:mcp/learning/route/004": {
+          "hash": "sha256:efe66bf6057beaf9dd4c889e0fc175c1a677626d922b5e2145080353c09730cd",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:mcp/learning/route/005": {
           "hash": "sha256:7bd3a434d82a2cf96ab4be2b9640caafa417a4fb21d46c89f601a180a0ad4791",
           "objectType": "learning",
           "sourceIds": []
@@ -11411,7 +11497,7 @@
           "sourceIds": []
         },
         "/module:mcp/publication/contentContract/cloud/000": {
-          "hash": "sha256:8763f9c13eee0b189da1b3ec3076f221b22884a6376c47de08193647edec8dd6",
+          "hash": "sha256:0c235277e8ed1cadbc5746a2732715e41b959c99a3a9db908861bb814b4821e7",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -11421,7 +11507,7 @@
           "sourceIds": []
         },
         "/module:mcp/publication/contentContract/customer/000": {
-          "hash": "sha256:538ac162b2333b08136a9de61ee04d4c37855364ad3133d22837cca5dbc0ec42",
+          "hash": "sha256:250cf32b6cb9f4a4c8d924ee155c714fbd4447b7c6a83805d7fd8403567df9e5",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -11431,7 +11517,7 @@
           "sourceIds": []
         },
         "/module:mcp/publication/contentContract/mechanism/000": {
-          "hash": "sha256:0cd6375a37bb434b73a77383ebe440ba2c3116954567f4eabd3f18c2fd0b70f2",
+          "hash": "sha256:e8cc6d27bdf497536064975ffc71f5ee020dc92298846ea3ea8ce3336e43123f",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -11441,7 +11527,7 @@
           "sourceIds": []
         },
         "/module:mcp/publication/contentContract/principle/000": {
-          "hash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
+          "hash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -11591,7 +11677,7 @@
           "sourceIds": []
         },
         "/module:mcp/publication/updatedAt": {
-          "hash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
+          "hash": "sha256:169670126c693bbe6cf3e565032488d8021f0e87862b4d5147c27e0c87f24992",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -11621,7 +11707,7 @@
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/$order": {
-          "hash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
+          "hash": "sha256:0b4144e2ce33c6cbe6a6bb18ba14605fb12d13e32e390dacd6121ade27664ae4",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -11651,71 +11737,86 @@
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/005": {
-          "hash": "sha256:4770dc400f389b91e03eb8bf6ad99d8ff6a356313d98974eccabc0727f036a1e",
+          "hash": "sha256:9637700634a98ad5bbb85fdfa7962bdedc61164ec0ee628cbb9a720d09859876",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/006": {
-          "hash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "hash": "sha256:4770dc400f389b91e03eb8bf6ad99d8ff6a356313d98974eccabc0727f036a1e",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/007": {
-          "hash": "sha256:7e772da401fa82cc1d98cabeee08656b68eb19b489550f73cb5c03d87f4f1134",
+          "hash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/008": {
-          "hash": "sha256:6ed8a529c93c97dac8ab5d8a6827c7e6ab90b08e2d86ed602bc03e054fc4f570",
+          "hash": "sha256:7e772da401fa82cc1d98cabeee08656b68eb19b489550f73cb5c03d87f4f1134",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/009": {
-          "hash": "sha256:2ca441323d9779956abd09b5ab1697bfd8db626a2142bf2a75f103321f423b02",
+          "hash": "sha256:6ed8a529c93c97dac8ab5d8a6827c7e6ab90b08e2d86ed602bc03e054fc4f570",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/010": {
-          "hash": "sha256:1a4d86b64424e2bf2897f02a86975cf77e191288fea6fc09e616c9fc33ca4478",
+          "hash": "sha256:2ca441323d9779956abd09b5ab1697bfd8db626a2142bf2a75f103321f423b02",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/011": {
-          "hash": "sha256:b387ed3cc3976456cb86843928ba4456d4e7ab5ce519e9ca638f0cc4c9bbc0c0",
+          "hash": "sha256:1a4d86b64424e2bf2897f02a86975cf77e191288fea6fc09e616c9fc33ca4478",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/012": {
-          "hash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
+          "hash": "sha256:b387ed3cc3976456cb86843928ba4456d4e7ab5ce519e9ca638f0cc4c9bbc0c0",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/013": {
-          "hash": "sha256:9d865611048dab7c2917bd1370be7377dbd86ad11649de92c7f2992690fed3cf",
+          "hash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/014": {
-          "hash": "sha256:e42f57f07d564ff585b79f51ab964c7b958aa695adcc78a224b22dbf5e11e669",
+          "hash": "sha256:9d865611048dab7c2917bd1370be7377dbd86ad11649de92c7f2992690fed3cf",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/015": {
-          "hash": "sha256:c77eee1c29a844c5a404e2464a626e03766792276023893529609696720d7c6d",
+          "hash": "sha256:e42f57f07d564ff585b79f51ab964c7b958aa695adcc78a224b22dbf5e11e669",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/016": {
-          "hash": "sha256:7df6840da680de732d647f6216ac610c790905a2e097938ecf522e74ee6b0f0d",
+          "hash": "sha256:c77eee1c29a844c5a404e2464a626e03766792276023893529609696720d7c6d",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/017": {
-          "hash": "sha256:799dc6f84a2398f9a18821ab714fbaf4e1eb383723d1c18a03f25c772b0faf7b",
+          "hash": "sha256:7df6840da680de732d647f6216ac610c790905a2e097938ecf522e74ee6b0f0d",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:mcp/referenceModule/sourceIds/018": {
+          "hash": "sha256:111f3a368c391fd3732352e37fcfcea210aa0b5261091ceb9400d8e8afb5dd36",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:mcp/referenceModule/sourceIds/019": {
+          "hash": "sha256:f658251e2b655a33afe11a48ecdc230156e2f88fb0aee584f9f36496b0c106d8",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:mcp/referenceModule/sourceIds/020": {
+          "hash": "sha256:799dc6f84a2398f9a18821ab714fbaf4e1eb383723d1c18a03f25c772b0faf7b",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:mcp/referenceModule/sourceIds/021": {
           "hash": "sha256:bb4bc3b9ed61109123eaea1b752496c6a868701e0a931cba0552bd8b1671c5b3",
           "objectType": "referenceModule",
           "sourceIds": []
@@ -11726,7 +11827,7 @@
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/evidenceCardIds/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -11750,8 +11851,18 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:mcp/renderedProjection/evidenceCardIds/004": {
+          "hash": "sha256:b0de86d0f2045025a01fed3a25cf224d85bd299296597bb4aed5a0be56ad87fc",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:mcp/renderedProjection/evidenceCardIds/005": {
+          "hash": "sha256:eb004c9cf8d9d9c22ac2d6292e23db0624f79e8711beb0c2cd52eedc33c4e048",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:mcp/renderedProjection/questionIds/$order": {
-          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "hash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -11830,68 +11941,73 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:mcp/renderedProjection/questionIds/015": {
+          "hash": "sha256:2da77bf44c201a2f6811e520b9af4ce99b7627b4ada7e9d882c96cd33b360534",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:mcp/renderedProjection/rendererDependencyFiles/$order": {
           "hash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/000": {
-          "hash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
+          "hash": "sha256:a146992c98933451c8c2bfdb0243f60a7b9da2167d6fa915197532f94018685e",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/001": {
-          "hash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
+          "hash": "sha256:13ef7b4c2e00db3926266926d311883f9c074ec9293f3212d1ba11e98e0d2a42",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/002": {
-          "hash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
+          "hash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/003": {
-          "hash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
+          "hash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/004": {
-          "hash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
+          "hash": "sha256:0d462183ed3bdb62a89352b7613b15831e963e1ac253c5c1c4a7fe0b71054a56",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/005": {
-          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "hash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/006": {
-          "hash": "sha256:81fb5881acf37866b9aa827c292e10e0b79f541bb122dbe568b0600f16cbf2a9",
+          "hash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/007": {
-          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/008": {
-          "hash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "hash": "sha256:000b1598d7ea9c928322619c47964590f19b50a456440ac2d03051bff22a038a",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/009": {
-          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
+          "hash": "sha256:c427aa95c86ccfb77b5f624d95c442e22509c36d621eda96aa712f723ccecd85",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/010": {
-          "hash": "sha256:d227808869b1fc8b0373dbf8a6ff006fbac55a9b1b8349e2cf935474b7deb093",
+          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/011": {
-          "hash": "sha256:445068b310617e58ae880a41fbdedeead25125593f8615ade429ad740964db02",
+          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
@@ -11901,17 +12017,17 @@
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/rendererDependencyFiles/013": {
-          "hash": "sha256:ea5a8e0fa921f951c9dd093928846157bc129eda92f33cc6ad8b8666340eaf15",
+          "hash": "sha256:d844f4e36eb7d62d6b189039f863e722b0c884cd15ba0a11c1effbb2fc28da6d",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
+          "hash": "sha256:e06fc827f4e05042002cf71596eb0379568c2dc309c2fce1727641d3893424e9",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:mcp/sources/a2a-release-1-0-1": {
-          "hash": "sha256:bfd33ca02d296e3177c91d44baf2e56e327d1232db8445b6db540355398ed1d4",
+          "hash": "sha256:d6b3a336ba17cc56b89f158af10c88d9c1ab4abb8ccd240cbd42ea85879cc409",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -11921,12 +12037,12 @@
           "sourceIds": []
         },
         "/module:mcp/sources/a2a-specification": {
-          "hash": "sha256:0a7efc16e8963aa19ed3cb39d1734569344f589a803768ca4b4d5e122e46a6e1",
+          "hash": "sha256:787be72c9606e4106c38394c90f803a5caf758125ab4806398a3c1476676f187",
           "objectType": "sources",
           "sourceIds": []
         },
         "/module:mcp/sources/mcp-2026-07-28-rc": {
-          "hash": "sha256:687224371b3860298b7978f0c677001486818cd7ddb765b1e749a6a8995f9306",
+          "hash": "sha256:ae3f5ab5a995ff6a16fbfb3726c0c24306f2879adabdfb4bbc48138c6b0062f4",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -11941,7 +12057,7 @@
           "sourceIds": []
         },
         "/module:mcp/sources/mcp-changelog-2026-07-28": {
-          "hash": "sha256:89a9bc16596ddca9840ec387b85df7bf67eaf1e861c3a306815ca255846bb739",
+          "hash": "sha256:7da18d3daf0f1fac9098d82503dab6c25a4066537f9506ce966d7e0b71812570",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -11950,8 +12066,23 @@
           "objectType": "sources",
           "sourceIds": []
         },
+        "/module:mcp/sources/mcp-http-routing-2026-07-28": {
+          "hash": "sha256:60769c735809a7bc53c51ff54a9e0dafa4cfef66ec8fce7ab862a2a3ba40192b",
+          "objectType": "sources",
+          "sourceIds": []
+        },
         "/module:mcp/sources/mcp-lifecycle-2025-11-25": {
           "hash": "sha256:ecc3209125e99d276a8d97f2dcd3594fd2b5e413ab83f5110173faf3533255a5",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:mcp/sources/mcp-list-cache-2026-07-28": {
+          "hash": "sha256:da8f5138da1fe43163a7a66be4b0042bd2461a961ee071edb7e447002fcadd90",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:mcp/sources/mcp-mrtr-2026-07-28": {
+          "hash": "sha256:51a3bd37df76b398365ef661ffc27b7a49382f67aafa8ea1f3e8d4de4fdcc5e5",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -11976,7 +12107,7 @@
           "sourceIds": []
         },
         "/module:mcp/sources/mcp-specification-2026-07-28": {
-          "hash": "sha256:36bab08903672720625cf3e6fe082b430f41f0949bff07e486b5f038eeba0602",
+          "hash": "sha256:e475b0b4cc4fa9c8a095b2c96b19202d3d4653e869a9ee5ea6038e4a79807bb2",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -11986,7 +12117,7 @@
           "sourceIds": []
         },
         "/module:mcp/sources/mcp-tasks-extension": {
-          "hash": "sha256:745abdccf8167e09e96f2f3a9e5724365f15856acc98ceea8cdf3e518f5505b7",
+          "hash": "sha256:270d38f7a3652dc7112dc66f31372a62c678bd0104c0903b1c4251a2ec4ed1bf",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -12192,44 +12323,44 @@
         }
       },
       "zhRendererFiles": [
+        "app/(zh)/layout.tsx",
+        "app/(zh)/modules/mcp/page.tsx",
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
+        "app/dense-module-reading-modes.tsx",
         "app/fieldbook-interactions.tsx",
-        "app/focused-visual-explainers.tsx",
         "app/i18n/locale-config.mjs",
         "app/layout-utils.mjs",
-        "app/layout.tsx",
+        "app/mcp-module-experience-client.tsx",
+        "app/mcp-module-experience.tsx",
         "app/module-content-components.tsx",
-        "app/module-pilot-views.tsx",
         "app/module-representation-assessment.mjs",
-        "app/module-visual-explorers.tsx",
-        "app/modules/[slug]/page.tsx",
         "app/question-filter.mjs",
-        "app/term-hint.tsx"
+        "app/unified-module-hero.tsx"
       ],
-      "enAuthoredHash": "sha256:ddc84ef4f18d009034d5d093b4079a4d5dce0a1d14315fbf0087c494f71a227b",
-      "enEffectiveHash": "sha256:da3a0bca73024e6f35319eb24edd42900a6c5a73dddd98650b1df7bdc8a7736a",
-      "enReviewHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c",
+      "enAuthoredHash": "sha256:8bcfe6a9faa252905fca7b41d80533260a76f250d4be2c851ee7aed962c03354",
+      "enEffectiveHash": "sha256:db001703b2802fdf33fbe31b72a4f7bc03fa03ff308837fa09eb4dcb295a56b6",
+      "enReviewHash": "sha256:3fb715e30d08666aecf0d082faa175d36214d5a18287f55e33f13b10b418b1c1",
       "enRendererFiles": [
+        "app/(en)/en/modules/[slug]/page.tsx",
+        "app/(en)/layout.tsx",
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
-        "app/en/layout.tsx",
-        "app/en/modules/[slug]/page.tsx",
+        "app/dense-module-reading-modes.tsx",
         "app/fieldbook-interactions.tsx",
-        "app/i18n/document-language.tsx",
         "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
         "app/i18n/locale-config.mjs",
         "app/layout-utils.mjs",
-        "app/layout.tsx",
         "app/module-content-components.tsx",
         "app/module-representation-assessment.mjs",
         "app/module-visual-explorers.tsx",
-        "app/question-filter.mjs"
+        "app/question-filter.mjs",
+        "app/unified-module-hero.tsx"
       ],
-      "englishUpdatedAt": "2026-08-10",
+      "englishUpdatedAt": "2026-09-04",
       "reviewFiles": {
         "br-mcp-2026-08-10-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-10/mcp.ultra-exception.json",
@@ -12254,6 +12385,30 @@
           "hash": "sha256:0f299d9db6c0990f70074aefee4baf011aa2705e7129c22c9374aac39046273f",
           "zhContentHash": "sha256:e7e5a3acc34b2aaf99cb0cb977a25d0dc1f6fc44291ec18b278f0e76a533433b",
           "enContentHash": "sha256:ff30f88bfca436549fc67877b85f484c518b1ec22d59b2a68fccb6ae8ac82f2c"
+        },
+        "br-mcp-2026-09-04-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/mcp.ultra-exception.json",
+          "hash": "sha256:a23cf66d2ff309f8fccccedcd8d747fe7bfd53a51821aaee000c8d0048443b68",
+          "zhContentHash": "sha256:599a1a398870dde64e01eba327e6d423a9379f1bc63171e210585dea2262434d",
+          "enContentHash": "sha256:3fb715e30d08666aecf0d082faa175d36214d5a18287f55e33f13b10b418b1c1"
+        },
+        "br-mcp-2026-09-04-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/mcp.xhigh-author.json",
+          "hash": "sha256:bf9e06dc379c459b4a16902d38734acd0ec3af34ed05d16eeacfb96c9f41d87f",
+          "zhContentHash": "sha256:599a1a398870dde64e01eba327e6d423a9379f1bc63171e210585dea2262434d",
+          "enContentHash": "sha256:3fb715e30d08666aecf0d082faa175d36214d5a18287f55e33f13b10b418b1c1"
+        },
+        "br-mcp-2026-09-04-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/mcp.xhigh-language.json",
+          "hash": "sha256:bf2863e296c1371996d175a1e4ba8430c1819a6743f3e877e079d9011fb2ef3c",
+          "zhContentHash": "sha256:599a1a398870dde64e01eba327e6d423a9379f1bc63171e210585dea2262434d",
+          "enContentHash": "sha256:3fb715e30d08666aecf0d082faa175d36214d5a18287f55e33f13b10b418b1c1"
+        },
+        "br-mcp-2026-09-04-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/mcp.xhigh-semantic.json",
+          "hash": "sha256:962fea0ff706ef81f43d6e392c8ff8d4149161474283a0e278237f8f37685e45",
+          "zhContentHash": "sha256:599a1a398870dde64e01eba327e6d423a9379f1bc63171e210585dea2262434d",
+          "enContentHash": "sha256:3fb715e30d08666aecf0d082faa175d36214d5a18287f55e33f13b10b418b1c1"
         },
         "br-mcp-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/mcp.ultra-exception.json",
@@ -51031,7 +51186,7 @@
       "moduleSlug": "mcp",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-24",
       "openedFromCommit": "4b633d33267a91219c009568bcbf84ff39f1902d",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
@@ -52256,7 +52411,16 @@
           "br-mcp-2026-09-04-xhigh-language",
           "br-mcp-2026-09-04-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-09-04",
+      "promotedCommit": "5b4c4b9dc661e7a1c31335f0a8f85a92c57bd2f4",
+      "closureReviewIds": [
+        "br-mcp-2026-09-04-xhigh-author",
+        "br-mcp-2026-09-04-xhigh-semantic",
+        "br-mcp-2026-09-04-xhigh-language",
+        "br-mcp-2026-09-04-ultra-exception"
+      ],
+      "closureReceipt": "receipt-mcp-module-presentation-english-closure-2026-09-04"
     },
     {
       "defermentId": "dfr-a2a-module-presentation-refresh-2026-08-24",
