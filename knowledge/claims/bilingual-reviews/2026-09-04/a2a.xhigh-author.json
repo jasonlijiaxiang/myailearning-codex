@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-a2a-2026-09-04-xhigh-author",
+  "scope": {
+    "moduleId": "a2a",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+    "enContentHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718",
+    "termIds": [
+      "a2a",
+      "a2a-message",
+      "a2a-task",
+      "agent-card",
+      "agent-collaboration",
+      "artifact",
+      "identity-authorization"
+    ],
+    "sourceIds": [
+      "a2a-agent-discovery",
+      "a2a-concepts",
+      "a2a-extensions",
+      "a2a-mcp-boundary",
+      "a2a-release-1-0-1",
+      "a2a-spec-1-0-0",
+      "a2a-specification",
+      "anthropic-effective-agents",
+      "mcp-changelog-2026-07-28",
+      "mcp-specification-2026-07-28",
+      "mcp-tasks-extension",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-observability-2026",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv"
+    ]
+  },
+  "stage": "xhigh-author",
+  "deterministic": [
+    {
+      "gateId": "a2a-xhigh-author-adjudication",
+      "status": "PASS",
+      "evidence": [
+        "The independently authored English candidate reconstructs to the registered Chinese and English review hashes, preserves stable module objects, and resolves every scoped term and source ID.",
+        "The candidate deepens Task and context identifier lineage, terminal-task continuation, streaming subscription recovery, push delivery, and Extension negotiation.",
+        "Normative protocol behavior is separated from implementation policy, especially for cursor scope, retry limits, duplicate delivery, and optional Extension versions.",
+        "The English update date is synchronized to the substantive 2026-09-04 Chinese revision."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 1,
+  "nextStage": "publish-candidate"
+}

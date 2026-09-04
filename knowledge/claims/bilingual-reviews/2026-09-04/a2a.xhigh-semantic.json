@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "bilingual-review/v1",
+  "reviewId": "br-a2a-2026-09-04-xhigh-semantic",
+  "scope": {
+    "moduleId": "a2a",
+    "locale": "en",
+    "objectType": "module",
+    "objectId": null,
+    "zhContentHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+    "enContentHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718",
+    "termIds": [
+      "a2a",
+      "a2a-message",
+      "a2a-task",
+      "agent-card",
+      "agent-collaboration",
+      "artifact",
+      "identity-authorization"
+    ],
+    "sourceIds": [
+      "a2a-agent-discovery",
+      "a2a-concepts",
+      "a2a-extensions",
+      "a2a-mcp-boundary",
+      "a2a-release-1-0-1",
+      "a2a-spec-1-0-0",
+      "a2a-specification",
+      "anthropic-effective-agents",
+      "mcp-changelog-2026-07-28",
+      "mcp-specification-2026-07-28",
+      "mcp-tasks-extension",
+      "nist-genai-profile",
+      "nist-zero-trust",
+      "opentelemetry-genai-observability-2026",
+      "opentelemetry-genai-semconv",
+      "opentelemetry-semconv"
+    ]
+  },
+  "stage": "xhigh-semantic",
+  "deterministic": [
+    {
+      "gateId": "canonical-structure-parity",
+      "status": "PASS",
+      "evidence": [
+        "Independent semantic review passed after aligning identifier errors, subscription recovery, push-notification support, retry semantics, and Extension version behavior to the current specification.",
+        "A client-supplied taskId only references an existing accessible Task; it cannot create one, and contextId inference or mismatch handling remains explicit.",
+        "SubscribeToTask starts with the current Task snapshot for a non-terminal Task and is not described as cursor-based replay; terminal recovery uses GetTask.",
+        "Optional unsupported Extensions may be ignored, unsupported versions do not fall back, and required mismatch uses ExtensionSupportRequiredError."
+      ]
+    }
+  ],
+  "rubric": {
+    "semanticFidelity": 5,
+    "mechanismAccuracy": 5,
+    "boundaryPreservation": 5,
+    "evidenceFaithfulness": 5,
+    "technicalEnglish": 5,
+    "presalesUsability": 5
+  },
+  "findings": [],
+  "verdict": "PASS",
+  "blockClass": "NONE",
+  "attempt": 2,
+  "nextStage": "publish-candidate"
+}

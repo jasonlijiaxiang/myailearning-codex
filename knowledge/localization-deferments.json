@@ -380,6 +380,13 @@
       "recordedAt": "2026-09-04",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
       "summary": "MCP English closure candidate: independently authored and reviewed MRTR, cache invalidation, HTTP routing metadata, Tasks extension scope, and Form-versus-URL credential boundaries; exact hashes and four review records are registered for atomic promotion."
+    },
+    {
+      "receiptId": "receipt-a2a-module-presentation-english-closure-2026-09-04",
+      "kind": "closure",
+      "recordedAt": "2026-09-04",
+      "decisionId": "module-content-presentation-refresh-2026-08-24",
+      "summary": "A2A English closure candidate: independently authored and reviewed identifier lineage, terminal continuation, subscription recovery, push-delivery semantics, and Extension negotiation; exact hashes and four review records are registered for atomic promotion."
     }
   ],
   "moduleBaselines": {
@@ -52039,7 +52046,7 @@
       "moduleSlug": "a2a",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-24",
       "openedFromCommit": "74baebd5cf7bfca6181fade8d639586c1d239fd3",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
@@ -52079,14 +52086,6 @@
           "sourceIds": []
         },
         {
-          "objectId": "/module:a2a/brief/deepDives/$order",
-          "objectType": "brief-order",
-          "changeKind": "modified",
-          "baselineHash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
-          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
-          "sourceIds": []
-        },
-        {
           "objectId": "/module:a2a/brief/deepDives/000",
           "objectType": "brief",
           "changeKind": "modified",
@@ -52104,31 +52103,6 @@
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:f115df488d01e7a7c2dfd4395e29832e5041693df7f6821447fe3cd68cbdbeac",
-          "currentHash": "sha256:114db6d43a1f10e05447542a29c292605c8235d3a61a7a4c8ee8bdd5cd4b2f76",
-          "sourceIds": [
-            "a2a-concepts",
-            "a2a-specification",
-            "anthropic-effective-agents"
-          ]
-        },
-        {
-          "objectId": "/module:a2a/brief/deepDives/002",
-          "objectType": "brief",
-          "changeKind": "added",
-          "baselineHash": null,
-          "currentHash": "sha256:308fed6798a3a16d9d8ba5b45ef8b153e4f8c29caefcb5b69333217e3307dbd6",
-          "sourceIds": [
-            "a2a-agent-discovery",
-            "a2a-extensions",
-            "a2a-specification",
-            "nist-zero-trust"
-          ]
-        },
-        {
-          "objectId": "/module:a2a/brief/deepDives/003",
-          "objectType": "brief",
-          "changeKind": "added",
-          "baselineHash": null,
           "currentHash": "sha256:bd85c269bfc609c255af7e533fe7b3ea068189235dfaab36355a742c365ece55",
           "sourceIds": [
             "a2a-concepts",
@@ -52384,14 +52358,6 @@
           ]
         },
         {
-          "objectId": "/module:a2a/content/deepDives/$order",
-          "objectType": "content-order",
-          "changeKind": "modified",
-          "baselineHash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
-          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
-          "sourceIds": []
-        },
-        {
           "objectId": "/module:a2a/content/deepDives/000",
           "objectType": "content",
           "changeKind": "modified",
@@ -52409,31 +52375,6 @@
           "objectType": "content",
           "changeKind": "modified",
           "baselineHash": "sha256:f115df488d01e7a7c2dfd4395e29832e5041693df7f6821447fe3cd68cbdbeac",
-          "currentHash": "sha256:114db6d43a1f10e05447542a29c292605c8235d3a61a7a4c8ee8bdd5cd4b2f76",
-          "sourceIds": [
-            "a2a-concepts",
-            "a2a-specification",
-            "anthropic-effective-agents"
-          ]
-        },
-        {
-          "objectId": "/module:a2a/content/deepDives/002",
-          "objectType": "content",
-          "changeKind": "added",
-          "baselineHash": null,
-          "currentHash": "sha256:308fed6798a3a16d9d8ba5b45ef8b153e4f8c29caefcb5b69333217e3307dbd6",
-          "sourceIds": [
-            "a2a-agent-discovery",
-            "a2a-extensions",
-            "a2a-specification",
-            "nist-zero-trust"
-          ]
-        },
-        {
-          "objectId": "/module:a2a/content/deepDives/003",
-          "objectType": "content",
-          "changeKind": "added",
-          "baselineHash": null,
           "currentHash": "sha256:bd85c269bfc609c255af7e533fe7b3ea068189235dfaab36355a742c365ece55",
           "sourceIds": [
             "a2a-concepts",
@@ -52664,7 +52605,7 @@
           "objectType": "curriculum",
           "changeKind": "modified",
           "baselineHash": "sha256:194c8ce18247065e4fdcc60c3ce2d321dfca728a3993fc90d91d9635565e5fc8",
-          "currentHash": "sha256:0c1092dda1162d8b4fd05288bc8ed3eecb74d4dff8ae74e080beaa6d6ed9036d",
+          "currentHash": "sha256:e856755d7f5039312e0537431c70ecad01710c517966a9c556452e9f9a8ab8d7",
           "sourceIds": [
             "a2a-agent-discovery",
             "a2a-concepts",
@@ -52677,7 +52618,7 @@
           "objectType": "curriculum",
           "changeKind": "modified",
           "baselineHash": "sha256:cd8728dd7e117e2958ab1c15935a0e21df175d895ed086ddc9079d2a7f3ad81f",
-          "currentHash": "sha256:e18b257a5aba46991bf8ec96544f5aa520ef83006963491b041ed763de0a18c0",
+          "currentHash": "sha256:ad50c0defdcede4ccf8268552d705d3c8ec923b50ca2af8df8b5e29af316e667",
           "sourceIds": [
             "a2a-concepts",
             "a2a-specification",
@@ -52701,7 +52642,7 @@
           "objectType": "curriculum",
           "changeKind": "modified",
           "baselineHash": "sha256:18658990c1ee4c62cee9dab4809af385763db5098a0b8581918e36fed8cd8e4e",
-          "currentHash": "sha256:ac3227a0578149d16bc95412726d32a239573da5cee5d58b4fcbeb47595c58a4",
+          "currentHash": "sha256:a61a95434b32706679c8c66e23919dc51c41b1cfeb5c8044e80a1db00637f731",
           "sourceIds": [
             "a2a-concepts",
             "a2a-extensions",
@@ -53052,14 +52993,6 @@
           "sourceIds": []
         },
         {
-          "objectId": "/module:a2a/renderedProjection/sharedRendererHash",
-          "objectType": "renderedProjection",
-          "changeKind": "modified",
-          "baselineHash": "sha256:648e3db6624f60a1bad204869ba02e830b1bf7c18fcd90fbfa5dd0a1f549722c",
-          "currentHash": "sha256:8930033b52bee7bceba8f0066e2c513e27786c688823f542d9e7d0c7ab8a72a5",
-          "sourceIds": []
-        },
-        {
           "objectId": "/module:a2a/sources/a2a-agent-discovery",
           "objectType": "sources",
           "changeKind": "added",
@@ -53123,7 +53056,54 @@
         "br-a2a-2026-08-10-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-module-content-presentation-refresh-locale-gate-2026-08-24",
-      "closureCriteria": "完成独立英文撰写与 xhigh-author、xhigh-semantic、xhigh-language、ultra-exception 四阶段审校，登记候选哈希并通过 ready 门后，方可原子提升双语基线并关闭。"
+      "closureCriteria": "完成独立英文撰写与 xhigh-author、xhigh-semantic、xhigh-language、ultra-exception 四阶段审校，登记候选哈希并通过 ready 门后，方可原子提升双语基线并关闭。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+        "zhRendererFiles": [
+          "app/(zh)/layout.tsx",
+          "app/(zh)/modules/a2a/page.tsx",
+          "app/a2a-module-experience.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/dense-module-reading-modes.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/question-filter.mjs",
+          "app/unified-module-hero.tsx"
+        ],
+        "enAuthoredHash": "sha256:e4ec7a037c89284b1826702e68dda472f185eeb1f6a3d5e32946bf0b77b92cda",
+        "enEffectiveHash": "sha256:8976d7344dbb46d2bb4af314b6b4bf221c3f184cd3de75a31e2a39c2d8723a2e",
+        "enReviewHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718",
+        "enRendererFiles": [
+          "app/(en)/en/modules/[slug]/page.tsx",
+          "app/(en)/layout.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/dense-module-reading-modes.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs",
+          "app/unified-module-hero.tsx"
+        ],
+        "englishUpdatedAt": "2026-09-04",
+        "reviewIds": [
+          "br-a2a-2026-09-04-xhigh-author",
+          "br-a2a-2026-09-04-xhigh-semantic",
+          "br-a2a-2026-09-04-xhigh-language",
+          "br-a2a-2026-09-04-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-veadk-module-presentation-refresh-2026-08-24",
