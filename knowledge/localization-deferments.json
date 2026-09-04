@@ -12437,16 +12437,16 @@
       }
     },
     "a2a": {
-      "zhBaselineCommit": "74baebd5cf7bfca6181fade8d639586c1d239fd3",
-      "enBaselineCommit": "74baebd5cf7bfca6181fade8d639586c1d239fd3",
+      "zhBaselineCommit": "2beb109119337a6abe112f21ca8970e21f8a5b77",
+      "enBaselineCommit": "2beb109119337a6abe112f21ca8970e21f8a5b77",
       "reviewSetIds": [
-        "br-a2a-2026-08-10-ultra-exception",
-        "br-a2a-2026-08-10-xhigh-author",
-        "br-a2a-2026-08-10-xhigh-language",
-        "br-a2a-2026-08-10-xhigh-semantic"
+        "br-a2a-2026-09-04-ultra-exception",
+        "br-a2a-2026-09-04-xhigh-author",
+        "br-a2a-2026-09-04-xhigh-language",
+        "br-a2a-2026-09-04-xhigh-semantic"
       ],
-      "zhReviewHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
-      "zhStateHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
+      "zhReviewHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+      "zhStateHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
       "zhObjects": {
         "/module:a2a/brief/cloudHooks/$order": {
           "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
@@ -12474,7 +12474,7 @@
           "sourceIds": []
         },
         "/module:a2a/brief/criticalBoundary": {
-          "hash": "sha256:82340f10d068887718933fca0ce73d09c54041c5407af263787dc8d45e6048fb",
+          "hash": "sha256:d37b2a77214b47c4f5e809215d37174cfafe209f91407495c403589d84820748",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -12484,7 +12484,7 @@
           "sourceIds": []
         },
         "/module:a2a/brief/decisions/000": {
-          "hash": "sha256:7032c318a43f5da73575c37976f36d8c94b0ccea26f8056a0d21bb103758bf0b",
+          "hash": "sha256:bb02ce12744b2701ceab0842d68671f49e48533213c155ff96ae82e220dba4fe",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -12509,7 +12509,7 @@
           "sourceIds": []
         },
         "/module:a2a/brief/deepDiveLead": {
-          "hash": "sha256:8f1f697b4aec1eedd0f58846f79404ad22f17522f80da34474e6242cc8cfe5d9",
+          "hash": "sha256:f7254b3d0ec35a64c038ce23c66cd896d38bab10ccb705cd5762da32f27fe245",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -12519,7 +12519,7 @@
           "sourceIds": []
         },
         "/module:a2a/brief/deepDives/000": {
-          "hash": "sha256:26fc3498ee966f972dbfd92512750fceecfbb67b2b6349f82115bd11da2f0c04",
+          "hash": "sha256:36c3f9fcf0b1c99a6787064f94dd020383ec5e845ced9b65df347e063b4ad4bb",
           "objectType": "brief",
           "sourceIds": [
             "a2a-concepts",
@@ -12529,7 +12529,7 @@
           ]
         },
         "/module:a2a/brief/deepDives/001": {
-          "hash": "sha256:f115df488d01e7a7c2dfd4395e29832e5041693df7f6821447fe3cd68cbdbeac",
+          "hash": "sha256:bd85c269bfc609c255af7e533fe7b3ea068189235dfaab36355a742c365ece55",
           "objectType": "brief",
           "sourceIds": [
             "a2a-concepts",
@@ -12543,12 +12543,12 @@
           "sourceIds": []
         },
         "/module:a2a/brief/definition": {
-          "hash": "sha256:858d1c5c1b8f27112ac2603ad861fe220d43135eee7d9ffc066a967b790fc1fc",
+          "hash": "sha256:7e3f7fbeb4f6b564a2a64876ffcdd3e6b6151faebec799034932c7b47384cc42",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:a2a/brief/evidenceCards/$order": {
-          "hash": "sha256:c789b1eb0795b8c977538e05735ff065ee97a55a3eb0ea97d076fb318d0d87c1",
+          "hash": "sha256:491907592657df5585f1c53e9c9efc36c2c0da331db0b9b085943c89f32e5888",
           "objectType": "brief-order",
           "sourceIds": []
         },
@@ -12574,14 +12574,21 @@
           ]
         },
         "/module:a2a/brief/evidenceCards/003": {
-          "hash": "sha256:a188ccda185132dc47494bdf422b94870826451773026e63c488760aa9dce6ef",
+          "hash": "sha256:4aff4260d74ff9f88439ffdae1ac1b61b3b8086c9904d862e56ce0b9ced4b62b",
           "objectType": "brief",
           "sourceIds": [
             "a2a-concepts"
           ]
         },
+        "/module:a2a/brief/evidenceCards/004": {
+          "hash": "sha256:7af9f76aa97472185e8196a2076fdcddae9cff96407f60bfacaffcfda01905d5",
+          "objectType": "brief",
+          "sourceIds": [
+            "a2a-specification"
+          ]
+        },
         "/module:a2a/brief/position": {
-          "hash": "sha256:60f9dfe446a273136f27569187c1772ad56f9deaa9185640dfed2b20563a6c36",
+          "hash": "sha256:b226ee7b0755bfe69da9e2fccf3c50f3f0766ac85220867a4c86dc95c43127c8",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -12596,12 +12603,12 @@
           "sourceIds": []
         },
         "/module:a2a/brief/principles/000": {
-          "hash": "sha256:51fe41137b9317d7959948989b07d2a13d7e8bc48cb5675c4761cc0868735721",
+          "hash": "sha256:ba81a17d2e55c3da93680e2c789e812a0eb7e0589af3ca36e59e297fa75b049a",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:a2a/brief/principles/001": {
-          "hash": "sha256:54d25dc36aa0c833e4fe5bc4e522dd417a8f317c35db3185d128307af0178cf2",
+          "hash": "sha256:9f6f03fda127ff3159b71c6d0da2239484d60ae52e1d7639674606658f8ad5cd",
           "objectType": "brief",
           "sourceIds": []
         },
@@ -12616,22 +12623,22 @@
           "sourceIds": []
         },
         "/module:a2a/brief/principles/004": {
-          "hash": "sha256:625a25fec393fde1de6587eb0255e58ed3ba346887459df98baaabfc91d719e3",
+          "hash": "sha256:e41c1b807d37fe336ec54eb6d62810e476f2f691002a9c37a69462774c890dd4",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:a2a/brief/principleTitle": {
-          "hash": "sha256:7ee08221231ed8e93b923a0e9bbe78b09d9e3ffd7f8318ed9e586f0cdba59c48",
+          "hash": "sha256:97a683e83307c050ea1afe29af9744984a5505323f22bd8a31639a209cbefd27",
           "objectType": "brief",
           "sourceIds": []
         },
         "/module:a2a/brief/qa/$order": {
-          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "brief-order",
           "sourceIds": []
         },
         "/module:a2a/brief/qa/000": {
-          "hash": "sha256:4a2ccfe1ebe3ce6600f4558def11decd42a8f6bc32383325fe59e386de9db1a5",
+          "hash": "sha256:8eaf427274e2ac83e17228a0d028d152f7af43f0a6caa41b30678c47cf633fce",
           "objectType": "brief",
           "sourceIds": [
             "a2a-mcp-boundary",
@@ -12647,7 +12654,7 @@
           ]
         },
         "/module:a2a/brief/qa/002": {
-          "hash": "sha256:e3a04cbbd44b6f7b8982dd53cabf2ac0f803c733e377d53c4e61313d441933e1",
+          "hash": "sha256:230b38eb3ed8045bf9036458a50dbd3dc9c8dc374f0fb9bd6bcb49a45a452e1f",
           "objectType": "brief",
           "sourceIds": [
             "a2a-concepts",
@@ -12655,7 +12662,7 @@
           ]
         },
         "/module:a2a/brief/qa/003": {
-          "hash": "sha256:ce65951f7c353c2c598f383ee678ef203496cdda7e30fc44b9c2a1d04ced37f2",
+          "hash": "sha256:d65289d1a5942bb91ce8fffcb861847bda5f406dfe430fe955b41a00f44959ec",
           "objectType": "brief",
           "sourceIds": [
             "a2a-specification",
@@ -12664,13 +12671,36 @@
           ]
         },
         "/module:a2a/brief/qa/004": {
+          "hash": "sha256:6bf19f47c8b50ddf89d66329c94d3cdbad930b6b9c18d3e2f797fdeafd13f422",
+          "objectType": "brief",
+          "sourceIds": [
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/brief/qa/005": {
+          "hash": "sha256:b01f990326047129c9df66d317607693691c3765dcb64ee03bb9feab31898f35",
+          "objectType": "brief",
+          "sourceIds": [
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/brief/qa/006": {
+          "hash": "sha256:340946c124e9b2ef7c40cba51761d5240466f1080c2593d08126dffa518a0ba4",
+          "objectType": "brief",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-extensions",
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/brief/qa/007": {
           "hash": "sha256:26bad672506e1ffd4baf11f91e56b833eb43f21fcb9a467a97439454fee7a74e",
           "objectType": "brief",
           "sourceIds": [
             "a2a-concepts"
           ]
         },
-        "/module:a2a/brief/qa/005": {
+        "/module:a2a/brief/qa/008": {
           "hash": "sha256:7f811179492ab95036c23b4ed9baa97e0d15cd65341953419fc41342ce1a1a0a",
           "objectType": "brief",
           "sourceIds": [
@@ -12678,7 +12708,7 @@
             "nist-genai-profile"
           ]
         },
-        "/module:a2a/brief/qa/006": {
+        "/module:a2a/brief/qa/009": {
           "hash": "sha256:95e9185dafe96e25f01a8380e5dca1ad0a5b92cc0af08f7198c4c2b9fde60961",
           "objectType": "brief",
           "sourceIds": [
@@ -12686,7 +12716,7 @@
             "nist-genai-profile"
           ]
         },
-        "/module:a2a/brief/qa/007": {
+        "/module:a2a/brief/qa/010": {
           "hash": "sha256:0be8154546ac1dd5e61041cf9407005eafcbc362bd0303d972845ebcad623f84",
           "objectType": "brief",
           "sourceIds": [
@@ -12694,7 +12724,7 @@
             "anthropic-effective-agents"
           ]
         },
-        "/module:a2a/brief/qa/008": {
+        "/module:a2a/brief/qa/011": {
           "hash": "sha256:5db76f7982fb6f67e168a59cd16b6e3c05c2e01d96aa3a78b7945096e63a0e2f",
           "objectType": "brief",
           "sourceIds": [
@@ -12702,7 +12732,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:a2a/brief/qa/009": {
+        "/module:a2a/brief/qa/012": {
           "hash": "sha256:14655911c72d6c423a5498c0b5a5408afbc02bc15225060aa079de40d8f4cd40",
           "objectType": "brief",
           "sourceIds": [
@@ -12710,7 +12740,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:a2a/brief/qa/010": {
+        "/module:a2a/brief/qa/013": {
           "hash": "sha256:63f3071618c84520518ac25d4ddbe02139cb1b79f2fe657520d971a97f9fcc4e",
           "objectType": "brief",
           "sourceIds": [
@@ -12718,7 +12748,7 @@
             "nist-genai-profile"
           ]
         },
-        "/module:a2a/brief/qa/011": {
+        "/module:a2a/brief/qa/014": {
           "hash": "sha256:a97531791ec12c8d4356b3bbaa954b7f25f0b33dcf10c14e950f998e6602e74d",
           "objectType": "brief",
           "sourceIds": [
@@ -12837,7 +12867,7 @@
           "sourceIds": []
         },
         "/module:a2a/content/deepDives/000": {
-          "hash": "sha256:26fc3498ee966f972dbfd92512750fceecfbb67b2b6349f82115bd11da2f0c04",
+          "hash": "sha256:36c3f9fcf0b1c99a6787064f94dd020383ec5e845ced9b65df347e063b4ad4bb",
           "objectType": "content",
           "sourceIds": [
             "a2a-concepts",
@@ -12847,7 +12877,7 @@
           ]
         },
         "/module:a2a/content/deepDives/001": {
-          "hash": "sha256:f115df488d01e7a7c2dfd4395e29832e5041693df7f6821447fe3cd68cbdbeac",
+          "hash": "sha256:bd85c269bfc609c255af7e533fe7b3ea068189235dfaab36355a742c365ece55",
           "objectType": "content",
           "sourceIds": [
             "a2a-concepts",
@@ -12856,7 +12886,7 @@
           ]
         },
         "/module:a2a/content/evidenceCards/$order": {
-          "hash": "sha256:c789b1eb0795b8c977538e05735ff065ee97a55a3eb0ea97d076fb318d0d87c1",
+          "hash": "sha256:491907592657df5585f1c53e9c9efc36c2c0da331db0b9b085943c89f32e5888",
           "objectType": "content-order",
           "sourceIds": []
         },
@@ -12882,19 +12912,26 @@
           ]
         },
         "/module:a2a/content/evidenceCards/003": {
-          "hash": "sha256:a188ccda185132dc47494bdf422b94870826451773026e63c488760aa9dce6ef",
+          "hash": "sha256:4aff4260d74ff9f88439ffdae1ac1b61b3b8086c9904d862e56ce0b9ced4b62b",
           "objectType": "content",
           "sourceIds": [
             "a2a-concepts"
           ]
         },
+        "/module:a2a/content/evidenceCards/004": {
+          "hash": "sha256:7af9f76aa97472185e8196a2076fdcddae9cff96407f60bfacaffcfda01905d5",
+          "objectType": "content",
+          "sourceIds": [
+            "a2a-specification"
+          ]
+        },
         "/module:a2a/content/qa/$order": {
-          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "content-order",
           "sourceIds": []
         },
         "/module:a2a/content/qa/000": {
-          "hash": "sha256:4a2ccfe1ebe3ce6600f4558def11decd42a8f6bc32383325fe59e386de9db1a5",
+          "hash": "sha256:8eaf427274e2ac83e17228a0d028d152f7af43f0a6caa41b30678c47cf633fce",
           "objectType": "content",
           "sourceIds": [
             "a2a-mcp-boundary",
@@ -12910,7 +12947,7 @@
           ]
         },
         "/module:a2a/content/qa/002": {
-          "hash": "sha256:e3a04cbbd44b6f7b8982dd53cabf2ac0f803c733e377d53c4e61313d441933e1",
+          "hash": "sha256:230b38eb3ed8045bf9036458a50dbd3dc9c8dc374f0fb9bd6bcb49a45a452e1f",
           "objectType": "content",
           "sourceIds": [
             "a2a-concepts",
@@ -12918,7 +12955,7 @@
           ]
         },
         "/module:a2a/content/qa/003": {
-          "hash": "sha256:ce65951f7c353c2c598f383ee678ef203496cdda7e30fc44b9c2a1d04ced37f2",
+          "hash": "sha256:d65289d1a5942bb91ce8fffcb861847bda5f406dfe430fe955b41a00f44959ec",
           "objectType": "content",
           "sourceIds": [
             "a2a-specification",
@@ -12927,13 +12964,36 @@
           ]
         },
         "/module:a2a/content/qa/004": {
+          "hash": "sha256:6bf19f47c8b50ddf89d66329c94d3cdbad930b6b9c18d3e2f797fdeafd13f422",
+          "objectType": "content",
+          "sourceIds": [
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/content/qa/005": {
+          "hash": "sha256:b01f990326047129c9df66d317607693691c3765dcb64ee03bb9feab31898f35",
+          "objectType": "content",
+          "sourceIds": [
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/content/qa/006": {
+          "hash": "sha256:340946c124e9b2ef7c40cba51761d5240466f1080c2593d08126dffa518a0ba4",
+          "objectType": "content",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-extensions",
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/content/qa/007": {
           "hash": "sha256:26bad672506e1ffd4baf11f91e56b833eb43f21fcb9a467a97439454fee7a74e",
           "objectType": "content",
           "sourceIds": [
             "a2a-concepts"
           ]
         },
-        "/module:a2a/content/qa/005": {
+        "/module:a2a/content/qa/008": {
           "hash": "sha256:7f811179492ab95036c23b4ed9baa97e0d15cd65341953419fc41342ce1a1a0a",
           "objectType": "content",
           "sourceIds": [
@@ -12941,7 +13001,7 @@
             "nist-genai-profile"
           ]
         },
-        "/module:a2a/content/qa/006": {
+        "/module:a2a/content/qa/009": {
           "hash": "sha256:95e9185dafe96e25f01a8380e5dca1ad0a5b92cc0af08f7198c4c2b9fde60961",
           "objectType": "content",
           "sourceIds": [
@@ -12949,7 +13009,7 @@
             "nist-genai-profile"
           ]
         },
-        "/module:a2a/content/qa/007": {
+        "/module:a2a/content/qa/010": {
           "hash": "sha256:0be8154546ac1dd5e61041cf9407005eafcbc362bd0303d972845ebcad623f84",
           "objectType": "content",
           "sourceIds": [
@@ -12957,7 +13017,7 @@
             "anthropic-effective-agents"
           ]
         },
-        "/module:a2a/content/qa/008": {
+        "/module:a2a/content/qa/011": {
           "hash": "sha256:5db76f7982fb6f67e168a59cd16b6e3c05c2e01d96aa3a78b7945096e63a0e2f",
           "objectType": "content",
           "sourceIds": [
@@ -12965,7 +13025,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:a2a/content/qa/009": {
+        "/module:a2a/content/qa/012": {
           "hash": "sha256:14655911c72d6c423a5498c0b5a5408afbc02bc15225060aa079de40d8f4cd40",
           "objectType": "content",
           "sourceIds": [
@@ -12973,7 +13033,7 @@
             "nist-zero-trust"
           ]
         },
-        "/module:a2a/content/qa/010": {
+        "/module:a2a/content/qa/013": {
           "hash": "sha256:63f3071618c84520518ac25d4ddbe02139cb1b79f2fe657520d971a97f9fcc4e",
           "objectType": "content",
           "sourceIds": [
@@ -12981,7 +13041,7 @@
             "nist-genai-profile"
           ]
         },
-        "/module:a2a/content/qa/011": {
+        "/module:a2a/content/qa/014": {
           "hash": "sha256:a97531791ec12c8d4356b3bbaa954b7f25f0b33dcf10c14e950f998e6602e74d",
           "objectType": "content",
           "sourceIds": [
@@ -12990,12 +13050,12 @@
           ]
         },
         "/module:a2a/curriculum/chapters/$order": {
-          "hash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "hash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
           "objectType": "curriculum-order",
           "sourceIds": []
         },
         "/module:a2a/curriculum/chapters/000": {
-          "hash": "sha256:720e95bd36709fb9ba5bdc50cf72553fdf017a22774349b01ae53dbfe5e87235",
+          "hash": "sha256:6a990a1c10b21ec6ed1c9e1b7fff49102c12a272d9af3f194773042b1dfbd71c",
           "objectType": "curriculum",
           "sourceIds": [
             "a2a-mcp-boundary",
@@ -13003,10 +13063,12 @@
           ]
         },
         "/module:a2a/curriculum/chapters/001": {
-          "hash": "sha256:194c8ce18247065e4fdcc60c3ce2d321dfca728a3993fc90d91d9635565e5fc8",
+          "hash": "sha256:e856755d7f5039312e0537431c70ecad01710c517966a9c556452e9f9a8ab8d7",
           "objectType": "curriculum",
           "sourceIds": [
+            "a2a-agent-discovery",
             "a2a-concepts",
+            "a2a-extensions",
             "a2a-specification"
           ]
         },
@@ -13019,22 +13081,38 @@
           ]
         },
         "/module:a2a/curriculum/chapters/003": {
-          "hash": "sha256:cd8728dd7e117e2958ab1c15935a0e21df175d895ed086ddc9079d2a7f3ad81f",
+          "hash": "sha256:ad50c0defdcede4ccf8268552d705d3c8ec923b50ca2af8df8b5e29af316e667",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/curriculum/chapters/004": {
+          "hash": "sha256:736cb245b39926e2228adf7dec7db95e14d77a9e000ae8649ae7498d34917e5e",
           "objectType": "curriculum",
           "sourceIds": [
             "a2a-specification",
             "opentelemetry-semconv"
           ]
         },
-        "/module:a2a/curriculum/chapters/004": {
-          "hash": "sha256:bad702d5221fd18ee7c027e12ffedc7d953acd535d1b2cf542d4c5bb3f34062c",
+        "/module:a2a/curriculum/chapters/005": {
+          "hash": "sha256:a61a95434b32706679c8c66e23919dc51c41b1cfeb5c8044e80a1db00637f731",
+          "objectType": "curriculum",
+          "sourceIds": [
+            "a2a-extensions",
+            "a2a-specification"
+          ]
+        },
+        "/module:a2a/curriculum/chapters/006": {
+          "hash": "sha256:08f65428fc0edc5c834dada8d046bb5b0a300584c0f58b8be21d453547fb1279",
           "objectType": "curriculum",
           "sourceIds": [
             "a2a-release-1-0-1",
             "a2a-specification"
           ]
         },
-        "/module:a2a/curriculum/chapters/005": {
+        "/module:a2a/curriculum/chapters/007": {
           "hash": "sha256:18658990c1ee4c62cee9dab4809af385763db5098a0b8581918e36fed8cd8e4e",
           "objectType": "curriculum",
           "sourceIds": [
@@ -13042,7 +13120,7 @@
             "anthropic-effective-agents"
           ]
         },
-        "/module:a2a/curriculum/chapters/006": {
+        "/module:a2a/curriculum/chapters/008": {
           "hash": "sha256:d2b25425a06b168d1c98e7dde321992ab07422db2e6716912ebce9973946ee46",
           "objectType": "curriculum",
           "sourceIds": [
@@ -13051,7 +13129,7 @@
             "opentelemetry-semconv"
           ]
         },
-        "/module:a2a/curriculum/chapters/007": {
+        "/module:a2a/curriculum/chapters/009": {
           "hash": "sha256:cc3a5d503e49205c800d751ea45de5fc17044a26c212316b94d6ceb8deaff4d8",
           "objectType": "curriculum",
           "sourceIds": [
@@ -13059,7 +13137,7 @@
             "nist-genai-profile"
           ]
         },
-        "/module:a2a/curriculum/chapters/008": {
+        "/module:a2a/curriculum/chapters/010": {
           "hash": "sha256:4b33e551a5b0628fd701dc2849d0f1eeb6f643d7d4bb46550dc382e0485ba3d1",
           "objectType": "curriculum",
           "sourceIds": [
@@ -13193,17 +13271,17 @@
           "sourceIds": []
         },
         "/module:a2a/extensionView/title": {
-          "hash": "sha256:1151bd0fcd68d9b011206c48d071a05e61a73c5442171042dc768a94e8967924",
+          "hash": "sha256:470c21d5c680c14ebb4364b0389a4abd38ef499a877326c89294f05f4155031c",
           "objectType": "extensionView",
           "sourceIds": []
         },
         "/module:a2a/learning/labs/$order": {
-          "hash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
           "objectType": "learning-order",
           "sourceIds": []
         },
         "/module:a2a/learning/labs/000": {
-          "hash": "sha256:6b5a72840208ea336f5001de9bf607032276a6faac009d1b3102aefec29f7495",
+          "hash": "sha256:8176ae77795e4e391b8780e9a7a9b21e113a4e5492798e7fd93b2dedbdc2699c",
           "objectType": "learning",
           "sourceIds": [
             "a2a-concepts",
@@ -13221,7 +13299,17 @@
           ]
         },
         "/module:a2a/learning/labs/002": {
-          "hash": "sha256:0cdad1426fbfe6c3e9d20289e7ac1a9a3c6be68d14891c89c5d20eb3d5b8b9c2",
+          "hash": "sha256:4d25c5e63050fb4ebb88f83920a6bc119aae6085ed548daa526c215038e3f255",
+          "objectType": "learning",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-extensions",
+            "a2a-specification",
+            "nist-zero-trust"
+          ]
+        },
+        "/module:a2a/learning/labs/003": {
+          "hash": "sha256:131b5572b095a38e5f411bedccb7a70a63d6ecfe242f83a2036083a51149d686",
           "objectType": "learning",
           "sourceIds": [
             "a2a-concepts",
@@ -13231,7 +13319,7 @@
           ]
         },
         "/module:a2a/learning/outcomes/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -13246,17 +13334,22 @@
           "sourceIds": []
         },
         "/module:a2a/learning/outcomes/002": {
-          "hash": "sha256:2bdf24ffbf1349d23171b4b59bb287ec17c2e2e025e94ed312a3869a0b053756",
+          "hash": "sha256:a78d4914586476ef447fbf34d1ea70c6fdf21e0875580a8b5ed5f78522307024",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:a2a/learning/outcomes/003": {
+          "hash": "sha256:dcd9b4b0e5521d9dabd1c53066fe9c6c37540d949b51b863adf0976ae8b574ee",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:a2a/learning/outcomes/004": {
           "hash": "sha256:72f37505c19780a0d2b3e03ecf45cfd5cd7a26f80fa7d88073a7f9c8dce8fd6e",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:a2a/learning/route/$order": {
-          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "hash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "objectType": "learning-order",
           "sourceIds": []
         },
@@ -13266,21 +13359,26 @@
           "sourceIds": []
         },
         "/module:a2a/learning/route/001": {
-          "hash": "sha256:3fd518dcb9f434ed4733409ef0100046e2affd0ff781ddedcdef0dbf0a51e422",
+          "hash": "sha256:09f7fe3426f7ee349eaf11c470bfbddb9a9613810748c7e3f4b2fac7bd3a0639",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:a2a/learning/route/002": {
-          "hash": "sha256:fde41ae4076b7dca13c995e832c5d693c7847338820758e96a5c1b0f1c857952",
+          "hash": "sha256:dc5f256b75749c3a9c2fb2ee6b25d5079c6ce47b64b7acc591817c365ebe9110",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:a2a/learning/route/003": {
-          "hash": "sha256:2212e0f1af03c871b90d47930ca8bca31428da77b07af1af9ec73367a3d1b045",
+          "hash": "sha256:09805db29a9233896dcb39cb0c0ddba0214824a078635475540c3675455fc188",
           "objectType": "learning",
           "sourceIds": []
         },
         "/module:a2a/learning/route/004": {
+          "hash": "sha256:2212e0f1af03c871b90d47930ca8bca31428da77b07af1af9ec73367a3d1b045",
+          "objectType": "learning",
+          "sourceIds": []
+        },
+        "/module:a2a/learning/route/005": {
           "hash": "sha256:d905077e75b9705e368806890b21ac3b77bc254f83313451ac20f7e80a921c55",
           "objectType": "learning",
           "sourceIds": []
@@ -13291,7 +13389,7 @@
           "sourceIds": []
         },
         "/module:a2a/publication/contentContract/boundary/000": {
-          "hash": "sha256:97dd1b1c3f027764fc11c9273d498025eeb2b0537dd147d2286998f83f826874",
+          "hash": "sha256:edf919e5b1f769fa5190ebf8efab447fcbbaff222ac0f73e89ff136451d41af3",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -13301,7 +13399,7 @@
           "sourceIds": []
         },
         "/module:a2a/publication/contentContract/cloud/000": {
-          "hash": "sha256:8763f9c13eee0b189da1b3ec3076f221b22884a6376c47de08193647edec8dd6",
+          "hash": "sha256:0c235277e8ed1cadbc5746a2732715e41b959c99a3a9db908861bb814b4821e7",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -13311,7 +13409,7 @@
           "sourceIds": []
         },
         "/module:a2a/publication/contentContract/customer/000": {
-          "hash": "sha256:538ac162b2333b08136a9de61ee04d4c37855364ad3133d22837cca5dbc0ec42",
+          "hash": "sha256:250cf32b6cb9f4a4c8d924ee155c714fbd4447b7c6a83805d7fd8403567df9e5",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -13321,7 +13419,7 @@
           "sourceIds": []
         },
         "/module:a2a/publication/contentContract/mechanism/000": {
-          "hash": "sha256:0cd6375a37bb434b73a77383ebe440ba2c3116954567f4eabd3f18c2fd0b70f2",
+          "hash": "sha256:e8cc6d27bdf497536064975ffc71f5ee020dc92298846ea3ea8ce3336e43123f",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -13331,7 +13429,7 @@
           "sourceIds": []
         },
         "/module:a2a/publication/contentContract/principle/000": {
-          "hash": "sha256:5e74d10f3379026eb49eb912ced296015f6f9d095bfc31359aa5c3fa0d16e3f1",
+          "hash": "sha256:0c37ab33a7117262225bc47c2d5e88a2a43a21789517441e7c71003a7f202c6c",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -13471,7 +13569,7 @@
           "sourceIds": []
         },
         "/module:a2a/publication/updatedAt": {
-          "hash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
+          "hash": "sha256:169670126c693bbe6cf3e565032488d8021f0e87862b4d5147c27e0c87f24992",
           "objectType": "publication",
           "sourceIds": []
         },
@@ -13501,7 +13599,7 @@
           "sourceIds": []
         },
         "/module:a2a/referenceModule/sourceIds/$order": {
-          "hash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
           "objectType": "referenceModule-order",
           "sourceIds": []
         },
@@ -13541,16 +13639,26 @@
           "sourceIds": []
         },
         "/module:a2a/referenceModule/sourceIds/007": {
-          "hash": "sha256:8fb0ddfe9a0c760da8a29664ece2ff31acfa90fe1bda59d87482c4f50c7d5487",
+          "hash": "sha256:60c724e3e9bc24c5d4f434ca5bb3e74995aa8031e16edac945aacba9b539337e",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:a2a/referenceModule/sourceIds/008": {
-          "hash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "hash": "sha256:1a009274dc43825e6b37fefb6c6eb8e69e1aa1aed231056d12cefa61c3379274",
           "objectType": "referenceModule",
           "sourceIds": []
         },
         "/module:a2a/referenceModule/sourceIds/009": {
+          "hash": "sha256:8fb0ddfe9a0c760da8a29664ece2ff31acfa90fe1bda59d87482c4f50c7d5487",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:a2a/referenceModule/sourceIds/010": {
+          "hash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "objectType": "referenceModule",
+          "sourceIds": []
+        },
+        "/module:a2a/referenceModule/sourceIds/011": {
           "hash": "sha256:4b3eeff7eda8e13c8b26ccde20879aa628bfe5c31a7c6112cae4473c9298d3d4",
           "objectType": "referenceModule",
           "sourceIds": []
@@ -13561,7 +13669,7 @@
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/evidenceCardIds/$order": {
-          "hash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "hash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -13585,8 +13693,13 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:a2a/renderedProjection/evidenceCardIds/004": {
+          "hash": "sha256:b0de86d0f2045025a01fed3a25cf224d85bd299296597bb4aed5a0be56ad87fc",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:a2a/renderedProjection/questionIds/$order": {
-          "hash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "hash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
@@ -13650,88 +13763,108 @@
           "objectType": "renderedProjection",
           "sourceIds": []
         },
+        "/module:a2a/renderedProjection/questionIds/012": {
+          "hash": "sha256:7ff9c6797dd599b81e3b3a925bf23c1b142d3125e9931f5a7f698d1eea830cb4",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:a2a/renderedProjection/questionIds/013": {
+          "hash": "sha256:7dfe5c77a5afe9885d60d565ad4dd2bf2cf49d14bc8b90695d232be0942b03d4",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:a2a/renderedProjection/questionIds/014": {
+          "hash": "sha256:3c3f3beb27872ae7f704168401b278f6c8e53b0105ef0e0f2be843fd5f0ce251",
+          "objectType": "renderedProjection",
+          "sourceIds": []
+        },
         "/module:a2a/renderedProjection/rendererDependencyFiles/$order": {
-          "hash": "sha256:a8c33ab9b38966660bac834449b4caabce80826ea8d29eccb2dc6173dd70bb60",
+          "hash": "sha256:7861861f1344999672a1802b279bf03aa2d152c96916bca5c74a622717c621ed",
           "objectType": "renderedProjection-order",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/000": {
-          "hash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
+          "hash": "sha256:a146992c98933451c8c2bfdb0243f60a7b9da2167d6fa915197532f94018685e",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/001": {
-          "hash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
+          "hash": "sha256:dd8f9e3a0286ead49d45be28c6b45f178ebdce04d645a4ab4d77a828df5b0fda",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/002": {
-          "hash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
+          "hash": "sha256:0b93e393f459af26545f88dbe5ee04b66051096fa2b9cd0951032b954db5b2b5",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/003": {
-          "hash": "sha256:9f5ef6d0c65f37a1d9cf5fb49391cb350828ed55fd71859bb9d079ffe880df8a",
+          "hash": "sha256:5440b8b7757cdc5dec836ea80b5c882252dc2628f1ce90649b68ed3afdddd7dd",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/004": {
-          "hash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
+          "hash": "sha256:6001138b068726caaf329105f91f7476d562fbecf09f2c86b0d9184ad0ef21a9",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/005": {
-          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
+          "hash": "sha256:0d462183ed3bdb62a89352b7613b15831e963e1ac253c5c1c4a7fe0b71054a56",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/006": {
-          "hash": "sha256:81fb5881acf37866b9aa827c292e10e0b79f541bb122dbe568b0600f16cbf2a9",
+          "hash": "sha256:1ff8217b16f3d7986198e906911c1525083ad1ada8726ecad7ece4fcc7eda13f",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/007": {
-          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
+          "hash": "sha256:95b79c00e2dea105a7df4faabab73d79970056c1dd95fe56cc5bd283d77cda0e",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/008": {
-          "hash": "sha256:7fdcd0dd4bcacf99082198f55ab49c9fa0a5ea77b19b51e9d988cfbf226d7545",
+          "hash": "sha256:07fe1a51155edb4eec9a83be27dfc3c61f5c6c41972b48957711439cbdb1b755",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/009": {
-          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
+          "hash": "sha256:fa776dff4a9ec6520fcf39204ca8f6f9f9d31dcad216deffca3f7d62d25ad1df",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/010": {
-          "hash": "sha256:d227808869b1fc8b0373dbf8a6ff006fbac55a9b1b8349e2cf935474b7deb093",
+          "hash": "sha256:185b7f356e14c1ce60b6b83b58e57ced9507a0285291e158eeeeedbe8e58994e",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/rendererDependencyFiles/011": {
-          "hash": "sha256:445068b310617e58ae880a41fbdedeead25125593f8615ade429ad740964db02",
-          "objectType": "renderedProjection",
-          "sourceIds": []
-        },
-        "/module:a2a/renderedProjection/rendererDependencyFiles/012": {
           "hash": "sha256:4945a323a677b61a9eb6436ef37f90bc6285707e54d755606af170bf973432f7",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
-        "/module:a2a/renderedProjection/rendererDependencyFiles/013": {
-          "hash": "sha256:ea5a8e0fa921f951c9dd093928846157bc129eda92f33cc6ad8b8666340eaf15",
+        "/module:a2a/renderedProjection/rendererDependencyFiles/012": {
+          "hash": "sha256:d844f4e36eb7d62d6b189039f863e722b0c884cd15ba0a11c1effbb2fc28da6d",
           "objectType": "renderedProjection",
           "sourceIds": []
         },
         "/module:a2a/renderedProjection/sharedRendererHash": {
-          "hash": "sha256:573804732310451ea196427ee58cf07a5b4ad0adeeff6e637c8f3ff7bbb9d952",
+          "hash": "sha256:648e3db6624f60a1bad204869ba02e830b1bf7c18fcd90fbfa5dd0a1f549722c",
           "objectType": "renderedProjection",
+          "sourceIds": []
+        },
+        "/module:a2a/sources/a2a-agent-discovery": {
+          "hash": "sha256:7ba90a256d97dfb758c46165a739b07e879be2e5037fbc3590b2baf7ead0d796",
+          "objectType": "sources",
           "sourceIds": []
         },
         "/module:a2a/sources/a2a-concepts": {
           "hash": "sha256:8d5fae8cb15caca7cb1b815d720ca4557d842485fb670072662f3df64a83601c",
+          "objectType": "sources",
+          "sourceIds": []
+        },
+        "/module:a2a/sources/a2a-extensions": {
+          "hash": "sha256:ce52cf2a9d0f35f68dea69cb281d6bd018933f668fba40e23aaa7726c7fde4c4",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -13741,7 +13874,7 @@
           "sourceIds": []
         },
         "/module:a2a/sources/a2a-release-1-0-1": {
-          "hash": "sha256:bfd33ca02d296e3177c91d44baf2e56e327d1232db8445b6db540355398ed1d4",
+          "hash": "sha256:d6b3a336ba17cc56b89f158af10c88d9c1ab4abb8ccd240cbd42ea85879cc409",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -13751,7 +13884,7 @@
           "sourceIds": []
         },
         "/module:a2a/sources/a2a-specification": {
-          "hash": "sha256:0a7efc16e8963aa19ed3cb39d1734569344f589a803768ca4b4d5e122e46a6e1",
+          "hash": "sha256:787be72c9606e4106c38394c90f803a5caf758125ab4806398a3c1476676f187",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -13761,17 +13894,17 @@
           "sourceIds": []
         },
         "/module:a2a/sources/mcp-changelog-2026-07-28": {
-          "hash": "sha256:89a9bc16596ddca9840ec387b85df7bf67eaf1e861c3a306815ca255846bb739",
+          "hash": "sha256:7da18d3daf0f1fac9098d82503dab6c25a4066537f9506ce966d7e0b71812570",
           "objectType": "sources",
           "sourceIds": []
         },
         "/module:a2a/sources/mcp-specification-2026-07-28": {
-          "hash": "sha256:36bab08903672720625cf3e6fe082b430f41f0949bff07e486b5f038eeba0602",
+          "hash": "sha256:e475b0b4cc4fa9c8a095b2c96b19202d3d4653e869a9ee5ea6038e4a79807bb2",
           "objectType": "sources",
           "sourceIds": []
         },
         "/module:a2a/sources/mcp-tasks-extension": {
-          "hash": "sha256:745abdccf8167e09e96f2f3a9e5724365f15856acc98ceea8cdf3e518f5505b7",
+          "hash": "sha256:270d38f7a3652dc7112dc66f31372a62c678bd0104c0903b1c4251a2ec4ed1bf",
           "objectType": "sources",
           "sourceIds": []
         },
@@ -14007,44 +14140,43 @@
         }
       },
       "zhRendererFiles": [
+        "app/(zh)/layout.tsx",
+        "app/(zh)/modules/a2a/page.tsx",
+        "app/a2a-module-experience.tsx",
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
+        "app/dense-module-reading-modes.tsx",
         "app/fieldbook-interactions.tsx",
-        "app/focused-visual-explainers.tsx",
         "app/i18n/locale-config.mjs",
         "app/layout-utils.mjs",
-        "app/layout.tsx",
         "app/module-content-components.tsx",
-        "app/module-pilot-views.tsx",
         "app/module-representation-assessment.mjs",
-        "app/module-visual-explorers.tsx",
-        "app/modules/[slug]/page.tsx",
         "app/question-filter.mjs",
-        "app/term-hint.tsx"
+        "app/unified-module-hero.tsx"
       ],
-      "enAuthoredHash": "sha256:a99057b4e4425fdac05758f15278616330bdd1eda9d04cc2d74bebc0cb330de8",
-      "enEffectiveHash": "sha256:8a2fee303d573e6f3973ca996758b6cd9a9b25458c58f0259f35d0bd79e17feb",
-      "enReviewHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791",
+      "enAuthoredHash": "sha256:e4ec7a037c89284b1826702e68dda472f185eeb1f6a3d5e32946bf0b77b92cda",
+      "enEffectiveHash": "sha256:8976d7344dbb46d2bb4af314b6b4bf221c3f184cd3de75a31e2a39c2d8723a2e",
+      "enReviewHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718",
       "enRendererFiles": [
+        "app/(en)/en/modules/[slug]/page.tsx",
+        "app/(en)/layout.tsx",
         "app/content-update-metadata.mjs",
         "app/deep-dive-relation-view.tsx",
-        "app/en/layout.tsx",
-        "app/en/modules/[slug]/page.tsx",
+        "app/dense-module-reading-modes.tsx",
         "app/fieldbook-interactions.tsx",
-        "app/i18n/document-language.tsx",
         "app/i18n/english-page-metadata.ts",
         "app/i18n/english-pilot-module-page.tsx",
         "app/i18n/english-representation-assessment.mjs",
         "app/i18n/english-section-outline.mjs",
         "app/i18n/locale-config.mjs",
         "app/layout-utils.mjs",
-        "app/layout.tsx",
         "app/module-content-components.tsx",
         "app/module-representation-assessment.mjs",
         "app/module-visual-explorers.tsx",
-        "app/question-filter.mjs"
+        "app/question-filter.mjs",
+        "app/unified-module-hero.tsx"
       ],
-      "englishUpdatedAt": "2026-08-10",
+      "englishUpdatedAt": "2026-09-04",
       "reviewFiles": {
         "br-a2a-2026-08-10-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-08-10/a2a.ultra-exception.json",
@@ -14069,6 +14201,30 @@
           "hash": "sha256:33b82406440be6d546c753d4f0f1b75e3cd956c29dc191702528b907bb25ee80",
           "zhContentHash": "sha256:ee80da35910534cb222ef62c816c041d68afa12b2081f603b9762f51dcdd39f5",
           "enContentHash": "sha256:d9c8c22642219218f9c51d5659e1494cbc64775efe6692e4958df6a46d0c8791"
+        },
+        "br-a2a-2026-09-04-ultra-exception": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/a2a.ultra-exception.json",
+          "hash": "sha256:b9af6cb36182ae1fc45c3ae27146c48ceb72288029a400f4e2639cf31e6e40fe",
+          "zhContentHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+          "enContentHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718"
+        },
+        "br-a2a-2026-09-04-xhigh-author": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/a2a.xhigh-author.json",
+          "hash": "sha256:31044ad721e519308a56995e285cb35371baed8f222cf7c22d0b0ed084f69926",
+          "zhContentHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+          "enContentHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718"
+        },
+        "br-a2a-2026-09-04-xhigh-language": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/a2a.xhigh-language.json",
+          "hash": "sha256:8cad40372d4a966bc44e05e60eeb25cd02804d5e93ee53b842a9b2394a047714",
+          "zhContentHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+          "enContentHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718"
+        },
+        "br-a2a-2026-09-04-xhigh-semantic": {
+          "path": "knowledge/claims/bilingual-reviews/2026-09-04/a2a.xhigh-semantic.json",
+          "hash": "sha256:993e2e869559ee688fabf63848f85b970f2bcc8911633b5ab19894ea23994146",
+          "zhContentHash": "sha256:baa606c3d78a7f4754da74dc1293c0827888a628c016a49de04321b52af5d8b8",
+          "enContentHash": "sha256:b21da954750b1784761301de95a44623f23da2193a73e22f987aa493daa60718"
         },
         "br-a2a-ultra-exception": {
           "path": "knowledge/claims/bilingual-reviews/2026-07-23/a2a.ultra-exception.json",
@@ -52427,7 +52583,7 @@
       "moduleSlug": "a2a",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "ready-for-english-review",
+      "status": "closed",
       "openedAt": "2026-08-24",
       "openedFromCommit": "74baebd5cf7bfca6181fade8d639586c1d239fd3",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
@@ -53484,7 +53640,16 @@
           "br-a2a-2026-09-04-xhigh-language",
           "br-a2a-2026-09-04-ultra-exception"
         ]
-      }
+      },
+      "closedAt": "2026-09-04",
+      "promotedCommit": "2beb109119337a6abe112f21ca8970e21f8a5b77",
+      "closureReviewIds": [
+        "br-a2a-2026-09-04-xhigh-author",
+        "br-a2a-2026-09-04-xhigh-semantic",
+        "br-a2a-2026-09-04-xhigh-language",
+        "br-a2a-2026-09-04-ultra-exception"
+      ],
+      "closureReceipt": "receipt-a2a-module-presentation-english-closure-2026-09-04"
     },
     {
       "defermentId": "dfr-veadk-module-presentation-refresh-2026-08-24",
