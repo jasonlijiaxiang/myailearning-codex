@@ -366,6 +366,20 @@
       "recordedAt": "2026-09-01",
       "decisionId": "DEC-CONTENT-DRIVEN-READERS-2026-09-01",
       "summary": "English renderer maintenance erm-content-driven-readers-2026-09-01: Preserve authored section order and semantic reader controls across bilingual module views."
+    },
+    {
+      "receiptId": "receipt-ai-agent-coding-agent-refresh-english-closure-2026-09-04",
+      "kind": "closure",
+      "recordedAt": "2026-09-04",
+      "decisionId": "coding-agent-claims-refresh-2026-08-23",
+      "summary": "AI Agent English closure candidate: independently authored and reviewed execution, control, and evidence planes; Safe Exit, Kill Switch, side-effect reconciliation, and incident evidence; exact hashes and four review records are registered for atomic promotion."
+    },
+    {
+      "receiptId": "receipt-mcp-module-presentation-english-closure-2026-09-04",
+      "kind": "closure",
+      "recordedAt": "2026-09-04",
+      "decisionId": "module-content-presentation-refresh-2026-08-24",
+      "summary": "MCP English closure candidate: independently authored and reviewed MRTR, cache invalidation, HTTP routing metadata, Tasks extension scope, and Form-versus-URL credential boundaries; exact hashes and four review records are registered for atomic promotion."
     }
   ],
   "moduleBaselines": {
@@ -48496,7 +48510,7 @@
       "moduleSlug": "ai-agent",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-23",
       "openedFromCommit": "055d6994e6de0a87daf7f9f100d9cd087401b5bf",
       "decisionId": "coding-agent-claims-refresh-2026-08-23",
@@ -48723,6 +48737,14 @@
           ]
         },
         {
+          "objectId": "/module:ai-agent/content/deepDives/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "currentHash": "sha256:4ad2b1407c875fde56c3932d54d57184c0ae7c98cbbfa88de3cb183bb37df0f0",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-agent/content/deepDives/000",
           "objectType": "content",
           "changeKind": "modified",
@@ -48785,6 +48807,40 @@
           ]
         },
         {
+          "objectId": "/module:ai-agent/content/deepDives/006",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:62081488352d17a250d95a93a1429f11e872979ea1dd098cc658702ec8d00876",
+          "sourceIds": [
+            "anthropic-agent-evals",
+            "ncsc-agentic-ai-risk-interim-2026",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/content/deepDives/007",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:e970222921488ecef58871c5abd90b320eecd5ae6aef082fe1c969d854f894c4",
+          "sourceIds": [
+            "metr-openai-hf-incident-2026",
+            "ncsc-agentic-ai-risk-interim-2026",
+            "nist-zero-trust",
+            "openai-hugging-face-incident-technical-report-2026",
+            "openai-source-sink-injection"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/content/evidenceCards/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:d4fe3ac3c00d932f5f2fe2cb78128c86d0f034b6fa447ac7cece7c51658f20fb",
+          "currentHash": "sha256:bf5f5eaa0a65a91e47c3ae2ab8e34d3179b5c71b1434f0f2b2640cbfa44135af",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-agent/content/evidenceCards/001",
           "objectType": "content",
           "changeKind": "modified",
@@ -48805,11 +48861,391 @@
           ]
         },
         {
+          "objectId": "/module:ai-agent/content/evidenceCards/006",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:45cc3bfd94ef545e5cfffa57964607d4f5ee513d127392fbee64ae3b95a8663f",
+          "sourceIds": [
+            "openai-hugging-face-incident-technical-report-2026"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/content/qa/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:480abbd12b5cc96a1d4833fdb675024f6f102c7007344f332ac13c5bc263d864",
+          "currentHash": "sha256:8dffbea9b8711e568bbed518533c6b4e1a1e0a8d1b3289383edd797af2ca1338",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/content/qa/028",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:d174dce99feb98e49c60798d5fe9c20e96ad784f75707f8b0f636d6461afca72",
+          "sourceIds": [
+            "metr-openai-hf-incident-2026",
+            "ncsc-agentic-ai-risk-interim-2026",
+            "openai-hugging-face-incident-technical-report-2026"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/content/qa/029",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:35c4312249cf0860d3729d00ee45d4cd71ee2987ec8bc69d8c6eba1c00492235",
+          "sourceIds": [
+            "ncsc-agentic-ai-risk-interim-2026",
+            "openai-hugging-face-incident-technical-report-2026"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/content/qa/030",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:549f6adfb4a2e3a4d3898ac0a093936916be0291fe1e8d957c1f72e459d42fac",
+          "sourceIds": [
+            "ncsc-agentic-ai-risk-interim-2026",
+            "openai-hugging-face-incident-technical-report-2026"
+          ]
+        },
+        {
+          "objectId": "/module:ai-agent/publication/updatedAt",
+          "objectType": "publication",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
+          "currentHash": "sha256:169670126c693bbe6cf3e565032488d8021f0e87862b4d5147c27e0c87f24992",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:ai-agent/referenceModule/sourceIds/$order",
           "objectType": "referenceModule-order",
           "changeKind": "modified",
           "baselineHash": "sha256:9d974e5ba0ecaa9e494362a6bcc0d8651a7b80f68fec541a1ff3b5d1323437e0",
-          "currentHash": "sha256:326522748f75dbef4b6170f2919d39c0cf0cfa2ed704d3760612044a765d8338",
+          "currentHash": "sha256:653a5c60f9ad114f5d7631afdc82819ebb0c7bc6e6e9216b7a61b11a54330879",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/006",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:51bdc41c44acfc287bdeeabcb21f3dde8dcc2f4c2232c117a524c19efd2f500a",
+          "currentHash": "sha256:998daf691b07f78f5ed1fd49c2a9ce8bab7254af0ad464e97a1f24c9e2293b7a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/007",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:39e6d409ff7e05465fc03c2cb5cf3db9c69553ead115451d541dff4fd1cf9848",
+          "currentHash": "sha256:51bdc41c44acfc287bdeeabcb21f3dde8dcc2f4c2232c117a524c19efd2f500a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/008",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9e37680c5b436667b86f9c4327423644c375e4b88b70506ca4803714706442c8",
+          "currentHash": "sha256:39e6d409ff7e05465fc03c2cb5cf3db9c69553ead115451d541dff4fd1cf9848",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/009",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8fb0ddfe9a0c760da8a29664ece2ff31acfa90fe1bda59d87482c4f50c7d5487",
+          "currentHash": "sha256:9e37680c5b436667b86f9c4327423644c375e4b88b70506ca4803714706442c8",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/010",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "currentHash": "sha256:8fb0ddfe9a0c760da8a29664ece2ff31acfa90fe1bda59d87482c4f50c7d5487",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/011",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e0471dd0cdad4994b6d276e2d2539110289a25930f89927ebd20e50a396163a7",
+          "currentHash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/012",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4ca3d80c454e70bd587ca31c5b1a979245a5570051b64cb8aedca4c7c1029142",
+          "currentHash": "sha256:e0471dd0cdad4994b6d276e2d2539110289a25930f89927ebd20e50a396163a7",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/013",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:ce55f6d5dfe99dda4c3e7ed18ab1beb4fc73f354f88c907def27afe69a0ca264",
+          "currentHash": "sha256:4ca3d80c454e70bd587ca31c5b1a979245a5570051b64cb8aedca4c7c1029142",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/014",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6b5e39847c247778f93f7c05ae40ed136cf39312dccfb23f47756a2832c4b073",
+          "currentHash": "sha256:ce55f6d5dfe99dda4c3e7ed18ab1beb4fc73f354f88c907def27afe69a0ca264",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/015",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
+          "currentHash": "sha256:6b5e39847c247778f93f7c05ae40ed136cf39312dccfb23f47756a2832c4b073",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/016",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4c86f879fe73df08ef285d0f7026bc283595cd69c4331e774739234581e39c11",
+          "currentHash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/017",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:74283d03243105a728ab0f7b34e34608d325fd6b60617c178946e7d148370025",
+          "currentHash": "sha256:4c86f879fe73df08ef285d0f7026bc283595cd69c4331e774739234581e39c11",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/018",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:156db9280a1e7d7734a3041728efb6c74701964bc3072db5a485ff2743140d00",
+          "currentHash": "sha256:74283d03243105a728ab0f7b34e34608d325fd6b60617c178946e7d148370025",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/019",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4770dc400f389b91e03eb8bf6ad99d8ff6a356313d98974eccabc0727f036a1e",
+          "currentHash": "sha256:156db9280a1e7d7734a3041728efb6c74701964bc3072db5a485ff2743140d00",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/020",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:eb77760ebb353d83982cf923f3dd6eb16743b88fd7321a186e05b2de13bdbf26",
+          "currentHash": "sha256:4770dc400f389b91e03eb8bf6ad99d8ff6a356313d98974eccabc0727f036a1e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/021",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:cfda4698d6c8e7a3d0d81d186230c4c475ef85d7a599329f7e870039812158e0",
+          "currentHash": "sha256:eb77760ebb353d83982cf923f3dd6eb16743b88fd7321a186e05b2de13bdbf26",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/022",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:d2a9c5cad8aee13a73afc9a27587204940b0f4f255686095088c4a46e3c05487",
+          "currentHash": "sha256:cfda4698d6c8e7a3d0d81d186230c4c475ef85d7a599329f7e870039812158e0",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/023",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3737ce10953351d3f86e0eb44fa97fb141d611720c0c14300c7cc0c430c18e47",
+          "currentHash": "sha256:d2a9c5cad8aee13a73afc9a27587204940b0f4f255686095088c4a46e3c05487",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/024",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:d96131c512867a8c166b6266a19c7776cd47dbcb2c9b339ddf3a5dbc545a824f",
+          "currentHash": "sha256:3737ce10953351d3f86e0eb44fa97fb141d611720c0c14300c7cc0c430c18e47",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/025",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:66646141e569fca4af986b5aaa589515643229d45b3c4ce5a73396e0497814c9",
+          "currentHash": "sha256:d96131c512867a8c166b6266a19c7776cd47dbcb2c9b339ddf3a5dbc545a824f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/026",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:25c6a29f71a085a65a9fa9b3adc5871368120ceeb20f6613dfa7f99030be2828",
+          "currentHash": "sha256:66646141e569fca4af986b5aaa589515643229d45b3c4ce5a73396e0497814c9",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/027",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:dbfa1a033c2da2b6b94eca38dfcb76186502b7491910c337f5ce6780040da9ad",
+          "currentHash": "sha256:25c6a29f71a085a65a9fa9b3adc5871368120ceeb20f6613dfa7f99030be2828",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/028",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a3f2eea5067f69993274ad01f510c855035b5fa761a6781691b13543990f3f05",
+          "currentHash": "sha256:dbfa1a033c2da2b6b94eca38dfcb76186502b7491910c337f5ce6780040da9ad",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/029",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:21d9299a5418c1660140fdacc846e5df65cb32ed4b630860df8e51ff2f41df28",
+          "currentHash": "sha256:a3f2eea5067f69993274ad01f510c855035b5fa761a6781691b13543990f3f05",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/030",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1a4d86b64424e2bf2897f02a86975cf77e191288fea6fc09e616c9fc33ca4478",
+          "currentHash": "sha256:f6f0ab9db8291aa85587a6d16b8141cb522b16ac6bc556d322885b30f40fa073",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/031",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5e0218e7cd3038c15f891c0ef41560c2abb1eb9674d6feaa316ec16c2cea4efa",
+          "currentHash": "sha256:06009f747666de4039cd00445fb0a1c76ed9a196c7ed9b3ac3db73f620068ed9",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/032",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:464386c88b1a69b533e4d369571468161a822bd5cc9f67334b7c768c47104fac",
+          "currentHash": "sha256:21d9299a5418c1660140fdacc846e5df65cb32ed4b630860df8e51ff2f41df28",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/033",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:302be7e6356b1e956d24373e8acfd4c3440bfa2ca1a36af59af72ba6d6bb1554",
+          "currentHash": "sha256:1a4d86b64424e2bf2897f02a86975cf77e191288fea6fc09e616c9fc33ca4478",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/034",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2802a29f310432dfd3a5a22c146ff8e39bc4e73c440ddef2b3124f39ef7f1c69",
+          "currentHash": "sha256:93e178c276a1b115293a8acb2d1f4c3b81534458cd5b5b195fc94e4998672026",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/035",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0dd63d34068ab4b90cc34d30812defd2b883d68e5ba6646edab282b90665dc28",
+          "currentHash": "sha256:5e0218e7cd3038c15f891c0ef41560c2abb1eb9674d6feaa316ec16c2cea4efa",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/036",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e0526942e5823cbeecd001e6572fdb308ff59d183f77b91f3f6cd26d8bd20b3a",
+          "currentHash": "sha256:464386c88b1a69b533e4d369571468161a822bd5cc9f67334b7c768c47104fac",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/037",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e50cb0517f4f562fc10500bd0e66a187fda516b186150a09456df894dfea308e",
+          "currentHash": "sha256:302be7e6356b1e956d24373e8acfd4c3440bfa2ca1a36af59af72ba6d6bb1554",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/038",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:22e7c351d5040c31c00ff88990fad8cde8309a8098903bb3e26a6a15e242333f",
+          "currentHash": "sha256:2802a29f310432dfd3a5a22c146ff8e39bc4e73c440ddef2b3124f39ef7f1c69",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/039",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9ad79aad339ffe5ce7b4992b54d85b5dd47c03242b683ff6aef999fb2179f746",
+          "currentHash": "sha256:0dd63d34068ab4b90cc34d30812defd2b883d68e5ba6646edab282b90665dc28",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/040",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:170d0b9b44de2d7eaff021c822b1ff8ac1b830c2abaa5903d439495f6dea2338",
+          "currentHash": "sha256:e0526942e5823cbeecd001e6572fdb308ff59d183f77b91f3f6cd26d8bd20b3a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/041",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b78a0f2d943c34f8ae3cc2a0db39db6378016939241e091fc0d6a0bfdfe79085",
+          "currentHash": "sha256:e50cb0517f4f562fc10500bd0e66a187fda516b186150a09456df894dfea308e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/042",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:32b046ac92f71dda09f301821ee46db344894eb57f743855cafebbef18e86ac3",
+          "currentHash": "sha256:22e7c351d5040c31c00ff88990fad8cde8309a8098903bb3e26a6a15e242333f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/043",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9ac2f94cef4a7c8c98359cda767fe360133af2ae64efa6c1183d9359c0501921",
+          "currentHash": "sha256:9ad79aad339ffe5ce7b4992b54d85b5dd47c03242b683ff6aef999fb2179f746",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/044",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e8f40af6f0a8e2593f8ff6cbe35afad22fc86c19dc4b6cb680a87b471a8162e2",
+          "currentHash": "sha256:170d0b9b44de2d7eaff021c822b1ff8ac1b830c2abaa5903d439495f6dea2338",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/045",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1bc409f5aaf5d25c49e5263857212320b4178d2eacec8c40db3408fcf8bd331e",
+          "currentHash": "sha256:b78a0f2d943c34f8ae3cc2a0db39db6378016939241e091fc0d6a0bfdfe79085",
           "sourceIds": []
         },
         {
@@ -48817,7 +49253,7 @@
           "objectType": "referenceModule",
           "changeKind": "modified",
           "baselineHash": "sha256:3b6cb04ae0925dcfc9e461c4458c8207a4b26283912b2836e9394408f5e78ddc",
-          "currentHash": "sha256:5000e311a0795d492a0c3fe3a64e4e91c00358ce5095d9332a303686f3fd7794",
+          "currentHash": "sha256:32b046ac92f71dda09f301821ee46db344894eb57f743855cafebbef18e86ac3",
           "sourceIds": []
         },
         {
@@ -48825,7 +49261,7 @@
           "objectType": "referenceModule",
           "changeKind": "modified",
           "baselineHash": "sha256:215e841ff55c176986853950591db48e1edf01bfab8f75e1929434678a4f74b2",
-          "currentHash": "sha256:b4e08f2c477f3aa7d4ec1d0d39de1e5aba2c921fad6b64009dd8e57b8a05d2b1",
+          "currentHash": "sha256:9ac2f94cef4a7c8c98359cda767fe360133af2ae64efa6c1183d9359c0501921",
           "sourceIds": []
         },
         {
@@ -48833,7 +49269,7 @@
           "objectType": "referenceModule",
           "changeKind": "modified",
           "baselineHash": "sha256:662a6163ecde3b1c3405ab94aee0beb1e322f9aca10c42b4918c16c0dd6717b3",
-          "currentHash": "sha256:327f7bd32e2d1a6a8c97af19f5542fc564fc5b9a8faebc50d14c602d7a7cf5c3",
+          "currentHash": "sha256:e8f40af6f0a8e2593f8ff6cbe35afad22fc86c19dc4b6cb680a87b471a8162e2",
           "sourceIds": []
         },
         {
@@ -48841,7 +49277,7 @@
           "objectType": "referenceModule",
           "changeKind": "modified",
           "baselineHash": "sha256:c4591add507312c16657cc536e14e6ab99a24dce9d60572f8478aab8eea9ca1e",
-          "currentHash": "sha256:3b6cb04ae0925dcfc9e461c4458c8207a4b26283912b2836e9394408f5e78ddc",
+          "currentHash": "sha256:1bc409f5aaf5d25c49e5263857212320b4178d2eacec8c40db3408fcf8bd331e",
           "sourceIds": []
         },
         {
@@ -48849,7 +49285,7 @@
           "objectType": "referenceModule",
           "changeKind": "modified",
           "baselineHash": "sha256:ccd9f442a58525865c11531e855ea312cc285f78b99bc28c0c7810a888dad93c",
-          "currentHash": "sha256:215e841ff55c176986853950591db48e1edf01bfab8f75e1929434678a4f74b2",
+          "currentHash": "sha256:5000e311a0795d492a0c3fe3a64e4e91c00358ce5095d9332a303686f3fd7794",
           "sourceIds": []
         },
         {
@@ -48857,7 +49293,7 @@
           "objectType": "referenceModule",
           "changeKind": "added",
           "baselineHash": null,
-          "currentHash": "sha256:662a6163ecde3b1c3405ab94aee0beb1e322f9aca10c42b4918c16c0dd6717b3",
+          "currentHash": "sha256:b4e08f2c477f3aa7d4ec1d0d39de1e5aba2c921fad6b64009dd8e57b8a05d2b1",
           "sourceIds": []
         },
         {
@@ -48865,7 +49301,7 @@
           "objectType": "referenceModule",
           "changeKind": "added",
           "baselineHash": null,
-          "currentHash": "sha256:c4591add507312c16657cc536e14e6ab99a24dce9d60572f8478aab8eea9ca1e",
+          "currentHash": "sha256:327f7bd32e2d1a6a8c97af19f5542fc564fc5b9a8faebc50d14c602d7a7cf5c3",
           "sourceIds": []
         },
         {
@@ -48873,7 +49309,7 @@
           "objectType": "referenceModule",
           "changeKind": "added",
           "baselineHash": null,
-          "currentHash": "sha256:ccd9f442a58525865c11531e855ea312cc285f78b99bc28c0c7810a888dad93c",
+          "currentHash": "sha256:3b6cb04ae0925dcfc9e461c4458c8207a4b26283912b2836e9394408f5e78ddc",
           "sourceIds": []
         },
         {
@@ -48881,7 +49317,7 @@
           "objectType": "referenceModule",
           "changeKind": "added",
           "baselineHash": null,
-          "currentHash": "sha256:3e3c989192cc642ecac30e07b9376064edd5d18cd7e93114e1e21eaa8199a823",
+          "currentHash": "sha256:215e841ff55c176986853950591db48e1edf01bfab8f75e1929434678a4f74b2",
           "sourceIds": []
         },
         {
@@ -48889,7 +49325,7 @@
           "objectType": "referenceModule",
           "changeKind": "added",
           "baselineHash": null,
-          "currentHash": "sha256:57167a746151334dfc64b95ed0fc9b5c7ff57f2d2518c4b428f5e582f6c442c7",
+          "currentHash": "sha256:662a6163ecde3b1c3405ab94aee0beb1e322f9aca10c42b4918c16c0dd6717b3",
           "sourceIds": []
         },
         {
@@ -48897,7 +49333,47 @@
           "objectType": "referenceModule",
           "changeKind": "added",
           "baselineHash": null,
+          "currentHash": "sha256:c4591add507312c16657cc536e14e6ab99a24dce9d60572f8478aab8eea9ca1e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/057",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:ccd9f442a58525865c11531e855ea312cc285f78b99bc28c0c7810a888dad93c",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/058",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:3e3c989192cc642ecac30e07b9376064edd5d18cd7e93114e1e21eaa8199a823",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/059",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:57167a746151334dfc64b95ed0fc9b5c7ff57f2d2518c4b428f5e582f6c442c7",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/referenceModule/sourceIds/060",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
           "currentHash": "sha256:f2a9ac6e1b9839d8a593eb1fb6f85c34c3a6ee9112868a160c1b36deaf7db13d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/renderedProjection/sharedRendererHash",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a6394d9fb4273374fd2d40b949af15788b4cc5b97c34b38c7e4069f43c377bb1",
+          "currentHash": "sha256:93e46f9c72dd762641090da173a910b25453a71af083006f82531ded655c21f9",
           "sourceIds": []
         },
         {
@@ -48906,6 +49382,62 @@
           "changeKind": "modified",
           "baselineHash": "sha256:687224371b3860298b7978f0c677001486818cd7ddb765b1e749a6a8995f9306",
           "currentHash": "sha256:ae3f5ab5a995ff6a16fbfb3726c0c24306f2879adabdfb4bbc48138c6b0062f4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/mcp-changelog-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:89a9bc16596ddca9840ec387b85df7bf67eaf1e861c3a306815ca255846bb739",
+          "currentHash": "sha256:7da18d3daf0f1fac9098d82503dab6c25a4066537f9506ce966d7e0b71812570",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/mcp-specification-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:36bab08903672720625cf3e6fe082b430f41f0949bff07e486b5f038eeba0602",
+          "currentHash": "sha256:e475b0b4cc4fa9c8a095b2c96b19202d3d4653e869a9ee5ea6038e4a79807bb2",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/mcp-tasks-extension",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:745abdccf8167e09e96f2f3a9e5724365f15856acc98ceea8cdf3e518f5505b7",
+          "currentHash": "sha256:270d38f7a3652dc7112dc66f31372a62c678bd0104c0903b1c4251a2ec4ed1bf",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/metr-openai-hf-incident-2026",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:8357f2a8adfa2faf06654cab84b05827053201a6ffdb9e5f12385e6dea8e2d32",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/ncsc-agentic-ai-risk-interim-2026",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:09441e12c4eb56f9aba5b148224c87fc7d93528acadafe7b303162c9a3095d4e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/openai-hugging-face-incident-technical-report-2026",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:7783529112b1d55956bfb5c2b828cdf441db5fbeb6bbd33c94a3d8a445c9bc30",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:ai-agent/sources/openai-source-sink-injection",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:1a4f7df92c8fa0a573249dbddba0800f4e804d53f69470e14a42655ef689efff",
           "sourceIds": []
         },
         {
@@ -49092,7 +49624,58 @@
         "br-ai-agent-2026-08-10-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-coding-agent-refresh-locale-gate-2026-08-23",
-      "closureCriteria": "AI Agent 模块若显式采用本轮新增 Coding Agent 来源或 Claim，须完成独立英文撰写与四阶段审校，登记候选哈希后再原子提升双语基线；独立 Coding Agent 雷达与全局来源页不冒充模块正文已同步。 本轮中文正文与呈现差异也须纳入同一英文候选与四阶段审校。"
+      "closureCriteria": "AI Agent 模块若显式采用本轮新增 Coding Agent 来源或 Claim，须完成独立英文撰写与四阶段审校，登记候选哈希后再原子提升双语基线；独立 Coding Agent 雷达与全局来源页不冒充模块正文已同步。 本轮中文正文与呈现差异也须纳入同一英文候选与四阶段审校。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:982e8368ead0f5d091524685af1063c9b1287e99fd94d3d5618efa25b26eabc1",
+        "zhRendererFiles": [
+          "app/(zh)/layout.tsx",
+          "app/(zh)/modules/ai-agent/page.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/dense-module-reading-modes.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/flagship-labs.tsx",
+          "app/focused-visual-explainers.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-pilot-views.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs",
+          "app/term-hint.tsx",
+          "app/unified-module-hero.tsx"
+        ],
+        "enAuthoredHash": "sha256:7a75f1a4f51a7be5746338a2fef481bfe15d0de61d739764dfae74e8228c2599",
+        "enEffectiveHash": "sha256:022e34d05668ccb03aa4083484a3e25ab346687c4e4c3a28e0a98a71909a0ca4",
+        "enReviewHash": "sha256:a0e423b52ff07b656be916fe970de372de25e0ace67137731d409a092338f74e",
+        "enRendererFiles": [
+          "app/(en)/en/modules/[slug]/page.tsx",
+          "app/(en)/layout.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/dense-module-reading-modes.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs",
+          "app/unified-module-hero.tsx"
+        ],
+        "englishUpdatedAt": "2026-09-04",
+        "reviewIds": [
+          "br-ai-agent-2026-09-04-xhigh-author",
+          "br-ai-agent-2026-09-04-xhigh-semantic",
+          "br-ai-agent-2026-09-04-xhigh-language",
+          "br-ai-agent-2026-09-04-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-solution-patterns-module-presentation-refresh-2026-08-24",
@@ -50224,7 +50807,7 @@
       "moduleSlug": "mcp",
       "sourceLocale": "zh-CN",
       "targetLocale": "en",
-      "status": "deferred",
+      "status": "ready-for-english-review",
       "openedAt": "2026-08-24",
       "openedFromCommit": "4b633d33267a91219c009568bcbf84ff39f1902d",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
@@ -50280,11 +50863,19 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:mcp/brief/deepDives/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:mcp/brief/deepDives/000",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:936f10f8751e3c2f7f9e6828d2c8babd87c20789cee5e9945ca6b2b0f55a103d",
-          "currentHash": "sha256:d70b726c613a7e6bf77762130a31c4c851d0ba7ff13f00739d6214af0beea5b4",
+          "currentHash": "sha256:ce9719e92e3c633d872686f6aae4512ee1385f6a47083083751fc63036d88d66",
           "sourceIds": [
             "mcp-architecture",
             "mcp-authorization",
@@ -50320,11 +50911,34 @@
           ]
         },
         {
+          "objectId": "/module:mcp/brief/deepDives/003",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:00690dbda9e6638f95be3d9aa0ec6745dace0247afea3a75ccfe755de3cdcdc7",
+          "sourceIds": [
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-mrtr-2026-07-28",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
+        {
           "objectId": "/module:mcp/brief/definition",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:5f40aa5f701ba0a9801516f85bd2bd4bd46b0fb1ff2722c80ea5ff95b2694168",
           "currentHash": "sha256:9b288104518e4b907e33fb477fcb14c870c6d0fb13000c85d62ab745247daffd",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/brief/evidenceCards/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:49fd80d2db002eb6db61439841c4cbe8559cf957ba0f6cc7339ed89792bb3006",
+          "currentHash": "sha256:fc57f809c149b2dc91933c8ef183a45bc51a7e3484009aeb54c8bb6d3e461fca",
           "sourceIds": []
         },
         {
@@ -50348,6 +50962,16 @@
           ]
         },
         {
+          "objectId": "/module:mcp/brief/evidenceCards/005",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:3350b341b1291def269744eb79f862d44801c47c00a93b4c5ae3df862421354f",
+          "sourceIds": [
+            "mcp-mrtr-2026-07-28"
+          ]
+        },
+        {
           "objectId": "/module:mcp/brief/position",
           "objectType": "brief",
           "changeKind": "modified",
@@ -50361,6 +50985,14 @@
           "changeKind": "modified",
           "baselineHash": "sha256:33fa3457ce0ed5cfaf49ed18c506d00c0b0704642cafaeeca0e6093decd2e30f",
           "currentHash": "sha256:c022bb606e12ab2a22ef61b927c606a20d24b72731e43cff8adace89ba6ef5c1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/brief/principles/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
           "sourceIds": []
         },
         {
@@ -50384,7 +51016,7 @@
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:2d3e695e73c1e6d2f65249f90e524bd90acdece77982cf846fba0c4528be24ae",
-          "currentHash": "sha256:7a5d01ee6dfa8d69e870e3cc665b89af16c1e54d6c809c99f8e3ac7ce09e6ea4",
+          "currentHash": "sha256:90a7b466b1d71377ad2e129df5a032d6bf5c932aeede5885f3e38069d301e953",
           "sourceIds": []
         },
         {
@@ -50404,15 +51036,173 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:mcp/brief/principles/005",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:8f78e2e982593c78ba46197d437645fddc41a462a7d518da814a62fb9b87c7b6",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "currentHash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:mcp/brief/qa/004",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:dbb76bfb1a78af0cacc7493b7dd6ae092aac8e05f5ed22ab437d3fa9c95fac4e",
-          "currentHash": "sha256:8b1bb9ee6070029a1383d6afcb21eff7ce066aff780da01816c354564d41a580",
+          "currentHash": "sha256:e1e059abecec0d983014596f3c1efb8e274b91646633ebcb8d2dc8fd181fdd88",
           "sourceIds": [
             "mcp-changelog-2026-07-28",
             "mcp-lifecycle-2025-11-25",
             "mcp-specification-2026-07-28",
+            "mcp-tasks-extension"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/005",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e98b13785da4089bd20560f61f815c105eca2f31746240fc8c0e02e7a36c88f2",
+          "currentHash": "sha256:52a35a77f8821e1c5f37b5d5847d26bd69d10c87d808b3d222fb091a274a7d4e",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-mrtr-2026-07-28",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/006",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:803492b54fbff372bfa81e3cb5108211f185f168158701fb06132d7d92893beb",
+          "currentHash": "sha256:e98b13785da4089bd20560f61f815c105eca2f31746240fc8c0e02e7a36c88f2",
+          "sourceIds": [
+            "mcp-architecture",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/007",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2b4f57183d09c9461bfb845033bdbcfec4073b3e491bf49726329383eb094922",
+          "currentHash": "sha256:803492b54fbff372bfa81e3cb5108211f185f168158701fb06132d7d92893beb",
+          "sourceIds": [
+            "mcp-architecture",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/008",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:65d4dec93d5e13071e38f89a60be14d8c43b7b589ed7b39a3388b43bf9f04fa1",
+          "currentHash": "sha256:2b4f57183d09c9461bfb845033bdbcfec4073b3e491bf49726329383eb094922",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-security",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/009",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a48fc88bd9ec15cb508659dc72e30bd2a3e940f75a838afe75d4f13f2165aa3e",
+          "currentHash": "sha256:65d4dec93d5e13071e38f89a60be14d8c43b7b589ed7b39a3388b43bf9f04fa1",
+          "sourceIds": [
+            "mcp-authorization",
+            "mcp-security",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/010",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4ada3422976a029258149b8e1536474ac2754ca731bc8e844c406774d0baf129",
+          "currentHash": "sha256:a48fc88bd9ec15cb508659dc72e30bd2a3e940f75a838afe75d4f13f2165aa3e",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-authorization",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/011",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:23ddd3369cccdf8c004d1f8a4e4d77d5805889283f693a9bf26b985bb1ed3d78",
+          "currentHash": "sha256:4ada3422976a029258149b8e1536474ac2754ca731bc8e844c406774d0baf129",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-security",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/012",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e9ab3be73ac7bb02805c3e00472244485c472dfea8fe5dc7d9262e1f0e674b0a",
+          "currentHash": "sha256:23ddd3369cccdf8c004d1f8a4e4d77d5805889283f693a9bf26b985bb1ed3d78",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-prompts-2026-07-28",
+            "mcp-resources-2026-07-28",
+            "mcp-security",
+            "mcp-tools-2026-07-28",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/013",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a0b10149405109be3eb2595c8c084b8fbaeb20c7cab9d5d00836c83df6157f6e",
+          "currentHash": "sha256:e9ab3be73ac7bb02805c3e00472244485c472dfea8fe5dc7d9262e1f0e674b0a",
+          "sourceIds": [
+            "mcp-prompts-2026-07-28",
+            "mcp-resources-2026-07-28",
+            "mcp-security",
+            "mcp-tools-2026-07-28",
+            "nist-zero-trust",
+            "owasp-prompt-injection"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/014",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7e8ad6c1b77c433b232ceb2d5b7b612d94ca455c53ccd6bae5176ab3b5148490",
+          "currentHash": "sha256:a0b10149405109be3eb2595c8c084b8fbaeb20c7cab9d5d00836c83df6157f6e",
+          "sourceIds": [
+            "a2a-spec-1-0-0",
+            "mcp-security",
+            "mcp-tasks-2025-11-25",
+            "mcp-tasks-extension",
+            "owasp-prompt-injection"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/brief/qa/015",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:8ba8c72a1d6944d337cef92485ca7251087ac2b985e85c143488b9fdb927370e",
+          "sourceIds": [
+            "a2a-spec-1-0-0",
+            "mcp-tasks-2025-11-25",
             "mcp-tasks-extension"
           ]
         },
@@ -50428,11 +51218,19 @@
           ]
         },
         {
+          "objectId": "/module:mcp/content/deepDives/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:mcp/content/deepDives/000",
           "objectType": "content",
           "changeKind": "modified",
           "baselineHash": "sha256:936f10f8751e3c2f7f9e6828d2c8babd87c20789cee5e9945ca6b2b0f55a103d",
-          "currentHash": "sha256:d70b726c613a7e6bf77762130a31c4c851d0ba7ff13f00739d6214af0beea5b4",
+          "currentHash": "sha256:ce9719e92e3c633d872686f6aae4512ee1385f6a47083083751fc63036d88d66",
           "sourceIds": [
             "mcp-architecture",
             "mcp-authorization",
@@ -50468,6 +51266,29 @@
           ]
         },
         {
+          "objectId": "/module:mcp/content/deepDives/003",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:00690dbda9e6638f95be3d9aa0ec6745dace0247afea3a75ccfe755de3cdcdc7",
+          "sourceIds": [
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-mrtr-2026-07-28",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/evidenceCards/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:49fd80d2db002eb6db61439841c4cbe8559cf957ba0f6cc7339ed89792bb3006",
+          "currentHash": "sha256:fc57f809c149b2dc91933c8ef183a45bc51a7e3484009aeb54c8bb6d3e461fca",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:mcp/content/evidenceCards/002",
           "objectType": "content",
           "changeKind": "modified",
@@ -50488,16 +51309,275 @@
           ]
         },
         {
+          "objectId": "/module:mcp/content/evidenceCards/005",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:3350b341b1291def269744eb79f862d44801c47c00a93b4c5ae3df862421354f",
+          "sourceIds": [
+            "mcp-mrtr-2026-07-28"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "currentHash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:mcp/content/qa/004",
           "objectType": "content",
           "changeKind": "modified",
           "baselineHash": "sha256:dbb76bfb1a78af0cacc7493b7dd6ae092aac8e05f5ed22ab437d3fa9c95fac4e",
-          "currentHash": "sha256:8b1bb9ee6070029a1383d6afcb21eff7ce066aff780da01816c354564d41a580",
+          "currentHash": "sha256:e1e059abecec0d983014596f3c1efb8e274b91646633ebcb8d2dc8fd181fdd88",
           "sourceIds": [
             "mcp-changelog-2026-07-28",
             "mcp-lifecycle-2025-11-25",
             "mcp-specification-2026-07-28",
             "mcp-tasks-extension"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/005",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e98b13785da4089bd20560f61f815c105eca2f31746240fc8c0e02e7a36c88f2",
+          "currentHash": "sha256:52a35a77f8821e1c5f37b5d5847d26bd69d10c87d808b3d222fb091a274a7d4e",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-mrtr-2026-07-28",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/006",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:803492b54fbff372bfa81e3cb5108211f185f168158701fb06132d7d92893beb",
+          "currentHash": "sha256:e98b13785da4089bd20560f61f815c105eca2f31746240fc8c0e02e7a36c88f2",
+          "sourceIds": [
+            "mcp-architecture",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/007",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2b4f57183d09c9461bfb845033bdbcfec4073b3e491bf49726329383eb094922",
+          "currentHash": "sha256:803492b54fbff372bfa81e3cb5108211f185f168158701fb06132d7d92893beb",
+          "sourceIds": [
+            "mcp-architecture",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/008",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:65d4dec93d5e13071e38f89a60be14d8c43b7b589ed7b39a3388b43bf9f04fa1",
+          "currentHash": "sha256:2b4f57183d09c9461bfb845033bdbcfec4073b3e491bf49726329383eb094922",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-security",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/009",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a48fc88bd9ec15cb508659dc72e30bd2a3e940f75a838afe75d4f13f2165aa3e",
+          "currentHash": "sha256:65d4dec93d5e13071e38f89a60be14d8c43b7b589ed7b39a3388b43bf9f04fa1",
+          "sourceIds": [
+            "mcp-authorization",
+            "mcp-security",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/010",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4ada3422976a029258149b8e1536474ac2754ca731bc8e844c406774d0baf129",
+          "currentHash": "sha256:a48fc88bd9ec15cb508659dc72e30bd2a3e940f75a838afe75d4f13f2165aa3e",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-authorization",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/011",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:23ddd3369cccdf8c004d1f8a4e4d77d5805889283f693a9bf26b985bb1ed3d78",
+          "currentHash": "sha256:4ada3422976a029258149b8e1536474ac2754ca731bc8e844c406774d0baf129",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-security",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/012",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e9ab3be73ac7bb02805c3e00472244485c472dfea8fe5dc7d9262e1f0e674b0a",
+          "currentHash": "sha256:23ddd3369cccdf8c004d1f8a4e4d77d5805889283f693a9bf26b985bb1ed3d78",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-prompts-2026-07-28",
+            "mcp-resources-2026-07-28",
+            "mcp-security",
+            "mcp-tools-2026-07-28",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/013",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a0b10149405109be3eb2595c8c084b8fbaeb20c7cab9d5d00836c83df6157f6e",
+          "currentHash": "sha256:e9ab3be73ac7bb02805c3e00472244485c472dfea8fe5dc7d9262e1f0e674b0a",
+          "sourceIds": [
+            "mcp-prompts-2026-07-28",
+            "mcp-resources-2026-07-28",
+            "mcp-security",
+            "mcp-tools-2026-07-28",
+            "nist-zero-trust",
+            "owasp-prompt-injection"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/014",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7e8ad6c1b77c433b232ceb2d5b7b612d94ca455c53ccd6bae5176ab3b5148490",
+          "currentHash": "sha256:a0b10149405109be3eb2595c8c084b8fbaeb20c7cab9d5d00836c83df6157f6e",
+          "sourceIds": [
+            "a2a-spec-1-0-0",
+            "mcp-security",
+            "mcp-tasks-2025-11-25",
+            "mcp-tasks-extension",
+            "owasp-prompt-injection"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/content/qa/015",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:8ba8c72a1d6944d337cef92485ca7251087ac2b985e85c143488b9fdb927370e",
+          "sourceIds": [
+            "a2a-spec-1-0-0",
+            "mcp-tasks-2025-11-25",
+            "mcp-tasks-extension"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/$order",
+          "objectType": "curriculum-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "currentHash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/002",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b89389802a8f5a6811c65c08a1a9cd28171c0dd8598205163ef1d9d75b667d56",
+          "currentHash": "sha256:978d63afefabb51c05b1e0123f982a85b9f6fced0cf0840ac7074cb5097e3d19",
+          "sourceIds": [
+            "mcp-changelog-2026-07-28",
+            "mcp-lifecycle-2025-11-25",
+            "mcp-specification-2026-07-28"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/004",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bc07256f3b2afb986d83e0d7567e1d6ededf2e23333d32244cb547b7e2322278",
+          "currentHash": "sha256:46b1be84466a50e7172d7d45a8a8766cf88dcfab113bb3f568b508257c4aa226",
+          "sourceIds": [
+            "mcp-authorization",
+            "mcp-specification-2026-07-28",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/005",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b69014d77e4e9179a9414a59a9b2d418e19fa555599e2127b776648a6eb75a33",
+          "currentHash": "sha256:4b25db88a5b14f7533b93567d3193f66106550906aa410e1f545b85096828db0",
+          "sourceIds": [
+            "mcp-authorization",
+            "mcp-elicitation-2025-11-25",
+            "mcp-mrtr-2026-07-28",
+            "mcp-specification-2026-07-28"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/006",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a8b6d8f826a336980b8f219f04c6fe566cec7c74111305ea426252f593498e70",
+          "currentHash": "sha256:767c7d2f323572cc9426221f4d158113a708fde3bdbd6838d11b8c8db9207bd5",
+          "sourceIds": [
+            "a2a-spec-1-0-0",
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-specification-2026-07-28",
+            "mcp-tasks-2025-11-25",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/007",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:d43ad6b6a0d3c6d3b8cab74f476004771baeb90176671227a04736e62d7e1da4",
+          "currentHash": "sha256:9767fe1654c80ca73edd844a9024971fb18f22ebc656f0da4b71d8a8b463576d",
+          "sourceIds": [
+            "a2a-spec-1-0-0",
+            "mcp-security",
+            "mcp-tasks-2025-11-25",
+            "mcp-tasks-extension",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/008",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:668b9e553f82f9391b4383f2fea13cfc1cd565a80a4f99346c0e1a006acb9be3",
+          "currentHash": "sha256:d43ad6b6a0d3c6d3b8cab74f476004771baeb90176671227a04736e62d7e1da4",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-security",
+            "nist-zero-trust",
+            "opentelemetry-genai-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/curriculum/chapters/009",
+          "objectType": "curriculum",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:668b9e553f82f9391b4383f2fea13cfc1cd565a80a4f99346c0e1a006acb9be3",
+          "sourceIds": [
+            "mcp-architecture",
+            "opentelemetry-genai-semconv"
           ]
         },
         {
@@ -50514,6 +51594,98 @@
           "changeKind": "modified",
           "baselineHash": "sha256:ab1868e361fe703fe4376bcfc8741c1b80f39da823043deabaa01e02da909270",
           "currentHash": "sha256:b03df2f64876f783328f9233ca1d6a2beb571ff4ec2d0ed57faa9bd696e3d895",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/labs/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "currentHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/labs/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5224c154fb02d65ee15d7c8e0b9f202fd05e1db6f53f97743300d0f12ad88ad7",
+          "currentHash": "sha256:46646acdcd001f7c7ccda094874c66fe3f5787bdcbfc1e84b1be834c35deb934",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-authorization",
+            "mcp-http-routing-2026-07-28",
+            "mcp-list-cache-2026-07-28",
+            "mcp-mrtr-2026-07-28",
+            "mcp-security",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/learning/labs/004",
+          "objectType": "learning",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:5224c154fb02d65ee15d7c8e0b9f202fd05e1db6f53f97743300d0f12ad88ad7",
+          "sourceIds": [
+            "mcp-architecture",
+            "mcp-authorization",
+            "mcp-security"
+          ]
+        },
+        {
+          "objectId": "/module:mcp/learning/outcomes/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5b4468f7977169022387d55dda03ab0c2ad262db28d7c43a6c28a414aa7af63d",
+          "currentHash": "sha256:9490f20014ad4c9863c812d4dfd9ff83e5e2c5879f02654a3d9e8522d8d3a661",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/outcomes/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5b5ce534d320ad57a10d3cea18b7f72237765ff8beb369e189d416fe960bcf6e",
+          "currentHash": "sha256:27563e53bc6f55c2ed431e73c8237022612777254c2b42aa9117edd0366b424e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/route/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:208463dc19f72e8efef0e2be6c674daa0460973ef45786afe5e3191b4118e7b6",
+          "currentHash": "sha256:024576b4c63a88c3a8cb371a65d304ac0f959fd711a0334ff666b12f47b6208d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:efe66bf6057beaf9dd4c889e0fc175c1a677626d922b5e2145080353c09730cd",
+          "currentHash": "sha256:e4a1192569ea7b76bb82de17a6a91fba56a227db8f810382947b5c8bcf8f24d3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7bd3a434d82a2cf96ab4be2b9640caafa417a4fb21d46c89f601a180a0ad4791",
+          "currentHash": "sha256:efe66bf6057beaf9dd4c889e0fc175c1a677626d922b5e2145080353c09730cd",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/learning/route/005",
+          "objectType": "learning",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:7bd3a434d82a2cf96ab4be2b9640caafa417a4fb21d46c89f601a180a0ad4791",
           "sourceIds": []
         },
         {
@@ -50553,7 +51725,199 @@
           "objectType": "publication",
           "changeKind": "modified",
           "baselineHash": "sha256:3e1caae907484ab5e247f058656247c22680376a573136f08b4b8ca2515d9185",
-          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
+          "currentHash": "sha256:169670126c693bbe6cf3e565032488d8021f0e87862b4d5147c27e0c87f24992",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/$order",
+          "objectType": "referenceModule-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e1b78afdf397e069e37a1bbf17af82f0b11ebd274950fccc197ecd5606d8f772",
+          "currentHash": "sha256:0b4144e2ce33c6cbe6a6bb18ba14605fb12d13e32e390dacd6121ade27664ae4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/005",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4770dc400f389b91e03eb8bf6ad99d8ff6a356313d98974eccabc0727f036a1e",
+          "currentHash": "sha256:9637700634a98ad5bbb85fdfa7962bdedc61164ec0ee628cbb9a720d09859876",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/006",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "currentHash": "sha256:4770dc400f389b91e03eb8bf6ad99d8ff6a356313d98974eccabc0727f036a1e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/007",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7e772da401fa82cc1d98cabeee08656b68eb19b489550f73cb5c03d87f4f1134",
+          "currentHash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/008",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6ed8a529c93c97dac8ab5d8a6827c7e6ab90b08e2d86ed602bc03e054fc4f570",
+          "currentHash": "sha256:7e772da401fa82cc1d98cabeee08656b68eb19b489550f73cb5c03d87f4f1134",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/009",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2ca441323d9779956abd09b5ab1697bfd8db626a2142bf2a75f103321f423b02",
+          "currentHash": "sha256:6ed8a529c93c97dac8ab5d8a6827c7e6ab90b08e2d86ed602bc03e054fc4f570",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/010",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:1a4d86b64424e2bf2897f02a86975cf77e191288fea6fc09e616c9fc33ca4478",
+          "currentHash": "sha256:2ca441323d9779956abd09b5ab1697bfd8db626a2142bf2a75f103321f423b02",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/011",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b387ed3cc3976456cb86843928ba4456d4e7ab5ce519e9ca638f0cc4c9bbc0c0",
+          "currentHash": "sha256:1a4d86b64424e2bf2897f02a86975cf77e191288fea6fc09e616c9fc33ca4478",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/012",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
+          "currentHash": "sha256:b387ed3cc3976456cb86843928ba4456d4e7ab5ce519e9ca638f0cc4c9bbc0c0",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/013",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:9d865611048dab7c2917bd1370be7377dbd86ad11649de92c7f2992690fed3cf",
+          "currentHash": "sha256:442ec1020968ac2f2f89a57187a7f53d901b73e4903a0e70fd18fbe98df1a247",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/014",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e42f57f07d564ff585b79f51ab964c7b958aa695adcc78a224b22dbf5e11e669",
+          "currentHash": "sha256:9d865611048dab7c2917bd1370be7377dbd86ad11649de92c7f2992690fed3cf",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/015",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c77eee1c29a844c5a404e2464a626e03766792276023893529609696720d7c6d",
+          "currentHash": "sha256:e42f57f07d564ff585b79f51ab964c7b958aa695adcc78a224b22dbf5e11e669",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/016",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7df6840da680de732d647f6216ac610c790905a2e097938ecf522e74ee6b0f0d",
+          "currentHash": "sha256:c77eee1c29a844c5a404e2464a626e03766792276023893529609696720d7c6d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/017",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:799dc6f84a2398f9a18821ab714fbaf4e1eb383723d1c18a03f25c772b0faf7b",
+          "currentHash": "sha256:7df6840da680de732d647f6216ac610c790905a2e097938ecf522e74ee6b0f0d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/018",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bb4bc3b9ed61109123eaea1b752496c6a868701e0a931cba0552bd8b1671c5b3",
+          "currentHash": "sha256:111f3a368c391fd3732352e37fcfcea210aa0b5261091ceb9400d8e8afb5dd36",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/019",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:f658251e2b655a33afe11a48ecdc230156e2f88fb0aee584f9f36496b0c106d8",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/020",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:799dc6f84a2398f9a18821ab714fbaf4e1eb383723d1c18a03f25c772b0faf7b",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/referenceModule/sourceIds/021",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:bb4bc3b9ed61109123eaea1b752496c6a868701e0a931cba0552bd8b1671c5b3",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/renderedProjection/evidenceCardIds/$order",
+          "objectType": "renderedProjection-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/renderedProjection/evidenceCardIds/005",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:eb004c9cf8d9d9c22ac2d6292e23db0624f79e8711beb0c2cd52eedc33c4e048",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/renderedProjection/questionIds/$order",
+          "objectType": "renderedProjection-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "currentHash": "sha256:4c30e5e6f896001e3a571189f10716effca492f0c39b3ec3e3dfcb3385f20b3d",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/renderedProjection/questionIds/015",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:2da77bf44c201a2f6811e520b9af4ce99b7627b4ada7e9d882c96cd33b360534",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/a2a-release-1-0-1",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bfd33ca02d296e3177c91d44baf2e56e327d1232db8445b6db540355398ed1d4",
+          "currentHash": "sha256:d6b3a336ba17cc56b89f158af10c88d9c1ab4abb8ccd240cbd42ea85879cc409",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/a2a-specification",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0a7efc16e8963aa19ed3cb39d1734569344f589a803768ca4b4d5e122e46a6e1",
+          "currentHash": "sha256:787be72c9606e4106c38394c90f803a5caf758125ab4806398a3c1476676f187",
           "sourceIds": []
         },
         {
@@ -50562,6 +51926,54 @@
           "changeKind": "modified",
           "baselineHash": "sha256:687224371b3860298b7978f0c677001486818cd7ddb765b1e749a6a8995f9306",
           "currentHash": "sha256:ae3f5ab5a995ff6a16fbfb3726c0c24306f2879adabdfb4bbc48138c6b0062f4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/mcp-changelog-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:89a9bc16596ddca9840ec387b85df7bf67eaf1e861c3a306815ca255846bb739",
+          "currentHash": "sha256:7da18d3daf0f1fac9098d82503dab6c25a4066537f9506ce966d7e0b71812570",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/mcp-http-routing-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:60769c735809a7bc53c51ff54a9e0dafa4cfef66ec8fce7ab862a2a3ba40192b",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/mcp-list-cache-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:da8f5138da1fe43163a7a66be4b0042bd2461a961ee071edb7e447002fcadd90",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/mcp-mrtr-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:51a3bd37df76b398365ef661ffc27b7a49382f67aafa8ea1f3e8d4de4fdcc5e5",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/mcp-specification-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:36bab08903672720625cf3e6fe082b430f41f0949bff07e486b5f038eeba0602",
+          "currentHash": "sha256:e475b0b4cc4fa9c8a095b2c96b19202d3d4653e869a9ee5ea6038e4a79807bb2",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:mcp/sources/mcp-tasks-extension",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:745abdccf8167e09e96f2f3a9e5724365f15856acc98ceea8cdf3e518f5505b7",
+          "currentHash": "sha256:270d38f7a3652dc7112dc66f31372a62c678bd0104c0903b1c4251a2ec4ed1bf",
           "sourceIds": []
         }
       ],
@@ -50572,7 +51984,55 @@
         "br-mcp-2026-08-10-xhigh-semantic"
       ],
       "localeGateReceipt": "receipt-module-content-presentation-refresh-locale-gate-2026-08-24",
-      "closureCriteria": "完成独立英文撰写与 xhigh-author、xhigh-semantic、xhigh-language、ultra-exception 四阶段审校，登记候选哈希并通过 ready 门后，方可原子提升双语基线并关闭。"
+      "closureCriteria": "完成独立英文撰写与 xhigh-author、xhigh-semantic、xhigh-language、ultra-exception 四阶段审校，登记候选哈希并通过 ready 门后，方可原子提升双语基线并关闭。",
+      "englishCandidate": {
+        "zhReviewHash": "sha256:599a1a398870dde64e01eba327e6d423a9379f1bc63171e210585dea2262434d",
+        "zhRendererFiles": [
+          "app/(zh)/layout.tsx",
+          "app/(zh)/modules/mcp/page.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/dense-module-reading-modes.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/mcp-module-experience-client.tsx",
+          "app/mcp-module-experience.tsx",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/question-filter.mjs",
+          "app/unified-module-hero.tsx"
+        ],
+        "enAuthoredHash": "sha256:8bcfe6a9faa252905fca7b41d80533260a76f250d4be2c851ee7aed962c03354",
+        "enEffectiveHash": "sha256:db001703b2802fdf33fbe31b72a4f7bc03fa03ff308837fa09eb4dcb295a56b6",
+        "enReviewHash": "sha256:3fb715e30d08666aecf0d082faa175d36214d5a18287f55e33f13b10b418b1c1",
+        "enRendererFiles": [
+          "app/(en)/en/modules/[slug]/page.tsx",
+          "app/(en)/layout.tsx",
+          "app/content-update-metadata.mjs",
+          "app/deep-dive-relation-view.tsx",
+          "app/dense-module-reading-modes.tsx",
+          "app/fieldbook-interactions.tsx",
+          "app/i18n/english-page-metadata.ts",
+          "app/i18n/english-pilot-module-page.tsx",
+          "app/i18n/english-representation-assessment.mjs",
+          "app/i18n/english-section-outline.mjs",
+          "app/i18n/locale-config.mjs",
+          "app/layout-utils.mjs",
+          "app/module-content-components.tsx",
+          "app/module-representation-assessment.mjs",
+          "app/module-visual-explorers.tsx",
+          "app/question-filter.mjs",
+          "app/unified-module-hero.tsx"
+        ],
+        "englishUpdatedAt": "2026-09-04",
+        "reviewIds": [
+          "br-mcp-2026-09-04-xhigh-author",
+          "br-mcp-2026-09-04-xhigh-semantic",
+          "br-mcp-2026-09-04-xhigh-language",
+          "br-mcp-2026-09-04-ultra-exception"
+        ]
+      }
     },
     {
       "defermentId": "dfr-a2a-module-presentation-refresh-2026-08-24",
@@ -50619,11 +52079,19 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:a2a/brief/deepDives/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:a2a/brief/deepDives/000",
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:26fc3498ee966f972dbfd92512750fceecfbb67b2b6349f82115bd11da2f0c04",
-          "currentHash": "sha256:d6ce2470fc0e8c0803425d92998f71d4fe800bfb685d40e033eba705ff18b6fd",
+          "currentHash": "sha256:36c3f9fcf0b1c99a6787064f94dd020383ec5e845ced9b65df347e063b4ad4bb",
           "sourceIds": [
             "a2a-concepts",
             "a2a-specification",
@@ -50636,6 +52104,31 @@
           "objectType": "brief",
           "changeKind": "modified",
           "baselineHash": "sha256:f115df488d01e7a7c2dfd4395e29832e5041693df7f6821447fe3cd68cbdbeac",
+          "currentHash": "sha256:114db6d43a1f10e05447542a29c292605c8235d3a61a7a4c8ee8bdd5cd4b2f76",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "anthropic-effective-agents"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/deepDives/002",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:308fed6798a3a16d9d8ba5b45ef8b153e4f8c29caefcb5b69333217e3307dbd6",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-extensions",
+            "a2a-specification",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/deepDives/003",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
           "currentHash": "sha256:bd85c269bfc609c255af7e533fe7b3ea068189235dfaab36355a742c365ece55",
           "sourceIds": [
             "a2a-concepts",
@@ -50652,6 +52145,14 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:a2a/brief/evidenceCards/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c789b1eb0795b8c977538e05735ff065ee97a55a3eb0ea97d076fb318d0d87c1",
+          "currentHash": "sha256:491907592657df5585f1c53e9c9efc36c2c0da331db0b9b085943c89f32e5888",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:a2a/brief/evidenceCards/003",
           "objectType": "brief",
           "changeKind": "modified",
@@ -50659,6 +52160,16 @@
           "currentHash": "sha256:4aff4260d74ff9f88439ffdae1ac1b61b3b8086c9904d862e56ce0b9ced4b62b",
           "sourceIds": [
             "a2a-concepts"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/evidenceCards/004",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:7af9f76aa97472185e8196a2076fdcddae9cff96407f60bfacaffcfda01905d5",
+          "sourceIds": [
+            "a2a-specification"
           ]
         },
         {
@@ -50702,6 +52213,36 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:a2a/brief/qa/$order",
+          "objectType": "brief-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "currentHash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/000",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4a2ccfe1ebe3ce6600f4558def11decd42a8f6bc32383325fe59e386de9db1a5",
+          "currentHash": "sha256:8eaf427274e2ac83e17228a0d028d152f7af43f0a6caa41b30678c47cf633fce",
+          "sourceIds": [
+            "a2a-mcp-boundary",
+            "mcp-tasks-extension"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/002",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e3a04cbbd44b6f7b8982dd53cabf2ac0f803c733e377d53c4e61313d441933e1",
+          "currentHash": "sha256:230b38eb3ed8045bf9036458a50dbd3dc9c8dc374f0fb9bd6bcb49a45a452e1f",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification"
+          ]
+        },
+        {
           "objectId": "/module:a2a/brief/qa/003",
           "objectType": "brief",
           "changeKind": "modified",
@@ -50714,11 +52255,148 @@
           ]
         },
         {
+          "objectId": "/module:a2a/brief/qa/004",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:26bad672506e1ffd4baf11f91e56b833eb43f21fcb9a467a97439454fee7a74e",
+          "currentHash": "sha256:6bf19f47c8b50ddf89d66329c94d3cdbad930b6b9c18d3e2f797fdeafd13f422",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/005",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7f811179492ab95036c23b4ed9baa97e0d15cd65341953419fc41342ce1a1a0a",
+          "currentHash": "sha256:b01f990326047129c9df66d317607693691c3765dcb64ee03bb9feab31898f35",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/006",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:95e9185dafe96e25f01a8380e5dca1ad0a5b92cc0af08f7198c4c2b9fde60961",
+          "currentHash": "sha256:340946c124e9b2ef7c40cba51761d5240466f1080c2593d08126dffa518a0ba4",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-extensions",
+            "a2a-specification",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/007",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0be8154546ac1dd5e61041cf9407005eafcbc362bd0303d972845ebcad623f84",
+          "currentHash": "sha256:26bad672506e1ffd4baf11f91e56b833eb43f21fcb9a467a97439454fee7a74e",
+          "sourceIds": [
+            "a2a-concepts",
+            "anthropic-effective-agents"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/008",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5db76f7982fb6f67e168a59cd16b6e3c05c2e01d96aa3a78b7945096e63a0e2f",
+          "currentHash": "sha256:7f811179492ab95036c23b4ed9baa97e0d15cd65341953419fc41342ce1a1a0a",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/009",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:14655911c72d6c423a5498c0b5a5408afbc02bc15225060aa079de40d8f4cd40",
+          "currentHash": "sha256:95e9185dafe96e25f01a8380e5dca1ad0a5b92cc0af08f7198c4c2b9fde60961",
+          "sourceIds": [
+            "a2a-specification",
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/010",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:63f3071618c84520518ac25d4ddbe02139cb1b79f2fe657520d971a97f9fcc4e",
+          "currentHash": "sha256:0be8154546ac1dd5e61041cf9407005eafcbc362bd0303d972845ebcad623f84",
+          "sourceIds": [
+            "a2a-concepts",
+            "anthropic-effective-agents",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/011",
+          "objectType": "brief",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a97531791ec12c8d4356b3bbaa954b7f25f0b33dcf10c14e950f998e6602e74d",
+          "currentHash": "sha256:5db76f7982fb6f67e168a59cd16b6e3c05c2e01d96aa3a78b7945096e63a0e2f",
+          "sourceIds": [
+            "a2a-release-1-0-1",
+            "a2a-specification",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/012",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:14655911c72d6c423a5498c0b5a5408afbc02bc15225060aa079de40d8f4cd40",
+          "sourceIds": [
+            "a2a-specification",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/013",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:63f3071618c84520518ac25d4ddbe02139cb1b79f2fe657520d971a97f9fcc4e",
+          "sourceIds": [
+            "a2a-concepts",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/brief/qa/014",
+          "objectType": "brief",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:a97531791ec12c8d4356b3bbaa954b7f25f0b33dcf10c14e950f998e6602e74d",
+          "sourceIds": [
+            "a2a-release-1-0-1",
+            "a2a-specification"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/deepDives/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:dad488023ea55b38b8af86583cab1a16f9218f96794cefb98075adc6c5f8e2e6",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
           "objectId": "/module:a2a/content/deepDives/000",
           "objectType": "content",
           "changeKind": "modified",
           "baselineHash": "sha256:26fc3498ee966f972dbfd92512750fceecfbb67b2b6349f82115bd11da2f0c04",
-          "currentHash": "sha256:d6ce2470fc0e8c0803425d92998f71d4fe800bfb685d40e033eba705ff18b6fd",
+          "currentHash": "sha256:36c3f9fcf0b1c99a6787064f94dd020383ec5e845ced9b65df347e063b4ad4bb",
           "sourceIds": [
             "a2a-concepts",
             "a2a-specification",
@@ -50731,12 +52409,45 @@
           "objectType": "content",
           "changeKind": "modified",
           "baselineHash": "sha256:f115df488d01e7a7c2dfd4395e29832e5041693df7f6821447fe3cd68cbdbeac",
+          "currentHash": "sha256:114db6d43a1f10e05447542a29c292605c8235d3a61a7a4c8ee8bdd5cd4b2f76",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "anthropic-effective-agents"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/deepDives/002",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:308fed6798a3a16d9d8ba5b45ef8b153e4f8c29caefcb5b69333217e3307dbd6",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-extensions",
+            "a2a-specification",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/deepDives/003",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
           "currentHash": "sha256:bd85c269bfc609c255af7e533fe7b3ea068189235dfaab36355a742c365ece55",
           "sourceIds": [
             "a2a-concepts",
             "a2a-specification",
             "anthropic-effective-agents"
           ]
+        },
+        {
+          "objectId": "/module:a2a/content/evidenceCards/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:c789b1eb0795b8c977538e05735ff065ee97a55a3eb0ea97d076fb318d0d87c1",
+          "currentHash": "sha256:491907592657df5585f1c53e9c9efc36c2c0da331db0b9b085943c89f32e5888",
+          "sourceIds": []
         },
         {
           "objectId": "/module:a2a/content/evidenceCards/003",
@@ -50746,6 +52457,46 @@
           "currentHash": "sha256:4aff4260d74ff9f88439ffdae1ac1b61b3b8086c9904d862e56ce0b9ced4b62b",
           "sourceIds": [
             "a2a-concepts"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/evidenceCards/004",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:7af9f76aa97472185e8196a2076fdcddae9cff96407f60bfacaffcfda01905d5",
+          "sourceIds": [
+            "a2a-specification"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/$order",
+          "objectType": "content-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "currentHash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/content/qa/000",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4a2ccfe1ebe3ce6600f4558def11decd42a8f6bc32383325fe59e386de9db1a5",
+          "currentHash": "sha256:8eaf427274e2ac83e17228a0d028d152f7af43f0a6caa41b30678c47cf633fce",
+          "sourceIds": [
+            "a2a-mcp-boundary",
+            "mcp-tasks-extension"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/002",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:e3a04cbbd44b6f7b8982dd53cabf2ac0f803c733e377d53c4e61313d441933e1",
+          "currentHash": "sha256:230b38eb3ed8045bf9036458a50dbd3dc9c8dc374f0fb9bd6bcb49a45a452e1f",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification"
           ]
         },
         {
@@ -50761,6 +52512,265 @@
           ]
         },
         {
+          "objectId": "/module:a2a/content/qa/004",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:26bad672506e1ffd4baf11f91e56b833eb43f21fcb9a467a97439454fee7a74e",
+          "currentHash": "sha256:6bf19f47c8b50ddf89d66329c94d3cdbad930b6b9c18d3e2f797fdeafd13f422",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/005",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:7f811179492ab95036c23b4ed9baa97e0d15cd65341953419fc41342ce1a1a0a",
+          "currentHash": "sha256:b01f990326047129c9df66d317607693691c3765dcb64ee03bb9feab31898f35",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/006",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:95e9185dafe96e25f01a8380e5dca1ad0a5b92cc0af08f7198c4c2b9fde60961",
+          "currentHash": "sha256:340946c124e9b2ef7c40cba51761d5240466f1080c2593d08126dffa518a0ba4",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-extensions",
+            "a2a-specification",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/007",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0be8154546ac1dd5e61041cf9407005eafcbc362bd0303d972845ebcad623f84",
+          "currentHash": "sha256:26bad672506e1ffd4baf11f91e56b833eb43f21fcb9a467a97439454fee7a74e",
+          "sourceIds": [
+            "a2a-concepts",
+            "anthropic-effective-agents"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/008",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5db76f7982fb6f67e168a59cd16b6e3c05c2e01d96aa3a78b7945096e63a0e2f",
+          "currentHash": "sha256:7f811179492ab95036c23b4ed9baa97e0d15cd65341953419fc41342ce1a1a0a",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/009",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:14655911c72d6c423a5498c0b5a5408afbc02bc15225060aa079de40d8f4cd40",
+          "currentHash": "sha256:95e9185dafe96e25f01a8380e5dca1ad0a5b92cc0af08f7198c4c2b9fde60961",
+          "sourceIds": [
+            "a2a-specification",
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/010",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:63f3071618c84520518ac25d4ddbe02139cb1b79f2fe657520d971a97f9fcc4e",
+          "currentHash": "sha256:0be8154546ac1dd5e61041cf9407005eafcbc362bd0303d972845ebcad623f84",
+          "sourceIds": [
+            "a2a-concepts",
+            "anthropic-effective-agents",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/011",
+          "objectType": "content",
+          "changeKind": "modified",
+          "baselineHash": "sha256:a97531791ec12c8d4356b3bbaa954b7f25f0b33dcf10c14e950f998e6602e74d",
+          "currentHash": "sha256:5db76f7982fb6f67e168a59cd16b6e3c05c2e01d96aa3a78b7945096e63a0e2f",
+          "sourceIds": [
+            "a2a-release-1-0-1",
+            "a2a-specification",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/012",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:14655911c72d6c423a5498c0b5a5408afbc02bc15225060aa079de40d8f4cd40",
+          "sourceIds": [
+            "a2a-specification",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/013",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:63f3071618c84520518ac25d4ddbe02139cb1b79f2fe657520d971a97f9fcc4e",
+          "sourceIds": [
+            "a2a-concepts",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/content/qa/014",
+          "objectType": "content",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:a97531791ec12c8d4356b3bbaa954b7f25f0b33dcf10c14e950f998e6602e74d",
+          "sourceIds": [
+            "a2a-release-1-0-1",
+            "a2a-specification"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/$order",
+          "objectType": "curriculum-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:5531567c521f2eefe73a8e7e4e45c97eb81d5d6760317901018671ebdfb15a86",
+          "currentHash": "sha256:f91f718fb177fa882dea45b91ddf374f31a18c01a0128710ac51585ae0cc350f",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/000",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:720e95bd36709fb9ba5bdc50cf72553fdf017a22774349b01ae53dbfe5e87235",
+          "currentHash": "sha256:6a990a1c10b21ec6ed1c9e1b7fff49102c12a272d9af3f194773042b1dfbd71c",
+          "sourceIds": [
+            "a2a-mcp-boundary",
+            "mcp-tasks-extension"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/001",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:194c8ce18247065e4fdcc60c3ce2d321dfca728a3993fc90d91d9635565e5fc8",
+          "currentHash": "sha256:0c1092dda1162d8b4fd05288bc8ed3eecb74d4dff8ae74e080beaa6d6ed9036d",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-concepts",
+            "a2a-extensions",
+            "a2a-specification"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/003",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:cd8728dd7e117e2958ab1c15935a0e21df175d895ed086ddc9079d2a7f3ad81f",
+          "currentHash": "sha256:e18b257a5aba46991bf8ec96544f5aa520ef83006963491b041ed763de0a18c0",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "opentelemetry-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/004",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bad702d5221fd18ee7c027e12ffedc7d953acd535d1b2cf542d4c5bb3f34062c",
+          "currentHash": "sha256:736cb245b39926e2228adf7dec7db95e14d77a9e000ae8649ae7498d34917e5e",
+          "sourceIds": [
+            "a2a-release-1-0-1",
+            "a2a-specification",
+            "opentelemetry-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/005",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:18658990c1ee4c62cee9dab4809af385763db5098a0b8581918e36fed8cd8e4e",
+          "currentHash": "sha256:ac3227a0578149d16bc95412726d32a239573da5cee5d58b4fcbeb47595c58a4",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-extensions",
+            "a2a-specification",
+            "anthropic-effective-agents"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/006",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:d2b25425a06b168d1c98e7dde321992ab07422db2e6716912ebce9973946ee46",
+          "currentHash": "sha256:08f65428fc0edc5c834dada8d046bb5b0a300584c0f58b8be21d453547fb1279",
+          "sourceIds": [
+            "a2a-release-1-0-1",
+            "a2a-specification",
+            "opentelemetry-genai-semconv",
+            "opentelemetry-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/007",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:cc3a5d503e49205c800d751ea45de5fc17044a26c212316b94d6ceb8deaff4d8",
+          "currentHash": "sha256:18658990c1ee4c62cee9dab4809af385763db5098a0b8581918e36fed8cd8e4e",
+          "sourceIds": [
+            "a2a-concepts",
+            "anthropic-effective-agents",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/008",
+          "objectType": "curriculum",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4b33e551a5b0628fd701dc2849d0f1eeb6f643d7d4bb46550dc382e0485ba3d1",
+          "currentHash": "sha256:d2b25425a06b168d1c98e7dde321992ab07422db2e6716912ebce9973946ee46",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-specification",
+            "anthropic-effective-agents",
+            "opentelemetry-genai-semconv",
+            "opentelemetry-semconv"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/009",
+          "objectType": "curriculum",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:cc3a5d503e49205c800d751ea45de5fc17044a26c212316b94d6ceb8deaff4d8",
+          "sourceIds": [
+            "a2a-concepts",
+            "nist-genai-profile"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/curriculum/chapters/010",
+          "objectType": "curriculum",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:4b33e551a5b0628fd701dc2849d0f1eeb6f643d7d4bb46550dc382e0485ba3d1",
+          "sourceIds": [
+            "a2a-concepts",
+            "anthropic-effective-agents"
+          ]
+        },
+        {
           "objectId": "/module:a2a/extensionView/title",
           "objectType": "extensionView",
           "changeKind": "modified",
@@ -50769,10 +52779,46 @@
           "sourceIds": []
         },
         {
+          "objectId": "/module:a2a/learning/labs/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:99c94196b8b34baeabe8c35d64f351f95f1976c406dd3ce22c161c8b412d2676",
+          "currentHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/labs/000",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:6b5a72840208ea336f5001de9bf607032276a6faac009d1b3102aefec29f7495",
+          "currentHash": "sha256:8176ae77795e4e391b8780e9a7a9b21e113a4e5492798e7fd93b2dedbdc2699c",
+          "sourceIds": [
+            "a2a-concepts",
+            "a2a-release-1-0-1",
+            "a2a-specification"
+          ]
+        },
+        {
           "objectId": "/module:a2a/learning/labs/002",
           "objectType": "learning",
           "changeKind": "modified",
           "baselineHash": "sha256:0cdad1426fbfe6c3e9d20289e7ac1a9a3c6be68d14891c89c5d20eb3d5b8b9c2",
+          "currentHash": "sha256:4d25c5e63050fb4ebb88f83920a6bc119aae6085ed548daa526c215038e3f255",
+          "sourceIds": [
+            "a2a-agent-discovery",
+            "a2a-concepts",
+            "a2a-extensions",
+            "a2a-release-1-0-1",
+            "a2a-specification",
+            "nist-genai-profile",
+            "nist-zero-trust"
+          ]
+        },
+        {
+          "objectId": "/module:a2a/learning/labs/003",
+          "objectType": "learning",
+          "changeKind": "added",
+          "baselineHash": null,
           "currentHash": "sha256:131b5572b095a38e5f411bedccb7a70a63d6ecfe242f83a2036083a51149d686",
           "sourceIds": [
             "a2a-concepts",
@@ -50780,6 +52826,86 @@
             "a2a-specification",
             "nist-genai-profile"
           ]
+        },
+        {
+          "objectId": "/module:a2a/learning/outcomes/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "currentHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/outcomes/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2bdf24ffbf1349d23171b4b59bb287ec17c2e2e025e94ed312a3869a0b053756",
+          "currentHash": "sha256:a78d4914586476ef447fbf34d1ea70c6fdf21e0875580a8b5ed5f78522307024",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/outcomes/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:72f37505c19780a0d2b3e03ecf45cfd5cd7a26f80fa7d88073a7f9c8dce8fd6e",
+          "currentHash": "sha256:dcd9b4b0e5521d9dabd1c53066fe9c6c37540d949b51b863adf0976ae8b574ee",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/outcomes/004",
+          "objectType": "learning",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:72f37505c19780a0d2b3e03ecf45cfd5cd7a26f80fa7d88073a7f9c8dce8fd6e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/route/$order",
+          "objectType": "learning-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "currentHash": "sha256:146b5fe3839503e20d17450b374786be2bc9bc5d6318b212f4b8e5d63143b55a",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/route/001",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:3fd518dcb9f434ed4733409ef0100046e2affd0ff781ddedcdef0dbf0a51e422",
+          "currentHash": "sha256:09f7fe3426f7ee349eaf11c470bfbddb9a9613810748c7e3f4b2fac7bd3a0639",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/route/002",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:fde41ae4076b7dca13c995e832c5d693c7847338820758e96a5c1b0f1c857952",
+          "currentHash": "sha256:dc5f256b75749c3a9c2fb2ee6b25d5079c6ce47b64b7acc591817c365ebe9110",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/route/003",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:2212e0f1af03c871b90d47930ca8bca31428da77b07af1af9ec73367a3d1b045",
+          "currentHash": "sha256:09805db29a9233896dcb39cb0c0ddba0214824a078635475540c3675455fc188",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/route/004",
+          "objectType": "learning",
+          "changeKind": "modified",
+          "baselineHash": "sha256:d905077e75b9705e368806890b21ac3b77bc254f83313451ac20f7e80a921c55",
+          "currentHash": "sha256:2212e0f1af03c871b90d47930ca8bca31428da77b07af1af9ec73367a3d1b045",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/learning/route/005",
+          "objectType": "learning",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:d905077e75b9705e368806890b21ac3b77bc254f83313451ac20f7e80a921c55",
+          "sourceIds": []
         },
         {
           "objectId": "/module:a2a/publication/contentContract/boundary/000",
@@ -50826,7 +52952,167 @@
           "objectType": "publication",
           "changeKind": "modified",
           "baselineHash": "sha256:e4c44c980c6db648ef3dc73b3e44858f44513012b0adef8342ca3a47eb0f56da",
-          "currentHash": "sha256:600826f5fc43ce7cd3b31ced69a455f99de1b7a27f61bb1561ea35fb3b68f532",
+          "currentHash": "sha256:169670126c693bbe6cf3e565032488d8021f0e87862b4d5147c27e0c87f24992",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/referenceModule/sourceIds/$order",
+          "objectType": "referenceModule-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:94264caaa84e392c04e5975af3cd2131264d9e7b602cac1fa0c211fa8e158867",
+          "currentHash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/referenceModule/sourceIds/007",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:8fb0ddfe9a0c760da8a29664ece2ff31acfa90fe1bda59d87482c4f50c7d5487",
+          "currentHash": "sha256:60c724e3e9bc24c5d4f434ca5bb3e74995aa8031e16edac945aacba9b539337e",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/referenceModule/sourceIds/008",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "currentHash": "sha256:1a009274dc43825e6b37fefb6c6eb8e69e1aa1aed231056d12cefa61c3379274",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/referenceModule/sourceIds/009",
+          "objectType": "referenceModule",
+          "changeKind": "modified",
+          "baselineHash": "sha256:4b3eeff7eda8e13c8b26ccde20879aa628bfe5c31a7c6112cae4473c9298d3d4",
+          "currentHash": "sha256:8fb0ddfe9a0c760da8a29664ece2ff31acfa90fe1bda59d87482c4f50c7d5487",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/referenceModule/sourceIds/010",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:059e2bb382bd40a2a05cd3054db5031542e7e6cd52a3fccf7bf1b912af6e91c1",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/referenceModule/sourceIds/011",
+          "objectType": "referenceModule",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:4b3eeff7eda8e13c8b26ccde20879aa628bfe5c31a7c6112cae4473c9298d3d4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/evidenceCardIds/$order",
+          "objectType": "renderedProjection-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:75e7ef1e66514a7d7b70cfbbbfcfa169549600cc527a614d9831a39e8d65c1ff",
+          "currentHash": "sha256:8848fdd948f0d00ca6367619a0de98e5cb420cc77ea22f11b0b2bc03ba6ec754",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/evidenceCardIds/004",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:b0de86d0f2045025a01fed3a25cf224d85bd299296597bb4aed5a0be56ad87fc",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/questionIds/$order",
+          "objectType": "renderedProjection-order",
+          "changeKind": "modified",
+          "baselineHash": "sha256:b802ed60fde247a73f10d291d0ef9bc6646035c3ea7fe752321067262e7b94be",
+          "currentHash": "sha256:f8c67062e42a70d6a52c1ee7ecffff11af4f8f6681ec77db1a2ffcc87460d4b0",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/questionIds/012",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:7ff9c6797dd599b81e3b3a925bf23c1b142d3125e9931f5a7f698d1eea830cb4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/questionIds/013",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:7dfe5c77a5afe9885d60d565ad4dd2bf2cf49d14bc8b90695d232be0942b03d4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/questionIds/014",
+          "objectType": "renderedProjection",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:3c3f3beb27872ae7f704168401b278f6c8e53b0105ef0e0f2be843fd5f0ce251",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/renderedProjection/sharedRendererHash",
+          "objectType": "renderedProjection",
+          "changeKind": "modified",
+          "baselineHash": "sha256:648e3db6624f60a1bad204869ba02e830b1bf7c18fcd90fbfa5dd0a1f549722c",
+          "currentHash": "sha256:8930033b52bee7bceba8f0066e2c513e27786c688823f542d9e7d0c7ab8a72a5",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/sources/a2a-agent-discovery",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:7ba90a256d97dfb758c46165a739b07e879be2e5037fbc3590b2baf7ead0d796",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/sources/a2a-extensions",
+          "objectType": "sources",
+          "changeKind": "added",
+          "baselineHash": null,
+          "currentHash": "sha256:ce52cf2a9d0f35f68dea69cb281d6bd018933f668fba40e23aaa7726c7fde4c4",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/sources/a2a-release-1-0-1",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:bfd33ca02d296e3177c91d44baf2e56e327d1232db8445b6db540355398ed1d4",
+          "currentHash": "sha256:d6b3a336ba17cc56b89f158af10c88d9c1ab4abb8ccd240cbd42ea85879cc409",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/sources/a2a-specification",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:0a7efc16e8963aa19ed3cb39d1734569344f589a803768ca4b4d5e122e46a6e1",
+          "currentHash": "sha256:787be72c9606e4106c38394c90f803a5caf758125ab4806398a3c1476676f187",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/sources/mcp-changelog-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:89a9bc16596ddca9840ec387b85df7bf67eaf1e861c3a306815ca255846bb739",
+          "currentHash": "sha256:7da18d3daf0f1fac9098d82503dab6c25a4066537f9506ce966d7e0b71812570",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/sources/mcp-specification-2026-07-28",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:36bab08903672720625cf3e6fe082b430f41f0949bff07e486b5f038eeba0602",
+          "currentHash": "sha256:e475b0b4cc4fa9c8a095b2c96b19202d3d4653e869a9ee5ea6038e4a79807bb2",
+          "sourceIds": []
+        },
+        {
+          "objectId": "/module:a2a/sources/mcp-tasks-extension",
+          "objectType": "sources",
+          "changeKind": "modified",
+          "baselineHash": "sha256:745abdccf8167e09e96f2f3a9e5724365f15856acc98ceea8cdf3e518f5505b7",
+          "currentHash": "sha256:270d38f7a3652dc7112dc66f31372a62c678bd0104c0903b1c4251a2ec4ed1bf",
           "sourceIds": []
         }
       ],

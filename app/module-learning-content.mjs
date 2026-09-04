@@ -62,28 +62,32 @@ const baseModuleLearningContent = Object.freeze({
     ],
   },
   mcp: {
-    outcomes: ["解释 Host、Client、Server 与三类原语", "区分当前正式版与旧版兼容路径", "按部署形态选择传输和信任边界", "把工具发现与身份授权分开", "为远程 MCP 建立生产发布门"],
+    outcomes: ["解释 Host、Client、Server 与三类原语", "区分当前正式版与旧版兼容路径", "区分无状态请求、MRTR、Tasks、缓存与业务状态", "按部署形态选择传输、网关和信任边界", "为远程 MCP 建立生产发布门"],
     route: [
       { title: "理解协议对象与版本", learn: "掌握 Tools、Resources、Prompts，并区分 2026-07-28 正式规范与 2025-11-25 旧版生命周期。", checkpoint: "能为一项能力选择正确原语，并说明结论适用的协议版本。" },
       { title: "画出调用与信任链", learn: "追踪用户、Host、Client、Server 和下游系统之间的身份与数据。", checkpoint: "能指出每一步由谁认证、授权、校验和审计。" },
-      { title: "完成生产化", learn: "处理版本、超时、幂等、限流、撤销、隔离与供应链风险。", checkpoint: "能把远程 MCP 当作高权限集成而不是普通插件。" },
+      { title: "拆开四类状态与网关元数据", learn: "用 MRTR 处理显式补参、Tasks 处理当前受支持 tools/call 的耐久执行、cacheScope 处理缓存隔离，并用 Mcp-Method / Mcp-Name 支持可验证路由。", checkpoint: "能说明 requestState、Task handle、缓存键和业务 ID 分别由谁保存、何时失效，以及为何都不是授权。" },
+      { title: "完成生产化", learn: "处理版本、超时、幂等、限流、撤销、隔离、网关策略与供应链风险。", checkpoint: "能把远程 MCP 当作高权限集成而不是普通插件。" },
     ],
     labs: [
       { title: "把现有 API 包装成最小 MCP Server", scenario: "客户有一个只读订单查询 API，希望多个 Agent 客户端复用。", tasks: ["把查询定义为模型控制的只读 Tool，并声明 Schema 与错误语义", "保留调用者身份并实施最小权限", "加入超时、审计和敏感字段过滤"], deliverable: "协议契约、调用序列与安全检查表", acceptance: "只读 Tool 可被发现但不能绕过原 API 权限，错误和撤销路径可测试。", sourceIds: ["mcp-tools-2026-07-28", "mcp-authorization", "mcp-security"] },
       { title: "比较本地与远程部署", scenario: "同一 Server 可通过本地 stdio 或远程 Streamable HTTP 提供。", tasks: ["分别画出进程、网络和凭据边界", "比较更新、隔离、可观测和故障半径", "为开发、受控桌面和企业共享三种场景选型"], deliverable: "部署决策记录与迁移触发条件", acceptance: "选择与信任边界一致，不把本地安全假设直接搬到远程。", sourceIds: ["mcp-architecture", "mcp-security", "nist-zero-trust"] },
       { title: "评审一次 MCP 版本迁移", scenario: "团队正在运行 2025-11-25，并准备迁移到当前正式版 2026-07-28。", tasks: ["冻结当前 Client、Server、SDK、网关与扩展清单", "对比 initialize、session、逐请求元数据、server/discover、Tasks 与授权变化", "设计隔离验证、并行兼容、生态支持复核和回滚门"], deliverable: "按版本拆分的迁移影响矩阵与验证计划", acceptance: "规范已生效与产品已兼容被分开记录，所有破坏性变化都有受影响组件、验证证据和切换条件。", sourceIds: ["mcp-lifecycle-2025-11-25", "mcp-changelog-2026-07-28", "mcp-tasks-extension"] },
+      { title: "验证无状态 MCP 的补参、缓存与路由", scenario: "一个多租户远程 Server 需要执行中补充信息、缓存工具目录，并由网关按方法与能力名施策。", tasks: ["让 input_required 以新 JSON-RPC id 重试原操作；Server 提供 requestState 时，验证它原样回传并绑定用户与操作", "验证 public / private cacheScope 的租户隔离、TTL 失效和撤权边界", "校验 Mcp-Method 及适用场景下的 Mcp-Name 与正文一致，再执行方法和能力级授权、限流与审计"], deliverable: "MRTR 时序、缓存键模型、网关策略与故障用例", acceptance: "没有隐式 Session 依赖；补参、缓存、路由元数据与业务状态不会互相冒充授权或权威事实。", sourceIds: ["mcp-mrtr-2026-07-28", "mcp-list-cache-2026-07-28", "mcp-http-routing-2026-07-28", "nist-zero-trust"] },
     ],
   },
   a2a: {
-    outcomes: ["区分 A2A 与 MCP Tasks 的职责边界", "处理 Agent Card 后的 Message | Task 双路径", "按精确状态为长任务设计恢复与取消", "建立跨组织 Agent 的信任、验收与互操作测试"],
+    outcomes: ["区分 A2A 与 MCP Tasks 的职责边界", "处理 Agent Card 后的 Message | Task 双路径", "映射 messageId、taskId、contextId、referenceTaskIds 与业务 ID", "按真实交付语义设计恢复、扩展与取消", "建立跨组织 Agent 的信任、验收与互操作测试"],
     route: [
       { title: "先判断是否需要协议边界", learn: "区分单进程编排、内部多 Agent 和跨系统协作。", checkpoint: "能说明为什么不是增加一个本地子 Agent 就够了。" },
-      { title: "再选择 Message 或 Task", learn: "理解即时 Message、服务端 Task、精确中断态与终态，以及可选 Artifact。", checkpoint: "客户端能处理两类响应，并设计重复投递、断线恢复和取消语义。" },
-      { title: "最后处理信任与运营", learn: "验证能力声明、调用身份、产物权限和跨域审计。", checkpoint: "能在不暴露内部 Prompt 的情况下证明任务执行边界。" },
+      { title: "再选择 Message 或 Task 并建立 ID 谱系", learn: "理解即时 Message、服务端 Task、精确中断态与终态、可选 Artifact，以及四类协议 ID 与业务单号的映射。", checkpoint: "终态修订发送不带旧 taskId 的新 Message，可保留 contextId 并引用旧 Task；响应仍可能是 Message，只有返回 Task 时才有新 taskId。" },
+      { title: "验证交付与扩展语义", learn: "区分读取幂等、SendMessage 可选去重、仅非终态可调用且无恢复游标的 SubscribeToTask、按每个已配置 webhook 至少尝试一次但不保证成功送达的 Push，并分清 Extended Agent Card 与 Extension。", checkpoint: "未知写结果会先查询，终态 Task 改用 GetTask；缺少 Push 能力时返回指定错误，重复通知按自有投递键或双方契约幂等处理，需要重放时有自有事件存储或明确扩展。" },
+      { title: "最后处理信任与运营", learn: "验证 Card 来源与可选签名、调用身份、Extension、产物权限和跨域审计。", checkpoint: "能在不暴露内部 Prompt 的情况下证明任务执行边界。" },
     ],
     labs: [
-      { title: "设计一个可恢复的长任务", scenario: "理赔受理 Agent 既可能即时回答材料问题，也可能委托跨区域专业 Agent 完成数分钟核验并等待补件。", tasks: ["为同一 SendMessage 覆盖直接 Message 与 Task 两类响应", "验证八个非 UNSPECIFIED 操作状态（正式枚举均以 TASK_STATE_ 开头）、断线重连、重复消息和取消", "规定可选 Artifact 的访问、验收与业务终态核对"], deliverable: "双路径契约、任务状态机与异常测试表", acceptance: "客户端不假设每次都有 Task；刷新、断线和重复投递不会创建不可解释的动作，COMPLETED 也不会被误当业务验收。", sourceIds: ["a2a-concepts", "a2a-specification", "a2a-release-1-0-1"] },
+      { title: "设计一个可恢复的长任务", scenario: "理赔受理 Agent 既可能即时回答材料问题，也可能委托跨区域专业 Agent 完成数分钟核验并等待补件。", tasks: ["为同一 SendMessage 覆盖直接 Message 与 Task 两类响应，并保存四类协议 ID 到业务单号的映射", "验证八个非 UNSPECIFIED 操作状态、非终态 SubscribeToTask 无恢复游标、终态 GetTask 回读、每个已配置 webhook 的 Push 失败与重复、缺少 Push 能力、SendMessage 未知结果和取消", "注入无效 taskId、taskId/contextId 不匹配与仅给 taskId 三类组合；终态修订发送不带旧 taskId 的新 Message，可保留 contextId、引用旧 Task，并再次覆盖 Message 与 Task 两类响应"], deliverable: "双路径契约、ID 谱系、任务状态机与异常测试表", acceptance: "客户端不假设每次都有 Task、成功 Push 或订阅重放；终态订阅返回 UnsupportedOperationError，无效 ID 返回 TaskNotFoundError，Agent Card 中 pushNotifications 缺失或为 false 时 Create / Get / List / Delete 配置操作返回 PushNotificationNotSupportedError。断线和重复投递不会创建不可解释动作，COMPLETED 也不会被误当业务验收。", sourceIds: ["a2a-concepts", "a2a-specification", "a2a-release-1-0-1"] },
       { title: "划分 A2A 与内部编排", scenario: "企业内已有多 Agent 框架，同时要连接合作伙伴的独立 Agent。", tasks: ["标出内部可共享状态与外部最小契约", "确定能力发现、身份和审计责任", "设计外部 Agent 不可用时的降级"], deliverable: "协议边界图与责任矩阵", acceptance: "内部实现可独立演进，外部协作只依赖稳定契约且故障不会扩散。", sourceIds: ["a2a-concepts", "anthropic-effective-agents", "nist-zero-trust"] },
+      { title: "验收 Agent Card 与 Extension 协商", scenario: "合作伙伴公开一张最小 Agent Card，认证后提供 Extended Card，并要求一个行业 Extension。", tasks: ["验证公开 Card 来源、可选 JWS 与请求身份，再获取 Extended Card", "固定 Extension 的版本化 URI、required、配置与 A2A-Extensions 激活请求，并验证破坏性变化改用新 URI", "注入不支持的可选 URI 或版本、required Extension 未声明支持、Card 更新和授权撤销"], deliverable: "发现信任链、扩展兼容矩阵与降级记录", acceptance: "Extended Card 和 Extension 不混淆；不支持的可选版本被忽略且不回退，缺少 required Extension 支持时返回 ExtensionSupportRequiredError，Card 或扩展变化会触发重新准入。", sourceIds: ["a2a-agent-discovery", "a2a-extensions", "a2a-specification", "nist-zero-trust"] },
     ],
   },
   evaluation: {

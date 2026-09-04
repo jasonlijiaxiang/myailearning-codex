@@ -224,6 +224,15 @@ function assertIncludesEvidenceSources(item, sourceIds, label) {
   sourceIds.forEach((sourceId) => assert.ok(actualSourceIds.has(sourceId), `${label} must retain ${sourceId}`));
 }
 
+function assertExactEvidenceSources(item, sourceIds, label) {
+  assert.ok(item, `${label} must exist`);
+  assert.deepEqual(
+    item.evidence?.map((entry) => entry.sourceId).sort(),
+    [...sourceIds].sort(),
+    `${label} must keep the exact reviewed evidence set`,
+  );
+}
+
 function buildUniqueMap(items, keyForItem, label) {
   const result = new Map();
   for (const item of items) {
@@ -932,13 +941,33 @@ test("Batch 12 English content preserves protocol, memory, and evaluation bounda
   [
     "a2a-concepts", "a2a-specification", "a2a-mcp-boundary", "mcp-tasks-extension", "anthropic-effective-agents",
     "opentelemetry-semconv", "opentelemetry-genai-semconv", "nist-genai-profile", "nist-zero-trust", "a2a-release-1-0-1",
+    "a2a-agent-discovery", "a2a-extensions",
   ].forEach((sourceId) => assert.ok(a2a.sources[sourceId], `A2A must retain source copy for ${sourceId}`));
   const a2aCopy = JSON.stringify(a2a);
   assert.match(a2aCopy, /protocol-level COMPLETED state/);
   assert.match(a2aCopy, /reconcile side effects with the business system/);
+  assert.match(a2aCopy, /messageId ≠ exactly once/);
+  assert.match(a2aCopy, /SubscribeToTask.*no resume cursor or historical replay.*ListTasks.*pagination/s);
+  assert.match(a2aCopy, /Task is already terminal.*SubscribeToTask MUST return UnsupportedOperationError/s);
+  assert.match(a2aCopy, /For each configured webhook.*MUST attempt push delivery at least once.*MAY retry failed deliveries.*MAY stop.*successful at-least-once delivery is not guaranteed/s);
+  assert.match(a2aCopy, /pushNotifications is false or absent.*PushNotificationNotSupportedError/s);
+  assert.match(a2aCopy, /Server requires an Extension marked required.*Client did not declare support.*MUST return ExtensionSupportRequiredError/s);
+  assert.match(a2aCopy, /unsupported version of an optional Extension.*SHOULD ignore.*MUST NOT fall back to another version/s);
+  assert.match(a2aCopy, /contextId is absent.*MAY generate one.*rejects that value.*MUST return an error rather than silently replace it/s);
+  assert.match(a2aCopy, /MAY generate one.*MUST include a generated value.*returned Task or Message/s);
+  assert.match(a2aCopy, /server-generated contextId values as opaque/);
+  assert.match(a2aCopy, /taskId in a client Message MUST reference an existing accessible Task.*cannot create a new Task/s);
+  assert.match(a2aCopy, /only taskId is supplied.*MUST infer contextId.*both are supplied but do not match.*MUST reject/s);
+  assert.match(a2aCopy, /nonexistent or inaccessible taskId causes the Agent to return TaskNotFoundError/);
+  assert.match(a2aCopy, /Extended Agent Card is not an Extension/);
+  assertIncludesEvidenceSources(findById(a2a.qa, "a2a-identifier-lineage", "A2A questions"), ["a2a-specification"], "A2A identifier-lineage question");
+  assertIncludesEvidenceSources(findById(a2a.qa, "extension-versus-extended-card", "A2A questions"), ["a2a-agent-discovery", "a2a-extensions", "a2a-specification"], "A2A Extension question");
   assert.doesNotMatch(a2aCopy, /mcp-architecture|a2a-spec-1-0-0/);
 
   const agent = englishModuleRegistry["ai-agent"];
+  [
+    "openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026",
+  ].forEach((sourceId) => assert.ok(agent.sources[sourceId], `AI Agent must retain source copy for ${sourceId}`));
   const memorySection = agent.sections.find((section) => section.id === "agent-memory-poisoning");
   const memoryLifecycle = memorySection.blocks.find((block) => block.items.some((item) => item.id === "agent-memory-write-trust"));
   assertReadableItems(memoryLifecycle.items, "Agent memory lifecycle");
@@ -947,7 +976,17 @@ test("Batch 12 English content preserves protocol, memory, and evaluation bounda
   const lowCodeDecisions = lowCodeSection.blocks.find((block) => block.items.some((item) => item.id === "agent-delivery-tool-protocol"));
   assertReadableItems(lowCodeDecisions.items, "Agent delivery decisions");
   assertIncludesSourceIds(findById(lowCodeDecisions.items, "agent-delivery-tool-protocol", "Agent delivery decisions"), ["mcp-specification-2026-07-28"], "Agent tool-protocol decision");
-  assert.match(JSON.stringify(agent), /Lab attack rates do not predict production incidence/);
+  const harnessSection = agent.sections.find((section) => section.id === "agent-harness-engineering");
+  const planeMatrix = harnessSection.blocks.find((block) => block.items.some((item) => item.id === "harness-plane-evidence"));
+  assertReadableItems(planeMatrix.items, "Agent execution-control-evidence planes");
+  assertIncludesSourceIds(findById(planeMatrix.items, "harness-plane-evidence", "Agent planes"), ["openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026"], "Agent evidence plane");
+  const runtimeSection = agent.sections.find((section) => section.id === "agent-production-runtime");
+  const safeExit = runtimeSection.blocks.find((block) => block.items.some((item) => item.id === "agent-safe-exit-detect"));
+  assertReadableItems(safeExit.items, "Agent Safe Exit sequence");
+  assertIncludesEvidenceSources(findById(agent.qa, "blocked-task-safe-exit", "Agent questions"), ["openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026"], "Agent Safe Exit question");
+  const agentCopy = JSON.stringify(agent);
+  assert.match(agentCopy, /Lab attack rates do not predict production incidence/);
+  assert.match(agentCopy, /no impact to OpenAI customer data.*does not cover the affected Hugging Face systems or data/s);
 
   const evaluation = englishModuleRegistry.evaluation;
   const evaluationCurriculum = evaluation.sections.find((section) => section.id === "evaluation-curriculum");
@@ -1019,12 +1058,79 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
 
   const mcp = englishModuleRegistry.mcp;
   assert.ok(Object.hasOwn(mcp.sources, "mcp-2026-07-28-rc"));
+  ["mcp-mrtr-2026-07-28", "mcp-list-cache-2026-07-28", "mcp-http-routing-2026-07-28"].forEach((sourceId) => {
+    assert.ok(mcp.sources[sourceId], `MCP must retain source copy for ${sourceId}`);
+  });
   const mcpTasks = findById(mcp.qa, "long-running-mcp-call", "MCP questions");
   assert.match(mcpTasks.a, /Client opts in per request/);
+  assert.match(mcpTasks.a, /CreateTaskResult only for tools\/call/);
   assert.match(mcpTasks.depth, /Server advertise it through server\/discover/);
   const mcpCopy = JSON.stringify(mcp);
   assert.match(mcpCopy, /MCP 2026-07-28 is the current final specification/);
+  assert.match(mcpCopy, /input_required.*new JSON-RPC id.*inputResponses.*requestState/s);
+  assert.match(mcpCopy, /prompts\/get, resources\/read, and tools\/call may return input_required.*every InputRequiredResult MUST contain at least one/s);
+  assert.match(mcpCopy, /resultType: complete results for server\/discover.*resources\/templates\/list.*require ttlMs/s);
+  assert.match(mcpCopy, /input_required.*MRTR retries.*MUST NOT be cached/s);
+  assert.match(mcpCopy, /private responses MUST NOT be reused across authorization contexts such as different access tokens/);
+  assert.match(mcpCopy, /Mcp-Method.*Mcp-Name/);
+  assert.match(mcpCopy, /notification POSTs.*core protocol defines no Client-to-Server notifications over Streamable HTTP/s);
+  assert.match(mcpCopy, /tasks\/get, tasks\/update, and tasks\/cancel.*Mcp-Name.*params\.taskId/s);
   assert.doesNotMatch(mcpCopy, /As of August 1, 2026|both parties can opt in/);
+});
+
+test("2026-09-04 Agent, MCP, and A2A additions preserve exact bilingual evidence mappings", () => {
+  const additions = {
+    "ai-agent": {
+      questions: [
+        ["blocked-task-safe-exit", "为什么任务越难，Agent 越需要定义主动停止，而不是一直重试？", ["openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026"]],
+        ["agent-owned-logs-not-ground-truth", "为什么 Agent 自己生成的日志不能作为唯一验收证据？", ["openai-hugging-face-incident-technical-report-2026", "ncsc-agentic-ai-risk-interim-2026"]],
+        ["cancel-does-not-undo", "点停止或 Cancel 后，为什么还要撤权、断网并核对外部副作用？", ["ncsc-agentic-ai-risk-interim-2026", "openai-hugging-face-incident-technical-report-2026"]],
+      ],
+      evidenceCard: ["impossible-task-control-failure", "安全退出不等于耗尽轮次", "openai-hugging-face-incident-technical-report-2026"],
+    },
+    mcp: {
+      questions: [
+        ["stateless-mrtr-input", "MCP 2026-07-28 已经无状态，工具执行中还需要用户补充信息怎么办？", ["mcp-mrtr-2026-07-28", "mcp-tasks-extension"]],
+      ],
+      evidenceCard: ["mcp-mrtr-stateless-input", "无状态请求仍可显式请求补参", "mcp-mrtr-2026-07-28"],
+    },
+    a2a: {
+      questions: [
+        ["a2a-identifier-lineage", "contextId、taskId、messageId、referenceTaskIds 和业务单号分别负责什么？", ["a2a-specification"]],
+        ["send-message-unknown-outcome", "SendMessage 超时后，可以带同一个 messageId 直接重发吗？", ["a2a-specification"]],
+        ["extension-versus-extended-card", "Agent Card 声明的 Extension 和 Extended Agent Card 是同一件事吗？", ["a2a-agent-discovery", "a2a-extensions", "a2a-specification"]],
+      ],
+      evidenceCard: ["message-id-not-exactly-once", "未知写结果要先查状态再决定重试", "a2a-specification"],
+    },
+  };
+
+  for (const [slug, expected] of Object.entries(additions)) {
+    const chinese = requireModuleContent(slug);
+    const english = englishModuleRegistry[slug];
+    assert.equal(chinese.qa.filter((question) => question.addedAt === "2026-09-04").length, expected.questions.length, `${slug} Chinese additions must stay complete`);
+    assert.equal(english.qa.filter((question) => question.addedAt === "2026-09-04").length, expected.questions.length, `${slug} English additions must stay complete`);
+
+    for (const [englishId, chineseQuestion, sourceIds] of expected.questions) {
+      const chineseItem = chinese.qa.find((question) => question.q === chineseQuestion);
+      const englishItem = findById(english.qa, englishId, `${slug} English questions`);
+      assert.ok(chineseItem, `${slug} Chinese questions must include ${chineseQuestion}`);
+      assert.equal(chineseItem.addedAt, "2026-09-04");
+      assert.equal(englishItem.addedAt, "2026-09-04");
+      assertExactEvidenceSources(chineseItem, sourceIds, `${slug} Chinese question ${chineseQuestion}`);
+      assertExactEvidenceSources(englishItem, sourceIds, `${slug} English question ${englishId}`);
+    }
+
+    const [englishCardId, chineseCardTitle, sourceId] = expected.evidenceCard;
+    const chineseCard = chinese.evidenceCards.find((card) => card.title === chineseCardTitle);
+    const englishCard = findById(english.evidenceCards, englishCardId, `${slug} English evidence cards`);
+    assert.ok(chineseCard, `${slug} Chinese evidence cards must include ${chineseCardTitle}`);
+    assert.equal(chineseCard.sourceId, sourceId);
+    assert.equal(englishCard.sourceId, sourceId);
+    if (slug === "ai-agent") {
+      assert.match(chineseCard.boundary, /不覆盖.*Hugging Face/);
+      assert.match(englishCard.boundary, /does not cover.*Hugging Face systems or data/);
+    }
+  }
 });
 
 test("Batch 14 English content preserves model mechanisms and predictive lifecycle controls", () => {

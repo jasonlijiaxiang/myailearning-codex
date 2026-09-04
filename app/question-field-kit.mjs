@@ -366,7 +366,7 @@ export const fieldQuestions = Object.freeze([
   }),
   fieldQuestion({
     fieldId: "fk-mcp-server-supply",
-    questionRef: { moduleId: "mcp", questionNumber: 9, expectedQuestion: "企业应该允许客户端自动安装任意 MCP Server 吗？" },
+    questionRef: { moduleId: "mcp", questionNumber: 10, expectedQuestion: "企业应该允许客户端自动安装任意 MCP Server 吗？" },
     intentId: "data-security-access",
     tier: "situational",
     scenarioIds: Object.freeze(["business-agent", "governance-assurance"]),

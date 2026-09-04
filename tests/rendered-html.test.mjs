@@ -751,6 +751,15 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.match(mcp, /Tool 由模型控制调用，Resource 由应用选择装配，Prompt 由用户主动选择/);
   assert.match(mcp, /Tool 也可以是只读查询/);
   assert.match(mcp, /版本、能力元数据与结构化消息/);
+  assert.match(mcp, /Multi Round-Trip Requests/);
+  assert.match(mcp, /input_required/);
+  assert.match(mcp, /requestState/);
+  assert.match(mcp, /server\/discover、tools\/list、prompts\/list、resources\/list、resources\/templates\/list 与 resources\/read 的 resultType: (?:&quot;|\")complete(?:&quot;|\") 结果必须携带/);
+  assert.match(mcp, /resultType: (?:&quot;|\")input_required(?:&quot;|\").*MRTR 重试也不得缓存/s);
+  assert.match(mcp, /Mcp-Method/);
+  assert.match(mcp, /Mcp-Name/);
+  assert.match(mcp, /notification POST 的该头要求/);
+  assert.match(mcp, /tasks\/get、tasks\/update 与 tasks\/cancel.*params\.taskId/s);
   assert.doesNotMatch(mcp, /会话、能力协商与结构化消息|状态变更用 Tool|只读内容优先 Resource/);
   assert.doesNotMatch(mcp, /class="mcpResponsibilityMap"/);
   const mcpSystematicStudy = readingPanelHtml(mcp, "learn", "MCP");
@@ -1160,11 +1169,15 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
       slug: "ai-agent",
       zhPath: "/modules/ai-agent",
       enPrimerId: "ai-agent-english-primer-title",
+      newQuestionIds: ["blocked-task-safe-exit", "agent-owned-logs-not-ground-truth", "cancel-does-not-undo"],
+      newEvidenceId: "impossible-task-control-failure",
     },
     {
       slug: "mcp",
       zhPath: "/modules/mcp",
       enPrimerId: "mcp-english-primer-title",
+      newQuestionIds: ["stateless-mrtr-input"],
+      newEvidenceId: "mcp-mrtr-stateless-input",
     },
   ];
 
@@ -1188,6 +1201,11 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
     }
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
+    for (const id of moduleCase.newQuestionIds) {
+      assert.equal((enHtml.match(new RegExp(`id="qa-${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must preserve #qa-${id}`);
+    }
+    assert.equal((enHtml.match(new RegExp(`id="evidence-${moduleCase.newEvidenceId}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must preserve #evidence-${moduleCase.newEvidenceId}`);
+    assert.equal((enHtml.match(/Added on (?:<!-- -->)?2026-09-04/g) ?? []).length, moduleCase.newQuestionIds.length, `${moduleCase.slug} must render every new-question date`);
     const englishTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
     const englishCaptions = enHtml.match(/<caption class="srOnly">/g) ?? [];
     assert.equal(englishCaptions.length, englishTables.length, `${moduleCase.slug} 的每张英文宽表都必须有可访问名称`);
@@ -1214,6 +1232,11 @@ test("A2A preserves its complete English pack and accessible Chinese comparison 
   assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, chineseA2A.qa.length);
   assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishA2A.qa.length);
   assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishA2A.evidenceCards.length);
+  for (const id of ["a2a-identifier-lineage", "send-message-unknown-outcome", "extension-versus-extended-card"]) {
+    assert.equal((enHtml.match(new RegExp(`id="qa-${id}"`, "g")) ?? []).length, 1, `A2A must preserve #qa-${id}`);
+  }
+  assert.equal((enHtml.match(/id="evidence-message-id-not-exactly-once"/g) ?? []).length, 1, "A2A must preserve #evidence-message-id-not-exactly-once");
+  assert.equal((enHtml.match(/Added on (?:<!-- -->)?2026-09-04/g) ?? []).length, 3, "A2A must render every new-question date");
   const a2aTables = zhHtml.match(/role="region" tabindex="0" aria-label="A2A [^"]+矩阵，可横向滚动"/g) ?? [];
   const a2aCaptions = zhHtml.match(/<caption class="srOnly">A2A [^<]+矩阵<\/caption>/g) ?? [];
   assert.ok(a2aTables.length > 0, "A2A 关系矩阵应保留至少一个可滚动、可命名的表达");
@@ -1775,6 +1798,10 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   assert.match(html, /搜索客户问题/);
   assert.match(html, /Agent 运行与恢复实验/);
   assert.match(html, /故障注入：工具超时/);
+  assert.match(html, /执行面、控制面与证据面(?:必须)?分权/);
+  assert.match(html, /Safe Exit 与 Kill Switch/);
+  assert.match(html, /为什么 Agent 自己生成的日志不能作为唯一验收证据/);
+  assert.match(html, /点停止或 Cancel 后，为什么还要撤权、断网并核对外部副作用/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("ai-agent"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
@@ -1914,9 +1941,37 @@ test("Batch 06 routes render the Message-or-Task, gateway-control, and AI Ops re
   assert.match(a2a, /TASK_STATE_SUBMITTED、TASK_STATE_WORKING、TASK_STATE_INPUT_REQUIRED、TASK_STATE_AUTH_REQUIRED/);
   assert.match(a2a, /TASK_STATE_COMPLETED、TASK_STATE_FAILED、TASK_STATE_CANCELED/);
   assert.match(a2a, /TASK_STATE_REJECTED/);
+  assert.match(a2a, /contextId、taskId、messageId、referenceTaskIds/);
+  assert.match(a2a, /SendMessage 超时后，可以带同一个 messageId 直接重发吗/);
+  assert.match(a2a, /Agent Card 声明的 Extension 和 Extended Agent Card/);
+  assert.match(a2a, /SubscribeToTask[^。]*没有恢复游标或历史重放/);
+  assert.match(a2a, /ListTasks 的 pageToken \/ cursor 只用于列表分页/);
+  assert.match(a2a, /Task 已处于终态时[^。]*SubscribeToTask 必须返回 UnsupportedOperationError/);
+  assert.match(a2a, /不保证至少一次成功送达/);
+  assert.match(a2a, /对于每个已配置 webhook/);
+  assert.match(a2a, /PushNotificationNotSupportedError/);
+  assert.match(a2a, /taskId 与 contextId[^。]*必须匹配/);
+  assert.match(a2a, /生成后必须在返回的 Task 或 Message 中带回/);
+  assert.match(a2a, /服务端生成值视为不透明标识/);
+  assert.match(a2a, /TaskNotFoundError/);
+  assert.match(a2a, /不支持的可选(?: Extension )?版本[^。]*不得自动回退/);
+  assert.match(a2a, /ExtensionSupportRequiredError/);
   assert.match(a2aEn, /Message \| Task/);
   assert.match(a2aEn, /v1\.0\.1/);
   assert.match(a2aEn, /TASK_STATE_SUBMITTED, TASK_STATE_WORKING, TASK_STATE_INPUT_REQUIRED, TASK_STATE_AUTH_REQUIRED, TASK_STATE_COMPLETED, TASK_STATE_FAILED, TASK_STATE_CANCELED, and TASK_STATE_REJECTED/);
+  assert.match(a2aEn, /messageId ≠ exactly once/);
+  assert.match(a2aEn, /SubscribeToTask[^.]*no resume cursor or historical replay/);
+  assert.match(a2aEn, /Task is already terminal[^.]*SubscribeToTask MUST return UnsupportedOperationError/);
+  assert.match(a2aEn, /successful at-least-once delivery is not guaranteed/);
+  assert.match(a2aEn, /For each configured webhook/);
+  assert.match(a2aEn, /PushNotificationNotSupportedError/);
+  assert.match(a2aEn, /taskId and contextId[^.]*MUST match/);
+  assert.match(a2aEn, /MUST include a generated value in (?:its )?returned Task or Message/);
+  assert.match(a2aEn, /server-generated (?:contextId )?values as opaque/);
+  assert.match(a2aEn, /TaskNotFoundError/);
+  assert.match(a2aEn, /unsupported version of an optional Extension[^.]*MUST NOT fall back/);
+  assert.match(a2aEn, /ExtensionSupportRequiredError/);
+  assert.match(a2aEn, /Extended Agent Card is not an Extension/);
 
   assert.match(gateway, /网关代管模型凭据后，是否就能代表用户访问所有模型和工具/);
   assert.match(gateway, /按请求数限流，为什么仍可能被 Token、并发或预算打穿/);

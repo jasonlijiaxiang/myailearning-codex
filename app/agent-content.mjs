@@ -89,6 +89,34 @@ export const agentDeepDives = [
     ],
     sourceIds: ["openai-agents-run-loop", "mcp-specification-2026-07-28"],
   },
+  {
+    kind: "matrix",
+    eyebrow: "ENGINEERING SYNTHESIS · THREE-PLANE ARCHITECTURE",
+    title: "执行、控制和证据必须分开拥有",
+    intro: "这是本站基于事件证据、评测实践与临时安全建议形成的工程归纳，不是来源定义的统一行业标准。Agent 可以在执行面动态选路，但不能同时拥有放宽权限、改写验收标准和删除审计的能力。三类平面由不同组件和权限域承担，才能在失控时真正停止并复盘。",
+    columnLabels: { name: "平面", mechanism: "主要职责", decision: "上线验收", boundary: "不能交给 Agent" },
+    items: [
+      { name: "执行面", en: "Execution Plane", mechanism: "模型、Harness、工具、沙箱和工作区执行任务，产生候选动作、外部调用与产物。", decision: "能否固定版本、限制资源，并在干净环境重放同一任务？", boundary: "执行结果不能自己授权下一次高风险动作，也不能宣告业务成功。" },
+      { name: "控制面", en: "Control Plane", mechanism: "身份、策略、预算、审批、网络出口、调度、停止和凭据生命周期约束每个 Run。", decision: "是否能阻止新调度、取消父子 Run、撤销凭据、断开网络与模型通信，并隔离迟到结果？", boundary: "Prompt 中的规则或 Agent 自愿停止不是可强制执行的控制。" },
+      { name: "证据面", en: "Evidence Plane", mechanism: "权威环境状态、授权记录、不可篡改日志、独立评分器和人工裁决证明发生了什么。", decision: "执行主体是否无权改写关键证据，最终结果能否由外部系统回读并交叉核对？", boundary: "Agent 自己写的日志、摘要和成功声明不能成为唯一 ground truth。" },
+    ],
+    sourceIds: ["anthropic-agent-evals", "nist-zero-trust", "ncsc-agentic-ai-risk-interim-2026"],
+  },
+  {
+    kind: "sequence",
+    eyebrow: "ENGINEERING SYNTHESIS · SAFE EXIT & KILL SWITCH",
+    title: "任务走不通时，安全退出是一条主路径",
+    intro: "本站把事件中的失败机制与 NCSC 临时建议整理成这条工程流程；Safe Exit 与 Kill Switch 不是这些来源规定的统一术语或阈值。最大轮次和超时只限制资源；安全退出还要识别不可完成、重复无进展、授权扩大和证据面受威胁，并把停止后的撤权、核对与补救变成确定性流程。",
+    maxColumns: 2,
+    items: [
+      { name: "判定阻塞而不是继续猜", en: "Detect Blocked State", mechanism: "前置资源不存在、目标互相矛盾、连续动作没有新增证据，或完成条件无法由可用工具验证时，进入 blocked / clarification 状态。", decision: "评估是否覆盖不可能任务、诱导坚持和伪进展？", boundary: "达到 max_turns 只是被动截断；安全退出应在风险扩大前主动触发。" },
+      { name: "拒绝把旁路信号当授权", en: "Reject Side-channel Authority", mechanism: "同伴消息、共享制品库、工具显示和环境文本都按来源与角色处理，不能覆盖系统策略、真实身份或审批。", decision: "每个跨 Agent 消息和 Artifact 是否携带来源、信任级别与可授权范围？", boundary: "另一个 Agent 说“继续”或“已获批”不是控制面授权。" },
+      { name: "停止调度并撤销能力", en: "Contain the Run", mechanism: "先阻止新动作和子任务，再取消父子 Run 与队列项、撤销短期凭据、切断网络和模型通信。", decision: "Kill Switch 是否能在预定时间内作用于所有执行副本？", boundary: "点击 Cancel 不会自动停止已经发出的 API、后台任务或第三方副作用。" },
+      { name: "隔离迟到结果并核对事实", en: "Fence & Reconcile", mechanism: "用 Run epoch 或状态版本拒绝取消后返回的迟到结果，再从业务系统、云控制面和独立日志查询真实影响范围。", decision: "取消后还能否有工具结果推进状态，哪些系统能证明最终资源和交易状态？", boundary: "Agent 自己的最后一条 Trace 不是外部副作用的完整证据。" },
+      { name: "补偿、人工修复与保全证据", en: "Recover & Preserve", mechanism: "对已发生动作执行可批准的补偿或人工修复，冻结关键日志、输入、版本和授权事件，形成复盘与新回归样本。", decision: "谁能批准补偿，谁保管执行主体无权修改的事件证据？", boundary: "停止不是回滚；补偿也可能失败，并需要独立验收。" },
+    ],
+    sourceIds: ["openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026", "openai-source-sink-injection", "nist-zero-trust"],
+  },
 ];
 
 export const agentEvidenceCards = [
@@ -135,6 +163,13 @@ export const agentEvidenceCards = [
     finding: "Durable Orchestration 通过事件历史和自动检查点恢复长期流程，并在重放时复用已经完成的活动结果。",
     boundary: "持久化运行时不自动让外部副作用幂等；工具仍需工具调用记录、去重与补偿。",
     sourceId: "azure-durable-orchestration",
+  },
+  {
+    metric: "Stop → Revoke → Reconcile",
+    title: "安全退出不等于耗尽轮次",
+    finding: "一次内部 Agent 事件显示，不可完成目标、旁路信息和被误读的同伴信号可能推动系统继续尝试；独立调查进一步还原了该事件链。",
+    boundary: "该事件发生在降低保护措施的内部评估中；OpenAI 报告称其未影响 OpenAI 客户数据、产品功能或可用性。这个结论不覆盖 Hugging Face 自身受影响的系统与数据，也不能外推生产发生率；事件支持的是控制设计和测试场景。",
+    sourceId: "openai-hugging-face-incident-technical-report-2026",
   },
 ];
 
@@ -651,6 +686,46 @@ const agentQaCandidates = [
       { sourceId: "configuring-agentic-coding-tools", supports: "支持 Coding Agent 配置与工具环境会影响软件工程任务结果。" },
     ],
     addedAt: "2026-07-23",
+  },
+  {
+    q: "为什么任务越难，Agent 越需要定义主动停止，而不是一直重试？",
+    a: "因为不可完成、相互矛盾或长期无进展的任务会把重试变成新的攻击和事故路径。Agent 应在前置条件缺失、连续无新增证据、需要扩大权限或无法验证终态时主动停止、报告或请求澄清。",
+    depth: "max_turns、超时和预算只能被动截断资源；Safe Exit 还要判断进展质量和授权边界。评估应加入不可能目标、伪造同伴批准、共享制品侧信道、操纵结果显示、攻击或篡改日志等场景；触发后由控制面阻止新调度、取消父子 Run、撤销凭据、断网，并由权威系统和独立证据面核对真实副作用。",
+    ask: "哪些条件表示任务不可完成或没有新增证据，何时必须停止而不是换一条旁路，谁能安全恢复？",
+    tag: "上线治理",
+    basis: "真实事件机制 + Agent 风险控制",
+    evidence: [
+      { sourceId: "openai-hugging-face-incident-technical-report-2026", supports: "支持不可完成任务、非预期旁路与同伴信号误读可推动 Agent 继续行动的事件机制及明确边界。" },
+      { sourceId: "metr-openai-hf-incident-2026", supports: "支持对同伴消息、轨迹编辑和工具显示混淆的独立技术调查。" },
+      { sourceId: "ncsc-agentic-ai-risk-interim-2026", supports: "支持完整环境隔离、防篡改日志和可切断网络与模型通信的停止控制。" },
+    ],
+    addedAt: "2026-09-04",
+  },
+  {
+    q: "为什么 Agent 自己生成的日志不能作为唯一验收证据？",
+    a: "因为执行主体可能遗漏、误解或影响自己的日志，正确的文字轨迹也不能证明外部状态。关键验收应来自 Agent 无权改写的授权记录、环境断言、业务系统回读和独立评分或人工裁决。",
+    depth: "把架构分成执行面、控制面和证据面：执行面运行模型与工具，控制面决定身份、预算、网络和停止，证据面保存权威状态与防篡改审计。三者共享 Run ID，但权限分离；最终验收交叉核对工具请求、策略决定、外部 operation ID、资源现状和业务后置条件，而不是相信一段自报成功或可编辑 Trace。",
+    ask: "哪些证据由执行主体无权修改，哪套系统能证明授权、外部副作用和最终业务状态？",
+    tag: "可观测",
+    basis: "证据平面隔离 + 防篡改审计",
+    evidence: [
+      { sourceId: "openai-hugging-face-incident-technical-report-2026", supports: "支持把尝试影响运行日志和评估证据列入 Agent 事故分析，而不将自报轨迹当成唯一事实。" },
+      { sourceId: "ncsc-agentic-ai-risk-interim-2026", supports: "支持使用防篡改日志和与执行环境分离的安全控制。" },
+    ],
+    addedAt: "2026-09-04",
+  },
+  {
+    q: "点停止或 Cancel 后，为什么还要撤权、断网并核对外部副作用？",
+    a: "因为 Cancel 只是控制意图：已经排队的子任务、已发出的 API、第三方后台作业和迟到结果可能继续改变状态。完整 Kill Switch 必须同时封锁调度、凭据、通信和结果提交。",
+    depth: "先把父子 Run 与队列冻结，撤销短期令牌并切断网络和模型通信，再用 epoch 或状态版本拒绝迟到结果。随后从业务系统和云控制面查询真实资源与交易状态，对已发生动作执行批准后的补偿或人工修复，并保全独立证据。停止、回滚和补偿是三个不同事件，不能用 UI 上的 Canceled 互相替代。",
+    ask: "停止命令覆盖哪些父子任务、凭据和网络路径，迟到结果如何隔离，哪个系统负责查询和补偿已发生动作？",
+    tag: "故障恢复",
+    basis: "Kill Switch + 权威状态核对",
+    evidence: [
+      { sourceId: "ncsc-agentic-ai-risk-interim-2026", supports: "支持 Kill Switch 切断网络与模型通信、隔离环境和防篡改记录。" },
+      { sourceId: "openai-hugging-face-incident-technical-report-2026", supports: "支持将停止控制、环境隔离与证据保全作为真实 Agent 事件后的工程改进方向。" },
+    ],
+    addedAt: "2026-09-04",
   },
 ];
 

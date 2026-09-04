@@ -113,11 +113,13 @@ const harnessNeighbors = [
 const harnessEvaluationDimensions = [
   "任务成功与关键后置条件",
   "多次运行稳定性与复现率",
-  "Token、P95 与成功任务成本",
+  "Token、时间、金额与工具调用预算",
+  "P95 与每个成功任务成本",
   "工具、权限和轨迹正确性",
   "策略违规与不可逆误执行",
-  "崩溃恢复、幂等和人工接管",
-  "Trace、版本与失败归因",
+  "阻塞识别、Safe Exit 与人工接管",
+  "崩溃恢复、幂等、Kill Switch 与补偿",
+  "独立证据、版本与失败归因",
   "模型、环境与业务迁移成本",
 ];
 
@@ -206,15 +208,15 @@ const agentSystemLens: LensPanel[] = [
   {
     id: "agent-controls",
     label: "控制规则",
-    title: "自治能力与模型外控制强度",
-    description: "规划、记忆和工具让 Agent 能持续运行；身份、策略、检查点与人工接管让它可被企业接受。",
-    takeaway: "不要把 Prompt 写成权限系统；授权、金额、审批、补偿与审计必须落在确定性系统。",
+    title: "执行面、控制面与证据面分权",
+    description: "规划、记忆和工具属于执行面；身份、策略、预算与停止属于控制面；权威状态、防篡改日志和独立评分属于证据面。",
+    takeaway: "Agent 可以改变执行路径，但不能放宽自己的权限、修改验收标准或删除证明发生了什么的证据。",
     nodes: [
-      { label: "规划", detail: "把目标拆成可检查里程碑，并为每一步定义预期结果。", signal: "控制：深度、轮次与预算" },
-      { label: "记忆", detail: "区分任务状态、会话状态、长期记忆和权威业务事实。", signal: "控制：主体、来源、TTL 与删除" },
-      { label: "工具契约", detail: "定义唯一用途、Schema、错误语义、读写级别和补偿能力。", signal: "控制：最小工具集与参数校验" },
+      { label: "执行面", detail: "模型、Harness、工具和沙箱运行任务，产出候选动作、调用和产物。", signal: "约束：版本、环境与资源上限" },
       { label: "身份与策略", detail: "在动作发生时绑定用户或工作负载身份并重新授权。", signal: "控制：最小权限与动态策略" },
-      { label: "检查点与人审", detail: "在高风险动作前暂停，在失败后从持久状态恢复。", signal: "控制：审批、超时与恢复责任" },
+      { label: "预算与停止", detail: "同时限制轮次、时间、Token、金额、工具调用和委托深度。", signal: "控制：Safe Exit 与 Kill Switch" },
+      { label: "权威状态", detail: "从业务系统和云控制面回读真实副作用与最终状态。", signal: "证据：operation ID 与后置条件" },
+      { label: "独立审计", detail: "由执行主体无权改写的日志、评分器和人工裁决保全证据。", signal: "证据：防篡改、可关联、可复核" },
     ],
   },
   {
@@ -250,9 +252,11 @@ const releaseAcceptanceGates = [
   { name: "策略违规 = 0", check: "命中策略就暂停，不用总体成功率抵消。", releaseBlocking: true },
   { name: "高风险误执行 = 0", check: "资金、生产变更和对外发送单独计数。", releaseBlocking: true },
   { name: "人工接管率", check: "同时检查接管是否及时、是否真正解决问题。" },
+  { name: "Safe Exit 上线硬门", check: "不可完成、无新增证据、权限扩大或证据面受威胁时能主动停止。", releaseBlocking: true },
+  { name: "独立证据上线硬门", check: "关键授权、外部副作用和业务终态不能只由 Agent 自报。", releaseBlocking: true },
   { name: "P95 / 完成时长", check: "按任务类型和风险分层，不用平均响应时间代替。" },
   { name: "每个成功任务成本", check: "计入失败重试、工具调用和人工处理。" },
-  { name: "可恢复 / 可回滚", check: "演练检查点恢复、补偿、人工接管和发布回退。" },
+  { name: "可恢复 / 可隔离", check: "演练检查点恢复、Kill Switch、迟到结果隔离、补偿、人工接管和发布回退。" },
 ] as const;
 
 type AgentMechanicItem = (typeof agentActions)[number] | (typeof coreCapabilities)[number];
@@ -413,7 +417,7 @@ export default function AgentModulePage() {
                 <article><span>03</span><h4>观察并决定是否继续<small>Observe &amp; Close</small></h4><p>回读案件与通知状态；材料完整或草稿获确认才结束，否则等待补件、转人工或安全停止。</p></article>
               </div>
             </div>
-            <CriticalBoundary>Agent 的“思考”不能替代业务控制。身份、权限、审批、幂等、补偿和审计必须由确定性系统执行；最终赔付资格、金额与案件状态永不由 Agent 自行决定。</CriticalBoundary>
+            <CriticalBoundary>Agent 的“思考”不能替代业务控制。身份、权限、审批、幂等、补偿和审计必须由确定性系统执行；最终赔付资格、金额与案件状态永不由 Agent 自行决定。三平面以及 Safe Exit / Kill Switch 时序是本站基于事件报告、评测实践与 NCSC 临时建议形成的工程归纳，不是任一来源定义的统一标准、统一术语、通用触发阈值或恢复时限。</CriticalBoundary>
             <SystemLens title="从运行、控制与恢复理解 Agent" lead="三个视角共同回答：Agent 如何推进任务、企业怎样限制它，以及失败后如何知道真实世界发生了什么。" panels={agentSystemLens} />
             <AgentRunLab />
           </div>
@@ -450,7 +454,7 @@ export default function AgentModulePage() {
             <div className="gates">
               <h4>怎样判断一套 Harness 更好</h4>
               <ol className={agentStyles.evaluationLedger}>{harnessEvaluationDimensions.map((item, index) => <li key={item}><span>{String(index + 1).padStart(2, "0")}</span>{item}</li>)}</ol>
-              <p>先固定任务、模型快照、代码或数据、网络、权限和预算，再进行多次运行与失败注入。SWE-bench、Terminal-Bench、SWE-ReBench 等只能回答特定任务；Harness-Bench 正尝试分离 Harness 效应，NIST 也在推进 Agent 标准工作，但目前没有覆盖所有 Agent 的统一总分。</p>
+              <p>先固定任务与干净环境快照、模型和推理配置、Prompt、工具与安全规则、网络、权限、数据、停止策略，以及 Token、时间、金额和工具调用预算，再进行多次运行与失败注入。成功率要区分至少一次成功的 pass@k 与连续可靠的 pass^k，并让安全硬门独立阻断。SWE-bench、Terminal-Bench、SWE-ReBench 等只能回答特定任务；Harness-Bench 正尝试分离 Harness 效应，NIST 也在推进 Agent 标准工作，但目前没有覆盖所有 Agent 的统一总分。</p>
             </div>
 
             <div className="workedExample">
@@ -537,7 +541,7 @@ export default function AgentModulePage() {
             </div>
             <div className="fitGrid" style={{ marginTop: 18 }}>
               <article className="fit"><h4><span>✓</span>适合 Agent 的任务</h4><ul><li>步骤数量或工具路径无法提前确定</li><li>需要综合非结构化信息和环境反馈</li><li>有清晰的成功状态、沙箱和人工接管</li><li>动态判断带来的收益高于新增风险与成本</li></ul></article>
-              <article className="fit maybe"><h4><span>!</span>优先不用 Agent</h4><ul><li>固定规则已经能稳定、低成本完成</li><li>缺少可验证的最终状态或真实工具反馈</li><li>高风险动作无法审批、回滚或补偿</li><li>没有代表性任务集和责任人持续运营</li></ul></article>
+              <article className="fit maybe"><h4><span>!</span>优先不用 Agent</h4><ul><li>固定规则已经能稳定、低成本完成</li><li>缺少可验证的最终状态或真实工具反馈</li><li>高风险动作无法审批、停止、隔离或补偿</li><li>Agent 自己的日志是唯一验收证据</li><li>没有代表性任务集和责任人持续运营</li></ul></article>
             </div>
           </div>
 
@@ -554,8 +558,10 @@ export default function AgentModulePage() {
               </div>
             </div>
             <div className="architectureNotes">
-              <p><strong>共同使用的控制部分（Control Plane）</strong>：模型与 Prompt 版本、工具目录、身份策略、预算、Trace、评测集、发布和回滚。</p>
-              <p><strong>关键分界</strong>：模型负责提出决策；应用与云平台负责验证身份、授权工具、执行动作并确认真实的最终状态。</p>
+              <p><strong>执行面（Execution Plane）</strong>：模型、Harness、工具、沙箱和工作区执行任务；它可以动态选路，但不能自行授权或验收。</p>
+              <p><strong>控制面（Control Plane）</strong>：身份、策略、预算、审批、网络出口、调度、停止和凭据生命周期；Kill Switch 要能阻止新调度、取消父子 Run、撤权、断网并隔离迟到结果。</p>
+              <p><strong>证据面（Evidence Plane）</strong>：权威业务状态、环境断言、防篡改日志、独立评分器和人工裁决；执行主体无权改写关键验收证据。</p>
+              <p><strong>归纳边界：</strong>三平面以及 Safe Exit / Kill Switch 时序是本站基于事件报告、评测实践与 NCSC 临时建议形成的工程归纳，不是任一来源定义的统一标准、统一术语、通用触发阈值或恢复时限。</p>
             </div>
           </div>
 

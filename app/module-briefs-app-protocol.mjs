@@ -1119,7 +1119,7 @@ export const mcpBrief = {
       zh: "能力协商与生命周期",
       en: "Capability Negotiation & Lifecycle",
       explanation:
-        "当前正式版 2026-07-28 已删除 initialize/initialized 与 Mcp-Session-Id；每个请求携带协议版本、客户端身份和能力元数据，server/discover 只在需要预取能力时调用。锁定 2025-11-25 的实现仍走初始化握手与协议会话。",
+        "当前正式版 2026-07-28 已删除 initialize/initialized 与 Mcp-Session-Id；每个请求必须携带 protocolVersion 与 clientCapabilities，Client 还应通过 clientInfo 自报软件名称与版本等元数据，Server 必须实现 server/discover。Client 可用它预取能力；同时兼容新旧协议的 stdio Client 应先用它探测对端是否支持当前协议。clientInfo 不是认证身份；锁定 2025-11-25 的实现仍走初始化握手与协议会话。",
       decision:
         "兼容矩阵至少保存一条 2026-07-28 自包含请求和一条 2025-11-25 initialize 轨迹，并覆盖能力缺失、调用失败、取消、断线与降级。",
     },
@@ -1138,6 +1138,14 @@ export const mcpBrief = {
         "Function Calling 定义模型如何表达一次工具选择和参数；MCP 统一工具如何被发现、描述与调用。",
       decision:
         "单应用、少量稳定工具使用直接函数调用；出现多个客户端或工具提供方时，用重复适配数量和运营成本决定是否引入 MCP。",
+    },
+    {
+      zh: "无状态不等于无交互",
+      en: "Stateless, Not Interaction-free",
+      explanation:
+        "2026-07-28 的请求自包含，但一次业务交互仍可通过 Multi Round-Trip Requests 补参；当前仅受支持的 tools/call 可通过 Tasks 扩展持久执行；符合条件的 complete 结果可使用带作用域的缓存提示。",
+      decision:
+        "分别设计补参轮次与 requestState、Task 句柄、private 缓存隔离和业务状态；不要用一个隐式会话混合承担这些责任。",
     },
   ],
   decisions: [
@@ -1205,7 +1213,7 @@ export const mcpBrief = {
         "选型总成本应计入协议版本、授权、排错、Server 运营和供应链管理。",
     },
   ],
-    deepDiveTitle: "远程 MCP 调用的主体、协议版本、授权和执行记录",
+  deepDiveTitle: "远程 MCP 调用的主体、协议版本、授权和执行记录",
   deepDiveLead:
     "最小运行包包括 Server 端点与发布者、协议版本、Tool Schema、调用身份、授权决策、执行终态和 Trace。它既用于核算复用收益，也用于追查一次发现、授权或执行落到了哪个主体、资源和版本。",
   deepDives: [
@@ -1230,7 +1238,7 @@ export const mcpBrief = {
           name: "用双版本契约测试固定协议路径",
           en: "Version Before Capability",
           mechanism:
-            "2026-07-28 的每个请求携带版本、客户端身份和能力元数据，可选用 server/discover 预取能力；2025-11-25 等旧版通过 initialize/initialized 与 Mcp-Session-Id 建立协议会话。",
+            "2026-07-28 的每个请求必须携带 protocolVersion 与 clientCapabilities，Client 还应通过 clientInfo 自报软件名称与版本等元数据；Server 必须实现 server/discover。Client 可用它预取能力，同时兼容新旧协议的 stdio Client 应先用它探测当前协议支持；clientInfo 不提供认证身份。2025-11-25 等旧版通过 initialize/initialized 与 Mcp-Session-Id 建立协议会话。",
           decision:
             "为两条协议路径各保留请求轨迹和契约测试；网关记录协议、SDK 模式、Server、扩展与 Tool Schema 版本。",
           boundary:
@@ -1371,6 +1379,62 @@ export const mcpBrief = {
         boundary: "不能忽略",
       },
     },
+    {
+      kind: "matrix",
+      eyebrow: "STATELESS INTERACTION MODEL",
+      title: "无状态请求不等于无交互、无缓存或无业务状态",
+      intro:
+        "2026-07-28 把请求间隐式协议会话拆开，让补参、耐久执行、缓存和业务状态各自拥有显式契约。生产设计要逐层说明状态由谁签发、保存、隔离和失效。",
+      items: [
+        {
+          name: "自包含请求与业务状态",
+          en: "Self-contained Request",
+          mechanism:
+            "每个请求必须携带 protocolVersion 与 clientCapabilities，Client 还应通过 clientInfo 自报软件名称与版本等元数据；clientInfo 不是认证身份。订单、案件或工作流状态仍由应用与权威业务系统用显式句柄维护。",
+          decision:
+            "把 protocol request、Run、MCP Task 与业务 operation ID 分开记录，并在每次请求重新建立当前身份、版本和能力上下文。",
+          boundary:
+            "删除协议 Session 不会删除应用状态，也不允许 Server 依赖未声明的上一次请求上下文。",
+        },
+        {
+          name: "Multi Round-Trip Requests 补参",
+          en: "MRTR Input",
+          mechanism:
+            "prompts/get、resources/read 与 tools/call 可返回 input_required；inputRequests 与不透明 requestState 各自可选，但每个 InputRequiredResult 至少必须包含其中一项。Client 以新的 JSON-RPC id 重试原操作，只对收到的 inputRequests 提交相应 inputResponses；仅在收到 requestState 时原样回传，未收到时不得自行添加。",
+          decision:
+            "限制补参轮数和有效期；若存在 requestState，则校验、封存并绑定原用户与操作；同时重新鉴权与验证输入，需要耐久轮询时另用 Tasks。",
+          boundary:
+            "MRTR 不是协议会话，也不是让 Server 借补参扩大原始权限或无限循环；Form / 带内补参不得收集密码、令牌等敏感凭据，确需敏感交互时应使用在 MCP Client 外完成的 URL mode。",
+        },
+        {
+          name: "列表缓存与租户隔离",
+          en: "Scoped List Cache",
+          mechanism:
+            "server/discover、tools/list、prompts/list、resources/list、resources/templates/list 与 resources/read 的 resultType: \"complete\" 结果必须携带 ttlMs 和 public / private cacheScope。resultType: \"input_required\" 中间结果不携带缓存提示且不得缓存；含 inputResponses 或 requestState 的 MRTR 重试也不得缓存。",
+          decision:
+            "private 缓存键至少绑定授权上下文（如不同 access token）、主体、租户、Scope、Server、协议与能力版本；敏感变更通过更短 TTL、失效通知或禁用缓存处理。",
+          boundary:
+            "TTL 是新鲜度提示，不是一致性、撤权传播或跨租户安全保证；public 也不等于可信。",
+        },
+        {
+          name: "HTTP 镜像头与网关路由",
+          en: "HTTP Routing Metadata",
+          mechanism:
+            "Streamable HTTP 中，每个承载 JSON-RPC request 的 Client POST 都必须用 Mcp-Method 镜像请求方法；本修订未规定 notification POST 的该头要求，且核心协议不定义 Streamable HTTP 上的 Client→Server notification。核心协议的 Mcp-Name 镜像 tools/call 与 prompts/get 的 params.name，或 resources/read 的 params.uri；Tasks 扩展还要求 tasks/get、tasks/update 与 tasks/cancel 用它镜像 params.taskId。",
+          decision:
+            "网关校验镜像头与正文一致，再按主体、Server、方法、能力名、租户和风险执行授权、限流与审计。",
+          boundary:
+            "路由头只是可验证的元数据，不是身份、权限或业务策略；头与正文不一致时必须拒绝。",
+        },
+      ],
+      sourceIds: ["mcp-specification-2026-07-28", "mcp-mrtr-2026-07-28", "mcp-list-cache-2026-07-28", "mcp-http-routing-2026-07-28", "mcp-tasks-extension", "nist-zero-trust"],
+      columnLabels: {
+        name: "状态面",
+        mechanism: "规范机制",
+        decision: "生产契约",
+        boundary: "不能推导",
+      },
+    },
   ],
   criticalBoundary:
     "MCP 覆盖发现与调用的协议消息。服务准入、主体授权、参数策略、资源校验和安全保证由 Host、网关与业务系统执行。",
@@ -1501,10 +1565,30 @@ export const mcpBrief = {
         },
         {
           sourceId: "mcp-tasks-extension",
-          supports: "支持当前 Tasks 扩展的耐久句柄、状态获取、更新、取消与恢复语义。",
+          supports: "支持当前 Tasks 扩展仅让 tools/call 返回 CreateTaskResult，并定义耐久句柄、状态获取、更新、取消与恢复语义，以及三个 Task 方法用 Mcp-Name 镜像 params.taskId 的 HTTP 路由要求。",
         },
       ],
       addedAt: "2026-07-21",
+    },
+    {
+      q: "MCP 2026-07-28 已经无状态，工具执行中还需要用户补充信息怎么办？",
+      a: "使用 Multi Round-Trip Requests：prompts/get、resources/read 与 tools/call 可返回 input_required；inputRequests 与不透明 requestState 各自可选，但每个 InputRequiredResult 至少必须包含其中一项。Client 用新的 JSON-RPC id 重试原操作，对收到的 inputRequests 提交相应 inputResponses；仅在收到 requestState 时原样回传，未收到时不得自行添加。需要跨时段耐久执行时再采用 Tasks 扩展。",
+      depth:
+        "Host 应限制补参轮数、时间和字段，在可信界面向用户显示是哪一个 Server 请求信息，并拒绝通过 Form / 带内补参收集密码或令牌；确需敏感交互时使用在 MCP Client 外完成的 URL mode。若存在 requestState，实现应将它绑定到原用户、操作和上下文，双方都不能把它当成授权。MRTR、Tasks、列表缓存和业务状态是四套不同契约：无状态只取消隐式协议会话，不表示一次交互不能跨轮，也不表示 Server 可以隐式记住一切。",
+      ask: "补参由谁展示和验证，存在 requestState 时多久失效，何时转成 Task，重新调用时怎样复核授权？",
+      tag: "长任务",
+      basis: "2026-07-28 MRTR + Tasks 边界",
+      evidence: [
+        {
+          sourceId: "mcp-mrtr-2026-07-28",
+          supports: "支持 prompts/get、resources/read 与 tools/call 的 input_required、各自可选但至少存在一项的 inputRequests / requestState、新 JSON-RPC id，以及只针对收到的 inputRequests 提交 inputResponses 并在收到时原样回传 requestState 的多轮补参模式。",
+        },
+        {
+          sourceId: "mcp-tasks-extension",
+          supports: "支持当前仅由 tools/call 通过独立 Tasks 扩展返回 CreateTaskResult，再使用耐久句柄、轮询、更新、恢复或取消。",
+        },
+      ],
+      addedAt: "2026-09-04",
     },
   ],
   evidenceCards: [
@@ -1543,6 +1627,13 @@ export const mcpBrief = {
       finding: "本地进程和远程共享服务面对不同的身份、网络、租户和运营风险。",
       boundary: "任何传输都需要与部署环境匹配的安全控制。",
       sourceId: "mcp-authorization",
+    },
+    {
+      metric: "input_required → inputResponses",
+      title: "无状态请求仍可显式请求补参",
+      finding: "MRTR 的 InputRequiredResult 至少携带 inputRequests 或 requestState 之一，再用新的请求重试原操作；Server 提供 requestState 时原样回传。它不恢复旧式协议 Session，耐久工作另由 Tasks 处理。",
+      boundary: "requestState 不是授权或业务真值；若存在，仍需绑定原用户与操作，并配合轮数限制、字段校验、重新鉴权和敏感信息保护。",
+      sourceId: "mcp-mrtr-2026-07-28",
     },
   ],
 };
@@ -1659,9 +1750,9 @@ export const a2aBrief = {
           name: "发送 Message 并选择响应对象",
           en: "Send Message & Choose Response",
           mechanism:
-            "调用方依据已验证的 Agent Card 发送 Message；远端对即时交互直接返回 Message，对需跟踪工作创建服务端 Task ID。",
+            "调用方依据已验证的 Agent Card 发送 Message；远端对即时交互直接返回 Message，对需跟踪工作创建服务端 taskId。客户端提供的 taskId 只能引用既有且可访问的 Task，不能创建新 Task；仅给 taskId 时，Agent 必须从 Task 推断 contextId，同时给出两者时必须匹配。",
           decision:
-            "契约测试覆盖 Message 与 Task 两条路径；需要恢复的实现持久化 Task 契约、状态和最后一次事件游标。",
+            "契约测试覆盖 Message 与 Task 两条路径，以及 TaskNotFoundError、taskId / contextId 不匹配拒绝和仅给 taskId 的推断路径；对非终态 Task，订阅首帧应取得当前 Task 快照。SubscribeToTask 请求没有恢复游标或历史重放；Task 已处于终态时必须返回 UnsupportedOperationError，客户端改用 GetTask。ListTasks 的 pageToken / cursor 只用于列表分页，不能恢复订阅。需要断点重放时由自有事件存储或显式扩展承担。",
           boundary:
             "接收请求不等于接受无限范围目标；Task 的持久化方案是实现责任，不是协议指定数据库。",
         },
@@ -1691,7 +1782,7 @@ export const a2aBrief = {
           mechanism:
             "规范共有九个 TaskState 枚举；TASK_STATE_UNSPECIFIED 只表示未知，另外八个操作状态为 TASK_STATE_SUBMITTED、TASK_STATE_WORKING、TASK_STATE_INPUT_REQUIRED、TASK_STATE_AUTH_REQUIRED、TASK_STATE_COMPLETED、TASK_STATE_FAILED、TASK_STATE_CANCELED 与 TASK_STATE_REJECTED。",
           decision:
-            "中断态恢复原 Task；终态不可继续写入，修订工作创建新 Task 并由客户端维护关联。重复交付仍使用业务幂等键。",
+            "中断态恢复原 Task；终态不可改写或恢复。修订工作发送不带旧 taskId 的新 Message，可保留 contextId 并通过 referenceTaskIds 引用旧 Task；SendMessage 仍可能返回 Message 或 Task，只有返回 Task 时才由服务端生成新的 taskId。重复业务动作仍使用独立业务幂等键。",
           boundary:
             "网络超时不能直接被解释为任务失败，也不能盲目重复执行高影响动作。",
         },
@@ -1707,6 +1798,118 @@ export const a2aBrief = {
         },
       ],
       sourceIds: ["a2a-concepts", "a2a-specification", "opentelemetry-semconv", "opentelemetry-genai-semconv"],
+    },
+    {
+      kind: "matrix",
+      eyebrow: "IDENTIFIER LINEAGE",
+      title: "四类协议 ID 只负责协作谱系，不替代业务单号",
+      intro:
+        "A2A 用 Message、Task 和 Context 的不同标识表达谁创建了消息、哪项工作由服务端跟踪、哪些交互属于同一上下文，以及新消息引用了哪些旧任务。它们必须与业务系统和其他协议的 ID 显式映射。",
+      items: [
+        {
+          name: "messageId · 一条消息",
+          en: "Message Identity",
+          mechanism:
+            "由消息创建方生成，用于区分一次 Message；服务端可以利用它做重复检测，但规范只允许 MAY 级幂等，不保证 exactly-once。",
+          decision:
+            "记录创建方、Task / Context 归属和接收结果；SendMessage 超时先查询 Task 或业务状态，再按双方约定决定是否复用 messageId。",
+          boundary:
+            "同一个 messageId 不是业务幂等键，也不能证明第一次请求未被执行。",
+        },
+        {
+          name: "taskId · 服务端工作单元",
+          en: "Task Identity",
+          mechanism:
+            "由服务端为需要跟踪的工作生成；客户端只能引用既有且可访问的 Task，不能用自造 taskId 创建新 Task。无效或不可访问时返回 TaskNotFoundError；客户端只给 taskId 时，Agent 必须从 Task 推断 contextId。",
+          decision:
+            "把 taskId 与提供方、协议版本、contextId、调用身份和权威业务 operation ID 一起保存。",
+          boundary:
+            "Task ID 不是业务订单号，也不应与 MCP Task 或本地 Agent Run ID 共用命名空间；它也不能被客户端当作新建 Task 的 ID。",
+        },
+        {
+          name: "contextId · 逻辑会话组",
+          en: "Interaction Context",
+          mechanism:
+            "contextId 缺失时，Agent 可以生成一个值，并且生成后必须在返回的 Task 或 Message 中带回；客户端应将服务端生成值视为不透明标识。Agent 也可以接受并保留客户端提供的值；若拒绝客户端值，必须返回错误，不能静默替换。客户端同时提供 taskId 与 contextId 时，两者必须与既有 Task 匹配，否则 Agent 必须拒绝 Message。它把多个 Message 与 Task 归入同一逻辑交互上下文，而不把它们变成同一个可变 Task。",
+          decision:
+            "客户端除非理解对端的 contextId 语义，否则不应主动提供，并应把服务端生成值当作不透明标识；契约测试要覆盖生成值随响应返回、taskId / contextId 不匹配被拒绝与仅给 taskId 时正确推断。接受 contextId 后，可在同一业务目标的修订、追问和关联 Task 间保留它，同时为每个 Task 维护独立终态和验收。",
+          boundary:
+            "Context 不是权限继承、长期会话存储或业务交易边界。",
+        },
+        {
+          name: "referenceTaskIds · 显式引用",
+          en: "Task References",
+          mechanism:
+            "Message 可列出它引用的已有 Task，用于表达修订、继续讨论或产物谱系；这不会强制 SendMessage 创建 Task。若响应是 Task，服务端才为新工作分配新的 taskId。",
+          decision:
+            "对终态后的修订，发送不带旧 taskId 的新 Message，可沿用 contextId 并引用原 Task；同时覆盖直接 Message 和新 Task 两种响应，在客户端保存版本、接受或拒绝记录。",
+          boundary:
+            "引用不会重开终态 Task，也不自动继承旧 Task 的授权、输入或业务接受。",
+        },
+      ],
+      sourceIds: ["a2a-specification", "a2a-concepts"],
+      columnLabels: {
+        name: "协议标识",
+        mechanism: "规范职责",
+        decision: "生产映射",
+        boundary: "不能推导",
+      },
+    },
+    {
+      kind: "matrix",
+      eyebrow: "DELIVERY AND EXTENSION CONTRACT",
+      title: "重试、重放、扩展与认证分别有自己的语义",
+      intro:
+        "A2A 核心操作只给出有限幂等与交付保证。需要断点重放、业务去重或行业字段时，应通过产品契约、事件存储或声明式 Extension 增加能力，不能把它们想当然地读进核心协议。",
+      items: [
+        {
+          name: "查询、发送与取消",
+          en: "RPC Semantics",
+          mechanism:
+            "Get/List/Get Extended Agent Card 天然幂等；SendMessage 仅可由服务端选择基于 messageId 去重；CancelTask 幂等，但 Task 清理后重复取消仍可能 TaskNotFoundError。",
+          decision:
+            "按操作分类重试：读取可退避重试，未知写结果先查询权威状态，高影响动作还要业务幂等与补偿。",
+          boundary:
+            "HTTP 或 RPC 重试库不能把 MAY 去重提升为 exactly-once。",
+        },
+        {
+          name: "订阅、流式与 Push",
+          en: "Streaming & Push",
+          mechanism:
+            "对于非终态 Task，SubscribeToTask 首帧必须给当前 Task 快照，但请求没有恢复游标或历史重放；Task 已处于终态时必须返回 UnsupportedOperationError，客户端改用 GetTask。ListTasks 的 pageToken / cursor 只用于列表分页，不能恢复订阅。对于每个已配置 webhook，Agent 必须至少尝试一次 Push；失败后可以重试，也可以在连续失败达到配置数量后停止，因此不保证至少一次成功送达，重试可能产生重复通知。Artifact chunk 有 artifactId、append 与 lastChunk，但没有核心全局序号或重放保证。",
+          decision:
+            "客户端以 taskId 回读当前状态，并按自有投递 ID、提供方契约字段或业务版本做幂等处理；这些字段不是 A2A 核心 eventId。需要重放时建立事件存储或双方支持的扩展。",
+          boundary:
+            "仅非终态 Task 可以断线重订阅，而且重订阅不是历史重放；终态 Task 只能查询。Agent Card 未声明 pushNotifications 或值为 false 时，Push 配置操作必须返回 PushNotificationNotSupportedError。流式分块也不是 exactly-once Artifact 交付。",
+        },
+        {
+          name: "公开 Card 与 Extended Card",
+          en: "Authenticated Discovery",
+          mechanism:
+            "公开 Agent Card 提供候选入口；认证后的 Extended Agent Card 可选择性披露额外能力信息。规范建议客户端在当前认证会话中用它替换此前缓存的公开 Card。",
+          decision:
+            "按来源与 HTTPS 取得 Card，依据可信密钥和规范化规则验证 JWS，再建立请求身份、操作授权和能力验收。",
+          boundary:
+            "Extended Agent Card 是认证后的选择性披露，不是 Extension 激活，也不证明技能质量或业务权限。",
+        },
+        {
+          name: "Extension 声明与启用",
+          en: "Protocol Extension",
+          mechanism:
+            "Extension 用稳定 URI 标识，在 Agent Card 中声明，再由调用方通过 A2A-Extensions 逐请求启用；它没有独立 version 字段，破坏性变化必须使用新 URI。不支持的可选 Extension 请求可以忽略；若请求的是不支持的可选版本，Agent 应忽略本次激活，且不得自动回退到另一版本。只有 Server 要求使用 Card 中标为 required 的 Extension、而 Client 未在请求中声明支持时，Agent 才必须返回 ExtensionSupportRequiredError。",
+          decision:
+            "分别评审 Owner、成熟度、安全、兼容、URI 演进与降级；把启用的版本化 URI、required 和配置写入 Trace 与契约测试。",
+          boundary:
+            "忽略不支持的可选激活时仍保持核心基线行为，缺少 required Extension 支持则是错误。Extension 可以增加数据、配置、方法或状态语义，但不得改变核心数据结构定义或给核心枚举加值，也不自动获得认证或授权。",
+        },
+      ],
+      sourceIds: ["a2a-specification", "a2a-agent-discovery", "a2a-extensions", "nist-zero-trust"],
+      columnLabels: {
+        name: "契约面",
+        mechanism: "协议语义",
+        decision: "生产设计",
+        boundary: "不能推导",
+      },
     },
     {
       kind: "scenario",
@@ -1794,7 +1997,7 @@ export const a2aBrief = {
       q: "A2A 和 MCP 到底有什么区别？",
       a: "A2A 面向客户端与独立远端 Agent 的 Message 或 Task 协作；MCP 面向 AI 应用与工具、资源和提示模板的连接。",
       depth:
-        "一个理赔受理 Agent 可通过 A2A 向跨区域专业 Agent 获取即时 Message，或委派一个有状态 Task；专业 Agent 再通过 MCP 调用知识与工具。A2A Task 是核心跨 Agent 对象，MCP Tasks 是可选长请求扩展，两类 ID、状态、取消和业务终态只能显式映射。",
+        "一个理赔受理 Agent 可通过 A2A 向跨区域专业 Agent 获取即时 Message，或委派一个有状态 Task；专业 Agent 再通过 MCP 调用知识与工具。A2A Task 是核心跨 Agent 对象；当前 MCP Tasks 是仅支持 tools/call 的可选耐久执行扩展，两类 ID、状态、取消和业务终态只能显式映射。",
       ask: "对方是能独立接任务并交付产物的 Agent，还是一个数据库/API 工具？",
       tag: "协议边界",
       basis: "A2A 概念模型 + MCP 架构",
@@ -1805,7 +2008,7 @@ export const a2aBrief = {
         },
         {
           sourceId: "mcp-tasks-extension",
-          supports: "支持 MCP Tasks 是需显式采用的长请求扩展，与 A2A 的跨 Agent Task 语义不同。",
+          supports: "支持当前 MCP Tasks 是需显式采用且仅覆盖 tools/call 的耐久执行扩展，与 A2A 的跨 Agent Task 语义不同。",
         },
       ],
     },
@@ -1830,9 +2033,9 @@ export const a2aBrief = {
     },
     {
       q: "长任务如何避免断线后丢失？",
-      a: "需要跟踪的工作应由远端返回 Task；实现必须让客户端可通过 Task ID 恢复查询或订阅，而不是把网络连接或 Message 当作唯一状态。",
+      a: "需要跟踪的工作应由远端返回 Task；实现必须让客户端可通过 Task ID 恢复查询，并且只在 Task 仍为非终态时恢复订阅，而不是把网络连接或 Message 当作唯一状态。",
       depth:
-        "实现应保存八个非 UNSPECIFIED 操作状态（正式枚举均以 TASK_STATE_ 开头），并在流式中断后支持查询或订阅。Push 失败要重试且保持幂等；关键事实不应只存在于可能未持久的 Message。协议定义对象与操作，不指定数据库或 Exactly-once。",
+        "实现应保存八个非 UNSPECIFIED 操作状态（正式枚举均以 TASK_STATE_ 开头），并在流式中断后通过 Task ID 调用 GetTask 回读当前状态。仅当 Task 仍为非终态时才调用 SubscribeToTask；其首帧是当前 Task 快照，但请求没有恢复游标或历史重放。Task 已处于终态时，SubscribeToTask 必须返回 UnsupportedOperationError，客户端继续使用 GetTask。ListTasks 的 pageToken / cursor 只用于列表分页。对于每个已配置 webhook，Agent 必须至少尝试一次 Push；失败后可以重试，也可以在连续失败达到配置数量后停止，因此不保证至少一次成功送达，重试还可能产生重复通知。Agent Card 未声明 pushNotifications 或值为 false 时，Push 配置操作必须返回 PushNotificationNotSupportedError。需要重放、幂等处理或重试次数保证时必须另建事件存储或产品契约。",
       ask: "任务状态存在哪里，断线、重复回调和服务重启后如何恢复？",
       tag: "可靠性",
       basis: "A2A Task 模型",
@@ -1870,6 +2073,62 @@ export const a2aBrief = {
         },
       ],
     },
+    {
+      q: "contextId、taskId、messageId、referenceTaskIds 和业务单号分别负责什么？",
+      a: "messageId 标识一条消息，taskId 标识服务端跟踪的工作，contextId 归组相关交互，referenceTaskIds 显式引用旧任务；taskId 由服务端生成，客户端只能引用既有且可访问的 Task。未提供 contextId 时，Agent 可以生成，生成后必须在返回的 Task 或 Message 中带回；客户端提供时，Agent 可以接受并保留。业务单号仍由权威业务系统生成并负责交易语义。",
+      depth:
+        "客户端提供的 taskId 必须引用既有且可访问的 Task，不能用于创建新 Task；否则 Agent 返回 TaskNotFoundError。仅给 taskId 时，Agent 必须从 Task 推断 contextId；同时给出 taskId 与 contextId 时必须匹配，否则拒绝 Message。Agent 自行生成 contextId 后必须在返回的 Task 或 Message 中带回，客户端应将服务端生成值视为不透明标识。终态 Task 不能改写或恢复。需要修订时，发送不带旧 taskId 的新 Message，可保留 contextId 并通过 referenceTaskIds 引用旧 Task；SendMessage 仍可能返回 Message 或 Task，只有返回 Task 时服务端才生成新 taskId。Agent 若拒绝客户端提供的 contextId，必须报错而不能静默替换；客户端除非理解其语义，否则不应主动提供。客户端保存新旧对象、业务单号、A2A / MCP / Run ID 和验收事件的映射。任何协议 ID 都不自动继承权限，也不能独自证明业务完成。",
+      ask: "每类 ID 由谁生成或接受，哪些非法组合必须失败，终态后如何用新 Message 保留谱系，哪个业务 ID 能回读权威结果？",
+      tag: "可靠性",
+      basis: "A2A 标识与任务生命周期",
+      evidence: [
+        {
+          sourceId: "a2a-specification",
+          supports: "支持 Message、Task、Context 与 referenceTaskIds 的标识职责、仅服务端创建 Task、无效或不可访问 taskId 的 TaskNotFoundError、contextId 推断与不匹配拒绝，以及终态后发送不带旧 taskId 的新 Message。",
+        },
+      ],
+      addedAt: "2026-09-04",
+    },
+    {
+      q: "SendMessage 超时后，可以带同一个 messageId 直接重发吗？",
+      a: "不能默认直接重发。服务端只可能基于 messageId 提供去重；规范没有给 SendMessage exactly-once 保证，超时后必须先判断远端是否已创建 Task 或产生业务副作用。",
+      depth:
+        "读取类操作可以退避重试；SendMessage 结果未知时，先用 context、Task 或业务 operation ID 查询，再依据双方明确的去重窗口和业务幂等契约重发。CancelTask 虽是幂等操作，对已清理 Task 的请求也可能返回 TaskNotFoundError。对于每个已配置 webhook，Agent 必须至少尝试一次 Push，但失败后可重试或在连续失败达到配置数量后停止，因此没有至少一次成功送达保证；接收方应以自有投递键或双方契约幂等处理可能的重复通知。Agent Card 未声明 pushNotifications 或值为 false 时，Push 配置操作必须返回 PushNotificationNotSupportedError。",
+      ask: "服务端是否明确实现 messageId 去重，保留多久，超时后用什么 ID 查询 Task 和业务副作用？",
+      tag: "故障恢复",
+      basis: "A2A 操作幂等与未知结果",
+      evidence: [
+        {
+          sourceId: "a2a-specification",
+          supports: "支持不同 RPC 的幂等等级、SendMessage 的可选 messageId 去重、每个已配置 webhook 的 Push 尝试、重复交付、缺失 Push 能力时的错误和取消边界。",
+        },
+      ],
+      addedAt: "2026-09-04",
+    },
+    {
+      q: "Agent Card 声明的 Extension 和 Extended Agent Card 是同一件事吗？",
+      a: "不是。Extended Agent Card 是认证后返回的选择性能力信息披露；Extension 是用稳定 URI 标识、在 Card 中声明并由客户端逐请求启用的协议扩展。",
+      depth:
+        "调用方先验证公开 Card 的来源、域名和可选签名，再完成请求身份与授权，按需取得 Extended Card；若使用 Extension，还要核验版本化 URI、required、配置、安全、URI 演进和降级，并通过 A2A-Extensions 明确激活。Extension 没有独立 version 字段，破坏性变化必须使用新 URI。不支持的可选 Extension 请求可以忽略；若请求的是不支持的可选版本，Agent 应忽略本次激活，且不得自动回退到另一版本。只有 Server 要求使用 Card 中标为 required 的 Extension、而 Client 未在请求中声明支持时，Agent 才必须返回 ExtensionSupportRequiredError。Extension 不得改变核心数据结构或给核心枚举加值；两者都不自动证明能力质量或业务授权。",
+      ask: "当前拿到的是公开还是认证后的 Card，请求和启用了哪些 Extension URI，不支持的可选版本是否被忽略且未回退，缺少 required Extension 支持时是否返回指定错误？",
+      tag: "发现信任",
+      basis: "A2A 认证发现 + 扩展协商",
+      evidence: [
+        {
+          sourceId: "a2a-agent-discovery",
+          supports: "支持公开 Agent Card、认证后的 Extended Agent Card 与发现信任链的区分。",
+        },
+        {
+          sourceId: "a2a-extensions",
+          supports: "支持 Extension 的 URI 声明、逐请求激活、不支持的可选版本被忽略且不得回退，以及 required Extension 应以适当错误拒绝的边界。",
+        },
+        {
+          sourceId: "a2a-specification",
+          supports: "以能力校验的规范性条款定义缺少 required Extension 支持时必须返回 ExtensionSupportRequiredError。",
+        },
+      ],
+      addedAt: "2026-09-04",
+    },
   ],
   evidenceCards: [
     {
@@ -1900,6 +2159,13 @@ export const a2aBrief = {
       finding: "身份、Task、状态、Message 和 Artifact 形成跨组织可核对的协作记录；内部执行证据由提供方留存。",
       boundary: "协议审计范围不免除提供方的内部质量与安全责任。",
       sourceId: "a2a-concepts",
+    },
+    {
+      metric: "messageId ≠ exactly-once",
+      title: "未知写结果要先查状态再决定重试",
+      finding: "SendMessage 可由服务端选择基于 messageId 去重；SubscribeToTask 只适用于非终态 Task，请求没有恢复游标或历史重放，终态 Task 应通过 GetTask 查询；ListTasks 分页游标不能恢复订阅。对于每个已配置 webhook，Push 必须至少尝试一次，但失败后可停止，重试还可能产生重复通知；缺少 Push 能力时配置操作返回 PushNotificationNotSupportedError。",
+      boundary: "协议级标识不能替代业务幂等、权威状态查询、自有事件存储和补偿。",
+      sourceId: "a2a-specification",
     },
   ],
 };
