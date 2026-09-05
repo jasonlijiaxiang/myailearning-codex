@@ -1,5 +1,7 @@
+@layer fieldbook-base, fieldbook-v2;
 @import "./preflight.css";
 
+@layer fieldbook-base {
 :root {
   /* A / Mist: the canonical site-wide design tokens. */
   --fb-ink: #153047;
@@ -76,6 +78,54 @@
   --shadow: var(--fb-shadow);
   --font-serif: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun";
   --font-display: var(--font-serif);
+}
+
+/*
+ * Dark scheme: one sanctioned override block for the A / Mist token system.
+ * Light values above are the single source of truth; dark values keep the
+ * same low-saturation misty gray-teal family at reduced luminance.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fb-ink: #cddbd9;
+    --fb-ink-2: #a5b7b5;
+    --fb-muted: #8ba09f;
+    --fb-meta: #7e9397;
+    --fb-link: #8fc2cf;
+    --fb-marker: #5e7c85;
+    --fb-guide: #3a4b4e;
+    --fb-line: #2b393c;
+    --fb-control: #46585c;
+    --fb-accent: #a9d95a;
+    --fb-accent-soft: #222c25;
+    --fb-canvas: #0f1618;
+    --fb-mist: #161f22;
+    --fb-mint: #17201c;
+    --fb-surface: #131b1e;
+    --fb-risk: #d98e70;
+    --fb-risk-soft: #2a1e1a;
+    --fb-shadow: 0 14px 34px rgba(0, 0, 0, .55);
+    --fb-focus: #8fc2cf;
+
+    --fb-chrome-ink: #cddbd9;
+    --fb-chrome-muted: #8ba09f;
+    --fb-chrome-meta: #7e9397;
+    --fb-chrome-link: #8fc2cf;
+    --fb-chrome-line: #2b393c;
+    --fb-chrome-accent: #a9d95a;
+    --fb-chrome-mist: #161f22;
+    --fb-chrome-mint: #17201c;
+    --fb-chrome-surface: #131b1e;
+    --fb-chrome-focus: #8fc2cf;
+    --fb-chrome-shadow: 0 16px 36px rgba(0, 0, 0, .6);
+
+    /* Hardcoded legacy compatibility colors also need a dark twin. */
+    --paper-2: #223031;
+    --purple: #9a91b4;
+    --gold: #b39567;
+    --teal: #6fa49b;
+    --rose: #c08b96;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -250,7 +300,7 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .subHead .kicker { margin-bottom: 8px; }
 .subHead h2, .subHead h3 { font-family: var(--font-serif), "Songti SC", serif; font-size: clamp(30px,3.5vw,52px); letter-spacing: -.03em; font-weight: 500; line-height: 1.1; margin: 0; text-wrap: balance; line-break: strict; overflow-wrap: break-word; }
 .sectionLead { max-width: 900px; margin: -10px 0 34px 70px; color: var(--muted); font-size: 15px; }
-.miniLabel { margin: 0 0 8px !important; font-size: 9px !important; line-height: 1.4; letter-spacing: .13em; font-weight: 800; text-transform: uppercase; color: var(--muted); }
+.miniLabel { margin: 0 0 8px; font-size: 9px; line-height: 1.4; letter-spacing: .13em; font-weight: 800; text-transform: uppercase; color: var(--muted); }
 .conceptGrid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .conceptGrid article { grid-column: span var(--concept-span, 12); min-width: 0; }
 .conceptCard { min-height: 190px; height: 100%; padding: 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--white); }
@@ -333,7 +383,6 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .variantList article { display: grid; grid-template-columns: .65fr 1fr 1fr; gap: 30px; align-items: center; padding: 24px 0; border-bottom: 1px solid var(--line); }
 .variantList h4 { margin: 0; font-size: 18px; }
 .variantList p { margin: 0; color: var(--muted); font-size: 12px; }
-.variantPipeline { font-family: var(--font-geist-mono), monospace; color: var(--ink) !important; }
 .sectionFootnote { margin: 22px 0 0; color: var(--muted); font-size: 11px; }
 .fitGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .fit { padding: 32px; border: 1px solid var(--line); }
@@ -418,7 +467,7 @@ details[open] .plus { transform: rotate(45deg); }
 .qaAnswer > div { padding: 24px; background: var(--paper); }
 .qaAnswer .qaBasis { grid-column: 1 / -1; background: #e9f5fd; }
 .qaBasisHead { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
-.qaBasisHead .answerLabel { margin-bottom: 0 !important; }
+.qaBasisHead .answerLabel { margin-bottom: 0; }
 .qaBasisHead > span { padding: 5px 9px; border: 1px solid #b9d8eb; border-radius: 999px; background: var(--white); color: var(--muted); font-size: 10px; }
 .qaBasisList { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 10px; align-items: stretch; }
 .qaBasisList a { grid-column: span var(--qa-evidence-span, 12); min-width: 0; padding: 14px; border: 1px solid #b9d8eb; background: var(--white); color: var(--ink); text-decoration: none; display: flex; flex-direction: column; }
@@ -428,7 +477,7 @@ details[open] .plus { transform: rotate(45deg); }
 .qaBasisList small { color: var(--muted); font-size: 11px; line-height: 1.55; }
 .qaAnswer .ask { grid-column: 1 / -1; background: #eaf9d8; }
 .qaAnswer p { margin: 0; font-size: 14px; }
-.answerLabel { font-size: 10px !important; color: var(--muted); font-weight: 800; letter-spacing: .12em; margin-bottom: 8px !important; }
+.answerLabel { font-size: 10px; color: var(--muted); font-weight: 800; letter-spacing: .12em; margin-bottom: 8px; }
 .questionAddedAt { width: fit-content; display: inline-flex; align-items: center; color: #52606a; font-family: var(--font-geist-mono), monospace; font-size: 12px; font-weight: 700; letter-spacing: .04em; line-height: 1.4; }
 .questionAddedAt::before { width: 5px; height: 5px; margin-right: 7px; border-radius: 50%; background: var(--blue); content: ""; }
 .moduleUpdatedAt time { font-family: var(--font-geist-mono), monospace; }
@@ -557,8 +606,6 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .pathCards { grid-template-columns: 1fr; }
   .metricCard { grid-column: span 6; min-height: 300px; }
   .evidenceGrid[data-odd="true"] .metricCard:last-child { grid-column: span 12; }
-  .balancedGridCell { grid-column: span 6 !important; }
-  .balancedGrid[data-odd="true"] .balancedGridCell:last-child { grid-column: span 12 !important; }
   .pocGrid { grid-template-columns: 1fr 1fr; }
   .pocGrid article:nth-child(2) { border-right: 0; }
   .pocGrid article:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
@@ -575,9 +622,6 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .relatedModuleGrid a, .referenceModuleLink { grid-column: span 6; }
   .relatedModuleGrid[data-odd="true"] > a:last-child,
   .referenceModuleNav[data-odd="true"] > a:last-child { grid-column: span 12; }
-  .briefPrinciples--decision article, .briefPrinciples--spectrum article { grid-column: span 6 !important; }
-  .briefPrinciples--decision[data-odd="true"] article:last-child,
-  .briefPrinciples--spectrum[data-odd="true"] article:last-child { grid-column: span 12 !important; }
 }
 
 @media (max-width: 720px) {
@@ -625,7 +669,6 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .ragHero { padding: 78px 24px; }
   .moduleHeroTitle { font-size: var(--module-title-mobile-size, 92px); }
   .moduleHeroTitle > span { margin-top: 30px; font-size: 15px; }
-  .balancedGridCell, .balancedGrid[data-odd="true"] .balancedGridCell:last-child { grid-column: span 12 !important; }
   .flow { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: 1fr; gap: 12px; overflow-x: visible; padding-bottom: 0; }
   .flowStep { min-height: 88px; }
   .flowStep:not(:last-child)::after { content: "↓"; right: 16px; top: auto; bottom: -18px; z-index: 2; }
@@ -649,9 +692,6 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .moduleBriefHeader .moduleHeroTitle > span { margin-top: 18px; font-size: 15px; }
   .moduleBriefDefinition { margin-top: 32px; font-size: 23px; }
   .moduleBriefIntro, .termStrip { margin-left: 0; }
-  .briefPrinciples--decision article, .briefPrinciples--spectrum article,
-  .briefPrinciples--decision[data-odd="true"] article:last-child,
-  .briefPrinciples--spectrum[data-odd="true"] article:last-child { grid-column: span 12 !important; min-height: auto; }
   .briefPrinciples--pipeline li, .briefPrinciples--loop li, .briefPrinciples--stack li { grid-template-columns: 44px 1fr; }
   .deepDiveHeader, .deepDiveSequence li { grid-template-columns: 44px 1fr; }
   .deepDiveHeader > div, .deepDiveSequence li > div { padding: 22px 18px; }
@@ -673,4 +713,5 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .layer, .metricCard, .qaList details { break-inside: avoid; }
   .qaList details { display: block; }
   .qaList details > * { display: grid; }
+}
 }

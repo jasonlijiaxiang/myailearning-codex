@@ -98,8 +98,7 @@ npm run handoff:check
 - `app/prompt-content.mjs`：Prompt Engineering 问答与证据卡内容源
 - `app/module-content-components.tsx`：模块共用的动态证据卡与深度问答组件
 - `app/fieldbook-interactions.tsx`：全库搜索、章节导航、机制视图、问答与来源筛选
-- `app/fieldbook-v2.css`：历史阅读组件与响应式布局基础；全站颜色统一消费 `globals.css` 的语义 token
-- `app/fieldbook-v3.css`：模块、目录与共享阅读组件的当前视觉层
+- `app/fieldbook-v3.css`：模块、目录与共享阅读组件的当前视觉层；历史阅读组件与响应式布局基础已并入其 `@layer fieldbook-v2`，全站颜色统一消费 `globals.css` 的语义 token
 - `app/home-refresh.css`：中英文首页共用的 A / Mist 首页构图
 - `app/reference-content.mjs`：全站来源台账与模块来源分组的唯一内容源
 - `app/(zh)/references/page.tsx`：所有中文模块共用的 Reference 页面

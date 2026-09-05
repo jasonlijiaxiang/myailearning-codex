@@ -9,7 +9,6 @@ const sharedChineseModuleUrl = new URL("../app/(zh)/modules/[slug]/page.tsx", im
 const unifiedBriefComponentUrl = new URL("../app/unified-brief-module-page.tsx", import.meta.url);
 const denseReaderComponentUrl = new URL("../app/dense-module-reading-modes.tsx", import.meta.url);
 const denseReaderStylesUrl = new URL("../app/dense-module-reading-modes.module.css", import.meta.url);
-const fieldbookV2StylesUrl = new URL("../app/fieldbook-v2.css", import.meta.url);
 const fieldbookV3StylesUrl = new URL("../app/fieldbook-v3.css", import.meta.url);
 const agentReaderStylesUrl = new URL("../app/agent-dense-reader.module.css", import.meta.url);
 const mcpStylesUrl = new URL("../app/mcp-module-experience.module.css", import.meta.url);
@@ -36,10 +35,19 @@ function tokenValues(css, token) {
     .map((match) => normalize(match[1]));
 }
 
-/** @param {string} css @param {string} token */
-function tokenValue(css, token) {
-  const values = tokenValues(css, token);
-  assert.equal(values.length, 1, `${token} must be declared exactly once in globals.css`);
+/** @param {string} css */
+function lightTokensSource(css) {
+  return stripComments(css).replace(/@media\s*\(prefers-color-scheme:\s*dark\)\s*\{[\s\S]*?\n\}/g, "");
+}
+
+/**
+ * 浅色值唯一源校验（暗色块允许一次覆盖）。
+ * @param {string} css
+ * @param {string} token
+ */
+function lightTokenValue(css, token) {
+  const values = tokenValues(lightTokensSource(css), token);
+  assert.equal(values.length, 1, `${token} must keep exactly one light declaration in globals.css`);
   return values[0];
 }
 
@@ -99,10 +107,41 @@ function atRuleBodies(css, atRulePattern) {
   return bodies;
 }
 
+/**
+ * 剥掉 @layer 包装层：合并后的 fieldbook-v3.css 用 @layer 承载 V2 规则。
+ * @param {string} css
+ */
+function unwrapLayerBlocks(css) {
+  let source = css;
+  for (;;) {
+    const match = /@layer\s+[-\w]+(?:\s*,\s*[-\w]+)*\s*\{/.exec(source);
+    if (!match) break;
+    const open = match.index + match[0].length - 1;
+    let depth = 1;
+    let end = open + 1;
+    let quote = null;
+    for (; end < source.length; end += 1) {
+      const c = source[end];
+      if (quote) {
+        if (c === quote && source[end - 1] !== "\\") quote = null;
+        continue;
+      }
+      if (c === '"' || c === "'") quote = c;
+      if (c === "{") depth += 1;
+      if (c === "}") {
+        depth -= 1;
+        if (depth === 0) break;
+      }
+    }
+    source = source.slice(0, match.index) + source.slice(open + 1, end) + source.slice(end + 1);
+  }
+  return source;
+}
+
 /** @param {string} css */
 function cssRules(css) {
   const rules = [];
-  const source = stripComments(css);
+  const source = unwrapLayerBlocks(stripComments(css));
   const pattern = /([^{}]+)\{([^{}]*)\}/g;
   for (const match of source.matchAll(pattern)) {
     const declarations = new Map();
@@ -201,11 +240,43 @@ test("chrome token aliases resolve to their canonical values", async () => {
   ];
 
   for (const [chromeToken, canonicalToken] of pairs) {
-    assert.equal(tokenValue(globals, chromeToken), tokenValue(globals, canonicalToken));
+    assert.equal(lightTokenValue(globals, chromeToken), lightTokenValue(globals, canonicalToken));
   }
-  assert.equal(tokenValue(globals, "--fb-body"), "var(--fb-ink-2)");
-  assert.equal(tokenValue(globals, "--fb-shell-wide"), "1480px");
-  assert.doesNotMatch(tokenValue(globals, "--fb-font-editorial"), /var\(--font-serif\)/);
+  assert.equal(lightTokenValue(globals, "--fb-body"), "var(--fb-ink-2)");
+  assert.equal(lightTokenValue(globals, "--fb-shell-wide"), "1480px");
+  assert.doesNotMatch(lightTokenValue(globals, "--fb-font-editorial"), /var\(--font-serif\)/);
+});
+
+test("the sanctioned dark scheme overrides keep the light palette untouched", async () => {
+  const globals = await readFile(globalsUrl, "utf8");
+  const darkBodies = atRuleBodies(globals, /prefers-color-scheme\s*:\s*dark/i);
+  assert.equal(darkBodies.length, 1, "globals.css must keep exactly one prefers-color-scheme: dark override block");
+  const darkRules = cssRules(darkBodies[0]);
+  const darkDeclarations = declarationsFor(darkRules, ":root");
+  assert.ok(darkDeclarations.has("--fb-canvas"), "the dark block must override the canvas token");
+  assert.ok(darkDeclarations.has("--fb-surface"), "the dark block must override the surface token");
+  assert.ok(darkDeclarations.has("--fb-chrome-ink"), "the dark block must override the chrome tokens");
+  for (const [chromeToken, canonicalToken] of [
+    ["--fb-chrome-ink", "--fb-ink"],
+    ["--fb-chrome-muted", "--fb-muted"],
+    ["--fb-chrome-meta", "--fb-meta"],
+    ["--fb-chrome-link", "--fb-link"],
+    ["--fb-chrome-line", "--fb-line"],
+    ["--fb-chrome-accent", "--fb-accent"],
+    ["--fb-chrome-mist", "--fb-mist"],
+    ["--fb-chrome-mint", "--fb-mint"],
+    ["--fb-chrome-surface", "--fb-surface"],
+    ["--fb-chrome-focus", "--fb-focus"],
+  ]) {
+    const darkChrome = darkDeclarations.get(chromeToken);
+    const darkCanonical = darkDeclarations.get(canonicalToken);
+    assert.ok(darkChrome, `${chromeToken} needs a dark value`);
+    assert.equal(darkChrome.join(" "), darkCanonical.join(" "), `${chromeToken} dark value must mirror ${canonicalToken}`);
+  }
+  // 浅色值不变：暗色块之外的 token 声明与改前完全一致。
+  assert.equal(lightTokenValue(globals, "--fb-canvas"), "#fafcfb");
+  assert.equal(lightTokenValue(globals, "--fb-surface"), "#ffffff");
+  assert.equal(lightTokenValue(globals, "--fb-accent"), "#a8d84f");
 });
 
 test("every site-wide token is declared once and documented", async () => {
@@ -214,9 +285,11 @@ test("every site-wide token is declared once and documented", async () => {
     readFile(designLanguageUrl, "utf8"),
   ]);
 
-  const definedTokens = new Set([...stripComments(globals).matchAll(/(--fb-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
+  const lightSource = lightTokensSource(globals);
+  const definedTokens = new Set([...stripComments(lightSource).matchAll(/(--fb-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
   for (const token of definedTokens) {
-    assert.equal(tokenValues(globals, token).length, 1, `${token} must not be redeclared in globals.css`);
+    assert.equal(tokenValues(lightSource, token).length, 1, `${token} must keep exactly one light declaration in globals.css`);
+    assert.ok(tokenValues(globals, token).length <= 2, `${token} may only be overridden once, inside the dark block`);
     assert.ok(designLanguage.includes(`\`${token}\``), `${token} must be registered in DESIGN-LANGUAGE.md`);
   }
 });
@@ -416,9 +489,8 @@ test("no route or component duplicates the Hero marker or overrides site tokens"
 });
 
 test("knowledge prose keeps its 16px release typography floor", async () => {
-  const [denseReader, fieldbookV2, fieldbookV3, agentReader, mcp, a2a, inference] = await Promise.all([
+  const [denseReader, fieldbookV3, agentReader, mcp, a2a, inference] = await Promise.all([
     readFile(denseReaderStylesUrl, "utf8"),
-    readFile(fieldbookV2StylesUrl, "utf8"),
     readFile(fieldbookV3StylesUrl, "utf8"),
     readFile(agentReaderStylesUrl, "utf8"),
     readFile(mcpStylesUrl, "utf8"),
@@ -429,7 +501,7 @@ test("knowledge prose keeps its 16px release typography floor", async () => {
   /** @type {Array<[ParsedCssRule[], string]>} */
   const sixteenPixelKnowledge = [
     [cssRules(denseReader), ".boundary p"],
-    [cssRules(fieldbookV2), ".briefPrinciples strong"],
+    [cssRules(fieldbookV3), ".briefPrinciples strong"],
     [cssRules(fieldbookV3), ".fieldbookTheme.modulePage .qaBasisNote"],
     [cssRules(agentReader), ".reader :global(:is(.tableWrap, .cloudTable) table)"],
     [cssRules(agentReader), ".knowledgeDigest"],

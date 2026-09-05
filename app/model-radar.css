@@ -478,7 +478,7 @@
   width: 54px;
   color: var(--poster-muted);
   font-family: var(--font-geist-mono), monospace;
-  text-align: center !important;
+  text-align: center;
 }
 
 .modelPosterRank.rank-1,

@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
-import "../fieldbook-v2.css";
 import "../fieldbook-v3.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });

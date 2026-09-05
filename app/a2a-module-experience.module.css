@@ -232,7 +232,7 @@
 .domainNode span, .sendNode span, .branchPaths span { color: var(--a2a-muted); font-size: 10px; font-weight: 800; }
 .domainNode h3, .sendNode h3, .branchPaths h3 { margin: 12px 0 6px; font-size: 17px; }
 .domainNode p, .branchPaths p { margin: 0; color: var(--a2a-muted); font-size: 12px; }
-.sendNode { align-self: center; border: 2px solid var(--a2a-ink); background: var(--a2a-lime) !important; text-align: center; }
+article.sendNode { align-self: center; border: 2px solid var(--a2a-ink); background: var(--a2a-lime); text-align: center; }
 .sendNode h3 { margin-top: 6px; }
 .sendNode code { display: block; font-size: 10px; }
 .branchPaths { display: grid; grid-template-columns: .72fr 1.28fr; border-inline: 1px solid var(--a2a-line-strong); }

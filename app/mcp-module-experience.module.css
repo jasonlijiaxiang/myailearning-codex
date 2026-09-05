@@ -302,7 +302,7 @@
 .evidenceGrid header small { color: var(--mcp-muted); font-size: 12px; }
 .evidenceGrid h3 { margin: 8px 0 6px; font-size: 18px; }
 .evidenceGrid > article > p { margin: 0; font-size: 14px; line-height: 1.58; }
-.evidenceBoundary { margin-top: 10px !important; padding: 9px 11px; border-left: 3px solid var(--mcp-risk); background: var(--mcp-risk-soft); color: #8f312c; }
+.evidenceGrid > article > p.evidenceBoundary { margin-top: 10px; padding: 9px 11px; border-left: 3px solid var(--mcp-risk); background: var(--mcp-risk-soft); color: #8f312c; }
 .evidenceBoundary strong { margin-right: 8px; }
 .evidenceGrid a { margin-top: 11px; color: var(--mcp-blue); display: grid; grid-template-columns: auto minmax(0,1fr) 17px; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; text-decoration: none; }
 .evidenceGrid a span { color: var(--mcp-muted); font-size: 12px; }
@@ -461,7 +461,7 @@
   .evidenceGrid { border-left: 0; }
   .evidenceGrid > article { padding-inline: 0; border-right: 0; }
   .cloudRow { grid-template-columns: 1fr; }
-  .cloudRow > * { border-right: 0 !important; }
+  .cloudRow > * { border-right: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

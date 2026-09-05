@@ -323,7 +323,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
     readFile(new URL("../app/question-index.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/search-index.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../AGENTS.md", import.meta.url), "utf8"),
     readFile(new URL("../docs/MODULE-BUILD-STANDARD.md", import.meta.url), "utf8"),
   ]);
@@ -658,7 +658,7 @@ test("focus surfaces provide accessible terminology explanations", async () => {
     for (const termId of group.termIds) assert.match(homepage, new RegExp(`data-term-id="${escapeRegExp(termId)}"`));
   }
 
-  const styles = await readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8");
   assert.match(styles, /\.termHint:hover\s+\.termHintPopover\s*\{\s*display:\s*block;/, "desktop hover must reveal the abbreviation note directly");
   assert.doesNotMatch(styles, /@media\s*\(hover:\s*hover\)[\s\S]*?\.termHint:hover\s+\.termHintPopover/, "abbreviation hover must not depend on the input-device capability query");
 });
@@ -2495,9 +2495,8 @@ test("all public page families use the shared A / Mist design contract", async (
     assert.match(html, /<main[^>]*class="[^"]*\bfieldbookTheme\b[^"]*"/, `${path} is missing the site-wide design-language root class`);
   }
 
-  const [globals, v2Styles, v3Styles, homeStyles, designLanguage] = await Promise.all([
+  const [globals, v3Styles, homeStyles, designLanguage] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/home-refresh.css", import.meta.url), "utf8"),
     readFile(new URL("../docs/DESIGN-LANGUAGE.md", import.meta.url), "utf8"),
@@ -2506,8 +2505,7 @@ test("all public page families use the shared A / Mist design contract", async (
   for (const token of ["--fb-ink", "--fb-muted", "--fb-link", "--fb-line", "--fb-accent", "--fb-canvas", "--fb-mist", "--fb-risk"]) {
     assert.match(globals, new RegExp(escapeRegExp(token)), `missing design token: ${token}`);
   }
-  assert.doesNotMatch(v2Styles, /^:root\s*\{/m, "V2 must not redefine site-wide tokens");
-  assert.doesNotMatch(v3Styles, /^:root\s*\{/m, "V3 must not redefine site-wide tokens");
+  assert.doesNotMatch(v3Styles, /^:root\s*\{/m, "the merged fieldbook styles must not redefine site-wide tokens");
   assert.doesNotMatch(homeStyles, /\.fieldbookHomeZh\b/, "the homepage design must serve both locales");
   assert.match(homeStyles, /\.fieldbookHome\s*\{/);
   // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
@@ -2903,7 +2901,7 @@ test("balances arbitrary CSS Grid counts without fractional or missing spans", (
 test("keeps module systems dynamically balanced, searchable, and navigable on mobile", async () => {
   const [styles, v2Styles, v3Styles, homepage, searchIndexSource, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/search-index.mjs", import.meta.url), "utf8"),
@@ -2947,7 +2945,9 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(v2Styles, /@container \(max-width: 900px\)/);
   assert.match(v2Styles, /@container \(max-width: 620px\)/);
   // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
-  assert.match(v2Styles, /\.subHead h2, \.subHead h3\s*\{[^}]*5cqi[^}]*text-wrap:\s*balance/s);
+  assert.match(v2Styles, /\.subHead h2, \.subHead h3\s*\{[^}]*text-wrap:\s*balance/s, "subsection headings keep balanced wrapping");
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
+  assert.match(v3Styles, /\.subHead h2,\s*\n\.subHead h3\s*\{[^}]*3\.4cqi/s, "subsection headings keep container-relative fluid sizing (V3 overrides the V2 scale)");
   assert.match(homepage, /explorerModules/);
   assert.match(homepage, /publishedModuleSlugs\.map/);
   assert.match(homepage, /knowledgeIndexUrl="\/search\/knowledge\.zh\.json"/);

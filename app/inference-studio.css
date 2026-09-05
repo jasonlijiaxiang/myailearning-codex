@@ -19,7 +19,7 @@
 .inferenceStudio button,
 .inferenceStudio select,
 .inferenceStudio input { font: inherit; }
-.inferenceStudio [hidden] { display: none !important; }
+.inferenceStudio [hidden] { display: none; }
 .inferenceStudio a { text-underline-offset: 3px; }
 .inferenceStudio footer { min-height: 0; }
 .inferenceContentScope { min-height: 0; overflow: visible; background: transparent; }
@@ -397,8 +397,8 @@
 .capacityRunPack dd { margin: 3px 0 0; color: #536a7e; font-size: 9px; line-height: 1.5; }
 .capacityConclusion > a { min-height: 31px; margin-top: 12px; display: grid; place-items: center; border: 1px solid #8bad3b; font-size: 9px; font-weight: 750; text-decoration: none; }
 .capacityConclusion > small { display: block; margin-top: 8px; color: var(--if-muted); font-size: 8px; text-align: center; }
-.chapterBrief { padding: 18px 12px !important; display: grid; grid-template-columns: minmax(0,1fr) minmax(360px,1.2fr); gap: 16px 28px; }
-.chapterBrief--afterArtifact { margin-top: 14px; padding-top: 18px !important; border-top: 1px solid var(--if-line); }
+.chapterBrief { padding: 18px 12px; display: grid; grid-template-columns: minmax(0,1fr) minmax(360px,1.2fr); gap: 16px 28px; }
+.chapterBrief--afterArtifact { margin-top: 14px; padding-top: 18px; border-top: 1px solid var(--if-line); }
 .chapterMechanism > span { color: #718397; font-size: 9px; font-weight: 850; }
 .chapterMechanism > p { margin: 4px 0 0; color: #435c70; font-size: 12px; line-height: 1.7; }
 .chapterBrief dl { margin: 0; }
@@ -407,7 +407,7 @@
 .chapterBrief dt { color: var(--if-muted); font-size: 9px; font-weight: 800; }
 .chapterBrief dd { margin: 3px 0 0; font-size: 10px; line-height: 1.55; }
 .chapterBrief > a { color: #477491; font-size: 10px; }
-.learningSourceLinks { min-height: 0 !important; margin-top: 10px; padding: 9px 0 0 !important; display: flex !important; flex-wrap: wrap; gap: 6px 14px; border-top: 1px solid var(--if-line); background: transparent !important; }
+.learningSourceLinks { min-height: 0; margin-top: 10px; padding: 9px 0 0; display: flex; flex-wrap: wrap; gap: 6px 14px; border-top: 1px solid var(--if-line); background: transparent; }
 .learningSourceLinks a { color: #477491; font-size: 8px; text-decoration: none; }
 .chapterBrief .learningSourceLinks { grid-column: 1 / -1; }
 .inferenceLearningPractice { max-width: 1220px; margin-top: 34px; padding-top: 28px; border-top: 2px solid var(--if-ink); }
@@ -504,7 +504,7 @@
   .metricInspector > header { grid-column: 1 / -1; }
   .metricInspector footer { align-self: end; }
   .capacityExperiment { grid-template-columns: 230px minmax(400px,1fr); }
-  .capacityConclusion { grid-column: 1 / -1; border-top: 1px solid var(--if-line); border-left: 0 !important; }
+  .capacityConclusion { grid-column: 1 / -1; border-top: 1px solid var(--if-line); border-left: 0; }
 }
 
 @media (max-width: 1080px) {
@@ -519,7 +519,7 @@
   .inferenceHeatmapPanel { border-right: 0; border-bottom: 1px solid var(--if-line); }
   .metricInspector { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .caseReviewGrid { grid-template-columns: minmax(0,.7fr) minmax(0,1.3fr); }
-  .caseAction { grid-column: 1 / -1; border-top: 1px solid var(--if-line); border-left: 0 !important; }
+  .caseAction { grid-column: 1 / -1; border-top: 1px solid var(--if-line); border-left: 0; }
   .capacityExperiment { grid-template-columns: 1fr; }
   .capacityExperiment > * + * { border-top: 1px solid var(--if-line); border-left: 0; }
   .chapterBrief { grid-template-columns: 1fr; }
@@ -653,7 +653,7 @@
   .capacityMetricCards article:nth-child(3) { border-left: 0; border-top: 1px solid var(--if-line); }
   .capacityMetricCards article:nth-child(4) { border-top: 1px solid var(--if-line); }
   .capacityMetricCards strong { font-size: 18px; }
-  .chapterBrief { padding: 14px 5px !important; }
+  .chapterBrief { padding: 14px 5px; }
   .learningOutcomeList { grid-template-columns: 1fr; }
   .learningOutcomeList li:nth-child(odd) { border-right: 0; }
   .learningStart { display: block; }
