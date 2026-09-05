@@ -5,7 +5,7 @@ import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { DeepDiveRelationView } from "./deep-dive-relation-view";
 import { QaFilterShell } from "./fieldbook-interactions";
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
-import { requireDeepDiveRepresentation } from "./module-representation-assessment.mjs";
+import { requireDeepDiveRepresentation } from "./deep-dive-representation.mjs";
 
 type SourceSummary = {
   grade: string;

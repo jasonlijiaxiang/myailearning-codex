@@ -1,5 +1,8 @@
 import { moduleContentRegistry } from "./module-content-registry.mjs";
 import { publishedModules } from "./module-publication.mjs";
+import { deepDiveRepresentationByKind, requireDeepDiveRepresentation } from "./deep-dive-representation.mjs";
+
+export { deepDiveRepresentationByKind, requireDeepDiveRepresentation };
 
 /**
  * 内容表达审计规则。
@@ -7,20 +10,8 @@ import { publishedModules } from "./module-publication.mjs";
  * 这不是视觉配额：它把每类内容关系映射到最省认知成本的表达方式。
  * 未建模关系的章节继续使用渐进文字；独立证据使用证据卡；共享维度使用表；
  * 只有方向、因果、分支或状态变化需要网页原生关系图。
+ * 映射本体在 app/deep-dive-representation.mjs（零 import，供客户端组件直接消费）。
  */
-export const deepDiveRepresentationByKind = Object.freeze({
-  sequence: "interactive-flow",
-  diagnostic: "interactive-diagnostic",
-  matrix: "interactive-matrix",
-  scenario: "interactive-branch",
-  checklist: "editorial-checklist",
-});
-
-export function requireDeepDiveRepresentation(kind) {
-  const representation = deepDiveRepresentationByKind[kind];
-  if (!representation) throw new Error(`Unknown deep-dive representation kind: ${kind}`);
-  return representation;
-}
 
 export const moduleRepresentationAssessment = Object.freeze(Object.fromEntries(
   publishedModules.map((publication) => {

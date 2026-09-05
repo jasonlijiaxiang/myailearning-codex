@@ -8,6 +8,7 @@ export const COMMIT_PATTERN = /^[0-9a-f]{40}$/;
 
 export const MODULE_RENDERER_LOGIC_FILES = Object.freeze([
   "app/content-update-metadata.mjs",
+  "app/deep-dive-representation.mjs",
   "app/i18n/english-representation-assessment.mjs",
   "app/i18n/english-section-outline.mjs",
   "app/i18n/locale-config.mjs",
