@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "modules": {
+    "solution-patterns": {
+      "status": "deferred",
+      "enSyncedCommit": "6be33d1c4e0c9189892994613769f12a94c7e2cf",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "model-landscape": {
+      "status": "aligned",
+      "enSyncedCommit": "90b428e2759d90fb53e4fee2a94341fd085a91d2"
+    },
+    "rag": {
+      "status": "deferred",
+      "enSyncedCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "ai-agent": {
+      "status": "aligned",
+      "enSyncedCommit": "73db768e98fadfc85cd7f597c0d25534c4241a72"
+    },
+    "multimodal": {
+      "status": "deferred",
+      "enSyncedCommit": "2ec8ee1182b8ff75a56ae0bdc6897971c94c29bf",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "mcp": {
+      "status": "aligned",
+      "enSyncedCommit": "5b4c4b9dc661e7a1c31335f0a8f85a92c57bd2f4"
+    },
+    "a2a": {
+      "status": "aligned",
+      "enSyncedCommit": "2beb109119337a6abe112f21ca8970e21f8a5b77"
+    },
+    "evaluation": {
+      "status": "deferred",
+      "enSyncedCommit": "8ca1d31a5c4308cc0e9006012a295eb243d77f68",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "ai-governance": {
+      "status": "deferred",
+      "enSyncedCommit": "3b4206a70380999ff5cd1bf0bfae82f1455070bc",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "security": {
+      "status": "deferred",
+      "enSyncedCommit": "35fb4e1a99823b0bcb9202834b36833470bc2551",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "ai-gateway": {
+      "status": "deferred",
+      "enSyncedCommit": "99e1b71bc96566b6b08126a92cef9b15205626cc",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "ai-ops": {
+      "status": "deferred",
+      "enSyncedCommit": "1abc88dd740b84427c3afe13707d2a3fa8fd6f53",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "predictive-ai-mlops": {
+      "status": "deferred",
+      "enSyncedCommit": "52720668163da34896656bcb906cb3cd259def9b",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "llm": {
+      "status": "deferred",
+      "enSyncedCommit": "d873cdb30360f7b00a1cd2a7a4f5b31201f1a17d",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "prompt-engineering": {
+      "status": "deferred",
+      "enSyncedCommit": "d58403b6e939cb3f24f936caa763ea448098f748",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "fine-tuning": {
+      "status": "deferred",
+      "enSyncedCommit": "979d7f3ed5302270466c89c39b83e06f5f643f89",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "llm-training": {
+      "status": "deferred",
+      "enSyncedCommit": "7d7146a27bad89df7778d5c9fe91eee08454147d",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "llm-inference": {
+      "status": "deferred",
+      "enSyncedCommit": "f7c4e5132210943359b2dc70ed126ac566fc8c8f",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "data-engineering": {
+      "status": "deferred",
+      "enSyncedCommit": "044d2e3328c8ed99fb7839732cac9c95c6c2a833",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "ai-infra-platform": {
+      "status": "deferred",
+      "enSyncedCommit": "f2c7cf5e8364945885562edaa787f09086157174",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "ai-infra-compute": {
+      "status": "deferred",
+      "enSyncedCommit": "c4c6e710f4e55b99e34b9f540f73e91631977e26",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "veadk": {
+      "status": "deferred",
+      "enSyncedCommit": "e8662a8fb5be6b68053d7c1cf557b3005efdcec7",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "agentkit": {
+      "status": "deferred",
+      "enSyncedCommit": "e8662a8fb5be6b68053d7c1cf557b3005efdcec7",
+      "openedAt": "2026-08-24",
+      "expiresAt": "2026-12-31",
+      "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    }
+  }
+}

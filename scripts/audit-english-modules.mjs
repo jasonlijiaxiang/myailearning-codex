@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -13,12 +12,11 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const modulesDirectory = path.join(root, "app", "i18n", "en", "modules");
 const requireAll = process.argv.includes("--require-all");
 const requireAligned = process.argv.includes("--require-aligned");
-execFileSync(process.execPath, ["scripts/audit-localization-deferments.mjs"], { cwd: root, encoding: "utf8" });
-const defermentsRegistry = JSON.parse(await readFile(path.join(root, "knowledge", "localization-deferments.json"), "utf8"));
+const localizationStatus = JSON.parse(await readFile(path.join(root, "knowledge", "localization", "status.json"), "utf8"));
 const deferredSlugs = new Set(
-  defermentsRegistry.deferments
-    .filter((deferment) => deferment.status !== "closed")
-    .map((deferment) => deferment.moduleSlug),
+  Object.entries(localizationStatus.modules)
+    .filter(([, record]) => record.status === "deferred")
+    .map(([slug]) => slug),
 );
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const sourceCopyFields = ["kind", "note", "shortTitle"];

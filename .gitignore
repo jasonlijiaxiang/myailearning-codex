@@ -55,4 +55,4 @@ next-env.d.ts
 !/external_reference/.gitkeep
 
 # stage-0 对照库提取物（研究输入，不纳入 Git；本机保留用于复现 stage-0 研究）
-docs/change-plans/**/extracted/
+docs/archive/**/extracted/

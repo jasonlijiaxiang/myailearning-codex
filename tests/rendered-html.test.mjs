@@ -1619,10 +1619,10 @@ test("English pages publish route-specific English sharing metadata", async () =
 
 test("Chinese pages declare their own canonical URL and bilingual alternates", async () => {
   const site = "https://cloud-ai-presales-fieldbook.lijx.chatgpt.site";
-  // 模块路由（[slug] 与专用页）的 canonical/hreflang 在 S1-T2 退役对象级本地化账本后补上；
-  // 账本模型拒绝纯中文渲染器变更记录，见 S0-T5 回执。
+  // 模块路由的 canonical/hreflang 在 S1-T2 退役对象级本地化账本后补齐，见 S0-T5 回执。
   const cases = [
     ["/", "/", "/en"],
+    ["/modules/ai-gateway", "/modules/ai-gateway", "/en/modules/ai-gateway"],
     ["/glossary", "/glossary", "/en/glossary"],
   ];
 
