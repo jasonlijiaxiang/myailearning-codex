@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import { agentDeepDives, agentEvidenceCards, agentQa } from "../../../agent-content.mjs";
@@ -14,10 +15,12 @@ import { DenseModuleReadingModes } from "../../../dense-module-reading-modes";
 import { UnifiedModuleScaffold } from "../../../unified-module-hero";
 import agentStyles from "../../../agent-dense-reader.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "Agent · 智能体 | 云计算 × AI 平台售前知识库",
   description: "AI Agent 的基础概念、工作循环、架构边界、云服务连接、评估治理与售前高频问题。",
-};
+  path: "/modules/ai-agent",
+  enPath: "/en/modules/ai-agent",
+});
 
 const agentPublication = getPublishedModule("ai-agent");
 const conceptLinks = [

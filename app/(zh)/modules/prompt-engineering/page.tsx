@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
@@ -14,10 +15,12 @@ import { getPublishedModule } from "../../../module-publication.mjs";
 import { DenseModuleReadingModes } from "../../../dense-module-reading-modes";
 import { UnifiedModuleScaffold } from "../../../unified-module-hero";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "提示词工程 · Prompt Engineering | 云计算 × AI 平台售前知识库",
   description: "提示词与上下文工程的基础机制、核心模式、版本治理、云服务连接、PoC 评估及售前深度问答。",
-};
+  path: "/modules/prompt-engineering",
+  enPath: "/en/modules/prompt-engineering",
+});
 
 const promptPublication = getPublishedModule("prompt-engineering");
 const promptExtensionView = getChineseModuleExtensionView("prompt-engineering") ?? undefined;

@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
@@ -21,10 +22,12 @@ import { RagArchitecturePrimer } from "../../../module-pilot-views";
 import { getPublishedModule } from "../../../module-publication.mjs";
 import { UnifiedModuleScaffold } from "../../../unified-module-hero";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
   description: "从适用性、证据契约、离线与在线生命周期、模型选型、评估、生产控制和经济性系统理解 RAG。",
-};
+  path: "/modules/rag",
+  enPath: "/en/modules/rag",
+});
 
 const ragPublication = getPublishedModule("rag");
 

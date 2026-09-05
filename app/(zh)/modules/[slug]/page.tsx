@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -116,10 +117,12 @@ export async function generateMetadata({ params }: ModulePageProps): Promise<Met
   const { slug } = await params;
   const currentModule = getModuleBySlug(slug);
   if (!currentModule) return {};
-  return {
+  return chinesePageMetadata({
     title: `${currentModule.zh} | 云计算 × AI 平台售前知识库`,
     description: `${currentModule.zh}（${currentModule.en}）的核心原理、选型边界、云服务连接与客户深度问答。`,
-  };
+    path: `/modules/${currentModule.slug}`,
+    enPath: `/en/modules/${currentModule.slug}`,
+  });
 }
 
 function PrincipleView({ brief }: { brief: ModuleBrief }) {

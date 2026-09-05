@@ -1180,7 +1180,7 @@ export const sourceLedger = {
     grade: "O", kind: "官方公告", shortTitle: "MCP 2026-07-28 RC 公告",
     title: "The 2026-07-28 MCP Specification Release Candidate",
     note: "历史 RC 公告记录了计划发布日期与候选变更；截至 2026-08-30，官方 latest 仍指向 2026-07-28 正式规范，该里程碑已完成。规范性要求必须回到正式版，不能继续把 RC 当作当前状态。",
-    verifiedAt: "2026-08-30", href: "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
+    verifiedAt: "2026-09-05", href: "https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/",
   },
   "mcp-specification-2026-07-28": {
     grade: "O", kind: "官方协议规范", shortTitle: "MCP 2026-07-28",
@@ -1312,7 +1312,7 @@ export const sourceLedger = {
     grade: "P", kind: "模型目录", shortTitle: "OpenAI Models",
     title: "Models — OpenAI API",
     note: "OpenAI 官方模型目录；型号、能力、上下文、可用接口、退役与计价属于高时效事实，必须按使用时点复核。",
-    verifiedAt: "2026-08-30", href: "https://developers.openai.com/api/docs/models",
+    verifiedAt: "2026-09-05", href: "https://developers.openai.com/api/docs/models",
   },
   "openai-reasoning-guide": {
     grade: "P", kind: "官方技术文档", shortTitle: "OpenAI Reasoning Guide",
@@ -1324,13 +1324,13 @@ export const sourceLedger = {
     grade: "P", kind: "模型目录", shortTitle: "Gemini Models",
     title: "Models — Gemini API",
     note: "Google 官方 Gemini 模型目录；型号、能力、限制和发布阶段会变化，不在知识正文固化当前排名。",
-    verifiedAt: "2026-08-30", href: "https://ai.google.dev/gemini-api/docs/models",
+    verifiedAt: "2026-09-05", href: "https://ai.google.dev/gemini-api/docs/models",
   },
   "anthropic-models": {
     grade: "P", kind: "模型目录", shortTitle: "Claude Models",
     title: "Models overview — Claude Platform Docs",
     note: "Anthropic 官方 Claude 模型目录；能力、生命周期、区域和定价应在选型时重新核验。",
-    verifiedAt: "2026-08-30", href: "https://platform.claude.com/docs/en/models/overview",
+    verifiedAt: "2026-09-05", href: "https://platform.claude.com/docs/en/models/overview",
   },
   "osi-open-source-ai-definition-1-0": {
     grade: "O", kind: "开放定义", shortTitle: "Open Source AI Definition 1.0",
@@ -1353,7 +1353,7 @@ export const sourceLedger = {
     shortTitle: "Dify Enterprise",
     title: "Dify Enterprise Pricing and Plan Comparison",
     note: "Dify 当期官方页面把 Community 与 Enterprise 的工作区、商业授权、SSO、安全控制、维护、支持和协商 SLA 等能力分开列示；这些是会变化的厂商自述，采购时仍需以目标版本和合同为准。",
-    verifiedAt: "2026-08-08",
+    verifiedAt: "2026-09-05",
     href: "https://dify.ai/pricing/dify-enterprise",
   },
   "openai-prompt-caching": {
@@ -1696,7 +1696,7 @@ export const sourceLedger = {
     grade: "A", kind: "模型目录", shortTitle: "Artificial Analysis Models",
     title: "AI Model Comparison — Artificial Analysis",
     note: "提供模型版本、Intelligence Index、同名能力指数和组成 benchmark 的公开分数；默认图表是页面候选池，不是全部推理配置的无条件总榜，快照必须连同模型版本、运行配置与核验日期阅读。",
-    verifiedAt: "2026-08-13", href: "https://artificialanalysis.ai/models",
+    verifiedAt: "2026-09-05", href: "https://artificialanalysis.ai/models",
   },
   "artificial-analysis-methodology": {
     grade: "A", kind: "行业基准官方说明", shortTitle: "AA Intelligence v4.1.1",
@@ -1864,13 +1864,13 @@ export const sourceLedger = {
     grade: "P", kind: "官方公告", shortTitle: "Antigravity CLI Transition",
     title: "Transitioning Gemini CLI to Antigravity CLI",
     note: "Google 官方公告介绍从 Gemini CLI 个人账户入口向 Antigravity CLI 的过渡；当前状态须结合后续状态公告、迁移文档和仓库版本核验，不能解释为 Gemini CLI 统一更名或全面停服。",
-    verifiedAt: "2026-08-23", href: "https://developers.googleblog.com/en/an-important-update-transitioning-gemini-cli-to-antigravity-cli/",
+    verifiedAt: "2026-09-05", href: "https://developers.googleblog.com/en/an-important-update-transitioning-gemini-cli-to-antigravity-cli/",
   },
   "product-gemini-cli-individual-transition": {
     grade: "P", kind: "官方公告", shortTitle: "Gemini CLI Account Transition",
     title: "Important update: Gemini CLI and Antigravity CLI",
     note: "Google Gemini CLI 官方说明 2026-06-18 起 Google AI Pro、Ultra 和免费个人账户请求转向 Antigravity CLI，而 Standard 或 Enterprise 许可证、Google Cloud 与付费 API key 路径不受该个人账户变化影响。",
-    verifiedAt: "2026-08-23", href: "https://github.com/google-gemini/gemini-cli/discussions/28017",
+    verifiedAt: "2026-09-05", href: "https://github.com/google-gemini/gemini-cli/discussions/28017",
   },
   "product-antigravity-cli-migration": {
     grade: "P", kind: "官方产品文档", shortTitle: "Antigravity CLI Migration Guide",
