@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-tooling:
+        patterns:
+          - "eslint"
+          - "eslint-config-next"
+          - "typescript"
+          - "@types/*"
+          - "vite"
+          - "@vitejs/*"
+          - "@cloudflare/*"
+          - "wrangler"
+      runtime:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+          - "react-server-dom-webpack"
+          - "vinext"
