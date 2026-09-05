@@ -41,16 +41,17 @@ function budgetFor(actualBytes) {
   return Math.ceil((actualBytes * 1.15) / 10240) * 10240;
 }
 
-// 改后实测值（S0-T3 回执）：
-//   / html=108,333 · /en html=157,859 · /questions inline=1,434,465
-//   /en/questions inline=374,774 · /modules/rag html=389,404 · /en/modules/rag html=529,298
+// 改后实测值（S0-T3 回执；/questions 行在问题目录 DOM 瘦身时改为 html 口径更新；
+//   /en/modules/rag 行在阅读模式按需挂载后更新）：
+//   / html=108,333 · /en html=157,859 · /questions html=387,322（原 inline=1,434,465）
+//   /en/questions inline=374,774 · /modules/rag html=389,404 · /en/modules/rag html=127,801
 const MEASURED = {
   "/": { metric: "html", bytes: 108_333, hardCap: 250_000 },
   "/en": { metric: "html", bytes: 157_859, hardCap: 350_000 },
-  "/questions": { metric: "inline", bytes: 1_434_465, hardCap: 1_700_000 },
+  "/questions": { metric: "html", bytes: 387_322, hardCap: 400_000 },
   "/en/questions": { metric: "inline", bytes: 374_774, hardCap: 500_000 },
   "/modules/rag": { metric: "html", bytes: 389_404, hardCap: 450_000 },
-  "/en/modules/rag": { metric: "html", bytes: 529_298, hardCap: 600_000 },
+  "/en/modules/rag": { metric: "html", bytes: 127_801, hardCap: 600_000 },
 };
 
 for (const [path, spec] of Object.entries(MEASURED)) {

@@ -306,7 +306,7 @@ button, a, summary { -webkit-tap-highlight-color: transparent; }
 .exampleSteps article:last-child { border-right: 0; }
 .exampleSteps span, .mechanicNo { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--white); font-size: 9px; }
 .exampleSteps h4 { display: flex; flex-direction: column; margin: 28px 0 8px; font-size: 20px; line-height: 1.25; }
-.exampleSteps h4 small { margin-top: 4px; color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .06em; }
+.exampleSteps h4 small { margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .06em; }
 .exampleSteps p { margin: 0; color: var(--muted); font-size: 13px; }
 .callout { margin-top: 24px; padding: 0; border: 2px solid var(--orange); background: #fff0e9; display: grid; grid-template-columns: 220px 1fr; box-shadow: 8px 8px 0 rgba(255,126,89,.22); }
 .calloutTitle { padding: 25px 28px; background: var(--ink); color: var(--white); display: flex; flex-direction: column; justify-content: center; }

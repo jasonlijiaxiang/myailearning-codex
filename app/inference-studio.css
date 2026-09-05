@@ -199,7 +199,7 @@
 .heatmapLegend > span { grid-column: 1 / -1; margin-bottom: 5px; white-space: nowrap; }
 .heatmapLegend > div { grid-row: 2 / 9; border-radius: 1px; background: linear-gradient(to bottom,#ef5b50,#f7a354,#ffe69e,#c9efca,#58c7b4); }
 .heatmapLegend small { align-self: center; font-size: 9px; }
-.inferenceFigureNote { margin: 9px 0 0; color: #6a7e8d; font-size: 9px; line-height: 1.45; }
+.inferenceFigureNote { margin: 9px 0 0; color: #6a7e8d; font-size: 12px; line-height: 1.45; }
 
 .requestTimeline > header { display: flex; justify-content: space-between; gap: 12px; }
 .requestTimeline > header p { margin: 3px 0 0; color: var(--if-muted); font-size: 10px; }
@@ -226,33 +226,33 @@
 .inspectorMetric { padding: 15px 0 14px; display: grid; grid-template-columns: 12px 1fr; gap: 7px 8px; border-bottom: 1px solid var(--if-line); }
 .inspectorMetric > i { margin-top: 4px; }
 .inspectorMetric > strong { font-size: 12px; }
-.inspectorMetric > p { grid-column: 1 / -1; margin: 0; color: var(--if-muted); font-size: 10px; line-height: 1.55; }
+.inspectorMetric > p { grid-column: 1 / -1; margin: 0; color: var(--if-muted); font-size: 12px; line-height: 1.55; }
 .metricInspector section { padding: 13px 0 0; }
-.metricInspector h4 { margin: 0 0 7px; font-size: 10px; }
+.metricInspector h4 { margin: 0 0 7px; font-size: 12px; }
 .metricInspector dl { margin: 0; }
 .metricInspector dl > div { display: flex; justify-content: space-between; gap: 8px; padding: 2px 0; }
 .metricInspector dt,
-.metricInspector dd { margin: 0; font-size: 10px; }
+.metricInspector dd { margin: 0; font-size: 12px; }
 .metricInspector dt { color: var(--if-muted); }
 .metricInspector dd { text-align: right; }
 .metricInspector dd.isSafe { color: #64a61f; }
 .metricInspector dd.isDanger { color: var(--if-risk); }
 .memoryGauge > div { height: 7px; overflow: hidden; background: #e8ecee; }
 .memoryGauge > div i { display: block; height: 100%; background: #87bd31; }
-.memoryGauge > p { margin: 5px 0 0; display: flex; align-items: baseline; gap: 4px; color: var(--if-muted); font-size: 9px; }
+.memoryGauge > p { margin: 5px 0 0; display: flex; align-items: baseline; gap: 4px; color: var(--if-muted); font-size: 12px; }
 .memoryGauge > p strong { color: var(--if-ink); font-size: 11px; }
 .memoryGauge > p span { margin-left: auto; }
-.capacityLink { width: 100%; min-height: 39px; margin-top: 14px; display: flex; justify-content: center; align-items: center; gap: 12px; border: 1px solid #88ad2e; background: #fff; color: var(--if-ink); font-size: 11px; font-weight: 750; cursor: pointer; }
+.capacityLink { width: 100%; min-height: 39px; margin-top: 14px; display: flex; justify-content: center; align-items: center; gap: 12px; border: 1px solid #88ad2e; background: #fff; color: var(--if-ink); font-size: 12px; font-weight: 750; cursor: pointer; }
 .capacityLink:hover,
 .capacityLink:focus-visible { background: var(--if-lime); outline: none; }
 .capacityLink span { font-size: 16px; }
 .metricInspector footer { margin-top: 13px; padding: 12px 0 0; display: grid; align-items: initial; justify-content: initial; gap: 3px; border-top: 1px solid var(--if-line); background: #fff; }
 .metricInspector footer strong,
 .metricInspector footer a,
-.metricInspector footer small { font-size: 9px; }
+.metricInspector footer small { font-size: 12px; }
 .metricInspector footer a { color: #477491; }
 .metricInspector footer small { color: var(--if-muted); }
-.openInspector { width: 100%; min-height: 42px; border: 1px solid var(--if-line); background: #fff; font-size: 11px; font-weight: 750; cursor: pointer; }
+.openInspector { width: 100%; min-height: 42px; border: 1px solid var(--if-line); background: #fff; font-size: 12px; font-weight: 750; cursor: pointer; }
 
 .inferenceStudio .focusedDecisionLedger { margin: 0; border: 0; }
 .inferenceCaseReview { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--if-line); }
@@ -269,13 +269,13 @@
 .caseAction h3:not(:first-child) { margin-top: 15px; }
 .caseNarrative p,
 .caseNarrative li,
-.caseAction li { color: #536a7e; font-size: 10px; line-height: 1.55; }
+.caseAction li { color: #536a7e; font-size: 12px; line-height: 1.55; }
 .caseNarrative p { margin: 0; }
 .caseNarrative ul,
 .caseAction ol { margin: 0; padding-left: 16px; }
 .memoryTrendFigure { margin: 0; }
 .memoryTrendFigure figcaption,
-.capacityTrend figcaption { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; }
+.capacityTrend figcaption { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; }
 .memoryTrendFigure figcaption span,
 .capacityTrend figcaption span { color: var(--if-muted); }
 .memoryTrendFigure svg { width: 100%; height: auto; margin-top: 8px; }
@@ -285,7 +285,7 @@
 .chartLine { fill: none; stroke: var(--if-blue); stroke-width: 2.4; }
 .memoryTrendFigure circle { fill: #fff; stroke: var(--if-risk); stroke-width: 4; }
 .caseAction { background: #fff7f4; }
-.caseAcceptance { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid #efd8d0; color: #7a463f; font-size: 10px; line-height: 1.55; }
+.caseAcceptance { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid #efd8d0; color: #7a463f; font-size: 12px; line-height: 1.55; }
 
 .inferenceLearning { padding-top: 18px; }
 .fieldbookTheme.modulePage.inferenceStudio .learningRoute,
@@ -300,20 +300,20 @@
 .inferenceContentScope .learningRoute > ol > li:not(:last-child)::after { content: ""; top: 15px; right: 16px; bottom: auto; left: 42px; width: auto; height: 1px; border: 0; border-radius: 0; background: var(--if-line-strong); }
 .fieldbookTheme.modulePage.inferenceStudio .learningRoute li:last-child::after,
 .inferenceContentScope .learningRoute li:last-child::after { display: none; }
-.learningRoute li > span { position: relative; z-index: 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--if-line-strong); border-radius: 50%; background: #fff; font-size: 11px; font-weight: 800; }
+.learningRoute li > span { position: relative; z-index: 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--if-line-strong); border-radius: 50%; background: #fff; font-size: 12px; font-weight: 800; }
 .learningRoute li.isActive > span { border-color: var(--if-lime); background: var(--if-lime); }
 .learningRoute li div { position: relative; z-index: 2; width: fit-content; padding: 1px 14px 0 0; display: grid; background: #fff; }
 .learningRoute li strong { font-size: 11px; }
-.learningRoute li small { max-width: 200px; color: var(--if-muted); font-size: 9px; }
-.learningRoute li em { max-width: 200px; margin-top: 3px; color: #718397; font-size: 8px; font-style: normal; line-height: 1.45; }
+.learningRoute li small { max-width: 200px; color: var(--if-muted); font-size: 12px; }
+.learningRoute li em { max-width: 200px; margin-top: 3px; color: #718397; font-size: 12px; font-style: normal; line-height: 1.45; }
 .learningChapters { max-width: 1220px; margin-top: 18px; border-top: 3px solid var(--if-lime); }
 .learningChapters > article { border: 1px solid var(--if-line); border-top: 0; scroll-margin-top: 70px; }
 .learningChapters > article > button { width: 100%; min-height: 49px; padding: 10px 14px; display: grid; grid-template-columns: 58px auto minmax(0,1fr) 20px; gap: 12px; align-items: center; border: 0; background: #fff; color: var(--if-ink); text-align: left; cursor: pointer; }
 .learningChapters > article > button:hover,
 .learningChapters > article > button:focus-visible { background: #f8faf5; outline: 2px solid var(--if-ink); outline-offset: -2px; }
-.learningChapters > article > button > span { color: #6b7f8f; font-size: 10px; }
+.learningChapters > article > button > span { color: #6b7f8f; font-size: 12px; }
 .learningChapters > article > button > strong { font-family: var(--font-serif); font-size: 14px; }
-.learningChapters > article > button > small { color: var(--if-muted); font-size: 9px; }
+.learningChapters > article > button > small { color: var(--if-muted); font-size: 12px; }
 .learningChapters > article > button > i { font-size: 18px; font-style: normal; transition: transform .18s ease; }
 .learningChapters > article.isOpen > button > i { transform: rotate(180deg); }
 .learningChapters > article > div { padding: 0 14px 14px; }
@@ -321,16 +321,16 @@
 .requestStage { position: relative; min-width: 0; padding: 14px 14px 12px; }
 .requestStage + .requestStage { border-left: 1px solid var(--if-line); }
 .requestStage header { display: flex; justify-content: space-between; gap: 8px; }
-.requestStage header strong { font-size: 11px; }
+.requestStage header strong { font-size: 12px; }
 .requestStage header small { color: var(--if-muted); font-size: 9px; }
 .requestStage > div { min-height: 40px; margin-top: 10px; padding: 7px; display: flex; gap: 5px; border: 1px solid #bad7b4; background: #eff8e8; }
 .requestStage--2 > div { border-color: #c4b6ee; background: #f1edff; }
 .requestStage > div i { flex: 1; border: 1px solid #a9c99e; background: #dcefd1; }
 .requestStage--0 > div span { align-self: center; overflow: hidden; color: #496078; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
 .requestStage--2 > div i { border-color: #aa96e6; background: #cfc3f4; }
-.requestStage p { margin: 7px 0 0; color: var(--if-muted); font-size: 9px; }
+.requestStage p { margin: 7px 0 0; color: var(--if-muted); font-size: 12px; }
 .requestStage > span { position: absolute; z-index: 3; top: 47px; right: -8px; color: #5c7082; }
-.singleRequestDiagram footer { grid-column: 1 / -1; padding: 9px 14px; display: flex; gap: 22px; border-top: 1px solid var(--if-line); font-size: 9px; }
+.singleRequestDiagram footer { grid-column: 1 / -1; padding: 9px 14px; display: flex; gap: 22px; border-top: 1px solid var(--if-line); font-size: 12px; }
 .singleRequestDiagram footer strong { color: var(--if-ink); }
 .singleRequestDiagram footer span { color: var(--if-muted); }
 
@@ -338,9 +338,9 @@
 .capacityExperiment > * { min-width: 0; padding: 13px; }
 .capacityExperiment > * + * { border-left: 1px solid var(--if-line); }
 .capacityExperiment :is(h3, h4) { margin: 0 0 9px; font-size: 11px; }
-.capacityTeachingLabel { margin: 0 0 7px; color: #537820; font-size: 9px; font-weight: 850; letter-spacing: .06em; }
-.capacityExperiment form > label { display: grid; gap: 4px; margin-bottom: 10px; color: #536a7e; font-size: 9px; }
-.capacityExperiment select { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--if-line); background: #fff; color: var(--if-ink); font-size: 9px; }
+.capacityTeachingLabel { margin: 0 0 7px; color: #537820; font-size: 12px; font-weight: 850; letter-spacing: .06em; }
+.capacityExperiment form > label { display: grid; gap: 4px; margin-bottom: 10px; color: #536a7e; font-size: 12px; }
+.capacityExperiment select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--if-line); background: #fff; color: var(--if-ink); font-size: 12px; }
 .capacityExperiment fieldset { margin: 0 0 10px; padding: 0; border: 0; }
 .capacityExperiment legend { margin-bottom: 5px; color: #536a7e; font-size: 9px; }
 .capacityExperiment fieldset > div { display: flex; flex-wrap: wrap; gap: 4px; }

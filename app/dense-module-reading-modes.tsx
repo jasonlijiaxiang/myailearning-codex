@@ -1,6 +1,6 @@
 "use client";
 
-import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { Suspense, type KeyboardEvent, type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import styles from "./dense-module-reading-modes.module.css";
 import type { UnifiedModuleLocale } from "./unified-module-hero";
@@ -180,9 +180,11 @@ export function DenseModuleReadingModes({
   if (new Set(modeIds).size !== modeIds.length) throw new Error("A module reader cannot reuse a reading-task ID.");
   const resolvedDefaultMode = modeIds.includes(defaultMode) ? defaultMode : firstReadingMode.id;
   const [requestedMode, setActiveMode] = useState<ReadingModeId>(resolvedDefaultMode);
-  // The server render is the no-JavaScript reading path. Keep every mode in
-  // that document, then collapse inactive panels only after enhancement.
-  const [isEnhanced, setIsEnhanced] = useState(false);
+  // The server render is the no-JavaScript reading path: it carries only the
+  // default reading task. The other tasks mount on first selection (or on a
+  // deep link into their content) and stay mounted afterwards, so switching
+  // keeps their scroll and interaction state.
+  const [mountedModes, setMountedModes] = useState<readonly ReadingModeId[]>(() => [resolvedDefaultMode]);
   const [activeAnchor, setActiveAnchor] = useState<string | undefined>();
   const [pendingHashReveal, setPendingHashReveal] = useState<{
     hash: string;
@@ -203,10 +205,12 @@ export function DenseModuleReadingModes({
   const activeDirectory = directoryByMode[activeMode] ?? chapters;
   const displayedActiveAnchor = activeDirectory.some((item) => item.id === activeAnchor) ? activeAnchor : activeDirectory[0]?.id;
 
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setIsEnhanced(true));
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
+  if (!mountedModes.includes(activeMode)) {
+    // Adjusting state during render mounts the requested panel in the same
+    // commit that activates it, so a hash reveal can scroll it immediately
+    // instead of waiting for a follow-up effect round.
+    setMountedModes((current) => [...current, activeMode]);
+  }
 
   const revealHash = useCallback((hash: string) => {
     if (!hash.replace(/^#/, "")) {
@@ -363,18 +367,18 @@ export function DenseModuleReadingModes({
         </aside>
 
         <div className={`moduleModePanels ${styles.panels}`}>
-          {readingModes.map((mode) => (
+          {readingModes.filter((mode) => mountedModes.includes(mode.id)).map((mode) => (
             <div
               aria-labelledby={`${tabsId}-${mode.id}-tab`}
               className={`moduleModePanel moduleModePanel--${mode.id} ${styles.panel}`}
-              hidden={isEnhanced && activeMode !== mode.id}
+              hidden={activeMode !== mode.id}
               id={`${tabsId}-${mode.id}`}
               key={mode.id}
               role="tabpanel"
               data-reading-mode={mode.id}
               tabIndex={0}
             >
-              {panels[mode.id]}
+              <Suspense fallback={null}>{panels[mode.id]}</Suspense>
             </div>
           ))}
         </div>

@@ -512,23 +512,44 @@ export type QuestionDirectoryModule = {
   count: number;
 };
 
+export type QuestionDirectoryDepthDetail = {
+  depth: string;
+  ask: string;
+  basis: string;
+  evidence: Array<{ sourceId: string; shortTitle: string; supports: string }>;
+  addedAt?: string | null;
+  intentName: string;
+  tier?: string | null;
+  displayPhrase?: string | null;
+};
+
+export type QuestionDirectoryClientPayload = {
+  items: Array<{ k: string; m: string; t: string; i: string; r: string | null }>;
+  detail: Record<string, QuestionDirectoryDepthDetail>;
+};
+
+const QUESTION_DIRECTORY_TIER_LABEL: Record<string, string> = {
+  core: "现场核心",
+  situational: "场景重点",
+};
+
 export function QuestionDirectoryShell({
-  items,
   modules,
   intentDefinitions = [],
   initialView = "all",
   initialIntentId = "all",
   initialModuleId = "all",
   questionIndexUrl = "",
+  questionDirectoryUrl = "",
   children,
 }: {
-  items: readonly QuestionDirectoryFilterItem[];
   modules: readonly QuestionDirectoryModule[];
   intentDefinitions?: ReadonlyArray<{ id: string; zh: string; scope?: string }>;
   initialView?: string;
   initialIntentId?: string;
   initialModuleId?: string;
   questionIndexUrl?: string;
+  questionDirectoryUrl?: string;
   children: ReactNode;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -540,7 +561,12 @@ export function QuestionDirectoryShell({
   const [indexState, setIndexState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [textByKey, setTextByKey] = useState<Record<string, string> | null>(null);
   const [view, setView] = useState(initialView === "field-kit" ? "field-kit" : initialView === "core" || initialView === "situational" ? initialView : "all");
-  const availableTags = useMemo(() => [...new Set(items.filter((item) => moduleId === "all" || item.moduleId === moduleId).map((item) => item.tag))].sort((a, b) => a.localeCompare(b, "zh-CN")), [items, moduleId]);
+  // 筛选模型与深答载荷都不进入初始 HTML：挂载后 fetch 一次静态 JSON（/search/question-directory.zh.json）。
+  const [directoryState, setDirectoryState] = useState<"loading" | "ready" | "error">(questionDirectoryUrl ? "loading" : "ready");
+  const [directoryItems, setDirectoryItems] = useState<QuestionDirectoryFilterItem[]>([]);
+  const [depthByKey, setDepthByKey] = useState<Record<string, QuestionDirectoryDepthDetail> | null>(null);
+  const depthLoadedModulesRef = useRef<Set<string>>(new Set());
+  const availableTags = useMemo(() => [...new Set(directoryItems.filter((item) => moduleId === "all" || item.moduleId === moduleId).map((item) => item.tag))].sort((a, b) => a.localeCompare(b, "zh-CN")), [directoryItems, moduleId]);
 
   // 首次输入或聚焦搜索框时 fetch 一次静态检索文本索引；失败时仍可模块/类别/意图筛选。
   const loadQuestionIndex = useCallback(async () => {
@@ -557,22 +583,189 @@ export function QuestionDirectoryShell({
     }
   }, [indexState, questionIndexUrl]);
 
+  // 挂载后加载筛选模型与深答载荷；失败时条目保持全部可见，只失去筛选与深答增强。
+  useEffect(() => {
+    if (!questionDirectoryUrl || directoryState !== "loading") return;
+    let cancelled = false;
+    void fetch(questionDirectoryUrl)
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = (await response.json()) as QuestionDirectoryClientPayload;
+        if (cancelled) return;
+        setDirectoryItems(payload.items.map((item) => ({
+          key: item.k,
+          moduleId: item.m,
+          tag: item.t,
+          intentId: item.i,
+          tier: item.r,
+        })));
+        setDepthByKey(payload.detail);
+        setDirectoryState("ready");
+      })
+      .catch(() => {
+        if (!cancelled) setDirectoryState("error");
+      });
+    return () => { cancelled = true; };
+  }, [directoryState, questionDirectoryUrl]);
+
+  const appendDepthContent = useCallback((article: HTMLElement, detail: QuestionDirectoryDepthDetail) => {
+    if (article.querySelector("details.questionDirectoryDepth")) return;
+
+    const depth = document.createElement("details");
+    depth.className = "questionDirectoryDepth";
+
+    const summary = document.createElement("summary");
+    const summaryText = document.createElement("span");
+    summaryText.textContent = "展开深答、下一问与证据";
+    const summaryIcon = document.createElement("i");
+    summaryIcon.setAttribute("aria-hidden", "true");
+    summaryIcon.textContent = "＋";
+    summary.append(summaryText, summaryIcon);
+    depth.append(summary);
+
+    const body = document.createElement("div");
+    body.className = "questionDirectoryDepthBody";
+
+    if (detail.intentName || detail.tier || detail.addedAt) {
+      const meta = document.createElement("p");
+      meta.className = "questionDirectoryDepthMeta";
+      if (detail.intentName) {
+        const intent = document.createElement("span");
+        intent.className = "questionDirectoryIntent";
+        intent.textContent = detail.intentName;
+        meta.append(intent);
+      }
+      if (detail.tier) {
+        const tier = document.createElement("span");
+        tier.className = `questionDirectoryTier questionDirectoryTier--${detail.tier}`;
+        tier.textContent = QUESTION_DIRECTORY_TIER_LABEL[detail.tier] ?? detail.tier;
+        meta.append(tier);
+      }
+      if (detail.addedAt) {
+        const added = document.createElement("time");
+        added.className = "questionDirectoryAddedAt";
+        added.dateTime = detail.addedAt;
+        added.textContent = `新增于 ${detail.addedAt}`;
+        meta.append(added);
+      }
+      body.append(meta);
+    }
+
+    if (detail.displayPhrase) {
+      const phrase = document.createElement("p");
+      phrase.className = "questionDirectoryPhrase";
+      phrase.textContent = `客户常这样说：${detail.displayPhrase}`;
+      body.append(phrase);
+    }
+
+    const deepSection = document.createElement("section");
+    const deepLabel = document.createElement("p");
+    deepLabel.className = "answerLabel";
+    deepLabel.textContent = "深一层";
+    const deepCopy = document.createElement("p");
+    deepCopy.textContent = detail.depth;
+    deepSection.append(deepLabel, deepCopy);
+    body.append(deepSection);
+
+    const askSection = document.createElement("section");
+    askSection.className = "questionDirectoryAsk";
+    const askLabel = document.createElement("p");
+    askLabel.className = "answerLabel";
+    askLabel.textContent = "售前下一问";
+    const askCopy = document.createElement("p");
+    askCopy.textContent = detail.ask;
+    askSection.append(askLabel, askCopy);
+    body.append(askSection);
+
+    const evidenceSection = document.createElement("section");
+    evidenceSection.className = "questionDirectoryEvidence";
+    evidenceSection.setAttribute("aria-label", "本题依据");
+    const evidenceHead = document.createElement("div");
+    const evidenceLabel = document.createElement("p");
+    evidenceLabel.className = "answerLabel";
+    evidenceLabel.textContent = "本题依据 / Evidence";
+    const evidenceBasis = document.createElement("span");
+    evidenceBasis.textContent = detail.basis;
+    evidenceHead.append(evidenceLabel, evidenceBasis);
+    evidenceSection.append(evidenceHead);
+    if (detail.evidence.length > 0) {
+      const evidenceList = document.createElement("ul");
+      for (const reference of detail.evidence) {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `/references#source-${reference.sourceId}`;
+        const title = document.createElement("strong");
+        title.textContent = reference.shortTitle;
+        const supports = document.createElement("span");
+        supports.textContent = reference.supports;
+        link.append(title, supports);
+        item.append(link);
+        evidenceList.append(item);
+      }
+      evidenceSection.append(evidenceList);
+    }
+    body.append(evidenceSection);
+
+    depth.append(body);
+    article.append(depth);
+  }, []);
+
+  const loadDepthForModule = useCallback((targetModuleId: string) => {
+    if (!targetModuleId || depthLoadedModulesRef.current.has(targetModuleId) || !depthByKey) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const moduleDetails = root.querySelector<HTMLDetailsElement>(`details.questionDirectoryModule[data-question-module="${CSS.escape(targetModuleId)}"]`);
+    if (!moduleDetails) return;
+    depthLoadedModulesRef.current.add(targetModuleId);
+    moduleDetails.querySelectorAll<HTMLElement>("[data-question-key]").forEach((article) => {
+      const detail = depthByKey[article.dataset.questionKey ?? ""];
+      if (detail) appendDepthContent(article, detail);
+    });
+  }, [appendDepthContent, depthByKey]);
+
   const visibleItems = useMemo(
-    () => filterQuestionDirectoryItems(items, { query, moduleId, tag, intentId, view, textByKey }) as QuestionDirectoryFilterItem[],
-    [items, intentId, moduleId, query, tag, textByKey, view],
+    () => filterQuestionDirectoryItems(directoryItems, { query, moduleId, tag, intentId, view, textByKey }) as QuestionDirectoryFilterItem[],
+    [directoryItems, intentId, moduleId, query, tag, textByKey, view],
   );
   const visibleKeys = useMemo(() => new Set(visibleItems.map((item) => item.key)), [visibleItems]);
+  const visibleModuleIds = useMemo(() => new Set(visibleItems.map((item) => item.moduleId)), [visibleItems]);
   const visibleModules = useMemo(() => new Set(visibleItems.map((item) => item.moduleId)).size, [visibleItems]);
+  const hasActiveFilter = Boolean(query.trim() || moduleId !== "all" || tag !== "all" || intentId !== "all" || view !== "all");
   const allModulesLabel = `全部 ${modules.length} 个模块`;
-  const fieldKitCount = useMemo(() => items.filter((item) => item.tier).length, [items]);
-  const coreCount = useMemo(() => items.filter((item) => item.tier === "core").length, [items]);
-  const situationalCount = useMemo(() => items.filter((item) => item.tier === "situational").length, [items]);
+  const moduleTotal = useMemo(() => modules.reduce((sum, directoryModule) => sum + directoryModule.count, 0), [modules]);
+  const fieldKitCount = useMemo(() => directoryItems.filter((item) => item.tier).length, [directoryItems]);
+  const coreCount = useMemo(() => directoryItems.filter((item) => item.tier === "core").length, [directoryItems]);
+  const situationalCount = useMemo(() => directoryItems.filter((item) => item.tier === "situational").length, [directoryItems]);
+  const directoryReady = directoryState === "ready";
 
   useEffect(() => {
-    rootRef.current?.querySelectorAll<HTMLElement>("[data-question-key]").forEach((node) => {
+    const root = rootRef.current;
+    if (!root || !directoryReady) return;
+    root.querySelectorAll<HTMLElement>("[data-question-key]").forEach((node) => {
       node.hidden = !visibleKeys.has(node.dataset.questionKey ?? "");
     });
-  }, [visibleKeys]);
+    // 模块 <details> 的显隐跟随筛选：无可见条目时整组隐藏；有筛选时展开命中模块。
+    root.querySelectorAll<HTMLDetailsElement>("details.questionDirectoryModule").forEach((section) => {
+      const targetModuleId = section.dataset.questionModule ?? "";
+      const hasVisibleItems = visibleModuleIds.has(targetModuleId);
+      section.hidden = !hasVisibleItems;
+      if (hasActiveFilter && hasVisibleItems && !section.open) section.open = true;
+    });
+  }, [directoryReady, hasActiveFilter, visibleKeys, visibleModuleIds]);
+
+  // 模块首次展开时渐进加载该模块问题的深答、下一问与证据。
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const onModuleToggle = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      const details = target?.closest?.("details.questionDirectoryModule");
+      if (!(details instanceof HTMLDetailsElement) || !details.open) return;
+      loadDepthForModule(details.dataset.questionModule ?? "");
+    };
+    root.addEventListener("toggle", onModuleToggle, true);
+    return () => root.removeEventListener("toggle", onModuleToggle, true);
+  }, [loadDepthForModule]);
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -607,16 +800,16 @@ export function QuestionDirectoryShell({
         <label><span>问题类别</span><select value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">全部类别</option>{availableTags.map((item) => <option value={item} key={item}>{item}</option>)}</select></label>
         <label><span>问题意图</span><select value={intentId} onChange={(event) => setIntentId(event.target.value)}><option value="all">全部意图</option>{intentDefinitions.map((intent) => <option value={intent.id} key={intent.id}>{intent.zh}</option>)}</select></label>
         <div className="questionDirectoryViewTabs" aria-label="现场精选筛选">
-          <button type="button" aria-pressed={view === "all"} className={view === "all" ? "active" : ""} onClick={() => setView("all")}>全部 {items.length}</button>
-          <button type="button" aria-pressed={view === "field-kit"} className={view === "field-kit" ? "active" : ""} onClick={() => setView("field-kit")}>现场精选 {fieldKitCount}</button>
-          <button type="button" aria-pressed={view === "core"} className={view === "core" ? "active" : ""} onClick={() => setView("core")}>核心 {coreCount}</button>
-          <button type="button" aria-pressed={view === "situational"} className={view === "situational" ? "active" : ""} onClick={() => setView("situational")}>场景 {situationalCount}</button>
+          <button type="button" aria-pressed={view === "all"} className={view === "all" ? "active" : ""} onClick={() => setView("all")}>全部 {directoryReady ? directoryItems.length : moduleTotal}</button>
+          <button type="button" aria-pressed={view === "field-kit"} className={view === "field-kit" ? "active" : ""} onClick={() => setView("field-kit")}>现场精选 {directoryReady ? fieldKitCount : "…"}</button>
+          <button type="button" aria-pressed={view === "core"} className={view === "core" ? "active" : ""} onClick={() => setView("core")}>核心 {directoryReady ? coreCount : "…"}</button>
+          <button type="button" aria-pressed={view === "situational"} className={view === "situational" ? "active" : ""} onClick={() => setView("situational")}>场景 {directoryReady ? situationalCount : "…"}</button>
         </div>
-        <div className="questionDirectoryStatus" aria-live="polite"><strong>{visibleItems.length}</strong><span>个问题 · {visibleModules} 个模块</span></div>
+        <div className="questionDirectoryStatus" aria-live="polite"><strong>{directoryReady ? visibleItems.length : moduleTotal}</strong><span>个问题 · {directoryReady ? visibleModules : modules.length} 个模块</span></div>
         {(query || moduleId !== "all" || tag !== "all" || intentId !== "all" || view !== "all") && <button className="questionDirectoryClear" type="button" onClick={clear}>清除全部筛选</button>}
       </div>
       {children}
-      {visibleItems.length === 0 && <div className="emptySearch questionDirectoryEmpty"><strong>没有匹配的问题</strong><p>尝试更短的关键词，或清除模块与类别筛选。</p></div>}
+      {directoryReady && visibleItems.length === 0 && <div className="emptySearch questionDirectoryEmpty"><strong>没有匹配的问题</strong><p>尝试更短的关键词，或清除模块与类别筛选。</p></div>}
     </div>
   );
 }

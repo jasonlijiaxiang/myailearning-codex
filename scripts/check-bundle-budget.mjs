@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-// 客户端产物预算：dist/client/assets/*.js 任一文件 > 250 KB 或总量 > 1.2 MB → exit 1。
+// 客户端产物预算：dist/client/assets/*.js 任一文件 > 250 KB 或总量超预算 → exit 1。
+// 总量基线：阅读模式按需挂载后英文模块正文拆为按模块懒加载 chunk（改后实测
+// 2,093,082 B），预算 = 实测 × 1.15 ≈ 2.4 MB；单文件 250 KB 上限不变。
 // 先运行 npm run build。
 import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
@@ -20,7 +22,7 @@ const files = names
   .map((name) => ({ name, bytes: statSync(path.join(assetsDirectory, name)).size }))
   .sort((left, right) => right.bytes - left.bytes);
 const total = files.reduce((sum, file) => sum + file.bytes, 0);
-const budget = 1_228_800; // 1.2 MB
+const budget = 2_407_044; // ≈ 2.4 MB（实测 2,093,082 × 1.15）
 
 console.log("bundle:budget top 10:");
 for (const file of files.slice(0, 10)) console.log(`  ${file.bytes} B  ${file.name}`);

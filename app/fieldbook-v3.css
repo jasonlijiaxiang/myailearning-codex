@@ -619,7 +619,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .solutionCapabilityMatrix { margin-top: 50px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); }
 .solutionCapabilityMatrixHead,
 .solutionCapabilityMatrixRow { display: grid; grid-template-columns: minmax(140px,.45fr) minmax(220px,1fr) minmax(190px,.7fr) minmax(260px,1.15fr); gap: 18px 28px; align-items: center; }
-.solutionCapabilityMatrixHead { padding: 12px 0; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+.solutionCapabilityMatrixHead { padding: 12px 0; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .08em; }
 .solutionCapabilityMatrixRow { padding: 18px 0; border-top: 1px solid var(--line); }
 .solutionCapabilityMatrixRow > strong { display: flex; gap: 12px; align-items: center; font-size: 17px; }
 .solutionCapabilityMatrixRow > strong span { display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 auto; border: 1px solid #7d9370; border-radius: 50%; color: #325346; }
@@ -880,7 +880,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .solutionCapabilityMatrixHead { display: none; }
   .solutionCapabilityMatrixRow { grid-template-columns: 1fr; gap: 9px; }
   .solutionCapabilityMatrixRow p { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 12px; }
-  .solutionCapabilityMatrixRow p::before { content: attr(data-label); color: #58705f; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+  .solutionCapabilityMatrixRow p::before { content: attr(data-label); color: #58705f; font-size: 12px; font-weight: 800; letter-spacing: .06em; }
   .mcpArchitectureCanvas { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-rows: auto; gap: 12px; }
   .mcpUserNode { grid-column: 1 / -1; max-width: 340px; }
   .mcpArchitectureBand--application,
@@ -1113,7 +1113,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .fieldbookTheme.modulePage .moduleModeGuide > span,
 .fieldbookTheme.modulePage .moduleDecisionWorkbench > header span {
   color: var(--fb-meta);
-  font: 700 11px/1.3 var(--font-geist-mono), monospace;
+  font: 700 12px/1.3 var(--font-geist-mono), monospace;
   letter-spacing: .08em;
 }
 .fieldbookTheme.modulePage .moduleModeHeader > div:first-child strong { color: var(--fb-ink); font-size: 17px; line-height: 1.4; }
@@ -1152,7 +1152,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   font: 700 11px/1.4 var(--font-geist-mono), monospace;
 }
 .fieldbookTheme.modulePage .moduleModeTabs button strong { font-size: 15px; line-height: 1.35; }
-.fieldbookTheme.modulePage .moduleModeTabs button small { color: var(--fb-muted); font-size: 11px; line-height: 1.35; }
+.fieldbookTheme.modulePage .moduleModeTabs button small { color: var(--fb-muted); font-size: 12px; line-height: 1.35; }
 
 .fieldbookTheme.modulePage .moduleModeWorkspace {
   min-width: 0;
@@ -1179,7 +1179,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .fieldbookTheme.modulePage .moduleModeGuide > p { margin: 0; color: var(--fb-muted); font-size: 14px; line-height: 1.72; }
 .fieldbookTheme.modulePage .moduleModeGuide dl { margin: 26px 0 0; }
 .fieldbookTheme.modulePage .moduleModeGuide dl > div { padding: 13px 0; border-top: 1px solid var(--fb-line); }
-.fieldbookTheme.modulePage .moduleModeGuide dt { color: var(--fb-meta); font-size: 11px; font-weight: 800; }
+.fieldbookTheme.modulePage .moduleModeGuide dt { color: var(--fb-meta); font-size: 12px; font-weight: 800; }
 .fieldbookTheme.modulePage .moduleModeGuide dd { margin: 6px 0 0; color: var(--fb-ink); font-size: 13px; line-height: 1.62; }
 .fieldbookTheme.modulePage .moduleModePanels,
 .fieldbookTheme.modulePage .moduleModePanel { min-width: 0; }
@@ -1249,7 +1249,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .fieldbookTheme.modulePage .moduleDecisionPrompt { margin: 0 0 22px; color: var(--fb-ink); font-family: var(--font-serif), "Songti SC", serif; font-size: 24px; line-height: 1.42; }
 .fieldbookTheme.modulePage .moduleDecisionCanvas dl { margin: 0; }
 .fieldbookTheme.modulePage .moduleDecisionCanvas dl > div { padding: 16px 0; display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 16px; border-top: 1px solid var(--fb-line); }
-.fieldbookTheme.modulePage .moduleDecisionCanvas dt { color: var(--fb-meta); font-size: 11px; font-weight: 800; }
+.fieldbookTheme.modulePage .moduleDecisionCanvas dt { color: var(--fb-meta); font-size: 12px; font-weight: 800; }
 .fieldbookTheme.modulePage .moduleDecisionCanvas dd { margin: 0; color: var(--fb-muted); font-size: 15px; line-height: 1.68; }
 .fieldbookTheme.modulePage .moduleDecisionCanvas .isRecommendation dd { color: var(--fb-ink); font-weight: 750; }
 .fieldbookTheme.modulePage .moduleDecisionCanvas .isConstraint { margin: 0 -10px; padding-inline: 10px; border-left: 4px solid var(--fb-risk); background: var(--fb-risk-soft); }
@@ -1286,7 +1286,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .fieldbookTheme.modulePage .qaEvidenceDisclosure .qaBasis { padding: 18px; border-top: 1px solid var(--fb-line); background: #fff; }
 .fieldbookTheme.modulePage .qaBasisNote { margin: 0 0 14px; color: var(--fb-muted); font-size: 13px; line-height: 1.65; }
 .fieldbookTheme.modulePage .qaNextQuestion { margin: 20px 0 0; padding: 14px 16px; display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; background: var(--fb-mint); color: var(--fb-ink); font-size: 15px; line-height: 1.62; }
-.fieldbookTheme.modulePage .qaNextQuestion span { color: var(--fb-meta); font-size: 11px; font-weight: 800; }
+.fieldbookTheme.modulePage .qaNextQuestion span { color: var(--fb-meta); font-size: 12px; font-weight: 800; }
 .fieldbookTheme.modulePage .qaCollectionActions { padding: 18px 0 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 22px; }
 .fieldbookTheme.modulePage .qaCollectionActions button,
 .fieldbookTheme.modulePage .qaCollectionActions a {
@@ -1304,7 +1304,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 }
 .fieldbookTheme.modulePage .qaCollectionActions button:hover,
 .fieldbookTheme.modulePage .qaCollectionActions a:hover { border-color: var(--fb-link); background: var(--fb-mint); }
-.fieldbookTheme.modulePage .metricBoundary span { display: block; margin-bottom: 5px; color: var(--fb-meta); font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+.fieldbookTheme.modulePage .metricBoundary span { display: block; margin-bottom: 5px; color: var(--fb-meta); font-size: 12px; font-weight: 800; letter-spacing: .06em; }
 
 @media (max-width: 980px) {
   .fieldbookTheme.modulePage .moduleModeHeader { grid-template-columns: 1fr; }
@@ -1736,7 +1736,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .knowledgeStepDetail > * { margin: 0; padding: 22px 24px; min-width: 0; }
 .knowledgeStepDetail > * + * { border-left: 1px solid #d0d6dd; }
 .knowledgeStepDetail > div span { color: #5d756b; font: 800 11px/1 var(--font-geist-mono),monospace; }
-.knowledgeStepDetail > div p { margin: 8px 0 3px; padding: 0; color: var(--visual-muted); font-size: 10px; }
+.knowledgeStepDetail > div p { margin: 8px 0 3px; padding: 0; color: var(--visual-muted); font-size: 12px; }
 .knowledgeStepDetail h3 { margin: 0; font-size: 21px; }
 .knowledgeStepDetail > p { color: var(--visual-muted); font-size: 14px; line-height: 1.65; }
 .knowledgeStepDetail > strong { font-size: 14px; line-height: 1.6; }
@@ -1924,7 +1924,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .securitySourceSinkPath li { position: relative; min-width: 0; padding: 12px; }
 .securitySourceSinkPath li > span { color: #bddf57; font: 800 10px/1 var(--font-geist-mono),monospace; }
 .securitySourceSinkPath li > strong { display: block; margin-top: 17px; font-size: 14px; }
-.securitySourceSinkPath li > small { display: block; margin-top: 6px; color: rgba(255,255,255,.62); font-size: 10px; line-height: 1.45; }
+.securitySourceSinkPath li > small { display: block; margin-top: 6px; color: rgba(255,255,255,.62); font-size: 12px; line-height: 1.45; }
 .securitySourceSinkPath li > i { position: absolute; top: 38px; right: -7px; color: #bddf57; font-style: normal; }
 .securityBarrierMatrix { padding: 22px 18px; display: grid; grid-template-columns: repeat(4,1fr); border-bottom: 1px solid #bcaeb5; }
 .securityBarrierMatrix button {
@@ -1973,8 +1973,8 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .tuningRouteDecision article > p { margin: 0; color: var(--visual-muted); font-size: 13px; line-height: 1.55; }
 .tuningRouteDecision dl { margin: 14px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .tuningRouteDecision dl div { padding-top: 10px; border-top: 1px solid #b8c98d; }
-.tuningRouteDecision dt { font-size: 10px; font-weight: 800; }
-.tuningRouteDecision dd { margin: 4px 0 0; color: var(--visual-muted); font-size: 11px; line-height: 1.45; }
+.tuningRouteDecision dt { font-size: 12px; font-weight: 800; }
+.tuningRouteDecision dd { margin: 4px 0 0; color: var(--visual-muted); font-size: 12px; line-height: 1.45; }
 .tuningReleasePath { grid-template-columns: repeat(6,minmax(0,1fr)); padding: 30px 0 10px; }
 .tuningReleasePath button {
   width: 100%;
@@ -2152,7 +2152,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   font: 800 11px/1 var(--font-geist-mono),monospace;
 }
 .curriculumChapter summary h3 { margin: 0; font-size: clamp(20px,2.1vw,27px); line-height: 1.28; }
-.curriculumChapter summary > div:not(.curriculumCore) > p { margin: 6px 0 0; color: #738092; font: 700 11px/1.35 var(--font-geist-mono),monospace; letter-spacing: .02em; }
+.curriculumChapter summary > div:not(.curriculumCore) > p { margin: 6px 0 0; color: #738092; font: 700 12px/1.35 var(--font-geist-mono),monospace; letter-spacing: .02em; }
 .curriculumChapter summary > .curriculumCore { margin: 0; }
 .curriculumCore .curriculumEssence { margin: 0; color: #3f4d60; font-size: 16px; line-height: 1.68; }
 .curriculumDecision { display: block; margin-top: 8px; color: #2d5d53; font-size: 13px; line-height: 1.58; }
@@ -2186,7 +2186,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .curriculumChapterBody dl { margin: 0; display: grid; gap: 8px; }
 .curriculumChapterBody dl > div { padding: 13px 16px; border-left: 3px solid #8796a8; background: #f5f7f9; }
 .curriculumChapterBody dl > div:last-child { border-left-color: #b75c3d; background: #fff7f3; }
-.curriculumChapterBody dt { color: #667386; font: 800 10px/1 var(--font-geist-mono),monospace; letter-spacing: .06em; }
+.curriculumChapterBody dt { color: #667386; font: 800 12px/1 var(--font-geist-mono),monospace; letter-spacing: .06em; }
 .curriculumChapterBody dd { margin: 6px 0 0; font-size: 14px; line-height: 1.62; }
 .curriculumChapterBody .deepDiveSources { grid-column: 1 / -1; margin: 0; padding: 12px 0 0; border: 0; background: transparent; }
 
@@ -2346,7 +2346,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 .relationMatrix table { width: 100%; min-width: 880px; border-collapse: collapse; }
 .relationMatrix th,
 .relationMatrix td { padding: 14px 16px; border-right: 1px solid #d0d6dd; border-bottom: 1px solid #d0d6dd; font-size: 13px; line-height: 1.55; text-align: left; vertical-align: top; }
-.relationMatrix thead th { background: #f4f6f8; color: #4f5d6f; font: 800 10px/1.3 var(--font-geist-mono),monospace; letter-spacing: .04em; }
+.relationMatrix thead th { background: #f4f6f8; color: #4f5d6f; font: 800 12px/1.3 var(--font-geist-mono),monospace; letter-spacing: .04em; }
 .relationMatrix tbody tr.isActive { background: #f8fce9; }
 .relationMatrix th button { width: 100%; min-height: 44px; padding: 0; display: grid; grid-template-columns: 28px 1fr; align-content: center; gap: 4px 8px; border: 0; background: transparent; color: inherit; font-weight: 800; text-align: left; cursor: pointer; }
 .relationMatrix th button span { grid-row: 1 / 3; color: #5a7269; font: 800 10px/1 var(--font-geist-mono),monospace; }
@@ -2387,7 +2387,7 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
 }
 .deepDiveEditorialChecklist li > span { padding-top: 5px; color: #587168; font: 800 11px/1 var(--font-geist-mono),monospace; }
 .deepDiveEditorialChecklist :is(h3, h4) { margin: 0 0 8px; font-size: 20px; }
-.deepDiveEditorialChecklist :is(h3, h4) small { display: block; margin-top: 4px; color: #738092; font-size: 10px; font-weight: 600; }
+.deepDiveEditorialChecklist :is(h3, h4) small { display: block; margin-top: 4px; color: #738092; font-size: 12px; font-weight: 600; }
 .deepDiveEditorialChecklist p { margin: 0 0 9px; color: #556274; font-size: 16px; line-height: 1.68; }
 .deepDiveEditorialChecklist strong { display: block; font-size: 14px; line-height: 1.62; }
 .deepDiveEditorialChecklist em { display: block; margin-top: 8px; color: #9c4a31; font-size: 13px; line-height: 1.58; font-style: normal; }
@@ -3364,5 +3364,5 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   .solutionCapabilityMatrixHead { display: none; }
   .solutionCapabilityMatrixRow { grid-template-columns: 1fr; gap: 9px; }
   .solutionCapabilityMatrixRow p { display: grid; grid-template-columns: 104px minmax(0,1fr); gap: 12px; }
-  .solutionCapabilityMatrixRow p::before { content: attr(data-label); color: #58705f; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+  .solutionCapabilityMatrixRow p::before { content: attr(data-label); color: #58705f; font-size: 12px; font-weight: 800; letter-spacing: .06em; }
 }

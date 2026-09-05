@@ -22,6 +22,7 @@ import {
   selectVisibleEnglishSectionGroups,
 } from "./english-section-outline.mjs";
 import { englishModuleSlugs } from "./locale-config.mjs";
+import { EnglishFieldPanel, EnglishLearnPanel } from "./english-reading-panels";
 import { moduleManifests } from "../modules/index.mjs";
 import { SiteFooter, SiteNav } from "../site-chrome";
 
@@ -572,20 +573,7 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
       return <EnglishSectionGroupView group={group} number={startNumber + index} key={group.id} />;
     });
     const quickStart = 2;
-    const learnStart = quickStart + groupIdsByMode.quick.length;
-    const fieldBase = learnStart + groupIdsByMode.learn.length;
     const quickGroups = renderUnifiedGroups(groupIdsByMode.quick, quickStart);
-    const learnGroups = renderUnifiedGroups(groupIdsByMode.learn, learnStart);
-    const fieldGroupStart = unifiedConfig.fieldGroupsBeforeEvidence ? fieldBase : fieldBase + 1;
-    const fieldGroups = renderUnifiedGroups(groupIdsByMode.field, fieldGroupStart);
-    const evidenceNumber = unifiedConfig.fieldGroupsBeforeEvidence
-      ? fieldBase + groupIdsByMode.field.length
-      : fieldBase;
-    const qaNumber = fieldBase + groupIdsByMode.field.length + 1;
-    const relatedNumber = qaNumber + 1;
-    const fieldContent = unifiedConfig.fieldGroupsBeforeEvidence
-      ? <>{fieldGroups}{renderEvidenceSection(evidenceNumber)}{renderQaSection(qaNumber)}{renderRelatedSection(relatedNumber)}</>
-      : <>{renderEvidenceSection(evidenceNumber)}{fieldGroups}{renderQaSection(qaNumber)}{renderRelatedSection(relatedNumber)}</>;
     const configuredDirectoryEntries = new Map(
       englishReaderModeIds.flatMap((mode) => unifiedConfig.directories[mode].map((entry) => [entry.id, entry] as const)),
     );
@@ -622,6 +610,37 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
     } satisfies EnglishUnifiedReaderConfig["directories"];
     const chapters = [...directories.quick, ...directories.learn, ...directories.field];
 
+    // The deferred learn/field panels recompute their projection on the client
+    // from the per-module English source file; they only receive the small
+    // serializable reader config, the merged source metadata, and the related
+    // module links instead of whole content trees.
+    const panelConfig = {
+      groupIds: unifiedConfig.groupIds,
+      fieldGroupsBeforeEvidence: unifiedConfig.fieldGroupsBeforeEvidence,
+      completeFocusedProjection: unifiedConfig.completeFocusedProjection,
+    };
+    const panelSourceMeta = Object.fromEntries(Object.keys(englishSourceCopyMap).map((sourceId) => [
+      sourceId,
+      {
+        kind: englishSourceCopyMap[sourceId]?.kind ?? "",
+        shortTitle: englishSourceCopyMap[sourceId]?.shortTitle ?? sourceId,
+        grade: sourceLedger[sourceId]?.grade ?? "",
+      },
+    ]));
+    const panelRelatedModules = module.relatedSlugs.map((slug) => {
+      const related = getModuleBySlug(slug);
+      if (!related) throw new Error(`Unknown related module: ${slug}`);
+      const availableInEnglish = englishModuleSlugs.includes(slug);
+      return {
+        href: availableInEnglish ? `/en/modules/${slug}` : related.href,
+        layerNo: related.layerNo,
+        en: related.en,
+        availableInEnglish,
+      };
+    });
+    const panelManifest = moduleManifests.find((manifest) => manifest.slug === module.slug);
+    const panelAuthored = !panelManifest?.brief || panelManifest.brief.presentation === "dedicated";
+
     return (
       <UnifiedModuleScaffold
         className={`fieldbookTheme modulePage moduleBriefPage modulePilot${module.slug === "rag" ? " modulePilot--dedicated" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}
@@ -648,9 +667,9 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
                 chapters={chapters}
                 criticalBoundary={unifiedConfig.criticalBoundary}
                 directories={directories}
-                field={fieldContent}
+                field={<EnglishFieldPanel slug={module.slug} authored={panelAuthored} config={panelConfig} focused={usesFocusedReadingProfile} relatedModules={panelRelatedModules} sourceMeta={panelSourceMeta} />}
                 hashGroups={groupIdsByMode}
-                learn={<>{learnGroups}</>}
+                learn={<EnglishLearnPanel slug={module.slug} authored={panelAuthored} config={panelConfig} sourceMeta={panelSourceMeta} />}
                 locale="en"
                 moduleName={module.title}
                 quick={<><EnglishModulePrimer module={module} primer={primer} />{quickGroups}</>}

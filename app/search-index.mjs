@@ -195,3 +195,33 @@ export function buildQuestionSearchText(locale) {
   }
   throw new Error(`Unsupported search index locale: ${locale}`);
 }
+
+// 问题查询页的渐进增强载荷：筛选模型与深答/下一问/证据不进入初始 HTML，
+// 客户端在挂载后按需加载（filterItem 用短键压缩体积）。键与 questionDirectoryItems 的 key 对齐。
+export function buildQuestionDirectoryClientPayload() {
+  const items = questionDirectoryItems.map((item) => ({
+    k: item.key,
+    m: item.moduleId,
+    t: item.tag,
+    i: item.intentId,
+    r: item.tier ?? null,
+  }));
+  const detail = Object.fromEntries(questionDirectoryItems.map((item) => [
+    item.key,
+    {
+      depth: item.depth,
+      ask: item.ask,
+      basis: item.basis,
+      evidence: item.evidence.map((/** @type {any} */ reference) => ({
+        sourceId: reference.sourceId,
+        shortTitle: sourceLedger[reference.sourceId]?.shortTitle ?? reference.sourceId,
+        supports: reference.supports,
+      })),
+      addedAt: item.addedAt ?? null,
+      intentName: item.intentName,
+      tier: item.tier ?? null,
+      displayPhrase: item.displayPhrase ?? null,
+    },
+  ]));
+  return { items, detail };
+}

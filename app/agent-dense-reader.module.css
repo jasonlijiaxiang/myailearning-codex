@@ -69,7 +69,7 @@
 .knowledgeInspector dd { margin: 0; color: var(--fb-body); font-size: 13px; line-height: 1.55; }
 
 .stackTable td strong { display: block; color: var(--fb-ink); }
-.stackTable td small { display: block; margin-top: 4px; color: var(--fb-muted); font-size: 11px; line-height: 1.45; }
+.stackTable td small { display: block; margin-top: 4px; color: var(--fb-muted); font-size: 12px; line-height: 1.45; }
 
 .harnessLayerLedger { margin: 18px 0; border: 1px solid var(--fb-line); border-radius: 7px; background: #fff; }
 .harnessLayerLedger > div { padding: 15px 18px; display: grid; grid-template-columns: minmax(160px,.34fr) minmax(0,1fr); gap: 18px; }
@@ -155,7 +155,7 @@
   .stackTable tbody tr:last-child { border-bottom: 0; }
   .stackTable tbody th { padding: 0 12px 9px !important; border: 0 !important; color: var(--fb-ink); font-size: 16px; }
   .stackTable tbody td { padding: 7px 12px !important; display: grid; grid-template-columns: 106px minmax(0,1fr); gap: 10px; border: 0 !important; font-size: 14px; line-height: 1.55; }
-  .stackTable tbody td::before { content: attr(data-label); color: var(--fb-meta); font: 700 10px/1.45 var(--font-geist-mono),monospace; letter-spacing: .02em; }
+  .stackTable tbody td::before { content: attr(data-label); color: var(--fb-meta); font: 700 12px/1.45 var(--font-geist-mono),monospace; letter-spacing: .02em; }
   .reader :global(.qaAnswer) { grid-template-columns: 1fr; }
   .reader :global(.qaAnswer > *) { grid-column: 1 !important; }
   .reader :global(.relationMatrixScroll) { margin-right: 0; padding-right: 0; overflow: visible; }
@@ -168,7 +168,7 @@
   .reader :global(.relationMatrix tbody tr) { padding: 10px 12px; border-bottom: 1px solid var(--fb-line); }
   .reader :global(.relationMatrix th),
   .reader :global(.relationMatrix td) { padding: 7px 0; border: 0; font-size: 14px; }
-  .reader :global(.relationMatrix td::before) { display: block; margin-bottom: 3px; color: var(--fb-meta); font: 700 10px/1.4 var(--font-geist-mono),monospace; }
+  .reader :global(.relationMatrix td::before) { display: block; margin-bottom: 3px; color: var(--fb-meta); font: 700 12px/1.4 var(--font-geist-mono),monospace; }
   .reader :global(.deepDiveList > .deepDiveBlock:nth-child(2) .relationMatrix td:nth-of-type(1)::before) { content: "必须声明"; }
   .reader :global(.deepDiveList > .deepDiveBlock:nth-child(2) .relationMatrix td:nth-of-type(2)::before) { content: "售前验收"; }
   .reader :global(.deepDiveList > .deepDiveBlock:nth-child(2) .relationMatrix td:nth-of-type(3)::before) { content: "常见误区"; }

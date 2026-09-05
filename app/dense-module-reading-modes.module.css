@@ -22,7 +22,7 @@
 }
 .boundary strong {
   color: var(--fb-meta);
-  font: 750 11px/1.35 var(--font-geist-mono), monospace;
+  font: 750 12px/1.35 var(--font-geist-mono), monospace;
   letter-spacing: .07em;
 }
 .boundary p { margin: 0; color: var(--fb-ink); font-size: 13px; font-weight: 650; line-height: 1.55; }
@@ -42,7 +42,7 @@
 .directory > header span,
 .directory > footer span {
   color: var(--fb-meta);
-  font: 700 10px/1.3 var(--font-geist-mono), monospace;
+  font: 700 12px/1.3 var(--font-geist-mono), monospace;
   letter-spacing: .08em;
 }
 .directory > header strong { color: var(--fb-ink); font-size: 16px; line-height: 1.4; }
@@ -68,9 +68,9 @@
 }
 .directory a:focus-visible,
 .mobileDirectory a:focus-visible { outline: 2px solid var(--fb-link); outline-offset: -2px; }
-.directory a > span { grid-row: 1 / 3; color: var(--fb-meta); font: 700 10px/1.3 var(--font-geist-mono), monospace; }
+.directory a > span { grid-row: 1 / 3; color: var(--fb-meta); font: 700 12px/1.3 var(--font-geist-mono), monospace; }
 .directory a strong { font-size: 13px; line-height: 1.35; }
-.directory a small { color: var(--fb-muted); font-size: 10px; line-height: 1.3; }
+.directory a small { color: var(--fb-muted); font-size: 12px; line-height: 1.3; }
 .directory > footer { padding: 17px 22px 21px; }
 .directory > footer p { margin: 7px 0 0; color: var(--fb-muted); font-size: 12px; line-height: 1.55; }
 
@@ -95,9 +95,9 @@
   .mobileDirectory ol { padding: 1px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1px; background: var(--fb-line); }
   .mobileDirectory li { min-width: 0; background: var(--fb-surface); }
   .mobileDirectory a { min-height: 54px; padding: 9px 10px; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 2px 6px; align-content: center; }
-  .mobileDirectory a > span { grid-row: 1 / 3; color: var(--fb-meta); font: 700 10px/1.3 var(--font-geist-mono), monospace; }
+  .mobileDirectory a > span { grid-row: 1 / 3; color: var(--fb-meta); font: 700 12px/1.3 var(--font-geist-mono), monospace; }
   .mobileDirectory a strong { overflow-wrap: anywhere; font-size: 12px; line-height: 1.35; }
-  .mobileDirectory a small { color: var(--fb-muted); font-size: 9px; line-height: 1.3; }
+  .mobileDirectory a small { color: var(--fb-muted); font-size: 12px; line-height: 1.3; }
   .mobileDirectory > p { margin: 0; padding: 0 20px 14px; color: var(--fb-muted); font-size: 12px; line-height: 1.55; }
   .panels :global([id]) { scroll-margin-top: 88px; }
 }

@@ -5,7 +5,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { buildKnowledgeSearchEntries, buildQuestionSearchText } from "../app/search-index.mjs";
+import { buildKnowledgeSearchEntries, buildQuestionDirectoryClientPayload, buildQuestionSearchText } from "../app/search-index.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputDirectory = path.join(root, "public", "search");
@@ -17,6 +17,7 @@ const files = {
   "knowledge.en.json": buildKnowledgeSearchEntries("en"),
   "questions.zh.json": buildQuestionSearchText("zh"),
   "questions.en.json": buildQuestionSearchText("en"),
+  "question-directory.zh.json": buildQuestionDirectoryClientPayload(),
 };
 
 for (const [filename, payload] of Object.entries(files)) {

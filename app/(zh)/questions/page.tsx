@@ -5,12 +5,9 @@ import Link from "next/link";
 import {
   QuestionDirectoryShell,
   ReadingProgress,
-  type QuestionDirectoryFilterItem,
   type QuestionDirectoryModule,
 } from "../../fieldbook-interactions";
 import { questionDirectoryItems, questionDirectoryModules } from "../../question-index.mjs";
-import { sourceLedger } from "../../reference-content.mjs";
-import { QuestionAddedAt } from "../../module-content-components";
 import { fallbackScripts, intentDefinitions } from "../../question-field-kit.mjs";
 import { SiteFooter, SiteNav, type SiteNavItem, type SiteFooterLink } from "../../site-chrome";
 
@@ -20,15 +17,6 @@ export const metadata: Metadata = chinesePageMetadata({
   path: "/questions",
   enPath: "/en/questions",
 });
-
-const filterItems: QuestionDirectoryFilterItem[] = questionDirectoryItems.map((/** @type {any} */ item) => ({
-  key: item.key,
-  moduleId: item.moduleId,
-  tag: item.tag,
-  intentId: item.intentId,
-  tier: item.tier,
-  fieldId: item.fieldId,
-}));
 
 const filterModules: QuestionDirectoryModule[] = questionDirectoryModules.map((module) => ({
   id: module.id as string,
@@ -52,6 +40,48 @@ const questionsFooterLinks: readonly SiteFooterLink[] = [
   { href: "/", label: "知识库首页" },
   { href: "/references", label: "来源与证据" },
 ];
+
+/** @param {string} value */
+function escapeHtml(value: string) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+type QuestionDirectoryEntry = {
+  key: string;
+  moduleId: string;
+  question: string;
+  answer: string;
+  displayPhrase?: string | null;
+  originalHref: string;
+};
+
+// 问题条目列表以静态 HTML 字符串整体输出（dangerouslySetInnerHTML），避免 355 个条目在
+// RSC flight 载荷中再次按元素树序列化。每个模块是一个原生 <details>：无 JS 时全部问题的
+// 结论短答可见可到达；深答、下一问与证据由客户端在模块展开时按需注入
+// （/search/question-directory.zh.json），不进入初始 HTML。
+function buildQuestionDirectoryListHtml() {
+  const entriesByModule = new Map<string, QuestionDirectoryEntry[]>(questionDirectoryModules.map((module) => [module.id, []]));
+  for (const item of questionDirectoryItems) entriesByModule.get(item.moduleId)?.push(item);
+
+  const sections = questionDirectoryModules.map((module) => {
+    const items = entriesByModule.get(module.id) ?? [];
+    const entries = items.map((item) => (
+      `<article class="questionDirectoryItem" data-question-key="${item.key}">` +
+      `<h3><a href="${item.originalHref}">${escapeHtml(item.question)}</a></h3>` +
+      `<p class="questionDirectoryShort"><span>结论短答</span>${escapeHtml(item.answer)}</p>` +
+      `</article>`
+    )).join("");
+    return (
+      `<details class="questionDirectoryModule" data-question-module="${module.id}">` +
+      `<summary><a href="${module.href}">${escapeHtml(`${module.zh} · ${module.en}`)}</a><small>${items.length} 道题</small></summary>` +
+      entries +
+      `</details>`
+    );
+  }).join("");
+  return sections;
+}
+
+const questionDirectoryListHtml = buildQuestionDirectoryListHtml();
 
 type QuestionsSearchParams = { view?: string; module?: string; intent?: string };
 
@@ -113,54 +143,19 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
       <section className="questionDirectorySection" id="question-directory" aria-labelledby="question-directory-title">
         <div className="questionDirectoryIntro">
           <div><p className="kicker">SEARCH, ANSWER, THEN ASK</p><h2 id="question-directory-title">从客户问题找到结论和依据</h2></div>
-          <p>默认展示全部问题。可以组合关键词、模块、类别和问题意图筛选，也可以只看现场精选；每条结果都保留短答、深答、下一问、证据，以及返回原模块上下文的入口。</p>
+          <p>默认展示全部问题的结论短答，可按模块展开。可以组合关键词、模块、类别和问题意图筛选，也可以只看现场精选；展开模块后按需加载每条问题的深答、下一问与证据，并可返回原模块上下文。</p>
         </div>
 
-        <QuestionDirectoryShell items={filterItems} modules={filterModules} intentDefinitions={intentDefinitions} initialView={initialView} initialModuleId={initialModuleId} initialIntentId={initialIntentId} questionIndexUrl="/search/questions.zh.json">
-          <div className="questionDirectoryList">
-            {questionDirectoryItems.map((/** @type {any} */ item) => (
-              <article
-                id={`question-${item.key}`}
-                className="questionDirectoryItem"
-                data-question-key={item.key}
-                data-question-module={item.moduleId}
-                data-question-tag={item.tag}
-                data-question-intent={item.intentId}
-                data-question-tier={item.tier ?? ""}
-                data-field-id={item.fieldId ?? ""}
-                key={item.key}
-              >
-                <header>
-                  <Link href={item.moduleHref}>{item.moduleZh}<span>{item.moduleEn}</span></Link>
-                  <span className="questionDirectoryTag">{item.tag}</span>
-                  <span className="questionDirectoryIntent">{item.intentName}</span>
-                  {item.tier ? <span className={`questionDirectoryTier questionDirectoryTier--${item.tier}`}>{item.tier === "core" ? "现场核心" : "场景重点"}</span> : null}
-                  <span className="questionDirectoryNo">Q{String(item.number).padStart(2, "0")}</span>
-                </header>
-                <h3>{item.question}</h3>
-                {item.displayPhrase ? <p className="questionDirectoryPhrase">客户常这样说：{item.displayPhrase}</p> : null}
-                <QuestionAddedAt value={item.addedAt ?? undefined} className="questionDirectoryAddedAt" />
-                <div className="questionDirectoryShort"><span>结论短答</span><p>{item.answer}</p></div>
-                <details>
-                  <summary><span>展开深答、下一问与证据</span><i aria-hidden="true">＋</i></summary>
-                  <div className="questionDirectoryDepth">
-                    <section><p className="answerLabel">深一层</p><p>{item.depth}</p></section>
-                    <section className="questionDirectoryAsk"><p className="answerLabel">售前下一问</p><p>{item.ask}</p></section>
-                    <section className="questionDirectoryEvidence" aria-label="本题依据">
-                      <div><p className="answerLabel">本题依据 / Evidence</p><span>{item.basis}</span></div>
-                      <ul>
-                        {item.evidence.map((/** @type {any} */ reference) => {
-                          const source = sourceLedger[reference.sourceId as keyof typeof sourceLedger];
-                          return <li key={reference.sourceId}><Link href={`/references#source-${reference.sourceId}`}><strong>{source.shortTitle}</strong><span>{reference.supports}</span></Link></li>;
-                        })}
-                      </ul>
-                    </section>
-                  </div>
-                </details>
-                <footer><Link href={item.originalHref}>回到原模块中的这个问题 <span>↗</span></Link></footer>
-              </article>
-            ))}
-          </div>
+        <QuestionDirectoryShell
+          modules={filterModules}
+          intentDefinitions={intentDefinitions}
+          initialView={initialView}
+          initialModuleId={initialModuleId}
+          initialIntentId={initialIntentId}
+          questionIndexUrl="/search/questions.zh.json"
+          questionDirectoryUrl="/search/question-directory.zh.json"
+        >
+          <div className="questionDirectoryList" dangerouslySetInnerHTML={{ __html: questionDirectoryListHtml }} />
         </QuestionDirectoryShell>
       </section>
 
