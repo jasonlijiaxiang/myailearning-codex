@@ -27,7 +27,6 @@ export const questionDirectoryItems = Object.freeze(questionDirectoryModules.fla
     const fieldEntry = fieldQuestionByRef[overrideKey];
     const intentId = fieldEntry?.intentId ?? resolveQuestionIntent(moduleEntry.id, number, item.tag, overrideKey);
     const intentName = intentNameById.get(intentId) ?? "概念与机制";
-    const phraseText = fieldEntry?.customerPhrases.join(" ") ?? "";
     return Object.freeze({
       key: overrideKey,
       number,
@@ -51,7 +50,6 @@ export const questionDirectoryItems = Object.freeze(questionDirectoryModules.fla
       customerPhrases: fieldEntry?.customerPhrases ?? Object.freeze([]),
       displayPhrase: fieldEntry?.displayPhrase ?? null,
       fieldId: fieldEntry?.fieldId ?? null,
-      searchText: `${moduleEntry.zh} ${moduleEntry.en} ${item.tag} ${item.q} ${item.a} ${item.depth} ${item.ask} ${item.basis} ${item.addedAt ?? ""} ${intentName} ${fieldEntry?.tier ?? ""} ${phraseText}`,
     });
   }),
 ));

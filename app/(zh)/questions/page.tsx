@@ -21,7 +21,6 @@ const filterItems: QuestionDirectoryFilterItem[] = questionDirectoryItems.map((i
   key: item.key,
   moduleId: item.moduleId,
   tag: item.tag,
-  text: item.searchText,
   intentId: item.intentId,
   tier: item.tier,
   fieldId: item.fieldId,
@@ -111,7 +110,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
           <p>默认展示全部问题。可以组合关键词、模块、类别和问题意图筛选，也可以只看现场精选；每条结果都保留短答、深答、下一问、证据，以及返回原模块上下文的入口。</p>
         </div>
 
-        <QuestionDirectoryShell items={filterItems} modules={filterModules} intentDefinitions={intentDefinitions} initialView={initialView} initialModuleId={initialModuleId} initialIntentId={initialIntentId}>
+        <QuestionDirectoryShell items={filterItems} modules={filterModules} intentDefinitions={intentDefinitions} initialView={initialView} initialModuleId={initialModuleId} initialIntentId={initialIntentId} questionIndexUrl="/search/questions.zh.json">
           <div className="questionDirectoryList">
             {questionDirectoryItems.map((item) => (
               <article

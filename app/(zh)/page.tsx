@@ -1,16 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "../fieldbook-interactions";
-import { exposesLongFormSearchSections, searchableQuestions } from "../home-search-visibility.mjs";
+import { ModuleExplorer, ReadingProgress, type ExplorerModule } from "../fieldbook-interactions";
 import { layers, moduleList } from "../knowledge-map.mjs";
-import { moduleContentRegistry } from "../module-content-registry.mjs";
-import { moduleCurriculumContent } from "../module-curriculum-content.mjs";
 import { moduleDiscovery } from "../module-discovery.mjs";
-import { moduleLearningContent } from "../module-learning-content.mjs";
 import { publishedModuleSlugs } from "../module-publication.mjs";
-import { referenceModules, sourceLedger } from "../reference-content.mjs";
-import { glossaryTermIds, homepageTermGroups, terminology } from "../terminology.mjs";
+import { glossaryTermIds, homepageTermGroups } from "../terminology.mjs";
 import { TermHintGroups } from "../term-hint";
 import { scenarioDefinitionsForHome, timeBudgetPaths } from "../home-learning-paths.mjs";
 
@@ -24,67 +19,6 @@ const explorerModules: ExplorerModule[] = publishedModuleSlugs.map((slug) => {
 });
 
 const moduleNames = new Map(moduleList.map((module) => [module.slug, module.zh]));
-const sourceModules = new Map<string, string[]>();
-referenceModules.forEach((module) => module.sourceIds.forEach((sourceId) => {
-  sourceModules.set(sourceId, [...(sourceModules.get(sourceId) ?? []), module.zh]);
-}));
-
-const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
-  ...Object.entries(terminology).map(([termId, term]) => {
-    const relatedNames = term.moduleSlugs.map((slug) => moduleNames.get(slug)).filter(Boolean);
-    return {
-      id: `term-${termId}`,
-      type: "专业术语" as const,
-      title: `${term.zh} · ${term.en}${term.abbr ? `（${term.abbr}）` : ""}`,
-      subtitle: `${relatedNames.join(" / ")} · 术语库`,
-      href: `/glossary#term-${termId}`,
-      keywords: `${term.zh} ${term.en} ${term.abbr ?? ""} ${term.description} ${relatedNames.join(" ")}`,
-    };
-  }),
-  ...Object.entries(moduleContentRegistry).flatMap(([slug, content]) => searchableQuestions(slug, content.qa).map((item, index) => ({
-    id: `qa-${slug}-${index + 1}`,
-    type: "客户问答" as const,
-    title: item.q,
-    subtitle: `${moduleNames.get(slug)} · ${item.tag}`,
-    href: `/modules/${slug}#qa-${index + 1}`,
-    keywords: `${moduleNames.get(slug)} ${item.q} ${item.tag}`,
-  }))),
-  ...Object.entries(moduleCurriculumContent).flatMap(([slug, curriculum]) => exposesLongFormSearchSections(slug) ? curriculum.chapters.map((chapter) => ({
-    id: `curriculum-${slug}-${chapter.en.toLocaleLowerCase("en-US").replace(/[^a-z0-9]+/g, "-")}`,
-    type: "课程章节" as const,
-    title: chapter.title,
-    subtitle: `${moduleNames.get(slug)} · ${chapter.en}`,
-    href: `/modules/${slug}#curriculum`,
-    keywords: `${moduleNames.get(slug)} ${chapter.title} ${chapter.en} ${chapter.explanation} ${chapter.decision} ${chapter.boundary}`,
-  })) : []),
-  ...Object.entries(moduleLearningContent).flatMap(([slug, learning]) => exposesLongFormSearchSections(slug) ? learning.labs.map((lab, index) => ({
-    id: `lab-${slug}-${index + 1}`,
-    type: "实战练习" as const,
-    title: lab.title,
-    subtitle: `${moduleNames.get(slug)} · 可验收练习`,
-    href: `/modules/${slug}#study-guide`,
-    keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
-  })) : []),
-  ...Object.entries(moduleContentRegistry).flatMap(([slug, content]) => {
-    if (Object.hasOwn(moduleLearningContent, slug) || !("learning" in content) || !content.learning) return [];
-    return content.learning.labs.map((lab, index) => ({
-      id: `lab-${slug}-${index + 1}`,
-      type: "实战练习" as const,
-      title: lab.title,
-      subtitle: `${moduleNames.get(slug)} · 可验收练习`,
-      href: `/modules/${slug}#practice`,
-      keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
-    }));
-  }),
-  ...Object.entries(sourceLedger).map(([sourceId, source]) => ({
-    id: `source-${sourceId}`,
-    type: "来源证据" as const,
-    title: source.title,
-    subtitle: `${source.grade} 类证据 · ${(sourceModules.get(sourceId) ?? []).join(" / ")}`,
-    href: `/references#source-${sourceId}`,
-    keywords: `${source.shortTitle} ${source.title} ${source.kind} ${(sourceModules.get(sourceId) ?? []).join(" ")}`,
-  })),
-];
 
 type LearningPathModule = { slug: string; label: string };
 
@@ -258,7 +192,7 @@ export default function Home() {
       <div id="available-modules" className="explorerAnchor">
         <ModuleExplorer
           modules={explorerModules}
-          knowledgeEntries={knowledgeSearchEntries}
+          knowledgeIndexUrl="/search/knowledge.zh.json"
           structureGuide={{
             badge: `${layerCount} 层 · ${moduleCount} 个模块`,
             title: "先从问题搜，需要时按层缩小范围",

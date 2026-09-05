@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { filterQuestionDirectoryItems } from "./question-filter.mjs";
@@ -61,6 +61,8 @@ type ModuleExplorerLabels = {
   knowledgeHeading: string;
   showingPrefix: string;
   showingSuffix: string;
+  indexLoading: string;
+  indexError: string;
   emptyTitle: string;
   emptyBody: string;
 };
@@ -90,6 +92,8 @@ const defaultModuleExplorerLabels: ModuleExplorerLabels = {
   knowledgeHeading: "直接进入知识内容",
   showingPrefix: "显示",
   showingSuffix: "条匹配",
+  indexLoading: "正在加载索引",
+  indexError: "知识索引加载失败，仍可按模块筛选",
   emptyTitle: "没有直接匹配的模块",
   emptyBody: "换一个业务问题或清除知识层筛选。",
 };
@@ -128,14 +132,14 @@ export function KnowledgeSearchLaunch({ labels = defaultSearchLaunchLabels }: { 
 
 export function ModuleExplorer({
   modules,
-  knowledgeEntries = [],
+  knowledgeIndexUrl = "",
   labels = defaultModuleExplorerLabels,
   locale = "zh-CN",
   questionsHref = "/questions",
   structureGuide,
 }: {
   modules: ExplorerModule[];
-  knowledgeEntries?: KnowledgeSearchEntry[];
+  knowledgeIndexUrl?: string;
   labels?: ModuleExplorerLabels;
   locale?: string;
   questionsHref?: string;
@@ -143,6 +147,8 @@ export function ModuleExplorer({
 }) {
   const [query, setQuery] = useState("");
   const [layer, setLayer] = useState("all");
+  const [indexState, setIndexState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [knowledgeEntries, setKnowledgeEntries] = useState<KnowledgeSearchEntry[] | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const layers = useMemo(() => {
     const seen = new Map<string, string>();
@@ -159,9 +165,24 @@ export function ModuleExplorer({
     });
   }, [layer, locale, modules, query]);
 
+  // 首次输入或聚焦搜索框时 fetch 一次静态索引并缓存；失败保留模块筛选。
+  const loadKnowledgeIndex = useCallback(async () => {
+    if (!knowledgeIndexUrl || indexState !== "idle") return;
+    setIndexState("loading");
+    try {
+      const response = await fetch(knowledgeIndexUrl);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const entries = (await response.json()) as KnowledgeSearchEntry[];
+      setKnowledgeEntries(entries);
+      setIndexState("ready");
+    } catch {
+      setIndexState("error");
+    }
+  }, [indexState, knowledgeIndexUrl]);
+
   const knowledgeMatches = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase(locale);
-    if (!normalized) return [];
+    if (!normalized || !knowledgeEntries) return [];
     return knowledgeEntries
       .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase(locale).includes(normalized));
   }, [knowledgeEntries, locale, query]);
@@ -218,7 +239,8 @@ export function ModuleExplorer({
             ref={searchRef}
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => { setQuery(event.target.value); if (event.target.value.trim()) void loadKnowledgeIndex(); }}
+            onFocus={() => void loadKnowledgeIndex()}
             placeholder={labels.placeholder}
           />
           <kbd>⌘ K</kbd>
@@ -235,7 +257,7 @@ export function ModuleExplorer({
 
       <div className="moduleExplorerStatus" aria-live="polite">
         <span>{labels.foundPrefix} {visible.length} {labels.moduleNoun}{query ? `, ${labels.knowledgeHitsPrefix} ${knowledgeMatches.length} ${labels.knowledgeHitsSuffix}` : ""}</span>
-        <div><Link href={questionsHref}>{labels.questionsLink}</Link>{query || layer !== "all" ? <button type="button" onClick={() => { setQuery(""); setLayer("all"); }}>{labels.clear}</button> : null}</div>
+        <div>{query && indexState === "loading" ? <span className="indexStatus">{labels.indexLoading}</span> : null}{query && indexState === "error" ? <span className="indexStatus">{labels.indexError}</span> : null}<Link href={questionsHref}>{labels.questionsLink}</Link>{query || layer !== "all" ? <button type="button" onClick={() => { setQuery(""); setLayer("all"); }}>{labels.clear}</button> : null}</div>
       </div>
 
       {query && knowledgeMatches.length > 0 ? (
@@ -479,7 +501,6 @@ export type QuestionDirectoryFilterItem = {
   key: string;
   moduleId: string;
   tag: string;
-  text: string;
   intentId?: string;
   tier?: string | null;
   fieldId?: string | null;
@@ -498,6 +519,7 @@ export function QuestionDirectoryShell({
   initialView = "all",
   initialIntentId = "all",
   initialModuleId = "all",
+  questionIndexUrl = "",
   children,
 }: {
   items: readonly QuestionDirectoryFilterItem[];
@@ -506,6 +528,7 @@ export function QuestionDirectoryShell({
   initialView?: string;
   initialIntentId?: string;
   initialModuleId?: string;
+  questionIndexUrl?: string;
   children: ReactNode;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -514,11 +537,29 @@ export function QuestionDirectoryShell({
   const [moduleId, setModuleId] = useState(initialModuleId);
   const [tag, setTag] = useState("all");
   const [intentId, setIntentId] = useState(initialIntentId);
+  const [indexState, setIndexState] = useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [textByKey, setTextByKey] = useState<Record<string, string> | null>(null);
   const [view, setView] = useState(initialView === "field-kit" ? "field-kit" : initialView === "core" || initialView === "situational" ? initialView : "all");
   const availableTags = useMemo(() => [...new Set(items.filter((item) => moduleId === "all" || item.moduleId === moduleId).map((item) => item.tag))].sort((a, b) => a.localeCompare(b, "zh-CN")), [items, moduleId]);
+
+  // 首次输入或聚焦搜索框时 fetch 一次静态检索文本索引；失败时仍可模块/类别/意图筛选。
+  const loadQuestionIndex = useCallback(async () => {
+    if (!questionIndexUrl || indexState !== "idle") return;
+    setIndexState("loading");
+    try {
+      const response = await fetch(questionIndexUrl);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const text = (await response.json()) as Record<string, string>;
+      setTextByKey(text);
+      setIndexState("ready");
+    } catch {
+      setIndexState("error");
+    }
+  }, [indexState, questionIndexUrl]);
+
   const visibleItems = useMemo(
-    () => filterQuestionDirectoryItems(items, { query, moduleId, tag, intentId, view }) as QuestionDirectoryFilterItem[],
-    [items, intentId, moduleId, query, tag, view],
+    () => filterQuestionDirectoryItems(items, { query, moduleId, tag, intentId, view, textByKey }) as QuestionDirectoryFilterItem[],
+    [items, intentId, moduleId, query, tag, textByKey, view],
   );
   const visibleKeys = useMemo(() => new Set(visibleItems.map((item) => item.key)), [visibleItems]);
   const visibleModules = useMemo(() => new Set(visibleItems.map((item) => item.moduleId)).size, [visibleItems]);
@@ -559,7 +600,7 @@ export function QuestionDirectoryShell({
       <div className="questionDirectoryToolbar">
         <label className="questionDirectorySearch">
           <span>搜索所有客户问题</span>
-          <input ref={searchRef} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="例如：模型切换、权限、量化、GPU 利用率……" />
+          <input ref={searchRef} type="search" value={query} onChange={(event) => { setQuery(event.target.value); if (event.target.value.trim()) void loadQuestionIndex(); }} onFocus={() => void loadQuestionIndex()} placeholder="例如：模型切换、权限、量化、GPU 利用率……" />
           <kbd>⌘ K</kbd>
         </label>
         <label><span>模块</span><select value={moduleId} onChange={(event) => { setModuleId(event.target.value); setTag("all"); }}><option value="all">{allModulesLabel}</option>{modules.map((directoryModule) => <option value={directoryModule.id} key={directoryModule.id}>{directoryModule.label}（{directoryModule.count}）</option>)}</select></label>

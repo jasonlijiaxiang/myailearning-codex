@@ -2,15 +2,12 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { KnowledgeSearchLaunch, ModuleExplorer, ReadingProgress, type ExplorerModule, type KnowledgeSearchEntry } from "../../fieldbook-interactions";
-import { searchableEnglishSectionGroups, searchableQuestions } from "../../home-search-visibility.mjs";
+import { KnowledgeSearchLaunch, ModuleExplorer, ReadingProgress, type ExplorerModule } from "../../fieldbook-interactions";
 import { englishPageMetadata } from "../../i18n/english-page-metadata";
-import { englishModuleRegistry, englishSourceCopy, englishTermCopy } from "../../i18n/en/registry.mjs";
-import { buildEnglishSectionGroups } from "../../i18n/english-section-outline.mjs";
+import { englishModuleRegistry, englishTermCopy } from "../../i18n/en/registry.mjs";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { layers, moduleList } from "../../knowledge-map.mjs";
 import { publishedModuleSlugs } from "../../module-publication.mjs";
-import { sourceLedger } from "../../reference-content.mjs";
 import { homepageTermGroups } from "../../terminology.mjs";
 
 export const metadata: Metadata = englishPageMetadata({
@@ -41,41 +38,6 @@ const explorerModules: ExplorerModule[] = publishedModuleSlugs.map((slug) => {
   };
 });
 
-const knowledgeSearchEntries: KnowledgeSearchEntry[] = [
-  ...Object.entries(englishTermCopy).map(([termId, term]) => ({
-    id: `term-${termId}`,
-    type: "Technical term",
-    title: `${term.name}${term.abbr ? ` (${term.abbr})` : ""}`,
-    subtitle: "Field glossary",
-    href: `/en/glossary#term-${termId}`,
-    keywords: `${term.name} ${term.abbr ?? ""} ${term.definition}`,
-  })),
-  ...Object.values(englishModuleRegistry).flatMap((module) => searchableQuestions(module.slug, module.qa, "en").map((item) => ({
-    id: `qa-${module.slug}-${item.id}`,
-    type: "Customer question",
-    title: item.q,
-    subtitle: `${module.title} · ${item.tag}`,
-    href: `/en/modules/${module.slug}#qa-${item.id}`,
-    keywords: `${module.title} ${item.q} ${item.a} ${item.depth} ${item.ask} ${item.tag}`,
-  }))),
-  ...Object.values(englishModuleRegistry).flatMap((module) => searchableEnglishSectionGroups(module.slug, buildEnglishSectionGroups(module)).flatMap((group) => group.sections.flatMap((section) => section.blocks.flatMap((contentBlock) => contentBlock.items.map((item) => ({
-    id: `section-${module.slug}-${item.id}`,
-    type: "Module section",
-    title: item.title,
-    subtitle: `${module.title} · ${section.title}`,
-    href: `/en/modules/${module.slug}#${item.id}`,
-    keywords: `${module.title} ${section.title} ${section.lead ?? ""} ${item.title} ${item.body ?? ""} ${item.decision ?? ""} ${item.boundary ?? ""} ${(item.cells ?? []).join(" ")}`,
-  })))))),
-  ...Object.entries(englishSourceCopy).map(([sourceId, source]) => ({
-    id: `source-${sourceId}`,
-    type: "Source evidence",
-    title: source.shortTitle,
-    subtitle: `${sourceLedger[sourceId]?.grade ?? ""} evidence · ${source.kind}`,
-    href: `/en/references#source-${sourceId}`,
-    keywords: `${source.shortTitle} ${source.kind} ${source.note} ${sourceLedger[sourceId]?.title ?? ""}`,
-  })),
-];
-
 const searchLabels = {
   ariaLabel: "Search the fieldbook",
   label: "Search modules, terms, customer questions, and sources",
@@ -101,6 +63,8 @@ const explorerLabels = {
   knowledgeHeading: "Open the matching knowledge directly",
   showingPrefix: "Showing",
   showingSuffix: "matches",
+  indexLoading: "Loading knowledge index…",
+  indexError: "Knowledge index failed to load; module filtering still works",
   emptyTitle: "No module matches this search",
   emptyBody: "Try a different customer problem or clear the layer filter.",
 };
@@ -228,7 +192,7 @@ export default function EnglishHome() {
       </header>
 
       <div id="available-modules" className="explorerAnchor">
-        <ModuleExplorer modules={explorerModules} knowledgeEntries={knowledgeSearchEntries} labels={explorerLabels} locale="en-US" questionsHref="/en/questions" />
+        <ModuleExplorer modules={explorerModules} knowledgeIndexUrl="/search/knowledge.en.json" labels={explorerLabels} locale="en-US" questionsHref="/en/questions" />
       </div>
 
       <section className="homeTermGuide" aria-labelledby="english-home-term-guide-title">
