@@ -36,7 +36,7 @@
 - **90 天**：协议、平台能力、安全清单、基准等中频变化事实。
 - **180 天**：原理、方法论、稳定架构模式等低频变化事实。
 
-周期是最长复核间隔，不是等待时间。出现产品公告、标准版本变更、来源失效、安全事件或客户现场反证时，应立即触发复核并重算 `review_by`。
+周期是最长复核间隔，不是等待时间。出现产品公告、标准版本变更、来源失效、安全事件或客户现场反证时，应立即触发复核并重算 `review_by`。到期来源不再阻断日常门禁；运行 `npm run sources:report`（支持 `--now YYYY-MM-DD` 与 `--json`）按到期日查看全部来源状态，引用到期来源的模块内容改动在发布前须重核并更新 `verifiedAt`，或登记到 `knowledge/source-waivers.json`。
 
 已经公告但尚未生效的标准替换或 Release Candidate 必须单独建立 `watch` 事实记录，并用 `announcement.kind: "scheduled-replacement"`、`targetClaimId` 与 `scheduledFor` 关联当前事实。公告记录和被影响记录的 `reviewBy` 都不得晚于计划日期；只有最终版本实际发布并完成核验后，才把当前事实转为 `replaced` 并建立正式 `supersedes` 关系。
 

@@ -2410,10 +2410,9 @@ test("every published module claim resolves to a unique, grouped, and verified s
     assert.match(source.href, /^https:\/\//);
     assert.match(source.verifiedAt, /^\d{4}-\d{2}-\d{2}$/);
     const freshness = sourceFreshness(source);
-    assert.equal(
-      freshness.status,
-      "fresh",
-      `来源必须使用真实日期且处于复核周期内：${sourceId} / ${freshness.status} / ${freshness.ageDays ?? "?"} 天`,
+    assert.ok(
+      freshness.status !== "invalid" && freshness.status !== "future",
+      `来源日期格式必须合法且不得在未来：${sourceId} / ${freshness.status} / ${freshness.ageDays ?? "?"} 天`,
     );
     assert.ok([30, 90, 180].includes(freshness.reviewCycleDays));
     assert.ok(source.grade && source.kind && source.shortTitle && source.title && source.note);
@@ -2507,6 +2506,10 @@ test("source freshness rejects impossible, future, and overdue verification date
   assert.equal(sourceFreshness({ ...productSource, verifiedAt: "2026-02-30" }, now).status, "invalid");
   assert.equal(sourceFreshness({ ...productSource, verifiedAt: "2026-07-18" }, now).status, "future");
   assert.equal(sourceFreshness({ ...productSource, verifiedAt: "2026-04-01" }, now).status, "stale");
+  assert.equal(
+    sourceFreshness({ kind: "产品规格", verifiedAt: "2026-08-08" }, new Date("2026-09-08T00:00:00Z")).status,
+    "stale",
+  );
 });
 
 test("every shared module has a source-backed learning route and practical labs", async () => {
