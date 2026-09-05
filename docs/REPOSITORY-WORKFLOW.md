@@ -63,7 +63,7 @@ git pull --ff-only origin main
 git status --short --branch
 ```
 
-完成修改后运行 `npm run check`，提交并推送 `main`，随后执行第 7 节的完整发布链。
+完成修改后运行 `npm run check`，提交并推送 `main`，随后执行第 7 节的完整发布链。日常开发用 `npm run check:fast`（约 30 秒），提交前用 `npm run check`。
 
 ### 开始任务分支
 
