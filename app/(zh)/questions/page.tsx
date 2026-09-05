@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import {
@@ -12,10 +13,12 @@ import { sourceLedger } from "../../reference-content.mjs";
 import { QuestionAddedAt } from "../../module-content-components";
 import { fallbackScripts, intentDefinitions } from "../../question-field-kit.mjs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "客户问题查询 | 云计算 × AI 平台售前知识库",
   description: "集中查询云计算与 AI 平台售前知识库全部模块的客户问题、短答、深答、售前下一问与证据。",
-};
+  path: "/questions",
+  enPath: "/en/questions",
+});
 
 const filterItems: QuestionDirectoryFilterItem[] = questionDirectoryItems.map((item) => ({
   key: item.key,

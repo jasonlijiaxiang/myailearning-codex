@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import { ReadingProgress } from "../../fieldbook-interactions";
@@ -12,10 +13,12 @@ import {
 import { KnowledgeConstellation } from "../../knowledge-graph/design-2/knowledge-constellation";
 import styles from "../../knowledge-graph/design-2/knowledge-constellation.module.css";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "动态探索 | 云计算 × AI 平台售前知识库",
   description: "从模块进入知识点，以动态聚焦、语义缩放和一跳关系探索云计算与 AI 平台知识。",
-};
+  path: "/knowledge-graph",
+  enPath: "/en/knowledge-graph",
+});
 
 export default function KnowledgeGraphPage() {
   return (

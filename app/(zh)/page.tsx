@@ -1,13 +1,22 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
 import { ModuleExplorer, ReadingProgress, type ExplorerModule } from "../fieldbook-interactions";
+import { chinesePageMetadata } from "../i18n/chinese-page-metadata";
 import { layers, moduleList } from "../knowledge-map.mjs";
 import { moduleDiscovery } from "../module-discovery.mjs";
 import { publishedModuleSlugs } from "../module-publication.mjs";
 import { glossaryTermIds, homepageTermGroups } from "../terminology.mjs";
 import { TermHintGroups } from "../term-hint";
 import { scenarioDefinitionsForHome, timeBudgetPaths } from "../home-learning-paths.mjs";
+
+export const metadata: Metadata = chinesePageMetadata({
+  title: "云计算 × AI 平台售前知识库",
+  description: "面向售前人员的云计算与 AI 平台知识地图、实战模块与客户问答手册。",
+  path: "/",
+  enPath: "/en",
+});
 
 const layerCount = layers.length;
 const moduleCount = moduleList.length;

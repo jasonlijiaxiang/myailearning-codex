@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import { CodingAgentExplorer } from "../../coding-agent-explorer";
@@ -6,10 +7,12 @@ import { codingAgentBenchmarks, codingAgentLandscapePolicy, codingAgentProducts 
 import { ReadingProgress } from "../../fieldbook-interactions";
 import { sourceLedger } from "../../reference-content.mjs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "Coding Agent 产品与 Harness 选型雷达 | 云计算 × AI 平台售前知识库",
   description: "按官方资料、独立基准、产品形态和 Harness 能力持续更新的 Coding Agent 选型与比较入口。",
-};
+  path: "/coding-agents",
+  enPath: "/en/coding-agents",
+});
 
 const evaluationDimensions = [
   ["任务结果", "端到端成功、关键后置条件与失败切片"],

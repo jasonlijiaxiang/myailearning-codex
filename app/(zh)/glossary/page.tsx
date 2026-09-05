@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import { ReadingProgress } from "../../fieldbook-interactions";
@@ -6,10 +7,12 @@ import { GlossaryExplorer, type GlossaryGroupItem, type GlossaryTermItem } from 
 import { moduleList } from "../../knowledge-map.mjs";
 import { glossaryGroups, glossaryTermIds, requireTerm } from "../../terminology.mjs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "专业术语库 | 云计算 × AI 平台售前知识库",
   description: "集中查询云计算、生成式 AI、RAG、Agent、模型训练推理、安全治理与售前交付的中英文专业术语。",
-};
+  path: "/glossary",
+  enPath: "/en/glossary",
+});
 
 const moduleBySlug = new Map(moduleList.map((module) => [module.slug, module]));
 

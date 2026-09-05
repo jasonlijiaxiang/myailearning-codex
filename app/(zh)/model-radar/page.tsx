@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../i18n/chinese-page-metadata";
 import Link from "next/link";
 
 import { ReadingProgress } from "../../fieldbook-interactions";
@@ -14,10 +15,12 @@ import {
   sourceLedger,
 } from "../../reference-content.mjs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "大模型能力快照 · 20 个配置 | 云计算 × AI 平台售前知识库",
   description: "用官方 Intelligence Index 与透明复算的 Coding、Agentic Composite 比较默认视图捕获的 20 个模型配置，并查看每项分数的组成与边界。",
-};
+  path: "/model-radar",
+  enPath: "/en/model-radar",
+});
 
 export default function ModelRadarPage() {
   const benchmarks = modelRadarBenchmarkSourceIds.map((sourceId) => {

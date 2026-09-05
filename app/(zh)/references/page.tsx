@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { chinesePageMetadata } from "../../i18n/chinese-page-metadata";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
@@ -6,10 +7,12 @@ import { ReadingProgress, ReferenceFilterShell, type ReferenceFilterItem } from 
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { chineseReferenceModules, sourceLedger } from "../../reference-content.mjs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = chinesePageMetadata({
   title: "来源与证据 | 云计算 × AI 平台售前知识库",
   description: "集中整理云计算与 AI 平台售前知识库的一手来源、证据类别、适用条件与核验日期。",
-};
+  path: "/references",
+  enPath: "/en/references",
+});
 
 const evidenceLegend = [
   {
