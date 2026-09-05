@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { EnglishPilotDirectory, type EnglishPilotDirectoryItem } from "../../../i18n/english-pilot-directory";
 import { englishPageMetadata } from "../../../i18n/english-page-metadata";
 import { englishTermCopy } from "../../../i18n/en/registry.mjs";
 import { englishModulePath } from "../../../i18n/locale-config.mjs";
 import { terminology } from "../../../terminology.mjs";
+import { SiteNav } from "../../../site-chrome";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "Glossary",
@@ -31,10 +31,17 @@ const items: EnglishPilotDirectoryItem[] = Object.entries(englishTermCopy as unk
 export default function EnglishGlossaryPage() {
   return (
     <main lang="en" className="fieldbookTheme questionDirectoryPage">
-      <nav className="topbar" aria-label="Glossary navigation">
-        <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
-        <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/glossary" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
-      </nav>
+      <SiteNav
+        locale="en"
+        ariaLabel="Glossary navigation"
+        brand="presales"
+        brandPrefetch={false}
+        links={[
+          { href: "/en/questions", label: "Questions", prefetch: false },
+          { href: "/en/references", label: "References", prefetch: false },
+          { href: "/glossary", label: "Chinese", hrefLang: "zh-CN", lang: "zh-CN", prefetch: false },
+        ]}
+      />
       <div id="main-content" className="skipTarget" tabIndex={-1} />
       <header className="questionDirectoryHero"><p className="kicker">FIELD GLOSSARY</p><h1>Use one stable concept across the fieldbook</h1><p>Names, abbreviations, concept IDs, and module relationships stay consistent so every definition leads back to the relevant technical context.</p></header>
       <EnglishPilotDirectory items={items} label="Search the glossary" placeholder="Try grounding, assurance, open weights…" />

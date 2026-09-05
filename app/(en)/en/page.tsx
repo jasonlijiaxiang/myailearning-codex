@@ -10,6 +10,7 @@ import { layers, moduleList } from "../../knowledge-map.mjs";
 import { publishedModuleSlugs } from "../../module-publication.mjs";
 import { homepageTermGroups } from "../../terminology.mjs";
 import HomeStyles from "../../home-styles";
+import { SiteFooter, SiteNav } from "../../site-chrome";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "Cloud × AI Presales Fieldbook",
@@ -169,23 +170,7 @@ export default function EnglishHome() {
       <HomeStyles />
       <ReadingProgress />
       <header className="hero heroV2" id="top">
-        <nav className="topbar" aria-label="Main navigation">
-          <Link className="brand" href="/en" prefetch={false}><span><strong>Cloud × AI Presales Fieldbook</strong><small>Evidence-backed technical field guide</small></span></Link>
-          <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><a href="#available-modules">Find modules</a><Link href="/en/knowledge-graph" prefetch={false}>Dynamic explorer</Link><Link href="/en/model-radar" prefetch={false}>Model radar</Link><Link href="/en/coding-agents" prefetch={false}>Coding agents</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
-          <details className="homeMobileNav">
-            <summary>More</summary>
-            <nav aria-label="More navigation">
-              <Link href="/en/questions" prefetch={false}>Questions</Link>
-              <Link href="/en/glossary" prefetch={false}>Glossary</Link>
-              <a href="#available-modules">Find modules</a>
-              <Link href="/en/knowledge-graph" prefetch={false}>Dynamic explorer</Link>
-              <Link href="/en/model-radar" prefetch={false}>Model radar</Link>
-              <Link href="/en/coding-agents" prefetch={false}>Coding agents</Link>
-              <Link href="/en/references" prefetch={false}>References</Link>
-              <Link href="/" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
-            </nav>
-          </details>
-        </nav>
+        <SiteNav locale="en" brandPrefetch={false} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="heroGrid heroGridV2">
           <div className="heroCopy"><p className="kicker">EVIDENCE-BACKED FIELD GUIDE</p><h1>Turn complex AI technology into decisions customers can act on</h1><p className="heroLead">This technical fieldbook connects system principles and architecture with failure analysis, cloud capabilities, acceptance evidence, and answers for customer conversations. Use it for focused study or during a presales meeting.</p><KnowledgeSearchLaunch labels={searchLabels} /><div className="heroActions"><a className="textButton" href="#learning-paths">Follow a mission-based path <span>→</span></a><a className="textButton" href="#map">Browse the knowledge map <span>→</span></a></div></div>
@@ -264,7 +249,7 @@ export default function EnglishHome() {
           ))}
         </div>
       </section>
-      <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{englishModuleCount} modules · {layerCount} knowledge layers</p><a href="#top">Back to top ↑</a></footer>
+      <SiteFooter locale="en" brand="Cloud × AI Presales Fieldbook" note={`${englishModuleCount} modules · ${layerCount} knowledge layers`} />
     </main>
   );
 }

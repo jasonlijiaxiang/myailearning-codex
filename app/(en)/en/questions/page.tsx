@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { EnglishPilotDirectory, type EnglishPilotDirectoryItem } from "../../../i18n/english-pilot-directory";
 import { englishPageMetadata } from "../../../i18n/english-page-metadata";
 import { englishModuleRegistry, englishQuestions } from "../../../i18n/en/registry.mjs";
+import { SiteNav } from "../../../site-chrome";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "Customer Questions",
@@ -46,10 +46,17 @@ export default async function EnglishQuestionsPage({ searchParams }: { searchPar
 
   return (
     <main lang="en" className="fieldbookTheme questionDirectoryPage">
-      <nav className="topbar" aria-label="Question directory navigation">
-        <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
-        <div className="toplinks"><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/en/references" prefetch={false}>References</Link><Link href="/questions" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
-      </nav>
+      <SiteNav
+        locale="en"
+        ariaLabel="Question directory navigation"
+        brand="presales"
+        brandPrefetch={false}
+        links={[
+          { href: "/en/glossary", label: "Glossary", prefetch: false },
+          { href: "/en/references", label: "References", prefetch: false },
+          { href: "/questions", label: "Chinese", hrefLang: "zh-CN", lang: "zh-CN", prefetch: false },
+        ]}
+      />
       <div id="main-content" className="skipTarget" tabIndex={-1} />
       <header className="questionDirectoryHero"><p className="kicker">CUSTOMER QUESTION PACK</p><h1>Find the answer you need in a customer conversation</h1><p>{scopeLead}</p></header>
       <EnglishPilotDirectory items={items} label="Search customer questions" placeholder="Try grounding, open weights, EU AI Act…" />

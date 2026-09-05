@@ -337,7 +337,7 @@
 .capacityExperiment { display: grid; grid-template-columns: minmax(220px,26%) minmax(420px,1fr) 230px; border: 1px solid var(--if-line); }
 .capacityExperiment > * { min-width: 0; padding: 13px; }
 .capacityExperiment > * + * { border-left: 1px solid var(--if-line); }
-.capacityExperiment h4 { margin: 0 0 9px; font-size: 11px; }
+.capacityExperiment :is(h3, h4) { margin: 0 0 9px; font-size: 11px; }
 .capacityTeachingLabel { margin: 0 0 7px; color: #537820; font-size: 9px; font-weight: 850; letter-spacing: .06em; }
 .capacityExperiment form > label { display: grid; gap: 4px; margin-bottom: 10px; color: #536a7e; font-size: 9px; }
 .capacityExperiment select { width: 100%; height: 30px; padding: 0 8px; border: 1px solid var(--if-line); background: #fff; color: var(--if-ink); font-size: 9px; }

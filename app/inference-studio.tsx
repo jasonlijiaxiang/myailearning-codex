@@ -453,7 +453,7 @@ function CapacityExperiment() {
     <div className="capacityExperiment" id="capacity-experiment">
       <form onSubmit={(event) => { event.preventDefault(); executeExperiment(); }}>
         <p className="capacityTeachingLabel">因果教学示例 · 确定性估算 · 非压测结果</p>
-        <h4>容量关系估算器</h4>
+        <h3>容量关系估算器</h3>
         <label>教学标称配置<select defaultValue="qwen"><option value="qwen">Qwen2.5-7B-Instruct · BF16 · 单卡 64 GB</option></select></label>
         <fieldset><legend>输入长度（Token）</legend><div>{inputOptions.map((input) => <button aria-pressed={inputTokens === input.tokens} key={input.label} onClick={() => setInputTokens(input.tokens)} type="button">{input.label}</button>)}</div></fieldset>
         <label className="capacityRange">并发（请求数）<output>{concurrency}</output><input aria-label="并发请求数" max="128" min="1" onChange={(event) => setConcurrency(Number(event.target.value))} step="1" type="range" value={concurrency}/><span><small>1</small><small>32</small><small>64</small><small>128</small></span></label>

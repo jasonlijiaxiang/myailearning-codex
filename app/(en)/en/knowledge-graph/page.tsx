@@ -12,6 +12,7 @@ import {
 } from "../../../i18n/en/graph-data.mjs";
 import { KnowledgeConstellation } from "../../../knowledge-graph/design-2/knowledge-constellation";
 import styles from "../../../knowledge-graph/design-2/knowledge-constellation.module.css";
+import { SiteFooter, SiteNav } from "../../../site-chrome";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "Dynamic Knowledge Explorer",
@@ -25,17 +26,20 @@ export default function EnglishKnowledgeGraphPage() {
     <main lang="en" className={`${styles.page} fieldbookTheme fieldbookGraphTheme`}>
       <ReadingProgress />
       <header className={styles.siteHeader}>
-        <nav className="topbar" aria-label="Dynamic explorer navigation">
-          <Link className="brand" href="/en" aria-label="Return to the fieldbook home" prefetch={false}><span><strong>Cloud × AI Presales Fieldbook</strong><small>Evidence-backed technical field guide</small></span></Link>
-          <div className="toplinks">
-            <Link href="/en" prefetch={false}>Home</Link>
-            <Link href="/en/questions" prefetch={false}>Questions</Link>
-            <Link href="/en/glossary" prefetch={false}>Glossary</Link>
-            <Link href="/en#available-modules" prefetch={false}>Find modules</Link>
-            <Link href="/en/references" prefetch={false}>References</Link>
-            <Link href="/knowledge-graph" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
-          </div>
-        </nav>
+        <SiteNav
+          locale="en"
+          ariaLabel="Dynamic explorer navigation"
+          brandAriaLabel="Return to the fieldbook home"
+          brandPrefetch={false}
+          links={[
+            { href: "/en", label: "Home", prefetch: false },
+            { href: "/en/questions", label: "Questions", prefetch: false },
+            { href: "/en/glossary", label: "Glossary", prefetch: false },
+            { href: "/en#available-modules", label: "Find modules", prefetch: false },
+            { href: "/en/references", label: "References", prefetch: false },
+            { href: "/knowledge-graph", label: "Chinese", hrefLang: "zh-CN", lang: "zh-CN", prefetch: false },
+          ]}
+        />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
       </header>
 
@@ -57,10 +61,7 @@ export default function EnglishKnowledgeGraphPage() {
         language="en"
       />
 
-      <footer className={styles.footer}>
-        <p>The graph shows curated explicit relationships; an omitted connection is not proof that two concepts are unrelated.</p>
-        <Link href="/en#map" prefetch={false}>Return to the knowledge map</Link>
-      </footer>
+      <SiteFooter locale="en" className={styles.footer}><p>The graph shows curated explicit relationships; an omitted connection is not proof that two concepts are unrelated.</p><Link href="/en#map" prefetch={false}>Return to the knowledge map</Link></SiteFooter>
     </main>
   );
 }

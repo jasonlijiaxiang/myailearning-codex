@@ -6,6 +6,7 @@ import { ReadingProgress } from "../../fieldbook-interactions";
 import { GlossaryExplorer, type GlossaryGroupItem, type GlossaryTermItem } from "../../glossary-explorer";
 import { moduleList } from "../../knowledge-map.mjs";
 import { glossaryGroups, glossaryTermIds, requireTerm } from "../../terminology.mjs";
+import { SiteFooter, SiteNav, type SiteNavItem, type SiteFooterLink } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "专业术语库 | 云计算 × AI 平台售前知识库",
@@ -37,23 +38,26 @@ const terms: GlossaryTermItem[] = glossaryGroups.flatMap((group) => group.termId
 
 const abbreviationCount = terms.filter((term) => term.abbr).length;
 
+const glossaryNavLinks: readonly SiteNavItem[] = [
+  { href: "/", label: "知识库首页" },
+  { href: "/questions", label: "问题查询" },
+  { href: "#glossary-directory", label: "术语目录" },
+  { href: "/references", label: "来源与证据 / Reference" },
+  { href: "/en/glossary", label: "English", hrefLang: "en", lang: "en", prefetch: false },
+];
+
+const glossaryFooterLinks: readonly SiteFooterLink[] = [
+  { href: "/", label: "知识库首页" },
+  { href: "/questions", label: "客户问题查询" },
+  { href: "/references", label: "来源与证据" },
+];
+
 export default function GlossaryPage() {
   return (
     <main className="fieldbookTheme glossaryPage">
       <ReadingProgress />
       <header className="hero glossaryHero" id="top">
-        <nav className="topbar" aria-label="术语库导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>
-          </Link>
-          <div className="toplinks">
-            <Link href="/">知识库首页</Link>
-            <Link href="/questions">问题查询</Link>
-            <a href="#glossary-directory">术语目录</a>
-            <Link href="/references">来源与证据 / Reference</Link>
-            <Link href="/en/glossary" hrefLang="en" lang="en" prefetch={false}>English</Link>
-          </div>
-        </nav>
+        <SiteNav locale="zh" ariaLabel="术语库导航" brandAriaLabel="返回云与 AI 售前知识库首页" links={glossaryNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="glossaryHeroGrid">
@@ -83,10 +87,7 @@ export default function GlossaryPage() {
         <GlossaryExplorer groups={groups} terms={terms} />
       </section>
 
-      <footer className="siteFooter glossaryFooter">
-        <p>专业术语库 / Field Glossary</p>
-        <div><Link href="/">知识库首页</Link><Link href="/questions">客户问题查询</Link><Link href="/references">来源与证据</Link><a href="#top">回到顶部 ↑</a></div>
-      </footer>
+      <SiteFooter locale="zh" className="siteFooter glossaryFooter" note="专业术语库 / Field Glossary" links={glossaryFooterLinks} backToTop={{ label: "回到顶部 ↑" }} />
     </main>
   );
 }

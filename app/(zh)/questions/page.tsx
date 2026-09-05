@@ -12,6 +12,7 @@ import { questionDirectoryItems, questionDirectoryModules } from "../../question
 import { sourceLedger } from "../../reference-content.mjs";
 import { QuestionAddedAt } from "../../module-content-components";
 import { fallbackScripts, intentDefinitions } from "../../question-field-kit.mjs";
+import { SiteFooter, SiteNav, type SiteNavItem, type SiteFooterLink } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "客户问题查询 | 云计算 × AI 平台售前知识库",
@@ -39,6 +40,19 @@ const uniqueTagCount = new Set(questionDirectoryItems.map((/** @type {any} */ it
 const fieldKitCount = questionDirectoryItems.filter((/** @type {any} */ item) => item.tier).length;
 const moduleCountLead = `这里汇总 ${questionDirectoryModules.length} 个模块的客户问题。可按客户原话、技术概念、风险或方案取舍搜索，查看结论短答、机制、售前下一问和题内证据；会前可先看 ${fieldKitCount} 道精选题。`;
 
+const questionsNavLinks: readonly SiteNavItem[] = [
+  { href: "/", label: "知识库首页 / Home" },
+  { href: "/glossary", label: "专业术语库" },
+  { href: "#question-directory", label: "查询全部问题" },
+  { href: "/references", label: "Reference" },
+  { href: "/en/questions", label: "English", hrefLang: "en", lang: "en", prefetch: false },
+];
+
+const questionsFooterLinks: readonly SiteFooterLink[] = [
+  { href: "/", label: "知识库首页" },
+  { href: "/references", label: "来源与证据" },
+];
+
 type QuestionsSearchParams = { view?: string; module?: string; intent?: string };
 
 export default async function QuestionsPage({ searchParams }: { searchParams?: Promise<QuestionsSearchParams> }) {
@@ -53,18 +67,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
     <main className="fieldbookTheme questionPage">
       <ReadingProgress />
       <header className="hero questionHero" id="top">
-        <nav className="topbar" aria-label="问题查询页导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span>Cloud × AI / Presales Fieldbook</span>
-          </Link>
-          <div className="toplinks">
-            <Link href="/">知识库首页 / Home</Link>
-            <Link href="/glossary">专业术语库</Link>
-            <a href="#question-directory">查询全部问题</a>
-            <Link href="/references">Reference</Link>
-            <Link href="/en/questions" hrefLang="en" lang="en" prefetch={false}>English</Link>
-          </div>
-        </nav>
+        <SiteNav locale="zh" ariaLabel="问题查询页导航" brand="presales" brandAriaLabel="返回云与 AI 售前知识库首页" links={questionsNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="questionHeroGrid">
@@ -161,10 +164,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
         </QuestionDirectoryShell>
       </section>
 
-      <footer className="siteFooter questionFooter">
-        <p>客户问题查询 / Question Directory</p>
-        <div><Link href="/">知识库首页</Link><Link href="/references">来源与证据</Link><a href="#top">回到顶部 ↑</a></div>
-      </footer>
+      <SiteFooter locale="zh" className="siteFooter questionFooter" note="客户问题查询 / Question Directory" links={questionsFooterLinks} backToTop={{ label: "回到顶部 ↑" }} />
     </main>
   );
 }

@@ -11,6 +11,7 @@ import { glossaryTermIds, homepageTermGroups } from "../terminology.mjs";
 import { TermHintGroups } from "../term-hint";
 import { scenarioDefinitionsForHome, timeBudgetPaths } from "../home-learning-paths.mjs";
 import HomeStyles from "../home-styles";
+import { SiteFooter, SiteNav } from "../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "云计算 × AI 平台售前知识库",
@@ -98,42 +99,7 @@ export default function Home() {
       <HomeStyles />
       <ReadingProgress />
       <header className="hero heroV2" id="top">
-        <nav className="topbar" aria-label="主导航">
-          <Link className="brand" href="/" aria-label="云与 AI 售前知识库首页">
-            <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>
-          </Link>
-          <div className="toplinks">
-            <a href="#available-modules">从问题开始</a>
-            <Link href="/glossary">术语库</Link>
-            <Link href="/knowledge-graph">模块关系</Link>
-            <details className="homeSelectionMenu">
-              <summary>选型</summary>
-              <div className="homeSelectionMenuList">
-                <Link href="/model-radar">模型</Link>
-                <Link href="/coding-agents">Code Agent</Link>
-              </div>
-            </details>
-            <Link href="/references">来源与证据 / Reference</Link>
-            <Link href="/en" hrefLang="en" lang="en" prefetch={false}>English</Link>
-          </div>
-          <details className="homeMobileNav">
-            <summary>更多</summary>
-            <nav aria-label="更多导航">
-              <a href="#available-modules">从问题开始</a>
-              <Link href="/glossary">术语库</Link>
-              <Link href="/knowledge-graph">模块关系</Link>
-              <details className="homeSelectionMenu">
-                <summary>选型</summary>
-                <div className="homeSelectionMenuList">
-                  <Link href="/model-radar">模型</Link>
-                  <Link href="/coding-agents">Code Agent</Link>
-                </div>
-              </details>
-              <Link href="/references">来源与证据</Link>
-              <Link href="/en" hrefLang="en" lang="en" prefetch={false}>English</Link>
-            </nav>
-          </details>
-        </nav>
+        <SiteNav locale="zh" brandAriaLabel="云与 AI 售前知识库首页" />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="heroGrid heroGridV2 heroGridWithArtwork">
@@ -249,7 +215,7 @@ export default function Home() {
         <TermHintGroups groups={homepageTermGroups} total={glossaryTermIds.length} />
       </section>
 
-      <footer><span>Cloud × AI Presales Fieldbook</span><span>{moduleCount} 模块阅读版</span></footer>
+      <SiteFooter locale="zh"><span>Cloud × AI Presales Fieldbook</span><span>{moduleCount} 模块阅读版</span></SiteFooter>
     </main>
   );
 }

@@ -264,7 +264,7 @@
 .qaPreview { min-width: 0; padding: 16px 17px; border: 1px solid var(--mcp-line-strong); background: #fff; scroll-margin-top: 176px; }
 .qaPreview > header { display: grid; grid-template-columns: 38px minmax(0,1fr); gap: 8px; }
 .qaPreview > header > span { color: var(--mcp-blue); font-size: 11px; font-weight: 900; }
-.qaPreview h4 { margin: 2px 0 0; font-size: 16px; line-height: 1.45; }
+.qaPreview :is(h3, h4) { margin: 2px 0 0; font-size: 16px; line-height: 1.45; }
 .qaPreview small { color: var(--mcp-accent-dark); font-size: 10.5px; font-weight: 900; }
 .qaLead { margin: 11px 0 0; font-size: 14.5px; line-height: 1.62; }
 .qaAsk { margin: 11px 0 0; padding: 9px 10px; background: var(--mcp-blue-soft); font-size: 12.5px; line-height: 1.5; }

@@ -487,14 +487,14 @@ details[open] .plus { transform: rotate(45deg); }
 .briefPrinciples--pipeline li > div, .briefPrinciples--loop li > div, .briefPrinciples--stack li > div { padding: 28px; }
 .briefPrinciples--loop li:nth-child(even) { background: #efffd9; }
 .briefPrinciples--stack li { border-left: 5px solid var(--blue); }
-.briefPrinciples h4 { margin: 0 0 10px; font-size: 20px; }
-.briefPrinciples h4 small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 500; }
+.briefPrinciples h3 { margin: 0 0 10px; font-size: 20px; }
+.briefPrinciples h3 small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; font-weight: 500; }
 .briefPrinciples p { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
 .briefPrinciples strong { display: block; font-size: 12px; line-height: 1.65; }
 .briefPrinciples--decision, .briefPrinciples--spectrum { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .briefPrinciples--decision article, .briefPrinciples--spectrum article { grid-column: span var(--brief-span, 12); min-width: 0; min-height: 260px; padding: 26px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .briefPrinciples--spectrum article { border-top: 5px solid var(--purple); }
-.briefPrinciples--decision h4, .briefPrinciples--spectrum h4 { margin: 30px 0 10px; font-size: 20px; }
+.briefPrinciples--decision h3, .briefPrinciples--spectrum h3 { margin: 30px 0 10px; font-size: 20px; }
 
 .deepDiveList { display: grid; gap: 32px; }
 .deepDiveBlock { border: 1px solid var(--line); background: var(--white); }

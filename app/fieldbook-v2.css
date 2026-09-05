@@ -186,7 +186,7 @@ body { font-size: 17px; line-height: 1.74; background: #f7f5ef; }
 .termHint[open] .termHintPopover,
 .termHint:focus-within .termHintPopover,
 .termHint:hover .termHintPopover { display: block; }
-.briefPrinciples h4 { font-size: 22px; }
+.briefPrinciples h3 { font-size: 22px; }
 .briefPrinciples p { font-size: 16px; line-height: 1.75; }
 .briefPrinciples strong { font-size: 15px; }
 .briefPrinciples--pipeline li, .briefPrinciples--loop li, .briefPrinciples--stack li,

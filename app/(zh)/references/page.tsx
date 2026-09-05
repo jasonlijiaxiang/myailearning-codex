@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ReadingProgress, ReferenceFilterShell, type ReferenceFilterItem } from "../../fieldbook-interactions";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { chineseReferenceModules, sourceLedger } from "../../reference-content.mjs";
+import { SiteFooter, SiteNav, type SiteNavItem } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "来源与证据 | 云计算 × AI 平台售前知识库",
@@ -66,23 +67,20 @@ const referenceFilterItems: ReferenceFilterItem[] = chineseReferenceModules.flat
   };
 }));
 
+const referenceNavLinks: readonly SiteNavItem[] = [
+  { href: "/", label: "知识库首页 / Home" },
+  { href: "/glossary", label: "专业术语库" },
+  { href: "/questions", label: "客户问题查询" },
+  { href: "#reference-modules", label: "模块来源目录 / Modules" },
+  { href: "/en/references", label: "English", hrefLang: "en", lang: "en", prefetch: false },
+];
+
 export default function ReferencesPage() {
   return (
     <main className="fieldbookTheme referencePage">
       <ReadingProgress />
       <header className="hero referenceHero" id="top">
-        <nav className="topbar" aria-label="来源页导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span>Cloud × AI / Presales Fieldbook</span>
-          </Link>
-          <div className="toplinks">
-            <Link href="/">知识库首页 / Home</Link>
-            <Link href="/glossary">专业术语库</Link>
-            <Link href="/questions">客户问题查询</Link>
-            <a href="#reference-modules">模块来源目录 / Modules</a>
-            <Link href="/en/references" hrefLang="en" lang="en" prefetch={false}>English</Link>
-          </div>
-        </nav>
+        <SiteNav locale="zh" ariaLabel="来源页导航" brand="presales" brandAriaLabel="返回云与 AI 售前知识库首页" links={referenceNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="heroGrid referenceHeroGrid">
@@ -212,11 +210,7 @@ export default function ReferencesPage() {
         ))}
       </ReferenceFilterShell>
 
-      <footer>
-        <div><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>来源与证据 / Reference Library</p>
-        <a href="#top">返回顶部 ↑</a>
-      </footer>
+      <SiteFooter locale="zh" brand="云计算 × AI 平台售前知识库" note="来源与证据 / Reference Library" />
     </main>
   );
 }

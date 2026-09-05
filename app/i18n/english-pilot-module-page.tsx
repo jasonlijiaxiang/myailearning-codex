@@ -23,6 +23,7 @@ import {
 } from "./english-section-outline.mjs";
 import { englishModuleSlugs } from "./locale-config.mjs";
 import { moduleManifests } from "../modules/index.mjs";
+import { SiteFooter, SiteNav } from "../site-chrome";
 
 const englishSourceCopyMap = englishSourceCopy as unknown as Record<string, { kind: string; note: string; shortTitle: string }>;
 
@@ -333,7 +334,7 @@ function EditorialStepList({ block }: { block: ContentBlock }) {
         <li id={item.id} key={item.id}>
           <span>{String(index + 1).padStart(2, "0")}</span>
           <div>
-            <h4>{item.title}{item.subtitle ? <small>{item.subtitle}</small> : null}</h4>
+            <h3>{item.title}{item.subtitle ? <small>{item.subtitle}</small> : null}</h3>
             {item.body ? <p>{item.body}</p> : null}
             {item.decision ? <strong>{item.decision}</strong> : null}
             {item.boundary ? <em>{item.boundary}</em> : null}
@@ -533,7 +534,7 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   );
 
   const pageFooter = (
-    <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>{module.title}<ModuleUpdatedAt value={getEnglishUpdatedAt(module.slug) ?? publication.updatedAt ?? undefined} locale="en" /></p><a href="#top">Back to top ↑</a></footer>
+    <SiteFooter locale="en" brand="Cloud × AI Presales Fieldbook" note={<>{module.title}<ModuleUpdatedAt value={getEnglishUpdatedAt(module.slug) ?? publication.updatedAt ?? undefined} locale="en" /></>} />
   );
 
   if (reader === "unified") {
@@ -667,16 +668,20 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
     <main lang="en" className={`fieldbookTheme modulePage moduleBriefPage${publication.visualProfile === "dense-reading" ? " modulePilot" : ""}${usesFocusedReadingProfile ? " moduleFocused" : ""}`}>
       <ReadingProgress />
       <header className="modulePageHero moduleBriefHero" id="top">
-        <nav className="topbar" aria-label="Module navigation">
-          <Link className="brand" href="/en" aria-label="Return to the fieldbook home" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
-          <div className="toplinks">
-            <a href="#qa">Questions</a>
-            <Link href="/en/glossary" prefetch={false}>Glossary</Link>
-            <Link href="/en/questions" prefetch={false}>All customer questions</Link>
-            <Link href="/en/references" prefetch={false}>References</Link>
-            <Link href={`/modules/${module.slug}`} hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
-          </div>
-        </nav>
+        <SiteNav
+          locale="en"
+          ariaLabel="Module navigation"
+          brand="presales"
+          brandAriaLabel="Return to the fieldbook home"
+          brandPrefetch={false}
+          links={[
+            { href: "#qa", label: "Questions" },
+            { href: "/en/glossary", label: "Glossary", prefetch: false },
+            { href: "/en/questions", label: "All customer questions", prefetch: false },
+            { href: "/en/references", label: "References", prefetch: false },
+            { href: `/modules/${module.slug}`, label: "Chinese", hrefLang: "zh-CN", lang: "zh-CN", prefetch: false },
+          ]}
+        />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="moduleBriefHeader">
           {!usesFocusedReadingProfile ? <p className="eyebrow">MODULE {canonicalModule.layerNo} · {canonicalModule.layerEn}</p> : null}

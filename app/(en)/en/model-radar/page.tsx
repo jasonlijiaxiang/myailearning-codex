@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { ReadingProgress } from "../../../fieldbook-interactions";
 import { englishPageMetadata } from "../../../i18n/english-page-metadata";
@@ -13,6 +12,7 @@ import {
 } from "../../../i18n/en/model-radar.mjs";
 import { ModelRadarExplorer } from "../../../model-radar-explorer";
 import { sourceLedger } from "../../../reference-content.mjs";
+import { SiteFooter, SiteNav } from "../../../site-chrome";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "Model Capability Radar: Dated 20-Configuration Snapshot",
@@ -45,18 +45,19 @@ export default function EnglishModelRadarPage() {
     <main lang="en" className="fieldbookTheme modelRadarPage modelPosterPage">
       <ReadingProgress />
       <header className="hero modelRadarHero modelPosterHero" id="top">
-        <nav className="topbar" aria-label="Model capability radar navigation">
-          <Link className="brand" href="/en" aria-label="Return to the fieldbook home" prefetch={false}>
-            <span><strong>Cloud × AI Presales Fieldbook</strong><small>Evidence-backed technical field guide</small></span>
-          </Link>
-          <div className="toplinks">
-            <Link href="/en" prefetch={false}>Home</Link>
-            <Link href="/en/modules/model-landscape" prefetch={false}>Model landscape</Link>
-            <Link href="/en/coding-agents" prefetch={false}>Coding agents</Link>
-            <Link href="/en/references" prefetch={false}>References</Link>
-            <Link href="/model-radar" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link>
-          </div>
-        </nav>
+        <SiteNav
+          locale="en"
+          ariaLabel="Model capability radar navigation"
+          brandAriaLabel="Return to the fieldbook home"
+          brandPrefetch={false}
+          links={[
+            { href: "/en", label: "Home", prefetch: false },
+            { href: "/en/modules/model-landscape", label: "Model landscape", prefetch: false },
+            { href: "/en/coding-agents", label: "Coding agents", prefetch: false },
+            { href: "/en/references", label: "References", prefetch: false },
+            { href: "/model-radar", label: "Chinese", hrefLang: "zh-CN", lang: "zh-CN", prefetch: false },
+          ]}
+        />
 
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="modelPosterHeroInner">
@@ -79,11 +80,7 @@ export default function EnglishModelRadarPage() {
         </div>
       </section>
 
-      <footer>
-        <div><strong>Cloud × AI Presales Fieldbook</strong></div>
-        <p>Model Landscape · verified {englishModelRadarPolicy.verifiedAt} · missing data is not inferred</p>
-        <a href="#top">Back to top ↑</a>
-      </footer>
+      <SiteFooter locale="en" brand="Cloud × AI Presales Fieldbook" note={`Model Landscape · verified ${englishModelRadarPolicy.verifiedAt} · missing data is not inferred`} />
     </main>
   );
 }

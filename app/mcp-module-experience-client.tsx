@@ -209,7 +209,7 @@ function QaPreview({ item, index, sources, anchorId }: { item: QaItem; index: nu
     <article className={styles.qaPreview} id={anchorId}>
       <header>
         <span>Q{String(index + 1).padStart(2, "0")}</span>
-        <div><small>{item.tag}</small><h4>{item.q}</h4><QuestionAddedAt value={item.addedAt} /></div>
+        <div><small>{item.tag}</small><h3>{item.q}</h3><QuestionAddedAt value={item.addedAt} /></div>
       </header>
       <p className={styles.qaLead}>{item.a}</p>
       <p className={styles.qaAsk}><strong>现场可追问</strong>{item.ask}</p>

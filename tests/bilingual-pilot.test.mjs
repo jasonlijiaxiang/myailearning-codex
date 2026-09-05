@@ -718,7 +718,7 @@ test("English pages reuse the established Chinese design system", async () => {
     readFile(new URL("../app/(en)/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/layout.tsx", import.meta.url), "utf8"),
   ]);
-  ["fieldbookHome", "hero heroV2", "topbar", "heroGrid heroGridV2", "heroDecisionPanel", "fieldbookPromise", "promiseGrid"].forEach((className) => assert.match(englishHome, new RegExp(className)));
+  ["fieldbookHome", "hero heroV2", "SiteNav", "heroGrid heroGridV2", "heroDecisionPanel", "fieldbookPromise", "promiseGrid"].forEach((className) => assert.match(englishHome, new RegExp(className)));
   ["modulePageHero moduleBriefHero", "moduleArticleLayout", "moduleBriefSection", "evidenceGrid", "qaList"].forEach((className) => assert.match(englishModulePage, new RegExp(className)));
   assert.match(englishModulePage, /ModuleReadingNav/);
   assert.match(englishModulePage, /ModuleHeroMetrics/);
@@ -1257,15 +1257,15 @@ test("Batch 14 English content preserves model mechanisms and predictive lifecyc
 
 test("Chinese global entry pages expose their matching English routes", async () => {
   const routes = [
-    ["../app/(zh)/page.tsx", "/en"],
+    ["../app/site-chrome.tsx", "/en", "shared zh navigation defaults"],
     ["../app/(zh)/questions/page.tsx", "/en/questions"],
     ["../app/(zh)/glossary/page.tsx", "/en/glossary"],
     ["../app/(zh)/references/page.tsx", "/en/references"],
   ];
   for (const [file, englishHref] of routes) {
     const source = await readFile(new URL(file, import.meta.url), "utf8");
-    assert.match(source, new RegExp(`href=["'{\\s]*${englishHref.replaceAll("/", "\\/")}`), `${file} must link to ${englishHref}`);
-    assert.match(source, /hrefLang="en"/);
+    assert.match(source, new RegExp(`href:\\s*["'{]${englishHref.replaceAll("/", "\\/")}`), `${file} must link to ${englishHref}`);
+    assert.match(source, /hrefLang:\s*"en"/);
   }
 });
 

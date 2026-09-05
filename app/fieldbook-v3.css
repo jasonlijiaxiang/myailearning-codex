@@ -2386,8 +2386,8 @@ body { background: var(--paper); color: var(--ink); font-size: 17px; line-height
   border-bottom: 1px solid #cfd6dd;
 }
 .deepDiveEditorialChecklist li > span { padding-top: 5px; color: #587168; font: 800 11px/1 var(--font-geist-mono),monospace; }
-.deepDiveEditorialChecklist h4 { margin: 0 0 8px; font-size: 20px; }
-.deepDiveEditorialChecklist h4 small { display: block; margin-top: 4px; color: #738092; font-size: 10px; font-weight: 600; }
+.deepDiveEditorialChecklist :is(h3, h4) { margin: 0 0 8px; font-size: 20px; }
+.deepDiveEditorialChecklist :is(h3, h4) small { display: block; margin-top: 4px; color: #738092; font-size: 10px; font-weight: 600; }
 .deepDiveEditorialChecklist p { margin: 0 0 9px; color: #556274; font-size: 16px; line-height: 1.68; }
 .deepDiveEditorialChecklist strong { display: block; font-size: 14px; line-height: 1.62; }
 .deepDiveEditorialChecklist em { display: block; margin-top: 8px; color: #9c4a31; font-size: 13px; line-height: 1.58; font-style: normal; }

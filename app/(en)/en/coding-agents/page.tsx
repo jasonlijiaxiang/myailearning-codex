@@ -11,6 +11,7 @@ import {
 import { englishPageMetadata } from "../../../i18n/english-page-metadata";
 import { englishSourceCopy } from "../../../i18n/en/registry.mjs";
 import { ReadingProgress } from "../../../fieldbook-interactions";
+import { SiteFooter, SiteNav } from "../../../site-chrome";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "Coding Agent and Harness Radar",
@@ -35,10 +36,19 @@ export default function EnglishCodingAgentsPage() {
     <main lang="en" className="fieldbookTheme codingAgentPage">
       <ReadingProgress />
       <header className="hero heroV2 codingAgentHero" id="top">
-        <nav className="topbar" aria-label="Coding agent radar navigation">
-          <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
-          <div className="toplinks"><Link href="/en" prefetch={false}>Home</Link><Link href="/en/modules/ai-agent#harness" prefetch={false}>Harness design</Link><a href="#products">Product radar</a><Link href="/en/references" prefetch={false}>References</Link><Link href="/coding-agents" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
-        </nav>
+        <SiteNav
+          locale="en"
+          ariaLabel="Coding agent radar navigation"
+          brand="presales"
+          brandPrefetch={false}
+          links={[
+            { href: "/en", label: "Home", prefetch: false },
+            { href: "/en/modules/ai-agent#harness", label: "Harness design", prefetch: false },
+            { href: "#products", label: "Product radar" },
+            { href: "/en/references", label: "References", prefetch: false },
+            { href: "/coding-agents", label: "Chinese", hrefLang: "zh-CN", lang: "zh-CN", prefetch: false },
+          ]}
+        />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="codingAgentHeroGrid">
           <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {englishCodingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>Product and Harness Radar</span></h1><p>This radar separates <strong>official product facts</strong>, <strong>independent benchmark results</strong>, and <strong>the customer&apos;s own PoC evidence</strong>. Test the model, harness, task, and environment separately. No product is a permanent winner outside a defined task.</p></div>
@@ -76,7 +86,7 @@ export default function EnglishCodingAgentsPage() {
         </div>
       </section>
 
-      <footer><div><strong>Cloud × AI Presales Fieldbook</strong></div><p>Coding Agent &amp; Harness Landscape · verified {englishCodingAgentLandscapePolicy.verifiedAt}</p><a href="#top">Back to top ↑</a></footer>
+      <SiteFooter locale="en" brand="Cloud × AI Presales Fieldbook" note={<>Coding Agent &amp; Harness Landscape · verified {englishCodingAgentLandscapePolicy.verifiedAt}</>} />
     </main>
   );
 }

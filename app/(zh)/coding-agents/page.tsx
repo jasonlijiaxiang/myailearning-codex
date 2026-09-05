@@ -6,6 +6,7 @@ import { CodingAgentExplorer } from "../../coding-agent-explorer";
 import { codingAgentBenchmarks, codingAgentLandscapePolicy, codingAgentProducts } from "../../coding-agent-landscape.mjs";
 import { ReadingProgress } from "../../fieldbook-interactions";
 import { sourceLedger } from "../../reference-content.mjs";
+import { SiteFooter, SiteNav } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "Coding Agent 产品与 Harness 选型雷达 | 云计算 × AI 平台售前知识库",
@@ -30,10 +31,18 @@ export default function CodingAgentsPage() {
     <main className="fieldbookTheme codingAgentPage">
       <ReadingProgress />
       <header className="hero heroV2 codingAgentHero" id="top">
-        <nav className="topbar" aria-label="Coding Agent 选型页导航">
-          <Link className="brand" href="/"><span>Cloud × AI / Presales Fieldbook</span></Link>
-          <div className="toplinks"><Link href="/">知识库首页</Link><Link href="/modules/ai-agent#harness">Harness 章节</Link><a href="#products">产品雷达</a><Link href="/references">Reference</Link><Link href="/en/coding-agents" hrefLang="en" lang="en">English</Link></div>
-        </nav>
+        <SiteNav
+          locale="zh"
+          ariaLabel="Coding Agent 选型页导航"
+          brand="presales"
+          links={[
+            { href: "/", label: "知识库首页" },
+            { href: "/modules/ai-agent#harness", label: "Harness 章节" },
+            { href: "#products", label: "产品雷达" },
+            { href: "/references", label: "Reference" },
+            { href: "/en/coding-agents", label: "English", hrefLang: "en", lang: "en" },
+          ]}
+        />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="codingAgentHeroGrid">
           <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {codingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>产品与 Harness 选型雷达</span></h1><p>这里不发布一个永久的“谁最好”总榜。我们把<strong>官方产品事实</strong>、<strong>独立 Benchmark</strong>和<strong>客户自己的 PoC</strong>分开，让模型、Harness、任务与环境的影响可以被逐层判断。</p></div>
@@ -71,7 +80,7 @@ export default function CodingAgentsPage() {
         </div>
       </section>
 
-      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>Coding Agent &amp; Harness Landscape · 核验于 {codingAgentLandscapePolicy.verifiedAt}</p><a href="#top">返回顶部 ↑</a></footer>
+      <SiteFooter locale="zh" brand="云计算 × AI 平台售前知识库" note={<>Coding Agent &amp; Harness Landscape · 核验于 {codingAgentLandscapePolicy.verifiedAt}</>} />
     </main>
   );
 }

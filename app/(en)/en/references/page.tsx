@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { EnglishPilotDirectory, type EnglishPilotDirectoryItem } from "../../../i18n/english-pilot-directory";
 import { englishPageMetadata } from "../../../i18n/english-page-metadata";
 import { englishModuleRegistry, englishSourceCopy } from "../../../i18n/en/registry.mjs";
 import { referenceModules, sourceLedger } from "../../../reference-content.mjs";
+import { SiteNav } from "../../../site-chrome";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "References",
@@ -61,10 +61,17 @@ export default async function EnglishReferencesPage({ searchParams }: { searchPa
 
   return (
     <main lang="en" className="fieldbookTheme questionDirectoryPage">
-      <nav className="topbar" aria-label="Reference ledger navigation">
-        <Link className="brand" href="/en" prefetch={false}><span>Cloud × AI / Presales Fieldbook</span></Link>
-        <div className="toplinks"><Link href="/en/questions" prefetch={false}>Questions</Link><Link href="/en/glossary" prefetch={false}>Glossary</Link><Link href="/references" hrefLang="zh-CN" lang="zh-CN" prefetch={false}>Chinese</Link></div>
-      </nav>
+      <SiteNav
+        locale="en"
+        ariaLabel="Reference ledger navigation"
+        brand="presales"
+        brandPrefetch={false}
+        links={[
+          { href: "/en/questions", label: "Questions", prefetch: false },
+          { href: "/en/glossary", label: "Glossary", prefetch: false },
+          { href: "/references", label: "Chinese", hrefLang: "zh-CN", lang: "zh-CN", prefetch: false },
+        ]}
+      />
       <div id="main-content" className="skipTarget" tabIndex={-1} />
       <header className="questionDirectoryHero"><p className="kicker">SOURCE LEDGER</p><h1>See what each source supports and where its limits begin</h1><p>Every entry pairs an English evidence note with the canonical URL, evidence grade, verification date, and explicit limit.</p></header>
       <EnglishPilotDirectory items={items} label="Search sources" placeholder="Try NIST, ISO, retrieval, model directory…" actionLabel="Open source ↗" scope={scope} />

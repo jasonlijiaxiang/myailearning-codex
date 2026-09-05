@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { chinesePageMetadata } from "../../i18n/chinese-page-metadata";
-import Link from "next/link";
 
 import { ReadingProgress } from "../../fieldbook-interactions";
 import { ModelRadarExplorer } from "../../model-radar-explorer";
@@ -14,6 +13,7 @@ import {
   modelRadarBenchmarkGuides,
   sourceLedger,
 } from "../../reference-content.mjs";
+import { SiteFooter, SiteNav } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "大模型能力快照 · 20 个配置 | 云计算 × AI 平台售前知识库",
@@ -44,18 +44,18 @@ export default function ModelRadarPage() {
     <main className="fieldbookTheme modelRadarPage modelPosterPage">
       <ReadingProgress />
       <header className="hero modelRadarHero modelPosterHero" id="top">
-        <nav className="topbar" aria-label="模型对比导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>
-          </Link>
-          <div className="toplinks">
-            <Link href="/">知识库首页</Link>
-            <Link href="/modules/model-landscape">模型格局模块</Link>
-            <Link href="/coding-agents">Coding Agent</Link>
-            <Link href="/references">来源与证据</Link>
-            <Link href="/en/model-radar" hrefLang="en" lang="en">English</Link>
-          </div>
-        </nav>
+        <SiteNav
+          locale="zh"
+          ariaLabel="模型对比导航"
+          brandAriaLabel="返回云与 AI 售前知识库首页"
+          links={[
+            { href: "/", label: "知识库首页" },
+            { href: "/modules/model-landscape", label: "模型格局模块" },
+            { href: "/coding-agents", label: "Coding Agent" },
+            { href: "/references", label: "来源与证据" },
+            { href: "/en/model-radar", label: "English", hrefLang: "en", lang: "en" },
+          ]}
+        />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="modelPosterHeroInner">
@@ -70,11 +70,7 @@ export default function ModelRadarPage() {
         </div>
       </section>
 
-      <footer>
-        <div><strong>云计算 × AI 平台售前知识库</strong></div>
-        <p>Model Landscape · {modelRadarPolicy.retention} · 缺失数据不补值</p>
-        <a href="#top">返回顶部 ↑</a>
-      </footer>
+      <SiteFooter locale="zh" brand="云计算 × AI 平台售前知识库" note={`Model Landscape · ${modelRadarPolicy.retention} · 缺失数据不补值`} />
     </main>
   );
 }

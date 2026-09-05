@@ -2801,11 +2801,14 @@ test("public page shells expose one real skip target after navigation without de
 
   for (const relativePath of pageFiles) {
     const source = await readFile(new URL(relativePath, appRoot), "utf8");
-    if (!source.includes('<nav className="topbar"')) continue;
+    assert.doesNotMatch(source, /className="topbar"/, `${relativePath} must delegate its topbar to the shared SiteNav`);
+    if (!source.includes("<SiteNav")) continue;
     assert.equal((source.match(/id="main-content"/g) ?? []).length, 1, `${relativePath} must keep exactly one main-content skip target`);
-    assert.ok(source.indexOf('id="main-content"') > source.indexOf("</nav>"), `${relativePath} skip target must sit after the navigation`);
+    assert.ok(source.indexOf('id="main-content"') > source.indexOf("<SiteNav"), `${relativePath} skip target must sit after the shared site navigation`);
     assert.doesNotMatch(source, /V2\.0/, `${relativePath} must not show decorative maintenance versions`);
   }
+  const siteChromeSource = await readFile(new URL("site-chrome.tsx", appRoot), "utf8");
+  assert.equal((siteChromeSource.match(/className="topbar"/g) ?? []).length, 1, "site-chrome.tsx must own the single shared topbar render");
 
   const publicPageFamilies = [
     { id: "home", zhPath: "/", enPath: "/en" },
@@ -2844,6 +2847,8 @@ test("public page shells expose one real skip target after navigation without de
     assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${path} must keep exactly one main-content skip target`);
     assert.ok(html.indexOf('id="main-content"') > html.indexOf("</nav>"), `${path} skip target must sit after the navigation`);
     assert.doesNotMatch(html, /V2\.0/, `${path} must not show decorative maintenance versions`);
+    const headingLevels = [...html.matchAll(/<h([1-6])(?=[\s>])/g)].map((match) => Number(match[1]));
+    assert.ok(!headingLevels.slice(1).some((level, index) => headingLevels[index] === 2 && level === 4), `${path} must not skip from h2 to h4`);
   }
 
   const unifiedHero = await readFile(new URL("unified-module-hero.tsx", appRoot), "utf8");

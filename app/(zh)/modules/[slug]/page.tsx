@@ -134,7 +134,7 @@ function PrincipleView({ brief }: { brief: ModuleBrief }) {
         {brief.principles.map((item, index) => (
           <li key={item.en}>
             <span>{String(index + 1).padStart(2, "0")}</span>
-            <div><h4>{item.zh}<small>{item.en}</small></h4><p>{item.explanation}</p><strong>{item.decision}</strong></div>
+            <div><h3>{item.zh}<small>{item.en}</small></h3><p>{item.explanation}</p><strong>{item.decision}</strong></div>
           </li>
         ))}
       </ol>
@@ -146,7 +146,7 @@ function PrincipleView({ brief }: { brief: ModuleBrief }) {
     <div className={`briefPrinciples briefPrinciples--${brief.presentation}`} data-count={brief.principles.length} data-odd={brief.principles.length % 2 === 1 ? "true" : "false"}>
       {rows.flatMap((row) => row.map((item) => (
         <article key={item.en} style={{ "--brief-span": gridSpan(row.length) } as CSSProperties}>
-          <p className="miniLabel">{item.en}</p><h4>{item.zh}</h4><p>{item.explanation}</p><strong>{item.decision}</strong>
+          <p className="miniLabel">{item.en}</p><h3>{item.zh}</h3><p>{item.explanation}</p><strong>{item.decision}</strong>
         </article>
       )))}
     </div>

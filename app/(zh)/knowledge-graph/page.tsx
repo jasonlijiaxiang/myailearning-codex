@@ -12,6 +12,7 @@ import {
 } from "../../knowledge-graph/graph-data.mjs";
 import { KnowledgeConstellation } from "../../knowledge-graph/design-2/knowledge-constellation";
 import styles from "../../knowledge-graph/design-2/knowledge-constellation.module.css";
+import { SiteFooter, SiteNav, type SiteNavItem } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "动态探索 | 云计算 × AI 平台售前知识库",
@@ -20,23 +21,20 @@ export const metadata: Metadata = chinesePageMetadata({
   enPath: "/en/knowledge-graph",
 });
 
+const graphNavLinks: readonly SiteNavItem[] = [
+  { href: "/", label: "知识库首页" },
+  { href: "/questions", label: "问题查询" },
+  { href: "/glossary", label: "术语库" },
+  { href: "/#available-modules", label: "从问题开始" },
+  { href: "/references", label: "来源与证据 / Reference" },
+];
+
 export default function KnowledgeGraphPage() {
   return (
     <main className={`${styles.page} fieldbookTheme fieldbookGraphTheme`}>
       <ReadingProgress />
       <header className={styles.siteHeader}>
-        <nav className="topbar" aria-label="动态探索导航">
-          <Link className="brand" href="/" aria-label="返回云与 AI 售前知识库首页">
-            <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>
-          </Link>
-          <div className="toplinks">
-            <Link href="/">知识库首页</Link>
-            <Link href="/questions">问题查询</Link>
-            <Link href="/glossary">术语库</Link>
-            <Link href="/#available-modules">从问题开始</Link>
-            <Link href="/references">来源与证据 / Reference</Link>
-          </div>
-        </nav>
+        <SiteNav locale="zh" ariaLabel="动态探索导航" brandAriaLabel="返回云与 AI 售前知识库首页" links={graphNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
       </header>
 
@@ -60,10 +58,7 @@ export default function KnowledgeGraphPage() {
         relationTypes={graphRelationTypes}
       />
 
-      <footer className={styles.footer}>
-        <p>图中只展示已经整理的明确关系，不表示所有可能联系。</p>
-        <Link href="/#available-modules">从问题开始</Link>
-      </footer>
+      <SiteFooter locale="zh" className={styles.footer}><p>图中只展示已经整理的明确关系，不表示所有可能联系。</p><Link href="/#available-modules">从问题开始</Link></SiteFooter>
     </main>
   );
 }
