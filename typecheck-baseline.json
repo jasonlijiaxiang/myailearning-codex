@@ -1,0 +1,19 @@
+{
+  "app/(en)/en/coding-agents/page.tsx": 1,
+  "app/(en)/en/glossary/page.tsx": 6,
+  "app/(en)/en/model-radar/page.tsx": 4,
+  "app/(en)/en/page.tsx": 26,
+  "app/(en)/en/questions/page.tsx": 5,
+  "app/(en)/en/references/page.tsx": 3,
+  "app/(zh)/glossary/page.tsx": 1,
+  "app/(zh)/model-radar/page.tsx": 3,
+  "app/(zh)/modules/ai-agent/page.tsx": 1,
+  "app/(zh)/page.tsx": 11,
+  "app/(zh)/questions/page.tsx": 12,
+  "app/(zh)/references/page.tsx": 3,
+  "app/a2a-module-experience.tsx": 6,
+  "app/i18n/english-pilot-module-page.tsx": 28,
+  "app/inference-module-page.tsx": 2,
+  "app/mcp-module-experience.tsx": 5,
+  "app/model-radar-explorer.tsx": 1
+}

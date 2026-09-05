@@ -23,7 +23,8 @@
     "audit:localization:remote": "node scripts/audit-localization-deferments.mjs --require-remote",
     "report:english-conflicts": "node scripts/report-english-copy-conflicts.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern outputs",
-    "check": "npm run lint && npm test",
+    "check": "npm run lint && npm run typecheck && npm test",
+    "typecheck": "node scripts/typecheck.mjs",
     "check:english-release": "npm run check && npm run audit:english:release",
     "portable:check": "npm run check && npm run test:portable",
     "handoff:build": "node scripts/build-handoff-html.mjs",
@@ -37,11 +38,9 @@
     "kb:release-check": "node scripts/release-check.mjs",
     "sites:release-check": "node scripts/release-check.mjs --mode sites --audience external",
     "module:polish": "node .agents/skills/curate-portable-knowledge-base/scripts/module-polish.mjs",
-    "module:polish:validate": "node .agents/skills/curate-portable-knowledge-base/scripts/module-polish.mjs validate",
-    "db:generate": "drizzle-kit generate"
+    "module:polish:validate": "node .agents/skills/curate-portable-knowledge-base/scripts/module-polish.mjs validate"
   },
   "dependencies": {
-    "drizzle-orm": "0.45.2",
     "next": "16.2.6",
     "react": "19.2.6",
     "react-dom": "19.2.6"
@@ -54,7 +53,6 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.26",
-    "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
     "react-server-dom-webpack": "19.2.6",

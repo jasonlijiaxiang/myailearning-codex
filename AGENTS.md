@@ -32,7 +32,7 @@
 
 - 经用户确认且已达到发布条件的正式知识库内容、配置或维护规则变更，必须在同一次任务中整合到 `main`，完成 Git 提交、推送和公开发布；计划、调研、无改动检查、未确认草稿和任务分支 checkpoint 不触发公开发布。
 - Codex 对本项目执行非 `main` 分支推送后不得更新公开站点；执行 `main` 推送后，必须在同一次任务中更新公开站点，不得只停留在 GitHub。
-- 推送 `main` 前运行 `npm run check`（构建、网站与内容检查、代码检查）；`npm run portable:check` 只在需要 portable 时运行。推送后确认本地 `main`、实时 `origin/main` 与目标提交一致，再运行 `npm run sites:release-check` 生成同一提交的发布候选；该门禁必须拒绝非 `origin/main`。
+- 推送 `main` 前运行 `npm run check`（构建、网站与内容检查、代码检查、类型检查）；`npm run portable:check` 只在需要 portable 时运行。推送后确认本地 `main`、实时 `origin/main` 与目标提交一致，再运行 `npm run sites:release-check` 生成同一提交的发布候选；该门禁必须拒绝非 `origin/main`。
 - 公开站点必须使用刚刚推送到 `origin/main` 的精确提交生成 Sites 版本，部署到现有唯一项目，并轮询到发布成功；不要为分支或设备创建第二个正式 Site。
 - 发布成功后打开并交付公开地址：`https://cloud-ai-presales-fieldbook.lijx.chatgpt.site`。
 - 如果 `main` 推送成功但公开发布失败，旧站保持在线，任务不得标记完成；必须说明失败环节、未对齐的提交和当前可恢复状态。
