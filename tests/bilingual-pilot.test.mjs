@@ -1297,8 +1297,9 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.match(enRag, /EnglishModulePage[^>]*reader="unified"/, "English RAG must opt into the shared task-led reader");
   assert.match(enModulePage, /DenseModuleReadingModes/);
   assert.match(enModulePage, /locale="en"/);
+  const ragManifest = await readFile(new URL("../app/modules/rag/manifest.mjs", import.meta.url), "utf8");
   for (const groupId of buildEnglishSectionGroups(englishModuleRegistry.rag).map((/** @type {any} */ group) => group.id)) {
-    assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
+    assert.match(ragManifest, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
   }
   const chineseUnifiedReaders = publishedModuleSlugs
     .map((slug) => [slug, getUnifiedBriefModuleConfig(slug)])
@@ -1308,9 +1309,11 @@ test("English routes and all Chinese module page families expose reciprocal lang
     assertReadableUnifiedBriefConfig(config, `${slug} Chinese unified reader`);
   }
   for (const slug of englishModuleSlugs.filter((moduleSlug) => moduleSlug !== "rag")) {
-    assert.match(enModulePage, new RegExp(`(?:^|\\n)  (?:"${slug}"|${slug}): \\{`), `English unified reader config must include ${slug}`);
+    const manifest = await readFile(new URL(`../app/modules/${slug}/manifest.mjs`, import.meta.url), "utf8");
+    assert.match(manifest, /englishReaderConfig\s*:/, `English reader config must live in the ${slug} manifest`);
   }
-  assert.match(enModulePage, /"prompt-engineering": \{[\s\S]*prompt-pattern-diagnostics[\s\S]*cloud-poc-operating-model/, "Prompt must preserve its dedicated reader map");
+  const promptManifest = await readFile(new URL("../app/modules/prompt-engineering/manifest.mjs", import.meta.url), "utf8");
+  assert.match(promptManifest, /[\s\S]*prompt-pattern-diagnostics[\s\S]*cloud-poc-operating-model/, "Prompt must preserve its dedicated reader map");
   const promptTermConfig = enModulePage.match(/"prompt-engineering":\s*\[([^\]]*)\]/);
   assert.ok(promptTermConfig, "Prompt primer must define localized term IDs");
   const promptTermIds = [...promptTermConfig[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]);
@@ -1318,8 +1321,10 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.equal(new Set(promptTermIds).size, promptTermIds.length, "Prompt primer term IDs must be unique");
   promptTermIds.forEach((termId) => assert.ok(englishModuleRegistry["prompt-engineering"].terms[termId], `Prompt primer term must resolve: ${termId}`));
   assert.match(enModulePage, /export const englishUnifiedReaderSlugs = Object\.freeze\(Object\.keys\(englishUnifiedReaderConfigs\)\)/);
-  assert.match(enModulePage, /mcp: \{[\s\S]*completeFocusedProjection: true/, "MCP must render its complete authored English projection");
-  assert.match(enModulePage, /"solution-patterns": \{[\s\S]*completeFocusedProjection: true/, "Solution Patterns must render its complete authored English projection");
+  const mcpManifest = await readFile(new URL("../app/modules/mcp/manifest.mjs", import.meta.url), "utf8");
+  const solutionManifest = await readFile(new URL("../app/modules/solution-patterns/manifest.mjs", import.meta.url), "utf8");
+  assert.match(mcpManifest, /completeFocusedProjection"?: ?true/, "MCP must render its complete authored English projection");
+  assert.match(solutionManifest, /completeFocusedProjection"?: ?true/, "Solution Patterns must render its complete authored English projection");
   assert.match(enModulePage, /englishSourceCopy/, "English module pages must render localized source labels");
   assert.doesNotMatch(enModulePage, /sourceLedger\[evidence\.sourceId\]\?\.(?:kind|shortTitle)/, "English QA evidence must not render Chinese canonical labels");
 });
