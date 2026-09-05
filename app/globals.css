@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import "./preflight.css";
 
 :root {
   /* A / Mist: the canonical site-wide design tokens. */
