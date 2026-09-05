@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "5739e718d368d17dd46a01cd35bcc7eb1c7d158c3bd84b3a66153abf1343ef9e",
-  qaCoverageTags: Object.freeze(["性能判断","显存规划","混合云","TCO","采购方法","网络选型","规格边界","扩展效率","网络投资","数据供给","能源与散热","异构可移植"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: aiInfraComputeBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

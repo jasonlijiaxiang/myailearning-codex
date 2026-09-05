@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "c94ef422a8f447daa9336ce65ebae56958cb1550c5b3e73b5f70e12cce8ec88f",
-  qaCoverageTags: Object.freeze(["平台复用","在线评估","漂移归因","事件响应","观测边界","SLO 设计","业务恢复","遥测治理","采样策略","反馈治理","成本异常","安全回放","告警设计","职责边界","发布清单","模型升级","测试方法","影子发布","平台边界","事故归因","建设边界","发布评估","容量经济","Agent 归因","异常管理","优化边界"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: aiOpsBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

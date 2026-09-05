@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "342cad66994dc68ec21c90a7b31753746f7d2935c2d0dcacf0f0c80fa5a619d1",
-  qaCoverageTags: Object.freeze(["架构定位","模型路由","可靠性","MCP 治理","路由策略","策略发布","故障降级","缓存隔离","成本归因","旁路治理","流式故障","身份链","容量与预算"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: aiGatewayBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

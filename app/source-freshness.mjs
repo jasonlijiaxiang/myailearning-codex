@@ -1,10 +1,25 @@
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-const reviewRules = Object.freeze([
-  Object.freeze({ pattern: /模型目录|价格|配额|产品规格|官方公告/, days: 30 }),
-  Object.freeze({ pattern: /产品文档|API 文档|技术文档|工程文档|SDK 文档|协议文档|官方源码|官方集成文档|官方框架文档|官方 CLI 文档|官方配置参考|官方协议规范|官方技术文章|官方许可证|法律文本|模型行为规范|安全指南|安全开发指南|事件响应指南|安全工程文章|可观测规范|开放血缘规范|规范性文件|部门规章|国家标准|法规实施页面|法规修订文本|行业基金会框架|行业基金会指南|行业基金会工作组指南|行业基准官方说明/, days: 90 }),
-  Object.freeze({ pattern: /论文|教材|研究综述|技术报告|任务特定研究|厂商实验|风险管理框架|架构指南|工程指南|实践指南|开放定义|开放标准|互联网标准|国际标准|推荐标准/, days: 180 }),
-]);
+// S2-T6：来源 kind 收敛为 15 个枚举（app/reference-content.mjs 的 sourceLedger
+// 与 /tmp/s6/kind-map.mjs 的 ENUM_TO_DAYS 保持一致），复核周期直接查表，
+// 不再用正则匹配细分类目。
+const ENUM_TO_DAYS = Object.freeze({
+  "产品规格": 30,
+  "官方公告": 30,
+  "模型目录": 30,
+  "官方文档": 90,
+  "协议规范": 90,
+  "官方源码": 90,
+  "法规标准": 90,
+  "安全治理": 90,
+  "可观测规范": 90,
+  "行业指南": 90,
+  "论文": 180,
+  "研究报告": 180,
+  "标准": 180,
+  "指南": 180,
+  "实验与教材": 180,
+});
 
 /** @param {string} value */
 export function parseIsoDate(value) {
@@ -25,9 +40,9 @@ export function parseIsoDate(value) {
 
 /** @param {any} source */
 export function reviewCycleDaysFor(source) {
-  const rule = reviewRules.find((candidate) => candidate.pattern.test(source.kind));
-  if (!rule) throw new Error(`No freshness review rule for source kind: ${source.kind}`);
-  return rule.days;
+  const days = /** @type {Readonly<Record<string, number>>} */ (ENUM_TO_DAYS)[source.kind];
+  if (!days) throw new Error(`No freshness review rule for source kind: ${source.kind}`);
+  return days;
 }
 
 /** @param {any} source */

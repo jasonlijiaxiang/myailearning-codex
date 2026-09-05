@@ -23,7 +23,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "07ddfd01632072126a875cbe9d52acee36cb149354af43c44510b68d4e8196db",
-  qaCoverageTags: Object.freeze(["共享责任","提示注入","RAG 安全","Agent 安全","安全验证","风险盘点","供应链","事件响应","监管控制","事件取证","行业安全"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: securityBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

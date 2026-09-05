@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "b1d9886106ef81384e0bb1593c441a8760ca4d1ce1aae6978d9fd002535ffa70",
-  qaCoverageTags: Object.freeze(["建设起点","调度选型","DRA","平台边界","资源效率","升级治理","有效产出","混部边界","队列公平","拓扑调度","平台隔离","可移植性"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: aiInfraPlatformBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

@@ -160,7 +160,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "35e50b6873227dc90cb62668e2b8edcb00349dfa8994853eebb437fd08bf634d",
-  qaCoverageTags: Object.freeze(["能力边界","安全边界","结构化输出","工具安全","版本治理","上下文装配","提示注入","评估方法","灰度回滚","PoC 验收"]),
   contentContract: deepFreeze({"principle":["Prompt 是什么，以及 Context Engineering 的边界"],"mechanism":["明确且稳定的指令","动态上下文","能力接口"],"boundary":["必须执行的规则应落在模型外"],"cloud":["提示词工程与云服务机会"],"customer":["客户高频问题与深度回答"]}),
   brief,
   curriculum: null,

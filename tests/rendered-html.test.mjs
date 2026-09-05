@@ -40,6 +40,7 @@ import {
 } from "../app/model-radar-data.mjs";
 import { promptQa } from "../app/prompt-content.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
+import { intentDefinitions } from "../app/question-field-kit.mjs";
 import { questionDirectoryItems, questionDirectoryModules } from "../app/question-index.mjs";
 import { evidenceCards, ragLearningContent, ragQa } from "../app/rag-content.mjs";
 import { chineseReferenceModules, referenceModules, sourceLedger } from "../app/reference-content.mjs";
@@ -477,6 +478,10 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
     "scicode-verified-2026", "gdpval-aa-v2", "tau3-banking",
   ];
   const componentAverage = (/** @type {number | null} */ left, /** @type {number | null} */ right) => left === null || right === null ? null : Number(((left + right) / 2).toFixed(2));
+  // S2-T6：benchmarkScores 四舍五入到源页面精度（1 位小数）；Intelligence 原始
+  // 值与两个 50/50 Composite 的 2 位复算值仍保留在 intelligence/coding/agentic
+  // 与 componentScores 中，此处只核对展示精度下的公式一致性。
+  const toSourcePrecision = (/** @type {number | null} */ value) => value === null ? null : Number(value.toFixed(1));
   const assertScoreRange = (/** @type {number | null} */ value, /** @type {string} */ label) => {
     if (value !== null) assert.ok(value >= 0 && value <= 100, `${label} is out of range`);
   };
@@ -507,15 +512,15 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
   for (const [index, model] of snapshot.models.entries()) {
     assertScoreRange(model.intelligence, `${model.id} Intelligence`);
     if (index > 0) assert.ok(snapshot.models[index - 1].intelligence >= model.intelligence, "the snapshot must stay sorted by descending Intelligence");
-    assert.equal(model.benchmarkScores["intelligence-index"], model.intelligence);
+    assert.equal(model.benchmarkScores["intelligence-index"], toSourcePrecision(model.intelligence));
     assert.equal(
       model.benchmarkScores["coding-index"],
-      componentAverage(model.componentScores["terminal-bench-v21"], model.componentScores.scicode),
+      toSourcePrecision(componentAverage(model.componentScores["terminal-bench-v21"], model.componentScores.scicode)),
       `${model.id} Coding Composite formula drifted`,
     );
     assert.equal(
       model.benchmarkScores["agentic-index"],
-      componentAverage(model.componentScores["gdpval-aa-v2"], model.componentScores["tau3-banking"]),
+      toSourcePrecision(componentAverage(model.componentScores["gdpval-aa-v2"], model.componentScores["tau3-banking"])),
       `${model.id} Agentic Composite formula drifted`,
     );
     for (const [sourceId, score] of Object.entries(model.componentScores)) assertScoreRange(score, `${model.id} / ${sourceId}`);
@@ -1464,15 +1469,19 @@ test("course maps use progressive reading instead of another wall of equal cards
   }
 });
 
-test("customer questions follow module decision coverage instead of a shared numeric template", async () => {
-  // 深度问题集已回填进 moduleContentRegistry（由内容快照哈希固定），这里改为对
-  // 全部已发布模块核对 qaCoverageTags 全覆盖，覆盖范围不小于原深度问题审计集合。
+test("customer questions resolve to a registered intent instead of a shared numeric template", async () => {
+  // 深度问题集已回填进 moduleContentRegistry（由内容快照哈希固定）。qaCoverageTags
+  // 覆盖表已退役：tag 保留为自由标签，改为核对每道题都解析出受控的 intentId。
+  const intentIds = new Set(intentDefinitions.map((intent) => intent.id));
   for (const publishedModule of publishedModuleRegistry) {
     const content = requireModuleContent(publishedModule.slug);
-    const tags = new Set(content.qa.map((item) => item.tag));
-    for (const requiredTag of publishedModule.qaCoverageTags) {
-      assert.ok(tags.has(requiredTag), `${publishedModule.slug} is missing the registered question topic: ${requiredTag}`);
+    for (const item of content.qa) {
+      assert.ok(item.tag?.trim(), `${publishedModule.slug} question must keep a free tag label`);
     }
+  }
+  assert.ok(questionDirectoryItems.length > 0);
+  for (const item of questionDirectoryItems) {
+    assert.ok(item.intentId && intentIds.has(item.intentId), `${item.key} resolves to an unknown intent: ${item.intentId}`);
   }
 });
 
@@ -2447,6 +2456,7 @@ test("every published module claim resolves to a unique, grouped, and verified s
   const sourceEntries = Object.entries(sourceLedger);
   const sourceIds = new Set(sourceEntries.map(([sourceId]) => sourceId));
   const allowedGrades = new Set(["O", "P", "A", "B", "G"]);
+  const intentIds = new Set(intentDefinitions.map((intent) => intent.id));
 
   assert.ok(sourceEntries.length > 0);
 
@@ -2507,9 +2517,13 @@ test("every published module claim resolves to a unique, grouped, and verified s
       publishedModule.qa.length,
       `one module must not repeat the same customer question: ${publishedModule.id}`,
     );
-    const actualQaTags = new Set(publishedModule.qa.map((item) => item.tag));
-    for (const requiredTag of publishedModule.qaCoverageTags) {
-      assert.ok(actualQaTags.has(requiredTag), `${publishedModule.id} questions are missing the registered coverage topic: ${requiredTag}`);
+    for (const item of publishedModule.qa) {
+      assert.ok(item.tag?.trim(), `${publishedModule.id} question must keep a free tag label`);
+    }
+    const moduleDirectoryItems = questionDirectoryItems.filter((item) => item.moduleId === publishedModule.id);
+    assert.equal(moduleDirectoryItems.length, publishedModule.qa.length, `question directory must cover every question: ${publishedModule.id}`);
+    for (const item of moduleDirectoryItems) {
+      assert.ok(intentIds.has(item.intentId), `${item.key} resolves to an unknown intent: ${item.intentId}`);
     }
     assert.ok(publishedModule.deepDives.length > 0, `published module is missing independent knowledge expansions: ${publishedModule.id}`);
 
@@ -2557,7 +2571,7 @@ test("every published module claim resolves to a unique, grouped, and verified s
 
 test("source freshness rejects impossible, future, and overdue verification dates", () => {
   const now = new Date("2026-07-17T12:00:00Z");
-  const productSource = { kind: "官方产品文档", verifiedAt: "2026-07-17" };
+  const productSource = { kind: "官方文档", verifiedAt: "2026-07-17" };
 
   assert.equal(sourceFreshness(productSource, now).status, "fresh");
   assert.equal(sourceFreshness({ ...productSource, verifiedAt: "2026-02-30" }, now).status, "invalid");

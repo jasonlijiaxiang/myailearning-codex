@@ -22,7 +22,8 @@ if (!record) {
   process.exit(0);
 }
 
-// 内容源文件候选：按文件名清单过滤 app/ 下的 .mjs。
+// 内容源文件候选：按文件名清单过滤 app/ 下的 .mjs，并纳入模块专属 manifest。
+// S2-T3 后每模块配置落在 app/modules/<slug>/manifest.mjs，一并纳入中文侧差异。
 const CANDIDATE_FILES = [
   /^module-briefs-.*\.mjs$/,
   /^module-content-agent-platforms\.mjs$/,
@@ -32,13 +33,25 @@ const CANDIDATE_FILES = [
   /^prompt-content\.mjs$/,
 ];
 
-const files = readdirSync(path.join(root, "app"))
+const appDirectory = path.join(root, "app");
+const files = readdirSync(appDirectory)
   .filter((name) => CANDIDATE_FILES.some((pattern) => pattern.test(name)));
 
-const matches = files.filter((name) => {
-  const text = readFileSync(path.join(root, "app", name), "utf8");
-  return text.includes(`"${slug}"`);
-});
+// git pathspec 必须以仓库根为基准（此前把 app/ 下的裸文件名传给 git diff，
+// 路径在仓库根下永远匹配不到，导致所有模块都误报“无差异”）。
+const matches = files
+  .map((name) => path.join("app", name))
+  .filter((relativePath) => {
+    const text = readFileSync(path.join(root, relativePath), "utf8");
+    return text.includes(`"${slug}"`);
+  });
+const manifestPath = path.join("app", "modules", slug, "manifest.mjs");
+try {
+  readFileSync(path.join(root, manifestPath), "utf8");
+  matches.push(manifestPath);
+} catch {
+  // 没有专属 manifest 的模块保持原有候选集合。
+}
 
 console.log(`# ${slug} 状态：${record.status}（enSyncedCommit ${record.enSyncedCommit}）`);
 if (record.status === "deferred") console.log(`# 延期原因：${record.reason}`);

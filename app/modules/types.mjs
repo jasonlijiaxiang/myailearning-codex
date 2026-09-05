@@ -15,7 +15,6 @@
  * @property {"focused" | null} readingProfile 聚焦阅读画像。
  * @property {"dense-reading" | "standard"} visualProfile 视觉画像。
  * @property {string} legacyUndatedQuestionSetSha256 日期策略前无 addedAt 问题集合摘要。
- * @property {readonly string[]} qaCoverageTags 问答覆盖标签。
  * @property {Readonly<Record<string, readonly string[]>>} contentContract 内容质量契约。
  * @property {any} brief brief 正文引用（dedicated 模块为 null）。
  * @property {any} curriculum 课程地图正文引用。

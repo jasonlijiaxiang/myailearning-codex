@@ -23,7 +23,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  qaCoverageTags: Object.freeze(["产品定位","继承与版本","执行与状态","工具边界","多实例状态","状态分层","应用适配"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: agentPlatformBriefs.veadk,
   curriculum: moduleCurriculumContent[slug] ?? null,

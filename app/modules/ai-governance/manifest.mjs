@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  qaCoverageTags: Object.freeze(["职责边界","框架边界","系统清单","风险分级","第三方治理","法规时效","治理落地","责任模型","影响评估","条件批准","变更复审","适用分诊","备案分诊","内容标识","行业治理"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: aiGovernanceBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

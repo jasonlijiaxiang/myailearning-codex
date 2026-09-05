@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  qaCoverageTags: Object.freeze(["路线选择","特征治理","模型注册","漂移再训练","效果验收","服务形态","发布治理","平台边界","更新策略","回滚恢复"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: predictiveAiMlopsBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

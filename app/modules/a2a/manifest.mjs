@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "7f302462d608a14f80957008e03ff4dfcdcb1c136d71eb6b4957998223a253b0",
-  qaCoverageTags: Object.freeze(["协议边界","架构选择","可靠性","审计与可观测","采用判断","故障恢复","取消语义","协作拓扑","发现信任","跨域委托","产物验收"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: a2aBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

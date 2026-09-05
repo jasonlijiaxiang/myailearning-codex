@@ -166,7 +166,6 @@ export default Object.freeze({
   readingProfile: "focused",
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "dc2edf09ae4b7d8dc60c0ad568d78b0fd4aed3847021103310769e23e46cd746",
-  qaCoverageTags: Object.freeze(["方案判断","离线证据","在线检索","有据回答","局部验收"]),
   contentContract: deepFreeze({"principle":["回答证据的成立条件"],"mechanism":["离线证据与在线回答生命周期","RAG 组件选型"],"boundary":["检索到不等于回答正确"],"cloud":["云能力、验收与责任映射"],"customer":["客户高频问题与深度回答"]}),
   brief,
   curriculum: null,

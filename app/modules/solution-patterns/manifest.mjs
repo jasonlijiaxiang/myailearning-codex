@@ -23,7 +23,6 @@ export default Object.freeze({
   readingProfile: "focused",
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "52a7b6302cb7bafde13c1d47e1f25e06eb103debf951508a765d7ae67341f110",
-  qaCoverageTags: Object.freeze(["方案边界","PoC 验收","TCO","场景选择","架构组合","智能客服","企业搜索","内容生成","AI Coding","数字人","ChatBI","会议助手","生产运营","成本边界","范围设计","单位经济","采购选型","价值衡量","内部结算","禁止动作"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: solutionPatternsBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "710518d2e7495dd0a4ab3b5a5f4ca5a6eb25398ffc81ebedb832aaf4b7be4f12",
-  qaCoverageTags: Object.freeze(["选型方法","供应连续性","TCO","生命周期","组合策略","版本治理","候选初筛","退出策略","任务分层","模型身份","部署责任","上下文边界","平台边界","采购边界","能力比较"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: modelLandscape,
   curriculum: moduleCurriculumContent[slug] ?? null,

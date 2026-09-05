@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: "focused",
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "1a732d72e0a2f584fe4fcd76f56b7913afe8fdc63d50080556095c9bb1adf973",
-  qaCoverageTags: Object.freeze(["性能原理","容量规划","优化边界","组件边界","SLO 取舍","精度选择","显存容量","量化发布","调度公平","投机解码","弹性冷启动","缓存安全","性能归因","准入控制"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: llmInferenceBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

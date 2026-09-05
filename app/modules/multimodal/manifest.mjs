@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "4df913dc37dccd7d10f4a83be80665e47ddb83998ab61acc5cf2b558b768dc38",
-  qaCoverageTags: Object.freeze(["方案选择","成本与性能","实时交互","多模态安全","证据链","评估设计","结构恢复","输入预算","时序证据","语音交互","模态隐私","降级策略","发布责任","发布状态"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: multimodalBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

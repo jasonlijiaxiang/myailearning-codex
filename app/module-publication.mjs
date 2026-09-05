@@ -20,7 +20,6 @@ import { moduleManifests } from "./modules/index.mjs";
  *   visualProfile: "dense-reading" | "standard";
  *   readingProfile?: "focused";
  *   knowledgeView: string | null;
- *   qaCoverageTags: readonly string[];
  *   contentContract: Readonly<Record<string, readonly string[]>>;
  * }>>} */
 export const publishedModules = Object.freeze(moduleManifests.map((manifest) => Object.freeze({
@@ -35,7 +34,6 @@ export const publishedModules = Object.freeze(moduleManifests.map((manifest) => 
   visualProfile: manifest.visualProfile,
   ...(manifest.readingProfile ? { readingProfile: manifest.readingProfile } : {}),
   knowledgeView: manifest.knowledgeView ?? null,
-  qaCoverageTags: manifest.qaCoverageTags,
   contentContract: manifest.contentContract,
 })));
 

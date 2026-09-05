@@ -27,9 +27,14 @@ const items = questionDirectoryItems.map((/** @type {any} */ item) => {
 /** @type {Readonly<Record<string, string>>} */
 const routeKindSnapshotProjection = Object.freeze({ mcp: "brief", a2a: "brief", "llm-inference": "brief" });
 const publishedModuleItems = publishedModules.map((/** @type {any} */ module) => {
+  // S2-T6 把 qaCoverageTags 覆盖表从发布注册表退役（问答 intent 由 question-field-kit
+  // 维护、tag 转为自由标签）。该字段是问答元数据而非知识正文：快照两侧一律剔除，
+  // 使内容哈希只反映 kind 枚举收敛与雷达精度这类真正的数据变化。
+  const projected = { ...module };
+  delete projected.qaCoverageTags;
   const projectedRouteKind = routeKindSnapshotProjection[module.slug];
-  if (!projectedRouteKind) return module;
-  return { ...module, routeKind: projectedRouteKind };
+  if (projectedRouteKind) projected.routeKind = projectedRouteKind;
+  return projected;
 });
 
 const payload = {

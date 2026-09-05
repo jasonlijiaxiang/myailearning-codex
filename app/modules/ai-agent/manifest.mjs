@@ -281,7 +281,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "53b2a8990c5769cdddd525727b6135d534dd4bbadc5501fa4fc32555e85bf114",
-  qaCoverageTags: Object.freeze(["概念边界","动作循环","可解释与审计","规划机制","路线选择","方案边界","工具治理","记忆治理","安全","架构选择","评估","可观测","云选型","FinOps","上线治理","协议边界","执行方式","Run 状态机","身份授权","工具契约","人工介入","故障恢复","长任务运行","多 Agent"]),
   contentContract: deepFreeze({"principle":["Agent 的基础概念与工作循环"],"mechanism":["感知—思考—行动—观察","规划、记忆与工具"],"boundary":["模型会调用 API，不等于模型拥有 API 权限"],"cloud":["Agent 技术环节与云服务机会"],"customer":["客户高频问题与深度回答"]}),
   brief,
   curriculum: null,

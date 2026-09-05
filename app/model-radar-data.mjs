@@ -100,13 +100,23 @@ function average(left, right) {
 }
 
 /**
+ * @param {number | null | undefined} value
+ */
+function toSourcePrecision(value) {
+  return value === null || value === undefined ? null : Number(value.toFixed(1));
+}
+
+/**
  * @param {any} item
  */
 function makeBenchmarkScores(item) {
+  // 雷达页对客展示的数值精度对齐 Artificial Analysis 模型页的 1 位小数。
+  // Intelligence 为官方 v4.1.1 分数；两个 Composite 先按 50/50 公式复算，
+  // 再四舍五入到与源页面一致的 1 位小数。
   return Object.freeze({
-    "intelligence-index": item.intelligence,
-    "coding-index": average(asPercent(item.terminalBench), asPercent(item.sciCode)),
-    "agentic-index": average(asPercent(item.gdpval), asPercent(item.tauBanking)),
+    "intelligence-index": toSourcePrecision(item.intelligence),
+    "coding-index": toSourcePrecision(average(asPercent(item.terminalBench), asPercent(item.sciCode))),
+    "agentic-index": toSourcePrecision(average(asPercent(item.gdpval), asPercent(item.tauBanking))),
   });
 }
 

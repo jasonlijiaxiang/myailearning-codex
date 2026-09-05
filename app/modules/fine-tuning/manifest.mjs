@@ -23,7 +23,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "32309070485d6a96e18382bfb09f74f991f842911f3609bb238e2b7f58ab02cc",
-  qaCoverageTags: Object.freeze(["路线选择","方法选型","数据准备","验收","对齐路线","数据格式","合成数据","训练平台","Adapter 部署","版本兼容","能力保留"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: fineTuning,
   curriculum: moduleCurriculumContent[slug] ?? null,

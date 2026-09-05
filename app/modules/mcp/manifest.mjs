@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: "focused",
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "0e77279a34c57ab3814cf800dd0f9f9874955adbcf0e1097d88d6999c267cc61",
-  qaCoverageTags: Object.freeze(["协议边界","身份授权","供应链安全","选型与锁定","安全边界","平台治理","错误语义","Server 供应链","授权链","契约版本","能力发现","能力分权","结果注入","长任务"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: mcpBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,

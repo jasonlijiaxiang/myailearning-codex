@@ -24,7 +24,6 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "6b7c274ad07e8010308e249563e65c4acf67df854498668b620de9c4a251636a",
-  qaCoverageTags: Object.freeze(["模型选型","评估方法","RAG 诊断","Agent 评估","评审方法","持续评估","黄金集治理","切片评估","红队边界","多目标评估","统计可信度"]),
   contentContract: deepFreeze({"principle":["data-quality-section=\"principle\""],"mechanism":["data-knowledge-view"],"boundary":["data-importance=\"critical\""],"cloud":["data-quality-section=\"cloud\""],"customer":["data-quality-section=\"qa\""]}),
   brief: evaluationBrief,
   curriculum: moduleCurriculumContent[slug] ?? null,
