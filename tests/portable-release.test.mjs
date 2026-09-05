@@ -756,6 +756,8 @@ test("run-vinext resolves the package-declared binary and forwards CLI arguments
   try {
     const marker = path.join(root, "argv.json");
     await write(path.join(root, "scripts", "run-vinext.mjs"), await fs.readFile(RUN_VINEXT, "utf8"));
+    // S0-T3 起 run-vinext 在 dev/build 前同步生成搜索索引；夹具提供最小 stub。
+    await write(path.join(root, "scripts", "build-search-index.mjs"), "process.exit(0);\n");
     await writeJson(path.join(root, "node_modules", "vinext", "package.json"), {
       name: "vinext",
       type: "module",
