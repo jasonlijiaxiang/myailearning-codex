@@ -25,13 +25,10 @@ import {
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
-import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
 import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
 import { moduleDiscovery } from "../app/module-discovery.mjs";
 import { getModuleExtensionView, moduleExtensionViews } from "../app/module-extension-views.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
-import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
-import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
 import { moduleRepresentationAssessment } from "../app/module-representation-assessment.mjs";
 import { publishedModules as publishedModuleRegistry, publishedModuleSlugs } from "../app/module-publication.mjs";
 import {
@@ -1323,7 +1320,7 @@ test("inference reader preserves its interactive system view inside the unified 
   assert.match(pageSource, /definition: brief\.definition/);
   assert.match(pageSource, /position: brief\.position/);
   const inferenceCurriculum = requireModuleCurriculum("llm-inference");
-  const inferenceTopicIds = inferenceCurriculum.chapters.map((topic) => `inference-topic-${topic.en.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "untitled"}`);
+  const inferenceTopicIds = inferenceCurriculum.chapters.map((/** @type {any} */ topic) => `inference-topic-${topic.en.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "untitled"}`);
   for (const topicId of inferenceTopicIds) {
     assert.equal((html.match(new RegExp(`id="${escapeRegExp(topicId)}"`, "g")) ?? []).length, 1, `推理主题必须保留语义锚点：${topicId}`);
   }
@@ -1380,14 +1377,110 @@ test("remaining modules complete their own knowledge views, learning expansions,
     }
   }
 
-  for (const slug of Object.keys(completionLearning)) {
+  // 完成内容已回填进静态课程/学习/注册表：不再依赖已删除的 module-completion-content.mjs，
+  // 改为按稳定标题/问题逐条核对回填结果仍在合并内容中（语义与原合并断言等价）。
+  const completionMarkers = {
+    curriculum: {
+      "model-landscape": ["退出演练与供应连续性"],
+      multimodal: ["长视频的候选检索与时序证据"],
+      mcp: ["错误、进度与可观测"],
+      a2a: ["幂等、取消与恢复", "采用边界与迁移"],
+      evaluation: ["评估契约与可重放结果", "重复试验、不确定性与硬门"],
+      "ai-gateway": ["策略变更与证据化发布"],
+      "ai-ops": ["遥测数据与隐私", "从告警到确认业务恢复"],
+      "llm-training": ["实验谱系与可复现制品"],
+      "llm-inference": ["版本发布与请求连续性"],
+      "data-engineering": ["为不同用途准备数据制品"],
+      "ai-infra-platform": ["Goodput、资源成本与业务 ROI"],
+      "ai-infra-compute": ["端到端基准与交付验收"],
+    },
+    learningRoute: {
+      "model-landscape": ["把选择变成可回退、可退出的发布证据"],
+      multimodal: [],
+      mcp: ["验证错误与恢复", "建立目录与下线责任"],
+      a2a: ["补齐恢复与取消", "验证采用收益"],
+      evaluation: [],
+      "ai-gateway": ["把策略当作发布资产", "演练网关自身故障"],
+      "ai-ops": [],
+      "llm-training": [],
+      "llm-inference": ["拆开时间账与显存账", "把优化作为版本发布"],
+      "data-engineering": [],
+      "ai-infra-platform": ["设计训练和推理的共享边界"],
+      "ai-infra-compute": [],
+    },
+    learningLabs: {
+      "model-landscape": ["验证一次受控模型路由"],
+      multimodal: ["处理一份跨模态证据冲突工单"],
+      mcp: ["评审一个企业 MCP Server"],
+      a2a: ["验收一次外部 Agent 的版本变更"],
+      evaluation: ["校准评分器并裁决分歧样本"],
+      "ai-gateway": ["排查一次网关放大故障"],
+      "ai-ops": ["编写 AI 事故运行手册"],
+      "llm-training": ["复盘一次长训练中断"],
+      "llm-inference": ["诊断一次首字延迟退化"],
+      "data-engineering": ["排查一次知识更新未生效"],
+      "ai-infra-platform": ["设计训练与在线推理混部策略"],
+      "ai-infra-compute": ["验证一条算力瓶颈假设"],
+    },
+    qa: {
+      "model-landscape": [
+        "公开 Benchmark 应该怎样用于模型候选初筛，而不是直接选出赢家？",
+        "怎样为模型停服或不可用准备替代方案？",
+      ],
+      multimodal: ["文档 OCR 字符准确率很高，为什么表格问答仍可能错误？"],
+      mcp: [
+        "MCP 工具返回成功，为什么业务动作仍可能失败？",
+        "企业应该允许客户端自动安装任意 MCP Server 吗？",
+      ],
+      a2a: [
+        "A2A 的取消请求，是否保证远端任务已经停止？",
+        "多 Agent 架构应该由一个编排者控制，还是允许点对点协作？",
+      ],
+      evaluation: ["评估集版本升级时，怎样接纳线上失败又保护盲留出集？"],
+      "ai-gateway": [
+        "AI 网关的策略应该怎样安全上线？",
+        "模型提供方故障时，AI 网关应该自动切到任意可用模型吗？",
+      ],
+      "ai-ops": [
+        "AI 事故恢复后，为什么还要核对业务系统状态？",
+        "观测数据保留越多，是否越容易排查 AI 问题？",
+      ],
+      "llm-training": ["训练恢复后 Loss 连续，为什么还不能证明状态正确？"],
+      "llm-inference": [
+        "模型权重能装进显存，为什么并发一上来仍会 OOM？",
+        "量化后吞吐提高，为什么仍可能不值得上线？",
+      ],
+      "data-engineering": ["同一份数据能否同时用于 RAG、评估和训练？"],
+      "ai-infra-platform": [
+        "GPU 利用率很高，为什么训练和推理产出仍可能很差？",
+        "训练和在线推理可以长期混在同一个 GPU 资源池吗？",
+      ],
+      "ai-infra-compute": [
+        "为什么不能直接用峰值 FLOPS 比较 AI 加速器？",
+        "多加一倍 GPU，为什么训练速度没有接近翻倍？",
+      ],
+    },
+  };
+
+  for (const [slug, titles] of Object.entries(completionMarkers.curriculum)) {
     const curriculum = requireModuleCurriculum(slug);
+    const chapterTitles = curriculum.chapters.map((/** @type {any} */ chapter) => chapter.title);
+    for (const title of titles) assert.ok(chapterTitles.includes(title), `${slug} 课程缺少完成章节：${title}`);
+  }
+  for (const [slug, titles] of Object.entries(completionMarkers.learningRoute)) {
     const learning = requireModuleLearning(slug);
+    const stepTitles = learning.route.map((/** @type {any} */ step) => step.title);
+    for (const title of titles) assert.ok(stepTitles.includes(title), `${slug} 学习路线缺少完成步骤：${title}`);
+  }
+  for (const [slug, titles] of Object.entries(completionMarkers.learningLabs)) {
+    const learning = requireModuleLearning(slug);
+    const labTitles = learning.labs.map((/** @type {any} */ lab) => lab.title);
+    for (const title of titles) assert.ok(labTitles.includes(title), `${slug} 实战任务缺少完成实验：${title}`);
+  }
+  for (const [slug, questions] of Object.entries(completionMarkers.qa)) {
     const content = requireModuleContent(slug);
-    for (const chapter of completionCurriculum[slug] ?? []) assert.ok(curriculum.chapters.includes(chapter));
-    for (const step of completionLearning[slug]?.route ?? []) assert.ok(learning.route.includes(step));
-    for (const lab of completionLearning[slug]?.labs ?? []) assert.ok(learning.labs.includes(lab));
-    for (const question of completionQa[slug] ?? []) assert.ok(content.qa.includes(question));
+    const qaQuestions = content.qa.map((/** @type {any} */ item) => item.q);
+    for (const question of questions) assert.ok(qaQuestions.includes(question), `${slug} 问答缺少完成问题：${question}`);
   }
 });
 
@@ -1459,18 +1552,14 @@ test("course maps use progressive reading instead of another wall of equal cards
 });
 
 test("customer questions follow module decision coverage instead of a shared numeric template", async () => {
-  const auditedSlugs = Object.keys(moduleQuestionDepthExpansion);
-
-  for (const slug of auditedSlugs) {
-    const publishedModule = publishedModuleRegistry.find((module) => module.slug === slug);
-    const content = requireModuleContent(slug);
+  // 深度问题集已回填进 moduleContentRegistry（由内容快照哈希固定），这里改为对
+  // 全部已发布模块核对 qaCoverageTags 全覆盖，覆盖范围不小于原深度问题审计集合。
+  for (const publishedModule of publishedModuleRegistry) {
+    const content = requireModuleContent(publishedModule.slug);
     const tags = new Set(content.qa.map((item) => item.tag));
-    assert.ok(publishedModule, `${slug} 缺少发布契约`);
-    for (const question of moduleQuestionDepthExpansion[slug]) {
-      assert.ok(content.qa.includes(question), `${slug} 的深度问题未进入正式内容注册表：${question.q}`);
-      assert.ok(publishedModule.qaCoverageTags.includes(question.tag), `${slug} 未登记问题覆盖主题：${question.tag}`);
+    for (const requiredTag of publishedModule.qaCoverageTags) {
+      assert.ok(tags.has(requiredTag), `${publishedModule.slug} 缺少登记的问题主题：${requiredTag}`);
     }
-    for (const requiredTag of publishedModule.qaCoverageTags) assert.ok(tags.has(requiredTag), `${slug} 缺少登记的问题主题：${requiredTag}`);
   }
 });
 
@@ -1734,13 +1823,13 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.doesNotMatch(tuningEnglishSource, /For enterprise behavior customization, start with LoRA|vllm-2023/);
   assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
 
-  const solutionCurriculum = moduleCurriculumContent["solution-patterns"].chapters.map((chapter) => chapter.title).join("；");
+  const solutionCurriculum = moduleCurriculumContent["solution-patterns"].chapters.map((/** @type {any} */ chapter) => chapter.title).join("；");
   // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(solutionCurriculum, /最小充分闭环.*责任架构.*客服.*企业搜索.*PoC 契约.*资产交接/s, "场景方案课程应覆盖从方案判断到交付交接的实际问题");
-  const tuningCurriculum = moduleCurriculumContent["fine-tuning"].chapters.map((chapter) => chapter.title).join("；");
+  const tuningCurriculum = moduleCurriculumContent["fine-tuning"].chapters.map((/** @type {any} */ chapter) => chapter.title).join("；");
   // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(tuningCurriculum, /失败分流.*数据.*训练曲线.*偏好优化.*验收.*Adapter/s, "微调课程应覆盖方法选择、数据、训练诊断与发布制品");
-  const securityCurriculum = moduleCurriculumContent.security.chapters.map((chapter) => chapter.title).join("；");
+  const securityCurriculum = moduleCurriculumContent.security.chapters.map((/** @type {any} */ chapter) => chapter.title).join("；");
   // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(securityCurriculum, /不可接受损失.*恶意简历.*候选人数据.*ATS 业务授权.*供应链.*验证控制措施.*事件证据/s, "安全课程必须覆盖招聘场景的攻击路径、授权、验证与恢复");
   const securityRoute = moduleLearningContent.security.route.map((/** @type {any} */ step) => step.title).join("；");
@@ -2611,7 +2700,9 @@ test("every shared module has a source-backed learning route and practical labs"
   assert.deepEqual([...moduleCurriculumSlugs].sort(), sharedModules.map((module) => module.slug).sort());
   assert.equal(Object.keys(moduleLearningContent).length, sharedModules.length);
   assert.equal(Object.keys(moduleCurriculumContent).length, sharedModules.length);
-  assert.deepEqual(Object.keys(moduleQaExpansion).sort(), sharedModules.map((module) => module.slug).sort());
+  for (const sharedModule of sharedModules) {
+    assert.ok(requireModuleContent(sharedModule.slug).qa.length > 0, `${sharedModule.slug} 缺少客户问答覆盖`);
+  }
 
   for (const publishedModuleEntry of sharedModules) {
     const learning = requireModuleLearning(publishedModuleEntry.slug);

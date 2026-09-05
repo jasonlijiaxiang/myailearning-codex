@@ -26,7 +26,7 @@ if (!record) {
 const CANDIDATE_FILES = [
   /^module-briefs-.*\.mjs$/,
   /^module-content-agent-platforms\.mjs$/,
-  /^module-(qa|question-depth|completion|curriculum|learning)-.*\.mjs$/,
+  /^module-(curriculum|learning)-.*\.mjs$/,
   /^rag-content\.mjs$/,
   /^agent-content\.mjs$/,
   /^prompt-content\.mjs$/,
