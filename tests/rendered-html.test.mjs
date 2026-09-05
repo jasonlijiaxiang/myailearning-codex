@@ -1617,6 +1617,23 @@ test("English pages publish route-specific English sharing metadata", async () =
   }
 });
 
+test("Chinese pages declare their own canonical URL and bilingual alternates", async () => {
+  const site = "https://cloud-ai-presales-fieldbook.lijx.chatgpt.site";
+  const cases = [
+    ["/", "/", "/en"],
+    ["/modules/ai-gateway", "/modules/ai-gateway", "/en/modules/ai-gateway"],
+    ["/glossary", "/glossary", "/en/glossary"],
+  ];
+
+  for (const [route, chinesePath, englishPath] of cases) {
+    const html = await renderHtml(route);
+    assert.match(html, new RegExp(`<link rel="canonical" href="${escapeRegExp(`${site}${chinesePath}`)}"/>`), `${route} needs its own canonical URL`);
+    assert.equal((html.match(/rel="alternate" hrefLang=/g) ?? []).length, 2, `${route} needs both zh-CN and en alternates`);
+    assert.match(html, new RegExp(`<link rel="alternate" hrefLang="zh-CN" href="${escapeRegExp(`${site}${chinesePath}`)}"/>`), `${route} needs its Chinese alternate`);
+    assert.match(html, new RegExp(`<link rel="alternate" hrefLang="en" href="${escapeRegExp(`${site}${englishPath}`)}"/>`), `${route} needs its English counterpart`);
+  }
+});
+
 test("question directory combines keyword, module, and category filters", () => {
   const textByKey = buildQuestionSearchText("zh");
   const filterItems = questionDirectoryItems.map((item) => ({ key: item.key, moduleId: item.moduleId, tag: item.tag }));
