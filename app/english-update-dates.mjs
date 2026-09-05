@@ -7,7 +7,7 @@
  * 日期按每个英文模块最后一次真实撰写与专业审校提交维护。中文单线更新
  * 不得刷新本表；未来英文同步只更新对应模块，不修改中文 updatedAt。
  */
-export const englishUpdatedDates = Object.freeze({
+const englishUpdatedDates = Object.freeze({
   "solution-patterns": "2026-08-10",
   "model-landscape": "2026-08-30",
   rag: "2026-07-29",

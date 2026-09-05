@@ -12,7 +12,7 @@ import type { DeepDiveBlock, ModuleCurriculumContent, ModuleLearningContent } fr
 import { requireModuleCurriculum } from "../../../module-curriculum-content.mjs";
 import { requireModuleLearning } from "../../../module-learning-content.mjs";
 import { ModuleDecisionWorkbench } from "../../../module-decision-workbench";
-import { getChineseModuleExtensionView } from "../../../module-extension-views-zh.mjs";
+import { getModuleExtensionView } from "../../../module-extension-views.mjs";
 import { getPublishedModule, hasDedicatedModule } from "../../../module-publication.mjs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { requireTerm } from "../../../terminology.mjs";
@@ -188,7 +188,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const hasDeepDives = Boolean(brief.deepDives?.length);
   const usesDenseReadingProfile = publication.visualProfile === "dense-reading";
   const usesFocusedReadingProfile = publication.readingProfile === "focused";
-  const extensionView = getChineseModuleExtensionView(currentModule.canonicalSlug) ?? undefined;
+  const extensionView = getModuleExtensionView(currentModule.canonicalSlug) ?? undefined;
   const primerOwnsPrincipleId = ["decision-blueprint", "mcp-host-server-boundary", "latency-capacity-map"].includes(publication.knowledgeView ?? "");
   // The primer summarizes a mechanism; it does not consume the first N
   // decisions. Keep the complete decision ledger available regardless of

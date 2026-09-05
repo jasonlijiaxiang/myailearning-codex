@@ -144,7 +144,7 @@ export const legacyModuleAliases = Object.freeze({
   "inference-stack": "llm-inference",
 });
 
-export function resolveModuleSlug(slug) {
+function resolveModuleSlug(slug) {
   return legacyModuleAliases[slug] ?? slug;
 }
 

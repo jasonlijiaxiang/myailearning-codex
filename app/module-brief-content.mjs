@@ -177,7 +177,6 @@ export const moduleBriefs = Object.freeze({
   [aiInfraComputeBrief.slug]: withExpandedQa(aiInfraComputeBrief),
 });
 
-export const moduleBriefSlugs = Object.freeze(Object.keys(moduleBriefs));
 
 export function requireModuleBrief(slug) {
   const brief = moduleBriefs[slug];

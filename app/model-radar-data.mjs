@@ -169,12 +169,6 @@ export const modelRadarBenchmarkScales = Object.freeze({
   "agentic-index": Object.freeze({ min: 0, max: 100, unit: "50/50 组合分" }),
 });
 
-export const modelRadarMetrics = Object.freeze({
-  intelligence: Object.freeze({ label: "Intelligence Index", shortLabel: "智能" }),
-  overall: Object.freeze({ label: "Intelligence Index", shortLabel: "智能" }),
-  coding: Object.freeze({ label: "Coding Composite", shortLabel: "编程" }),
-  agentic: Object.freeze({ label: "Agentic Composite", shortLabel: "Agentic" }),
-});
 
 export const modelRadarPolicy = Object.freeze({
   verifiedAt: "2026-08-13",

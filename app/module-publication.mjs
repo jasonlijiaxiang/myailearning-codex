@@ -231,11 +231,8 @@ export const publishedModules = Object.freeze(moduleSpecs.map(([slug, titleId, r
 })));
 
 export const publishedModuleSlugs = Object.freeze(publishedModules.map((module) => module.slug));
-export const dedicatedModuleSlugs = Object.freeze(publishedModules.filter((module) => module.routeKind === "dedicated").map((module) => module.slug));
+const dedicatedModuleSlugs = Object.freeze(publishedModules.filter((module) => module.routeKind === "dedicated").map((module) => module.slug));
 
-export function isPublishedModule(slug) {
-  return publishedModuleSlugs.includes(slug);
-}
 
 export function hasDedicatedModule(slug) {
   return dedicatedModuleSlugs.includes(slug);

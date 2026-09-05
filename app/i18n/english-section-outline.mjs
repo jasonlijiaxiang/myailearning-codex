@@ -9,13 +9,23 @@ export const sharedSectionRoles = Object.freeze({
   cloud: Object.freeze({ id: "cloud", label: "Cloud connections", eyebrow: "Map to available services" }),
 });
 
-// Kept as public compatibility exports for callers that need the vocabulary
-// of roles. They never prescribe a reader order or a required section set.
-export const sharedSectionRoleOrder = Object.freeze(Object.keys(sharedSectionRoles));
-export const focusedSectionRoleOrder = sharedSectionRoleOrder;
-export const focusedEnglishModuleSlugs = Object.freeze(
+const focusedEnglishModuleSlugs = Object.freeze(
   publishedModules.filter((module) => module.readingProfile === "focused").map((module) => module.slug),
 );
+
+// Kept for the English module pages: the legacy branch still renders the full
+// authored selection for modules without a unified reader config.
+export function selectVisibleEnglishSectionGroups(module, sectionGroups = buildEnglishSectionGroups(module)) {
+  return sectionGroups;
+}
+
+export function selectVisibleEnglishEvidenceCards(module) {
+  return module.evidenceCards;
+}
+
+export function selectVisibleEnglishQuestions(module) {
+  return module.qa;
+}
 
 export function usesFocusedEnglishPreview(module) {
   return focusedEnglishModuleSlugs.includes(module.slug) && !hasDedicatedModule(module.slug);
@@ -85,14 +95,3 @@ export function buildEnglishSectionGroups(module) {
   });
 }
 
-export function selectVisibleEnglishSectionGroups(module, sectionGroups = buildEnglishSectionGroups(module)) {
-  return sectionGroups;
-}
-
-export function selectVisibleEnglishEvidenceCards(module) {
-  return module.evidenceCards;
-}
-
-export function selectVisibleEnglishQuestions(module) {
-  return module.qa;
-}

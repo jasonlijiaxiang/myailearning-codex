@@ -437,12 +437,12 @@ const intentKeywordRules = Object.freeze([
   }),
 ]);
 
-export function defaultIntentForTag(tag) {
+function defaultIntentForTag(tag) {
   const match = intentKeywordRules.find((rule) => rule.pattern.test(tag));
   return match?.intentId ?? "concept-mechanism";
 }
 
-export const questionIntentOverrides = Object.freeze({
+const questionIntentOverrides = Object.freeze({
   "ai-agent-9": "data-security-access",
   "ai-agent-11": "evaluation-acceptance",
   "ai-agent-14": "cost-procurement",

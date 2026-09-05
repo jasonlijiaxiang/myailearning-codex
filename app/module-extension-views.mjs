@@ -10,7 +10,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "selection-coordinate",
     layout: "spectrum",
     eyebrow: "SELECTION COORDINATES",
-    title: "模型选型从业务损失开始，不从排行榜开始",
+    title: "模型选型的业务损失坐标",
     intro: "以跨地区理赔材料初审为例：先固定任务、不可接受错误和交付边界，再形成候选、同条件试点并决定是否真的需要模型组合。",
     termIds: Object.freeze(["llm", "poc", "sla", "tco"]),
     steps: Object.freeze([
@@ -31,7 +31,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "multimodal-evidence-pipeline",
     layout: "pipeline",
     eyebrow: "EVIDENCE PIPELINE",
-    title: "多模态先管理信息损失，再谈统一模型",
+    title: "照片、语音和视频在哪一步丢了信息",
     intro: "以现场设备巡检为例：手册页、仪表照片、工程师语音和短视频承载不同结构与时序；方案要先说明每一步保留、压缩和丢失什么。",
     termIds: Object.freeze(["multimodal", "document-intelligence", "ocr", "asr"]),
     steps: Object.freeze([
@@ -54,12 +54,12 @@ export const moduleExtensionViews = Object.freeze({
     layout: "boundary",
     controlPlaneStepCodes: Object.freeze(["CLIENT", "SERVER"]),
     eyebrow: "HOST–SERVER BOUNDARY",
-    title: "MCP 统一能力交换，不接管业务授权",
+    title: "MCP 交换能力，业务系统决定授权",
     intro: "协议让 Host 发现和调用 Server 提供的工具、资源与提示；身份、同意、业务权限和动作后果仍由协议外的确定性系统承担。",
     termIds: Object.freeze(["mcp", "api", "iam", "acl"]),
     steps: Object.freeze([
       Object.freeze({ code: "HOST", title: "Host", en: "User-facing Control", detail: "掌握用户意图、Client 生命周期、上下文选择和确认体验。", signal: "不得把不可信 Server 内容提升为高优先级指令。" }),
-      Object.freeze({ code: "CLIENT", title: "Client", en: "Protocol Session", detail: "与一个 Server 建立会话，协商能力并传递结构化请求。", signal: "连接身份与最终资源权限不能混为一谈。" }),
+      Object.freeze({ code: "CLIENT", title: "Client", en: "Request-scoped Exchange", detail: "面向一个 Server 发送自包含请求；版本与能力元数据随请求表达，不建立协议级 Session。", signal: "请求身份与最终资源权限仍是两层控制。" }),
       Object.freeze({ code: "SERVER", title: "Server", en: "Capability Provider", detail: "声明工具、资源和提示，并返回结果、错误与能力变化。", signal: "工具数量不等于契约质量或安全性。" }),
       Object.freeze({ code: "SYSTEM", title: "业务系统", en: "Authoritative Resource", detail: "执行最终身份、授权、参数、事务和审计控制。", signal: "模型提出调用不等于获得许可。" }),
     ]),
@@ -75,7 +75,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "delegated-task-lifecycle",
     layout: "lifecycle",
     eyebrow: "DELEGATED TASK LIFECYCLE",
-    title: "A2A 用 Message 即时交互，用 Task 管理状态化工作",
+    title: "一项跨 Agent 任务如何暂停、恢复或失败",
     intro: "Agent Card 之后有两条响应路径：远端可直接返回 Message，也可创建 Task，并在需要时用 Artifact 交付任务输出。",
     termIds: Object.freeze(["a2a", "agent-card", "a2a-message", "a2a-task", "artifact"]),
     steps: Object.freeze([
@@ -96,7 +96,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "agent-definition-runtime-bridge",
     layout: "pipeline",
     eyebrow: "DEFINITION–EXECUTION–ADAPTER",
-    title: "先把 Agent 逻辑跑对，再把运行责任交给应用与平台",
+    title: "把 VeADK 应用交到平台手里",
     intro: "VeADK 负责定义模型、指令、Tool 和状态使用方式，并通过 Runner 执行；应用适配入口把同一根 Agent 暴露给 AgentKit，但不会自动补齐生产身份、共享状态和发布治理。",
     termIds: Object.freeze(["veadk", "root-agent", "agent-runner", "tool-loop", "agentkit-app-adapter"]),
     steps: Object.freeze([
@@ -118,7 +118,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "application-runtime-lifecycle",
     layout: "lifecycle",
     eyebrow: "APPLICATION–RUNTIME LIFECYCLE",
-    title: "构建、部署和运行是三段责任，不是一条成功提示",
+    title: "AgentKit 上云后，谁负责运行结果",
     intro: "AgentKit 用应用合同、CLI 和 Runtime 连接源码与云端执行；生产判断还要验证共享状态、身份网络、质量、容量、可观测和回退。",
     termIds: Object.freeze(["agentkit", "agent-application", "build-deploy-lifecycle", "agentkit-runtime", "runtime-binding"]),
     steps: Object.freeze([
@@ -140,7 +140,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "evaluation-flywheel",
     layout: "loop",
     eyebrow: "EVALUATION FLYWHEEL",
-    title: "评估先定义要做的决定，再定义分数",
+    title: "把“效果不错”写成评估合同",
     intro: "一份可信评估要同时说明测谁、在哪个生命周期阶段测、用什么量尺、自然波动多大，以及结果触发发布、补做还是停止。",
     termIds: Object.freeze(["evaluation", "evaluation-contract", "golden-set", "evaluation-layers", "llm-as-judge"]),
     steps: Object.freeze([
@@ -163,7 +163,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "governance-assurance-loop",
     layout: "loop",
     eyebrow: "GOVERNANCE ASSURANCE",
-    title: "AI 治理用责任与证据把原则变成持续保证",
+    title: "谁批准 AI 用途，靠什么持续证明",
     intro: "先登记用途和所有者，再按影响分级、验证控制、批准运行；系统、供应商或法规变化后重新评估，而不是保留永久合规标签。",
     termIds: Object.freeze(["ai-governance", "ai-inventory", "ai-risk-tiering", "continuous-assurance"]),
     steps: Object.freeze([
@@ -185,7 +185,7 @@ export const moduleExtensionViews = Object.freeze({
     layout: "control",
     controlPlaneStepCodes: Object.freeze(["POLICY"]),
     eyebrow: "POLICY & DATA PLANE",
-    title: "AI 网关把跨模型控制集中到一条可审计请求路径",
+    title: "沿一条请求检查 AI 网关",
     intro: "统一入口的价值不是多转发一跳，而是让身份、路由、预算、安全与遥测使用同一策略版本，并保留到最终业务结果的关联。",
     termIds: Object.freeze(["api", "iam", "sla", "tco"]),
     steps: Object.freeze([
@@ -206,7 +206,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "operations-feedback-loop",
     layout: "loop",
     eyebrow: "GENAI DELIVERY & OPERATIONS",
-    title: "AI 应用交付的版本应能回放过程、定位问题并恢复",
+    title: "发布失败后，系统怎样停下并恢复",
     intro: "模型、Prompt、检索、工具、编排、策略和运行环境共同决定行为；同一条工程闭环必须覆盖组装、验证、发布、观测与恢复。",
     termIds: Object.freeze(["ai-application-engineering", "genaiops", "ai-release-manifest", "observability"]),
     steps: Object.freeze([
@@ -228,7 +228,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "context-assembly",
     layout: "stack",
     eyebrow: "CONTEXT ASSEMBLY",
-    title: "生产 Prompt 是一次受治理的上下文装配",
+    title: "生产 Prompt 到底装进了什么",
     intro: "模型看到的是不同权威、来源、时效和执行后果的输入组合；提示词只负责表达任务，不能替代身份、授权和业务校验。",
     termIds: Object.freeze(["llm", "rag", "api", "iam"]),
     steps: Object.freeze([
@@ -249,7 +249,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "predictive-model-lifecycle",
     layout: "lifecycle",
     eyebrow: "PREDICTIVE MODEL LIFECYCLE",
-    title: "预测模型的生产对象是一条可复现、可回滚的生命周期",
+    title: "让一次预测可以复现、替换和回滚",
     intro: "模型权重只是其中一项资产；业务目标、时间正确的数据、特征、代码、环境、评估、端点和真实结果必须作为同一发布链管理。",
     termIds: Object.freeze(["predictive-ai-mlops", "feature-store", "model-registry", "model-drift"]),
     steps: Object.freeze([
@@ -271,7 +271,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "training-supply-chain",
     layout: "pipeline",
     eyebrow: "TRAINING SUPPLY CHAIN",
-    title: "训练交付的是可追溯模型制品，不是一次 Loss 下降",
+    title: "训练产物如何一路进入可部署模型",
     intro: "数据、目标合同、分布式执行、恢复、评估和发布共同决定模型能力；任何一段缺少版本与证据，结果都难以复现。",
     termIds: Object.freeze(["llm-training", "pretraining", "distributed-training", "evaluation"]),
     steps: Object.freeze([
@@ -293,7 +293,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "latency-capacity-map",
     layout: "topology",
     eyebrow: "LATENCY & CAPACITY MAP",
-    title: "把一次推理拆成时间账和显存账",
+    title: "推理慢，先看时间账还是显存账",
     intro: "先冻结真实负载与 SLO，再把排队、Prefill、Decode、KV Cache、交付和过载拆开；模型能加载不等于能以目标并发稳定服务。",
     termIds: Object.freeze(["llm-inference", "kv-cache", "batching", "ttft", "tpot", "goodput"]),
     steps: Object.freeze([
@@ -315,7 +315,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "ai-data-lineage",
     layout: "pipeline",
     eyebrow: "DATA LINEAGE",
-    title: "AI 数据管道必须证明来源、加工、状态和责任",
+    title: "一份资料怎样变成可撤回的 AI 数据",
     intro: "原始资料只有经过权威确认、解析、清洗裁决、稳定派生、按用途发布和生命周期传播，才成为可运营的数据产品；切片与向量只是其中一种派生产物。",
     termIds: Object.freeze(["data-contract", "data-lineage", "deletion-propagation", "document-intelligence"]),
     steps: Object.freeze([
@@ -339,7 +339,7 @@ export const moduleExtensionViews = Object.freeze({
     layout: "control",
     controlPlaneStepCodes: Object.freeze(["ADMIT", "PLACE"]),
     eyebrow: "PLATFORM CONTROL & EXECUTION",
-    title: "平台把自助契约变成可恢复、可解释的运行路径",
+    title: "平台管什么，工作负载自己管什么",
     intro: "平台控制层维护能力、策略与期望状态，工作负载执行层完成 Notebook、训练、批处理和模型服务；两层通过准入、放置、运行证据与恢复契约连接。",
     termIds: Object.freeze(["ai-infra-platform", "resource-scheduling", "gang-scheduling", "observability", "goodput"]),
     steps: Object.freeze([
@@ -362,7 +362,7 @@ export const moduleExtensionViews = Object.freeze({
     id: "compute-bottleneck-path",
     layout: "topology",
     eyebrow: "BOTTLENECK PATH",
-    title: "算力方案取决于整条数据通路的最窄处",
+    title: "GPU 很忙，数据可能还没到它手里",
     intro: "从工作负载包络出发，逐层验证计算、内存、紧耦合互联、跨域网络、数据与设施；峰值 FLOPS 只描述特定计算上限。",
     termIds: Object.freeze(["ai-infra-compute", "vram", "hbm", "scale-up", "scale-out", "tco"]),
     steps: Object.freeze([
@@ -387,4 +387,13 @@ export function requireModuleExtensionView(slug) {
   const view = moduleExtensionViews[slug];
   if (!view) throw new Error(`Missing module extension view: ${slug}`);
   return view;
+}
+
+/**
+ * 按 slug 读取首屏知识视图；未登记返回 null。
+ * @param {string} slug
+ * @returns {any}
+ */
+export function getModuleExtensionView(slug) {
+  return moduleExtensionViews[slug] ?? null;
 }

@@ -134,4 +134,3 @@ export const englishSourceCopy = Object.freeze({
 export const englishQuestions = Object.freeze(Object.values(englishModuleRegistry).flatMap((localizedModule) =>
   localizedModule.qa.map((item) => Object.freeze({ ...item, moduleSlug: localizedModule.slug, moduleTitle: localizedModule.title })),
 ));
-export const englishPilotQuestions = englishQuestions;

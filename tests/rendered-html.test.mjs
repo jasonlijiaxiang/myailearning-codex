@@ -28,8 +28,8 @@ import { moduleContentRegistry, requireModuleContent } from "../app/module-conte
 import { completionCurriculum, completionLearning, completionQa } from "../app/module-completion-content.mjs";
 import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
 import { moduleDiscovery } from "../app/module-discovery.mjs";
+import { getModuleExtensionView, moduleExtensionViews } from "../app/module-extension-views.mjs";
 import { moduleExtensionViews } from "../app/module-extension-views.mjs";
-import { getChineseModuleExtensionView } from "../app/module-extension-views-zh.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
 import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
@@ -1344,7 +1344,7 @@ test("remaining modules complete their own knowledge views, learning expansions,
       assert.match(html, /class="[^"]*\bfocusedNarrative\b[^"]*"/);
       assert.match(html, /class="focusedDecisionLedger"/);
     } else {
-      const chineseView = getChineseModuleExtensionView(slug) ?? view;
+      const chineseView = getModuleExtensionView(slug) ?? view;
       assert.match(html, new RegExp(escapeRegExp(chineseView.title)));
       assert.match(html, /data-knowledge-explorer="interactive"/);
       assert.match(html, new RegExp(`moduleKnowledgeExplorer--${escapeRegExp(view.layout)}`));
@@ -2079,7 +2079,7 @@ test("Batch 09 control views expose every step and focused search entries resolv
   ]);
 
   const platformView = moduleExtensionViews["ai-infra-platform"];
-  const chinesePlatformView = getChineseModuleExtensionView("ai-infra-platform");
+  const chinesePlatformView = getModuleExtensionView("ai-infra-platform");
   const englishPlatformPrinciples = englishModuleRegistry["ai-infra-platform"].sections
     .find((section) => section.id === "principles")
     ?.blocks.find((block) => block.type === "cards")

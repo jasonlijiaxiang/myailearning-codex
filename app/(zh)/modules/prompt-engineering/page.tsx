@@ -8,7 +8,7 @@ import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGri
 import { SystemLens, type LensPanel } from "../../../fieldbook-interactions";
 import { PromptAssemblyLab } from "../../../flagship-labs";
 import { ModuleExtensionPrimer } from "../../../module-pilot-views";
-import { getChineseModuleExtensionView } from "../../../module-extension-views-zh.mjs";
+import { getModuleExtensionView } from "../../../module-extension-views.mjs";
 import { promptDecisionCase, promptDeepDives, promptEvidenceCards, promptQa } from "../../../prompt-content.mjs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { getPublishedModule } from "../../../module-publication.mjs";
@@ -23,7 +23,7 @@ export const metadata: Metadata = chinesePageMetadata({
 });
 
 const promptPublication = getPublishedModule("prompt-engineering");
-const promptExtensionView = getChineseModuleExtensionView("prompt-engineering") ?? undefined;
+const promptExtensionView = getModuleExtensionView("prompt-engineering") ?? undefined;
 
 const conceptLinks = [
   { concept: "模型原理与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "前置知识", local: "理解 token、上下文容量、指令遵循与生成不确定性。" },

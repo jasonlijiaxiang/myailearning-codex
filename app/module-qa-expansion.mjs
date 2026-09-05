@@ -729,8 +729,3 @@ export const moduleQaExpansion = Object.freeze({
   ]),
 });
 
-export function requireModuleQaExpansion(slug) {
-  const items = moduleQaExpansion[slug];
-  if (!items) throw new Error(`Unknown module QA expansion: ${slug}`);
-  return items;
-}
