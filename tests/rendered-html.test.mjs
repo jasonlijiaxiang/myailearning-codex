@@ -29,7 +29,6 @@ import { completionCurriculum, completionLearning, completionQa } from "../app/m
 import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
 import { moduleDiscovery } from "../app/module-discovery.mjs";
 import { getModuleExtensionView, moduleExtensionViews } from "../app/module-extension-views.mjs";
-import { moduleExtensionViews } from "../app/module-extension-views.mjs";
 import { moduleLearningContent, moduleLearningSlugs, requireModuleLearning } from "../app/module-learning-content.mjs";
 import { moduleQaExpansion } from "../app/module-qa-expansion.mjs";
 import { moduleQuestionDepthExpansion } from "../app/module-question-depth-expansion.mjs";
