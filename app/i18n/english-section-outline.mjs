@@ -4,8 +4,12 @@ import { moduleManifests } from "../modules/index.mjs";
 // 英文统一 reader 的“自撰分组/共享分组”跟随英文内容形态：没有 brief 的模块
 // 拥有完整自撰分组。mcp、a2a、llm-inference 的中文路由虽然改为 dedicated，
 // 其英文内容仍是共享分组形态，因此这里按“是否有 brief”而不是中文 routeKind 判断。
+// rag、ai-agent、prompt-engineering 的 brief 只承载中文专用页面的呈现正文
+// （brief.presentation === "dedicated"），英文仍是完整自撰分组，不得因此翻转。
 const englishAuthoredModuleSlugs = Object.freeze(
-  moduleManifests.filter((manifest) => !manifest.brief).map((manifest) => manifest.slug),
+  moduleManifests
+    .filter((manifest) => !manifest.brief || manifest.brief.presentation === "dedicated")
+    .map((manifest) => manifest.slug),
 );
 
 export const sharedSectionRoles = Object.freeze({

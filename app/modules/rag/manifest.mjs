@@ -2,10 +2,155 @@
 // 本文件是该模块在全站注册表中的唯一配置源：正文只引用，不复制。
 // 注册表（发布、地图、发现、简报、英文、Reference、问答等）全部从本文件派生。
 import { deepFreeze } from "../freeze.mjs";
-import { ragLearningContent } from "../../rag-content.mjs";
+import { evidenceCards, ragDeepDives, ragLearningContent, ragQa } from "../../rag-content.mjs";
 import { fieldQuestions } from "../../question-field-kit.mjs";
 
 const slug = "rag";
+
+// brief 正文：15 键统一结构（slug/definition/position/presentation/principleTitle/principles/
+// decisions/deepDiveTitle/deepDiveLead/deepDives/criticalBoundary/cloudHooks/relatedSlugs/qa/
+// evidenceCards）+ 专用页面的呈现扩展字段。页面只引用，不复制。
+const brief = {
+  slug,
+  definition: "把外部资料整理成当前用户可使用、能核对且可撤回的依据；向量检索只是候选发现手段之一。",
+  position: "把 RAG 当作应用证据系统：应用负责权威性、身份、生命周期、评估、生产控制与经济性；可选扩展不能替代这些责任。",
+  presentation: "dedicated",
+  principleTitle: "回答证据的成立条件",
+  principles: [],
+  decisions: [],
+  deepDiveTitle: "证据链测量与失效定位",
+  deepDiveLead: "最终答案只是结果。诊断需要同时保存候选集、过滤结果、排序、最终证据包和回答主张；换更大模型只可能修复最后一段中的部分问题。",
+  deepDives: ragDeepDives,
+  criticalBoundary: "检索到不等于回答正确。标准证据还必须进入最终上下文，被模型忠实使用，并且来源本身权威、当前且适用于这位用户。",
+  cloudHooks: [
+    { stage: "资料进入与处理", capability: "对象存储、连接器、CDC、队列、文档智能、批处理", value: "让知识变化可追踪、可重放", discover: "数据在哪里，谁负责，新增、删除和撤权多久生效？", acceptance: "关键文档解析保真；正负变化完成证明", responsibility: "云提供连接与处理能力；客户定义权威源、许可和质量" },
+    { stage: "检索与索引", capability: "托管搜索、向量数据库、关系 / 图谱查询、缓存", value: "按问题类型产生权限内候选", discover: "精确、语义、关系和结构化查询各占多少？", acceptance: "过滤后的 Recall、时延、删除一致性、备份恢复", responsibility: "平台实现索引能力；应用负责查询路由、ACL 语义和验收" },
+    { stage: "模型能力", capability: "Embedding、Reranker、生成模型、模型路由", value: "把候选变成可用证据和回答", discover: "语言、质量、数据边界、P95 与成本如何排序？", acceptance: "固定任务和证据包上的质量—时延—成本结果", responsibility: "供应方说明模型与服务边界；客户负责场景选择和发布" },
+    { stage: "安全运行", capability: "IAM、KMS、私网、WAF、API 网关、容器 / Serverless", value: "让身份、密钥和网络边界贯穿链路", discover: "谁能检索什么，谁能调用什么，日志可记录什么？", acceptance: "越权泄漏为零；凭据、缓存、日志和故障路径受控", responsibility: "共享责任；托管服务不替代业务授权和威胁建模" },
+    { stage: "持续评估与日常运营", capability: "Tracing、评估平台、日志、告警、灰度、回滚", value: "定位失败并持续改进", discover: "谁对质量、事故、版本和恢复负责？", acceptance: "能从业务结果回到证据链阶段并恢复可信版本", responsibility: "平台提供观测和发布能力；团队定义业务状态与处置流程" },
+    { stage: "成本与容量", capability: "用量计量、预算、配额、弹性、FinOps", value: "控制离线和在线完整成本", discover: "成本驱动来自解析、索引、模型、流量还是人工？", acceptance: "单位成功结果成本、峰值容量和预算异常可解释", responsibility: "云方提供计量；客户定义分摊、价值和投资门槛" },
+  ],
+  relatedSlugs: ["llm", "data-engineering", "multimodal", "prompt-engineering", "evaluation", "security", "ai-ops", "solution-patterns", "ai-agent", "mcp", "a2a"],
+  qa: ragQa,
+  evidenceCards,
+  facts: [
+    { label: "采用条件", value: "动态知识、权限、引用或撤回" },
+    { label: "证据路径", value: "检索、编排、回答决策" },
+    { label: "生产门禁", value: "权威、身份、版本、引用与停止" },
+    { label: "扩展原则", value: "按需增加 Agent、MCP 或 A2A" },
+  ],
+  quickDirectory: [
+    { id: "fit", label: "采用判断", eyebrow: "先选最简单路线" },
+    { id: "knowledge-location", label: "知识位置", eyebrow: "权重或外部证据" },
+  ],
+  learnDirectory: [
+    { id: "evidence-contract", label: "证据契约", eyebrow: "回答成立条件" },
+    { id: "evidence-lifecycle", label: "双生命周期", eyebrow: "离线与在线" },
+    { id: "model-selection", label: "组件选型", eyebrow: "控制实验" },
+    { id: "measurement", label: "测量与诊断", eyebrow: "定位失效层" },
+    { id: "production", label: "生产与经济性", eyebrow: "控制和决策" },
+    { id: "extensions", label: "扩展模式", eyebrow: "按真实需要增加" },
+    { id: "practice", label: "实战产物", eyebrow: "按交付物验收" },
+  ],
+  fieldDirectory: [
+    { id: "cloud", label: "云能力与责任", eyebrow: "交付边界" },
+    { id: "evidence", label: "证据与范围", eyebrow: "来源核验" },
+    { id: "qa", label: "客户问题", eyebrow: "现场回答" },
+    { id: "related-modules", label: "相关模块", eyebrow: "责任连接" },
+  ],
+  conceptLinks: [
+    { concept: "参数化知识与上下文窗口", owner: "大语言模型原理", href: "/modules/llm", relation: "模型边界", local: "解释模型权重、Token 与长上下文能做什么，不能替代外部证据治理。" },
+    { concept: "接入、解析、清洗与索引生命周期", owner: "AI 数据工程", href: "/modules/data-engineering", relation: "知识供给", local: "负责把源资料变成带稳定 ID、版本、血缘和权限的检索产物。" },
+    { concept: "版面、图表与视觉证据", owner: "多模态", href: "/modules/multimodal", relation: "复杂文档", local: "负责 OCR、版面和页面图像表示；RAG 负责怎样检索和使用这些证据。" },
+    { concept: "指令、证据包与输出契约", owner: "提示词工程", href: "/modules/prompt-engineering", relation: "生成约束", local: "负责把检索结果、引用格式、拒答条件和结构化输出装配成模型输入。" },
+    { concept: "黄金集、Judge 与发布门槛", owner: "评估", href: "/modules/evaluation", relation: "质量治理", local: "RAG 定义每一层要测什么；评估模块负责数据集、统计、校准与持续评估方法。" },
+    { concept: "投毒、注入与数据泄漏", owner: "AI 安全", href: "/modules/security", relation: "威胁控制", local: "RAG 说明检索链上的攻击面；安全模块负责完整威胁模型、控制验证和事件响应。" },
+    { concept: "版本、Trace、灰度与事故恢复", owner: "AI 应用运营", href: "/modules/ai-ops", relation: "生产运营", local: "RAG 提供专属 Span 与降级信号；AI Ops 负责跨组件发布、回滚和事故闭环。" },
+    { concept: "业务基线、TCO 与 ROI", owner: "场景解决方案", href: "/modules/solution-patterns", relation: "投资判断", local: "RAG 解释技术成本驱动；完整价值、采用率、Build / Buy 和 ROI 由场景方案统领。" },
+    { concept: "多步、自适应检索", owner: "Agent · 智能体", href: "/modules/ai-agent", relation: "可选控制", local: "只有问题确实需要动态分解、选源、循环和工具调用时，才把 RAG 作为 Agent 的知识工具。" },
+    { concept: "把检索能力暴露给 Host", owner: "MCP", href: "/modules/mcp", relation: "可选协议", local: "MCP 可把检索服务标准化为 Resource 或 Tool，但不会自动增加检索质量、权限正确性或回答忠实度。" },
+    { concept: "把完整任务委派给另一 Agent", owner: "A2A", href: "/modules/a2a", relation: "可选协议", local: "A2A 适合跨 Agent 的任务委派、状态与产物交换；只读知识问答通常不需要这层复杂度。" },
+  ],
+  adoptionChoices: [
+    { route: "关键词搜索", fit: "编号、错误码、精确术语和短文档查找", change: "索引可独立更新", evidence: "命中文档或段落", limit: "不负责综合回答与主张级引用" },
+    { route: "直接长上下文", fit: "语料小、稳定、可整体安全传入", change: "每次请求重新提供", evidence: "可设计引用", limit: "输入成本、位置敏感与权限装配仍需验证" },
+    { route: "RAG", fit: "知识动态、跨源、需权限、引用或撤回", change: "证据链可独立发布", evidence: "回答可回到当前证据", limit: "增加数据链、检索链和评估复杂度" },
+    { route: "SQL / API / 规则", fit: "实时交易、精确计算和确定性状态", change: "直接读取事实源", evidence: "结果来自权威系统", limit: "不适合把开放文档理解全部改写成查询" },
+    { route: "微调", fit: "稳定语气、格式、行为或窄任务模式", change: "通过训练版本更新", evidence: "难以逐条归因", limit: "不适合作为频繁知识更新和撤回机制" },
+    { route: "人工流程", fit: "证据不成熟、风险极高或必须专业签署", change: "由流程和人员维护", evidence: "人工记录", limit: "可作为基线、审批点或最终兜底" },
+  ],
+  evidenceContract: [
+    { field: "权威来源", question: "谁有资格定义这个事实？", output: "来源系统、内容负责人、允许用途", acceptance: "非权威副本不能覆盖正式版本" },
+    { field: "稳定坐标", question: "回答怎样回到原文？", output: "文档 ID、版本、页码 / 区域、Chunk ID", acceptance: "每个关键主张可定位到原始证据" },
+    { field: "生效范围", question: "它在何时、何地、对谁有效？", output: "valid_from / valid_to、产品、地区、客户范围", acceptance: "过期或范围不符的证据不能进入最终上下文" },
+    { field: "授权边界", question: "当前用户能否看到这条证据？", output: "租户、主体、组、文档 / 字段 ACL", acceptance: "候选、缓存、上下文与返回都执行同一授权语义" },
+    { field: "冲突规则", question: "两个来源不一致时怎么办？", output: "优先级、并列披露、人工裁决", acceptance: "系统不会静默拼接出一个不存在的结论" },
+    { field: "回答契约", question: "证据能支持到什么程度？", output: "允许主张、引用格式、限定说明", acceptance: "事实、推断和建议在输出中可区分" },
+    { field: "停止条件", question: "何时追问、限定回答、拒答或转人工？", output: "缺条件、低覆盖、冲突、高风险规则", acceptance: "证据不足不会被流畅表达掩盖" },
+  ],
+  offlineLifecycle: [
+    { stage: "来源盘点与许可", output: "权威源、负责人、使用范围和同步方式", failure: "把草稿、个人副本或无权使用资料当事实", acceptance: "每个知识域有唯一裁决责任" },
+    { stage: "连接与变化捕获", output: "新增、修改、删除、撤权事件", failure: "只同步新增，旧内容和旧权限长期残留", acceptance: "正向与负向变化都能证明已传播" },
+    { stage: "解析与质量隔离", output: "文本、表格、标题、页码、版面和失败队列", failure: "解析成功状态掩盖表格错位或段落缺失", acceptance: "关键字段与原页抽样对账" },
+    { stage: "清洗、去重与版本裁决", output: "规范内容、重复簇、正式版本和替代关系", failure: "多个近似版本同时进入召回", acceptance: "冲突内容有明确保留、降权或撤回规则" },
+    { stage: "切片与元数据", output: "可召回单元、父子关系、坐标、版本和 ACL", failure: "条件、标题或表格被切断", acceptance: "真实问题能召回完整而非孤立的证据" },
+    { stage: "Embedding 与索引发布", output: "可版本化的稀疏 / 稠密索引和别名", failure: "模型、Chunk 与索引版本无法配套回滚", acceptance: "新旧版本可并行比较并受控切换" },
+    { stage: "更新、删除与撤权证明", output: "传播状态、缓存失效和完成证据", failure: "源文件已删但索引、摘要或缓存仍可命中", acceptance: "在约定目标内不可再检索或返回旧权限内容" },
+  ],
+  onlineLifecycle: [
+    { stage: "查询契约", output: "原问题、身份、时间、产品、地区和风险", failure: "改写丢失否定、型号或硬约束", signal: "原问题与每次改写均进入 Trace" },
+    { stage: "澄清与路由", output: "直接回答、追问、关键词、向量、SQL、图谱或不检索", failure: "所有请求无差别走最复杂链路", signal: "每条路线有启用原因、预算和停止条件" },
+    { stage: "候选召回", output: "尽量不漏的权限内候选集合", failure: "标准证据没有进入 Top-K", signal: "按查询类型与身份切片的 Candidate Recall@K" },
+    { stage: "过滤、融合与重排", output: "版本正确、可授权且真正相关的排序", failure: "正确证据被噪声、旧版本或错误过滤挤走", signal: "过滤前后召回、nDCG / MRR、重排增益和时延" },
+    { stage: "证据编排", output: "去重、冲突处理、顺序和 Token 预算后的证据包", failure: "召回正确但最终上下文缺关键条件", signal: "最终上下文覆盖、来源 ID 和冲突状态" },
+    { stage: "回答决策", output: "回答、限定回答、追问、拒答或人工接管", failure: "证据不足仍生成确定语气", signal: "忠实度、引用正确性 / 完整性、拒答与任务成功" },
+  ],
+  modelStack: [
+    { component: "解析 / OCR / VLM", choose: "文档类型、版面、表格、语言、扫描质量、部署边界", experiment: "原页坐标、关键字段完整率与失败分层", release: "解析器 + 配置 + 文档类型路由" },
+    { component: "Embedding", choose: "语言、领域、查询长度、Chunk 长度、维度、吞吐和数据边界", experiment: "固定候选生成方式比较 Recall@K 与关键切片", release: "Embedding + 预处理 + Chunk + 索引版本" },
+    { component: "稀疏搜索", choose: "字段权重、分词、语言、同义词、过滤和精确匹配能力", experiment: "编号、专名、日期、否定和错误码基线", release: "Schema + 分词器 + 字段 / 权重配置" },
+    { component: "向量索引", choose: "过滤时机、ANN、删除一致性、多租户、容量、备份和地域", experiment: "Recall—时延—内存曲线与权限过滤后的结果", release: "引擎 + 索引参数 + 数据版本 + 切换方案" },
+    { component: "Reranker", choose: "候选排序错误是否仍是主要瓶颈，新增延迟是否可接受", experiment: "固定候选集比较排序、最终上下文与业务成功增益", release: "模型 + 候选数 + 截断 + 阈值" },
+    { component: "生成模型", choose: "证据遵循、引用、拒答、结构化输出、语言、上下文、时延和成本", experiment: "固定证据包比较主张支持、严重错误与任务成功", release: "模型 + Prompt + 输出 Schema + 安全策略" },
+    { component: "可选 Judge", choose: "开放回答是否无法由规则和人工抽样覆盖", experiment: "与双人标注对齐并测试位置、长度和模型家族偏差", release: "Judge + Rubric + 校准集 + 人工争议流程" },
+  ],
+  failureChain: [
+    { stage: "来源与解析", symptom: "文档存在，标准段落从未进入索引", inspect: "连接事件、解析保真、失败队列、版本与删除状态", owner: "Data Engineering / Multimodal" },
+    { stage: "切片与索引", symptom: "证据被拆断、重复或仍命中旧版本", inspect: "Chunk 边界、父子关系、重复簇、索引和 ACL 版本", owner: "Data Engineering；RAG 验证可召回性" },
+    { stage: "候选召回", symptom: "正确证据不在候选 Top-K", inspect: "查询契约、路线、过滤前后 Recall@K", owner: "RAG" },
+    { stage: "融合与重排", symptom: "证据已召回却排不进最终上下文", inspect: "融合名次、排序指标、阈值、候选数和新增时延", owner: "RAG" },
+    { stage: "证据编排", symptom: "上下文缺版本、条件、冲突或稳定来源 ID", inspect: "最终证据包、去重、顺序、压缩和 Token 预算", owner: "RAG / Prompt Engineering" },
+    { stage: "回答决策", symptom: "证据正确但回答误读、漏引或不该答却回答", inspect: "主张—证据对齐、引用、拒答、人工复核和业务结果", owner: "RAG / Evaluation" },
+  ],
+  productionControls: [
+    { control: "身份与权限", local: "候选生成、过滤、缓存、上下文和返回使用同一当前主体", evidence: "越权测试、ACL 版本、拒绝原因", owner: "Security / 应用身份平台" },
+    { control: "不可信内容", local: "检索证据始终按数据处理，不能覆盖系统指令或自动授权工具", evidence: "恶意文档、投毒、间接注入测试", owner: "Security / Prompt Engineering" },
+    { control: "版本组合", local: "Parser、Chunk、Embedding、索引、Reranker、模型、Prompt 可成组追踪", evidence: "发布清单、影子对照、回滚证明", owner: "AI Ops / Data Engineering" },
+    { control: "RAG Trace", local: "记录查询、路线、候选、过滤、重排、最终证据包和回答决策", evidence: "阶段 Span、版本、时延、Token、成本和失败原因", owner: "RAG 定义字段；AI Ops 治理链路" },
+    { control: "容量与降级", local: "索引、Embedding、Reranker 或模型故障时保留权限和证据边界", evidence: "峰值、超时、区域故障、只搜不答、转人工演练", owner: "AI Infra / AI Gateway / AI Ops" },
+    { control: "质量与经济性", local: "质量、风险、时延和成本按成功业务结果共同观察", evidence: "关键切片、严重错误、采用率、人工接管和单位成功成本", owner: "Evaluation / Solution Patterns / FinOps" },
+  ],
+  economicsStages: [
+    { title: "现状基线", body: "记录当前处理时间、一次解决率、错误与返工、检索耗时、人工升级和不可接受损失。", decision: "没有现状就无法证明增量价值。" },
+    { title: "价值变化", body: "测量节省时间、覆盖提升、错误减少、交付提速、风险降低和新增业务能力。", decision: "把模型指标转换成真实工作状态。" },
+    { title: "完整成本", body: "同时计入接入、解析、Embedding、索引、重排、模型、网络、存储、评估、运营和人工复核。", decision: "区分一次建设、持续固定与按量成本。" },
+    { title: "采用与人工", body: "观察真实使用率、放弃率、转人工质量、人工接受率和流程绕行。", decision: "技术准确但无人采用仍没有 ROI。" },
+    { title: "风险调整", body: "把越权、错误承诺、过期知识和停机的预期损失及控制成本计入。", decision: "高风险场景不能只看平均节省。" },
+    { title: "上线决定", body: "比较净收益、回收期、关键切片和责任准备度，形成 Go / Repair / Stop。", decision: "结论绑定当前样本和假设，不外推为行业比例。" },
+  ],
+  extensionChoices: [
+    { pattern: "普通 / Advanced RAG", trigger: "单跳事实、制度、产品和知识问答", adds: "混合召回、过滤、重排、引用", risk: "数据链和评估复杂度", owner: "RAG 的生产基线" },
+    { pattern: "GraphRAG", trigger: "跨文档关系、主题归纳和全局问题", adds: "实体关系、社区和分层摘要", risk: "索引、更新、摘要与权限治理更重", owner: "RAG 使用图证据；Data Engineering 管图数据" },
+    { pattern: "Multimodal RAG", trigger: "答案依赖版面、图表、图纸或图像", adds: "OCR / VLM、页面或区域级表示", risk: "视觉成本和证据坐标更复杂", owner: "Multimodal 生产表示；RAG 检索和使用" },
+    { pattern: "Structured Retrieval", trigger: "指标、交易、关系数据库和精确计算", adds: "语义层、SQL / API、结果验证", risk: "口径、查询安全和实时一致性", owner: "事实源 / Data Engineering；RAG 负责路由与编排" },
+    { pattern: "Agentic RAG", trigger: "问题确需动态分解、选源、循环或工具", adds: "计划、预算、停止、轨迹和恢复", risk: "调用、时延和故障路径增加", owner: "Agent 拥有动态控制；RAG 仍拥有证据链" },
+  ],
+  protocolBoundaries: [
+    { name: "Agent", need: "模型必须根据中间结果动态决定下一次检索或工具动作", notNeed: "单轮、预设检索链的只读知识问答", responsibility: "计划、循环、预算、停止和恢复" },
+    { name: "MCP", need: "多个 Host / Agent 需要用标准协议发现和调用检索能力", notNeed: "应用可直接调用稳定内部 API", responsibility: "连接契约；不自动提供业务授权、质量或 SLA" },
+    { name: "A2A", need: "独立 Agent 之间需要委派完整任务并交付 Artifact", notNeed: "一个 Agent 调用一次搜索或 RAG 工具", responsibility: "跨 Agent 任务状态、身份、产物和失败语义" },
+  ],
+};
 
 export default Object.freeze({
   slug,
@@ -23,7 +168,7 @@ export default Object.freeze({
   legacyUndatedQuestionSetSha256: "dc2edf09ae4b7d8dc60c0ad568d78b0fd4aed3847021103310769e23e46cd746",
   qaCoverageTags: Object.freeze(["方案判断","离线证据","在线检索","有据回答","局部验收"]),
   contentContract: deepFreeze({"principle":["回答证据的成立条件"],"mechanism":["离线证据与在线回答生命周期","RAG 组件选型"],"boundary":["检索到不等于回答正确"],"cloud":["云能力、验收与责任映射"],"customer":["客户高频问题与深度回答"]}),
-  brief: null,
+  brief,
   curriculum: null,
   learning: ragLearningContent,
   extensionViews: null,
