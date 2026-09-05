@@ -39,7 +39,7 @@ function tokenValues(css, token) {
 /** @param {string} css @param {string} token */
 function tokenValue(css, token) {
   const values = tokenValues(css, token);
-  assert.equal(values.length, 1, `${token} 必须在 globals.css 唯一声明一次`);
+  assert.equal(values.length, 1, `${token} must be declared exactly once in globals.css`);
   return values[0];
 }
 
@@ -123,7 +123,7 @@ function cssRules(css) {
 /** @param {ParsedCssRule[]} rules @param {string} selector */
 function declarationsFor(rules, selector) {
   const matches = rules.filter((rule) => rule.selector === selector);
-  assert.ok(matches.length > 0, `缺少共享样式角色：${selector}`);
+  assert.ok(matches.length > 0, `missing shared style role: ${selector}`);
   const declarations = new Map();
   for (const rule of matches) {
     for (const [property, values] of rule.declarations) {
@@ -138,13 +138,13 @@ function assertRole(rules, selector, contract) {
   const declarations = declarationsFor(rules, selector);
   for (const [property, allowedValues] of Object.entries(contract)) {
     const actualValues = declarations.get(property) ?? [];
-    assert.ok(actualValues.length > 0, `${selector} 必须直接声明 ${property}`);
+    assert.ok(actualValues.length > 0, `${selector} must declare ${property} directly`);
     const normalizedAllowed = allowedValues.map(normalize);
     for (const allowedValue of normalizedAllowed) {
-      assert.ok(actualValues.includes(allowedValue), `${selector} 的 ${property} 必须包含契约值 ${allowedValue}`);
+      assert.ok(actualValues.includes(allowedValue), `${selector} ${property} must include the contract value ${allowedValue}`);
     }
     for (const actualValue of actualValues) {
-      assert.ok(normalizedAllowed.includes(actualValue), `${selector} 的 ${property} 不得漂移为 ${actualValue}`);
+      assert.ok(normalizedAllowed.includes(actualValue), `${selector} ${property} must not drift to ${actualValue}`);
     }
   }
 }
@@ -152,18 +152,41 @@ function assertRole(rules, selector, contract) {
 /** @param {ParsedCssRule[]} rules @param {string} selector @param {string} expected */
 function assertFinalFontSize(rules, selector, expected) {
   const matches = rules.filter((rule) => rule.selector === selector);
-  assert.ok(matches.length > 0, `缺少字号发布门槛：${selector}`);
+  assert.ok(matches.length > 0, `missing font-size release gate: ${selector}`);
   const values = matches.flatMap((rule) => rule.declarations.get("font-size") ?? []);
-  assert.ok(values.length > 0, `${selector} 必须直接声明 font-size`);
-  assert.equal(values.at(-1), expected, `${selector} 的最终字号必须为 ${expected}`);
+  assert.ok(values.length > 0, `${selector} must declare font-size directly`);
+  assert.equal(values.at(-1), expected, `${selector} final font size must be ${expected}`);
 }
 
-test("shared visual tokens have one owner and one documented meaning", async () => {
-  const [globals, designLanguage, appEntries] = await Promise.all([
-    readFile(globalsUrl, "utf8"),
-    readFile(designLanguageUrl, "utf8"),
-    readdir(appUrl, { recursive: true }),
-  ]);
+// 渲染验证：与 rendered-html 测试共用 dist 的 worker fetch 模式。
+let workerPromise;
+
+/** @param {string} path */
+async function render(path = "/") {
+  assert.match(path, /^\//, "render(path) must receive an absolute site path");
+
+  workerPromise ??= import(new URL("../dist/server/index.js", import.meta.url).href).then(({ default: worker }) => worker);
+  const worker = await workerPromise;
+
+  return worker.fetch(
+    new Request(new URL(path, "http://localhost"), {
+      headers: { accept: "text/html" },
+    }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
+  );
+}
+
+/** @param {string} path */
+async function renderHtml(path) {
+  const response = await render(path);
+  assert.equal(response.status, 200, `${path} must be reachable`);
+  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+  return response.text();
+}
+
+test("chrome token aliases resolve to their canonical values", async () => {
+  const globals = await readFile(globalsUrl, "utf8");
   const pairs = [
     ["--fb-chrome-ink", "--fb-ink"],
     ["--fb-chrome-muted", "--fb-muted"],
@@ -183,51 +206,77 @@ test("shared visual tokens have one owner and one documented meaning", async () 
   assert.equal(tokenValue(globals, "--fb-body"), "var(--fb-ink-2)");
   assert.equal(tokenValue(globals, "--fb-shell-wide"), "1480px");
   assert.doesNotMatch(tokenValue(globals, "--fb-font-editorial"), /var\(--font-serif\)/);
+});
+
+test("every site-wide token is declared once and documented", async () => {
+  const [globals, designLanguage] = await Promise.all([
+    readFile(globalsUrl, "utf8"),
+    readFile(designLanguageUrl, "utf8"),
+  ]);
 
   const definedTokens = new Set([...stripComments(globals).matchAll(/(--fb-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
   for (const token of definedTokens) {
-    assert.equal(tokenValues(globals, token).length, 1, `${token} 不得在 globals.css 重复声明`);
-    assert.ok(designLanguage.includes(`\`${token}\``), `${token} 必须登记在 DESIGN-LANGUAGE.md`);
+    assert.equal(tokenValues(globals, token).length, 1, `${token} must not be redeclared in globals.css`);
+    assert.ok(designLanguage.includes(`\`${token}\``), `${token} must be registered in DESIGN-LANGUAGE.md`);
   }
+});
 
+test("module css must not redeclare site tokens or pierce the shared shell", async () => {
+  const appEntries = await readdir(appUrl, { recursive: true });
   const cssEntries = appEntries.filter((entry) => entry.endsWith(".css"));
   const cssFiles = await Promise.all(cssEntries.map(async (entry) => [entry, await readFile(new URL(entry, appUrl), "utf8")]));
   const protectedDeclaration = /--fb-[a-z0-9-]+\s*:/g;
   for (const [entry, source] of cssFiles) {
     const protectedDeclarations = [...stripComments(source).matchAll(protectedDeclaration)];
     if (entry === "globals.css") {
-      assert.ok(protectedDeclarations.length > 0, "globals.css 必须拥有全站基础 Token");
+      assert.ok(protectedDeclarations.length > 0, "globals.css must own the site-wide base tokens");
     } else {
-      assert.equal(protectedDeclarations.length, 0, `${entry} 不得重复声明全站基础 Token`);
-      assert.doesNotMatch(source, /data-module-hero/i, `${entry} 不得穿透共享 Header / Hero`);
+      assert.equal(protectedDeclarations.length, 0, `${entry} must not redeclare site-wide base tokens`);
+      assert.doesNotMatch(source, /data-module-hero/i, `${entry} must not pierce the shared Header / Hero`);
       if (entry !== "unified-module-reader.module.css") {
-        assert.doesNotMatch(source, /var\(--fb-(?:chrome-[a-z0-9-]+|font-(?:ui|editorial|code)|shell-wide)\)/, `${entry} 不得消费共享外壳专用 Token`);
-      }
-      if (entry.endsWith(".module.css")) {
-        for (const rule of cssRules(source)) {
-          assert.doesNotMatch(
-            rule.selector,
-            /^(?:(?::global\()?(?:html|body|header|nav|a|h1|small|em|button|summary)(?:\b|\))|[#*\[]|:(?:is|where|not|has)\([^)]*(?:html|body|header|nav|a|h1|small|em|button|summary)\b)/i,
-            `${entry} 不得从全局裸元素 ${rule.selector} 起始选择，以免穿透共享外壳`,
-          );
-          if (rule.selector.startsWith(":global(")) {
-            assert.ok(
-              ["dense-module-reading-modes.module.css", "unified-module-reader.module.css"].includes(entry),
-              `${entry} 的无局部根 :global 选择器会绕过共享外壳边界`,
-            );
-          }
-        }
+        assert.doesNotMatch(source, /var\(--fb-(?:chrome-[a-z0-9-]+|font-(?:ui|editorial|code)|shell-wide)\)/, `${entry} must not consume shell-only tokens`);
       }
     }
   }
+});
 
-  const usedTokens = new Set(cssFiles.flatMap(([, source]) => [...source.matchAll(/var\((--fb-[a-z0-9-]+)/g)].map((match) => match[1])));
-  for (const token of usedTokens) {
-    assert.ok(definedTokens.has(token), `${token} 已被生产样式使用，但 globals.css 没有声明`);
+test("module css selectors must not start from global bare elements", async () => {
+  const appEntries = await readdir(appUrl, { recursive: true });
+  const moduleCssEntries = appEntries.filter((entry) => entry.endsWith(".module.css"));
+  for (const entry of moduleCssEntries) {
+    const source = await readFile(new URL(entry, appUrl), "utf8");
+    for (const rule of cssRules(source)) {
+      assert.doesNotMatch(
+        rule.selector,
+        /^(?:(?::global\()?(?:html|body|header|nav|a|h1|small|em|button|summary)(?:\b|\))|[#*\[]|:(?:is|where|not|has)\([^)]*(?:html|body|header|nav|a|h1|small|em|button|summary)\b)/i,
+        `${entry} must not start a selector from the global bare element ${rule.selector}, or it would pierce the shared shell`,
+      );
+      if (rule.selector.startsWith(":global(")) {
+        assert.ok(
+          ["dense-module-reading-modes.module.css", "unified-module-reader.module.css"].includes(entry),
+          `${entry} :global root selectors would bypass the shared shell boundary`,
+        );
+      }
+    }
   }
 });
 
-test("the unified Header and Hero own every typography and interaction role", async () => {
+test("every consumed token is declared in globals.css", async () => {
+  const [globals, appEntries] = await Promise.all([
+    readFile(globalsUrl, "utf8"),
+    readdir(appUrl, { recursive: true }),
+  ]);
+  const definedTokens = new Set([...stripComments(globals).matchAll(/(--fb-[a-z0-9-]+)\s*:/g)].map((match) => match[1]));
+  const cssFiles = await Promise.all(
+    appEntries.filter((entry) => entry.endsWith(".css")).map(async (entry) => [entry, await readFile(new URL(entry, appUrl), "utf8")]),
+  );
+  const usedTokens = new Set(cssFiles.flatMap(([, source]) => [...source.matchAll(/var\((--fb-[a-z0-9-]+)/g)].map((match) => match[1])));
+  for (const token of usedTokens) {
+    assert.ok(definedTokens.has(token), `${token} is used by production styles but not declared in globals.css`);
+  }
+});
+
+test("the unified Hero desktop typography roles follow the contract", async () => {
   const css = await readFile(sharedHeroUrl, "utf8");
   const rules = cssRules(css);
   const ui = "var(--fb-font-ui)";
@@ -255,9 +304,12 @@ test("the unified Header and Hero own every typography and interaction role", as
     [".hero .mobileMenu a", { color: [ink], "font-family": [ui], "font-size": ["13px"], "font-weight": ["700"], "letter-spacing": ["normal"], "line-height": ["1.35"] }],
   ];
   for (const [selector, contract] of roles) assertRole(rules, selector, contract);
+});
 
+test("the unified Hero keeps exactly one 720px mobile contract", async () => {
+  const css = await readFile(sharedHeroUrl, "utf8");
   const mobileBodies = atRuleBodies(css, /max-width\s*:\s*720px/i);
-  assert.equal(mobileBodies.length, 1, "共享外壳必须只有一个 720px 移动断点契约");
+  assert.equal(mobileBodies.length, 1, "the shared shell must keep exactly one 720px mobile breakpoint contract");
   const mobileRules = cssRules(mobileBodies[0]);
   /** @type {Array<[string, Record<string, string[]>]>} */
   const mobileRoles = [
@@ -271,7 +323,11 @@ test("the unified Header and Hero own every typography and interaction role", as
     [".hero .factLedger dd", { "font-size": ["12px"] }],
   ];
   for (const [selector, contract] of mobileRoles) assertRole(mobileRules, selector, contract);
+});
 
+test("the unified Hero interaction states stay token-driven", async () => {
+  const css = await readFile(sharedHeroUrl, "utf8");
+  const rules = cssRules(css);
   assertRole(rules, ".hero .siteLinks a:hover", { color: ["var(--fb-chrome-link)"], "border-bottom-color": ["var(--fb-chrome-accent)"] });
   assertRole(rules, ".hero .brand:focus-visible", { color: ["var(--fb-chrome-link)"], outline: ["3px solid var(--fb-chrome-focus)"], "outline-offset": ["2px"] });
   assertRole(rules, ".hero .siteLinks a:focus-visible", { color: ["var(--fb-chrome-link)"], outline: ["3px solid var(--fb-chrome-focus)"], "outline-offset": ["2px"] });
@@ -281,13 +337,17 @@ test("the unified Header and Hero own every typography and interaction role", as
   assertRole(rules, ".mobileMenu > div", { border: ["1px solid var(--fb-chrome-line)"], background: ["var(--fb-chrome-surface)"], "box-shadow": ["var(--fb-chrome-shadow)"] });
   assertRole(rules, ".hero .mobileMenu a:hover", { color: ["var(--fb-chrome-link)"], background: ["var(--fb-chrome-mint)"] });
   assertRole(rules, ".hero .mobileMenu a:focus-visible", { color: ["var(--fb-chrome-link)"], background: ["var(--fb-chrome-mint)"], outline: ["3px solid var(--fb-chrome-focus)"], "outline-offset": ["2px"] });
+});
 
+test("the shared shell consumes only chrome tokens and never bare colors", async () => {
+  const css = await readFile(sharedHeroUrl, "utf8");
+  const rules = cssRules(css);
   const allowedVariables = /^--fb-(?:chrome-[a-z0-9-]+|font-(?:ui|editorial|code)|shell-wide)$/;
   for (const variable of [...css.matchAll(/var\((--[a-z0-9-]+)/gi)].map((match) => match[1])) {
-    assert.match(variable, allowedVariables, `共享外壳不得消费 ${variable}`);
+    assert.match(variable, allowedVariables, `the shared shell must not consume ${variable}`);
   }
-  assert.doesNotMatch(css, /!important|\bfont\s*:/i, "共享外壳不得依赖 !important 或 font shorthand");
-  assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(|oklch?\(|lab\(|lch\(|color-mix\(/i, "共享外壳不得写裸色值");
+  assert.doesNotMatch(css, /!important|\bfont\s*:/i, "the shared shell must not rely on !important or the font shorthand");
+  assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(|oklch?\(|lab\(|lch\(|color-mix\(/i, "the shared shell must not write bare color values");
 
   const protectedVisualProperties = new Set(["color", "background", "background-color", "border", "border-color", "border-top", "border-right", "border-bottom", "border-left", "border-bottom-color", "outline", "box-shadow", "fill", "stroke"]);
   for (const rule of rules) {
@@ -296,7 +356,7 @@ test("the unified Header and Hero own every typography and interaction role", as
       for (const value of values) {
         assert.ok(
           /var\(--fb-chrome-[a-z0-9-]+\)/.test(value) || /^(?:0|none|transparent|\d+(?:px)? solid transparent)$/.test(value),
-          `${rule.selector} 的 ${property} 必须直接消费 chrome token，而不是 ${value}`,
+          `${rule.selector} ${property} must consume a chrome token directly, not ${value}`,
         );
         assert.doesNotMatch(value, /\binherit\b|currentcolor/i);
       }
@@ -304,31 +364,36 @@ test("the unified Header and Hero own every typography and interaction role", as
   }
 });
 
-test("the shared scaffold keeps module CSS outside the Header boundary", async () => {
-  const [componentSource, appEntries, sharedChineseSource, unifiedBriefSource] = await Promise.all([
-    readFile(sharedHeroComponentUrl, "utf8"),
-    readdir(appUrl, { recursive: true }),
+test("the Hero stays a leading sibling of the module content root", async () => {
+  const componentSource = await readFile(sharedHeroComponentUrl, "utf8");
+  const heroIndex = componentSource.indexOf("<UnifiedModuleHero {...hero} />");
+  const contentIndex = componentSource.indexOf('data-module-content="unified"');
+  assert.ok(heroIndex > 0 && contentIndex > heroIndex, "the shared Hero must be a leading sibling of the module content root");
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
+  assert.match(componentSource, /<main[^>]+id="main-content"[^>]+data-module-content="unified"/s);
+  assert.doesNotMatch(componentSource, /--fb-[a-z0-9-]+\s*:/, "shared components must not inline-override site-wide base tokens");
+});
+
+test("brief routes delegate unconditionally to the shared shell", async () => {
+  const [sharedChineseSource, unifiedBriefSource] = await Promise.all([
     readFile(sharedChineseModuleUrl, "utf8"),
     readFile(unifiedBriefComponentUrl, "utf8"),
   ]);
-  const heroIndex = componentSource.indexOf("<UnifiedModuleHero {...hero} />");
-  const contentIndex = componentSource.indexOf('data-module-content="unified"');
-  assert.ok(heroIndex > 0 && contentIndex > heroIndex, "共享 Hero 必须是模块内容根的前置兄弟节点");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(componentSource, /<main[^>]+id="main-content"[^>]+data-module-content="unified"/s);
-  assert.doesNotMatch(componentSource, /--fb-[a-z0-9-]+\s*:/, "共享组件不得按模块内联覆盖全站基础 Token");
   assert.match(sharedChineseSource, /if \(!unifiedConfig\) throw new Error\(`Missing unified reader configuration for published brief:/);
   assert.match(sharedChineseSource, /const directories = buildBriefModuleDirectories\(/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(sharedChineseSource, /return \(\s*<UnifiedBriefModulePage\b/s);
-  assert.doesNotMatch(sharedChineseSource, /\bModuleReadingModes\b/, "中文 brief route 不得保留旧阅读器回退");
-  assert.doesNotMatch(sharedChineseSource, /<ReadingProgress\b/, "中文 brief route 不得复制旧版页面外壳");
-  assert.doesNotMatch(sharedChineseSource, /<main\b/, "中文 brief route 必须无条件交给共享页面外壳");
+  assert.doesNotMatch(sharedChineseSource, /\bModuleReadingModes\b/, "the Chinese brief route must not keep the legacy reader fallback");
+  assert.doesNotMatch(sharedChineseSource, /<ReadingProgress\b/, "the Chinese brief route must not copy the old page shell");
+  assert.doesNotMatch(sharedChineseSource, /<main\b/, "the Chinese brief route must unconditionally delegate to the shared page shell");
   assert.match(unifiedBriefSource, /<UnifiedModuleScaffold\b/);
   assert.match(unifiedBriefSource, /<DenseModuleReadingModes\b/);
-  assert.match(unifiedBriefSource, /hasDeepDives \? \[\{ id: "deep-dive"/, "目录只能在真实深挖存在时列出工程深挖入口");
-  assert.doesNotMatch(unifiedBriefSource, /<UnifiedModuleHero\b|<ReadingProgress\b/, "共享 brief wrapper 不得拆开共享页面边界");
+  assert.match(unifiedBriefSource, /hasDeepDives \? \[\{ id: "deep-dive"/, "the directory may only list the engineering deep-dive entry when deep dives really exist");
+  assert.doesNotMatch(unifiedBriefSource, /<UnifiedModuleHero\b|<ReadingProgress\b/, "the shared brief wrapper must not split the shared page boundary");
+});
 
+test("no route or component duplicates the Hero marker or overrides site tokens", async () => {
+  const appEntries = await readdir(appUrl, { recursive: true });
   const sourceEntries = appEntries.filter((entry) => /\.(?:tsx|jsx)$/.test(entry) && entry !== "unified-module-hero.tsx");
   const scaffoldEntries = [];
   for (const entry of sourceEntries) {
@@ -338,19 +403,19 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
       if (entry === "i18n/english-pilot-module-page.tsx") {
         const unifiedBranchStart = source.indexOf('if (reader === "unified")');
         const legacyBranchStart = source.indexOf("\n  return (\n    <main", unifiedBranchStart);
-        assert.ok(unifiedBranchStart > 0 && legacyBranchStart > unifiedBranchStart, "英文混合 renderer 必须保持可识别的统一与旧版分支边界");
-        assert.doesNotMatch(source.slice(unifiedBranchStart, legacyBranchStart), /<UnifiedModuleHero\b|<ReadingProgress\b/, `${entry} 的统一分支不得拆开共享页面边界`);
+        assert.ok(unifiedBranchStart > 0 && legacyBranchStart > unifiedBranchStart, "the mixed English renderer must keep identifiable unified and legacy branch boundaries");
+        assert.doesNotMatch(source.slice(unifiedBranchStart, legacyBranchStart), /<UnifiedModuleHero\b|<ReadingProgress\b/, `${entry} unified branch must not split the shared page boundary`);
       } else {
-        assert.doesNotMatch(source, /<UnifiedModuleHero\b|<ReadingProgress\b/, `${entry} 不得拆开共享页面边界`);
+        assert.doesNotMatch(source, /<UnifiedModuleHero\b|<ReadingProgress\b/, `${entry} must not split the shared page boundary`);
       }
     }
-    assert.doesNotMatch(source, /data-module-hero\s*=/, `${entry} 不得复制共享 Hero 标记`);
-    assert.doesNotMatch(source, /--fb-[a-z0-9-]+\s*:/, `${entry} 不得以内联样式覆盖全站基础 Token`);
+    assert.doesNotMatch(source, /data-module-hero\s*=/, `${entry} must not duplicate the shared Hero marker`);
+    assert.doesNotMatch(source, /--fb-[a-z0-9-]+\s*:/, `${entry} must not override site-wide base tokens with inline styles`);
   }
-  assert.ok(scaffoldEntries.length > 0, "共享阅读外壳必须至少有一个真实接入点");
+  assert.ok(scaffoldEntries.length > 0, "the shared reading shell must have at least one real integration point");
 });
 
-test("knowledge prose keeps its release typography floor across every module family", async () => {
+test("knowledge prose keeps its 16px release typography floor", async () => {
   const [denseReader, fieldbookV2, fieldbookV3, agentReader, mcp, a2a, inference] = await Promise.all([
     readFile(denseReaderStylesUrl, "utf8"),
     readFile(fieldbookV2StylesUrl, "utf8"),
@@ -377,6 +442,16 @@ test("knowledge prose keeps its release typography floor across every module fam
     [cssRules(inference), ".chapterBrief dd"],
   ];
   for (const [rules, selector] of sixteenPixelKnowledge) assertFinalFontSize(rules, selector, "16px");
+});
+
+test("supporting metadata keeps its 14px floor", async () => {
+  const [fieldbookV3, agentReader, mcp, a2a, inference] = await Promise.all([
+    readFile(fieldbookV3StylesUrl, "utf8"),
+    readFile(agentReaderStylesUrl, "utf8"),
+    readFile(mcpStylesUrl, "utf8"),
+    readFile(a2aStylesUrl, "utf8"),
+    readFile(inferenceStylesUrl, "utf8"),
+  ]);
 
   /** @type {Array<[ParsedCssRule[], string]>} */
   const fourteenPixelSupport = [
@@ -387,20 +462,18 @@ test("knowledge prose keeps its release typography floor across every module fam
     [cssRules(inference), ".inferenceFieldContent .focusedCloudRows small"],
   ];
   for (const [rules, selector] of fourteenPixelSupport) assertFinalFontSize(rules, selector, "14px");
-
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(fieldbookV3, /\.solutionCapabilityMatrixRow p::before\s*\{[^}]*content:\s*attr\(data-label\)/s, "窄屏责任矩阵必须显示每个字段标签");
-  assert.doesNotMatch(fieldbookV3, /\.solutionCapabilityMatrixRow p:nth-child\(3\)\s*\{\s*display:\s*none;/, "窄屏责任矩阵不得隐藏常见选择");
 });
 
-test("unified deep links and comparison tables keep their accessibility ownership", async () => {
-  const [readerSource, englishSource, qaInteractionSource, a2aSource, modulePilotSource] = await Promise.all([
-    readFile(denseReaderComponentUrl, "utf8"),
-    readFile(englishModuleComponentUrl, "utf8"),
-    readFile(qaInteractionComponentUrl, "utf8"),
-    readFile(a2aComponentUrl, "utf8"),
-    readFile(modulePilotViewsUrl, "utf8"),
-  ]);
+test("the responsibility matrix keeps its field labels on narrow screens", async () => {
+  const fieldbookV3 = await readFile(fieldbookV3StylesUrl, "utf8");
+  const rules = cssRules(fieldbookV3);
+  assertRole(rules, ".solutionCapabilityMatrixRow p::before", { content: ["attr(data-label)"] });
+  const hiddenThirdCell = rules.find((rule) => rule.selector === ".solutionCapabilityMatrixRow p:nth-child(3)" && (rule.declarations.get("display") ?? []).includes("none"));
+  assert.equal(hiddenThirdCell, undefined, "the narrow-screen responsibility matrix must not hide the common choice");
+});
+
+test("deep links resolve through real DOM ancestors", async () => {
+  const readerSource = await readFile(denseReaderComponentUrl, "utf8");
   assert.match(readerSource, /function directoryAnchorForTarget\(/);
   assert.match(readerSource, /const directoryIds = new Set\(\(directories\[modeId\] \?\? \[\]\)\.map\(\(item\) => item\.id\)\)/);
   assert.match(readerSource, /while \(current\)[\s\S]*current = current\.parentElement/);
@@ -408,6 +481,10 @@ test("unified deep links and comparison tables keep their accessibility ownershi
   assert.match(readerSource, /target instanceof HTMLDetailsElement\) target\.open = true/);
   assert.match(readerSource, /window\.history\.replaceState\(window\.history\.state/);
   assert.match(readerSource, /requestAnimationFrame\(\(\) => \{[\s\S]*revealTarget\(\);[\s\S]*requestAnimationFrame\(revealTarget\)/);
+});
+
+test("English reader sections own accessible headings", async () => {
+  const englishSource = await readFile(englishModuleComponentUrl, "utf8");
   assert.match(englishSource, /const headingId = `\$\{group\.id\}-section-title`/);
   assert.match(englishSource, /<section aria-labelledby=\{headingId\}[^>]*id=\{group\.id\}/);
   assert.match(englishSource, /<h2 id=\{headingId\}>/);
@@ -419,13 +496,81 @@ test("unified deep links and comparison tables keep their accessibility ownershi
   assert.match(englishSource, /<table><caption className="srOnly">\{tableLabel\}<\/caption>/);
   assert.match(englishSource, /<th scope="col"/);
   assert.match(englishSource, /<th scope="row"/);
-  assert.match(qaInteractionSource, /target\.hidden = false;[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*requestAnimationFrame\(\(\) => target\.scrollIntoView/);
+});
+
+test("comparison tables keep accessible regions, captions, and headers", async () => {
+  const [a2aSource, modulePilotSource] = await Promise.all([
+    readFile(a2aComponentUrl, "utf8"),
+    readFile(modulePilotViewsUrl, "utf8"),
+  ]);
   const a2aScrollableRegions = a2aSource.match(/role="region" tabIndex=\{0\}/g) ?? [];
   const a2aCaptions = a2aSource.match(/<caption className="srOnly">/g) ?? [];
-  assert.ok(a2aScrollableRegions.length > 0, "A2A 必须保留至少一个可访问的关系表");
-  assert.equal(a2aCaptions.length, a2aScrollableRegions.length, "每个 A2A 可滚动关系表必须有隐藏表名");
-  assert.ok((a2aSource.match(/scope="col"/g) ?? []).length > 0, "A2A 关系表必须声明列标题");
-  assert.ok((a2aSource.match(/scope="row"/g) ?? []).length > 0, "A2A 关系表必须声明行标题");
-  assert.match(modulePilotSource, /className="primerAtlasTable" role="table" aria-label="七类场景的目标、指标和隐藏风险"/);
+  assert.ok(a2aScrollableRegions.length > 0, "A2A must keep at least one accessible relation table");
+  assert.equal(a2aCaptions.length, a2aScrollableRegions.length, "every A2A scrollable relation table must have a hidden caption");
+  assert.ok((a2aSource.match(/scope="col"/g) ?? []).length > 0, "A2A relation tables must declare column headers");
+  assert.ok((a2aSource.match(/scope="row"/g) ?? []).length > 0, "A2A relation tables must declare row headers");
+  assert.match(modulePilotSource, /className="primerAtlasTable" role="table" aria-label="[^"]+"/);
   assert.match(modulePilotSource, /brief && showCriticalBoundary \? <aside/, "focused primers must support one explicit critical-boundary owner");
+});
+
+test("qa deep links re-anchor after expansion", async () => {
+  const qaInteractionSource = await readFile(qaInteractionComponentUrl, "utf8");
+  assert.match(qaInteractionSource, /target\.hidden = false;[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*requestAnimationFrame\(\(\) => target\.scrollIntoView/);
+});
+
+test("rendered public pages carry the shared design-language root", async () => {
+  const representativeRoutes = [
+    "/",
+    "/en",
+    "/modules/solution-patterns",
+    "/modules/rag",
+    "/en/modules/rag",
+    "/questions",
+    "/glossary",
+    "/references",
+    "/coding-agents",
+    "/en/questions",
+    "/en/glossary",
+    "/en/references",
+    "/knowledge-graph",
+    "/en/knowledge-graph",
+  ];
+
+  for (const path of representativeRoutes) {
+    const html = await renderHtml(path);
+    assert.match(html, /<main[^>]*class="[^"]*\bfieldbookTheme\b[^"]*"/, `${path} is missing the site-wide design-language root class`);
+  }
+});
+
+test("rendered module pages carry the unified Hero and reader chrome", async () => {
+  const html = await renderHtml("/modules/solution-patterns");
+  assert.match(html, /data-module-hero="unified"/);
+  assert.match(html, /data-module-reader="unified"/);
+  assert.match(html, /<header\b[^>]*\bdata-module-hero="unified"/);
+  assert.match(html, /<nav[^>]*aria-label="[^"]+"/);
+  assert.match(html, /Cloud × AI \/ Presales Fieldbook/);
+  assert.match(html, /<dl class="moduleHeroMetrics" aria-label="[^"]+">/);
+  assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/);
+  assert.match(html, /role="tablist" aria-label="[^"]+"/);
+  assert.match(html, /<summary aria-label="[^"]+"><span><\/span><span><\/span><span><\/span><\/summary>/);
+});
+
+test("rendered English module pages keep their localized reader labels", async () => {
+  const ragHtml = await renderHtml("/en/modules/rag");
+  assert.match(ragHtml, /<html\b[^>]*\blang="en"/i);
+  assert.match(ragHtml, /aria-label="Module navigation"/);
+  assert.match(ragHtml, /aria-label="Reading modes"/);
+  assert.match(ragHtml, />10-minute scan</);
+  assert.match(ragHtml, />Systematic study</);
+  assert.match(ragHtml, />Field lookup</);
+  assert.match(ragHtml, /aria-label="Critical boundary"[^>]*data-importance="critical"/);
+});
+
+test("rendered module pages expose one main-content skip target after navigation", async () => {
+  for (const path of ["/modules/solution-patterns", "/en/modules/rag"]) {
+    const html = await renderHtml(path);
+    assert.equal((html.match(/class="skipLink" href="#main-content"/g) ?? []).length, 1, `${path} must keep exactly one skip link`);
+    assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${path} must keep exactly one main-content skip target`);
+    assert.ok(html.indexOf('id="main-content"') > html.indexOf("</nav>"), `${path} skip target must sit after the navigation`);
+  }
 });

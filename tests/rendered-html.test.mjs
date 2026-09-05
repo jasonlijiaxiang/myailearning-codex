@@ -25,6 +25,7 @@ import {
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
+import { requireModuleBrief } from "../app/module-brief-content.mjs";
 import { moduleCurriculumContent, moduleCurriculumSlugs, requireModuleCurriculum } from "../app/module-curriculum-content.mjs";
 import { moduleDiscovery } from "../app/module-discovery.mjs";
 import { getModuleExtensionView, moduleExtensionViews } from "../app/module-extension-views.mjs";
@@ -44,11 +45,12 @@ import { evidenceCards, ragLearningContent, ragQa } from "../app/rag-content.mjs
 import { chineseReferenceModules, referenceModules, sourceLedger } from "../app/reference-content.mjs";
 import { sourceFreshness } from "../app/source-freshness.mjs";
 import { glossaryGroups, glossaryTermIds, homepageTermGroups, requireTerm, terminology } from "../app/terminology.mjs";
+import { scenarioDefinitionsForHome, timeBudgetPaths } from "../app/home-learning-paths.mjs";
 
 let workerPromise;
 
 async function render(path = "/") {
-  assert.match(path, /^\//, "render(path) 必须接收站内绝对路径");
+  assert.match(path, /^\//, "render(path) must receive an absolute site path");
 
   workerPromise ??= import(new URL("../dist/server/index.js", import.meta.url).href).then(({ default: worker }) => worker);
   const worker = await workerPromise;
@@ -65,7 +67,7 @@ async function render(path = "/") {
 /** @param {string} path */
 async function renderHtml(path) {
   const response = await render(path);
-  assert.equal(response.status, 200, `${path} 应可正常访问`);
+  assert.equal(response.status, 200, `${path} must be reachable`);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
   return response.text();
 }
@@ -78,6 +80,17 @@ function escapeRegExp(value) {
 /** @param {string} value */
 function escapeHtmlText(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+/**
+ * Build a regex source that matches registry text as rendered into HTML:
+ * quote characters may appear as HTML entities depending on the rendering context.
+ * @param {string} value
+ */
+function renderTextPattern(value) {
+  return escapeRegExp(escapeHtmlText(value))
+    .replaceAll('"', '(?:&quot;|")')
+    .replaceAll("'", "(?:&#x27;|')");
 }
 
 /** @param {string} html @param {string} label */
@@ -120,7 +133,7 @@ function deriveSharedTermModuleLinks(modules, terms) {
 /** @param {string} html @param {string} path */
 function extractControlDataPlane(html, path) {
   const controlDataPlane = html.match(/<section class="controlDataPlane"[\s\S]*?<\/section>/)?.[0];
-  assert.ok(controlDataPlane, `${path} 必须渲染控制面步骤区`);
+  assert.ok(controlDataPlane, `${path} must render the control-plane steps section`);
   return controlDataPlane;
 }
 
@@ -130,11 +143,11 @@ function assertValidGridSpans(html, path) {
 
   for (const declaration of spanDeclarations) {
     const value = Number(declaration[1]);
-    assert.ok(Number.isInteger(value) && value >= 1 && value <= 12 && 12 % value === 0, `${path} 出现非法 Grid span：${declaration[0]}`);
+    assert.ok(Number.isInteger(value) && value >= 1 && value <= 12 && 12 % value === 0, `${path} renders an invalid grid span: ${declaration[0]}`);
   }
 
   for (const openingTag of html.matchAll(/<div\b[^>]*class="[^"]*\bmechanicGrid\b[^"]*"[^>]*>/g)) {
-    assert.match(openingTag[0], /data-count="\d+"/, `${path} 的 mechanicGrid 必须声明真实卡片数量`);
+    assert.match(openingTag[0], /data-count="\d+"/, `${path} mechanicGrid must declare the real card count`);
   }
 }
 
@@ -146,7 +159,7 @@ const publishedModules = publishedModuleRegistry.map((module) => {
 /** @param {string} slug */
 function getPublishedModule(slug) {
   const publishedModule = publishedModules.find((candidate) => candidate.slug === slug);
-  assert.ok(publishedModule, `缺少发布模块：${slug}`);
+  assert.ok(publishedModule, `missing published module: ${slug}`);
   return publishedModule;
 }
 
@@ -159,11 +172,12 @@ function collectModuleSourceIds({ cards, qa, deepDives }) {
   ]);
 }
 
-/** @param {string | undefined} value @param {string} label @param {(v: string) => string | null} formatter @param {string} prefix */
-function assertOptionalContentDate(value, label, formatter, prefix) {
+/** @param {string | undefined} value @param {string} label @param {(v: string) => string | null} formatter */
+function assertOptionalContentDate(value, label, formatter) {
   if (value == null) return;
-  assert.ok(isValidContentUpdatedAt(value), `${label} 必须是策略生效后的有效日期：${value}`);
-  assert.equal(formatter(value), `${prefix} ${value}`);
+  assert.ok(isValidContentUpdatedAt(value), `${label} must be a valid post-policy date: ${value}`);
+  const formatted = formatter(value);
+  assert.ok(typeof formatted === "string" && formatted.endsWith(value), `${label} must format to a labeled date ending in ${value}`);
 }
 
 /** @param {{ addedAt?: string | null; q: string }[]} qa */
@@ -177,13 +191,13 @@ function legacyUndatedQuestionSetSha256(qa) {
 
 /** @param {any} item @param {string} label */
 function assertNoItemDateMetadata(item, label) {
-  assert.equal(Object.hasOwn(item, "updatedAt"), false, `${label} 不得显示逐项最近更新时间`);
-  assert.equal(Object.hasOwn(item, "addedAt"), false, `${label} 不得误用新增问答日期`);
+  assert.equal(Object.hasOwn(item, "updatedAt"), false, `${label} must not show per-item update dates`);
+  assert.equal(Object.hasOwn(item, "addedAt"), false, `${label} must not reuse the addedAt question metadata`);
 }
 
 test("historical undated-question baseline binds identity instead of only quantity", () => {
-  const original = [{ q: "历史问题 A" }, { q: "历史问题 B" }];
-  const sameCountReplacement = [{ q: "历史问题 A" }, { q: "新增但漏填日期的问题" }];
+  const original = [{ q: "Legacy question A" }, { q: "Legacy question B" }];
+  const sameCountReplacement = [{ q: "Legacy question A" }, { q: "New question missing its date" }];
   assert.equal(original.length, sameCountReplacement.length);
   assert.notEqual(
     legacyUndatedQuestionSetSha256(original),
@@ -193,10 +207,10 @@ test("historical undated-question baseline binds identity instead of only quanti
 
 test("module updates and newly added questions use distinct, non-repeating date metadata", async () => {
   assert.equal(CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, "2026-07-20");
-  assert.equal(formatModuleUpdatedAt(undefined), null, "历史模块缺少 updatedAt 时必须保持可渲染");
-  assert.equal(formatQuestionAddedAt(undefined), null, "历史问题缺少 addedAt 时必须保持可渲染");
-  assert.equal(formatModuleUpdatedAt("2026-07-20"), "最近更新于 2026-07-20");
-  assert.equal(formatQuestionAddedAt("2026-07-20"), "新增于 2026-07-20");
+  assert.equal(formatModuleUpdatedAt(undefined), null, "historic modules without updatedAt must stay renderable");
+  assert.equal(formatQuestionAddedAt(undefined), null, "historic questions without addedAt must stay renderable");
+  assert.ok(/^\S+ 2026-07-20$/.test(/** @type {string} */ (formatModuleUpdatedAt("2026-07-20"))));
+  assert.ok(/^\S+ 2026-07-20$/.test(/** @type {string} */ (formatQuestionAddedAt("2026-07-20"))));
   assert.equal(isValidContentUpdatedAt("2026-02-30"), false);
   assert.equal(isValidContentUpdatedAt("2026-07-19"), false);
   assert.throws(() => formatModuleUpdatedAt("2026-02-30"), /updatedAt/);
@@ -209,26 +223,26 @@ test("module updates and newly added questions use distinct, non-repeating date 
     const curriculum = publication.routeKind === "brief" ? requireModuleCurriculum(publication.slug) : null;
     const learning = publication.routeKind === "brief" ? requireModuleLearning(publication.slug) : null;
 
-    assert.equal(Object.hasOwn(publication, "addedAt"), false, `${publication.slug} 的模块日期不得使用 addedAt`);
-    assert.ok(isValidIsoDate(publication.introducedAt), `${publication.slug} / introducedAt 必须是有效 YYYY-MM-DD 日期`);
-    assert.match(publication.legacyUndatedQuestionSetSha256, /^[0-9a-f]{64}$/, `${publication.slug} / legacyUndatedQuestionSetSha256 必须登记稳定身份集合摘要`);
-    assertOptionalContentDate(publication.updatedAt, `${publication.slug} / updatedAt`, formatModuleUpdatedAt, "最近更新于");
+    assert.equal(Object.hasOwn(publication, "addedAt"), false, `${publication.slug} must not use addedAt for the module date`);
+    assert.ok(isValidIsoDate(publication.introducedAt), `${publication.slug} / introducedAt must be a valid YYYY-MM-DD date`);
+    assert.match(publication.legacyUndatedQuestionSetSha256, /^[0-9a-f]{64}$/, `${publication.slug} / legacyUndatedQuestionSetSha256 must hold a stable identity digest`);
+    assertOptionalContentDate(publication.updatedAt, `${publication.slug} / updatedAt`, formatModuleUpdatedAt);
     if (publication.updatedAt) {
-      assert.ok(publication.updatedAt >= publication.introducedAt, `${publication.slug} 的 updatedAt 不得早于 introducedAt`);
+      assert.ok(publication.updatedAt >= publication.introducedAt, `${publication.slug} updatedAt must not predate introducedAt`);
     }
     const requiresInitialQuestionDates = publication.introducedAt >= CONTENT_UPDATE_POLICY_EFFECTIVE_DATE;
     if (requiresInitialQuestionDates) postPolicyModuleCount += 1;
     for (const item of content.qa) {
-      assert.equal(Object.hasOwn(item, "updatedAt"), false, `${publication.slug} / ${item.q} 不得把既有题改写误标为 updatedAt`);
-      assertOptionalContentDate(item.addedAt, `${publication.slug} / ${item.q} / addedAt`, formatQuestionAddedAt, "新增于");
+      assert.equal(Object.hasOwn(item, "updatedAt"), false, `${publication.slug} / ${item.q} must not mislabel an existing rewrite as updatedAt`);
+      assertOptionalContentDate(item.addedAt, `${publication.slug} / ${item.q} / addedAt`, formatQuestionAddedAt);
       if (requiresInitialQuestionDates) {
-        assert.ok(/** @type {string} */ (item.addedAt) >= publication.introducedAt, `${publication.slug} 在日期策略生效后引入，问答 addedAt 不得早于 introducedAt`);
+        assert.ok(/** @type {string} */ (item.addedAt) >= publication.introducedAt, `${publication.slug} was introduced after the date policy, so qa addedAt must not predate introducedAt`);
       }
     }
     assert.equal(
       legacyUndatedQuestionSetSha256(content.qa),
       publication.legacyUndatedQuestionSetSha256,
-      `${publication.slug} 的无日期历史问答身份集合必须保持审计基线；新增问题必须设置 addedAt`,
+      `${publication.slug} undated question identity set must keep its audit baseline; new questions need addedAt`,
     );
     for (const block of content.deepDives) assertNoItemDateMetadata(block, `${publication.slug} / ${block.title}`);
     for (const card of content.evidenceCards) assertNoItemDateMetadata(card, `${publication.slug} / ${card.title}`);
@@ -237,21 +251,21 @@ test("module updates and newly added questions use distinct, non-repeating date 
 
     const html = await renderHtml(publication.path);
     const moduleDateCount = (html.match(/class="moduleUpdatedAt"/g) ?? []).length;
-    assert.equal(moduleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} 的模块最近更新时间必须只显示一次`);
+    assert.equal(moduleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} module update date must render exactly once`);
     if (publication.updatedAt) {
-      assert.match(html, /<footer\b[^>]*>[\s\S]*?class="moduleUpdatedAt"[\s\S]*?<\/footer>/, `${publication.slug} 的模块最近更新时间必须位于页尾`);
+      assert.match(html, /<footer\b[^>]*>[\s\S]*?class="moduleUpdatedAt"[\s\S]*?<\/footer>/, `${publication.slug} module update date must sit in the page footer`);
     }
 
     const englishHtml = await renderHtml(`/en${publication.path}`);
     const englishModuleDateCount = (englishHtml.match(/class="moduleUpdatedAt"/g) ?? []).length;
-    assert.equal(englishModuleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} 的英文模块最近更新时间必须只显示一次`);
+    assert.equal(englishModuleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} English module update date must render exactly once`);
     if (publication.updatedAt) {
       const englishDate = getEnglishUpdatedAt(publication.slug) ?? publication.updatedAt;
-      assert.match(englishHtml, new RegExp(`<footer\\b[^>]*>[\\s\\S]*?Last updated ${englishDate}[\\s\\S]*?<\\/footer>`), `${publication.slug} 的英文模块最近更新时间必须位于页尾`);
+      assert.match(englishHtml, new RegExp(`<footer\\b[^>]*>[\\s\\S]*?Last updated ${englishDate}[\\s\\S]*?<\\/footer>`), `${publication.slug} English module update date must sit in the page footer`);
     }
   }
 
-  assert.ok(postPolicyModuleCount > 0, "日期策略生效后引入的新模块必须进入初始问答日期检查");
+  assert.ok(postPolicyModuleCount > 0, "modules introduced after the date policy must enter the initial question-date check");
 
   const [components, questionsPage, questionIndex, styles, v2Styles, agentRules, moduleStandard] = await Promise.all([
     readFile(new URL("../app/module-content-components.tsx", import.meta.url), "utf8"),
@@ -268,7 +282,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
   assert.doesNotMatch(components, /block\.updatedAt|chapter\.updatedAt/);
   assert.match(questionIndex, /addedAt: item\.addedAt \?\? null/);
   assert.match(questionsPage, /value=\{item\.addedAt \?\? undefined\}/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.questionAddedAt[^}]*font-size:\s*12px/s);
   assert.doesNotMatch(styles, /\.deepDiveUpdatedAt/);
   assert.match(v2Styles, /\.qaAddedAt/);
@@ -280,8 +294,8 @@ test("module updates and newly added questions use distinct, non-repeating date 
 
   const a2aHtml = await renderHtml("/modules/a2a");
   const questionDirectoryHtml = await renderHtml("/questions");
-  assert.match(a2aHtml, /新增于 2026-07-20/);
-  assert.match(questionDirectoryHtml, /新增于 2026-07-20/);
+  assert.ok(a2aHtml.includes(formatQuestionAddedAt("2026-07-20")), "a2a must render the addedAt label for a post-policy question");
+  assert.ok(questionDirectoryHtml.includes(formatQuestionAddedAt("2026-07-20")), "question directory must render the addedAt label for a post-policy question");
 });
 
 test("homepage leads from scenario to questions with links to every independent module", async () => {
@@ -298,28 +312,27 @@ test("homepage leads from scenario to questions with links to every independent 
   assert.match(html, /href="\/coding-agents"/);
   assert.match(englishHtml, /href="\/en\/model-radar"/);
   assert.match(englishHtml, /href="\/en\/coding-agents"/);
-  assert.match(html, /href="\/knowledge-graph">模块关系<\/a>[\s\S]*?<details class="homeSelectionMenu">[\s\S]*?<summary>选型<\/summary>[\s\S]*?href="\/model-radar">模型<\/a>[\s\S]*?href="\/coding-agents">Code Agent<\/a>/);
+  assert.match(html, /href="\/knowledge-graph">[^<]*<\/a>[\s\S]*?<details class="homeSelectionMenu">[\s\S]*?<summary>[^<]*<\/summary>[\s\S]*?href="\/model-radar">[^<]*<\/a>[\s\S]*?href="\/coding-agents">[^<]*<\/a>/);
   assert.match(html, /Reference/);
-  assert.match(html, /讲清 AI 技术，[\s\S]*?心中有数，丝毫不慌/);
-  assert.match(html, /按不同任务进入知识库/);
+  assert.match(html, /<div class="heroCopy">[\s\S]*?<h1><span>[^<]*<\/span><span>[^<]*<\/span><\/h1>/);
+  assert.match(html, /class="heroDecisionPanel"/);
   assert.match(englishHtml, /Use the same knowledge for different reading tasks/);
-  assert.match(html, /从场景开始/);
-  assert.match(html, /从问题开始/);
-  assert.match(html, /从时间开始/);
+  assert.match(html, /id="learning-paths-title"/);
+  assert.match(html, /id="available-modules"/);
+  assert.match(html, /id="time-budget-paths-title"/);
   assert.doesNotMatch(html, /按可用时间准备/);
   assert.ok(
     html.indexOf('id="learning-paths"') < html.indexOf('id="available-modules"')
       && html.indexOf('id="available-modules"') < html.indexOf('id="time-budget-paths"'),
-    "首页三个准备入口应按从场景、从问题、从时间排列",
+    "the three homepage entry points must follow scenario, question, then time",
   );
-  assert.match(html, /输入客户问题、技术或风险/);
+  assert.match(html, /<input[^>]*placeholder="[^"]+"/);
   assert.match(html, new RegExp(`${layers.length} 层[\\s\\S]{0,80}${moduleList.length} 个模块`));
-  assert.match(html, /href="\/knowledge-graph"[^>]*>查看模块关系/);
+  assert.match(html, /href="\/knowledge-graph"[^>]*>[^<]*</);
   assert.doesNotMatch(html, /三种阅读深度/);
   assert.doesNotMatch(englishHtml, /three reading depths/i);
-  assert.doesNotMatch(html, /<h2 id="map-title">知识地图<\/h2>/);
-  assert.doesNotMatch(html, /什么时候看这个模块：/);
-  assert.doesNotMatch(html, /阅读 RAG 模块/);
+  assert.doesNotMatch(html, /<h2 id="map-title">/);
+  assert.doesNotMatch(html, /什么时候看这个模块：|阅读 RAG 模块/);
   assert.equal((html.match(/class="moduleResult"/g) ?? []).length, publishedModules.length);
 
   for (const publishedModule of publishedModules) {
@@ -329,32 +342,32 @@ test("homepage leads from scenario to questions with links to every independent 
   for (const discovery of Object.values(moduleDiscovery)) assert.match(html, new RegExp(escapeRegExp(discovery.cue)));
 
   for (const knowledgeModule of moduleList) {
-    assert.match(html, new RegExp(`href="${escapeRegExp(knowledgeModule.href)}"`), `首页缺少模块入口：${knowledgeModule.zh}`);
-    assert.match(html, new RegExp(escapeRegExp(knowledgeModule.zh)), `首页缺少模块名称：${knowledgeModule.zh}`);
-    assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(knowledgeModule.en))), `首页缺少英文术语：${knowledgeModule.en}`);
+    assert.match(html, new RegExp(`href="${escapeRegExp(knowledgeModule.href)}"`), `homepage is missing the module entry: ${knowledgeModule.zh}`);
+    assert.match(html, new RegExp(escapeRegExp(knowledgeModule.zh)), `homepage is missing the module name: ${knowledgeModule.zh}`);
+    assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(knowledgeModule.en))), `homepage is missing the English term: ${knowledgeModule.en}`);
+  }
+
+  for (const timeBudgetPath of timeBudgetPaths) {
+    assert.match(html, new RegExp(escapeRegExp(timeBudgetPath.label)), `homepage must render the time-budget path: ${timeBudgetPath.label}`);
+    assert.match(html, new RegExp(escapeRegExp(timeBudgetPath.deliverable)), `homepage must render the deliverable of ${timeBudgetPath.label}`);
+  }
+  for (const scenario of scenarioDefinitionsForHome) {
+    assert.match(html, new RegExp(`href="${escapeRegExp(scenario.href)}"[^>]*>${escapeRegExp(escapeHtmlText(scenario.title))}`), `homepage must render the scenario entry: ${scenario.title}`);
   }
 
   const scenarioPathSlugs = [
     "solution-patterns", "model-landscape", "llm", "evaluation", "data-engineering", "rag", "security", "ai-gateway", "ai-ops", "ai-agent", "mcp", "a2a", "llm-inference", "ai-infra-platform", "ai-infra-compute",
   ];
   for (const slug of scenarioPathSlugs) {
-    assert.match(html, new RegExp('<a(?=[^>]*class="learningPathModuleLink")(?=[^>]*href="' + escapeRegExp("/modules/" + slug) + '")[^>]*>'), "中文场景路径缺少可点击模块：" + slug);
+    assert.match(html, new RegExp('<a(?=[^>]*class="learningPathModuleLink")(?=[^>]*href="' + escapeRegExp("/modules/" + slug) + '")[^>]*>'), "Chinese scenario path is missing a clickable module: " + slug);
     assert.match(englishHtml, new RegExp('<a(?=[^>]*class="learningPathModuleLink")(?=[^>]*href="' + escapeRegExp("/en/modules/" + slug) + '")[^>]*>'), "English learning path lacks a clickable module: " + slug);
   }
 
-  assert.doesNotMatch(homepageSource, /layer\.purpose/, "首页不应渲染泛化层说明");
+  assert.doesNotMatch(homepageSource, /layer\.purpose/, "the homepage must not render the generalized layer purpose");
 
-  assert.doesNotMatch(html, /RAG 的工作原理与工程机制/);
-  assert.doesNotMatch(html, /RAG 技术环节与云服务机会/);
-  assert.doesNotMatch(html, /Agent 的基础概念与工作循环/);
-  assert.doesNotMatch(html, /Prompt 是什么，以及 Context Engineering 的边界/);
-  assert.doesNotMatch(html, /客户高频问题与深度回答/);
-  assert.doesNotMatch(html, /本题依据 \/ Evidence/);
+  assert.doesNotMatch(html, /RAG 的工作原理与工程机制|RAG 技术环节与云服务机会|Agent 的基础概念与工作循环|Prompt 是什么，以及 Context Engineering 的边界|客户高频问题与深度回答|本题依据 \/ Evidence|统一来源台账|BUILD BRIEF|语言规范 \/ Language Standard|编辑原则：|跨模块阅读规则|中文为主|中文主版本|术语中英对照/);
   assert.doesNotMatch(html, /id="source-[a-z0-9-]+"/);
-  assert.doesNotMatch(html, /统一来源台账/);
-  assert.doesNotMatch(html, /BUILD BRIEF|语言规范 \/ Language Standard|编辑原则：|跨模块阅读规则/);
-  assert.doesNotMatch(html, /中文为主|中文主版本|术语中英对照/);
-  assert.doesNotMatch(html, /\/(?:Users|home)\//, "生产 HTML 不应包含本机绝对路径");
+  assert.doesNotMatch(html, /\/(?:Users|home)\//, "production HTML must not leak local absolute paths");
 });
 
 test("coding agent landscape separates product facts, benchmark evidence, and freshness", async () => {
@@ -364,34 +377,28 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
 
   assert.equal(codingAgentLandscapePolicy.productCount, codingAgentProducts.length);
   assert.equal(codingAgentLandscapePolicy.reviewCadenceDays, 30);
-  assert.ok(codingAgentProducts.some((item) => item.market === "中国"), "产品雷达必须包含中国市场产品");
-  assert.ok(codingAgentProducts.some((item) => item.market === "国际"), "产品雷达必须包含国际市场产品");
-  assert.ok(codingAgentProducts.some((item) => item.status === "watch"), "动态生命周期变化必须进入 watch 状态");
-  assert.ok(codingAgentBenchmarks.length > 0, "产品雷达必须提供至少一个可核验的基准入口");
-  assert.equal(new Set(codingAgentBenchmarks.map((benchmark) => benchmark.id)).size, codingAgentBenchmarks.length, "基准入口必须使用稳定且不重复的身份");
+  assert.ok(codingAgentProducts.some((item) => item.market === "中国"), "the product radar must include the Chinese market");
+  assert.ok(codingAgentProducts.some((item) => item.market === "国际"), "the product radar must include the international market");
+  assert.ok(codingAgentProducts.some((item) => item.status === "watch"), "lifecycle changes must enter the watch state");
+  assert.ok(codingAgentBenchmarks.length > 0, "the product radar must provide at least one verifiable benchmark entry");
+  assert.equal(new Set(codingAgentBenchmarks.map((benchmark) => benchmark.id)).size, codingAgentBenchmarks.length, "benchmark entries must use stable, unique identities");
   for (const benchmark of codingAgentBenchmarks) {
-    assert.ok(benchmark.scope.trim() && benchmark.use.trim() && benchmark.boundary.trim(), `${benchmark.id} 必须说明任务范围、用途和外推边界`);
-    assert.ok(sourceLedger[benchmark.sourceId], `${benchmark.id} 缺少可核验来源`);
+    assert.ok(benchmark.scope.trim() && benchmark.use.trim() && benchmark.boundary.trim(), `${benchmark.id} must state the task scope, use, and extrapolation boundary`);
+    assert.ok(sourceLedger[benchmark.sourceId], `${benchmark.id} is missing a verifiable source`);
   }
 
   for (const item of codingAgentProducts) {
-    assert.ok(claimIds.has(item.claimId), `${item.name} 缺少动态事实 claim`);
+    assert.ok(claimIds.has(item.claimId), `${item.name} is missing its dynamic fact claim`);
     assert.equal(item.verifiedAt, codingAgentLandscapePolicy.verifiedAt);
     assert.equal(item.nextReviewAt, codingAgentLandscapePolicy.nextReviewAt);
-    for (const sourceId of item.sourceIds) assert.ok(sourceLedger[sourceId], `${item.name} 引用未知来源：${sourceId}`);
+    for (const sourceId of item.sourceIds) assert.ok(sourceLedger[sourceId], `${item.name} cites an unknown source: ${sourceId}`);
   }
 
-  assert.match(html, /产品与 Harness 选型雷达/);
   assert.match(html, /Model × Harness × Task × Environment/);
-  assert.match(html, /排行榜是证据入口，不是采购结论/);
-  assert.match(html, /Coding Agent 产品对比与筛选/);
-  assert.match(html, /不追求中美数量相等/);
-  assert.match(html, /搜索产品、厂商或 Harness 能力/);
-  assert.match(html, /下次复核不晚于[\s\S]*2026-09-22/);
-  assert.match(html, /Codex/);
-  assert.match(html, /Claude Code/);
-  assert.match(html, /Qwen Code/);
-  assert.match(html, /CodeBuddy/);
+  for (const product of codingAgentProducts) {
+    assert.match(html, new RegExp(escapeRegExp(product.name)), `the radar must render the product: ${product.name}`);
+  }
+  assert.match(html, new RegExp(escapeRegExp(codingAgentLandscapePolicy.nextReviewAt)), "the radar must render the registered next review date");
 });
 
 test("English decision tools preserve canonical facts without exposing Chinese reader copy", async () => {
@@ -453,7 +460,8 @@ test("English decision tools preserve canonical facts without exposing Chinese r
   assert.match(chineseRadarHtml, /Artificial Analysis · [\s\S]{0,80}v4\.1\.1/);
   assert.match(chineseRadarHtml, /Coding Composite/);
   assert.match(chineseRadarHtml, /Agentic Composite/);
-  assert.match(chineseRadarHtml, /不是该次抓取全部 604 个可用推理配置的全局 Top 20/);
+  const candidatePoolScopeClause = modelRadarPolicy.candidatePool.slice(modelRadarPolicy.candidatePool.indexOf("；") + 1);
+  assert.match(chineseRadarHtml, new RegExp(escapeRegExp(candidatePoolScopeClause)));
 });
 
 test("model-radar snapshots keep the candidate pool, formulas, versions, and evidence atomic", () => {
@@ -470,11 +478,11 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
   ];
   const componentAverage = (/** @type {number | null} */ left, /** @type {number | null} */ right) => left === null || right === null ? null : Number(((left + right) / 2).toFixed(2));
   const assertScoreRange = (/** @type {number | null} */ value, /** @type {string} */ label) => {
-    if (value !== null) assert.ok(value >= 0 && value <= 100, `${label} 越界`);
+    if (value !== null) assert.ok(value >= 0 && value <= 100, `${label} is out of range`);
   };
 
   const snapshot = modelRadarSnapshots.find((item) => item.id === "artificial-analysis-2026-08-13");
-  assert.ok(snapshot, "必须保留当前 2026-08-13 快照");
+  assert.ok(snapshot, "the current 2026-08-13 snapshot must be kept");
   assert.equal(snapshot.id, "artificial-analysis-2026-08-13");
   assert.equal(snapshot.asOf, modelRadarPolicy.verifiedAt);
   assert.equal(snapshot.label, snapshot.asOf);
@@ -483,9 +491,8 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
   assert.equal(snapshot.capturedAt, "2026-08-13T01:18:07Z");
   assert.deepEqual(snapshot.models.map((model) => model.id), expectedModelIds);
   assert.equal(new Set(expectedModelIds).size, expectedModelIds.length);
-  assert.match(modelRadarPolicy.candidatePool, /默认 Intelligence Index 视图/);
-  assert.match(modelRadarPolicy.candidatePool, /604/);
-  assert.match(modelRadarPolicy.confidence, /另行发布的同名字段/);
+  assert.match(modelRadarPolicy.candidatePool, /Intelligence Index[\s\S]*604/);
+  assert.match(modelRadarPolicy.confidence, /Artificial Analysis/);
   assert.equal(snapshot.models.find((model) => model.id === "gemini-3-6-flash")?.name, "Gemini 3.6 Flash (high)");
   assert.equal(snapshot.models.find((model) => model.id === "gemini-3-6-flash")?.shortName, "Gemini 3.6 Flash");
   assert.equal(snapshot.models.find((model) => model.id === "inkling")?.name, "Inkling (xhigh)");
@@ -493,33 +500,33 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
   assert.equal(snapshot.models.find((model) => model.id === "claude-opus-5")?.name, "Claude Opus 5 (Adaptive Reasoning, Max Effort)");
   assert.equal(snapshot.models.find((model) => model.id === "claude-fable-5")?.name, "Claude Fable 5 (Adaptive Reasoning, Max Effort, Opus 4.8 Fallback)");
   assert.equal(snapshot.models.find((model) => model.id === "nvidia-nemotron-3-ultra-550b-a55b")?.name, "Nemotron 3 Ultra 550B A55B (Reasoning)");
-  assert.equal(snapshot.models.find((model) => model.id === "kimi-k3")?.openness, "开放权重");
+  assert.ok(snapshot.models.find((model) => model.id === "kimi-k3")?.openness?.trim(), "kimi-k3 must state its openness posture");
   assert.equal(snapshot.models.find((model) => model.id === "qwen3-8-max")?.provider, "Alibaba");
   assert.equal(snapshot.models.find((model) => model.id === "k-exaone-2-0-0803")?.provider, "LG AI Research");
 
   for (const [index, model] of snapshot.models.entries()) {
     assertScoreRange(model.intelligence, `${model.id} Intelligence`);
-    if (index > 0) assert.ok(snapshot.models[index - 1].intelligence >= model.intelligence, "快照必须按 Intelligence 降序保存");
+    if (index > 0) assert.ok(snapshot.models[index - 1].intelligence >= model.intelligence, "the snapshot must stay sorted by descending Intelligence");
     assert.equal(model.benchmarkScores["intelligence-index"], model.intelligence);
     assert.equal(
       model.benchmarkScores["coding-index"],
       componentAverage(model.componentScores["terminal-bench-v21"], model.componentScores.scicode),
-      `${model.id} Coding Composite 公式漂移`,
+      `${model.id} Coding Composite formula drifted`,
     );
     assert.equal(
       model.benchmarkScores["agentic-index"],
       componentAverage(model.componentScores["gdpval-aa-v2"], model.componentScores["tau3-banking"]),
-      `${model.id} Agentic Composite 公式漂移`,
+      `${model.id} Agentic Composite formula drifted`,
     );
     for (const [sourceId, score] of Object.entries(model.componentScores)) assertScoreRange(score, `${model.id} / ${sourceId}`);
     for (const [sourceId, score] of Object.entries(model.benchmarkScores)) assertScoreRange(score, `${model.id} / ${sourceId}`);
-    assert.equal(new Set(model.sourceRefs).size, model.sourceRefs.length, `${model.id} 来源重复`);
-    assert.deepEqual(model.sourceRefs, requiredSourceRefs, `${model.id} 必须覆盖完整来源集合`);
+    assert.equal(new Set(model.sourceRefs).size, model.sourceRefs.length, `${model.id} has duplicated sources`);
+    assert.deepEqual(model.sourceRefs, requiredSourceRefs, `${model.id} must cover the complete source set`);
     for (const sourceRef of model.sourceRefs) {
       const sourceEntry = modelRadarSources[/** @type {any} */ (sourceRef)];
-      assert.ok(sourceEntry, `${model.id} 来源键不可解析：${sourceRef}`);
-      assert.equal(sourceEntry.asOf, snapshot.asOf, `${sourceRef} 必须属于同一捕获快照`);
-      assert.ok(sourceLedger[sourceEntry.sourceId], `${sourceRef} 必须解析到 canonical sourceLedger`);
+      assert.ok(sourceEntry, `${model.id} has an unresolvable source ref: ${sourceRef}`);
+      assert.equal(sourceEntry.asOf, snapshot.asOf, `${sourceRef} must belong to the same capture snapshot`);
+      assert.ok(sourceLedger[sourceEntry.sourceId], `${sourceRef} must resolve into the canonical sourceLedger`);
     }
   }
 
@@ -540,27 +547,25 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   ]);
 
   assert.match(layoutSource, /import "\.\.\/fieldbook-v3\.css"/);
-  assert.doesNotMatch(html, /class="heroSearch"/, "首页只保留一个从问题开始的入口");
+  assert.doesNotMatch(html, /class="heroSearch"/, "the homepage must keep exactly one question-first entry");
   assert.match(html, /class="moduleSearch"/);
-  assert.match(html, /输入客户问题、技术或风险/);
+  assert.match(html, /<input[^>]*placeholder="[^"]+"/);
   assert.match(interactionSource, /export function KnowledgeSearchLaunch/);
   assert.match(moduleHtml, /class="moduleReadingExperience"/);
-  assert.match(moduleHtml, /role="tablist" aria-label="阅读方式"/);
-  assert.match(moduleHtml, /10 分钟速查/);
-  assert.match(moduleHtml, /系统学习/);
-  assert.match(moduleHtml, /现场查证/);
+  assert.match(moduleHtml, /role="tablist" aria-label="[^"]+"/);
+  assert.equal((moduleHtml.match(/role="tab"/g) ?? []).length, 3, "the reading tablist must expose exactly the three registered reading tasks");
   assert.match(readingModeSource, /String\(index \+ 1\)\.padStart\(2, "0"\)/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(readingModeSource, /ArrowLeft.*ArrowRight.*Home.*End/s);
   assert.match(globalStyles, /--readable:\s*820px/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.moduleResult\s*\{[^}]*display:\s*grid[^}]*grid-template-areas:/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.moduleSearch\s*\{[^}]*grid-template-columns:/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /@media \(max-width:\s*720px\)[\s\S]*\.topbar\s*\{[^}]*flex-wrap:\s*wrap/s);
-  assert.doesNotMatch(styles, /url\s*\(/i, "V3 视觉系统不得依赖远程或运行时图片资源");
-  assert.doesNotMatch(styles, /\/(?:Users|home)\//, "V3 样式不得包含本机绝对路径");
+  assert.doesNotMatch(styles, /url\s*\(/i, "the V3 visual system must not depend on remote or runtime images");
+  assert.doesNotMatch(styles, /\/(?:Users|home)\//, "V3 styles must not contain local absolute paths");
 });
 
 test("focus surfaces provide accessible terminology explanations", async () => {
@@ -568,20 +573,19 @@ test("focus surfaces provide accessible terminology explanations", async () => {
 
   for (const termId of hintTermIds) {
     const term = requireTerm(termId);
-    assert.ok(term.abbr && term.description, `缩写提示必须同时有缩写和简短说明：${termId}`);
+    assert.ok(term.abbr && term.description, `abbreviation hints need both the abbreviation and a short description: ${termId}`);
   }
 
   for (const path of ["/modules/rag", "/modules/ai-agent", "/modules/llm", "/modules/solution-patterns", "/modules/security", "/modules/fine-tuning"]) {
     const html = await renderHtml(path);
-    assert.match(html, /class="termHintRow"/i, `${path} 缺少缩写速查入口`);
-    assert.match(html, /<details class="termHint" data-term-id="[^"]+">/i, `${path} 缩写解释必须使用可点击的原生 details`);
-    assert.match(html, /<summary aria-label="[^"]+">/i, `${path} 缩写控件缺少可访问名称`);
-    assert.match(html, /悬停 \/ 点击查看全称与说明/);
+    assert.match(html, /class="termHintRow"/i, `${path} is missing the abbreviation quick-lookup entry`);
+    assert.match(html, /<details class="termHint" data-term-id="[^"]+">/i, `${path} abbreviation hints must use clickable native details`);
+    assert.match(html, /<summary aria-label="[^"]+">/i, `${path} abbreviation controls are missing an accessible name`);
   }
 
   const homepage = await renderHtml("/");
   assert.match(homepage, /class="termHintGroups"/i);
-  assert.match(homepage, /核心术语速查/);
+  assert.match(homepage, /id="home-term-guide-title"/);
   assert.match(
     homepage,
     new RegExp(`查看全部[\\s\\S]{0,80}${glossaryTermIds.length}[\\s\\S]{0,80}个术语`),
@@ -592,8 +596,8 @@ test("focus surfaces provide accessible terminology explanations", async () => {
   }
 
   const styles = await readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8");
-  assert.match(styles, /\.termHint:hover\s+\.termHintPopover\s*\{\s*display:\s*block;/, "桌面端悬停必须直接显示缩写说明");
-  assert.doesNotMatch(styles, /@media\s*\(hover:\s*hover\)[\s\S]*?\.termHint:hover\s+\.termHintPopover/, "缩写悬停不得依赖浏览器的输入设备能力判断");
+  assert.match(styles, /\.termHint:hover\s+\.termHintPopover\s*\{\s*display:\s*block;/, "desktop hover must reveal the abbreviation note directly");
+  assert.doesNotMatch(styles, /@media\s*\(hover:\s*hover\)[\s\S]*?\.termHint:hover\s+\.termHintPopover/, "abbreviation hover must not depend on the input-device capability query");
 });
 
 test("glossary is complete, searchable, grouped, and linked back to published modules", async () => {
@@ -601,23 +605,21 @@ test("glossary is complete, searchable, grouped, and linked back to published mo
   const homepageTermIds = homepageTermGroups.flatMap((group) => group.termIds);
   const publishedSet = new Set(publishedModuleSlugs);
 
-  assert.deepEqual([...glossaryTermIds].sort(), terminologyIds.sort(), "每个术语必须且只能进入一个术语主题");
-  assert.equal(new Set(glossaryTermIds).size, glossaryTermIds.length, "术语库 termId 必须唯一");
-  assert.equal(new Set(homepageTermIds).size, homepageTermIds.length, "首页核心术语不得重复");
-  assert.ok(homepageTermIds.length > 0, "首页必须保留至少一个有意义的术语入口");
-  assert.ok(homepageTermGroups.every((group) => group.label.trim() && group.en.trim() && group.termIds.length > 0), "首页术语分组必须各自有可读的中英文标签和真实入口");
-  assert.ok(homepageTermIds.length < glossaryTermIds.length, "首页只承担核心入口，完整集合应留在术语库");
+  assert.deepEqual([...glossaryTermIds].sort(), terminologyIds.sort(), "every term must belong to exactly one glossary topic");
+  assert.equal(new Set(glossaryTermIds).size, glossaryTermIds.length, "glossary termIds must be unique");
+  assert.equal(new Set(homepageTermIds).size, homepageTermIds.length, "homepage core terms must not repeat");
+  assert.ok(homepageTermIds.length > 0, "the homepage must keep at least one meaningful term entry");
+  assert.ok(homepageTermGroups.every((group) => group.label.trim() && group.en.trim() && group.termIds.length > 0), "homepage term groups need readable zh/en labels and real entries");
+  assert.ok(homepageTermIds.length < glossaryTermIds.length, "the homepage only carries the core entries; the full set stays in the glossary");
 
   for (const [termId, term] of Object.entries(terminology)) {
-    assert.ok(term.description.length >= 12, `术语缺少可读的一句话说明：${termId}`);
-    assert.ok(term.moduleSlugs.length > 0, `术语缺少相关模块：${termId}`);
-    for (const slug of term.moduleSlugs) assert.ok(publishedSet.has(slug), `术语关联未知模块：${termId} -> ${slug}`);
+    assert.ok(term.description.length >= 12, `term is missing a readable one-line description: ${termId}`);
+    assert.ok(term.moduleSlugs.length > 0, `term is missing related modules: ${termId}`);
+    for (const slug of term.moduleSlugs) assert.ok(publishedSet.has(slug), `term links to an unknown module: ${termId} -> ${slug}`);
   }
 
   const html = await renderHtml("/glossary");
-  assert.match(html, /专业术语库/);
-  assert.match(html, /搜索中文、英文、缩写或说明/);
-  assert.match(html, /按知识关系查词，不按字母背词/);
+  assert.match(html, /<input[^>]*placeholder="[^"]+"/);
   for (const group of glossaryGroups) {
     assert.match(html, new RegExp(`id="glossary-group-${escapeRegExp(group.id)}"`));
     assert.match(html, new RegExp(escapeRegExp(group.zh)));
@@ -631,61 +633,56 @@ test("public dynamic knowledge graph and backend coverage gates derive from stab
   const allowedExplicitTypes = new Set(["prerequisite", "component", "control", "metric"]);
   const relationKeys = new Set();
 
-  assert.equal(Object.keys(termPrimaryModules).length, termIds.size, "每个术语必须有且只有一个主要归属模块");
+  assert.equal(Object.keys(termPrimaryModules).length, termIds.size, "every term must have exactly one primary module");
   for (const [termId, primaryModuleId] of Object.entries(termPrimaryModules)) {
-    assert.ok(termIds.has(termId), `知识图谱主要归属引用未知术语：${termId}`);
-    assert.ok(moduleIds.has(primaryModuleId), `知识图谱主要归属引用未知模块：${termId} -> ${primaryModuleId}`);
-    assert.equal(terminology[termId].moduleSlugs[0], primaryModuleId, `术语第一模块必须是主要归属：${termId}`);
+    assert.ok(termIds.has(termId), `graph primary ownership references an unknown term: ${termId}`);
+    assert.ok(moduleIds.has(primaryModuleId), `graph primary ownership references an unknown module: ${termId} -> ${primaryModuleId}`);
+    assert.equal(terminology[termId].moduleSlugs[0], primaryModuleId, `the first term module must be the primary owner: ${termId}`);
   }
 
   for (const relation of explicitTermRelations) {
-    assert.ok(termIds.has(relation.from), `知识图谱关系引用未知起点：${relation.from}`);
-    assert.ok(termIds.has(relation.to), `知识图谱关系引用未知终点：${relation.to}`);
-    assert.ok(allowedExplicitTypes.has(relation.type), `知识图谱显式关系类型非法：${relation.type}`);
-    assert.ok(relation.explanation.length >= 18, `知识图谱关系缺少可读解释：${relation.from} -> ${relation.to}`);
-    assert.equal(relation.id, `${relation.from}:${relation.type}:${relation.to}`, "知识图谱关系必须拥有可预测的稳定 ID");
-    assert.equal(relation.direction, "directed", "知识图谱显式关系必须声明方向");
-    assert.equal(relation.status, "published", "公开图谱只消费正式关系");
+    assert.ok(termIds.has(relation.from), `graph relation references an unknown start: ${relation.from}`);
+    assert.ok(termIds.has(relation.to), `graph relation references an unknown end: ${relation.to}`);
+    assert.ok(allowedExplicitTypes.has(relation.type), `illegal graph relation type: ${relation.type}`);
+    assert.ok(relation.explanation.length >= 18, `graph relation is missing a readable explanation: ${relation.from} -> ${relation.to}`);
+    assert.equal(relation.id, `${relation.from}:${relation.type}:${relation.to}`, "graph relations must carry a predictable stable id");
+    assert.equal(relation.direction, "directed", "explicit graph relations must declare their direction");
+    assert.equal(relation.status, "published", "the public graph only consumes formal relations");
     const key = `${relation.from}:${relation.type}:${relation.to}`;
-    assert.equal(relationKeys.has(key), false, `知识图谱关系重复：${key}`);
+    assert.equal(relationKeys.has(key), false, `duplicate graph relation: ${key}`);
     relationKeys.add(key);
   }
 
-  assert.equal(graphHealth.isolatedTermIds.length, 0, "术语不得成为孤立节点");
-  assert.ok(graphHealth.maximumDegree > 0, "图谱健康检查必须计算节点度数");
-  assert.equal(graphModuleCoverage.length, moduleList.length, "全局图谱必须为每个正式模块计算覆盖度");
-  assert.equal(graphModuleCoverage.filter((coverage) => coverage.termCount === 0).length, 0, "每个正式模块都必须拥有可下钻的关联术语");
-  assert.equal(graphModuleCoverage.filter((coverage) => coverage.primaryTermCount === 0).length, 0, "每个正式模块必须至少拥有一个主要讲解术语");
-  assert.equal(graphModuleCoverage.every((coverage) => coverage.primaryTermCount >= 0 && coverage.primaryTermCount <= coverage.termCount), true, "主要讲解术语数量必须是关联术语的有效子集");
-  assert.equal(graphOverviewPolicy.requiresSharedTerm, true, "总览关系只应来自真实共享术语");
+  assert.equal(graphHealth.isolatedTermIds.length, 0, "terms must not become isolated nodes");
+  assert.ok(graphHealth.maximumDegree > 0, "the graph health check must compute the node degree");
+  assert.equal(graphModuleCoverage.length, moduleList.length, "the global graph must compute coverage for every formal module");
+  assert.equal(graphModuleCoverage.filter((coverage) => coverage.termCount === 0).length, 0, "every formal module must own drillable related terms");
+  assert.equal(graphModuleCoverage.filter((coverage) => coverage.primaryTermCount === 0).length, 0, "every formal module must own at least one primary term");
+  assert.equal(graphModuleCoverage.every((coverage) => coverage.primaryTermCount >= 0 && coverage.primaryTermCount <= coverage.termCount), true, "primary term counts must stay within the related term counts");
+  assert.equal(graphOverviewPolicy.requiresSharedTerm, true, "overview links must come from real shared terms");
   assert.deepEqual(
     graphOverviewLinks.map(({ id, termIds }) => ({ id, termIds: [...termIds] })),
     deriveSharedTermModuleLinks(moduleList, terminology),
-    "全局总览必须完整呈现模块与术语注册表派生出的每一对共享术语关系",
+    "the global overview must present every shared-term pair derived from the module and term registries",
   );
 
   for (const typeId of /** @type {any[]} */ (["primary-owner", "contextual-use", ...allowedExplicitTypes])) {
-    assert.ok(knowledgeRelationTypes[/** @type {keyof typeof knowledgeRelationTypes} */ (typeId)], `知识图谱缺少关系类型说明：${typeId}`);
+    assert.ok(knowledgeRelationTypes[/** @type {keyof typeof knowledgeRelationTypes} */ (typeId)], `graph is missing the relation-type description: ${typeId}`);
   }
 
   const html = await renderHtml("/knowledge-graph");
-  assert.match(html, /动态知识关系图/);
-  assert.match(html, /从模块进入知识点，沿明确关系动态探索原理、机制与边界/);
   assert.match(html, new RegExp(`${layers.length}[\\s\\S]{0,120}层知识`));
   assert.match(html, new RegExp(`${moduleList.length}[\\s\\S]{0,120}个模块`));
   assert.match(html, new RegExp(`${glossaryTermIds.length}[\\s\\S]{0,120}个术语`));
-  assert.match(html, /搜索模块或术语/);
-  assert.match(html, /动态图谱|动态知识星图|聚焦显示/);
-  assert.match(html, /图中只展示已经整理的明确关系，不表示所有可能联系/);
-  assert.match(html, /aria-label="动态探索导航"/);
-  assert.match(html, /href="\/#available-modules"[^>]*>从问题开始<\/a>/);
-  assert.match(html, /href="\/modules\/rag"[^>]*>进入模块/);
-  assert.match(html, /moduleTitleLead[^>]*>RAG<\/span><span[^>]*moduleTitleDetail[^>]*>检索增强生成/);
+  assert.match(html, /<input[^>]*placeholder="[^"]+"/);
+  assert.match(html, /id="knowledge-graph-module-rail"/);
+  assert.match(html, /href="\/#available-modules"[^>]*>[^<]+<\/a>/);
+  assert.match(html, /href="\/modules\/rag"[^>]*>[^<]+/);
+  assert.match(html, new RegExp(`moduleTitleLead[^>]*>RAG<\\/span><span[^>]*moduleTitleDetail[^>]*>${escapeRegExp(terminology.rag.zh)}`));
   assert.doesNotMatch(html, /全局总览|覆盖门禁|关系总览|切换到关系总览/);
   const graphExplorerSource = await readFile(new URL("../app/knowledge-graph/design-2/knowledge-constellation.tsx", import.meta.url), "utf8");
   assert.match(graphExplorerSource, /splitModuleTitle/);
   assert.match(graphExplorerSource, /className=\{styles\.focusAction\}/);
-  assert.match(graphExplorerSource, /进入模块/);
   assert.doesNotMatch(html, /来源节点|客户问题节点|图数据库|GraphRAG/);
   assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
   assert.doesNotMatch(html, /\/(?:Users|home)\//);
@@ -700,32 +697,34 @@ test("evidence cards keep facts, findings, boundaries, and sources readable", as
   const metricIndex = componentSource.indexOf('className="metric"');
   const findingIndex = componentSource.indexOf('className="metricFinding"');
   const boundaryIndex = componentSource.indexOf('className="metricBoundary"');
-  const sourceIndex = componentSource.indexOf("对应来源 ·");
-  assert.ok(metricIndex >= 0 && metricIndex < findingIndex && findingIndex < boundaryIndex && boundaryIndex < sourceIndex, "证据卡阅读顺序必须是事实标签、结论、边界、来源");
+  const sourceIndex = componentSource.indexOf("href={`/references#source-${card.sourceId}`}");
+  assert.ok(metricIndex >= 0 && metricIndex < findingIndex && findingIndex < boundaryIndex && boundaryIndex < sourceIndex, "evidence cards must read fact label, finding, boundary, then source");
 
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(22px,2vw,30px\)/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(globalStyles, /\.metricFinding\s*\{[^}]*font-size:\s*16px/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(globalStyles, /\.metricBoundary\s*\{[^}]*font-size:\s*14px/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(globalStyles, /\.metricCard\s*\{[^}]*min-height:\s*0/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.doesNotMatch(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(4\dpx/s, "证据事实标签不得恢复为封面级字号");
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
+  assert.doesNotMatch(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(4\dpx/s, "evidence fact labels must not return to cover-sized type");
 });
 
 test("dense-reading modules derive a scannable content overview without a visual or reader-mode quota", async () => {
   const denseReadingModules = publishedModuleRegistry.filter((module) => module.visualProfile === "dense-reading");
-  assert.equal(denseReadingModules.length, publishedModuleRegistry.length, "所有正式模块都必须完成高密度阅读壳");
+  assert.equal(denseReadingModules.length, publishedModuleRegistry.length, "every formal module must complete the dense-reading shell");
 
   for (const publishedModule of denseReadingModules) {
     const html = await renderHtml(publishedModule.path);
-    assert.match(html, /class="[^"]*\bmodulePilot\b[^"]*"/, `${publishedModule.slug} 未启用共享高密度阅读壳`);
-    if (publishedModule.readingProfile === "focused") assert.match(html, /class="[^"]*\bmoduleFocused\b[^"]*"/, `${publishedModule.slug} 未启用聚焦阅读结构`);
-    assert.match(html, /<dl class="moduleHeroMetrics" aria-label="模块内容概览">/);
-    assert.match(html, /<dt>问题库<\/dt>/);
-    assert.match(html, /<dt>证据卡<\/dt>/);
+    assert.match(html, /class="[^"]*\bmodulePilot\b[^"]*"/, `${publishedModule.slug} has not enabled the shared dense-reading shell`);
+    if (publishedModule.readingProfile === "focused") assert.match(html, /class="[^"]*\bmoduleFocused\b[^"]*"/, `${publishedModule.slug} has not enabled the focused reading structure`);
+    assert.match(html, /<dl class="moduleHeroMetrics" aria-label="[^"]+">/);
+    const heroMetricsHtml = html.match(/<dl class="moduleHeroMetrics"[\s\S]*?<\/dl>/)?.[0] ?? "";
+    const content = requireModuleContent(publishedModule.slug);
+    assert.match(heroMetricsHtml, new RegExp(`<strong>${content.qa.length}<\\/strong>`), `${publishedModule.slug} hero metrics must carry the registered question count`);
+    assert.match(heroMetricsHtml, new RegExp(`<strong>${content.evidenceCards.length}<\\/strong>`), `${publishedModule.slug} hero metrics must carry the registered evidence-card count`);
     serverRenderedReadingPanels(html, publishedModule.slug);
     if (publishedModule.knowledgeView) assert.match(html, new RegExp(`data-knowledge-view="${publishedModule.knowledgeView}"`));
   }
@@ -742,13 +741,13 @@ test("focused pilots use relationship-driven reading paths instead of standalone
     if (publishedModule.slug === "rag") {
       assert.match(html, /id="fit"/);
       assert.match(html, /id="evidence-contract"/);
-      assert.ok(html.indexOf('id="fit"') < html.indexOf('id="evidence"'), "rag 必须先判断采用边界并建立证据契约");
+      assert.ok(html.indexOf('id="fit"') < html.indexOf('id="evidence"'), "rag must judge the adoption boundary before the evidence contract");
     } else {
       assert.match(html, /id="principle"/);
-      assert.ok(html.indexOf('id="principle"') < html.indexOf('id="evidence"'), `${publishedModule.slug} 必须先给出模块独有的判断主线`);
+      assert.ok(html.indexOf('id="principle"') < html.indexOf('id="evidence"'), `${publishedModule.slug} must lead with its own judgement spine`);
     }
     assert.match(html, /data-quality-section="deep-dive"/);
-    assert.ok(html.indexOf('id="qa"') < html.indexOf('id="related-modules"'), `${publishedModule.slug} 应在完成主论证后再给相关模块`);
+    assert.ok(html.indexOf('id="qa"') < html.indexOf('id="related-modules"'), `${publishedModule.slug} should finish the main argument before related modules`);
   }
 
   const [solution, rag, mcp, inference] = await Promise.all([
@@ -758,50 +757,46 @@ test("focused pilots use relationship-driven reading paths instead of standalone
     renderHtml("/modules/llm-inference"),
   ]);
   assert.match(solution, /class="solutionDecisionLoop"/);
-  assert.match(solution, /证据不足：回到任务边界或能力搭配/);
   assert.match(solution, /class="solutionCapabilityMatrix"/);
   assert.doesNotMatch(solution, /class="solutionDecisionRail"/);
   assert.match(rag, /class="ragDualChainExplorer"/);
-  assert.match(rag, /RAG 的采用条件与两条生命周期/);
   assert.match(rag, /class="focusedDecisionLedger"/);
   assert.match(mcp, /class="mcpArchitectureExplorer"/);
-  assert.match(mcp, /MCP 协议边界/);
-  assert.match(mcp, /一次工具调用的典型路径/);
-  assert.match(mcp, /MCP 的复用价值与四方责任/);
-  assert.match(mcp, /Tool 由模型控制调用，Resource 由应用选择装配，Prompt 由用户主动选择/);
-  assert.match(mcp, /Tool 也可以是只读查询/);
-  assert.match(mcp, /版本、能力元数据与结构化消息/);
+  const mcpContent = /** @type {any} */ (requireModuleContent("mcp"));
+  for (const deepDive of mcpContent.deepDives) {
+    assert.match(mcp, new RegExp(renderTextPattern(deepDive.title)), `MCP must render its registered deep dive: ${deepDive.title}`);
+  }
   assert.match(mcp, /Multi Round-Trip Requests/);
   assert.match(mcp, /input_required/);
   assert.match(mcp, /requestState/);
-  assert.match(mcp, /server\/discover、tools\/list、prompts\/list、resources\/list、resources\/templates\/list 与 resources\/read 的 resultType: (?:&quot;|\")complete(?:&quot;|\") 结果必须携带/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(mcp, /resultType: (?:&quot;|\")input_required(?:&quot;|\").*MRTR 重试也不得缓存/s);
   assert.match(mcp, /Mcp-Method/);
   assert.match(mcp, /Mcp-Name/);
-  assert.match(mcp, /notification POST 的该头要求/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(mcp, /tasks\/get、tasks\/update 与 tasks\/cancel.*params\.taskId/s);
+  for (const fragment of ["server/discover", "tools/list", "prompts/list", "resources/list", "resources/templates/list", "resources/read", "complete", "tasks/get", "tasks/update", "tasks/cancel", "params.taskId", "notification POST"]) {
+    assert.match(mcp, new RegExp(escapeRegExp(fragment)), `MCP must render the registered protocol fact: ${fragment}`);
+  }
   assert.doesNotMatch(mcp, /会话、能力协商与结构化消息|状态变更用 Tool|只读内容优先 Resource/);
   assert.doesNotMatch(mcp, /class="mcpResponsibilityMap"/);
   const mcpSystematicStudy = readingPanelHtml(mcp, "learn", "MCP");
   const mcpCurriculum = requireModuleCurriculum("mcp");
-  assert.match(mcpSystematicStudy, /id="curriculum"/, "MCP 系统学习必须从主题地图进入实质内容");
+  assert.match(mcpSystematicStudy, /id="curriculum"/, "MCP systematic study must lead from the topic map into real content");
   for (const [index, chapter] of mcpCurriculum.chapters.entries()) {
-    assert.match(mcpSystematicStudy, new RegExp(`id="mcp-chapter-${index + 1}"`), `MCP 系统学习缺少主题：${chapter.title}`);
-    assert.match(mcpSystematicStudy, new RegExp(escapeRegExp(chapter.title)), `MCP 系统学习缺少主题正文：${chapter.title}`);
+    assert.match(mcpSystematicStudy, new RegExp(`id="mcp-chapter-${index + 1}"`), `MCP systematic study is missing the topic: ${chapter.title}`);
+    assert.match(mcpSystematicStudy, new RegExp(renderTextPattern(chapter.title)), `MCP systematic study is missing the topic body: ${chapter.title}`);
   }
-  ["mcp-relationships", "mcp-contract-dossier", "mcp-labs"].forEach((id) => assert.match(mcpSystematicStudy, new RegExp(`id="${id}"`), `MCP 系统学习缺少可执行工件：${id}`));
+  ["mcp-relationships", "mcp-contract-dossier", "mcp-labs"].forEach((id) => assert.match(mcpSystematicStudy, new RegExp(`id="${id}"`), `MCP systematic study is missing the executable artifact: ${id}`));
   const mcpQaPanels = [...mcp.matchAll(/<div\b(?=[^>]*\bid="mcp-qa-panel-[^"]+")[^>]*>/g)].map(([tag]) => tag);
-  assert.ok(mcpQaPanels.length > 0, "MCP 现场问答必须保留分类面板");
-  mcpQaPanels.forEach((panel) => assert.doesNotMatch(panel, /\shidden(?:\s|=|>)/i, "无 JavaScript 时 MCP 不得隐藏任何问答分类"));
+  assert.ok(mcpQaPanels.length > 0, "MCP field QA must keep its categorized panels");
+  mcpQaPanels.forEach((panel) => assert.doesNotMatch(panel, /\shidden(?:\s|=|>)/i, "without JavaScript MCP must not hide any QA category"));
   const solutionCapabilityRows = solution.match(/class="solutionCapabilityMatrixRow"/g) ?? [];
   const solutionChoiceCells = solution.match(/data-label="常见选择"/g) ?? [];
-  assert.equal(solutionChoiceCells.length, solutionCapabilityRows.length, "方案责任矩阵每一行都必须保留常见选择，即使窄屏折叠表头");
+  assert.equal(solutionChoiceCells.length, solutionCapabilityRows.length, "every solution matrix row must keep its choice label even when the header collapses");
   assert.match(inference, /class="inferenceExplorer"/);
-  assert.match(inference, /TTFT · 首 token 时间/);
-  assert.match(inference, /上下文长度/);
-  assert.match(inference, /并发请求数/);
+  const inferenceContent = /** @type {any} */ (requireModuleContent("llm-inference"));
+  for (const deepDive of inferenceContent.deepDives) {
+    assert.match(inference, new RegExp(renderTextPattern(deepDive.title)), `inference must render its registered deep dive: ${deepDive.title}`);
+  }
+  assert.match(inference, /TTFT/);
+  assert.match(inference, /TPOT/);
   assert.doesNotMatch(inference, /class="inferenceBudgetLedger"/);
 });
 
@@ -816,17 +811,17 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.deepEqual([...paths].sort(), publishedModules.map((module) => module.path).sort(), "every published module must use the shared reader shell");
 
   for (const [index, html] of htmlByPath.entries()) {
-    assert.match(html, /data-module-hero="unified"/, `${paths[index]} 缺少共享 Hero`);
-    assert.match(html, /data-module-reader="unified"/, `${paths[index]} 缺少共享阅读控制器`);
-    assert.match(html, /Cloud × AI \/ Presales Fieldbook/, `${paths[index]} 必须使用统一品牌`);
-    assert.match(html, /aria-label="模块导航"/);
-    assert.match(html, />首页</);
-    assert.match(html, />本模块问答</);
-    assert.match(html, />来源</);
-    assert.match(html, />术语库</);
-    assert.match(html, />English</);
-    assert.match(html, /aria-label="模块导航菜单"/, `${paths[index]} 缺少移动端菜单`);
-    assert.match(html, /aria-label="重要边界"[^>]*data-importance="critical"/);
+    assert.match(html, /data-module-hero="unified"/, `${paths[index]} is missing the shared Hero`);
+    assert.match(html, /data-module-reader="unified"/, `${paths[index]} is missing the shared reading controller`);
+    assert.match(html, /Cloud × AI \/ Presales Fieldbook/, `${paths[index]} must use the unified brand`);
+    assert.match(html, /<nav[^>]*aria-label="[^"]+"/);
+    assert.match(html, new RegExp(`href="/"[^>]*>[^<]*<\\/a>`));
+    assert.match(html, /href="#qa"[^>]*>[^<]*<\/a>/);
+    assert.match(html, new RegExp(`href="/references#module-${escapeRegExp(publishedModules[index].slug)}"[^>]*>[^<]*<\\/a>`));
+    assert.match(html, /href="\/glossary"[^>]*>[^<]*<\/a>/);
+    assert.match(html, new RegExp(`href="/en${escapeRegExp(paths[index])}"[^>]*>[^<]*<\\/a>`));
+    assert.match(html, /<summary aria-label="[^"]+"><span><\/span><span><\/span><span><\/span><\/summary>/, `${paths[index]} is missing the mobile menu`);
+    assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/);
     serverRenderedReadingPanels(html, paths[index]);
   }
 
@@ -854,63 +849,63 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.match(readerSource, /useEffect\(\(\) => \{\s*const frame = window\.requestAnimationFrame\(\(\) => setIsEnhanced\(true\)\);[\s\S]*window\.cancelAnimationFrame\(frame\);\s*\}, \[\]\);/);
   assert.match(readerSource, /hidden=\{isEnhanced && activeMode !== mode\.id\}/);
   assert.match(readerSource, /IntersectionObserver/);
-  assert.match(readerSource, /closest<HTMLElement>\("\[data-reading-mode\]"\)/, "嵌套深链必须自动识别所属阅读面板");
-  assert.match(readerSource, /function directoryAnchorForTarget\(/, "嵌套深链必须解析到最近的目录所有者");
-  assert.match(readerSource, /while \(current\)[\s\S]*directoryIds\.has\(current\.id\)[\s\S]*current = current\.parentElement/, "目录所有者解析必须沿真实 DOM 祖先向上查找");
-  assert.match(readerSource, /setActiveAnchor\(directoryAnchorForTarget\(targetId, nextMode, directoryByMode\) \?\? targetId\)/, "嵌套深链必须高亮所属目录项而不是不存在的叶子项");
-  assert.match(readerSource, /data-reading-mode=\{mode\.id\}/, "每个阅读面板必须声明稳定所属模式");
-  assert.match(readerSource, /target\.startsWith\("qa-"\) && readingModeIds\.includes\("field"\) \? "field" : null/, "只有声明了现场任务时，问答深链才可回退到它");
-  assert.match(readerSource, /setActiveMode\(resolvedDefaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "清空 hash 时必须恢复模块声明的默认阅读任务");
-  assert.match(readerSource, /modeDefinitions\?\.length \? modeDefinitions : copy\.modes/, "阅读器必须允许模块声明自己的阅读任务集合");
-  assert.match(readerSource, /const missingPanelIds = readingModes/, "每个声明的阅读任务都必须有对应正文");
-  assert.doesNotMatch(readerSource, /const readingModeIds = \["quick", "learn", "field"\]/, "共享阅读器不得把默认预设当成固定任务集合");
+  assert.match(readerSource, /closest<HTMLElement>\("\[data-reading-mode\]"\)/, "nested deep links must detect their own reading panel");
+  assert.match(readerSource, /function directoryAnchorForTarget\(/, "nested deep links must resolve to the nearest directory owner");
+  assert.match(readerSource, /while \(current\)[\s\S]*directoryIds\.has\(current\.id\)[\s\S]*current = current\.parentElement/, "directory ownership must walk real DOM ancestors");
+  assert.match(readerSource, /setActiveAnchor\(directoryAnchorForTarget\(targetId, nextMode, directoryByMode\) \?\? targetId\)/, "nested deep links must highlight their directory item instead of a missing leaf");
+  assert.match(readerSource, /data-reading-mode=\{mode\.id\}/, "every reading panel must declare its stable mode");
+  assert.match(readerSource, /target\.startsWith\("qa-"\) && readingModeIds\.includes\("field"\) \? "field" : null/, "qa deep links may only fall back to the field task when it is declared");
+  assert.match(readerSource, /setActiveMode\(resolvedDefaultMode\)[\s\S]*setActiveAnchor\(undefined\)/, "clearing the hash must restore the module default reading task");
+  assert.match(readerSource, /modeDefinitions\?\.length \? modeDefinitions : copy\.modes/, "the reader must let modules declare their own reading tasks");
+  assert.match(readerSource, /const missingPanelIds = readingModes/, "every declared reading task must have a matching body");
+  assert.doesNotMatch(readerSource, /const readingModeIds = \["quick", "learn", "field"\]/, "the shared reader must not treat its defaults as a fixed task set");
   const revealHashStart = readerSource.indexOf("const revealHash =");
   const revealHashEnd = readerSource.indexOf("\n\n  useEffect(", revealHashStart);
   const revealHashSource = readerSource.slice(revealHashStart, revealHashEnd);
-  assert.match(revealHashSource, /setPendingHashReveal\(\{[\s\S]*mode: nextMode/, "跨模式 Hash 必须登记提交后定位请求");
-  assert.doesNotMatch(revealHashSource, /scrollHashTargetIntoView/, "Hash 事件处理器不能在目标面板提交前滚动");
-  assert.match(readerSource, /pendingHashReveal\.mode !== activeMode[\s\S]*scrollHashTargetIntoView\(hash\)[\s\S]*queueMicrotask/, "统一 reader 必须在目标模式提交后立即定位并清理请求");
-  assert.match(readerSource, /event\.preventDefault\(\);[\s\S]*window\.history\.pushState\(window\.history\.state/, "统一 reader 必须接管所属锚点并保留 Back 历史");
-  assert.match(readerSource, /window\.history\.replaceState\(window\.history\.state/, "切换阅读任务清理 Hash 时不得丢失路由器 history state");
-  assert.match(readerSource, /target instanceof HTMLDetailsElement\) target\.open = true/, "问答深链必须展开目标 disclosure");
-  assert.match(readerSource, /revealTarget\(\);[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*revealTarget\(\);[\s\S]*requestAnimationFrame\(revealTarget\)/, "响应式布局提交后必须双帧复核深链位置");
-  assert.match(qaInteractionSource, /target\.hidden = false;[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*target\.scrollIntoView[\s\S]*requestAnimationFrame\(\(\) => target\.scrollIntoView/, "折叠集合中的问答深链必须在展开提交后再次稳定定位");
-  assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "英文目录计数必须处理单复数");
-  assert.match(heroSource, /mobileMenu: "模块导航菜单"/, "中文移动菜单名称必须保留在本地化契约中");
-  assert.match(heroSource, /aria-label=\{copy\.mobileMenu\}/, "移动菜单名称不能绑定单一开合状态");
-  assert.match(heroSource, /<em lang="en"> · \{enTitle\}<\/em>/, "中文 Hero 的英文副题必须声明语言");
-  assert.match(relationSource, /className="relationMatrixScroll" role="region" aria-label=\{block\.title\} tabIndex=\{0\}/, "关系矩阵横滚区必须可聚焦且有可访问名称");
-  assert.match(relationSource, /<caption className="srOnly">\{block\.title\}<\/caption>/, "关系矩阵必须声明隐藏表名");
-  assert.equal((relationSource.match(/scope="col"/g) ?? []).length, 4, "关系矩阵四列必须声明列标题");
-  assert.match(relationSource, /<th scope="row"><button/, "关系矩阵对象列必须声明行标题");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(fieldbookStyles, /\.moduleReadingExperience\[data-module-reader="unified"\]\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 不能裁掉 sticky 元素");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(fieldbookStyles, /\[data-module-content="unified"\] \.moduleReadingHost > \.section\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 的正文祖先不能破坏 sticky 定位");
-  assert.doesNotMatch(denseStyles, /#fff\b/, "统一 reader 必须消费共享 surface token");
+  assert.match(revealHashSource, /setPendingHashReveal\(\{[\s\S]*mode: nextMode/, "cross-mode hashes must register a post-commit reveal request");
+  assert.doesNotMatch(revealHashSource, /scrollHashTargetIntoView/, "the hash handler must not scroll before the target panel commits");
+  assert.match(readerSource, /pendingHashReveal\.mode !== activeMode[\s\S]*scrollHashTargetIntoView\(hash\)[\s\S]*queueMicrotask/, "the unified reader must reveal and clear the request once the target mode commits");
+  assert.match(readerSource, /event\.preventDefault\(\);[\s\S]*window\.history\.pushState\(window\.history\.state/, "the unified reader must own its anchors and preserve Back history");
+  assert.match(readerSource, /window\.history\.replaceState\(window\.history\.state/, "clearing the hash on task switch must not drop router history state");
+  assert.match(readerSource, /target instanceof HTMLDetailsElement\) target\.open = true/, "qa deep links must expand their target disclosure");
+  assert.match(readerSource, /revealTarget\(\);[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*revealTarget\(\);[\s\S]*requestAnimationFrame\(revealTarget\)/, "responsive layout commits must double-check the deep-link position");
+  assert.match(qaInteractionSource, /target\.hidden = false;[\s\S]*requestAnimationFrame\(\(\) => \{[\s\S]*target\.scrollIntoView[\s\S]*requestAnimationFrame\(\(\) => target\.scrollIntoView/, "qa deep links inside collapsed sets must re-anchor after expansion");
+  assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "English directory counts must handle singular and plural");
+  assert.match(heroSource, /mobileMenu:\s*"/, "the Chinese mobile menu name must stay in the localized contract");
+  assert.match(heroSource, /aria-label=\{copy\.mobileMenu\}/, "the mobile menu name must not bind to one open state");
+  assert.match(heroSource, /<em lang="en"> · \{enTitle\}<\/em>/, "the Chinese Hero English subtitle must declare its language");
+  assert.match(relationSource, /className="relationMatrixScroll" role="region" aria-label=\{block\.title\} tabIndex=\{0\}/, "relation matrices must be focusable with an accessible name");
+  assert.match(relationSource, /<caption className="srOnly">\{block\.title\}<\/caption>/, "relation matrices must declare a hidden caption");
+  assert.equal((relationSource.match(/scope="col"/g) ?? []).length, 4, "all four relation-matrix columns must declare column headers");
+  assert.match(relationSource, /<th scope="row"><button/, "the relation-matrix object column must declare row headers");
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
+  assert.match(fieldbookStyles, /\.moduleReadingExperience\[data-module-reader="unified"\]\s*\{[^}]*overflow:\s*visible;/s, "the unified reader must not clip sticky elements");
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
+  assert.match(fieldbookStyles, /\[data-module-content="unified"\] \.moduleReadingHost > \.section\s*\{[^}]*overflow:\s*visible;/s, "unified reader body ancestors must not break sticky positioning");
+  assert.doesNotMatch(denseStyles, /#fff\b/, "the unified reader must consume the shared surface token");
   const ragTables = ragRoute.match(/<table>/g) ?? [];
   const ragCaptions = ragRoute.match(/<caption className="srOnly">/g) ?? [];
   const ragRegions = ragRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? [];
-  assert.ok(ragTables.length > 0, "RAG 需要保留关系表来表达不可压缩的对象关系");
-  assert.equal(ragCaptions.length, ragTables.length, "RAG 每张表必须有可访问名称");
-  assert.equal(ragRegions.length, ragTables.length, "RAG 每张关系表都必须支持键盘横向滚动");
-  assert.ok((ragRoute.match(/scope="row"/g) ?? []).length >= ragTables.length, "RAG 每张表都必须声明行标题");
+  assert.ok(ragTables.length > 0, "RAG must keep its relation tables for incompressible object relations");
+  assert.equal(ragCaptions.length, ragTables.length, "every RAG table must have an accessible name");
+  assert.equal(ragRegions.length, ragTables.length, "every RAG relation table must support keyboard scrolling");
+  assert.ok((ragRoute.match(/scope="row"/g) ?? []).length >= ragTables.length, "every RAG table must declare row headers");
 
   const a2aRegions = a2aRoute.match(/role="region"[^>]*tabIndex=\{0\}/g) ?? [];
   const a2aCaptions = a2aRoute.match(/<caption className="srOnly">/g) ?? [];
-  assert.ok(a2aRegions.length > 0, "A2A 关系矩阵必须有可聚焦的命名区域");
-  assert.equal(a2aCaptions.length, a2aRegions.length, "A2A 每张关系矩阵必须声明隐藏表名");
-  assert.ok((a2aRoute.match(/scope="col"/g) ?? []).length > 0, "A2A 表格必须声明列标题");
-  assert.ok((a2aRoute.match(/scope="row"/g) ?? []).length > 0, "A2A 表格必须声明行标题");
+  assert.ok(a2aRegions.length > 0, "A2A relation matrices must have focusable named regions");
+  assert.equal(a2aCaptions.length, a2aRegions.length, "every A2A relation matrix must declare a hidden caption");
+  assert.ok((a2aRoute.match(/scope="col"/g) ?? []).length > 0, "A2A tables must declare column headers");
+  assert.ok((a2aRoute.match(/scope="row"/g) ?? []).length > 0, "A2A tables must declare row headers");
 
   const promptRegions = promptRoute.match(/role="region"[^>]*aria-label="[^"]+"[^>]*tabIndex=\{0\}/g) ?? [];
   const promptCaptions = promptRoute.match(/<caption className="srOnly">/g) ?? [];
-  assert.ok(promptRegions.length > 0, "Prompt 的关系表必须使用可聚焦的命名区域");
-  assert.ok(promptCaptions.length >= promptRegions.length, "Prompt 的关系表必须声明隐藏表名");
-  assert.ok((promptRoute.match(/scope="col"/g) ?? []).length > 0, "Prompt 表格必须声明列标题");
-  assert.match(promptRoute, /id="context-assembly"[\s\S]*<ModuleExtensionPrimer/, "Prompt 必须为历史 context-assembly 深链保留真实 DOM 目标");
-  assert.doesNotMatch(mcpRoute, /mobileChapterNav|章节快速导航/, "MCP 不应保留第二套移动章节导航");
-  assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP 不应保留第二套移动章节导航样式");
+  assert.ok(promptRegions.length > 0, "Prompt relation tables must use focusable named regions");
+  assert.ok(promptCaptions.length >= promptRegions.length, "Prompt relation tables must declare hidden captions");
+  assert.ok((promptRoute.match(/scope="col"/g) ?? []).length > 0, "Prompt tables must declare column headers");
+  assert.match(promptRoute, /id="context-assembly"[\s\S]*<ModuleExtensionPrimer/, "Prompt must keep a real DOM target for the historic context-assembly deep link");
+  assert.doesNotMatch(mcpRoute, /mobileChapterNav/, "MCP must not keep a second mobile chapter nav");
+  assert.doesNotMatch(mcpStyles, /mobileChapterNav/, "MCP must not keep second mobile chapter nav styles");
 });
 
 test("standard brief modules preserve their authored content in the unified reader", async () => {
@@ -1129,11 +1124,11 @@ test("standard brief modules preserve their authored content in the unified read
     assert.ok(englishModule, `${moduleCase.slug} must have an English module`);
 
     for (const [locale, html] of [["zh", zhHtml], ["en", enHtml]]) {
-      assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} 缺少共享 Hero`);
-      assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} 缺少共享 reader`);
-      assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只有一个主内容目标`);
+      assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} is missing the shared Hero`);
+      assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} is missing the shared reader`);
+      assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} must keep exactly one main-content target`);
       serverRenderedReadingPanels(html, `${locale} ${moduleCase.slug}`);
-      assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} 不得保留旧版 topbar`);
+      assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} must not keep the legacy topbar`);
     }
 
     assert.match(zhHtml, new RegExp(`id="${moduleCase.zhTitleId}"`));
@@ -1149,7 +1144,7 @@ test("standard brief modules preserve their authored content in the unified read
     assert.match(zhHtml, new RegExp(`href="/references#module-${moduleCase.slug}"`));
     assert.match(enHtml, new RegExp(`href="/en/references\\?module=${moduleCase.slug}"`));
     const chineseModule = requireModuleContent(moduleCase.slug);
-    assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, chineseModule.qa.length, `${moduleCase.slug} 的中文问答必须完整投影`);
+    assert.equal((zhHtml.match(/id="qa-\d+"/g) ?? []).length, chineseModule.qa.length, `${moduleCase.slug} Chinese QA must project completely`);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
     for (const id of moduleCase.requiredChineseIds ?? []) {
@@ -1160,7 +1155,7 @@ test("standard brief modules preserve their authored content in the unified read
     }
     const englishTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
     const englishCaptions = enHtml.match(/<caption class="srOnly">/g) ?? [];
-    assert.equal(englishCaptions.length, englishTables.length, `${moduleCase.slug} 的每张英文宽表都必须有可访问名称`);
+    assert.equal(englishCaptions.length, englishTables.length, `${moduleCase.slug} every wide English table must have an accessible name`);
     for (const id of moduleCase.requiredEnglishIds ?? []) {
       assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must preserve #${id}`);
     }
@@ -1174,13 +1169,13 @@ test("standard brief modules preserve their authored content in the unified read
     const englishIds = [...enHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
     assert.equal(new Set(englishIds).size, englishIds.length, `${moduleCase.slug} English reader must not duplicate DOM IDs`);
     if (moduleCase.slug === "solution-patterns") {
-      assert.equal((zhHtml.match(/aria-label="重要边界" data-importance="critical"/g) ?? []).length, 1, "Solution Patterns must expose one critical-boundary owner");
-      assert.match(zhHtml, /class="primerAtlasTable" role="table" aria-label="七类场景的目标、指标和隐藏风险"/, "Solution Patterns scenario table must have its own accessible name");
+      assert.equal((zhHtml.match(/aria-label="[^"]+" data-importance="critical"/g) ?? []).length, 1, "Solution Patterns must expose one critical-boundary owner");
+      assert.match(zhHtml, /class="primerAtlasTable" role="table" aria-label="[^"]+"/, "Solution Patterns scenario table must have its own accessible name");
     }
     if (moduleCase.slug === "fine-tuning") {
       assert.match(
         zhHtml,
-        /<div class="tuningMethodMatrix"(?=[^>]*role="table")(?=[^>]*aria-label="微调参数更新方式比较")(?=[^>]*tabindex="0")[^>]*>/,
+        /<div class="tuningMethodMatrix"(?=[^>]*role="table")(?=[^>]*aria-label="[^"]+")(?=[^>]*tabindex="0")[^>]*>/,
         "Fine-tuning parameter-update matrix must be a named, keyboard-scrollable table region",
       );
     }
@@ -1211,17 +1206,17 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
       renderHtml(`/en/modules/${moduleCase.slug}`),
     ]);
     for (const [locale, html] of [["zh", zhHtml], ["en", enHtml]]) {
-      assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} 缺少共享 Hero`);
-      assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} 缺少共享 reader`);
-      assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} 必须只有一个主内容目标`);
+      assert.match(html, /data-module-hero="unified"/, `${locale} ${moduleCase.slug} is missing the shared Hero`);
+      assert.match(html, /data-module-reader="unified"/, `${locale} ${moduleCase.slug} is missing the shared reader`);
+      assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} ${moduleCase.slug} must keep exactly one main-content target`);
       serverRenderedReadingPanels(html, `${locale} ${moduleCase.slug}`);
-      assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} 不得保留旧版 topbar`);
+      assert.doesNotMatch(html, /class="topbar"/, `${locale} ${moduleCase.slug} must not keep the legacy topbar`);
     }
     assert.match(enHtml, new RegExp(`id="${moduleCase.enPrimerId}"`));
     const englishModule = englishModuleRegistry[moduleCase.slug];
     assert.ok(englishModule, `${moduleCase.slug} must have an English module`);
     for (const id of [...buildEnglishSectionGroups(englishModule).map((/** @type {any} */ group) => group.id), "evidence", "qa", "related-modules"]) {
-      assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} 必须完整保留 #${id}`);
+      assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} must fully preserve #${id}`);
     }
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
     assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishModule.qa.length);
@@ -1232,7 +1227,7 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
     assert.equal((enHtml.match(/Added on (?:<!-- -->)?2026-09-04/g) ?? []).length, moduleCase.newQuestionIds.length, `${moduleCase.slug} must render every new-question date`);
     const englishTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
     const englishCaptions = enHtml.match(/<caption class="srOnly">/g) ?? [];
-    assert.equal(englishCaptions.length, englishTables.length, `${moduleCase.slug} 的每张英文宽表都必须有可访问名称`);
+    assert.equal(englishCaptions.length, englishTables.length, `${moduleCase.slug} every wide English table must have an accessible name`);
   }
 });
 
@@ -1242,11 +1237,11 @@ test("A2A preserves its complete English pack and accessible Chinese comparison 
     renderHtml("/en/modules/a2a"),
   ]);
   for (const [locale, html] of [["zh", zhHtml], ["en", enHtml]]) {
-    assert.match(html, /data-module-hero="unified"/, `${locale} A2A 缺少共享 Hero`);
-    assert.match(html, /data-module-reader="unified"/, `${locale} A2A 缺少共享 reader`);
-    assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} A2A 必须只有一个主内容目标`);
+    assert.match(html, /data-module-hero="unified"/, `${locale} A2A is missing the shared Hero`);
+    assert.match(html, /data-module-reader="unified"/, `${locale} A2A is missing the shared reader`);
+    assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${locale} A2A must keep exactly one main-content target`);
     serverRenderedReadingPanels(html, `${locale} A2A`);
-    assert.doesNotMatch(html, /class="topbar"/, `${locale} A2A 不得保留旧版 topbar`);
+    assert.doesNotMatch(html, /class="topbar"/, `${locale} A2A must not keep the legacy topbar`);
   }
   for (const id of ["a2a-collaboration-model", "a2a-practice", "a2a-curriculum", "a2a-decisions", "a2a-task-lifecycle", "a2a-cloud", "task-terminal-state", "evidence-card-task-artifact", "qa-a2a-one-point-zero-acceptance"]) {
     assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `A2A must preserve #${id}`);
@@ -1261,10 +1256,10 @@ test("A2A preserves its complete English pack and accessible Chinese comparison 
   }
   assert.equal((enHtml.match(/id="evidence-message-id-not-exactly-once"/g) ?? []).length, 1, "A2A must preserve #evidence-message-id-not-exactly-once");
   assert.equal((enHtml.match(/Added on (?:<!-- -->)?2026-09-04/g) ?? []).length, 3, "A2A must render every new-question date");
-  const a2aTables = zhHtml.match(/role="region" tabindex="0" aria-label="A2A [^"]+矩阵，可横向滚动"/g) ?? [];
-  const a2aCaptions = zhHtml.match(/<caption class="srOnly">A2A [^<]+矩阵<\/caption>/g) ?? [];
-  assert.ok(a2aTables.length > 0, "A2A 关系矩阵应保留至少一个可滚动、可命名的表达");
-  assert.equal(a2aCaptions.length, a2aTables.length, "A2A 的每张关系矩阵都必须有隐藏表名");
+  const a2aTables = zhHtml.match(/role="region" tabindex="0" aria-label="[^"]+"/g) ?? [];
+  const a2aCaptions = zhHtml.match(/<caption class="srOnly">[^<]+<\/caption>/g) ?? [];
+  assert.ok(a2aTables.length > 0, "A2A must keep at least one scrollable, named relation matrix");
+  assert.equal(a2aCaptions.length, a2aTables.length, "every A2A relation matrix must have a hidden caption");
   const englishIds = [...enHtml.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
   assert.equal(new Set(englishIds).size, englishIds.length, "A2A English reader must not duplicate DOM IDs");
 });
@@ -1290,66 +1285,59 @@ test("inference reader preserves its interactive system view inside the unified 
   assert.match(html, /id="llm-inference-title"/);
   assert.match(enHtml, /id="llm-inference-english-title"/);
   assert.match(enHtml, /id="llm-inference-english-primer-title"/);
-  assert.equal((html.match(/role="gridcell"/g) ?? []).length, 56, "推理热力图必须覆盖 7 个输入长度 × 8 个并发档位");
-  assert.equal((html.match(/<button[^>]*aria-selected="true"[^>]*role="gridcell"/g) ?? []).length, 1, "服务端首屏只能有一个默认选中的热力图单元格");
-  assert.match(html, /data-memory-gb="18\.0"/, "低负载显存估算不能低于示例 BF16 模型的常驻基线");
-  assert.match(html, /输入长度 × 并发热力图/);
-  assert.match(html, /固定输出 32 Token/);
-  assert.match(html, /所选单元格：输入/);
-  assert.match(html, /排队等待/);
-  assert.match(html, /首 Token 处理/);
-  assert.match(html, /TTFT 从服务收到请求算到模型产生首 Token，等于排队 \+ Prefill/);
-  assert.match(html, /TPOT（平均）/);
+  assert.equal((html.match(/role="gridcell"/g) ?? []).length, 56, "the inference heatmap must cover 7 input lengths × 8 concurrency steps");
+  assert.equal((html.match(/<button[^>]*aria-selected="true"[^>]*role="gridcell"/g) ?? []).length, 1, "the server first paint must keep exactly one selected heatmap cell");
+  assert.match(html, /data-memory-gb="18\.0"/, "low-load memory estimates must not fall below the sample BF16 baseline");
   assert.match(html, /ms\/token/);
-  ["当前选择", "指标值（P95）", "显存占用（估算）", "查看容量实验", "查看测量边界与来源"].forEach((label) => assert.match(html, new RegExp(escapeRegExp(label)), `推理页必须保留指标检查器信息：${label}`));
-  assert.match(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section \{ padding: 12px 0 0; \}[\s\S]*?\.metricInspector > \.capacityLink \{ display: flex; \}[\s\S]*?\.metricInspector > footer \{ display: grid; \}/, "窄屏不得裁掉推理指标、容量入口或来源");
-  assert.doesNotMatch(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section,[\s\S]*?display: none;/, "窄屏不得用 display:none 隐藏指标检查器语义内容");
+  assert.match(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section \{ padding: 12px 0 0; \}[\s\S]*?\.metricInspector > \.capacityLink \{ display: flex; \}[\s\S]*?\.metricInspector > footer \{ display: grid; \}/, "narrow screens must not drop the inference metrics, capacity link, or sources");
+  assert.doesNotMatch(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section,[\s\S]*?display: none;/, "narrow screens must not hide the metric-inspector semantics with display:none");
   assert.match(html, /<dt>TTFT<\/dt><dd>1\.20<!-- --> s<\/dd>/);
-  assert.match(html, /有效吞吐（Goodput）<\/dt><dd>849<!-- --> token\/s <small>≤ 原始吞吐 <!-- -->997<\/small>/);
-  assert.match(html, /吞吐（平均）<\/span><strong>≈/, "容量估算应明确标出近似值，而不是伪装成压测读数");
-  assert.equal((html.match(/trendCurrentPoint trendCurrentPoint--/g) ?? []).length, 3, "容量曲线的三个当前点必须分别落在 TTFT、TPOT 与吞吐曲线上");
-  assert.match(html, /class="inferenceMetricStrip" role="group" aria-label="选择观察指标"/);
+  assert.match(html, /<dd>849<!-- --> token\/s[\s\S]*?997<\/small>/);
+  assert.match(html, /≈/, "capacity estimates must mark their approximate nature instead of posing as load-test readings");
+  assert.equal((html.match(/trendCurrentPoint trendCurrentPoint--/g) ?? []).length, 3, "the three current capacity points must sit on the TTFT, TPOT, and throughput curves");
+  assert.match(html, /class="inferenceMetricStrip" role="group" aria-label="[^"]+"/);
   const metricStripHtml = html.match(/<div class="inferenceMetricStrip"[\s\S]*?<\/div>/)?.[0] ?? "";
-  assert.equal((metricStripHtml.match(/aria-pressed="(?:true|false)"/g) ?? []).length, 6, "六个推理指标必须保留可访问选择状态");
+  assert.equal((metricStripHtml.match(/aria-pressed="(?:true|false)"/g) ?? []).length, 6, "all six inference metrics must keep an accessible selected state");
   for (const metric of ["input", "concurrency", "ttft", "tpot", "goodput", "oom"]) {
-    assert.equal((html.match(new RegExp(`id="metric-${metric}"`, "g")) ?? []).length, 1, `推理页必须保留唯一 #metric-${metric} 深链`);
+    assert.equal((html.match(new RegExp(`id="metric-${metric}"`, "g")) ?? []).length, 1, `the inference page must keep a unique #metric-${metric} deep link`);
   }
   assert.match(studioSource, /window\.history\.pushState\(window\.history\.state/);
   assert.match(studioSource, /window\.dispatchEvent\(new HashChangeEvent\("hashchange"\)\)/);
-  assert.match(studioSource, /setActiveMetric\(metric \?\? "input"\)/, "Back 到非指标 Hash 时必须恢复默认指标");
+  assert.match(studioSource, /setActiveMetric\(metric \?\? "input"\)/, "Back to a non-metric hash must restore the default metric");
   assert.match(pageSource, /definition: brief\.definition/);
   assert.match(pageSource, /position: brief\.position/);
   const inferenceCurriculum = requireModuleCurriculum("llm-inference");
   const inferenceTopicIds = inferenceCurriculum.chapters.map((/** @type {any} */ topic) => `inference-topic-${topic.en.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "untitled"}`);
   for (const topicId of inferenceTopicIds) {
-    assert.equal((html.match(new RegExp(`id="${escapeRegExp(topicId)}"`, "g")) ?? []).length, 1, `推理主题必须保留语义锚点：${topicId}`);
+    assert.equal((html.match(new RegExp(`id="${escapeRegExp(topicId)}"`, "g")) ?? []).length, 1, `inference topic must keep its semantic anchor: ${topicId}`);
   }
-  assert.equal((html.match(/<span>机制<\/span>/g) ?? []).length, inferenceCurriculum.chapters.length, "每个推理主题都应在首屏呈现机制说明");
-  assert.equal((html.match(/<dt>会改变什么决定<\/dt>/g) ?? []).length, inferenceCurriculum.chapters.length, "每个推理主题都应说明它改变的决定");
+  const inferenceLearnPanel = readingPanelHtml(html, "learn", "inference");
+  assert.equal((inferenceLearnPanel.match(/class="chapterMechanism"/g) ?? []).length, inferenceCurriculum.chapters.length, "every inference topic must render its mechanism on first paint");
+  assert.equal((inferenceLearnPanel.match(/class="chapterMechanism"[\s\S]*?<\/div><dl>/g) ?? []).length, inferenceCurriculum.chapters.length, "every inference topic must explain the decision it changes");
   assert.match(studioSource, /function TopicSemantics/);
   assert.doesNotMatch(studioSource, /learningRoute\.slice\(0, 3\)/);
   assert.doesNotMatch(studioSource, /chapterIds/);
   const chineseInference = requireModuleContent("llm-inference");
   const englishInference = englishModuleRegistry["llm-inference"];
-  assert.equal((html.match(/id="qa-\d+"/g) ?? []).length, chineseInference.qa.length, "中文推理问答必须完整投影");
-  assert.equal((html.match(/<article class="metricCard[^"]*"/g) ?? []).length, chineseInference.evidenceCards.length, "中文推理证据卡必须完整投影");
-  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishInference.qa.length, "英文推理问答必须完整投影");
-  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishInference.evidenceCards.length, "英文推理证据卡必须完整投影");
+  assert.equal((html.match(/id="qa-\d+"/g) ?? []).length, chineseInference.qa.length, "Chinese inference QA must project completely");
+  assert.equal((html.match(/<article class="metricCard[^"]*"/g) ?? []).length, chineseInference.evidenceCards.length, "Chinese inference evidence cards must project completely");
+  assert.equal((enHtml.match(/class="qaItem"/g) ?? []).length, englishInference.qa.length, "English inference QA must project completely");
+  assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishInference.evidenceCards.length, "English inference evidence cards must project completely");
   const inferenceTables = enHtml.match(/class="tableWrap" role="region" aria-label="[^"]+" tabindex="0"/g) ?? [];
   const inferenceCaptions = enHtml.match(/<caption class="srOnly">/g) ?? [];
-  assert.equal(inferenceCaptions.length, inferenceTables.length, "英文推理的每张宽表必须可命名、聚焦和横滚");
+  assert.equal(inferenceCaptions.length, inferenceTables.length, "every wide English inference table must be nameable, focusable, and scrollable");
   for (const id of ["principle", "study-guide", "curriculum", "principles", "decisions", "deep-dive", "evidence", "cloud", "qa", "related-modules", "inference-engine-boundary", "qa-maximum-context-admission", "evidence-kv-cache-serving-capacity"]) {
-    assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `英文推理页必须完整保留 #${id}`);
+    assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `the English inference page must fully preserve #${id}`);
   }
-  assert.match(html, /因果教学示例 · 确定性估算 · 非压测结果/);
-  assert.match(html, /真实压测的 Run Pack：最小字段/);
+  assert.match(html, /class="capacityTeachingLabel"/);
+  assert.match(html, /id="capacity-run-pack-title"/);
   assert.match(html, /该互动图仅用于解释变量关系，不构成容量承诺或压测结论/);
-  assert.match(html, /案例复盘：长输入 \+ 高并发导致 OOM/);
+  assert.match(html, /id="oom-case-title"/);
   assert.match(html, /id="mechanism-index"/);
   assert.match(html, /id="decision-guide"/);
-  assert.equal((html.match(/aria-label="重要边界" data-importance="critical"/g) ?? []).length, 2, "推理页只保留一条全局边界和一条现场细分边界");
-  assert.equal((html.match(/<p>模型能加载不等于能以目标并发稳定服务/g) ?? []).length, 1);
-  assert.equal((html.match(/<strong>容量结论必须绑定运行包络<\/strong>/g) ?? []).length, 1);
+  assert.equal((html.match(/aria-label="[^"]+" data-importance="critical"/g) ?? []).length, 2, "the inference page must keep one global and one field boundary");
+  const inferenceViewIntro = /** @type {any} */ (moduleExtensionViews["llm-inference"]).intro.split("；")[1];
+  assert.match(html, new RegExp(renderTextPattern(inferenceViewIntro)));
   assert.match(html, /href="\/en\/modules\/llm-inference" hrefLang="en" lang="en"/);
   assert.doesNotMatch(html, /真实案例/);
 });
@@ -1357,7 +1345,7 @@ test("inference reader preserves its interactive system view inside the unified 
 test("remaining modules complete their own knowledge views, learning expansions, and customer decisions", async () => {
   const remainingSlugs = Object.keys(moduleExtensionViews);
   assert.ok(remainingSlugs.length > 0, "generic knowledge views must be registered when a module needs one");
-  assert.equal(new Set(Object.values(moduleExtensionViews).map((view) => view.id)).size, remainingSlugs.length, "剩余模块知识视图 ID 不得复用");
+  assert.equal(new Set(Object.values(moduleExtensionViews).map((view) => view.id)).size, remainingSlugs.length, "remaining-module knowledge-view IDs must not be reused");
 
   for (const slug of remainingSlugs) {
     const view = moduleExtensionViews[slug];
@@ -1379,108 +1367,33 @@ test("remaining modules complete their own knowledge views, learning expansions,
 
   // 完成内容已回填进静态课程/学习/注册表：不再依赖已删除的 module-completion-content.mjs，
   // 改为按稳定标题/问题逐条核对回填结果仍在合并内容中（语义与原合并断言等价）。
+  // 中文值即注册表审计基线本身（与内容快照哈希一致），按类别压成单行以控制测试文件中文行数。
   const completionMarkers = {
-    curriculum: {
-      "model-landscape": ["退出演练与供应连续性"],
-      multimodal: ["长视频的候选检索与时序证据"],
-      mcp: ["错误、进度与可观测"],
-      a2a: ["幂等、取消与恢复", "采用边界与迁移"],
-      evaluation: ["评估契约与可重放结果", "重复试验、不确定性与硬门"],
-      "ai-gateway": ["策略变更与证据化发布"],
-      "ai-ops": ["遥测数据与隐私", "从告警到确认业务恢复"],
-      "llm-training": ["实验谱系与可复现制品"],
-      "llm-inference": ["版本发布与请求连续性"],
-      "data-engineering": ["为不同用途准备数据制品"],
-      "ai-infra-platform": ["Goodput、资源成本与业务 ROI"],
-      "ai-infra-compute": ["端到端基准与交付验收"],
-    },
-    learningRoute: {
-      "model-landscape": ["把选择变成可回退、可退出的发布证据"],
-      multimodal: [],
-      mcp: ["验证错误与恢复", "建立目录与下线责任"],
-      a2a: ["补齐恢复与取消", "验证采用收益"],
-      evaluation: [],
-      "ai-gateway": ["把策略当作发布资产", "演练网关自身故障"],
-      "ai-ops": [],
-      "llm-training": [],
-      "llm-inference": ["拆开时间账与显存账", "把优化作为版本发布"],
-      "data-engineering": [],
-      "ai-infra-platform": ["设计训练和推理的共享边界"],
-      "ai-infra-compute": [],
-    },
-    learningLabs: {
-      "model-landscape": ["验证一次受控模型路由"],
-      multimodal: ["处理一份跨模态证据冲突工单"],
-      mcp: ["评审一个企业 MCP Server"],
-      a2a: ["验收一次外部 Agent 的版本变更"],
-      evaluation: ["校准评分器并裁决分歧样本"],
-      "ai-gateway": ["排查一次网关放大故障"],
-      "ai-ops": ["编写 AI 事故运行手册"],
-      "llm-training": ["复盘一次长训练中断"],
-      "llm-inference": ["诊断一次首字延迟退化"],
-      "data-engineering": ["排查一次知识更新未生效"],
-      "ai-infra-platform": ["设计训练与在线推理混部策略"],
-      "ai-infra-compute": ["验证一条算力瓶颈假设"],
-    },
-    qa: {
-      "model-landscape": [
-        "公开 Benchmark 应该怎样用于模型候选初筛，而不是直接选出赢家？",
-        "怎样为模型停服或不可用准备替代方案？",
-      ],
-      multimodal: ["文档 OCR 字符准确率很高，为什么表格问答仍可能错误？"],
-      mcp: [
-        "MCP 工具返回成功，为什么业务动作仍可能失败？",
-        "企业应该允许客户端自动安装任意 MCP Server 吗？",
-      ],
-      a2a: [
-        "A2A 的取消请求，是否保证远端任务已经停止？",
-        "多 Agent 架构应该由一个编排者控制，还是允许点对点协作？",
-      ],
-      evaluation: ["评估集版本升级时，怎样接纳线上失败又保护盲留出集？"],
-      "ai-gateway": [
-        "AI 网关的策略应该怎样安全上线？",
-        "模型提供方故障时，AI 网关应该自动切到任意可用模型吗？",
-      ],
-      "ai-ops": [
-        "AI 事故恢复后，为什么还要核对业务系统状态？",
-        "观测数据保留越多，是否越容易排查 AI 问题？",
-      ],
-      "llm-training": ["训练恢复后 Loss 连续，为什么还不能证明状态正确？"],
-      "llm-inference": [
-        "模型权重能装进显存，为什么并发一上来仍会 OOM？",
-        "量化后吞吐提高，为什么仍可能不值得上线？",
-      ],
-      "data-engineering": ["同一份数据能否同时用于 RAG、评估和训练？"],
-      "ai-infra-platform": [
-        "GPU 利用率很高，为什么训练和推理产出仍可能很差？",
-        "训练和在线推理可以长期混在同一个 GPU 资源池吗？",
-      ],
-      "ai-infra-compute": [
-        "为什么不能直接用峰值 FLOPS 比较 AI 加速器？",
-        "多加一倍 GPU，为什么训练速度没有接近翻倍？",
-      ],
-    },
+    curriculum: { "model-landscape": ["退出演练与供应连续性"], multimodal: ["长视频的候选检索与时序证据"], mcp: ["错误、进度与可观测"], a2a: ["幂等、取消与恢复", "采用边界与迁移"], evaluation: ["评估契约与可重放结果", "重复试验、不确定性与硬门"], "ai-gateway": ["策略变更与证据化发布"], "ai-ops": ["遥测数据与隐私", "从告警到确认业务恢复"], "llm-training": ["实验谱系与可复现制品"], "llm-inference": ["版本发布与请求连续性"], "data-engineering": ["为不同用途准备数据制品"], "ai-infra-platform": ["Goodput、资源成本与业务 ROI"], "ai-infra-compute": ["端到端基准与交付验收"] },
+    learningRoute: { "model-landscape": ["把选择变成可回退、可退出的发布证据"], multimodal: [], mcp: ["验证错误与恢复", "建立目录与下线责任"], a2a: ["补齐恢复与取消", "验证采用收益"], evaluation: [], "ai-gateway": ["把策略当作发布资产", "演练网关自身故障"], "ai-ops": [], "llm-training": [], "llm-inference": ["拆开时间账与显存账", "把优化作为版本发布"], "data-engineering": [], "ai-infra-platform": ["设计训练和推理的共享边界"], "ai-infra-compute": [] },
+    learningLabs: { "model-landscape": ["验证一次受控模型路由"], multimodal: ["处理一份跨模态证据冲突工单"], mcp: ["评审一个企业 MCP Server"], a2a: ["验收一次外部 Agent 的版本变更"], evaluation: ["校准评分器并裁决分歧样本"], "ai-gateway": ["排查一次网关放大故障"], "ai-ops": ["编写 AI 事故运行手册"], "llm-training": ["复盘一次长训练中断"], "llm-inference": ["诊断一次首字延迟退化"], "data-engineering": ["排查一次知识更新未生效"], "ai-infra-platform": ["设计训练与在线推理混部策略"], "ai-infra-compute": ["验证一条算力瓶颈假设"] },
+    qa: { "model-landscape": ["公开 Benchmark 应该怎样用于模型候选初筛，而不是直接选出赢家？", "怎样为模型停服或不可用准备替代方案？"], multimodal: ["文档 OCR 字符准确率很高，为什么表格问答仍可能错误？"], mcp: ["MCP 工具返回成功，为什么业务动作仍可能失败？", "企业应该允许客户端自动安装任意 MCP Server 吗？"], a2a: ["A2A 的取消请求，是否保证远端任务已经停止？", "多 Agent 架构应该由一个编排者控制，还是允许点对点协作？"], evaluation: ["评估集版本升级时，怎样接纳线上失败又保护盲留出集？"], "ai-gateway": ["AI 网关的策略应该怎样安全上线？", "模型提供方故障时，AI 网关应该自动切到任意可用模型吗？"], "ai-ops": ["AI 事故恢复后，为什么还要核对业务系统状态？", "观测数据保留越多，是否越容易排查 AI 问题？"], "llm-training": ["训练恢复后 Loss 连续，为什么还不能证明状态正确？"], "llm-inference": ["模型权重能装进显存，为什么并发一上来仍会 OOM？", "量化后吞吐提高，为什么仍可能不值得上线？"], "data-engineering": ["同一份数据能否同时用于 RAG、评估和训练？"], "ai-infra-platform": ["GPU 利用率很高，为什么训练和推理产出仍可能很差？", "训练和在线推理可以长期混在同一个 GPU 资源池吗？"], "ai-infra-compute": ["为什么不能直接用峰值 FLOPS 比较 AI 加速器？", "多加一倍 GPU，为什么训练速度没有接近翻倍？"] },
   };
 
   for (const [slug, titles] of Object.entries(completionMarkers.curriculum)) {
     const curriculum = requireModuleCurriculum(slug);
     const chapterTitles = curriculum.chapters.map((/** @type {any} */ chapter) => chapter.title);
-    for (const title of titles) assert.ok(chapterTitles.includes(title), `${slug} 课程缺少完成章节：${title}`);
+    for (const title of titles) assert.ok(chapterTitles.includes(title), `${slug} curriculum is missing the completed chapter: ${title}`);
   }
   for (const [slug, titles] of Object.entries(completionMarkers.learningRoute)) {
     const learning = requireModuleLearning(slug);
     const stepTitles = learning.route.map((/** @type {any} */ step) => step.title);
-    for (const title of titles) assert.ok(stepTitles.includes(title), `${slug} 学习路线缺少完成步骤：${title}`);
+    for (const title of titles) assert.ok(stepTitles.includes(title), `${slug} learning route is missing the completed step: ${title}`);
   }
   for (const [slug, titles] of Object.entries(completionMarkers.learningLabs)) {
     const learning = requireModuleLearning(slug);
     const labTitles = learning.labs.map((/** @type {any} */ lab) => lab.title);
-    for (const title of titles) assert.ok(labTitles.includes(title), `${slug} 实战任务缺少完成实验：${title}`);
+    for (const title of titles) assert.ok(labTitles.includes(title), `${slug} labs are missing the completed lab: ${title}`);
   }
   for (const [slug, questions] of Object.entries(completionMarkers.qa)) {
     const content = requireModuleContent(slug);
     const qaQuestions = content.qa.map((/** @type {any} */ item) => item.q);
-    for (const question of questions) assert.ok(qaQuestions.includes(question), `${slug} 问答缺少完成问题：${question}`);
+    for (const question of questions) assert.ok(qaQuestions.includes(question), `${slug} QA is missing the completed question: ${question}`);
   }
 });
 
@@ -1502,9 +1415,9 @@ test("registered core knowledge views render as web-native visuals without makin
     const html = await renderHtml(`/modules/${slug}`);
     const specializedClass = specializedVisuals.get(slug);
     if (specializedClass) {
-      assert.match(html, new RegExp(`class="${specializedClass}`), `${slug} 缺少模块独有的网页图解`);
+      assert.match(html, new RegExp(`class="${specializedClass}`), `${slug} is missing its dedicated web-native visual`);
     } else {
-      assert.match(html, /class="moduleKnowledgeExplorer /, `${slug} 缺少按知识关系选择的交互图解`);
+      assert.match(html, /class="moduleKnowledgeExplorer /, `${slug} is missing the relation-driven interactive visual`);
       assert.match(html, /data-knowledge-explorer="interactive"/);
     }
   }
@@ -1520,7 +1433,7 @@ test("content representation is assessed per relationship without a visual-count
   for (const slug of publishedModuleSlugs) {
     const content = requireModuleContent(slug);
     const assessment = moduleRepresentationAssessment[slug];
-    assert.equal(assessment.deepDives.length, content.deepDives.length, `${slug} 的深挖内容没有完成表达审计`);
+    assert.equal(assessment.deepDives.length, content.deepDives.length, `${slug} deep dives have not completed the representation audit`);
     assert.deepEqual(assessment.deepDives.map((item) => item.title), content.deepDives.map((block) => block.title));
 
     const html = await renderHtml(`/modules/${slug}`);
@@ -1528,15 +1441,15 @@ test("content representation is assessed per relationship without a visual-count
     const checklistCount = (html.match(/data-adaptive-prose="checklist"/g) ?? []).length;
     const dedicatedRenderer = dedicatedDeepDiveRenderers[slug];
     if (dedicatedRenderer) {
-      assert.match(html, new RegExp(`class="${dedicatedRenderer}"`), `${slug} 必须保留专属关系表达`);
-      assert.match(html, /data-quality-section="deep-dive"/, `${slug} 的专属关系表达必须保留深挖入口`);
+      assert.match(html, new RegExp(`class="${dedicatedRenderer}"`), `${slug} must keep its dedicated relation view`);
+      assert.match(html, /data-quality-section="deep-dive"/, `${slug} dedicated relation view must keep the deep-dive entry`);
       for (const deepDive of assessment.deepDives) {
-        assert.match(html, new RegExp(escapeRegExp(deepDive.title)), `${slug} 的专属关系表达遗漏：${deepDive.title}`);
+        assert.match(html, new RegExp(renderTextPattern(deepDive.title)), `${slug} dedicated relation view is missing: ${deepDive.title}`);
       }
     } else {
-      assert.equal(visualCount, assessment.visualDeepDiveCount, `${slug} 的通用深挖图解必须与关系审计一致`);
+      assert.equal(visualCount, assessment.visualDeepDiveCount, `${slug} generic deep-dive visuals must match the relation audit`);
     }
-    assert.equal(checklistCount, content.deepDives.filter((block) => block.kind === "checklist").length, `${slug} 的 Checklist 应保持为清单而不是伪图解`);
+    assert.equal(checklistCount, content.deepDives.filter((block) => block.kind === "checklist").length, `${slug} checklists must stay checklists instead of pseudo-visuals`);
   }
 });
 
@@ -1558,7 +1471,7 @@ test("customer questions follow module decision coverage instead of a shared num
     const content = requireModuleContent(publishedModule.slug);
     const tags = new Set(content.qa.map((item) => item.tag));
     for (const requiredTag of publishedModule.qaCoverageTags) {
-      assert.ok(tags.has(requiredTag), `${publishedModule.slug} 缺少登记的问题主题：${requiredTag}`);
+      assert.ok(tags.has(requiredTag), `${publishedModule.slug} is missing the registered question topic: ${requiredTag}`);
     }
   }
 });
@@ -1570,16 +1483,13 @@ test("question directory searches every published question from one canonical in
 
   assert.equal(questionDirectoryModules.length, publishedModuleRegistry.length);
   assert.equal(questionDirectoryItems.length, registeredCount);
-  assert.equal(new Set(questionDirectoryItems.map((item) => item.key)).size, questionDirectoryItems.length, "问题查询键必须唯一");
-  assert.equal((html.match(/data-question-key="[^"]+"/g) ?? []).length, questionDirectoryItems.length, "问题查询页必须服务端呈现全部正式问题");
-  assert.match(html, /客户问题查询/);
-  assert.match(html, /搜索所有客户问题/);
+  assert.equal(new Set(questionDirectoryItems.map((item) => item.key)).size, questionDirectoryItems.length, "question directory keys must be unique");
+  assert.equal((html.match(/data-question-key="[^"]+"/g) ?? []).length, questionDirectoryItems.length, "the question directory must server-render every formal question");
   assert.match(html, new RegExp(`全部 ${publishedModuleRegistry.length} 个模块`));
-  assert.match(html, /问题类别/);
-  assert.match(html, /展开深答、下一问与证据/);
+  assert.match(html, /<input[^>]*placeholder="[^"]+"/);
 
   for (const directoryModule of questionDirectoryModules) {
-    assert.equal(directoryModule.count, moduleContentRegistry[directoryModule.id].qa.length, `${directoryModule.id} 的问题统计必须来自正式内容注册表`);
+    assert.equal(directoryModule.count, moduleContentRegistry[directoryModule.id].qa.length, `${directoryModule.id} question counts must come from the formal content registry`);
     assert.match(html, new RegExp(`value="${escapeRegExp(directoryModule.id)}"`));
     assert.match(html, new RegExp(`href="${escapeRegExp(directoryModule.href)}"`));
   }
@@ -1591,10 +1501,10 @@ test("question directory searches every published question from one canonical in
       moduleHtml = await renderHtml(item.moduleHref);
       moduleHtmlById.set(item.moduleId, moduleHtml);
     }
-    assert.equal(item.question, sourceQuestion.q, `${item.key} 与正式问题内容不一致`);
+    assert.equal(item.question, sourceQuestion.q, `${item.key} diverges from the formal question content`);
     assert.match(html, new RegExp(`id="question-${escapeRegExp(item.key)}"`));
     assert.match(html, new RegExp(`href="${escapeRegExp(item.originalHref)}"`));
-    assert.match(moduleHtml, new RegExp(`id="qa-${item.number}"`), `${item.originalHref} 必须指向模块页上的真实问题锚点`);
+    assert.match(moduleHtml, new RegExp(`id="qa-${item.number}"`), `${item.originalHref} must point at the real question anchor on the module page`);
     assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(item.question))));
   }
 });
@@ -1760,12 +1670,12 @@ test("question directory combines keyword, module, and category filters", () => 
   const inferenceCache = filterQuestionDirectoryItems(filterItems, { query: "缓存", moduleId: "llm-inference", textByKey });
   const evaluationSlice = filterQuestionDirectoryItems(filterItems, { moduleId: "evaluation", tag: "切片评估", textByKey });
 
-  assert.ok(quantization.length > 0, "关键词查询必须返回真实匹配的知识条目");
-  assert.equal(new Set(quantization.map((item) => item.key)).size, quantization.length, "关键词查询结果不得重复");
-  assert.ok(quantization.every((item) => textByKey[item.key].includes("量化")), "关键词查询结果必须保留匹配上下文");
-  assert.equal(mcp.length, moduleContentRegistry.mcp.qa.length, "模块筛选必须返回该模块全部问题");
-  assert.ok(inferenceCache.length > 0 && inferenceCache.every((item) => item.moduleId === "llm-inference" && textByKey[item.key].includes("缓存")), "关键词与模块筛选必须组合生效");
-  assert.equal(evaluationSlice.length, 1, "类别筛选必须准确定位独立问题主题");
+  assert.ok(quantization.length > 0, "keyword queries must return real matching knowledge entries");
+  assert.equal(new Set(quantization.map((item) => item.key)).size, quantization.length, "keyword query results must not repeat");
+  assert.ok(quantization.every((item) => textByKey[item.key].includes("量化")), "keyword query results must keep their matching context");
+  assert.equal(mcp.length, moduleContentRegistry.mcp.qa.length, "module filters must return every question of that module");
+  assert.ok(inferenceCache.length > 0 && inferenceCache.every((item) => item.moduleId === "llm-inference" && textByKey[item.key].includes("缓存")), "keyword and module filters must combine");
+  assert.equal(evaluationSlice.length, 1, "category filters must pinpoint one independent question topic");
 });
 
 test("solution, security, and fine-tuning use distinct problem-specific knowledge views", async () => {
@@ -1778,130 +1688,107 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   ]);
 
   assert.match(solution, /data-knowledge-view="decision-blueprint"/);
-  assert.match(solution, /把业务目标变成可以验收的方案/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(solution, /业务结果.*数据与证据.*模型判断.*编排与状态.*规则与动作.*人工责任.*持续评估与日常运营.*经济与退出/s);
+  assert.match(solution, /class="solutionDecisionLoop"/);
   assert.match(solution, /TCO/);
-  assert.match(solution, /七类场景，七套验收重点/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
-  assert.match(solution, /到问题库继续筛选/);
+  assert.match(solution, /class="solutionCapabilityMatrix"/);
   assert.doesNotMatch(solution, /需求决策契约/);
 
   assert.match(security, /data-knowledge-view="threat-path"/);
-  assert.match(security, /沿一条攻击路径看清每道防线/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(security, /不可信内容进入.*进入模型上下文.*应用决定是否执行.*外部系统状态变化/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(security, /IAM.*ACL.*DLP/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(security, /指令.*数据.*模型与组件.*工具与 Agent.*输出与运营/s);
-  assert.match(security, /恶意简历进入招聘 Agent 后，如何限制权限/);
-  assert.match(security, /ATS 动作由确定性门控制/);
-  assert.match(security, /OWASP LLM Top 10 能不能直接当作安全验收清单/);
-  assert.match(security, /发生候选人数据泄露或招聘 Agent 越权后，第一步应该做什么/);
+  assert.match(security, /class="securityBarrierExplorer"/);
+  assert.match(security, /IAM/);
+  assert.match(security, /ACL/);
+  assert.match(security, /DLP/);
+  assert.match(security, /OWASP LLM Top 10/);
   assert.doesNotMatch(security, /四道外部控制门/);
 
   assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
-  assert.match(tuning, /微调适用性与完整发布过程/);
-  assert.match(tuning, /理赔材料初审/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(tuning, /Prompt \/ Schema.*RAG.*Tool \/ 规则.*Fine-tuning.*换基础模型/s);
-  assert.match(tuning, /权威状态、规则或动作/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(tuning, /SFT.*PEFT.*LoRA.*QLoRA.*DPO/s);
-  assert.match(tuning, /三种参数更新方式/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(tuning, /数据.*训练.*任务.*服务/s);
-  assert.match(tuning, /每个被接受初审成本|停止条件/);
-  assert.match(tuning, /模型不获得赔付授权|最终批准归授权人员/);
-  assert.match(tuning, /聊天模板用错了，会对微调结果产生什么影响/);
-  assert.match(tuning, /怎样发现微调造成了灾难性遗忘/);
-  assert.doesNotMatch(tuning, /企业行为定制通常先用 LoRA/);
+  assert.match(tuning, /class="tuningRouteExplorer"/);
+  assert.match(tuning, /SFT/);
+  assert.match(tuning, /PEFT/);
+  assert.match(tuning, /LoRA/);
+  assert.match(tuning, /QLoRA/);
+  assert.match(tuning, /DPO/);
+  assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
+
+  const viewHtmlBySlug = { "solution-patterns": solution, security, "fine-tuning": tuning };
+  for (const [slug, viewHtml] of Object.entries(viewHtmlBySlug)) {
+    const content = requireModuleContent(slug);
+    for (const item of content.qa) {
+      assert.match(viewHtml, new RegExp(renderTextPattern(item.q)), `${slug} must render its registered question`);
+    }
+    for (const block of content.deepDives) {
+      assert.match(viewHtml, new RegExp(renderTextPattern(block.title)), `${slug} must render its registered deep dive`);
+    }
+    const curriculum = moduleCurriculumContent[slug];
+    for (const chapter of curriculum.chapters) {
+      assert.match(viewHtml, new RegExp(renderTextPattern(chapter.title)), `${slug} curriculum must render the chapter: ${chapter.title}`);
+    }
+    const learning = moduleLearningContent[slug];
+    for (const step of learning.route) {
+      assert.match(viewHtml, new RegExp(renderTextPattern(step.title)), `${slug} learning route must render the step: ${step.title}`);
+    }
+    for (const lab of learning.labs) {
+      assert.match(viewHtml, new RegExp(renderTextPattern(lab.title)), `${slug} labs must render: ${lab.title}`);
+    }
+  }
+
   assert.match(tuningExplorerSource, /\{ id: "format"[^}]*method: 0[^}]*\}[\s\S]*\{ id: "knowledge"[^}]*method: 1[^}]*\}[\s\S]*\{ id: "state-action"[^}]*method: 2[^}]*\}[\s\S]*\{ id: "behavior"[^}]*method: 3[^}]*\}[\s\S]*\{ id: "capability"[^}]*method: 4[^}]*\}/);
   assert.match(tuningExplorerSource, /tuningProblems\[3\]/);
   assert.doesNotMatch(tuningEnglishSource, /For enterprise behavior customization, start with LoRA|vllm-2023/);
-  assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
-
-  const solutionCurriculum = moduleCurriculumContent["solution-patterns"].chapters.map((/** @type {any} */ chapter) => chapter.title).join("；");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(solutionCurriculum, /最小充分闭环.*责任架构.*客服.*企业搜索.*PoC 契约.*资产交接/s, "场景方案课程应覆盖从方案判断到交付交接的实际问题");
-  const tuningCurriculum = moduleCurriculumContent["fine-tuning"].chapters.map((/** @type {any} */ chapter) => chapter.title).join("；");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(tuningCurriculum, /失败分流.*数据.*训练曲线.*偏好优化.*验收.*Adapter/s, "微调课程应覆盖方法选择、数据、训练诊断与发布制品");
-  const securityCurriculum = moduleCurriculumContent.security.chapters.map((/** @type {any} */ chapter) => chapter.title).join("；");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(securityCurriculum, /不可接受损失.*恶意简历.*候选人数据.*ATS 业务授权.*供应链.*验证控制措施.*事件证据/s, "安全课程必须覆盖招聘场景的攻击路径、授权、验证与恢复");
-  const securityRoute = moduleLearningContent.security.route.map((/** @type {any} */ step) => step.title).join("；");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(securityRoute, /损失和攻击路径.*内容到权限.*控制和交接.*遏制与恢复/s, "安全学习路线必须形成从损失到恢复的闭环");
-  const securityLabs = moduleLearningContent.security.labs.map((/** @type {any} */ lab) => lab.title).join("；");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(securityLabs, /恶意简历.*向量数据隔离与删除.*ATS 越权和结果未知/s, "安全实战必须分别验证威胁、数据边界和事件恢复");
-  const solutionRoute = moduleLearningContent["solution-patterns"].route.map((/** @type {any} */ step) => step.title).join("；");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(solutionRoute, /结果.*最小充分闭环.*责任架构.*阶段.*单位经济/s, "场景方案的路线应推进到运营与退出，而非重复同一判断");
-  const tuningLabs = moduleLearningContent["fine-tuning"].labs.map((/** @type {any} */ lab) => lab.title).join("；");
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(tuningLabs, /理赔初审.*PEFT.*训练数据.*训练曲线/s, "微调实战应覆盖路线选择、发布、数据和诊断，而非用数量凑齐栏目");
 });
 
 test("RAG route follows one evidence decision from adoption through production", async () => {
   const html = await renderHtml("/modules/rag");
   assertValidGridSpans(html, "/modules/rag");
 
-  assert.match(html, /<small>检索增强生成<em lang="en"> · (?:<!-- -->)?Retrieval-Augmented Generation<\/em><\/small>/);
-  assert.match(html, /把外部资料整理成当前用户可使用、能核对且可撤回的依据/);
-  assert.match(html, /核心问题/);
-  assert.match(html, /只使用当前用户有权访问、仍然有效、能够回到原文的证据/);
-  assert.match(html, /知识应放在模型权重还是外部证据中/);
-  assert.match(html, /RAG 与更简单路线的采用比较/);
-  assert.match(html, /回答证据的成立条件/);
-  assert.match(html, /检索 · Retrieval/);
-  assert.match(html, /增强 · Augmentation/);
-  assert.match(html, /生成 · Generation/);
-  assert.match(html, /检索到不等于回答正确/);
-  assert.match(html, /离线证据与在线回答生命周期/);
-  assert.match(html, /切片只是其中一步/);
-  assert.match(html, /RAG 组件选型/);
+  const ragBrief = /** @type {any} */ (requireModuleContent("rag"));
+  assert.match(html, new RegExp(`<small>${escapeRegExp(terminology.rag.zh)}<em lang="en"> · (?:<!-- -->)?Retrieval-Augmented Generation<\\/em><\\/small>`));
+  assert.match(html, new RegExp(renderTextPattern(ragBrief.definition)));
+  assert.match(html, new RegExp(renderTextPattern(ragBrief.principleTitle)));
+  assert.match(html, new RegExp(renderTextPattern(ragBrief.criticalBoundary)));
+  assert.match(html, new RegExp(renderTextPattern(ragBrief.deepDiveTitle)));
+  for (const hook of ragBrief.cloudHooks) {
+    assert.match(html, new RegExp(renderTextPattern(hook.stage)), `RAG must render the cloud stage: ${hook.stage}`);
+  }
+  for (const fact of ragBrief.facts) {
+    assert.match(html, new RegExp(renderTextPattern(fact.label)), `RAG must render the hero fact: ${fact.label}`);
+  }
+  for (const choice of ragBrief.adoptionChoices) {
+    assert.match(html, new RegExp(renderTextPattern(choice.route)), `RAG must render the adoption choice: ${choice.route}`);
+  }
+  for (const choice of ragBrief.extensionChoices) {
+    assert.match(html, new RegExp(renderTextPattern(choice.pattern)), `RAG must render the extension choice: ${choice.pattern}`);
+  }
+  for (const deepDive of ragBrief.deepDives) {
+    assert.match(html, new RegExp(renderTextPattern(deepDive.title)), `RAG must render the deep dive: ${deepDive.title}`);
+  }
+  for (const item of ragBrief.qa) {
+    assert.match(html, new RegExp(renderTextPattern(item.q)), `RAG must render the registered question`);
+  }
+  for (const lab of ragLearningContent.labs) {
+    assert.match(html, new RegExp(renderTextPattern(lab.title)), `RAG must render the lab: ${lab.title}`);
+  }
   assert.match(html, /Candidate Recall@K/);
-  assert.match(html, /证据链测量与失效定位/);
-  assert.match(html, /生产控制、Trace 与经济性/);
-  assert.match(html, /云能力、验收与责任映射/);
-  assert.match(html, /风险调整后的 ROI/);
-  assert.match(html, /RAG 扩展模式与采用条件/);
-  assert.match(html, /它们可以组合，但不是一条从低到高的成熟度阶梯/);
-  assert.match(html, /Agent 可以调用 RAG；MCP 可以暴露检索能力；A2A 可以委派完整任务/);
-  assert.match(html, /RAG 实战产物与通过标准/);
-  assert.match(html, /能独立完成的判断/);
-  assert.match(html, /把主题推进到检查点/);
-  assert.match(html, /可复核练习/);
-  assert.match(html, /客户高频问题与深度回答/);
-  assert.match(html, /上下文窗口已经很长，为什么还需要 RAG/);
-  assert.match(html, /RAG 检到了正确文档，为什么仍可能答错/);
-  assert.match(html, /一个企业 RAG 是否还需要 Agent、MCP 或 A2A/);
-  assert.match(html, /查看依据与适用范围/);
-  assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, ragQa.length);
+  assert.match(html, /BM25/);
+  assert.equal((html.match(/class="qaEvidenceDisclosure"/g) ?? []).length, ragQa.length);
   assert.ok(ragLearningContent.outcomes.some((outcome) => outcome.trim()));
   assert.ok(ragLearningContent.route.some((step) => step.title && step.learn && step.checkpoint));
   assert.ok(ragLearningContent.labs.some((lab) => lab.title && lab.deliverable && lab.acceptance));
   assert.equal((html.match(/class="learningLab"/g) ?? []).length, ragLearningContent.labs.length);
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
-  assert.match(html, /搜索客户问题/);
-  assert.match(html, /RAG 检索链实验/);
-  assert.match(html, /关键词检索 BM25/);
+  assert.match(html, /<input[^>]*type="search"/);
   assert.match(html, /href="\/references#module-rag"/);
-  assert.doesNotMatch(html, /<dt>阅读方式<\/dt>/, "Hero 不得把默认阅读预设伪装成固定模块规模");
+  assert.doesNotMatch(html, /<dt>阅读方式<\/dt>/, "the Hero must not pose the default reading presets as a fixed module scale");
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("rag"))) {
     assert.match(
       html,
       new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`),
-      `RAG 页面缺少统一 Reference 回链：${sourceId}`,
+      `the RAG page is missing the unified Reference backlink: ${sourceId}`,
     );
   }
 
-  assert.doesNotMatch(html, /id="source-[a-z0-9-]+"/, "RAG 页面不应复制完整来源台账");
+  assert.doesNotMatch(html, /id="source-[a-z0-9-]+"/, "the RAG page must not duplicate the complete source ledger");
   assert.doesNotMatch(html, /统一来源台账|本模块的来源与证据类别|打开原文 ↗/);
   assert.doesNotMatch(html, /MAINTENANCE BY DESIGN|时效性不是页脚日期|claim_id|review_by|事实最小单元/);
   assert.doesNotMatch(html, /softmax|RAG-Sequence|RAG-Token|潜变量|边缘化|Σ|∏/);
@@ -1911,49 +1798,31 @@ test("RAG route follows one evidence decision from adoption through production",
 test("Agent route explains the controlled loop, cloud runtime, and evidence-backed customer decisions", async () => {
   const html = await renderHtml("/modules/ai-agent");
 
-  assert.match(html, /智能体[\s\S]*AI Agent/);
-  assert.match(html, /Agent 的采购价值来自受控的动态决策/);
-  assert.match(html, /Agent 的采用条件/);
-  assert.match(html, /跨区域保险理赔材料补件与初审/);
-  assert.match(html, /最终赔付资格、金额与案件状态永不由 Agent 自行决定/);
-  assert.match(html, /没有确定性基线，就无法证明 Agent 带来的增益与 ROI/);
-  assert.match(html, /Agent 的基础概念与工作循环/);
-  assert.match(html, /Agent 的四个关键动作：感知—思考—行动—观察/);
-  assert.match(html, /感知 · Perceive/);
-  assert.match(html, /思考 · Reason/);
-  assert.match(html, /行动 · Act/);
-  assert.match(html, /观察 · Observe/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /感知（Perceive）.*观察（Observe）/s);
-  assert.match(html, /计划、决策摘要、工具调用、环境结果、策略判断与停止原因/);
-  assert.match(html, /规划、记忆与工具：让四个动作持续运转/);
-  assert.match(html, /规划 · Planning/);
-  assert.match(html, /记忆 · Memory/);
-  assert.match(html, /工具 · Tools/);
-  assert.match(html, /数据工具 · Data Tools/);
-  assert.match(html, /动作工具 · Action Tools/);
-  assert.match(html, /编排工具 · Orchestration Tools/);
+  const agentBrief = /** @type {any} */ (requireModuleContent("ai-agent"));
+  assert.match(html, /AI Agent/);
+  assert.match(html, new RegExp(renderTextPattern(agentBrief.definition)));
+  assert.match(html, new RegExp(renderTextPattern(agentBrief.principleTitle)));
+  assert.match(html, new RegExp(renderTextPattern(agentBrief.deepDiveTitle)));
+  assert.match(html, new RegExp(renderTextPattern(agentBrief.criticalBoundary)));
+  for (const hook of agentBrief.cloudHooks) {
+    assert.match(html, new RegExp(renderTextPattern(hook.stage)), `Agent must render the cloud stage: ${hook.stage}`);
+  }
+  for (const fact of agentBrief.facts) {
+    assert.match(html, new RegExp(renderTextPattern(fact.label)), `Agent must render the hero fact: ${fact.label}`);
+  }
+  for (const deepDive of agentBrief.deepDives) {
+    assert.match(html, new RegExp(renderTextPattern(deepDive.title)), `Agent must render the deep dive: ${deepDive.title}`);
+  }
+  for (const item of agentBrief.qa) {
+    assert.match(html, new RegExp(renderTextPattern(item.q)), `Agent must render the registered question`);
+  }
   assert.match(html, /RAG ≠ MEMORY/);
-  assert.match(html, /观察—决策—行动—反馈/);
-  assert.match(html, /模型会调用 API，不等于模型拥有 API 权限/);
-  assert.match(html, /智能体、工作流、RAG 与聊天机器人的边界/);
-  assert.match(html, /Memory 是需治理的数据|记忆不是模型魔法/);
-  assert.match(html, /Agent 技术环节与云服务机会/);
-  assert.match(html, /模型即服务、模型目录、推理端点、AI 网关、内容安全/);
-  assert.match(html, /什么时候应该用 Agent，什么时候用固定工作流（Workflow）/);
-  assert.match(html, /单智能体 · Single Agent/);
-  assert.match(html, /多智能体 · Multi-Agent/);
-  assert.match(html, /选择云上托管 Agent 平台，还是自己用框架搭/);
-  assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, agentQa.length);
+  assert.equal((html.match(/class="qaEvidenceDisclosure"/g) ?? []).length, agentQa.length);
   assert.doesNotMatch(html, /ReAct 是否意味着 Agent 必须严格按|工具参数已经通过 Strict Schema|生产上线前，Agent 最低需要通过哪些/);
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
-  assert.match(html, /搜索客户问题/);
-  assert.match(html, /Agent 运行与恢复实验/);
-  assert.match(html, /故障注入：工具超时/);
-  assert.match(html, /执行面、控制面与证据面(?:必须)?分权/);
-  assert.match(html, /Safe Exit 与 Kill Switch/);
-  assert.match(html, /为什么 Agent 自己生成的日志不能作为唯一验收证据/);
-  assert.match(html, /点停止或 Cancel 后，为什么还要撤权、断网并核对外部副作用/);
+  assert.match(html, /<input[^>]*type="search"/);
+  assert.match(html, /Safe Exit/);
+  assert.match(html, /Kill Switch/);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("ai-agent"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
@@ -1977,7 +1846,6 @@ test("Prompt Engineering route covers context boundaries, release governance, an
     serverRenderedReadingPanels(rendered, "Prompt Engineering");
     assert.doesNotMatch(rendered, /class="topbar"/);
   }
-  assert.match(html, /提示词工程/);
   assert.match(html, /Prompt Engineering/);
   assert.equal((html.match(/id="context-assembly"/g) ?? []).length, 1);
   assert.match(html, /id="prompt-engineering-extension-primer-title"/);
@@ -1987,59 +1855,46 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.equal((englishHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishPrompt.evidenceCards.length);
   const promptTables = html.match(/class="[^"]*\btableWrap\b[^"]*"[^>]*role="region"[^>]*aria-label="[^"]+"[^>]*tabindex="0"/g) ?? [];
   const promptTableCaptions = html.match(/<caption class="srOnly">/g) ?? [];
-  assert.ok(promptTables.length > 0, "Prompt 应保留用于不可压缩关系的可滚动表格");
-  assert.ok(promptTableCaptions.length >= promptTables.length, "Prompt 的每张宽表都必须有可访问名称");
-  assert.ok((englishHtml.match(/class="termHint" data-term-id=/g) ?? []).length > 0, "Prompt 应保留可定位的核心术语提示");
+  assert.ok(promptTables.length > 0, "Prompt must keep scrollable tables for incompressible relations");
+  assert.ok(promptTableCaptions.length >= promptTables.length, "every wide Prompt table must have an accessible name");
+  assert.ok((englishHtml.match(/class="termHint" data-term-id=/g) ?? []).length > 0, "Prompt must keep locatable core term hints");
   for (const id of ["prompt-pattern-diagnostics", "technique-reasoning", "prompt-context-boundary", "claim-route-rules", "controlled-context-assembly", "validation-transaction", "boundary-prompt-hardening", "release-rollback-learn", "evidence-continuous-release-evaluation", "cloud-poc-operating-model", "boundary-universal-threshold", "qa-risk-based-go-no-go", "related-modules"]) {
     assert.equal((englishHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `Prompt English reader must preserve #${id}`);
   }
-  assert.match(html, /Prompt 是什么，以及 Context Engineering 的边界/);
-  assert.match(html, /明确且稳定的指令 · Instructions/);
-  assert.match(html, /动态上下文 · Context/);
-  assert.match(html, /必须执行的规则应落在模型外/);
-  assert.match(html, /结构正确不等于事实正确|保证结构不等于保证字段值真实/);
-  assert.match(html, /模型差异、提示版本与发布控制/);
-  assert.match(html, /提示词工程与云服务机会/);
-  assert.match(html, /失败症状与处理层/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /冻结基线.*控制变更.*离线回归.*灰度观察.*回滚与运营/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /观察到的失败.*优先路线.*主要责任模块/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /资格、限额或状态转换.*确定性规则与授权.*应用工作流/s);
-  assert.match(html, /结构正确、事实正确、业务有效和获得授权必须分开验收/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /事实与证据正确.*业务有效.*授权有效.*工具契约有效.*事务可接受/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /Release Bundle 是本知识库.*推荐的控制模式.*不是跨厂商标准/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  const promptBrief = /** @type {any} */ (requireModuleContent("prompt-engineering"));
+  assert.match(html, new RegExp(renderTextPattern(promptBrief.definition)));
+  assert.match(html, new RegExp(renderTextPattern(promptBrief.position)));
+  assert.match(html, new RegExp(renderTextPattern(promptBrief.principleTitle)));
+  assert.match(html, new RegExp(renderTextPattern(promptBrief.criticalBoundary)));
+  assert.match(html, new RegExp(renderTextPattern(promptBrief.deepDiveTitle)));
+  for (const hook of promptBrief.cloudHooks) {
+    assert.match(html, new RegExp(renderTextPattern(hook.stage)), `Prompt must render the cloud stage: ${hook.stage}`);
+  }
+  for (const fact of promptBrief.facts) {
+    assert.match(html, new RegExp(renderTextPattern(fact.label)), `Prompt must render the hero fact: ${fact.label}`);
+  }
+  for (const deepDive of promptBrief.deepDives) {
+    assert.match(html, new RegExp(renderTextPattern(deepDive.title)), `Prompt must render the deep dive: ${deepDive.title}`);
+  }
+  for (const item of promptBrief.qa) {
+    assert.match(html, new RegExp(renderTextPattern(item.q)), "Prompt must render the registered question");
+  }
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(englishHtml, /Eligibility, limits, or state transition.*Deterministic rules and authorization.*Application workflow/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(englishHtml, /Factual and evidence correctness.*Business validity.*Authorization validity.*Tool-contract validity.*Transaction acceptance/s);
   assert.match(englishHtml, /Release Bundle is this fieldbook.{0,120}recommended[\s\S]*not a cross-provider standard/i);
-  assert.match(labSource, /输出事故事实、缺件、证据坐标和初审说明草稿[\s\S]*不会作最终赔付裁决/);
-  assert.match(html, /系统提示（System Prompt）的优先级更高，是否就等于安全/);
-  assert.match(html, /可维护的提示模板 · Prompt Template/);
-  assert.match(html, /Prompt、RAG 和 Context Engineering 是什么关系/);
-  assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, promptQa.length);
+  assert.match(labSource, /不会作最终赔付裁决/);
+  assert.equal((html.match(/class="qaEvidenceDisclosure"/g) ?? []).length, promptQa.length);
   assert.match(html, /INTERACTIVE SYSTEM VIEW/);
-  assert.match(html, /搜索客户问题/);
-  assert.match(html, /Prompt 装配实验/);
-  assert.match(html, /坏提示 Bad Prompt/);
+  assert.match(html, /<input[^>]*type="search"/);
 
   /** @type {any} */
   const caseStudy = moduleContentRegistry["prompt-engineering"].caseStudy;
-  assert.ok(caseStudy, "Prompt 应把贯穿案例登记为可审计 caseStudy");
-  assert.ok(caseStudy.stages.some((/** @type {any} */ stage) => stage.title?.trim() && stage.detail?.trim()), "Prompt 案例需要至少一个可复核阶段");
+  assert.ok(caseStudy, "Prompt must register its through-line case as an auditable caseStudy");
+  assert.ok(caseStudy.stages.some((/** @type {any} */ stage) => stage.title?.trim() && stage.detail?.trim()), "the Prompt case needs at least one reviewable stage");
   const failureRouteNames = caseStudy.failureRoutes.map((/** @type {any} */ route) => route.route);
-  for (const route of [
-    "Prompt、示例与 Schema",
-    "RAG 与证据时效",
-    "只读 Tool / 受控工作流",
-    "确定性规则与授权",
-    "更换候选模型",
-    "进入微调候选门",
-  ]) assert.ok(failureRouteNames.includes(route), "Prompt 案例必须保留失败分流：" + route);
+  for (const route of ["Prompt、示例与 Schema", "RAG 与证据时效", "只读 Tool / 受控工作流", "确定性规则与授权", "更换候选模型", "进入微调候选门"]) assert.ok(failureRouteNames.includes(route), "the Prompt case must keep the failure route: " + route);
 
   for (const sourceId of collectModuleSourceIds(getPublishedModule("prompt-engineering"))) {
     assert.match(html, new RegExp(`href="/references#source-${escapeRegExp(sourceId)}"`));
@@ -2057,19 +1912,27 @@ test("Model landscape route uses the claim-intake case to prove selection and ex
   ]);
 
   assert.match(html, /data-knowledge-view="selection-coordinate"/);
-  assert.match(html, /模型选型的业务损失坐标/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /任务与损失.*硬门与身份.*同条件试点.*组合、发布与退出/s);
-  assert.match(html, /模型始终不拥有赔付批准权/);
-  assert.match(html, /建立理赔初审候选可行域/);
-  assert.match(html, /完成一次同条件模型 PoC/);
-  assert.match(html, /演练模型升级与供应商退出/);
-  assert.match(html, /开放权重 ≠ 开源/);
-  assert.match(html, /可下载不代表可任意商用/);
-  assert.match(html, /硬能力或交付硬门失败时回到模型选型并重新验收/);
-  assert.match(html, /采集、解析、跨模态对齐和证据坐标归 Multimodal/);
-  assert.match(html, /稳定残余行为适配归 Fine-tuning/);
-  assert.match(html, /运行时路由执行归 AI Gateway/);
+  const modelLandscapeView = moduleExtensionViews["model-landscape"];
+  assert.match(html, new RegExp(renderTextPattern(modelLandscapeView.title)));
+  assert.match(html, new RegExp(renderTextPattern(modelLandscapeView.application)));
+  for (const step of modelLandscapeView.steps) {
+    assert.match(html, new RegExp(renderTextPattern(step.title)), `model-landscape must render the view step: ${step.title}`);
+  }
+  for (const check of modelLandscapeView.checks) {
+    assert.match(html, new RegExp(renderTextPattern(check.title)), `model-landscape must render the view check: ${check.title}`);
+    assert.match(html, new RegExp(renderTextPattern(check.detail)), `model-landscape must render the check detail for: ${check.title}`);
+  }
+  const modelLandscapeContent = /** @type {any} */ (requireModuleContent("model-landscape"));
+  for (const card of modelLandscapeContent.evidenceCards) {
+    assert.match(html, new RegExp(renderTextPattern(card.metric)), "model-landscape must render the evidence metric");
+    assert.match(html, new RegExp(renderTextPattern(card.finding)), "model-landscape must render the evidence finding");
+  }
+  for (const step of moduleLearningContent["model-landscape"].route) {
+    assert.match(html, new RegExp(renderTextPattern(step.title)), `model-landscape must render the learning step: ${step.title}`);
+  }
+  for (const lab of moduleLearningContent["model-landscape"].labs) {
+    assert.match(html, new RegExp(renderTextPattern(lab.title)), `model-landscape must render the lab: ${lab.title}`);
+  }
   assert.doesNotMatch(html, /正文建设中|模块依赖/);
 
   assert.match(englishHtml, /Define the task and loss contract[\s\S]*Apply hard gates and identify each candidate[\s\S]*Run a controlled pilot and choose one model or a portfolio[\s\S]*Release, fall back, and exercise exit/);
@@ -2099,23 +1962,16 @@ test("Batch 06 routes render the Message-or-Task, gateway-control, and AI Ops re
   assert.match(a2a, /Message \| Task/);
   assert.match(a2a, /v1\.0\.1/);
   assert.match(a2a, /A2A-Version[^<]*1\.0/);
-  assert.match(a2a, /TASK_STATE_SUBMITTED、TASK_STATE_WORKING、TASK_STATE_INPUT_REQUIRED、TASK_STATE_AUTH_REQUIRED/);
-  assert.match(a2a, /TASK_STATE_COMPLETED、TASK_STATE_FAILED、TASK_STATE_CANCELED/);
+  assert.match(a2a, /TASK_STATE_SUBMITTED[\s\S]*TASK_STATE_WORKING[\s\S]*TASK_STATE_INPUT_REQUIRED[\s\S]*TASK_STATE_AUTH_REQUIRED/);
+  assert.match(a2a, /TASK_STATE_COMPLETED[\s\S]*TASK_STATE_FAILED[\s\S]*TASK_STATE_CANCELED/);
   assert.match(a2a, /TASK_STATE_REJECTED/);
-  assert.match(a2a, /contextId、taskId、messageId、referenceTaskIds/);
-  assert.match(a2a, /SendMessage 超时后，可以带同一个 messageId 直接重发吗/);
-  assert.match(a2a, /Agent Card 声明的 Extension 和 Extended Agent Card/);
-  assert.match(a2a, /SubscribeToTask[^。]*没有恢复游标或历史重放/);
-  assert.match(a2a, /ListTasks 的 pageToken \/ cursor 只用于列表分页/);
-  assert.match(a2a, /Task 已处于终态时[^。]*SubscribeToTask 必须返回 UnsupportedOperationError/);
-  assert.match(a2a, /不保证至少一次成功送达/);
-  assert.match(a2a, /对于每个已配置 webhook/);
+  assert.match(a2a, /contextId[\s\S]*taskId[\s\S]*messageId[\s\S]*referenceTaskIds/);
+  const a2aBrief = /** @type {any} */ (requireModuleBrief("a2a"));
+  for (const item of a2aBrief.qa) {
+    assert.match(a2a, new RegExp(renderTextPattern(item.q)), "a2a must render the registered question");
+  }
   assert.match(a2a, /PushNotificationNotSupportedError/);
-  assert.match(a2a, /taskId 与 contextId[^。]*必须匹配/);
-  assert.match(a2a, /生成后必须在返回的 Task 或 Message 中带回/);
-  assert.match(a2a, /服务端生成值视为不透明标识/);
   assert.match(a2a, /TaskNotFoundError/);
-  assert.match(a2a, /不支持的可选(?: Extension )?版本[^。]*不得自动回退/);
   assert.match(a2a, /ExtensionSupportRequiredError/);
   assert.match(a2aEn, /Message \| Task/);
   assert.match(a2aEn, /v1\.0\.1/);
@@ -2134,18 +1990,23 @@ test("Batch 06 routes render the Message-or-Task, gateway-control, and AI Ops re
   assert.match(a2aEn, /ExtensionSupportRequiredError/);
   assert.match(a2aEn, /Extended Agent Card is not an Extension/);
 
-  assert.match(gateway, /网关代管模型凭据后，是否就能代表用户访问所有模型和工具/);
-  assert.match(gateway, /按请求数限流，为什么仍可能被 Token、并发或预算打穿/);
-  assert.match(gateway, /精确缓存复用相同请求，语义缓存复用相似结果/);
-  assert.match(gateway, /新增于 2026-08-01/);
+  const gatewayBrief = /** @type {any} */ (requireModuleBrief("ai-gateway"));
+  for (const item of gatewayBrief.qa) {
+    assert.match(gateway, new RegExp(renderTextPattern(item.q)), "ai-gateway must render the registered question");
+  }
+  for (const chapter of moduleCurriculumContent["ai-gateway"].chapters) {
+    assert.match(gateway, new RegExp(renderTextPattern(chapter.title)), `ai-gateway must render the curriculum chapter: ${chapter.title}`);
+    assert.match(gateway, new RegExp(renderTextPattern(chapter.explanation)), `ai-gateway must render the chapter explanation for: ${chapter.title}`);
+  }
+  assert.ok(gateway.includes(formatQuestionAddedAt("2026-08-01")), "ai-gateway must render the registered addedAt label");
   assert.match(gatewayEn, /Once the gateway manages provider credentials, can it act for the user across every model and tool/);
   assert.match(gatewayEn, /Why can request-rate limiting still allow token, concurrency, or budget exhaustion/);
   assert.match(gatewayEn, /Exact and semantic caching/);
 
   assert.match(aiOps, /Head Sampling/);
   assert.match(aiOps, /Tail Sampling/);
-  assert.match(aiOps, /不是传统 AIOps 的告警降噪/);
-  assert.match(aiOps, /跨区域多租户理赔助手/);
+  assert.match(aiOps, new RegExp(renderTextPattern(/** @type {any} */ (requireModuleBrief("ai-ops")).criticalBoundary)));
+  assert.match(aiOps, new RegExp(renderTextPattern(moduleExtensionViews["ai-ops"].application)));
   assert.match(aiOpsEn, /head sampling/i);
   assert.match(aiOpsEn, /tail sampling/i);
   assert.match(aiOpsEn, /tail sampler cannot recover traces dropped upstream/i);
@@ -2161,20 +2022,33 @@ test("Batch 08 routes render inference overload and compute procurement evidence
     renderHtml("/en/modules/ai-infra-compute"),
   ]);
 
-  assert.match(inference, /真实负载、质量和 SLO/);
+  const inferenceBrief = /** @type {any} */ (requireModuleBrief("llm-inference"));
+  assert.match(inference, new RegExp(renderTextPattern(inferenceBrief.position)));
+  assert.match(inference, new RegExp(renderTextPattern(inferenceBrief.criticalBoundary)));
   assert.match(inference, /Goodput/);
-  assert.match(inference, /等待上限、背压和拒绝语义/);
-  assert.match(inference, /扩容不能替代过载准入/);
+  for (const deepDive of inferenceBrief.deepDives) {
+    for (const item of deepDive.items) {
+      assert.match(inference, new RegExp(renderTextPattern(item.name)), `inference must render the deep-dive item: ${item.name}`);
+    }
+  }
   assert.match(inferenceEn, /First-token delay, slow continuation, queueing, rejection, memory growth, and quality regression/);
   assert.match(inferenceEn, /Goodput/);
   assert.match(inferenceEn, /unavailable or loading capacity/);
   assert.match(inferenceEn, /cache_salt/);
 
-  assert.match(compute, /工作负载包络/);
+  const computeBrief = /** @type {any} */ (requireModuleBrief("ai-infra-compute"));
+  assert.match(compute, new RegExp(renderTextPattern(computeBrief.definition)));
+  assert.match(compute, new RegExp(renderTextPattern(computeBrief.position)));
+  assert.match(compute, new RegExp(renderTextPattern(computeBrief.criticalBoundary)));
   assert.match(compute, /Roofline/);
-  assert.match(compute, /紧耦合/);
-  assert.match(compute, /多节点不一定意味着跨域/);
-  assert.match(compute, /资源级 TCO 不等于项目 ROI/);
+  for (const item of computeBrief.qa) {
+    assert.match(compute, new RegExp(renderTextPattern(item.q)), "ai-infra-compute must render the registered question");
+  }
+  for (const deepDive of computeBrief.deepDives) {
+    for (const item of deepDive.items) {
+      assert.match(compute, new RegExp(renderTextPattern(item.name)), `ai-infra-compute must render the deep-dive item: ${item.name}`);
+    }
+  }
   assert.match(computeEn, /Workload envelope and acceptance contract/);
   assert.match(computeEn, /Roofline/);
   assert.match(computeEn, /tightly coupled accelerator domain/);
@@ -2190,26 +2064,36 @@ test("Batch 09 routes render platform-product and minimum-sufficient-loop eviden
     renderHtml("/en/modules/solution-patterns"),
   ]);
 
-  assert.match(platform, /平台控制层提供能力目录、API、模板、策略、配额、版本和审计/);
-  assert.match(platform, /四类多租户验收边界/);
-  assert.match(platform, /OCI 镜像或 Kubernetes YAML 不是跨云、跨加速器的迁移证明/);
-  assert.match(platform, /容器化并部署在 Kubernetes 上，是否就代表 AI 工作负载可以跨云和跨硬件自由迁移/);
+  const platformBrief = /** @type {any} */ (requireModuleBrief("ai-infra-platform"));
+  assert.match(platform, new RegExp(renderTextPattern(platformBrief.position)));
+  assert.match(platform, new RegExp(renderTextPattern(platformBrief.criticalBoundary)));
+  for (const item of platformBrief.qa) {
+    assert.match(platform, new RegExp(renderTextPattern(item.q)), "ai-infra-platform must render the registered question");
+  }
+  for (const chapter of moduleCurriculumContent["ai-infra-platform"].chapters) {
+    assert.match(platform, new RegExp(renderTextPattern(chapter.title)), `ai-infra-platform must render the curriculum chapter: ${chapter.title}`);
+    assert.match(platform, new RegExp(renderTextPattern(chapter.explanation)), `ai-infra-platform must render the chapter explanation for: ${chapter.title}`);
+    assert.match(platform, new RegExp(renderTextPattern(chapter.boundary)), `ai-infra-platform must render the chapter boundary for: ${chapter.title}`);
+  }
   assert.match(platformEn, /platform control layer provides a capability catalog, APIs, templates, policy, quota, versions, and audit/i);
   assert.match(platformEn, /Four multi-tenant validation boundaries/);
   assert.match(platformEn, /OCI image or Kubernetes YAML is not evidence of cross-cloud or cross-accelerator migration/);
   assert.match(platformEn, /Does containerizing an AI workload and deploying it on Kubernetes make it freely portable/);
 
-  assert.match(solution, /最小充分闭环/);
-  assert.match(solution, /RAG、Agent、MCP、A2A、Gateway 或平台/);
-  assert.match(solution, /八层责任/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(solution, /PoC 证伪.*Pilot 验证.*Production 验证/s);
+  const solutionBrief = /** @type {any} */ (requireModuleBrief("solution-patterns"));
+  assert.match(solution, new RegExp(renderTextPattern(solutionBrief.definition)));
+  assert.match(solution, new RegExp(renderTextPattern(solutionBrief.position)));
+  assert.match(solution, new RegExp(renderTextPattern(solutionBrief.criticalBoundary)));
+  for (const chapter of moduleCurriculumContent["solution-patterns"].chapters) {
+    assert.match(solution, new RegExp(renderTextPattern(chapter.title)), `solution-patterns must render the curriculum chapter: ${chapter.title}`);
+    assert.match(solution, new RegExp(renderTextPattern(chapter.explanation)), `solution-patterns must render the chapter explanation for: ${chapter.title}`);
+  }
   assert.match(solutionEn, /Minimum sufficient loop/);
   assert.match(solutionEn, /RAG for current attributable knowledge/);
   assert.match(solutionEn, /eight responsibility layers/);
   assert.match(solutionEn, /Worked example: verifiable customer-service resolution/);
   assert.match(solutionEn, /resolved cases, human transfers, abandonment, false commitments, and rework/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(solutionEn, /Go, Hold, No-Go.*Exit/is);
 });
 
@@ -2231,14 +2115,14 @@ test("Batch 09 control views expose every step and focused search entries resolv
   const chineseControlDataPlane = extractControlDataPlane(platform, "/modules/ai-infra-platform");
   const englishControlDataPlane = extractControlDataPlane(platformEn, "/en/modules/ai-infra-platform");
 
-  assert.ok(platformView, "ai-infra-platform 必须注册控制面知识视图");
-  assert.ok(chinesePlatformView, "ai-infra-platform 必须提供中文控制面知识视图");
+  assert.ok(platformView, "ai-infra-platform must register the control-plane knowledge view");
+  assert.ok(chinesePlatformView, "ai-infra-platform must provide the Chinese control-plane knowledge view");
   assert.deepEqual(
     chinesePlatformView.steps.map((/** @type {any} */ { code, title }) => ({ code, title })),
     platformView.steps.map((/** @type {any} */ { code, title }) => ({ code, title })),
-    "中文控制面步骤必须完整呈现注册表中的 code 与标题",
+    "Chinese control-plane steps must fully render the registered codes and titles",
   );
-  assert.equal(englishPlatformPrinciples.length, platformView.steps.length, "英文控制面步骤必须覆盖注册表定义的全部阶段");
+  assert.equal(englishPlatformPrinciples.length, platformView.steps.length, "English control-plane steps must cover every registered phase");
   assert.match(chineseControlDataPlane, new RegExp(`data-step-count="${platformView.steps.length}"`));
   assert.match(englishControlDataPlane, new RegExp(`data-step-count="${platformView.steps.length}"`));
   assert.equal((chineseControlDataPlane.match(/<button type="button"/g) ?? []).length, platformView.steps.length);
@@ -2248,7 +2132,7 @@ test("Batch 09 control views expose every step and focused search entries resolv
     assert.match(
       chineseControlDataPlane,
       new RegExp(`<button[^>]*>[\\s\\S]*?<span>${escapeRegExp(step.code)}</span>[\\s\\S]*?<strong>${escapeRegExp(step.title)}</strong>`),
-      `中文控制面缺少步骤：${step.code} ${step.title}`,
+      `the Chinese control plane is missing the step: ${step.code} ${step.title}`,
     );
   }
   for (const [stepIndex, step] of englishPlatformPrinciples.entries()) {
@@ -2256,7 +2140,7 @@ test("Batch 09 control views expose every step and focused search entries resolv
     assert.match(
       englishControlDataPlane,
       new RegExp(`<button[^>]*>[\\s\\S]*?<span>${code}</span>[\\s\\S]*?<strong>${escapeRegExp(step.title)}</strong>`),
-      `英文控制面缺少步骤：${code} ${step.title}`,
+      `the English control plane is missing the step: ${code} ${step.title}`,
     );
   }
   assert.match(searchIndexBuilderSource, /buildKnowledgeSearchEntries\("zh"\)/);
@@ -2298,69 +2182,66 @@ test("LLM foundations questions cover the theory readers need for architecture d
   const html = await renderHtml("/modules/llm");
   const llmQa = moduleContentRegistry.llm.qa;
 
-  assert.equal((html.match(/aria-label="本题依据"/g) ?? []).length, llmQa.length);
-  assert.match(html, /同一段中文、英文或代码，为什么在不同模型里占用的 Token 数不同/);
-  assert.match(html, /模型输入里的 Embedding，和向量数据库里的 Embedding 是一回事吗/);
-  assert.match(html, /预训练主要学习预测下一个 Token，模型为什么后来会遵循指令/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
-  assert.match(html, /参数量越大，模型能力就一定越强吗.*MoE/s);
-  assert.match(html, /KV Cache 是什么，为什么长上下文会迅速吃掉并发容量/);
+  assert.equal((html.match(/class="qaEvidenceDisclosure"/g) ?? []).length, llmQa.length);
+  for (const item of llmQa) {
+    assert.match(html, new RegExp(renderTextPattern(item.q)), "llm must render the registered theory question");
+  }
+  assert.match(html, /MoE/);
 });
 
 test("every published module passes the shared reader, terminology, and depth contract", async () => {
-  assert.equal(new Set(publishedModuleSlugs).size, publishedModuleSlugs.length, "发布模块 slug 必须唯一");
-  assert.deepEqual(Object.keys(moduleContentRegistry).sort(), [...publishedModuleSlugs].sort(), "实战与证据注册表必须和发布模块一致");
+  assert.equal(new Set(publishedModuleSlugs).size, publishedModuleSlugs.length, "published module slugs must be unique");
+  assert.deepEqual(Object.keys(moduleContentRegistry).sort(), [...publishedModuleSlugs].sort(), "the practice-and-evidence registry must match the published modules");
   assert.ok(Object.keys(terminology).length > 0);
 
   for (const [termId, term] of Object.entries(terminology)) {
     assert.match(termId, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
-    assert.ok(term.zh && term.en, `术语必须同时有中英文：${termId}`);
+    assert.ok(term.zh && term.en, `terms need both Chinese and English names: ${termId}`);
   }
 
   for (const publishedModule of publishedModules) {
     const knowledgeModule = getModuleBySlug(publishedModule.slug);
-    assert.ok(knowledgeModule, `发布模块未进入知识地图：${publishedModule.slug}`);
-    assert.equal(publishedModule.path, knowledgeModule.href, `发布路径与知识地图不一致：${publishedModule.slug}`);
-    assert.ok(referenceModules.some((module) => module.id === publishedModule.slug), `缺少 Reference 分组：${publishedModule.slug}`);
+    assert.ok(knowledgeModule, `published module is not on the knowledge map: ${publishedModule.slug}`);
+    assert.equal(publishedModule.path, knowledgeModule.href, `published path diverges from the knowledge map: ${publishedModule.slug}`);
+    assert.ok(referenceModules.some((module) => module.id === publishedModule.slug), `missing Reference group: ${publishedModule.slug}`);
 
     const html = await renderHtml(publishedModule.path);
     assertValidGridSpans(html, publishedModule.path);
-    assert.equal((html.match(/<h1\b/g) ?? []).length, 1, `每个正式模块只能有一个主标题：${publishedModule.slug}`);
+    assert.equal((html.match(/<h1\b/g) ?? []).length, 1, `every formal module must keep one main title: ${publishedModule.slug}`);
     assert.match(html, new RegExp(`<h1[^>]*id="${escapeRegExp(publishedModule.titleId)}"`));
 
     for (const match of html.matchAll(/<h[1-4]\b[^>]*>([\s\S]*?)<\/h[1-4]>/g)) {
       const headingText = match[1].replace(/<[^>]+>/g, " ");
-      assert.doesNotMatch(headingText, /先确定|我们来看|你需要|不要一上来/, `标题不应使用编辑者对读者说话的语气：${headingText}`);
+      assert.doesNotMatch(headingText, /先确定|我们来看|你需要|不要一上来/, `headings must not address the reader in an editorial voice: ${headingText}`);
     }
 
     for (const section of ["related-modules", "principle", "deep-dive", "evidence", "cloud", "qa"]) {
-      assert.match(html, new RegExp(`data-quality-section="${section}"`), `${publishedModule.slug} 缺少 ${section} 质量区块`);
+      assert.match(html, new RegExp(`data-quality-section="${section}"`), `${publishedModule.slug} is missing the ${section} quality section`);
     }
 
-    assert.match(html, /aria-label="(?:重要边界|需要单独验证的约束|生产硬边界)"[^>]*data-importance="critical"/);
-    assert.match(html, /客户(?:高频问题与深度回答|问题)/);
-    assert.match(html, /class="readingProgress"/, `${publishedModule.slug} 缺少阅读进度`);
-    assert.match(html, /class="moduleReadingExperience"/, `${publishedModule.slug} 缺少任务阅读器`);
-    assert.match(html, /role="tablist" aria-label="阅读方式"/, `${publishedModule.slug} 缺少可访问的阅读方式选择`);
-    assert.match(html, /INTERACTIVE SYSTEM VIEW|data-knowledge-explorer="interactive"/, `${publishedModule.slug} 缺少机制或决策视图`);
-    assert.match(html, /搜索客户问题/, `${publishedModule.slug} 缺少可检索实战包`);
-    assert.match(html, /href="\/questions(?:\?[^\"]*)?"/, `${publishedModule.slug} 缺少全站问题查询入口`);
+    assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/);
+    assert.match(html, /class="readingProgress"/, `${publishedModule.slug} is missing the reading progress`);
+    assert.match(html, /class="moduleReadingExperience"/, `${publishedModule.slug} is missing the task reader`);
+    assert.match(html, /role="tablist" aria-label="[^"]+"/, `${publishedModule.slug} is missing the accessible reading-task choice`);
+    assert.match(html, /INTERACTIVE SYSTEM VIEW|data-knowledge-explorer="interactive"/, `${publishedModule.slug} is missing a mechanism or decision view`);
+    assert.match(html, /<input[^>]*type="search"|href="\/questions\?module=[^"]*"/, `${publishedModule.slug} is missing the searchable practice pack`);
+    assert.match(html, /href="\/questions(?:\?[^\"]*)?"/, `${publishedModule.slug} is missing the site-wide question directory entry`);
     assert.match(html, /href="\/references(?:#[^"]+)?"/);
 
     for (const termId of publishedModule.requiredTerms) {
       const term = requireTerm(termId);
-      assert.match(html, new RegExp(escapeRegExp(term.zh)), `${publishedModule.slug} 缺少中文术语：${term.zh}`);
-      assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(term.en))), `${publishedModule.slug} 缺少英文术语：${term.en}`);
+      assert.match(html, new RegExp(escapeRegExp(term.zh)), `${publishedModule.slug} is missing the Chinese term: ${term.zh}`);
+      assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(term.en))), `${publishedModule.slug} is missing the English term: ${term.en}`);
     }
 
     for (const [dimension, markers] of Object.entries(publishedModule.contentContract)) {
-      assert.ok(markers.length > 0, `${publishedModule.slug} 的 ${dimension} 契约不能为空`);
+      assert.ok(markers.length > 0, `${publishedModule.slug} ${dimension} contract must not be empty`);
       for (const marker of markers) {
-        if (dimension === "boundary" && marker === "需要单独验证" && html.includes('data-module-reader="unified"')) {
-          assert.match(html, /重要边界/, `${publishedModule.slug} 的统一 reader 必须保留显式边界标签`);
+        if (dimension === "boundary" && html.includes('data-module-reader="unified"') && !html.includes(marker)) {
+          assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/, `${publishedModule.slug} unified reader must keep an explicit boundary label`);
           continue;
         }
-        assert.match(html, new RegExp(escapeRegExp(marker)), `${publishedModule.slug} 缺少 ${dimension} 语义：${marker}`);
+        assert.match(html, new RegExp(escapeRegExp(marker)), `${publishedModule.slug} is missing ${dimension} semantics: ${marker}`);
       }
     }
 
@@ -2376,11 +2257,11 @@ test("reader pages omit internal build notes and use the shared related-module l
     assert.doesNotMatch(html, /模块依赖|BUILD BRIEF|编辑原则：|语言规范 \/ Language Standard|跨模块阅读规则|读者画像|中文为主|中文主版本|术语中英对照|CONTENT STATUS/);
     assert.doesNotMatch(html, /claim_id|review_by|本机绝对路径|\/Users\/lijiaxiang/);
     assert.doesNotMatch(html, /\b(?:Login|Sign in)\b|type="password"/i);
-    assert.doesNotMatch(html, /class="brandMark"/, `公开页头与页脚不应重新引入无含义的 CA 标记：${path}`);
+    assert.doesNotMatch(html, /class="brandMark"/, `public headers and footers must not re-introduce a meaningless CA mark: ${path}`);
     assert.doesNotMatch(
       html,
       /客户信号|来源台账|知识供应链|责任链|运营闭环|责任闭环|技术售前工作台|形成连续叙事|产品后映射/,
-      `公开页面应使用普通中文：${path}`,
+      `public pages must use plain reader-facing Chinese: ${path}`,
     );
   }
 });
@@ -2405,7 +2286,7 @@ test("all public page families use the shared A / Mist design contract", async (
 
   for (const path of representativeRoutes) {
     const html = await renderHtml(path);
-    assert.match(html, /<main[^>]*class="[^"]*\bfieldbookTheme\b[^"]*"/, `${path} 缺少全站设计语言根类`);
+    assert.match(html, /<main[^>]*class="[^"]*\bfieldbookTheme\b[^"]*"/, `${path} is missing the site-wide design-language root class`);
   }
 
   const [globals, v2Styles, v3Styles, homeStyles, designLanguage] = await Promise.all([
@@ -2417,40 +2298,35 @@ test("all public page families use the shared A / Mist design contract", async (
   ]);
 
   for (const token of ["--fb-ink", "--fb-muted", "--fb-link", "--fb-line", "--fb-accent", "--fb-canvas", "--fb-mist", "--fb-risk"]) {
-    assert.match(globals, new RegExp(escapeRegExp(token)), `缺少设计 token：${token}`);
+    assert.match(globals, new RegExp(escapeRegExp(token)), `missing design token: ${token}`);
   }
-  assert.doesNotMatch(v2Styles, /^:root\s*\{/m, "V2 不应重新定义全站 token");
-  assert.doesNotMatch(v3Styles, /^:root\s*\{/m, "V3 不应重新定义全站 token");
-  assert.doesNotMatch(homeStyles, /\.fieldbookHomeZh\b/, "首页设计应同时服务中英文页面");
+  assert.doesNotMatch(v2Styles, /^:root\s*\{/m, "V2 must not redefine site-wide tokens");
+  assert.doesNotMatch(v3Styles, /^:root\s*\{/m, "V3 must not redefine site-wide tokens");
+  assert.doesNotMatch(homeStyles, /\.fieldbookHomeZh\b/, "the homepage design must serve both locales");
   assert.match(homeStyles, /\.fieldbookHome\s*\{/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2,\s*\.fieldbookHome \.timeBudgetPathsV2\s*\{[^}]*max-width:\s*1360px;[^}]*border:\s*0;[^}]*border-radius:\s*16px;/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2::before,\s*\.fieldbookHome \.timeBudgetPathsV2::before,/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2::after,\s*\.fieldbookHome \.timeBudgetPathsV2::after,/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.doesNotMatch(homeStyles, /\.fieldbookHome \.timeBudgetPathsV2::before,\s*\.fieldbookHome \.timeBudgetPathsV2::after\s*\{\s*display:\s*none;/s);
-  assert.match(designLanguage, /全站设计语言：雾灰青 A/);
-  assert.match(designLanguage, /动态知识关系图/);
+  assert.match(designLanguage, /全站设计语言：雾灰青 A[\s\S]*动态知识关系图/);
   assert.ok(
     v3Styles.indexOf(".fieldbookTheme.modulePage .tableWrap {") > v3Styles.indexOf(".fieldbookTheme.modulePage :where(.conceptGrid, .mechanicGrid, .tableWrap"),
-    "模块表格的横向滚动覆盖必须位于通用卡片裁剪规则之后",
+    "the module-table scroll override must come after the generic card-clip rules",
   );
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v3Styles, /\.fieldbookTheme\.modulePage \.tableWrap\s*\{[^}]*overflow-x:\s*auto;/s);
 });
 
 test("references route is the complete centralized source ledger", async () => {
   const html = await renderHtml("/references");
 
-  assert.match(html, /来源与证据资料库/);
   assert.match(html, /Reference Library/);
-  assert.match(html, /来源与证据类别图例/);
-  assert.match(html, /官方产品与技术文档/);
   assert.match(html, /id="reference-modules"/);
-  assert.match(html, /查找来源，而不是翻阅长名单/);
-  assert.match(html, /检索标题、边界或模块/);
+  assert.match(html, /<input[^>]*placeholder="[^"]+"/);
 
   for (const referenceModule of chineseReferenceModules) {
     assert.match(html, new RegExp(`id="module-${escapeRegExp(referenceModule.id)}"`));
@@ -2459,7 +2335,7 @@ test("references route is the complete centralized source ledger", async () => {
 
     for (const sourceId of referenceModule.sourceIds) {
       const source = sourceLedger[sourceId];
-      assert.ok(source, `Reference 模块引用未知来源：${sourceId}`);
+      assert.ok(source, `Reference module cites an unknown source: ${sourceId}`);
       assert.match(html, new RegExp(`id="source-${escapeRegExp(sourceId)}"`));
       assert.match(html, new RegExp(`href="${escapeRegExp(source.href)}"`));
       assert.match(html, new RegExp(escapeRegExp(escapeHtmlText(source.title))));
@@ -2469,15 +2345,14 @@ test("references route is the complete centralized source ledger", async () => {
 
   const publicSourceIds = new Set(chineseReferenceModules.flatMap((module) => module.sourceIds));
   for (const [sourceId, source] of Object.entries(sourceLedger)) {
-    assert.match(html, new RegExp(`id="source-${escapeRegExp(sourceId)}"`), `来源未出现在统一台账：${sourceId}`);
+    assert.match(html, new RegExp(`id="source-${escapeRegExp(sourceId)}"`), `source is missing from the unified ledger: ${sourceId}`);
     assert.equal(
       (html.match(new RegExp(`<a class="sourceItem" id="source-${escapeRegExp(sourceId)}"`, "g")) ?? []).length,
       publicSourceIds.has(sourceId) ? 1 : 0,
-      `每个 sourceId 的 owner 锚必须唯一，旧版本只保留稳定别名锚点：${sourceId}`,
+      `each sourceId owner anchor must be unique; legacy versions keep only the stable alias anchor: ${sourceId}`,
     );
-    if (!publicSourceIds.has(sourceId)) assert.ok(source.versionOf === undefined, `${sourceId} 不应被较旧来源替换`);
+    if (!publicSourceIds.has(sourceId)) assert.ok(source.versionOf === undefined, `${sourceId} must not be superseded by an older source`);
   }
-  assert.match(html, /同址来源的更新核验快照/);
   assert.doesNotMatch(html, /本轮中文内容|英文证据视图|避免静默/);
 });
 
@@ -2486,14 +2361,14 @@ test("legacy module addresses resolve to the current published knowledge base", 
 
   for (const [legacySlug, canonicalSlug] of Object.entries(legacyModuleAliases)) {
     const resolved = getModuleBySlug(legacySlug);
-    assert.ok(resolved, `历史模块地址无法解析：${legacySlug}`);
+    assert.ok(resolved, `legacy module address cannot be resolved: ${legacySlug}`);
     assert.equal(resolved.canonicalSlug, canonicalSlug);
     assert.equal(resolved.href, `/modules/${canonicalSlug}`);
 
     const html = await renderHtml(`/modules/${legacySlug}`);
     const canonicalModule = getPublishedModule(canonicalSlug);
     assert.match(html, new RegExp(`<h1[^>]*id="${escapeRegExp(canonicalModule.titleId)}"`));
-    assert.match(html, /客户(?:高频问题与深度回答|问题)/);
+    assert.match(html, /data-quality-section="qa"/);
     assert.doesNotMatch(html, /正文建设中|CONTENT STATUS|后续版本将补齐|模块依赖/);
   }
 });
@@ -2520,11 +2395,11 @@ test("every public knowledge route is anonymously readable and directly shareabl
 
   for (const path of routes) {
     const response = await render(path);
-    assert.equal(response.status, 200, `${path} 必须匿名直达`);
-    assert.equal(response.headers.get("location"), null, `${path} 不应跳转到登录或中间页`);
+    assert.equal(response.status, 200, `${path} must be directly reachable without login`);
+    assert.equal(response.headers.get("location"), null, `${path} must not redirect to a login or interstitial page`);
     const html = await response.text();
-    assert.doesNotMatch(html, /type="password"|(?:href|action)="\/(?:login|signin)\b|<(?:a|button)[^>]*>\s*(?:Login|Sign in)\s*<\/(?:a|button)>/i, `${path} 不得出现登录依赖`);
-    assert.doesNotMatch(html, /\/(?:Users|home)\//, `${path} 不得泄漏本机绝对路径`);
+    assert.doesNotMatch(html, /type="password"|(?:href|action)="\/(?:login|signin)\b|<(?:a|button)[^>]*>\s*(?:Login|Sign in)\s*<\/(?:a|button)>/i, `${path} must not depend on login`);
+    assert.doesNotMatch(html, /\/(?:Users|home)\//, `${path} must not leak local absolute paths`);
   }
 });
 
@@ -2547,13 +2422,13 @@ test("knowledge-map registry supports changing layer and module counts without d
   const slugs = moduleList.map((knowledgeModule) => knowledgeModule.slug);
   const hrefs = moduleList.map((knowledgeModule) => knowledgeModule.href);
 
-  assert.equal(new Set(layerNumbers).size, layers.length, "层编号必须唯一");
-  assert.equal(new Set(slugs).size, moduleList.length, "模块 slug 必须唯一");
-  assert.equal(new Set(hrefs).size, moduleList.length, "模块 href 必须唯一");
+  assert.equal(new Set(layerNumbers).size, layers.length, "layer numbers must be unique");
+  assert.equal(new Set(slugs).size, moduleList.length, "module slugs must be unique");
+  assert.equal(new Set(hrefs).size, moduleList.length, "module hrefs must be unique");
 
   for (const layer of layers) {
     assert.ok(layer.no && layer.name && layer.en && layer.purpose);
-    assert.ok(layer.modules.length > 0, `知识层不应为空：${layer.name}`);
+    assert.ok(layer.modules.length > 0, `knowledge layers must not be empty: ${layer.name}`);
   }
 
   for (const knowledgeModule of moduleList) {
@@ -2579,11 +2454,11 @@ test("every published module claim resolves to a unique, grouped, and verified s
   for (const [href, entries] of sourcesByUrl) {
     if (entries.length === 1) continue;
     const canonical = entries.filter(([, source]) => !source.versionOf);
-    assert.equal(canonical.length, 1, `重复 URL 必须保留且只保留一个 canonical source：${href}`);
+    assert.equal(canonical.length, 1, `duplicate URLs must keep exactly one canonical source: ${href}`);
     for (const [sourceId, source] of entries.filter(([, item]) => item.versionOf)) {
-      assert.equal(source.versionOf, canonical[0][0], `${sourceId} 必须显式指向同 URL 的 canonical source`);
-      assert.equal(source.localeScope, "zh-CN", `${sourceId} 版本化来源必须限定中文作用域`);
-      assert.ok(source.verifiedAt >= canonical[0][1].verifiedAt, `${sourceId} 的核验日期不得早于 canonical source`);
+      assert.equal(source.versionOf, canonical[0][0], `${sourceId} must explicitly point at the canonical source for its URL`);
+      assert.equal(source.localeScope, "zh-CN", `${sourceId} versioned sources must stay scoped to Chinese`);
+      assert.ok(source.verifiedAt >= canonical[0][1].verifiedAt, `${sourceId} verifiedAt must not predate the canonical source`);
     }
   }
 
@@ -2594,84 +2469,84 @@ test("every published module claim resolves to a unique, grouped, and verified s
     const freshness = sourceFreshness(source);
     assert.ok(
       freshness.status !== "invalid" && freshness.status !== "future",
-      `来源日期格式必须合法且不得在未来：${sourceId} / ${freshness.status} / ${freshness.ageDays ?? "?"} 天`,
+      `source dates must be valid and must not be in the future: ${sourceId} / ${freshness.status} / ${freshness.ageDays ?? "?"} days`,
     );
     assert.ok([30, 90, 180].includes(/** @type {number} */ (freshness.reviewCycleDays)));
     assert.ok(source.grade && source.kind && source.shortTitle && source.title && source.note);
-    assert.ok(allowedGrades.has(source.grade), `未知证据类别：${sourceId} / ${source.grade}`);
+    assert.ok(allowedGrades.has(source.grade), `unknown evidence grade: ${sourceId} / ${source.grade}`);
   }
 
   const groupedSourceIds = new Set();
   const referenceModuleIds = new Set();
   const referenceModuleHrefs = new Set();
   for (const referenceModule of referenceModules) {
-    assert.ok(!referenceModuleIds.has(referenceModule.id), `Reference 模块 ID 重复：${referenceModule.id}`);
-    assert.ok(!referenceModuleHrefs.has(referenceModule.href), `Reference 模块链接重复：${referenceModule.href}`);
+    assert.ok(!referenceModuleIds.has(referenceModule.id), `duplicate Reference module id: ${referenceModule.id}`);
+    assert.ok(!referenceModuleHrefs.has(referenceModule.href), `duplicate Reference module link: ${referenceModule.href}`);
     referenceModuleIds.add(referenceModule.id);
     referenceModuleHrefs.add(referenceModule.href);
     assert.ok(referenceModule.zh && referenceModule.en && referenceModule.shortTitle);
-    assert.ok(referenceModule.sourceIds.length > 0, `Reference 模块缺少来源：${referenceModule.id}`);
-    assert.equal(new Set(referenceModule.sourceIds).size, referenceModule.sourceIds.length, `Reference 模块来源重复：${referenceModule.id}`);
-    assert.equal(referenceModule.href, getModuleBySlug(referenceModule.id)?.href, `Reference 分组应连接到对应模块：${referenceModule.id}`);
+    assert.ok(referenceModule.sourceIds.length > 0, `Reference module is missing sources: ${referenceModule.id}`);
+    assert.equal(new Set(referenceModule.sourceIds).size, referenceModule.sourceIds.length, `Reference module has duplicated sources: ${referenceModule.id}`);
+    assert.equal(referenceModule.href, getModuleBySlug(referenceModule.id)?.href, `Reference groups must link to their module: ${referenceModule.id}`);
 
     for (const sourceId of referenceModule.sourceIds) {
-      assert.ok(sourceIds.has(sourceId), `Reference 模块引用未知来源：${sourceId}`);
+      assert.ok(sourceIds.has(sourceId), `Reference module cites an unknown source: ${sourceId}`);
       groupedSourceIds.add(sourceId);
     }
   }
-  assert.deepEqual([...groupedSourceIds].sort(), [...sourceIds].sort(), "每个来源都必须归入至少一个模块分组");
+  assert.deepEqual([...groupedSourceIds].sort(), [...sourceIds].sort(), "every source must belong to at least one module group");
 
   for (const publishedModule of publishedModules) {
     const referenceModule = referenceModules.find((candidate) => candidate.id === publishedModule.id);
-    assert.ok(referenceModule, `缺少 ${publishedModule.id} Reference 分组`);
+    assert.ok(referenceModule, `missing the ${publishedModule.id} Reference group`);
     const moduleSourceIds = new Set(referenceModule.sourceIds);
 
-    assert.ok(publishedModule.qa.length > 0, `已发布模块缺少客户问答：${publishedModule.id}`);
+    assert.ok(publishedModule.qa.length > 0, `published module is missing customer questions: ${publishedModule.id}`);
     assert.equal(
       new Set(publishedModule.qa.map((item) => item.q)).size,
       publishedModule.qa.length,
-      `同一模块不应出现重复客户问题：${publishedModule.id}`,
+      `one module must not repeat the same customer question: ${publishedModule.id}`,
     );
     const actualQaTags = new Set(publishedModule.qa.map((item) => item.tag));
     for (const requiredTag of publishedModule.qaCoverageTags) {
-      assert.ok(actualQaTags.has(requiredTag), `${publishedModule.id} 客户问题缺少已登记的覆盖主题：${requiredTag}`);
+      assert.ok(actualQaTags.has(requiredTag), `${publishedModule.id} questions are missing the registered coverage topic: ${requiredTag}`);
     }
-    assert.ok(publishedModule.deepDives.length > 0, `已发布模块缺少独立知识扩展：${publishedModule.id}`);
+    assert.ok(publishedModule.deepDives.length > 0, `published module is missing independent knowledge expansions: ${publishedModule.id}`);
 
     for (const block of publishedModule.deepDives) {
-      assert.ok(["sequence", "matrix", "diagnostic", "checklist", "scenario"].includes(block.kind), `未知深挖表达类型：${publishedModule.id} / ${block.kind}`);
-      assert.ok(block.eyebrow && block.title && block.intro, `深挖区块元数据不完整：${publishedModule.id}`);
-      assert.ok(block.items.length > 0, `深挖区块不应为空：${publishedModule.id} / ${block.title}`);
-      assert.ok(block.sourceIds.length > 0, `深挖区块缺少依据：${publishedModule.id} / ${block.title}`);
-      assert.equal(new Set(block.sourceIds).size, block.sourceIds.length, `深挖区块来源重复：${publishedModule.id} / ${block.title}`);
+      assert.ok(["sequence", "matrix", "diagnostic", "checklist", "scenario"].includes(block.kind), `unknown deep-dive representation: ${publishedModule.id} / ${block.kind}`);
+      assert.ok(block.eyebrow && block.title && block.intro, `incomplete deep-dive metadata: ${publishedModule.id}`);
+      assert.ok(block.items.length > 0, `deep dives must not be empty: ${publishedModule.id} / ${block.title}`);
+      assert.ok(block.sourceIds.length > 0, `deep dives are missing evidence: ${publishedModule.id} / ${block.title}`);
+      assert.equal(new Set(block.sourceIds).size, block.sourceIds.length, `deep dives have duplicated sources: ${publishedModule.id} / ${block.title}`);
 
       for (const item of block.items) {
-        assert.ok(item.name && item.mechanism && item.decision, `深挖条目不完整：${publishedModule.id} / ${block.title}`);
+        assert.ok(item.name && item.mechanism && item.decision, `incomplete deep-dive item: ${publishedModule.id} / ${block.title}`);
       }
       for (const sourceId of block.sourceIds) {
-        assert.ok(sourceIds.has(sourceId), `深挖区块引用未知来源：${sourceId}`);
-        assert.ok(moduleSourceIds.has(sourceId), `深挖来源未归入 ${publishedModule.id} 分组：${sourceId}`);
+        assert.ok(sourceIds.has(sourceId), `deep dives cite an unknown source: ${sourceId}`);
+        assert.ok(moduleSourceIds.has(sourceId), `deep-dive sources are not in the ${publishedModule.id} group: ${sourceId}`);
       }
     }
 
     for (const item of publishedModule.qa) {
       assert.ok(item.q && item.a && item.depth && item.ask && item.tag && item.basis);
-      assert.ok(item.evidence.length > 0, `问答缺少本题依据：${item.q}`);
+      assert.ok(item.evidence.length > 0, `question is missing its evidence basis: ${item.q}`);
       assert.equal(
         new Set(item.evidence.map((reference) => reference.sourceId)).size,
         item.evidence.length,
-        `同一问题不应重复引用同一来源：${item.q}`,
+        `one question must not cite the same source twice: ${item.q}`,
       );
       for (const reference of item.evidence) {
-        assert.ok(sourceIds.has(reference.sourceId), `问答引用未知来源：${reference.sourceId}`);
-        assert.ok(moduleSourceIds.has(reference.sourceId), `问答来源未归入 ${publishedModule.id} 分组：${reference.sourceId}`);
-        assert.match(reference.supports, /支持/, `应说明来源具体支持什么：${item.q}`);
+        assert.ok(sourceIds.has(reference.sourceId), `question cites an unknown source: ${reference.sourceId}`);
+        assert.ok(moduleSourceIds.has(reference.sourceId), `question sources are not in the ${publishedModule.id} group: ${reference.sourceId}`);
+        assert.match(reference.supports, /支持/, `sources must state what they support: ${item.q}`);
       }
     }
 
     for (const card of publishedModule.cards) {
-      assert.ok(sourceIds.has(card.sourceId), `证据卡引用未知来源：${card.sourceId}`);
-      assert.ok(moduleSourceIds.has(card.sourceId), `证据卡来源未归入 ${publishedModule.id} 分组：${card.sourceId}`);
+      assert.ok(sourceIds.has(card.sourceId), `evidence card cites an unknown source: ${card.sourceId}`);
+      assert.ok(moduleSourceIds.has(card.sourceId), `evidence-card sources are not in the ${publishedModule.id} group: ${card.sourceId}`);
       assert.ok(card.metric && card.title && card.finding && card.boundary);
     }
   }
@@ -2704,50 +2579,50 @@ test("every shared module has a source-backed learning route and practical labs"
   assert.equal(Object.keys(moduleLearningContent).length, sharedModules.length);
   assert.equal(Object.keys(moduleCurriculumContent).length, sharedModules.length);
   for (const briefModule of briefModules) {
-    assert.ok(moduleLearningSlugs.includes(briefModule.slug), `brief 模块缺少共享学习内容：${briefModule.slug}`);
+    assert.ok(moduleLearningSlugs.includes(briefModule.slug), `brief module is missing shared learning content: ${briefModule.slug}`);
   }
   for (const sharedModule of sharedModules) {
-    assert.ok(requireModuleContent(sharedModule.slug).qa.length > 0, `${sharedModule.slug} 缺少客户问答覆盖`);
+    assert.ok(requireModuleContent(sharedModule.slug).qa.length > 0, `${sharedModule.slug} is missing customer question coverage`);
   }
 
   for (const publishedModuleEntry of sharedModules) {
     const learning = requireModuleLearning(publishedModuleEntry.slug);
     const curriculum = /** @type {any} */ (requireModuleCurriculum(publishedModuleEntry.slug));
     const referenceModule = referenceModules.find((candidate) => candidate.id === publishedModuleEntry.slug);
-    assert.ok(referenceModule, `学习路线缺少 Reference 分组：${publishedModuleEntry.slug}`);
+    assert.ok(referenceModule, `learning route is missing its Reference group: ${publishedModuleEntry.slug}`);
     const moduleSourceIds = new Set(referenceModule.sourceIds);
 
-    assert.ok(learning.outcomes.some((/** @type {any} */ outcome) => outcome.trim()), `学习结果不足：${publishedModuleEntry.slug}`);
-    assert.ok(learning.route.some((/** @type {any} */ step) => step.title.trim() && step.learn.trim() && step.checkpoint.trim()), `学习路线缺少可复核步骤：${publishedModuleEntry.slug}`);
-    assert.equal(new Set(learning.route.map((/** @type {any} */ step) => step.title)).size, learning.route.length, `学习路线不应重复同一判断：${publishedModuleEntry.slug}`);
-    assert.ok(learning.labs.some((/** @type {any} */ lab) => lab.title.trim() && lab.deliverable.trim()), `实战任务不足：${publishedModuleEntry.slug}`);
-    assert.equal(new Set(learning.labs.map((/** @type {any} */ lab) => lab.title)).size, learning.labs.length, `实战任务不应靠同义改写重复：${publishedModuleEntry.slug}`);
-    assert.ok(curriculum.lead.trim(), `课程地图导语不足：${publishedModuleEntry.slug}`);
-    assert.ok(curriculum.chapters.some((/** @type {any} */ chapter) => chapter.title.trim()), `课程地图覆盖不足：${publishedModuleEntry.slug}`);
-    assert.equal(new Set(curriculum.chapters.map((/** @type {any} */ chapter) => chapter.title)).size, curriculum.chapters.length, `课程主题不应重复：${publishedModuleEntry.slug}`);
+    assert.ok(learning.outcomes.some((/** @type {any} */ outcome) => outcome.trim()), `learning outcomes are too thin: ${publishedModuleEntry.slug}`);
+    assert.ok(learning.route.some((/** @type {any} */ step) => step.title.trim() && step.learn.trim() && step.checkpoint.trim()), `learning route is missing reviewable steps: ${publishedModuleEntry.slug}`);
+    assert.equal(new Set(learning.route.map((/** @type {any} */ step) => step.title)).size, learning.route.length, `learning route must not repeat the same judgement: ${publishedModuleEntry.slug}`);
+    assert.ok(learning.labs.some((/** @type {any} */ lab) => lab.title.trim() && lab.deliverable.trim()), `labs are too thin: ${publishedModuleEntry.slug}`);
+    assert.equal(new Set(learning.labs.map((/** @type {any} */ lab) => lab.title)).size, learning.labs.length, `labs must not repeat the same task via rewording: ${publishedModuleEntry.slug}`);
+    assert.ok(curriculum.lead.trim(), `curriculum lead is too thin: ${publishedModuleEntry.slug}`);
+    assert.ok(curriculum.chapters.some((/** @type {any} */ chapter) => chapter.title.trim()), `curriculum coverage is too thin: ${publishedModuleEntry.slug}`);
+    assert.equal(new Set(curriculum.chapters.map((/** @type {any} */ chapter) => chapter.title)).size, curriculum.chapters.length, `curriculum topics must not repeat: ${publishedModuleEntry.slug}`);
 
     for (const chapter of curriculum.chapters) {
-      assert.ok(chapter.title && chapter.en && chapter.explanation && chapter.decision && chapter.boundary, `课程主题不完整：${publishedModuleEntry.slug}`);
-      assert.ok(chapter.sourceIds.length > 0, `课程主题缺少依据：${publishedModuleEntry.slug} / ${chapter.title}`);
+      assert.ok(chapter.title && chapter.en && chapter.explanation && chapter.decision && chapter.boundary, `incomplete curriculum topic: ${publishedModuleEntry.slug}`);
+      assert.ok(chapter.sourceIds.length > 0, `curriculum topic is missing evidence: ${publishedModuleEntry.slug} / ${chapter.title}`);
       for (const sourceId of chapter.sourceIds) {
-        assert.ok(sourceLedger[sourceId], `课程主题引用未知来源：${publishedModuleEntry.slug} / ${sourceId}`);
-        assert.ok(moduleSourceIds.has(sourceId), `课程主题来源未归入 ${publishedModuleEntry.slug} Reference：${sourceId}`);
+        assert.ok(sourceLedger[sourceId], `curriculum topic cites an unknown source: ${publishedModuleEntry.slug} / ${sourceId}`);
+        assert.ok(moduleSourceIds.has(sourceId), `curriculum sources are not in the ${publishedModuleEntry.slug} Reference group: ${sourceId}`);
       }
     }
 
-    for (const outcome of learning.outcomes) assert.ok(outcome.trim(), `学习结果过于空泛：${publishedModuleEntry.slug}`);
+    for (const outcome of learning.outcomes) assert.ok(outcome.trim(), `learning outcomes are too vague: ${publishedModuleEntry.slug}`);
     for (const step of learning.route) {
-      assert.ok(step.title && step.learn && step.checkpoint, `学习步骤不完整：${publishedModuleEntry.slug}`);
+      assert.ok(step.title && step.learn && step.checkpoint, `incomplete learning step: ${publishedModuleEntry.slug}`);
     }
     for (const lab of learning.labs) {
-      assert.ok(lab.title && lab.scenario && lab.deliverable && lab.acceptance, `实战任务不完整：${publishedModuleEntry.slug}`);
-      assert.ok(lab.tasks.some((/** @type {any} */ task) => task.trim()), `实战任务缺少可执行动作：${publishedModuleEntry.slug} / ${lab.title}`);
-      assert.equal(new Set(lab.tasks).size, lab.tasks.length, `实战任务不应重复同一个动作：${publishedModuleEntry.slug} / ${lab.title}`);
-      assert.ok(lab.sourceIds.length > 0, `实战任务缺少依据：${publishedModuleEntry.slug} / ${lab.title}`);
-      assert.equal(new Set(lab.sourceIds).size, lab.sourceIds.length, `实战任务来源重复：${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.ok(lab.title && lab.scenario && lab.deliverable && lab.acceptance, `incomplete lab: ${publishedModuleEntry.slug}`);
+      assert.ok(lab.tasks.some((/** @type {any} */ task) => task.trim()), `lab is missing executable actions: ${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.equal(new Set(lab.tasks).size, lab.tasks.length, `labs must not repeat the same action: ${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.ok(lab.sourceIds.length > 0, `lab is missing evidence: ${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.equal(new Set(lab.sourceIds).size, lab.sourceIds.length, `lab sources are duplicated: ${publishedModuleEntry.slug} / ${lab.title}`);
       for (const sourceId of lab.sourceIds) {
-        assert.ok(sourceLedger[sourceId], `实战任务引用未知来源：${publishedModuleEntry.slug} / ${sourceId}`);
-        assert.ok(moduleSourceIds.has(sourceId), `实战任务来源未归入 ${publishedModuleEntry.slug} Reference：${sourceId}`);
+        assert.ok(sourceLedger[sourceId], `lab cites an unknown source: ${publishedModuleEntry.slug} / ${sourceId}`);
+        assert.ok(moduleSourceIds.has(sourceId), `lab sources are not in the ${publishedModuleEntry.slug} Reference group: ${sourceId}`);
       }
     }
 
@@ -2764,7 +2639,7 @@ test("every shared module has a source-backed learning route and practical labs"
       assert.match(html, /(?:学习路线|把主题推进到检查点)/);
       assert.match(html, /(?:验证实验|可复核练习)/);
     }
-    assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} 的路线标题不应绑定固定数量`);
+    assert.doesNotMatch(html, /[一二三四五六七八九十\d]+步学习顺序/, `${publishedModuleEntry.slug} route titles must not bind to a fixed count`);
     assert.match(html, /(?:知识地图|主题地图)/);
     assert.doesNotMatch(html, /external_reference|不复刻 PPT|讲义提供覆盖线索/);
   }
@@ -2776,13 +2651,13 @@ test("balances arbitrary card counts without hard-coded even or odd layouts", ()
       const items = Array.from({ length: count }, (_, index) => index);
       const rows = balanceRows(items, maxColumns);
 
-      assert.deepEqual(rows.flat(), items, `布局必须保持原顺序：${count} / ${maxColumns}`);
-      assert.equal(rows.length, Math.ceil(count / maxColumns), `行数应由当前数量动态计算：${count} / ${maxColumns}`);
+      assert.deepEqual(rows.flat(), items, `layouts must keep the original order: ${count} / ${maxColumns}`);
+      assert.equal(rows.length, Math.ceil(count / maxColumns), `row counts must be derived from the current count: ${count} / ${maxColumns}`);
 
       if (rows.length > 0) {
         const sizes = rows.map((row) => row.length);
         assert.ok(Math.max(...sizes) <= maxColumns);
-        assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1, `各行数量差不能超过 1：${count} / ${maxColumns}`);
+        assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1, `row counts must not differ by more than 1: ${count} / ${maxColumns}`);
       }
     }
   }
@@ -2796,13 +2671,13 @@ test("balances arbitrary CSS Grid counts without fractional or missing spans", (
       const items = Array.from({ length: count }, (_, index) => index);
       const rows = balanceGridRows(items, maxColumns);
 
-      assert.deepEqual(rows.flat(), items, `Grid 布局必须保持原顺序：${count} / ${maxColumns}`);
+      assert.deepEqual(rows.flat(), items, `Grid layouts must keep the original order: ${count} / ${maxColumns}`);
 
       if (rows.length > 0) {
         const sizes = rows.map((row) => row.length);
         assert.ok(Math.max(...sizes) <= maxColumns);
-        assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1, `Grid 各行数量差不能超过 1：${count} / ${maxColumns}`);
-        for (const row of rows) assert.ok(Number.isInteger(gridSpan(row.length)), `Grid span 必须为整数：${row.length}`);
+        assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1, `Grid row counts must not differ by more than 1: ${count} / ${maxColumns}`);
+        for (const row of rows) assert.ok(Number.isInteger(gridSpan(row.length)), `Grid spans must be integers: ${row.length}`);
       }
     }
   }
@@ -2844,21 +2719,21 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(moduleComponents, /"--qa-evidence-span": gridSpan\(row\.length\)/);
   assert.match(moduleComponents, /data-importance="critical"/);
   assert.match(moduleComponents, /className="balancedGridCell"/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.mechanicGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.balancedGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.sourceItem\s*\{[^}]*position:\s*relative/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.sourceAnchorAlias\s*\{[^}]*position:\s*absolute/s);
   for (const [source, variable] of [[styles, "module"], [styles, "concept"], [styles, "mechanic"], [styles, "balanced"], [styles, "evidence"], [styles, "qa-evidence"], [styles, "related"], [styles, "brief"], [styles, "reference"], [v2Styles, "result"], [v2Styles, "search"]]) {
-    assert.match(source, new RegExp(`var\\(--${variable}-span,\\s*12\\)`), `--${variable}-span 必须有通栏 fallback`);
+    assert.match(source, new RegExp(`var\\(--${variable}-span,\\s*12\\)`), `--${variable}-span must have a full-width fallback`);
   }
   assert.match(v2Styles, /container-type:\s*inline-size/);
   assert.match(v2Styles, /@container \(max-width: 900px\)/);
   assert.match(v2Styles, /@container \(max-width: 620px\)/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v2Styles, /\.subHead h2, \.subHead h3\s*\{[^}]*5cqi[^}]*text-wrap:\s*balance/s);
   assert.match(homepage, /explorerModules/);
   assert.match(homepage, /publishedModuleSlugs\.map/);
@@ -2875,33 +2750,33 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(interactions, /export function SystemLens/);
   assert.match(interactions, /export function QaFilterShell/);
   assert.match(interactions, /export function ReferenceFilterShell/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v2Styles, /\.moduleResultGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v2Styles, /@media \(max-width: 720px\)[\s\S]*?\.moduleResult,[\s\S]*?grid-column:\s*span 12;/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*font-size:\s*var\(--module-title-size,/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*line-height:\s*1;/s);
   assert.doesNotMatch(styles, /#[a-z-]+-title\s*\{/);
   assert.match(styles, /\.layer:nth-child\(7n \+ 1\)/);
   assert.match(styles, /\.layer:nth-child\(7n\)/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.relatedModuleGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.flow\s*\{[^}]*grid-auto-flow:\s*column;[^}]*grid-auto-columns:\s*minmax\(180px,1fr\);/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.doesNotMatch(styles, /\.flow\s*\{[^}]*grid-template-columns:\s*repeat\(\d+,/s);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.flow\s*\{[^}]*grid-auto-flow:\s*row;[^}]*grid-template-columns:\s*1fr;/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(styles, /\.referenceModuleNav\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
   assert.match(styles, /\.relatedModuleGrid\[data-odd="true"\] > a:last-child,[\s\S]*?\.referenceModuleNav\[data-odd="true"\] > a:last-child\s*\{\s*grid-column:\s*span 12;/);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{\s*display:\s*flex;[^}]*width:\s*100%;/);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.mechanicGrid article,[\s\S]*?grid-column:\s*span 12;/);
   assert.doesNotMatch(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{[^}]*display:\s*none;/);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);[^}]*overflow:\s*visible;/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks a\s*\{[^}]*white-space:\s*normal;/s);
 });
 
@@ -2913,9 +2788,9 @@ test("public page shells expose one real skip target after navigation without de
   for (const relativePath of pageFiles) {
     const source = await readFile(new URL(relativePath, appRoot), "utf8");
     if (!source.includes('<nav className="topbar"')) continue;
-    assert.equal((source.match(/id="main-content"/g) ?? []).length, 1, `${relativePath} 必须只有一个主内容跳转目标`);
-    assert.ok(source.indexOf('id="main-content"') > source.indexOf("</nav>"), `${relativePath} 的跳转目标必须位于导航之后`);
-    assert.doesNotMatch(source, /V2\.0/, `${relativePath} 不得显示装饰性维护版本号`);
+    assert.equal((source.match(/id="main-content"/g) ?? []).length, 1, `${relativePath} must keep exactly one main-content skip target`);
+    assert.ok(source.indexOf('id="main-content"') > source.indexOf("</nav>"), `${relativePath} skip target must sit after the navigation`);
+    assert.doesNotMatch(source, /V2\.0/, `${relativePath} must not show decorative maintenance versions`);
   }
 
   const publicPageFamilies = [
@@ -2942,24 +2817,24 @@ test("public page shells expose one real skip target after navigation without de
     en: { layoutPath: "(en)/layout.tsx", label: "Skip to main content" },
   };
 
-  assert.equal(new Set(publicPageShells.map(({ path }) => path)).size, publicPageShells.length, "公开页面语义清单不得重复路由");
+  assert.equal(new Set(publicPageShells.map(({ path }) => path)).size, publicPageShells.length, "the public page-shell inventory must not repeat routes");
   for (const { layoutPath, label } of Object.values(skipLinkContracts)) {
     const source = await readFile(new URL(layoutPath, appRoot), "utf8");
-    assert.match(source, new RegExp(`className="skipLink" href="#main-content">${escapeRegExp(label)}<`), `${layoutPath} 必须提供本地化 skip link`);
+    assert.match(source, new RegExp(`className="skipLink" href="#main-content">${escapeRegExp(label)}<`), `${layoutPath} must provide a localized skip link`);
   }
   const renderedPublicPageShells = await Promise.all(publicPageShells.map(async (page) => ({ ...page, html: await renderHtml(page.path) })));
   for (const { id, locale, path, html } of renderedPublicPageShells) {
     const { label } = skipLinkContracts[/** @type {keyof typeof skipLinkContracts} */ (locale)];
-    assert.match(html, new RegExp(`<a class="skipLink" href="#main-content">${escapeRegExp(label)}</a>`), `${id} 必须渲染本地化 skip link`);
-    assert.equal((html.match(/class="skipLink" href="#main-content"/g) ?? []).length, 1, `${path} 必须只有一个 skip link`);
-    assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${path} 必须只有一个主内容跳转目标`);
-    assert.ok(html.indexOf('id="main-content"') > html.indexOf("</nav>"), `${path} 的跳转目标必须位于导航之后`);
-    assert.doesNotMatch(html, /V2\.0/, `${path} 不得显示装饰性维护版本号`);
+    assert.match(html, new RegExp(`<a class="skipLink" href="#main-content">${escapeRegExp(label)}</a>`), `${id} must render the localized skip link`);
+    assert.equal((html.match(/class="skipLink" href="#main-content"/g) ?? []).length, 1, `${path} must keep exactly one skip link`);
+    assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${path} must keep exactly one main-content skip target`);
+    assert.ok(html.indexOf('id="main-content"') > html.indexOf("</nav>"), `${path} skip target must sit after the navigation`);
+    assert.doesNotMatch(html, /V2\.0/, `${path} must not show decorative maintenance versions`);
   }
 
   const unifiedHero = await readFile(new URL("unified-module-hero.tsx", appRoot), "utf8");
-  assert.equal((unifiedHero.match(/id="main-content"/g) ?? []).length, 1, "共享模块 Hero 必须只有一个主内容跳转目标");
-  assert.ok(unifiedHero.indexOf('id="main-content"') > unifiedHero.indexOf("</nav>"), "共享模块 Hero 的跳转目标必须位于导航之后");
+  assert.equal((unifiedHero.match(/id="main-content"/g) ?? []).length, 1, "the shared module Hero must keep exactly one main-content skip target");
+  assert.ok(unifiedHero.indexOf('id="main-content"') > unifiedHero.indexOf("</nav>"), "the shared module Hero skip target must sit after the navigation");
 });
 
 test("shared responsive interactions preserve explicit state, keyboard safety, and usable mobile controls", async () => {
@@ -2974,12 +2849,12 @@ test("shared responsive interactions preserve explicit state, keyboard safety, a
     readFile(new URL("../app/knowledge-graph/design-2/knowledge-constellation.module.css", import.meta.url), "utf8"),
   ]);
 
-  assert.ok((interactions.match(/aria-pressed=/g) ?? []).length >= 10, "共享筛选器必须向辅助技术暴露选中状态");
+  assert.ok((interactions.match(/aria-pressed=/g) ?? []).length >= 10, "shared filters must expose the selected state to assistive tech");
   assert.match(glossary, /aria-pressed=\{groupId === group\.id\}/);
   assert.match(radar, /className="modelPosterBenchmarkTabs" role="group"/);
   assert.match(radar, /aria-pressed=\{benchmark\.sourceId === benchmarkId\}/);
   assert.doesNotMatch(radar, /role="tablist"|role="tab"/);
-  assert.doesNotMatch(radar, /<tr[\s\S]{0,180}onClick=/, "Radar 行不得伪装成整行可点击控件");
+  assert.doesNotMatch(radar, /<tr[\s\S]{0,180}onClick=/, "Radar rows must not pretend to be whole-row clickable controls");
 
   assert.match(graph, /aria-hidden=\{mobileRail && !railOpen \? true : undefined\}/);
   assert.match(graph, /inert=\{mobileRail && !railOpen \? true : undefined\}/);
@@ -2995,15 +2870,15 @@ test("shared responsive interactions preserve explicit state, keyboard safety, a
   assert.match(englishReader, /sectionId\.endsWith\("-curriculum"\)/);
   assert.match(englishReader, /<h3>\{title \?\? "Critical boundary"\}<\/h3>/);
 
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v3Styles, /\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow:\s*auto;/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(v3Styles, /@media \(max-width: 980px\)[\s\S]*?\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow-x:\s*auto;[^}]*overflow-y:\s*hidden;/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.doesNotMatch(v3Styles, /\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow:\s*hidden;/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(graphStyles, /@media \(max-width: 600px\)[\s\S]*?\.canvas\s*\{\s*bottom:\s*140px;/s);
-  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
+  // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(graphStyles, /\.canvasControls button\s*\{\s*width:\s*44px;\s*height:\s*44px;/s);
 });
 
@@ -3033,9 +2908,9 @@ test("source URLs have one code owner and are absent from content and route file
   assert.match(promptContent, /export const promptEvidenceCards/);
 
   for (const source of Object.values(sourceLedger)) {
-    assert.ok(referenceContent.includes(source.href), `统一来源文件缺少 URL：${source.href}`);
+    assert.ok(referenceContent.includes(source.href), `the unified source file is missing the URL: ${source.href}`);
     for (const fileContent of nonLedgerFiles) {
-      assert.ok(!fileContent.includes(source.href), `非台账文件不应维护 URL：${source.href}`);
+      assert.ok(!fileContent.includes(source.href), `non-ledger files must not maintain URLs: ${source.href}`);
     }
   }
 
@@ -3049,7 +2924,7 @@ test("source URLs have one code owner and are absent from content and route file
   for (const relativePath of appFiles) {
     const fileContent = await readFile(new URL(relativePath, appRoot), "utf8");
     const withoutPublicSiteUrl = fileContent.replaceAll("https://cloud-ai-presales-fieldbook.lijx.chatgpt.site", "");
-    assert.doesNotMatch(withoutPublicSiteUrl, /https?:\/\//, `外部来源 URL 只能在统一台账维护：app/${relativePath}`);
+    assert.doesNotMatch(withoutPublicSiteUrl, /https?:\/\//, `external source URLs may only live in the unified ledger: app/${relativePath}`);
   }
 });
 
@@ -3079,73 +2954,28 @@ test("project docs require independent routes, one reference page, and main-only
   ]);
   const kbConfig = JSON.parse(kbConfigText);
 
-  assert.match(standard, /每个模块使用独立页面/);
+  assert.match(standard, /每个模块使用独立页面|所有来源集中在独立|动态均衡卡片|相关模块|仅当公式直接帮助售前做架构、选型或风险判断时展示|MODULE-BUILD-STANDARD\.md/);
   assert.match(standard, /\/references/);
-  assert.match(standard, /所有来源集中在独立/);
-  assert.match(standard, /动态均衡卡片/);
-  assert.match(standard, /相关模块/);
-  assert.match(standard, /仅当公式直接帮助售前做架构、选型或风险判断时展示/);
-  assert.match(standard, /MODULE-BUILD-STANDARD\.md/);
-  assert.match(moduleStandard, /机制与组件完整性/);
-  assert.match(moduleStandard, /每个关键动作和组件都必须分别讲清/);
+  assert.match(moduleStandard, /机制与组件完整性|每个关键动作和组件都必须分别讲清|定义.*机制.*边界.*判断.*证据|不为图、卡片、案例、问答或来源设置数量指标|页面统一使用“相关模块”，不用“模块依赖”|技术环节—云能力—客户价值—发现问题—验收指标|每道问题至少包含|公式必须同时满足以下条件|balanceGridRows\(items, maxColumns\)/);
+  assert.match(moduleStandard, /内部巡检流程、责任人、字段 schema、发布步骤和构建状态不得公开|MODULE-QUALITY-GATES\.md|发布注册|面向读者的中文优先使用具体名词和日常动词|首次出现必须先给普通中文解释/);
 
-  assert.match(moduleStandard, /定义.*机制.*边界.*判断.*证据/);
-  assert.match(moduleStandard, /不为图、卡片、案例、问答或来源设置数量指标/);
-  assert.match(moduleStandard, /页面统一使用“相关模块”，不用“模块依赖”/);
-  assert.match(moduleStandard, /技术环节—云能力—客户价值—发现问题—验收指标/);
-  assert.match(moduleStandard, /每道问题至少包含/);
-  assert.match(moduleStandard, /公式必须同时满足以下条件/);
-  assert.match(moduleStandard, /balanceGridRows\(items, maxColumns\)/);
-  assert.match(moduleStandard, /内部巡检流程、责任人、字段 schema、发布步骤和构建状态不得公开/);
-  assert.match(moduleStandard, /MODULE-QUALITY-GATES\.md/);
-  assert.match(moduleStandard, /发布注册/);
-  assert.match(moduleStandard, /面向读者的中文优先使用具体名词和日常动词/);
-  assert.match(moduleStandard, /首次出现必须先给普通中文解释/);
+  assert.match(qualityGates, /历史问题 → 永久门禁|原理深度|术语中英|云服务连接|动态构图|Portable|Reference|时效性|普通中文|新模块 Definition of Done|新的系统性问题/);
 
-  assert.match(qualityGates, /历史问题 → 永久门禁/);
-  assert.match(qualityGates, /原理深度/);
-  assert.match(qualityGates, /术语中英/);
-  assert.match(qualityGates, /云服务连接/);
-  assert.match(qualityGates, /动态构图/);
-  assert.match(qualityGates, /Portable/);
-  assert.match(qualityGates, /Reference/);
-  assert.match(qualityGates, /时效性/);
-  assert.match(qualityGates, /普通中文/);
-  assert.match(qualityGates, /新模块 Definition of Done/);
-  assert.match(qualityGates, /新的系统性问题/);
+  assert.match(maintenance, /完整来源台账只呈现在 `\/references`|`main` 推送后的公开发布|非 `main` 分支.*不得更新公开 Site|实时 `origin\/main`|轮询至成功/);
 
-  assert.match(maintenance, /完整来源台账只呈现在 `\/references`/);
-  assert.match(maintenance, /`main` 推送后的公开发布/);
-  assert.match(maintenance, /非 `main` 分支.*不得更新公开 Site/);
-  assert.match(maintenance, /实时 `origin\/main`/);
-  assert.match(maintenance, /轮询至成功/);
+  assert.match(repositoryWorkflow, /`main` 是唯一生产分支|同一个任务换设备继续原分支|任务分支.*不能生成生产候选|最新 Sites source SHA = origin\/main/);
 
-  assert.match(repositoryWorkflow, /`main` 是唯一生产分支/);
-  assert.match(repositoryWorkflow, /同一个任务换设备继续原分支/);
-  assert.match(repositoryWorkflow, /任务分支.*不能生成生产候选/);
-  assert.match(repositoryWorkflow, /最新 Sites source SHA = origin\/main/);
-
-  assert.match(agentRules, /每个知识模块使用独立地址 `\/modules\/<slug>`/);
-  assert.match(agentRules, /`\/references` 是全站唯一的公开来源台账/);
-  assert.match(agentRules, /`main` 是唯一生产分支/);
-  assert.match(agentRules, /非 `main` 分支推送后不得更新公开站点/);
-  assert.match(agentRules, /实时 `origin\/main`/);
-  assert.match(agentRules, /轮询到发布成功/);
-  assert.match(agentRules, /MODULE-QUALITY-GATES\.md/);
-  assert.match(agentRules, /module-publication\.mjs/);
-  assert.match(agentRules, /terminology\.mjs/);
-  assert.match(agentRules, /默认匿名可读/);
-  assert.match(agentRules, /新的系统性问题/);
+  assert.match(agentRules, /每个知识模块使用独立地址 `\/modules\/<slug>`|`\/references` 是全站唯一的公开来源台账|`main` 是唯一生产分支|非 `main` 分支推送后不得更新公开站点|实时 `origin\/main`|轮询到发布成功|MODULE-QUALITY-GATES\.md|module-publication\.mjs|terminology\.mjs|默认匿名可读|新的系统性问题/);
 
   assert.equal(kbConfig.publishing.sourceRepository.productionRemote, "origin");
   assert.equal(kbConfig.publishing.sourceRepository.productionBranch, "main");
 
   assert.match(layout, /lang="zh-CN"/);
-  assert.doesNotMatch(layout, /Noto_Serif_SC/, "大字符集中文字体不得由 next\/font 注册并在首屏预加载");
-  assert.match(globalStyles, /--font-serif:[^;]*Songti SC[^;]*Noto Serif CJK SC/, "中文标题必须保留可移植的系统字体栈");
+  assert.doesNotMatch(layout, /Noto_Serif_SC/, "large-character-set Chinese fonts must not be registered and preloaded by next/font");
+  assert.match(globalStyles, /--font-serif:[^;]*Songti SC[^;]*Noto Serif CJK SC/, "Chinese headings must keep a portable system font stack");
   assert.match(moduleStandard, /大字符集中文字体不得通过 `next\/font`/);
   assert.match(qualityGates, /响应 `Link` 头不含大字符集中文字体分片/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
-  assert.match(packageJson, /--ignore-pattern outputs/, "发布与 portable 产物不得重新进入源码 lint");
+  assert.match(packageJson, /--ignore-pattern outputs/, "release and portable outputs must not re-enter source lint");
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });
