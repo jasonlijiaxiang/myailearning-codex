@@ -387,6 +387,13 @@
       "recordedAt": "2026-09-04",
       "decisionId": "module-content-presentation-refresh-2026-08-24",
       "summary": "A2A English closure candidate: independently authored and reviewed identifier lineage, terminal continuation, subscription recovery, push-delivery semantics, and Extension negotiation; exact hashes and four review records are registered for atomic promotion."
+    },
+    {
+      "receiptId": "receipt-lazy-search-index-2026-09-05",
+      "kind": "runtime-maintenance",
+      "recordedAt": "2026-09-05",
+      "decisionId": "DEC-IMPROVE-S0",
+      "summary": "English renderer maintenance erm-lazy-search-index-2026-09-05: Lazy-load static search indexes instead of serializing the full corpus into page props."
     }
   ],
   "moduleBaselines": {
@@ -42290,6 +42297,54 @@
       "contentProjectionChangeSlugs": [],
       "metadataScope": "all-en-routes",
       "summary": "Preserve authored section order and semantic reader controls across bilingual module views."
+    },
+    {
+      "maintenanceId": "erm-lazy-search-index-2026-09-05",
+      "status": "applied",
+      "kind": "document-shell",
+      "decisionId": "DEC-IMPROVE-S0",
+      "recordedAt": "2026-09-05",
+      "baseCommit": "d67db8798e710f688dc7243047b4686dd9d53add",
+      "implementationCommit": "499799ffc24b24a64fa49cb9c57b14381233dcb7",
+      "receiptId": "receipt-lazy-search-index-2026-09-05",
+      "changedRendererFiles": [
+        "app/(en)/en/page.tsx",
+        "app/(en)/en/questions/page.tsx",
+        "app/(zh)/page.tsx",
+        "app/(zh)/questions/page.tsx",
+        "app/fieldbook-interactions.tsx",
+        "app/question-filter.mjs",
+        "app/question-index.mjs",
+        "app/search-index.mjs"
+      ],
+      "affectedModuleSlugs": [
+        "a2a",
+        "agentkit",
+        "ai-agent",
+        "ai-gateway",
+        "ai-governance",
+        "ai-infra-compute",
+        "ai-infra-platform",
+        "ai-ops",
+        "data-engineering",
+        "evaluation",
+        "fine-tuning",
+        "llm",
+        "llm-inference",
+        "llm-training",
+        "mcp",
+        "model-landscape",
+        "multimodal",
+        "predictive-ai-mlops",
+        "prompt-engineering",
+        "rag",
+        "security",
+        "solution-patterns",
+        "veadk"
+      ],
+      "contentProjectionChangeSlugs": [],
+      "metadataScope": "all-en-routes",
+      "summary": "Lazy-load static search indexes instead of serializing the full corpus into page props."
     }
   ],
   "deferments": [
