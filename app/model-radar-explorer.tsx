@@ -1,5 +1,6 @@
 "use client";
 
+import "./model-radar.css";
 import Link from "next/link";
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 

@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import "../fieldbook-v2.css";
 import "../fieldbook-v3.css";
-import "../home-refresh.css";
-import "../model-radar.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });

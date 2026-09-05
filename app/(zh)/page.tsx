@@ -10,6 +10,7 @@ import { publishedModuleSlugs } from "../module-publication.mjs";
 import { glossaryTermIds, homepageTermGroups } from "../terminology.mjs";
 import { TermHintGroups } from "../term-hint";
 import { scenarioDefinitionsForHome, timeBudgetPaths } from "../home-learning-paths.mjs";
+import HomeStyles from "../home-styles";
 
 export const metadata: Metadata = chinesePageMetadata({
   title: "云计算 × AI 平台售前知识库",
@@ -94,6 +95,7 @@ const learningPaths: Array<{
 export default function Home() {
   return (
     <main className="fieldbookTheme fieldbookHome fieldbookHomeZh">
+      <HomeStyles />
       <ReadingProgress />
       <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="主导航">

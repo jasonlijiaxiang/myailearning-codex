@@ -9,6 +9,7 @@ import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
 import { layers, moduleList } from "../../knowledge-map.mjs";
 import { publishedModuleSlugs } from "../../module-publication.mjs";
 import { homepageTermGroups } from "../../terminology.mjs";
+import HomeStyles from "../../home-styles";
 
 export const metadata: Metadata = englishPageMetadata({
   title: "Cloud × AI Presales Fieldbook",
@@ -165,6 +166,7 @@ function EnglishHomeTermGroups() {
 export default function EnglishHome() {
   return (
     <main lang="en" className="fieldbookTheme fieldbookHome fieldbookHomeEn">
+      <HomeStyles />
       <ReadingProgress />
       <header className="hero heroV2" id="top">
         <nav className="topbar" aria-label="Main navigation">
