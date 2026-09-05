@@ -160,8 +160,8 @@ function groupFieldQuestions(qa: readonly SourceQa[]): readonly FieldQuestionGro
 
 function loadA2ASourceContent() {
   const brief = requireModuleBrief("a2a") as A2ASourceBrief;
-  const curriculum = requireModuleCurriculum("a2a") as A2ASourceCurriculum;
-  const learning = requireModuleLearning("a2a") as A2ASourceLearning;
+  const curriculum = requireModuleCurriculum("a2a") as unknown as A2ASourceCurriculum;
+  const learning = requireModuleLearning("a2a") as unknown as A2ASourceLearning;
   const fieldQuestionGroups = groupFieldQuestions(brief.qa);
   const renderedQuestions = fieldQuestionGroups.flatMap((group) => group.questions);
   const renderedQuestionIndices = renderedQuestions.map((question) => question.sourceIndex);
@@ -739,7 +739,7 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
   const sourceContent = loadA2ASourceContent();
   const publication = getPublishedModule("a2a");
   if (!publication) throw new Error("Missing A2A publication entry");
-  const terms = publication.requiredTerms.map((termId) => {
+  const terms = (publication.requiredTerms as unknown as readonly string[]).map((termId) => {
     const term = terminology[termId];
     if (!term) throw new Error(`Unknown A2A term: ${termId}`);
     return { id: termId, zh: term.zh, en: term.en, description: term.description };
@@ -763,7 +763,7 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
         questionCount: sourceContent.qa.length,
         shortTitle: "A2A",
         slug: "a2a",
-        titleId: publication.titleId,
+        titleId: publication.titleId as string,
         zhTitle: "智能体间协议",
       }}
     >

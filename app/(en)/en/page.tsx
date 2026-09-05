@@ -25,7 +25,7 @@ const layerNames = new Map(layers.map((layer) => [layer.no, layer.en]));
 
 const explorerModules: ExplorerModule[] = publishedModuleSlugs.map((slug) => {
   const canonical = moduleList.find((module) => module.slug === slug);
-  const localized = englishModuleRegistry[slug];
+  const localized = englishModuleRegistry[slug as string];
   if (!canonical || !localized) throw new Error(`English module discovery data is incomplete: ${slug}`);
   return {
     ...canonical,
@@ -144,7 +144,7 @@ function EnglishHomeTermGroups() {
           <section className="termHintGroup" key={group.label}>
             <h3>{group.label}</h3>
             <div>{group.termIds.map((termId) => {
-              const term = englishTermCopy[termId];
+              const term = (englishTermCopy as unknown as Record<string, { name: string; abbr?: string; definition: string } | undefined>)[termId];
               if (!term) throw new Error(`Unknown homepage term: ${termId}`);
               const label = term.abbr ?? term.name;
               return (

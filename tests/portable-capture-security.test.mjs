@@ -16,11 +16,13 @@ const SCRIPT_ROOT = path.join(
 const CAPTURE_SCRIPT = path.join(SCRIPT_ROOT, "capture-turn.mjs");
 const PRIVATE_RUNTIME = path.join(SCRIPT_ROOT, "private-runtime.mjs");
 
+/** @param {string} file @param {unknown} value */
 async function writeJson(file, value) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+/** @param {string} root @param {{ storeRawTranscript?: boolean }} [options] */
 async function configureRoot(root, { storeRawTranscript = false } = {}) {
   await writeJson(path.join(root, "kb.config.json"), {
     schemaVersion: 1,
@@ -34,6 +36,7 @@ async function configureRoot(root, { storeRawTranscript = false } = {}) {
   });
 }
 
+/** @param {string} root */
 async function copyCaptureScripts(root) {
   const destination = path.join(
     root,
@@ -50,6 +53,7 @@ async function copyCaptureScripts(root) {
   }
 }
 
+/** @param {string} root */
 async function copyHookConfig(root) {
   await fs.mkdir(path.join(root, ".codex"), { recursive: true });
   await fs.copyFile(
@@ -58,6 +62,7 @@ async function copyHookConfig(root) {
   );
 }
 
+/** @param {string} script @param {{ cwd?: string; env?: Record<string, string | undefined>; input?: string }} [options] */
 function runNode(script, { cwd, env = {}, input = "" } = {}) {
   return spawnSync(process.execPath, [script], {
     cwd,
@@ -68,6 +73,7 @@ function runNode(script, { cwd, env = {}, input = "" } = {}) {
   });
 }
 
+/** @param {string} script @param {{ cwd?: string; env?: Record<string, string | undefined>; input?: string }} [options] */
 function runNodeAsync(script, { cwd, env = {}, input = "" } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [script], {
@@ -88,23 +94,28 @@ function runNodeAsync(script, { cwd, env = {}, input = "" } = {}) {
   });
 }
 
+/** @param {string} command @param {{ cwd?: string; input?: string; env?: Record<string, string | undefined> }} options */
 function runHook(command, { cwd, input, env = {} }) {
   return spawnSync(command, {
     cwd,
-    env: { ...process.env, NODE_ENV: "", PORTABLE_KB_TEST_ROOT: "", ...env },
+    env: /** @type {NodeJS.ProcessEnv} */ (/** @type {unknown} */ ({ ...process.env, NODE_ENV: "", PORTABLE_KB_TEST_ROOT: "", ...env })),
     input,
     encoding: "utf8",
     shell: true,
   });
 }
 
+/** @param {string} directory @param {string | null} [suffix] */
 async function filesBelow(directory, suffix = null) {
+  /** @type {string[]} */
   const output = [];
+  /** @param {string} current */
   async function visit(current) {
+    /** @type {import("node:fs").Dirent[]} */
     let entries;
     try {
       entries = await fs.readdir(current, { withFileTypes: true });
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (error?.code === "ENOENT") return;
       throw error;
     }
@@ -118,6 +129,7 @@ async function filesBelow(directory, suffix = null) {
   return output;
 }
 
+/** @param {string} root @param {Record<string, string>} [extra] */
 function captureEnv(root, extra = {}) {
   return {
     NODE_ENV: "test",
@@ -126,6 +138,11 @@ function captureEnv(root, extra = {}) {
   };
 }
 
+/**
+ * @param {string} root
+ * @param {Record<string, unknown>} [overrides]
+ * @returns {any}
+ */
 function captureEvent(root, overrides = {}) {
   return {
     hook_event_name: "UserPromptSubmit",
@@ -137,6 +154,7 @@ function captureEvent(root, overrides = {}) {
   };
 }
 
+/** @param {string} rawSession */
 function sessionKey(rawSession) {
   return `s_${createHash("sha256")
     .update(`codex-session\0${rawSession}`)
@@ -155,7 +173,7 @@ test("capture and retention reject linked runtime descendants without touching o
     await fs.mkdir(runtime, { recursive: true });
     try {
       await fs.symlink(outside, path.join(runtime, "user-messages"), "junction");
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (["EPERM", "EACCES", "ENOTSUP"].includes(error?.code)) {
         context.skip(`symlinks unavailable: ${error.code}`);
         return;
@@ -210,7 +228,7 @@ test("capture and retention reject linked runtime descendants without touching o
         force: true,
         verifyProcessed: async () => true,
       }),
-      (error) => error?.code === "UNSAFE_PRIVATE_PATH",
+      (/** @type {any} */ error) => error?.code === "UNSAFE_PRIVATE_PATH",
     );
     assert.equal(await fs.readFile(victim, "utf8"), "outside-must-survive");
   } finally {
@@ -476,7 +494,7 @@ test("hook loader rejects a linked script ancestor before external JavaScript ca
     );
     try {
       await fs.symlink(outside, path.join(root, ".agents"), "junction");
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (["EPERM", "EACCES", "ENOTSUP"].includes(error?.code)) {
         context.skip(`symlinks unavailable: ${error.code}`);
         return;
@@ -552,7 +570,7 @@ test("raw transcript capture only accepts no-follow JSONL files in Codex session
     try {
       await fs.symlink(outsideTranscript, linked);
       events.push(["linked", linked]);
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (!["EPERM", "EACCES", "ENOTSUP"].includes(error?.code)) throw error;
       context.diagnostic(`symlink transcript case skipped: ${error.code}`);
     }

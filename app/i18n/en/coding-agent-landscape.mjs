@@ -26,8 +26,9 @@ const benchmarkCopy = Object.freeze({
   "harness-bench": Object.freeze({ scope: "Harness effects across models", use: "Separate model and harness contributions and test how the same model changes across wrappers.", boundary: "It is a preprint, not product certification or a universal industry standard." }),
 });
 
+/** @param {any} product */
 function localizeProduct(product) {
-  const copy = productCopy[product.id];
+  const copy = productCopy[/** @type {keyof typeof productCopy} */ (product.id)];
   if (!copy) throw new Error(`Missing English coding-agent copy: ${product.id}`);
   return Object.freeze({
     ...product,
@@ -37,8 +38,9 @@ function localizeProduct(product) {
   });
 }
 
+/** @param {any} benchmark */
 function localizeBenchmark(benchmark) {
-  const copy = benchmarkCopy[benchmark.id];
+  const copy = benchmarkCopy[/** @type {keyof typeof benchmarkCopy} */ (benchmark.id)];
   if (!copy) throw new Error(`Missing English coding benchmark copy: ${benchmark.id}`);
   return Object.freeze({ ...benchmark, ...copy });
 }

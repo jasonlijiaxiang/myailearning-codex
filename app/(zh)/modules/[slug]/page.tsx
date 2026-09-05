@@ -144,7 +144,7 @@ function PrincipleView({ brief }: { brief: ModuleBrief }) {
   const rows = balanceGridRows(brief.principles, brief.presentation === "spectrum" ? 5 : 3);
   return (
     <div className={`briefPrinciples briefPrinciples--${brief.presentation}`} data-count={brief.principles.length} data-odd={brief.principles.length % 2 === 1 ? "true" : "false"}>
-      {(rows as BriefPrinciple[][]).flatMap((row) => row.map((item) => (
+      {rows.flatMap((row) => row.map((item) => (
         <article key={item.en} style={{ "--brief-span": gridSpan(row.length) } as CSSProperties}>
           <p className="miniLabel">{item.en}</p><h4>{item.zh}</h4><p>{item.explanation}</p><strong>{item.decision}</strong>
         </article>
@@ -175,8 +175,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
   if (hasDedicatedModule(currentModule.canonicalSlug)) notFound();
 
   const brief = requireModuleBrief(currentModule.canonicalSlug) as ModuleBrief;
-  const curriculumContent = requireModuleCurriculum(currentModule.canonicalSlug) as ModuleCurriculumContent;
-  const learningContent = requireModuleLearning(currentModule.canonicalSlug) as ModuleLearningContent;
+  const curriculumContent = requireModuleCurriculum(currentModule.canonicalSlug) as unknown as ModuleCurriculumContent;
+  const learningContent = requireModuleLearning(currentModule.canonicalSlug) as unknown as ModuleLearningContent;
   const publication = getPublishedModule(currentModule.canonicalSlug) as ModulePublication | undefined;
   if (!publication) notFound();
 

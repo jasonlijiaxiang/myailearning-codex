@@ -7,6 +7,7 @@ import { moduleBriefs } from "./module-brief-content.mjs";
  * 已发布模块中可结构化复用的实战与证据数据。正文仍在逐步数据化；新增
  * 正式模块时必须在此登记，避免测试和多载体生成器各自维护模块名单。
  */
+/** @type {Record<string, import("./content-types").ModuleBrief>} */
 export const moduleContentRegistry = Object.freeze({
   ...Object.fromEntries(Object.values(moduleBriefs).map((brief) => [
     brief.slug,
@@ -17,6 +18,7 @@ export const moduleContentRegistry = Object.freeze({
   "prompt-engineering": Object.freeze({ qa: promptQa, evidenceCards: promptEvidenceCards, deepDives: promptDeepDives, caseStudy: promptDecisionCase }),
 });
 
+/** @param {string} slug */
 export function requireModuleContent(slug) {
   const content = moduleContentRegistry[slug];
   if (!content) throw new Error(`Unknown published module content: ${slug}`);

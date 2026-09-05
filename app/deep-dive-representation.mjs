@@ -9,8 +9,9 @@ export const deepDiveRepresentationByKind = Object.freeze({
   checklist: "editorial-checklist",
 });
 
+/** @param {string} kind */
 export function requireDeepDiveRepresentation(kind) {
-  const representation = deepDiveRepresentationByKind[kind];
+  const representation = deepDiveRepresentationByKind[/** @type {keyof typeof deepDiveRepresentationByKind} */ (kind)];
   if (!representation) throw new Error(`Unknown deep-dive representation kind: ${kind}`);
   return representation;
 }

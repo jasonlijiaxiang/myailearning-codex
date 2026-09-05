@@ -5,6 +5,7 @@
  * 决策、证据、云连接和问答继续由各模块内容源维护。layout 表达知识关系，
  * 不表达模块等级，也不要求不同主题凑成相同节点数。
  */
+/** @type {Record<string, any>} */
 export const moduleExtensionViews = Object.freeze({
   "model-landscape": Object.freeze({
     id: "selection-coordinate",
@@ -383,6 +384,9 @@ export const moduleExtensionViews = Object.freeze({
   }),
 });
 
+/**
+ * @param {string} slug
+ */
 export function requireModuleExtensionView(slug) {
   const view = moduleExtensionViews[slug];
   if (!view) throw new Error(`Missing module extension view: ${slug}`);

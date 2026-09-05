@@ -22,6 +22,9 @@ import { moduleQaExpansion } from "./module-qa-expansion.mjs";
 import { completionQa } from "./module-completion-content.mjs";
 import { moduleQuestionDepthExpansion } from "./module-question-depth-expansion.mjs";
 
+/**
+ * @param {any} brief
+ */
 const withExpandedQa = (brief) => Object.freeze({
   ...brief,
   qa: Object.freeze([
@@ -178,6 +181,9 @@ export const moduleBriefs = Object.freeze({
 });
 
 
+/**
+ * @param {string} slug
+ */
 export function requireModuleBrief(slug) {
   const brief = moduleBriefs[slug];
   if (!brief) throw new Error(`Unknown module brief: ${slug}`);

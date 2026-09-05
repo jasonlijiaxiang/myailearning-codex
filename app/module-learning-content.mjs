@@ -245,6 +245,7 @@ const baseModuleLearningContent = Object.freeze({
   },
 });
 
+/** @type {Record<string, any>} */
 export const moduleLearningContent = Object.freeze(Object.fromEntries(
   Object.entries(baseModuleLearningContent).map(([slug, content]) => [
     slug,
@@ -258,6 +259,9 @@ export const moduleLearningContent = Object.freeze(Object.fromEntries(
 
 export const moduleLearningSlugs = Object.freeze(Object.keys(moduleLearningContent));
 
+/**
+ * @param {string} slug
+ */
 export function requireModuleLearning(slug) {
   const content = moduleLearningContent[slug];
   if (!content) throw new Error(`Missing module learning content: ${slug}`);

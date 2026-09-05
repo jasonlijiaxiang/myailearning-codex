@@ -21,7 +21,7 @@ export const graphModules = Object.freeze(moduleList.map((module) => Object.free
   href: module.href,
   layerNo: module.layerNo,
   layerName: module.layerName,
-  summary: moduleDiscovery[module.slug].summary,
+  summary: moduleDiscovery[/** @type {keyof typeof moduleDiscovery} */ (module.slug)].summary,
 })));
 
 export const graphTerms = Object.freeze(Object.entries(terminology).map(([termId, term]) => Object.freeze({

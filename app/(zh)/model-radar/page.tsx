@@ -25,7 +25,7 @@ export const metadata: Metadata = chinesePageMetadata({
 export default function ModelRadarPage() {
   const benchmarks = modelRadarBenchmarkSourceIds.map((sourceId) => {
     const source = sourceLedger[sourceId];
-    const guide = modelRadarBenchmarkGuides[sourceId];
+    const guide = modelRadarBenchmarkGuides[sourceId as keyof typeof modelRadarBenchmarkGuides];
     if (!source || !guide) throw new Error(`Missing model radar benchmark metadata: ${sourceId}`);
     return {
       sourceId,
@@ -35,7 +35,7 @@ export default function ModelRadarPage() {
       grade: source.grade,
       note: source.note,
       href: source.href,
-      scoreScale: modelRadarBenchmarkScales[sourceId],
+      scoreScale: modelRadarBenchmarkScales[sourceId as keyof typeof modelRadarBenchmarkScales],
       guide,
     };
   });

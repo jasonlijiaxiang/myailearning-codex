@@ -57,7 +57,7 @@ export default function EnglishCodingAgentsPage() {
       <section className="section codingAgentBenchmarks" aria-labelledby="benchmarks-title">
         <div className="sectionNumber">02</div><div className="sectionBody">
           <div className="sectionIntro splitIntro"><div><p className="kicker">LIVE LEADERBOARDS &amp; RESEARCH</p><h2 id="benchmarks-title">A leaderboard is an evidence entry point, not a procurement conclusion</h2></div><p>Every leaderboard covers only one task space. When opening the original result, record its date, model snapshot, harness version, cost, and retry conditions. Do not combine scores from different configurations into a single ranking.</p></div>
-          <div className="codingBenchmarkList">{englishCodingAgentBenchmarks.map((item) => { const source = englishSourceCopy[item.sourceId]; if (!source) throw new Error(`Missing English source copy: ${item.sourceId}`); return <article key={item.id}><p>{item.scope}</p><h3>{item.name}</h3><strong>{item.use}</strong><span>{item.boundary}</span><Link href={`/en/references#source-${item.sourceId}`}>{source.shortTitle} · source and boundary ↗</Link></article>; })}</div>
+          <div className="codingBenchmarkList">{englishCodingAgentBenchmarks.map((item) => { const source = (englishSourceCopy as unknown as Record<string, { shortTitle: string; kind: string; note: string } | undefined>)[item.sourceId]; if (!source) throw new Error(`Missing English source copy: ${item.sourceId}`); return <article key={item.id}><p>{item.scope}</p><h3>{item.name}</h3><strong>{item.use}</strong><span>{item.boundary}</span><Link href={`/en/references#source-${item.sourceId}`}>{source.shortTitle} · source and boundary ↗</Link></article>; })}</div>
         </div>
       </section>
 

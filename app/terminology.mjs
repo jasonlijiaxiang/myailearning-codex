@@ -7,6 +7,13 @@
  * 解释需要独立撰写和专业校对。
  */
 
+/**
+ * @param {string} zh
+ * @param {string} en
+ * @param {string} description
+ * @param {any} moduleSlugs
+ * @param {string} [abbr]
+ */
 function term(zh, en, description, moduleSlugs, abbr) {
   return Object.freeze({
     zh,
@@ -17,6 +24,7 @@ function term(zh, en, description, moduleSlugs, abbr) {
   });
 }
 
+/** @type {Record<string, import("./content-types").Term>} */
 export const terminology = Object.freeze({
   "model-landscape": term("模型格局与选型", "Model Landscape", "从任务、风险、服务约束和生命周期共同判断模型组合，而不是只看单一排行榜。", ["model-landscape"]),
   "access-spectrum": term("模型开放程度", "Model Access Spectrum", "区分 API 服务、开放权重与开源软件，判断可控范围、部署责任和替换成本。", ["model-landscape", "ai-infra-compute"]),
@@ -206,6 +214,7 @@ const glossaryTermIdSet = new Set(glossaryTermIds);
 if (glossaryTermIdSet.size !== glossaryTermIds.length) throw new Error("Glossary term IDs must be unique");
 if (glossaryTermIds.length !== Object.keys(terminology).length) throw new Error("Every terminology entry must belong to exactly one glossary group");
 
+/** @param {string} termId */
 export function requireTerm(termId) {
   const value = terminology[termId];
   if (!value) throw new Error(`Unknown terminology termId: ${termId}`);

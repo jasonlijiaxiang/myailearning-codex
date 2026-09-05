@@ -23,6 +23,8 @@ import {
 } from "./english-section-outline.mjs";
 import { englishModuleSlugs } from "./locale-config.mjs";
 
+const englishSourceCopyMap = englishSourceCopy as unknown as Record<string, { kind: string; note: string; shortTitle: string }>;
+
 function discoveryQuestion(value: string) {
   const question = value.replace(/^Ask the customer:\s*/i, "");
   return question.replace(/^[a-z]/, (letter) => letter.toUpperCase());
@@ -71,7 +73,7 @@ type EnglishPrimer = {
   application: string;
   links: Array<{ href: string; label: string }>;
 };
-type EnglishModule = {
+export type EnglishModule = {
   slug: string;
   title: string;
   subtitle: string;
@@ -680,7 +682,7 @@ function deriveEnglishPrimer(module: EnglishModule, knowledgeView: string): Engl
   const explicitTermIds = specialPrimerTermIds[module.slug] ?? canonicalView?.termIds;
   const termIds = explicitTermIds?.filter((termId) => module.terms[termId]) ?? Object.keys(module.terms);
   const checkItems = decisionItems.length ? decisionItems : steps;
-  const visibleGroups = selectVisibleEnglishSectionGroups(module);
+  const visibleGroups = selectVisibleEnglishSectionGroups(module) as EnglishSectionGroup[];
 
   return {
     id: knowledgeView,
@@ -720,7 +722,7 @@ function SourceLinks({ sourceIds }: { sourceIds?: string[] }) {
       <span>Sources</span>
       {[...new Set(sourceIds)].map((sourceId) => {
         const source = sourceLedger[sourceId];
-        const localizedSource = englishSourceCopy[sourceId];
+        const localizedSource = englishSourceCopyMap[sourceId];
         if (!source || !localizedSource) throw new Error(`Unknown English sourceId: ${sourceId}`);
         return <Link href={`/en/references#source-${sourceId}`} key={sourceId} prefetch={false}>{localizedSource.shortTitle} ↘</Link>;
       })}
@@ -892,8 +894,8 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
   const visibleSectionGroups = completeFocusedProjection
     ? sectionGroups
     : selectVisibleEnglishSectionGroups(module, sectionGroups) as EnglishSectionGroup[];
-  const visibleEvidenceCards = completeFocusedProjection ? module.evidenceCards : selectVisibleEnglishEvidenceCards(module);
-  const visibleQuestions = completeFocusedProjection ? module.qa : selectVisibleEnglishQuestions(module);
+  const visibleEvidenceCards = (completeFocusedProjection ? module.evidenceCards : selectVisibleEnglishEvidenceCards(module)) as EnglishModule["evidenceCards"];
+  const visibleQuestions = (completeFocusedProjection ? module.qa : selectVisibleEnglishQuestions(module)) as EnglishModule["qa"];
   const contentReadingSections: ReadingSection[] = [
     ...visibleSectionGroups.map((group) => ({ id: group.id, label: group.label, eyebrow: group.eyebrow })),
     { id: "evidence", label: "Evidence and limits", eyebrow: "Know what sources prove" },
@@ -922,7 +924,7 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
       <div className="subHead"><span>{String(number).padStart(2, "0")}</span><div><p className="kicker">EVIDENCE WITH LIMITS</p><h2 id="evidence-section-title">Evidence cards</h2></div></div>
       <div className="evidenceGrid" data-count={visibleEvidenceCards.length} data-odd={visibleEvidenceCards.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(visibleEvidenceCards, 3).flatMap((row) => row.map((card) => {
         const source = sourceLedger[card.sourceId];
-        const localizedSource = englishSourceCopy[card.sourceId];
+        const localizedSource = englishSourceCopyMap[card.sourceId];
         if (!source || !localizedSource) throw new Error(`Unknown evidence sourceId: ${card.sourceId}`);
         return <article className={`metricCard${card.accent ? " accent" : ""}`} id={`evidence-${card.id}`} key={card.id} style={{ "--evidence-span": gridSpan(row.length) } as CSSProperties}><p className="metric">{card.metric}</p><h3>{card.title}</h3><p className="metricFinding">{card.finding}</p><p className="metricBoundary"><strong>Evidence limit</strong>{card.boundary}</p><Link href={`/en/references#source-${card.sourceId}`} prefetch={false}>{localizedSource.shortTitle} ↘</Link></article>;
       }))}</div>
@@ -939,7 +941,7 @@ export function EnglishModulePage({ module, reader = "legacy" }: { module: Engli
           <div className="qaAnswer">
             <div><p className="answerLabel">SHORT ANSWER</p><p>{item.a}</p></div>
             <div><p className="answerLabel">TECHNICAL DETAIL</p><p>{item.depth}</p></div>
-            <div className="qaBasis" aria-label="Evidence for this answer"><div className="qaBasisHead"><p className="answerLabel">EVIDENCE AND LIMITS</p><span>{item.basis}</span></div><div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(item.evidence, 3).flatMap((row) => row.map((evidence) => <Link href={`/en/references#source-${evidence.sourceId}`} key={evidence.sourceId} prefetch={false} style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}><span className="qaEvidenceMeta">{sourceLedger[evidence.sourceId]?.grade} · {englishSourceCopy[evidence.sourceId]?.kind}</span><strong>{englishSourceCopy[evidence.sourceId]?.shortTitle ?? evidence.sourceId}</strong><small>{evidence.supports}</small></Link>))}</div></div>
+            <div className="qaBasis" aria-label="Evidence for this answer"><div className="qaBasisHead"><p className="answerLabel">EVIDENCE AND LIMITS</p><span>{item.basis}</span></div><div className="qaBasisList" data-count={item.evidence.length} data-odd={item.evidence.length % 2 === 1 ? "true" : "false"}>{balanceGridRows(item.evidence, 3).flatMap((row) => row.map((evidence) => <Link href={`/en/references#source-${evidence.sourceId}`} key={evidence.sourceId} prefetch={false} style={{ "--qa-evidence-span": gridSpan(row.length) } as CSSProperties}><span className="qaEvidenceMeta">{sourceLedger[evidence.sourceId]?.grade} · {englishSourceCopyMap[evidence.sourceId]?.kind}</span><strong>{englishSourceCopyMap[evidence.sourceId]?.shortTitle ?? evidence.sourceId}</strong><small>{evidence.supports}</small></Link>))}</div></div>
             <div className="ask"><p className="answerLabel">RECOMMENDED DISCOVERY QUESTION</p><p>{discoveryQuestion(item.ask)}</p></div>
           </div>
         </details>

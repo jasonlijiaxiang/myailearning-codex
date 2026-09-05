@@ -1,20 +1,35 @@
 // Portable VeADK and AgentKit module content; central registries import these exports.
 const freeze = Object.freeze;
+/**
+ * @param {any[]} values
+ */
 const list = (values) => freeze(values.map((value) => freeze(value)));
+/**
+ * @param {string[]} values
+ */
 const strings = (values) => freeze([...values]);
+/**
+ * @param {any} value
+ */
 const datedQa = (value) => freeze({
   ...value,
-  evidence: list(value.evidence.map((reference) => ({
+  evidence: list(value.evidence.map((/** @type {any} */ reference) => ({
     ...reference,
     supports: `该来源支持以下判断：${reference.supports.replace(/^(?:说明|支持)/, "").trim()}`,
   }))),
   addedAt: "2026-08-15",
 });
+/**
+ * @param {any} value
+ */
 const dive = (value) => freeze({
   ...value,
   sourceIds: strings(value.sourceIds),
   items: list(value.items),
 });
+/**
+ * @param {any} value
+ */
 const brief = (value) => freeze({
   ...value,
   principles: list(value.principles),
@@ -25,17 +40,23 @@ const brief = (value) => freeze({
   qa: freeze(value.qa.map(datedQa)),
   evidenceCards: list(value.evidenceCards),
 });
+/**
+ * @param {any} value
+ */
 const curriculum = (value) => freeze({
   ...value,
-  chapters: freeze(value.chapters.map((chapter) => freeze({
+  chapters: freeze(value.chapters.map((/** @type {any} */ chapter) => freeze({
     ...chapter,
     sourceIds: strings(chapter.sourceIds),
   }))),
 });
+/**
+ * @param {any} value
+ */
 const learning = (value) => freeze({
   outcomes: strings(value.outcomes),
   route: list(value.route),
-  labs: freeze(value.labs.map((lab) => freeze({
+  labs: freeze(value.labs.map((/** @type {any} */ lab) => freeze({
     ...lab,
     tasks: strings(lab.tasks),
     sourceIds: strings(lab.sourceIds),

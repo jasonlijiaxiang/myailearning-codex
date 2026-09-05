@@ -1,11 +1,21 @@
+/**
+ * @param {any[]} items
+ */
 const freezeItems = (items) => Object.freeze(items.map((item) => Object.freeze(item)));
+/**
+ * @param {any[]} items
+ */
 const freezeLabs = (items) => freezeItems(items.map((item) => ({ ...item, tasks: freezeItems(item.tasks), sourceIds: Object.freeze(item.sourceIds) })));
+/**
+ * @param {any[]} items
+ */
 const freezeQa = (items) => freezeItems(items.map((item) => ({ ...item, evidence: freezeItems(item.evidence) })));
 
 /**
  * 在原有课程与学习内容上补齐试点之后暴露出的生产判断缺口。
  * 数量由主题决定；这里不复制既有章节，也不把每个模块配成相同长度。
  */
+/** @type {Record<string, readonly any[]>} */
 export const completionCurriculum = Object.freeze({
   "model-landscape": freezeItems([
     { title: "退出演练与供应连续性", en: "Exit Exercise", explanation: "备用候选只有在相同地域、数据、模态、接口和关键切片硬门下通过验证，才构成真实回退。定期演练区域不可用、版本退役和供应商退出，并记录阻断、人工接管、切换与恢复证据。", decision: "把退出能力变成可执行演练，不把配置里的第二个模型名称当作连续性证明。", boundary: "回退可以牺牲的时延或功能必须预先批准；不能静默放宽数据边界、授权边界或不可接受错误。", sourceIds: ["nist-genai-profile", "opentelemetry-genai-semconv"] },
@@ -48,6 +58,7 @@ export const completionCurriculum = Object.freeze({
   ]),
 });
 
+/** @type {Record<string, any>} */
 export const completionLearning = Object.freeze({
   "model-landscape": Object.freeze({
     route: freezeItems([
@@ -133,6 +144,7 @@ export const completionLearning = Object.freeze({
   }),
 });
 
+/** @type {Record<string, readonly any[]>} */
 export const completionQa = Object.freeze({
   "model-landscape": freezeQa([
     { q: "公开 Benchmark 应该怎样用于模型候选初筛，而不是直接选出赢家？", a: "先用地域、版本、工具、数据和预算等硬约束划出可行域，再把与客户任务相关的 Benchmark 作为排序信号，选出少量候选进入同条件验证。", depth: "记录榜单对应的模型版本、硬件、Prompt、评分方法和适用任务，把每个分数映射到客户真正需要的能力；不相关或无法复现的分数不进入排序。初筛输出应是候选短名单、淘汰理由和待验证假设，生产验收仍在客户数据、工具和约束下比较任务成功、严重错误、P95 与单位成功成本。", ask: "哪些榜单维度与真实任务相关？哪些候选已满足硬约束，值得进入下一轮同条件验证？", tag: "候选初筛", basis: "模型可行域 + 证据映射", evidence: [{ sourceId: "nist-genai-profile", supports: "支持按具体使用情境、受影响主体和风险容忍度测量生成式 AI，而非依赖单一通用分数。" }, { sourceId: "openai-models", supports: "支持模型家族具有不同能力与使用定位，选择仍需结合任务。" }] },

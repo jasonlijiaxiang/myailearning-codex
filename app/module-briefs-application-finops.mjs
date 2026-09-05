@@ -1,3 +1,7 @@
+/**
+ * @param {string} sourceId
+ * @param {string} supports
+ */
 const evidence = (sourceId, supports) => ({ sourceId, supports: supports.includes("支持") ? supports : `支持${supports}` });
 
 // 这两组内容不再形成独立发布模块，而是作为跨模块知识贡献分别并入

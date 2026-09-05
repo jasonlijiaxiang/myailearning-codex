@@ -13,7 +13,7 @@ import { buildQuestionSearchText } from "../app/search-index.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
 import { timeBudgetPaths } from "../app/home-learning-paths.mjs";
 
-const itemsByKey = new Map(questionDirectoryItems.map((item) => [item.key, item]));
+const itemsByKey = new Map(questionDirectoryItems.map((/** @type {any} */ item) => [item.key, item]));
 
 test("field kit intents provide distinct, readable decision scopes", () => {
   assert.ok(intentDefinitions.length > 0, "现场题需要至少一个可解释的意图维度");
@@ -114,7 +114,7 @@ test("fallback scripts stay process guidance instead of factual answers", () => 
 });
 
 test("field-kit view filters to field questions and composes with intent", () => {
-  const items = questionDirectoryItems.map((item) => ({
+  const items = questionDirectoryItems.map((/** @type {any} */ item) => ({
     key: item.key,
     moduleId: item.moduleId,
     tag: item.tag,

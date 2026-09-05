@@ -4,8 +4,8 @@
  */
 export function filterQuestionDirectoryItems(items, { query = "", moduleId = "all", tag = "all", intentId = "all", view = "all", tier = "all", textByKey = null } = {}) {
   const normalized = query.trim().toLocaleLowerCase("zh-CN");
-  const viewMatches = (item) => view === "all" || (view === "field-kit" && item.tier) || (view === "situational" && item.tier === "situational") || (view === "core" && item.tier === "core");
-  const tierMatches = (item) => tier === "all" || item.tier === tier;
+  const viewMatches = (/** @type {any} */ item) => view === "all" || (view === "field-kit" && item.tier) || (view === "situational" && item.tier === "situational") || (view === "core" && item.tier === "core");
+  const tierMatches = (/** @type {any} */ item) => tier === "all" || item.tier === tier;
   return items.filter((item) => (
     (moduleId === "all" || item.moduleId === moduleId)
     && (tag === "all" || item.tag === tag)

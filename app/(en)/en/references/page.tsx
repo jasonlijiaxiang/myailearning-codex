@@ -13,7 +13,7 @@ export const metadata: Metadata = englishPageMetadata({
   zhPath: "/references",
 });
 
-function referenceItem(sourceId: string, copy: (typeof englishSourceCopy)[string]): EnglishPilotDirectoryItem {
+function referenceItem(sourceId: string, copy: (typeof englishSourceCopy)[keyof typeof englishSourceCopy]): EnglishPilotDirectoryItem {
   const canonical = sourceLedger[sourceId];
   if (!canonical) throw new Error(`Unknown English sourceId: ${sourceId}`);
   return {
@@ -47,7 +47,7 @@ function requireReferenceItem(sourceId: string) {
 type EnglishReferencesSearchParams = { module?: string };
 
 export default async function EnglishReferencesPage({ searchParams }: { searchParams?: Promise<EnglishReferencesSearchParams> }) {
-  const resolvedSearchParams = await (searchParams ?? Promise.resolve({}));
+  const resolvedSearchParams = await (searchParams ?? Promise.resolve({})) as EnglishReferencesSearchParams;
   const requestedModule = resolvedSearchParams.module;
   const selectedModule = requestedModule && englishModuleRegistry[requestedModule] ? englishModuleRegistry[requestedModule] : null;
   const selectedSourceIds = selectedModule ? referenceSourceIdsByModule.get(selectedModule.slug) : null;

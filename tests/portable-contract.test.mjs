@@ -16,20 +16,24 @@ const KB_TOOL = path.join(
 );
 const QUALITY_COMMANDS = ["npm run lint", "npm test"];
 
+/** @param {Buffer | string} value */
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 
+/** @param {string} file @param {unknown} value */
 async function writeJson(file, value) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+/** @param {string} file @param {Buffer | string} [value] */
 async function writeFile(file, value = "fixture\n") {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, value);
 }
 
+/** @param {string} root @param {string[]} args @param {Record<string, string>} [extraEnv] */
 function runTool(root, args, extraEnv = {}) {
   return spawnSync(process.execPath, [KB_TOOL, ...args], {
     cwd: root,
@@ -44,6 +48,7 @@ function runTool(root, args, extraEnv = {}) {
   });
 }
 
+/** @param {string} root @param {string[]} args */
 function runGit(root, args) {
   return spawnSync("git", args, {
     cwd: root,
@@ -52,12 +57,14 @@ function runGit(root, args) {
   });
 }
 
+/** @param {string} root @param {string[]} args */
 function requireGit(root, args) {
   const result = runGit(root, args);
   assert.equal(result.status, 0, result.stderr || `git ${args.join(" ")} failed`);
   return result;
 }
 
+/** @param {string} root */
 async function initializeGitFixture(root) {
   requireGit(root, ["init", "-q"]);
   requireGit(root, ["config", "user.name", "Portable Contract Test"]);
@@ -66,6 +73,7 @@ async function initializeGitFixture(root) {
   requireGit(root, ["commit", "-q", "-m", "fixture"]);
 }
 
+/** @param {Buffer} archive */
 function storedZipEntries(archive) {
   const entries = new Map();
   let offset = 0;
@@ -82,6 +90,7 @@ function storedZipEntries(archive) {
   return entries;
 }
 
+/** @param {Buffer} value */
 function crc32(value) {
   let crc = 0xffffffff;
   for (const byte of value) {
@@ -93,6 +102,7 @@ function crc32(value) {
   return (crc ^ 0xffffffff) >>> 0;
 }
 
+/** @param {Array<[string, Buffer | string]>} entries */
 function storedZip(entries) {
   const localParts = [];
   const centralParts = [];
@@ -136,6 +146,7 @@ function storedZip(entries) {
   return Buffer.concat([...localParts, centralDirectory, end]);
 }
 
+/** @param {string} relative @param {Buffer} value @param {number} [declaredSize] */
 function deflatedZip(relative, value, declaredSize = value.length) {
   const name = Buffer.from(relative, "utf8");
   const data = Buffer.isBuffer(value) ? value : Buffer.from(value);
@@ -171,6 +182,7 @@ function deflatedZip(relative, value, declaredSize = value.length) {
   return Buffer.concat([local, name, compressed, central, name, end]);
 }
 
+/** @param {string} root */
 async function createFixture(root) {
   const config = {
     schemaVersion: 1,
@@ -323,6 +335,7 @@ async function createFixture(root) {
   return config;
 }
 
+/** @param {string} root @param {Record<string, unknown>} [overrides] */
 async function createCapture(root, overrides = {}) {
   const sessionKey = `s_${"1".repeat(32)}`;
   const turnKey = `t_${"2".repeat(32)}`;
@@ -359,6 +372,7 @@ async function createCapture(root, overrides = {}) {
   return { capture, captureFile, runtime, userPath, turnKey };
 }
 
+/** @param {string} turnKey @param {Record<string, unknown>} [overrides] */
 function candidate(turnKey, overrides = {}) {
   return {
     id: "candidate-one",
@@ -377,6 +391,7 @@ function candidate(turnKey, overrides = {}) {
   };
 }
 
+/** @param {string} date @param {number} days */
 function addDays(date, days) {
   const value = new Date(`${date}T00:00:00Z`);
   value.setUTCDate(value.getUTCDate() + days);
@@ -397,7 +412,7 @@ test("portable config and ZIP enforce nested exclusions, required roots, and pai
     const originalSidecar = await fs.readFile(`${output}.sha256`);
     const entries = storedZipEntries(originalArchive);
     const manifest = JSON.parse(entries.get("PORTABLE-MANIFEST.json").toString("utf8"));
-    const paths = new Set(manifest.files.map((file) => file.path));
+    const paths = new Set(manifest.files.map((/** @type {any} */ file) => file.path));
     assert.deepEqual(manifest.qualityCommands, QUALITY_COMMANDS);
     assert.ok(paths.has("docs/kept.txt"));
     assert.ok(![...paths].some((item) => item.split("/").includes("node_modules")));
@@ -606,7 +621,7 @@ test("handoff metadata inspection caps deflated ZIP output", async () => {
       report.attachments[0].metadata.inspectionError,
       /larger than 4194304 bytes|maxOutputLength|Cannot create a Buffer/i,
     );
-    assert.ok(report.warnings.some((warning) => /metadata could not be inspected/.test(warning)));
+    assert.ok(report.warnings.some((/** @type {any} */ warning) => /metadata could not be inspected/.test(warning)));
   } finally {
     await fs.rm(root, { recursive: true, force: true });
   }
@@ -863,7 +878,7 @@ test("inbox, mark, and validate fail closed on private-runtime symlinks", async 
     await fs.mkdir(runtime, { recursive: true });
     try {
       await fs.symlink(outside, path.join(runtime, "captures"), "junction");
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (["EPERM", "EACCES", "ENOTSUP"].includes(error?.code)) {
         context.skip(`symlinks unavailable: ${error.code}`);
         return;
@@ -871,11 +886,11 @@ test("inbox, mark, and validate fail closed on private-runtime symlinks", async 
       throw error;
     }
 
-    for (const [command, args] of [
+    for (const [command, args] of /** @type {Array<[string, string[]]>} */ ([
       ["inbox", ["inbox", "--json"]],
       ["mark", ["mark", `cap_${"3".repeat(32)}`, "pending"]],
       ["validate", ["validate"]],
-    ]) {
+    ])) {
       const result = runTool(root, args);
       assert.notEqual(result.status, 0, `${command} followed an internal capture symlink`);
       assert.match(result.stderr, /Unsafe private runtime path/);

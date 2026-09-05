@@ -5,11 +5,36 @@ import {
 } from "../../../prompt-content.mjs";
 
 const freeze = Object.freeze;
+/**
+ * @param {string} title
+ * @param {string | undefined} intro
+ * @param {any[]} items
+ */
 const cards = (title, intro, items) => freeze({ type: "cards", title, ...(intro ? { intro } : {}), items: freeze(items.map(freeze)) });
+/**
+ * @param {string} title
+ * @param {string | undefined} intro
+ * @param {any[]} items
+ */
 const steps = (title, intro, items) => freeze({ type: "steps", title, ...(intro ? { intro } : {}), items: freeze(items.map(freeze)) });
+/**
+ * @param {string} title
+ * @param {string | undefined} intro
+ * @param {string[]} columns
+ * @param {any[]} items
+ */
 const table = (title, intro, columns, items) => freeze({ type: "table", title, ...(intro ? { intro } : {}), columns: freeze(columns), items: freeze(items.map((item) => freeze({ ...item, cells: freeze(item.cells) }))) });
+/**
+ * @param {string} title
+ * @param {any[]} items
+ */
 const boundary = (title, items) => freeze({ type: "boundary", title, items: freeze(items.map(freeze)) });
 
+/**
+ * @param {any} item
+ * @param {string | ((item: any) => string | undefined)} key
+ * @param {string} label
+ */
 const keyOf = (item, key, label) => {
   const value = typeof key === "function" ? key(item) : item?.[key];
   if (typeof value !== "string" || !value.trim()) {
@@ -18,6 +43,11 @@ const keyOf = (item, key, label) => {
   return value;
 };
 
+/**
+ * @param {readonly any[]} items
+ * @param {string | ((item: any) => string | undefined)} key
+ * @param {string} label
+ */
 const indexUnique = (items, key, label) => {
   if (!Array.isArray(items)) throw new Error(`${label} must be an array`);
   const indexed = new Map();
@@ -29,6 +59,9 @@ const indexUnique = (items, key, label) => {
   return indexed;
 };
 
+/**
+ * @param {{ canonicalItems: readonly any[]; canonicalKey: string | ((item: any) => string | undefined); englishItems: readonly any[]; englishKey: string | ((item: any) => string | undefined); canonicalKeyByEnglishKey: Record<string, string>; label: string; }} params
+ */
 const resolveCompleteProjection = ({
   canonicalItems,
   canonicalKey,
@@ -65,6 +98,11 @@ const resolveCompleteProjection = ({
   return resolved;
 };
 
+/**
+ * @param {Map<string, any>} left
+ * @param {Map<string, any>} right
+ * @param {string} label
+ */
 const assertSameIdentities = (left, right, label) => {
   for (const identity of left.keys()) {
     if (!right.has(identity)) throw new Error(`${label} is missing ${identity}`);
@@ -326,6 +364,9 @@ const promptQaCanonicalQuestionsById = freeze({
   "demo-vs-poc-acceptance": "Prompt PoC 能稳定演示几个案例，是否就可以判定成功？",
   "risk-based-go-no-go": "Prompt PoC 的 Go / No-Go 门槛应该设成统一的 90% 或 95% 吗？",
 });
+/**
+ * @param {any} copy
+ */
 const supportTextBySourceId = (copy) => {
   if (!copy.supports || Array.isArray(copy.supports)) {
     throw new Error(`Prompt Engineering English QA ${copy.id} must key support text by source ID`);
@@ -367,7 +408,7 @@ const qa = freeze(qaCopy.map((copy) => {
     ask: copy.ask,
     tag: copy.tag,
     basis: copy.basis,
-    evidence: freeze(canonical.evidence.map((entry) => freeze({ sourceId: entry.sourceId, supports: supportsBySourceId.get(entry.sourceId) }))),
+    evidence: freeze(canonical.evidence.map((/** @type {any} */ entry) => freeze({ sourceId: entry.sourceId, supports: supportsBySourceId.get(entry.sourceId) }))),
     ...(canonical.addedAt ? { addedAt: canonical.addedAt } : {}),
   });
 }));

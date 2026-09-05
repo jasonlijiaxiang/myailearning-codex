@@ -42,6 +42,7 @@ export const moduleRepresentationAssessment = Object.freeze(Object.fromEntries(
   }),
 ));
 
+/** @param {string} slug */
 export function requireModuleRepresentationAssessment(slug) {
   const assessment = moduleRepresentationAssessment[slug];
   if (!assessment) throw new Error(`Unknown module representation assessment: ${slug}`);

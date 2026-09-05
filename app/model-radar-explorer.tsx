@@ -255,7 +255,7 @@ export function ModelRadarExplorer({
     if (!scrollElement || !stickyTable || !actualTable) return;
 
     const sourceCells = Array.from(actualTable.querySelectorAll("thead th"));
-    const stickyCells = Array.from(stickyTable.querySelectorAll("thead th"));
+    const stickyCells = Array.from(stickyTable.querySelectorAll("thead th")) as HTMLElement[];
 
     const syncHorizontalScroll = () => {
       stickyTable.style.width = `${actualTable.getBoundingClientRect().width}px`;

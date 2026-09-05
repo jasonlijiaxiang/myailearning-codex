@@ -9,7 +9,9 @@ const modules = await Promise.all(files.map(async (file) => {
   return englishModule;
 }));
 
+/** @param {string} field */
 function collectConflicts(field) {
+  /** @type {Map<string, Array<{ modules: string[]; value: any; serialized: string }>>} */
   const valuesById = new Map();
   for (const localizedModule of modules) {
     for (const [id, value] of Object.entries(localizedModule[field] ?? {})) {

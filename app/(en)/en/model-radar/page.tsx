@@ -24,9 +24,9 @@ export const metadata: Metadata = englishPageMetadata({
 export default function EnglishModelRadarPage() {
   const benchmarks = englishModelRadarBenchmarkSourceIds.map((sourceId) => {
     const canonical = sourceLedger[sourceId];
-    const copy = englishSourceCopy[sourceId];
-    const guide = englishModelRadarBenchmarkGuides[sourceId];
-    const scoreScale = englishModelRadarBenchmarkScales[sourceId];
+    const copy = englishSourceCopy[sourceId as keyof typeof englishSourceCopy];
+    const guide = englishModelRadarBenchmarkGuides[sourceId as keyof typeof englishModelRadarBenchmarkGuides];
+    const scoreScale = englishModelRadarBenchmarkScales[sourceId as keyof typeof englishModelRadarBenchmarkScales];
     if (!canonical || !copy || !guide || !scoreScale) throw new Error(`Missing English model-radar benchmark: ${sourceId}`);
     return {
       sourceId,

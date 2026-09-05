@@ -17,11 +17,17 @@ const KB_TOOL = path.join(
   ".agents/skills/curate-portable-knowledge-base/scripts/kb-tool.mjs",
 );
 
+/** @param {string} file @param {unknown} value */
 async function writeJson(file, value) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+/**
+ * @param {string} script
+ * @param {string[]} args
+ * @param {{ cwd?: string; env?: Record<string, string | undefined>; input?: string }} [options]
+ */
 function runNode(script, args, { cwd, env, input } = {}) {
   return spawnSync(process.execPath, [script, ...args], {
     cwd,
@@ -32,6 +38,11 @@ function runNode(script, args, { cwd, env, input } = {}) {
   });
 }
 
+/**
+ * @param {string} script
+ * @param {string[]} args
+ * @param {{ cwd?: string; env?: Record<string, string | undefined>; input?: string }} [options]
+ */
 function runNodeAsync(script, args, { cwd, env, input } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [script, ...args], {
@@ -52,6 +63,10 @@ function runNodeAsync(script, args, { cwd, env, input } = {}) {
   });
 }
 
+/**
+ * @param {string} command
+ * @param {{ cwd?: string; env?: Record<string, string | undefined>; input?: string }} options
+ */
 function runHookCommand(command, { cwd, env, input }) {
   return spawnSync(command, {
     cwd,
@@ -72,6 +87,7 @@ function sourceSupportsNestedHookCwd() {
   return path.resolve(result.stdout.trim()) === PROJECT_ROOT;
 }
 
+/** @param {Buffer} archive */
 function storedZipEntries(archive) {
   const entries = new Map();
   let offset = 0;
@@ -90,13 +106,17 @@ function storedZipEntries(archive) {
   return entries;
 }
 
+/** @param {string} directory */
 async function jsonFiles(directory) {
+  /** @type {string[]} */
   const output = [];
+  /** @param {string} current */
   async function visit(current) {
+    /** @type {import("node:fs").Dirent[]} */
     let entries;
     try {
       entries = await fs.readdir(current, { withFileTypes: true });
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (error?.code === "ENOENT") return;
       throw error;
     }
@@ -329,7 +349,7 @@ test("Codex hooks capture visible messages and opaque transcript deltas privatel
     assert.equal(malformed.stdout.trim(), '{"continue":true}');
 
     const beforeRetention = await jsonFiles(path.join(runtime, "captures"));
-    const retainedPendingFile = beforeRetention.find((file) => file.includes(oversizedEnvelope.turnKey));
+    const retainedPendingFile = /** @type {string} */ (beforeRetention.find((file) => file.includes(oversizedEnvelope.turnKey)));
     const processedFile = captures[0];
     const processed = JSON.parse(await fs.readFile(processedFile, "utf8"));
     processed.curation = {
@@ -449,7 +469,7 @@ test("capture fails open without following a symlinked private inbox", async (co
     await fs.mkdir(path.join(root, "knowledge"), { recursive: true });
     try {
       await fs.symlink(outside, path.join(root, "knowledge/private-inbox"), "junction");
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       if (["EPERM", "EACCES", "ENOTSUP"].includes(error?.code)) {
         context.skip(`symlinks unavailable: ${error.code}`);
         return;
@@ -762,7 +782,7 @@ test("portable tools pass without Git and exclude private runtime and personal S
     const archive = await fs.readFile(output);
     const entries = storedZipEntries(archive);
     const manifest = JSON.parse(entries.get("PORTABLE-MANIFEST.json").toString("utf8"));
-    const manifestPaths = new Set(manifest.files.map((file) => file.path));
+    const manifestPaths = new Set(manifest.files.map((/** @type {any} */ file) => file.path));
     assert.ok(entries.get("app/page.tsx").includes(Buffer.from("APP_UNCHANGED")));
     assert.ok(entries.get("public/site.css").includes(Buffer.from("PUBLIC_UNCHANGED")));
     assert.ok(manifestPaths.has(".openai/hosting.example.json"));

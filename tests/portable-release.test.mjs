@@ -11,15 +11,18 @@ const PROJECT_ROOT = path.resolve(TEST_DIR, "..");
 const RELEASE_CHECK = path.join(PROJECT_ROOT, "scripts", "release-check.mjs");
 const RUN_VINEXT = path.join(PROJECT_ROOT, "scripts", "run-vinext.mjs");
 
+/** @param {string} file @param {string} content */
 async function write(file, content) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, content);
 }
 
+/** @param {string} file @param {unknown} value */
 async function writeJson(file, value) {
   await write(file, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+/** @param {string} executable @param {string[]} args @param {{ cwd?: string; env?: Record<string, string | undefined> }} [options] */
 function run(executable, args, { cwd, env } = {}) {
   return spawnSync(executable, args, {
     cwd,
@@ -29,6 +32,7 @@ function run(executable, args, { cwd, env } = {}) {
   });
 }
 
+/** @param {string} cwd @param {string[]} args @param {{ env?: Record<string, string | undefined>; allowFailure?: boolean }} [options] */
 function runGit(cwd, args, options = {}) {
   const result = run("git", args, {
     cwd,
@@ -40,6 +44,11 @@ function runGit(cwd, args, options = {}) {
   return result;
 }
 
+/**
+ * @param {string} command
+ * @param {{ sites?: boolean; include?: string[]; sourceVisibility?: string; sitesVisibility?: string; handoff?: any }} [options]
+ * @returns {any}
+ */
 function releaseConfig(command, {
   sites = false,
   include = [],
@@ -63,6 +72,7 @@ function releaseConfig(command, {
   };
 }
 
+/** @param {string} project */
 async function copyReleaseScript(project) {
   await write(
     path.join(project, "scripts", "release-check.mjs"),
@@ -70,6 +80,7 @@ async function copyReleaseScript(project) {
   );
 }
 
+/** @param {string} project @param {string} remote */
 async function initializeRepository(project, remote) {
   runGit(project, ["init", "-b", "main"]);
   runGit(project, ["config", "user.name", "Portable Release Test"]);
@@ -83,6 +94,9 @@ async function initializeRepository(project, remote) {
   return runGit(project, ["rev-parse", "HEAD"]).stdout.trim();
 }
 
+/**
+ * @param {{ qualityScript?: string; config?: any; files?: Record<string, string> }} [options]
+ */
 async function createGitFixture({ qualityScript, config, files = {} } = {}) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "portable-release-test-"));
   const project = path.join(root, "project");
@@ -108,6 +122,7 @@ async function createGitFixture({ qualityScript, config, files = {} } = {}) {
   return { root, project, remote, sha };
 }
 
+/** @param {string} project @param {string} mode @param {Record<string, string | undefined>} [env] @param {string | null} [audience] */
 function runRelease(project, mode, env = {}, audience = null) {
   const args = [path.join(project, "scripts", "release-check.mjs"), "--mode", mode];
   if (audience) args.push("--audience", audience);
@@ -117,6 +132,7 @@ function runRelease(project, mode, env = {}, audience = null) {
   });
 }
 
+/** @param {string} root */
 async function removeFixture(root) {
   await fs.rm(root, { recursive: true, force: true });
 }

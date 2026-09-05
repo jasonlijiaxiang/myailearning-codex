@@ -23,6 +23,9 @@ const ALLOWED_MODES = new Set(["local", "git", "sites"]);
 const ALLOWED_AUDIENCES = new Set(["internal", "external"]);
 const SITE_PROJECT_ID_PATTERN = /^appgprj_[0-9a-f]{32}$/i;
 
+/**
+ * @param {string[]} argv
+ */
 function parseArguments(argv) {
   let mode = "local";
   let audience = "internal";
@@ -47,12 +50,16 @@ function parseArguments(argv) {
   return { mode, audience };
 }
 
+/**
+ * @param {string} text
+ * @param {string} source
+ */
 function parseConfig(text, source) {
   let config;
   try {
     config = JSON.parse(text);
   } catch (error) {
-    throw new Error(`Unable to parse ${source}: ${error.message}`);
+    throw new Error(`Unable to parse ${source}: ${/** @type {Error} */ (error).message}`);
   }
   const commands = config?.quality?.commands;
   if (!Array.isArray(commands) || commands.length === 0) {
@@ -64,6 +71,11 @@ function parseConfig(text, source) {
   return config;
 }
 
+/**
+ * @param {any} config
+ * @param {string} mode
+ * @param {string} audience
+ */
 function requireReleaseAudience(config, mode, audience) {
   const visibility = mode === "git"
     ? config?.publishing?.sourceRepository?.visibility
@@ -80,6 +92,7 @@ function requireReleaseAudience(config, mode, audience) {
   return visibility;
 }
 
+/** @param {string[]} args */
 function git(args, { cwd = PROJECT_ROOT } = {}) {
   return spawnSync("git", args, {
     cwd,
@@ -89,6 +102,7 @@ function git(args, { cwd = PROJECT_ROOT } = {}) {
   });
 }
 
+/** @param {string[]} args */
 function gitBytes(args, { cwd = PROJECT_ROOT } = {}) {
   return spawnSync("git", args, {
     cwd,
@@ -98,6 +112,11 @@ function gitBytes(args, { cwd = PROJECT_ROOT } = {}) {
   });
 }
 
+/**
+ * @param {any} result
+ * @param {string} message
+ * @returns {string}
+ */
 function requireGit(result, message) {
   if (result.status !== 0) {
     const detail = result.stderr?.trim();
@@ -106,6 +125,11 @@ function requireGit(result, message) {
   return result.stdout.trim();
 }
 
+/**
+ * @param {string} remote
+ * @param {string} mergeRef
+ * @param {string} mode
+ */
 function readLiveUpstream(remote, mergeRef, mode) {
   const live = git(["ls-remote", "--exit-code", remote, mergeRef]);
   const output = requireGit(live, `${mode} release mode could not verify the live upstream branch`);
@@ -119,6 +143,10 @@ function readLiveUpstream(remote, mergeRef, mode) {
   return match[0];
 }
 
+/**
+ * @param {string} mode
+ * @param {any} expected
+ */
 function inspectExactGitState(mode, expected = null) {
   const topLevel = requireGit(
     git(["rev-parse", "--show-toplevel"]),
@@ -168,6 +196,10 @@ function inspectExactGitState(mode, expected = null) {
   return { sha, branchName, remote, mergeRef, remoteSha };
 }
 
+/**
+ * @param {any} config
+ * @param {any} gitState
+ */
 function requireSitesProductionTarget(config, gitState) {
   const productionRemote = config?.publishing?.sourceRepository?.productionRemote;
   const productionBranch = config?.publishing?.sourceRepository?.productionBranch;
@@ -201,6 +233,10 @@ function requireSitesProductionTarget(config, gitState) {
   return { remote: productionRemote, branch: productionBranch, mergeRef };
 }
 
+/**
+ * @param {string} sha
+ * @param {string} mode
+ */
 function readCommittedConfig(sha, mode) {
   const result = git(["show", `${sha}:kb.config.json`]);
   const text = requireGit(
@@ -210,12 +246,16 @@ function readCommittedConfig(sha, mode) {
   return parseConfig(text, `kb.config.json at ${sha}`);
 }
 
+/**
+ * @param {any} bytes
+ * @param {string} source
+ */
 function parseSitesBinding(bytes, source) {
   let binding;
   try {
     binding = JSON.parse(bytes.toString("utf8"));
   } catch (error) {
-    throw new Error(`Sites release mode could not parse ${source}: ${error.message}`);
+    throw new Error(`Sites release mode could not parse ${source}: ${/** @type {Error} */ (error).message}`);
   }
   if (!SITE_PROJECT_ID_PATTERN.test(binding?.project_id ?? "")) {
     throw new Error(
@@ -225,6 +265,10 @@ function parseSitesBinding(bytes, source) {
   return binding;
 }
 
+/**
+ * @param {any} config
+ * @param {string} sha
+ */
 function readSitesBinding(config, sha) {
   const configuredPath = config?.publishing?.sites?.binding;
   if (typeof configuredPath !== "string" || !configuredPath.trim()) {
@@ -272,6 +316,12 @@ function readSitesBinding(config, sha) {
   };
 }
 
+/**
+ * @param {string} command
+ * @param {string} cwd
+ * @param {string | null} [releaseSha]
+ * @returns {Promise<void>}
+ */
 function runCommand(command, cwd, releaseSha = null) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, {
@@ -299,6 +349,11 @@ function runCommand(command, cwd, releaseSha = null) {
   });
 }
 
+/**
+ * @param {any} config
+ * @param {string} cwd
+ * @param {string | null} [releaseSha]
+ */
 async function runQualityCommands(config, cwd, releaseSha = null) {
   for (const command of config.quality.commands) {
     console.log(`Running quality command: ${command}`);
@@ -306,6 +361,10 @@ async function runQualityCommands(config, cwd, releaseSha = null) {
   }
 }
 
+/**
+ * @param {string} sha
+ * @param {string} mode
+ */
 function addExactWorktree(sha, mode) {
   const temporaryRoot = mkdtempSync(path.join(os.tmpdir(), "kb-release-"));
   const sourceRoot = path.join(temporaryRoot, "source");
@@ -318,6 +377,10 @@ function addExactWorktree(sha, mode) {
   return { temporaryRoot, sourceRoot };
 }
 
+/**
+ * @param {string} sourceRoot
+ * @param {string} sha
+ */
 async function installExactDependencies(sourceRoot, sha) {
   const packageManifest = path.join(sourceRoot, "package.json");
   const packageLock = path.join(sourceRoot, "package-lock.json");
@@ -344,6 +407,7 @@ async function installExactDependencies(sourceRoot, sha) {
   );
 }
 
+/** @param {any} worktree */
 function removeExactWorktree(worktree) {
   if (!worktree) return;
   const removed = git(["worktree", "remove", "--force", worktree.sourceRoot]);
@@ -354,6 +418,10 @@ function removeExactWorktree(worktree) {
   rmSync(worktree.temporaryRoot, { recursive: true, force: true });
 }
 
+/**
+ * @param {string} sourceRoot
+ * @param {any} sitesBinding
+ */
 function installSitesBinding(sourceRoot, sitesBinding) {
   const destination = path.join(sourceRoot, sitesBinding.configuredPath);
   if (existsSync(destination)) {
@@ -369,6 +437,7 @@ function installSitesBinding(sourceRoot, sitesBinding) {
   writeFileSync(destination, sitesBinding.bytes, { flag: "wx" });
 }
 
+/** @param {any} sitesBinding */
 function requireSitesBindingUnchanged(sitesBinding) {
   if (sitesBinding.source === "commit") return;
   if (
@@ -380,6 +449,12 @@ function requireSitesBindingUnchanged(sitesBinding) {
   }
 }
 
+/**
+ * @param {string} root
+ * @param {string} label
+ * @param {string} [current]
+ * @returns {string[]}
+ */
 function collectRegularFiles(root, label, current = root) {
   if (!existsSync(current)) return [];
   const stat = lstatSync(current);
@@ -393,10 +468,17 @@ function collectRegularFiles(root, label, current = root) {
     .flatMap((name) => collectRegularFiles(root, label, path.join(current, name)));
 }
 
+/** @param {string} file */
 function sha256File(file) {
   return createHash("sha256").update(readFileSync(file)).digest("hex");
 }
 
+/**
+ * @param {any} config
+ * @param {string} sourceRoot
+ * @param {string} stagingRoot
+ * @param {string} audience
+ */
 function auditSitesArtifactAttachments(config, sourceRoot, stagingRoot, audience) {
   const roots = config?.handoff?.attachmentRoots ?? [];
   const policyPath = config?.handoff?.attachmentPolicy;
@@ -423,9 +505,9 @@ function auditSitesArtifactAttachments(config, sourceRoot, stagingRoot, audience
     }
     policy = JSON.parse(readFileSync(absolutePolicy, "utf8"));
   } catch (error) {
-    throw new Error(`Sites artifact attachment audit could not read its policy: ${error.message}`);
+    throw new Error(`Sites artifact attachment audit could not read its policy: ${/** @type {Error} */ (error).message}`);
   }
-  const policyMap = new Map((policy.items ?? []).map((item) => [item.path, item]));
+  const policyMap = new Map((policy.items ?? []).map((/** @type {any} */ item) => [item.path, item]));
   const attachments = [];
   for (const configuredRoot of roots) {
     const absoluteRoot = path.resolve(sourceRoot, configuredRoot);
@@ -481,6 +563,11 @@ function auditSitesArtifactAttachments(config, sourceRoot, stagingRoot, audience
   return audit;
 }
 
+/**
+ * @param {any} config
+ * @param {string} sourceRoot
+ * @param {string} sha
+ */
 async function ensureSitesBuild(config, sourceRoot, sha) {
   const serverEntry = path.join(sourceRoot, "dist", "server", "index.js");
   if (!existsSync(serverEntry)) {
@@ -502,6 +589,13 @@ async function ensureSitesBuild(config, sourceRoot, sha) {
   }
 }
 
+/**
+ * @param {any} config
+ * @param {string} sourceRoot
+ * @param {any} gitState
+ * @param {any} sitesBinding
+ * @param {string} audience
+ */
 function stageSitesArtifact(
   config,
   sourceRoot,
@@ -558,6 +652,7 @@ function stageSitesArtifact(
   };
 }
 
+/** @param {any} artifact */
 function publishStagedArtifact(artifact) {
   rmSync(artifact.finalRoot, { recursive: true, force: true });
   renameSync(artifact.stagingRoot, artifact.finalRoot);

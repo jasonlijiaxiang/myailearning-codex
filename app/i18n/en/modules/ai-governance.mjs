@@ -1,4 +1,7 @@
 const freeze = Object.freeze;
+/**
+ * @param {any[]} values
+ */
 const items = (values) => freeze(values.map((value) => freeze(value)));
 
 export const englishModule = freeze({

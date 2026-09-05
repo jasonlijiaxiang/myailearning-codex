@@ -19,6 +19,7 @@ async function render(path = "/") {
   );
 }
 
+/** @param {string} path */
 async function renderHtml(path) {
   const response = await render(path);
   assert.equal(response.status, 200, `${path} 应可正常访问`);
@@ -26,6 +27,7 @@ async function renderHtml(path) {
   return response.text();
 }
 
+/** @param {string} html */
 function inlineScriptBytes(html) {
   let total = 0;
   for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
@@ -34,6 +36,7 @@ function inlineScriptBytes(html) {
   return total;
 }
 
+/** @param {number} actualBytes */
 function budgetFor(actualBytes) {
   return Math.ceil((actualBytes * 1.15) / 10240) * 10240;
 }

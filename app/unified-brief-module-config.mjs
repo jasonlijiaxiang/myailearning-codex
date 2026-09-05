@@ -1,3 +1,6 @@
+/**
+ * @param {{ facts: any[]; mechanismId?: string; primer: any; shortTitle: string }} config
+ */
 function defineConfig({ facts, mechanismId = "principle", primer, shortTitle }) {
   return Object.freeze({
     shortTitle,
@@ -7,6 +10,7 @@ function defineConfig({ facts, mechanismId = "principle", primer, shortTitle }) 
   });
 }
 
+/** @type {Record<string, any>} */
 const configs = Object.freeze({
   "solution-patterns": defineConfig({
     shortTitle: "场景解决方案",
@@ -181,6 +185,9 @@ const configs = Object.freeze({
   }),
 });
 
+/**
+ * @param {string} slug
+ */
 export function getUnifiedBriefModuleConfig(slug) {
   return configs[slug] ?? null;
 }

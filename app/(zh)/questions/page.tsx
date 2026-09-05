@@ -20,7 +20,7 @@ export const metadata: Metadata = chinesePageMetadata({
   enPath: "/en/questions",
 });
 
-const filterItems: QuestionDirectoryFilterItem[] = questionDirectoryItems.map((item) => ({
+const filterItems: QuestionDirectoryFilterItem[] = questionDirectoryItems.map((/** @type {any} */ item) => ({
   key: item.key,
   moduleId: item.moduleId,
   tag: item.tag,
@@ -30,19 +30,19 @@ const filterItems: QuestionDirectoryFilterItem[] = questionDirectoryItems.map((i
 }));
 
 const filterModules: QuestionDirectoryModule[] = questionDirectoryModules.map((module) => ({
-  id: module.id,
+  id: module.id as string,
   label: `${module.zh} · ${module.en}`,
   count: module.count,
 }));
 
-const uniqueTagCount = new Set(questionDirectoryItems.map((item) => item.tag)).size;
-const fieldKitCount = questionDirectoryItems.filter((item) => item.tier).length;
+const uniqueTagCount = new Set(questionDirectoryItems.map((/** @type {any} */ item) => item.tag)).size;
+const fieldKitCount = questionDirectoryItems.filter((/** @type {any} */ item) => item.tier).length;
 const moduleCountLead = `这里汇总 ${questionDirectoryModules.length} 个模块的客户问题。可按客户原话、技术概念、风险或方案取舍搜索，查看结论短答、机制、售前下一问和题内证据；会前可先看 ${fieldKitCount} 道精选题。`;
 
 type QuestionsSearchParams = { view?: string; module?: string; intent?: string };
 
 export default async function QuestionsPage({ searchParams }: { searchParams?: Promise<QuestionsSearchParams> }) {
-  const resolvedSearchParams = await (searchParams ?? Promise.resolve({}));
+  const resolvedSearchParams = await (searchParams ?? Promise.resolve({})) as QuestionsSearchParams;
   const initialView = resolvedSearchParams.view === "field-kit" || resolvedSearchParams.view === "core" || resolvedSearchParams.view === "situational" ? resolvedSearchParams.view : "all";
   const requestedModule = resolvedSearchParams.module;
   const requestedIntent = resolvedSearchParams.intent;
@@ -115,7 +115,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
 
         <QuestionDirectoryShell items={filterItems} modules={filterModules} intentDefinitions={intentDefinitions} initialView={initialView} initialModuleId={initialModuleId} initialIntentId={initialIntentId} questionIndexUrl="/search/questions.zh.json">
           <div className="questionDirectoryList">
-            {questionDirectoryItems.map((item) => (
+            {questionDirectoryItems.map((/** @type {any} */ item) => (
               <article
                 id={`question-${item.key}`}
                 className="questionDirectoryItem"
@@ -146,7 +146,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
                     <section className="questionDirectoryEvidence" aria-label="本题依据">
                       <div><p className="answerLabel">本题依据 / Evidence</p><span>{item.basis}</span></div>
                       <ul>
-                        {item.evidence.map((reference) => {
+                        {item.evidence.map((/** @type {any} */ reference) => {
                           const source = sourceLedger[reference.sourceId as keyof typeof sourceLedger];
                           return <li key={reference.sourceId}><Link href={`/references#source-${reference.sourceId}`}><strong>{source.shortTitle}</strong><span>{reference.supports}</span></Link></li>;
                         })}

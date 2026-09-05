@@ -10,6 +10,7 @@ import { moduleLearningContent } from "./module-learning-content.mjs";
  * referenceModules 明确记录每个模块使用的来源，避免新增模块时把来源误归到 RAG。
  */
 
+/** @type {Record<string, import("./content-types").Source>} */
 export const sourceLedger = {
   "veadk-agent-source-2026-08-15": {
     grade: "P",
@@ -2117,6 +2118,7 @@ const additionalSourceIds = Object.freeze({
   ],
 });
 
+/** @param {string} slug */
 function contentSourceIds(slug) {
   const content = moduleContentRegistry[slug];
   if (!content) return [];
@@ -2127,29 +2129,31 @@ function contentSourceIds(slug) {
   ];
 }
 
+/** @param {string} slug */
 function learningSourceIds(slug) {
   const learning = moduleLearningContent[slug];
   if (!learning) return [];
-  return learning.labs.flatMap((lab) => lab.sourceIds);
+  return learning.labs.flatMap((/** @type {any} */ lab) => lab.sourceIds);
 }
 
+/** @param {string} slug */
 function curriculumSourceIds(slug) {
   const curriculum = moduleCurriculumContent[slug];
   if (!curriculum) return [];
-  return curriculum.chapters.flatMap((chapter) => chapter.sourceIds);
+  return curriculum.chapters.flatMap((/** @type {any} */ chapter) => chapter.sourceIds);
 }
 
 export const referenceModules = moduleList.map((module) => ({
   id: module.slug,
   zh: module.zh,
   en: module.en,
-  shortTitle: referenceShortTitles[module.slug],
+  shortTitle: referenceShortTitles[/** @type {keyof typeof referenceShortTitles} */ (module.slug)],
   href: module.href,
   sourceIds: [...new Set([
     ...contentSourceIds(module.slug),
     ...learningSourceIds(module.slug),
     ...curriculumSourceIds(module.slug),
-    ...(additionalSourceIds[module.slug] ?? []),
+    ...(additionalSourceIds[/** @type {keyof typeof additionalSourceIds} */ (module.slug)] ?? []),
   ])],
 }));
 

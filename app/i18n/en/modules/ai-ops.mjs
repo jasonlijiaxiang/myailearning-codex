@@ -1,6 +1,26 @@
+/**
+ * @param {any[]} items
+ */
 const freezeItems = (items) => Object.freeze(items.map((item) => Object.freeze(item)));
+/**
+ * @param {string} type
+ * @param {string} title
+ * @param {any[]} items
+ * @param {Object} [extra]
+ */
 const block = (type, title, items, extra = {}) => Object.freeze({ type, title, ...extra, items: freezeItems(items) });
+/**
+ * @param {string} id
+ * @param {string} eyebrow
+ * @param {string} title
+ * @param {string} lead
+ * @param {any[]} blocks
+ */
 const section = (id, eyebrow, title, lead, blocks) => Object.freeze({ id, eyebrow, title, lead, blocks: Object.freeze(blocks) });
+/**
+ * @param {string} id
+ * @param {any} copy
+ */
 const question = (id, copy) => Object.freeze({ ...copy, id, evidence: freezeItems(copy.evidence) });
 
 export const englishModule = Object.freeze({

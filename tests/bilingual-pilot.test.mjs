@@ -128,28 +128,35 @@ const idProjectionsBySlug = Object.freeze({
   }),
 });
 
+/**
+ * @param {any} value
+ * @param {Set<string>} [result]
+ */
 function collectSourceIds(value, result = new Set()) {
-  if (Array.isArray(value)) value.forEach((item) => collectSourceIds(item, result));
+  if (Array.isArray(value)) value.forEach((/** @type {any} */ item) => collectSourceIds(item, result));
   else if (value && typeof value === "object") {
     if (typeof value.sourceId === "string") result.add(value.sourceId);
-    if (Array.isArray(value.sourceIds)) value.sourceIds.forEach((sourceId) => result.add(sourceId));
-    Object.values(value).forEach((item) => collectSourceIds(item, result));
+    if (Array.isArray(value.sourceIds)) value.sourceIds.forEach((/** @type {any} */ sourceId) => result.add(sourceId));
+    Object.values(value).forEach((/** @type {any} */ item) => collectSourceIds(item, result));
   }
   return result;
 }
 
+/** @param {any[]} items @param {string} [label] */
 function assertUniqueIds(items, label) {
-  const ids = items.map((item) => item.id);
+  const ids = items.map((/** @type {any} */ item) => item.id);
   assert.equal(new Set(ids).size, ids.length, `${label} IDs must be unique`);
-  ids.forEach((id) => assert.match(id, slugIdPattern, `${label} ID must be a stable slug: ${id}`));
+  ids.forEach((/** @type {any} */ id) => assert.match(id, slugIdPattern, `${label} ID must be a stable slug: ${id}`));
 }
 
+/** @param {any[]} items @param {string} id @param {string} label */
 function findById(items, id, label) {
-  const item = items?.find((candidate) => candidate.id === id);
+  const item = items?.find((/** @type {any} */ candidate) => candidate.id === id);
   assert.ok(item, `${label} must include ${id}`);
   return item;
 }
 
+/** @param {any[]} items @param {string} label @param {{ allowBoundaryOmission?: boolean }} [options] */
 function assertReadableItems(items, label, { allowBoundaryOmission = false } = {}) {
   assert.ok(items?.length, `${label} must include authored content`);
   assertUniqueIds(items, label);
@@ -157,7 +164,7 @@ function assertReadableItems(items, label, { allowBoundaryOmission = false } = {
     assert.ok(item.title?.trim(), `${label} / ${item.id} needs a readable title`);
     if (Array.isArray(item.cells)) {
       assert.ok(item.cells.length > 0, `${label} / ${item.id} table item needs relationship cells`);
-      item.cells.forEach((cell, index) => {
+      item.cells.forEach((/** @type {any} */ cell, /** @type {number} */ index) => {
         assert.ok(typeof cell === "string" && cell.trim(), `${label} / ${item.id} cell ${index + 1} needs readable copy`);
       });
       continue;
@@ -171,6 +178,7 @@ function assertReadableItems(items, label, { allowBoundaryOmission = false } = {
   }
 }
 
+/** @param {any[]} items @param {string[]} fields @param {string} label */
 function assertReadablePrimerItems(items, fields, label) {
   assert.ok(items?.length, `${label} must include authored content`);
   const titles = new Set();
@@ -184,6 +192,7 @@ function assertReadablePrimerItems(items, fields, label) {
   }
 }
 
+/** @param {any} config @param {string} label */
 function assertReadableUnifiedBriefConfig(config, label) {
   assert.ok(config?.shortTitle?.trim(), `${label} needs a readable short title`);
   assert.ok(config.primer?.id?.trim() && config.primer.label?.trim() && config.primer.eyebrow?.trim(), `${label} needs an identifiable, readable primer`);
@@ -196,27 +205,31 @@ function assertReadableUnifiedBriefConfig(config, label) {
   }
 }
 
+/** @param {any} item @param {string[]} sourceIds @param {string} label */
 function assertIncludesSourceIds(item, sourceIds, label) {
   assert.ok(item, `${label} must exist`);
   const actualSourceIds = new Set(item.sourceIds ?? []);
   sourceIds.forEach((sourceId) => assert.ok(actualSourceIds.has(sourceId), `${label} must retain ${sourceId}`));
 }
 
+/** @param {any} item @param {string[]} sourceIds @param {string} label */
 function assertIncludesEvidenceSources(item, sourceIds, label) {
   assert.ok(item, `${label} must exist`);
-  const actualSourceIds = new Set(item.evidence?.map((entry) => entry.sourceId));
+  const actualSourceIds = new Set(item.evidence?.map((/** @type {any} */ entry) => entry.sourceId));
   sourceIds.forEach((sourceId) => assert.ok(actualSourceIds.has(sourceId), `${label} must retain ${sourceId}`));
 }
 
+/** @param {any} item @param {string[]} sourceIds @param {string} label */
 function assertExactEvidenceSources(item, sourceIds, label) {
   assert.ok(item, `${label} must exist`);
   assert.deepEqual(
-    item.evidence?.map((entry) => entry.sourceId).sort(),
+    item.evidence?.map((/** @type {any} */ entry) => entry.sourceId).sort(),
     [...sourceIds].sort(),
     `${label} must keep the exact reviewed evidence set`,
   );
 }
 
+/** @param {any[]} items @param {(item: any) => string} keyForItem @param {string} label */
 function buildUniqueMap(items, keyForItem, label) {
   const result = new Map();
   for (const item of items) {
@@ -228,23 +241,27 @@ function buildUniqueMap(items, keyForItem, label) {
   return result;
 }
 
+/** @param {any[]} items @param {(item: any) => any} signature */
 function sortedMultiset(items, signature) {
   return items.map(signature).sort();
 }
 
+/** @param {any} item */
 function questionEvidenceSignature(item) {
   return JSON.stringify({
     addedAt: item.addedAt ?? null,
-    sourceIds: [...item.evidence.map((entry) => entry.sourceId)].sort(),
+    sourceIds: [...item.evidence.map((/** @type {any} */ entry) => entry.sourceId)].sort(),
   });
 }
 
+/** @param {any} card */
 function evidenceCardSignature(card) {
   return card.sourceId;
 }
 
+/** @param {string} label @param {any[]} englishItems @param {any[]} canonicalItems @param {Record<string, string>} projection @param {(item: any) => string} canonicalKey */
 function assertCompleteIdProjection(label, englishItems, canonicalItems, projection, canonicalKey) {
-  const englishById = buildUniqueMap(englishItems, (item) => item.id, `${label} English item`);
+  const englishById = buildUniqueMap(englishItems, (/** @type {any} */ item) => item.id, `${label} English item`);
   const canonicalByKey = buildUniqueMap(canonicalItems, canonicalKey, `${label} canonical item`);
   const projectedIds = Object.keys(projection);
   const projectedCanonicalKeys = Object.values(projection);
@@ -291,9 +308,9 @@ test("English release audit refuses active localization deferments", () => {
 test("active and watch claims stay inside their review window", () => {
   const claimItems = JSON.parse(readFileSync(new URL("../knowledge/claims/index.json", import.meta.url), "utf8")).items;
   const overdue = claimItems
-    .filter((claim) => ["active", "watch"].includes(claim.status))
-    .filter((claim) => claim.reviewBy < today)
-    .map((claim) => `${claim.id} (reviewBy ${claim.reviewBy})`);
+    .filter((/** @type {any} */ claim) => ["active", "watch"].includes(claim.status))
+    .filter((/** @type {any} */ claim) => claim.reviewBy < today)
+    .map((/** @type {any} */ claim) => `${claim.id} (reviewBy ${claim.reviewBy})`);
   assert.deepEqual(overdue, [], `Claim 复核窗口已过期：${overdue.join("; ")}`);
 });
 
@@ -306,7 +323,7 @@ test("shared English modules preserve canonical related-module routes and order"
       continue;
     }
     assert.deepEqual(
-      [...englishModuleRegistry[slug].relatedSlugs].sort(),
+      [.../** @type {any} */ (englishModuleRegistry[slug].relatedSlugs)].sort(),
       [...canonical.relatedSlugs].sort(),
       `${slug} relatedSlugs must remain bilingual`,
     );
@@ -319,7 +336,12 @@ test("English edition preserves canonical question evidence relationships and da
     const english = englishModuleRegistry[slug];
     const chinese = requireModuleContent(slug);
     const deferred = deferredSlugs.has(slug);
+    /** @type {{ failures: (string | undefined)[] }} */
     const counter = { failures: [] };
+    /**
+     * @param {() => void} fn
+     * @param {string} [label]
+     */
     const check = (fn, label) => {
       try {
         fn();
@@ -331,7 +353,7 @@ test("English edition preserves canonical question evidence relationships and da
     if (deferred) check(() => assert.equal(statusBySlug[slug].status, "deferred"), "status");
     check(() => assert.equal(english.qa.length, chinese.qa.length), "question parity");
     check(() => assertUniqueIds(english.qa), "question IDs");
-    const questionProjection = idProjectionsBySlug[slug]?.question;
+    const questionProjection = idProjectionsBySlug[/** @type {keyof typeof idProjectionsBySlug} */ (slug)]?.question;
     if (questionProjection) {
       let canonicalQaByEnglishId = new Map();
       check(() => {
@@ -340,16 +362,16 @@ test("English edition preserves canonical question evidence relationships and da
           english.qa,
           chinese.qa,
           questionProjection,
-          (item) => item.q,
+          (/** @type {any} */ item) => item.q,
         );
       }, "question projection");
-      english.qa.forEach((item) => {
+      english.qa.forEach((/** @type {any} */ item) => {
         check(() => assert.ok(item.q?.trim() && item.a?.trim() && item.depth?.trim() && item.ask?.trim()), "readable question copy");
         const canonical = canonicalQaByEnglishId.get(item.id);
         check(() => assert.ok(canonical, "canonical question projection"));
         check(() => assert.deepEqual(
-          [...item.evidence.map((entry) => entry.sourceId)].sort(),
-          [...(canonical?.evidence ?? []).map((entry) => entry.sourceId)].sort(),
+          [...item.evidence.map((/** @type {any} */ entry) => entry.sourceId)].sort(),
+          [...(canonical?.evidence ?? []).map((/** @type {any} */ entry) => entry.sourceId)].sort(),
         ), "evidence sources");
         check(() => assert.equal(item.addedAt ?? null, canonical?.addedAt ?? null), "addedAt");
       });
@@ -378,7 +400,12 @@ test("English evidence cards keep canonical source relationships", () => {
     const english = englishModuleRegistry[slug];
     const chinese = requireModuleContent(slug);
     const deferred = deferredSlugs.has(slug);
+    /** @type {{ failures: (string | undefined)[] }} */
     const counter = { failures: [] };
+    /**
+     * @param {() => void} fn
+     * @param {string} [label]
+     */
     const check = (fn, label) => {
       try {
         fn();
@@ -392,7 +419,7 @@ test("English evidence cards keep canonical source relationships", () => {
     english.evidenceCards.forEach((card) => {
       check(() => assert.ok(card.metric?.trim() && card.title?.trim() && card.finding?.trim() && card.boundary?.trim()), "readable evidence copy");
     });
-    const evidenceCardProjection = idProjectionsBySlug[slug]?.evidenceCard;
+    const evidenceCardProjection = idProjectionsBySlug[/** @type {keyof typeof idProjectionsBySlug} */ (slug)]?.evidenceCard;
     if (evidenceCardProjection) {
       let canonicalEvidenceCardsByEnglishId = new Map();
       check(() => {
@@ -401,7 +428,7 @@ test("English evidence cards keep canonical source relationships", () => {
           english.evidenceCards,
           chinese.evidenceCards,
           evidenceCardProjection,
-          (card) => card.sourceId,
+          (/** @type {any} */ card) => card.sourceId,
         );
       }, "evidence-card projection");
       english.evidenceCards.forEach((card) => {
@@ -424,9 +451,10 @@ test("English evidence cards keep canonical source relationships", () => {
 });
 
 test("Batch 05 English content preserves the Agent adoption gate and MCP control model", () => {
+  /** @type {any} */
   const agentModule = englishModuleRegistry["ai-agent"];
-  const agentAdoption = agentModule.sections.find((section) => section.id === "agent-adoption-decision");
-  const agentAdoptionLevels = agentAdoption.blocks.find((block) => block.items.some((item) => item.id === "agent-adoption-multi"));
+  const agentAdoption = agentModule.sections.find((/** @type {any} */ section) => section.id === "agent-adoption-decision");
+  const agentAdoptionLevels = agentAdoption.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "agent-adoption-multi"));
   assertReadableItems(agentAdoptionLevels.items, "Agent adoption levels");
   findById(agentAdoptionLevels.items, "agent-adoption-workflow", "Agent adoption levels");
   findById(agentAdoptionLevels.items, "agent-adoption-multi", "Agent adoption levels");
@@ -443,7 +471,7 @@ test("Batch 05 English content preserves the Agent adoption gate and MCP control
   assert.doesNotMatch(mcp, /Use Tools for actions, Resources for read-only context|stateless Host|failed, canceled, TTL/);
   ["mcp-changelog-2026-07-28", "mcp-server-overview-2026-07-28", "mcp-tools-2026-07-28", "mcp-resources-2026-07-28", "mcp-prompts-2026-07-28", "mcp-tasks-extension"].forEach((sourceId) => {
     assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
-    assert.ok(englishModuleRegistry.mcp.sources[sourceId], `${sourceId} must have independent English source copy`);
+    assert.ok((/** @type {any} */ (englishModuleRegistry.mcp.sources))[sourceId], `${sourceId} must have independent English source copy`);
   });
 });
 
@@ -459,9 +487,10 @@ test("Batch 06 English content preserves runtime interoperability and operations
   assert.match(a2a, /COMPLETED[^.]*not[^.]*business acceptance|COMPLETED is not treated as business acceptance/);
   ["a2a-release-1-0-1", "a2a-mcp-boundary"].forEach((sourceId) => {
     assert.ok(sourceLedger[sourceId], `${sourceId} must resolve in the canonical source ledger`);
-    assert.ok(englishModuleRegistry.a2a.sources[sourceId], `${sourceId} must have independent English source copy`);
+    assert.ok((/** @type {any} */ (englishModuleRegistry.a2a.sources))[sourceId], `${sourceId} must have independent English source copy`);
   });
 
+  /** @type {any} */
   const gateway = englishModuleRegistry["ai-gateway"];
   const credentialNotAuthority = findById(gateway.qa, "gateway-credential-not-user-authority", "AI Gateway questions");
   const requestRateLimit = findById(gateway.qa, "request-rate-limit-not-enough", "AI Gateway questions");
@@ -474,9 +503,11 @@ test("Batch 06 English content preserves runtime interoperability and operations
     assert.ok(gateway.sources[sourceId], `${sourceId} must have independent English source copy`);
   });
 
+  /** @type {any} */
   const aiOps = englishModuleRegistry["ai-ops"];
   assert.equal(aiOps.relatedSlugs.includes("ai-ops"), false);
   assert.ok(aiOps.relatedSlugs.includes("predictive-ai-mlops"));
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(JSON.stringify(aiOps), /head sampling.*tail sampling/is);
   assert.match(JSON.stringify(aiOps), /tail sampler cannot recover traces dropped upstream/i);
   assert.match(JSON.stringify(aiOps), /not traditional AIOps alert reduction or GPU-only monitoring/);
@@ -485,17 +516,18 @@ test("Batch 06 English content preserves runtime interoperability and operations
 });
 
 test("Batch 07 English content preserves the training contract and predictive rollback boundaries", async () => {
+  /** @type {any} */
   const training = englishModuleRegistry["llm-training"];
-  const trainingIds = training.qa.map((item) => item.id);
+  const trainingIds = training.qa.map((/** @type {any} */ item) => item.id);
   assert.equal(trainingIds.includes("gpu-scaling-efficiency"), false);
   assert.equal(trainingIds.includes("scaling-law-task-boundary"), false);
   assert.match(JSON.stringify(training), /run manifest/);
   assert.match(JSON.stringify(training), /asynchronous completion/i);
   assert.match(JSON.stringify(training), /not guarantee bitwise|do not promise cross-platform bitwise|not promising bitwise identity/i);
   const modelCompute = training.sections
-    .find((section) => section.id === "deep-dive")
-    .blocks.flatMap((block) => block.items)
-    .find((item) => item.id === "deep-model-compute");
+    .find((/** @type {any} */ section) => section.id === "deep-dive")
+    .blocks.flatMap((/** @type {any} */ block) => block.items)
+    .find((/** @type {any} */ item) => item.id === "deep-model-compute");
   assertIncludesSourceIds(modelCompute, ["megatron-3d-parallelism-2021"], "Training model-compute deep dive");
   [
     "deduplicating-training-data-2022",
@@ -509,11 +541,12 @@ test("Batch 07 English content preserves the training contract and predictive ro
     assert.ok(training.sources[sourceId], `${sourceId} must have independent English source copy`);
   });
 
+  /** @type {any} */
   const predictive = englishModuleRegistry["predictive-ai-mlops"];
   const predictiveRollback = findById(predictive.qa, "predictive-rollback-bundle", "Predictive AI questions");
   assert.equal(predictiveRollback.addedAt, "2026-08-01");
-  const predictiveProduction = predictive.sections.find((section) => section.id === "predictive-production-deep-dive");
-  const predictiveSignals = predictiveProduction.blocks.find((block) => block.items.some((item) => item.id === "predictive-deep-performance"));
+  const predictiveProduction = predictive.sections.find((/** @type {any} */ section) => section.id === "predictive-production-deep-dive");
+  const predictiveSignals = predictiveProduction.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "predictive-deep-performance"));
   assertReadableItems(predictiveSignals.items, "Predictive production signals");
   findById(predictiveSignals.items, "predictive-deep-data-quality", "Predictive production signals");
   findById(predictiveSignals.items, "predictive-deep-feedback-loop", "Predictive production signals");
@@ -530,13 +563,14 @@ test("Batch 07 English content preserves the training contract and predictive ro
   });
 
   const claimItems = JSON.parse(await readFile(new URL("../knowledge/claims/index.json", import.meta.url), "utf8")).items;
-  const claimsById = Object.fromEntries(claimItems.map((claim) => [claim.id, claim]));
+  const claimsById = Object.fromEntries(claimItems.map((/** @type {any} */ claim) => [claim.id, claim]));
   assert.equal(claimsById["mlops.azure-monitoring-signals-2026-08-01"].status, "watch");
   assert.equal(claimsById["mlops.aws-deployment-guardrails-scope-2026-08-01"].status, "watch");
   assert.equal(claimsById["training.pytorch-dcp-compatibility-2026-08-01"].status, "watch");
 });
 
 test("Batch 08 English content preserves inference overload and compute procurement contracts", () => {
+  /** @type {any} */
   const inference = englishModuleRegistry["llm-inference"];
   findById(inference.qa, "same-model-different-speed", "Inference questions");
   findById(inference.qa, "maximum-context-admission", "Inference questions");
@@ -554,6 +588,7 @@ test("Batch 08 English content preserves inference overload and compute procurem
     assert.ok(inference.sources[sourceId], `${sourceId} must have independent English source copy`);
   });
 
+  /** @type {any} */
   const compute = englishModuleRegistry["ai-infra-compute"];
   findById(compute.qa, "peak-compute-not-speed", "Compute questions");
   findById(compute.qa, "heterogeneous-supply-risk", "Compute questions");
@@ -562,6 +597,7 @@ test("Batch 08 English content preserves inference overload and compute procurem
   assert.match(JSON.stringify(compute), /Multiple nodes do not necessarily mean multiple domains/);
   assert.doesNotMatch(compute.terms["scale-out"].definition, /across nodes/);
   assert.match(JSON.stringify(compute), /MLPerf Storage/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(JSON.stringify(compute), /resource TCO.*(?:does not|not).*application ROI/is);
   const canonicalCompute = requireModuleContent("ai-infra-compute");
   const trainingEvidenceCard = canonicalCompute.evidenceCards.find((card) => card.sourceId === "mlperf-training");
@@ -581,10 +617,13 @@ test("Batch 08 English content preserves inference overload and compute procurem
 });
 
 test("Batch 09 English content preserves the platform-product and minimum-sufficient-loop contracts", async () => {
+  /** @type {any} */
   const platform = englishModuleRegistry["ai-infra-platform"];
   const portableContainer = findById(platform.qa, "containerized-not-fully-portable", "Platform questions");
   assert.equal(portableContainer.addedAt, "2026-08-01");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(JSON.stringify(platform), /platform control layer.*workload execution layer/is);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(JSON.stringify(platform), /Management\/control.*identity\/data\/network.*performance\/resources.*cost allocation\/accountability/is);
   assert.match(JSON.stringify(platform), /OCI image or Kubernetes YAML is not evidence of cross-cloud or cross-accelerator migration/i);
   assert.match(JSON.stringify(platform), /platform economics and application business ROI have different owners/i);
@@ -598,18 +637,22 @@ test("Batch 09 English content preserves the platform-product and minimum-suffic
     assert.ok(platform.sources[sourceId], `${sourceId} must have independent English source copy`);
   });
 
+  /** @type {any} */
   const solution = englishModuleRegistry["solution-patterns"];
   findById(solution.qa, "solution-versus-model-api", "Solution-pattern questions");
   findById(solution.qa, "claim-intake-prohibited-actions", "Solution-pattern questions");
   assert.match(JSON.stringify(solution), /Outcome and current baseline/);
   assert.match(JSON.stringify(solution), /Measurable constraint envelope/);
   assert.match(JSON.stringify(solution), /Minimum sufficient loop/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(JSON.stringify(solution), /RAG.*agent.*MCP.*A2A.*gateway.*platform/is);
   ["rag-original-2020", "mcp-architecture", "a2a-concepts", "cloudflare-ai-gateway", "cncf-platforms-whitepaper"].forEach((sourceId) => {
-    assert.ok(englishSourceCopy[sourceId], `${sourceId} must have shared English source copy`);
+    assert.ok(englishSourceCopy[/** @type {keyof typeof englishSourceCopy} */ (sourceId)], `${sourceId} must have shared English source copy`);
     assert.match(JSON.stringify(solution), new RegExp(sourceId));
   });
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(JSON.stringify(solution), /Go, Hold, No-Go.*Exit/is);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(JSON.stringify(solution), /token price.*not ROI/is);
   assert.ok(sourceLedger["finops-unit-economics"]);
   assert.ok(solution.sources["finops-unit-economics"]);
@@ -617,7 +660,7 @@ test("Batch 09 English content preserves the platform-product and minimum-suffic
   assert.ok(solution.sources["finops-ai-tools-considerations"]);
 
   const claimItems = JSON.parse(await readFile(new URL("../knowledge/claims/index.json", import.meta.url), "utf8")).items;
-  const draClaim = claimItems.find((claim) => claim.id === "platform.kubernetes-dra-1-36-feature-maturity-2026-08-01");
+  const draClaim = claimItems.find((/** @type {any} */ claim) => claim.id === "platform.kubernetes-dra-1-36-feature-maturity-2026-08-01");
   assert.equal(draClaim?.status, "watch");
   assert.equal(draClaim?.reviewBy, "2026-10-30");
 });
@@ -625,13 +668,14 @@ test("Batch 09 English content preserves the platform-product and minimum-suffic
 test("English sections and rendered object anchors use stable, unique IDs", () => {
   const generatedPageSectionIds = new Set(["evidence", "qa"]);
   for (const slug of englishModuleSlugs) {
+    /** @type {any} */
     const english = englishModuleRegistry[slug];
     assertUniqueIds(english.sections, `${slug} section`);
-    english.sections.forEach((section) => assert.ok(!generatedPageSectionIds.has(section.id), `${slug} section ID ${section.id} conflicts with a generated page section`));
-    const sectionItemIds = english.sections.flatMap((section) => section.blocks.flatMap((block) => block.items.map((item) => item.id)));
-    const sectionLegacyIds = english.sections.flatMap((section) => section.blocks.flatMap((block) => block.items.flatMap((item) => item.legacyIds ?? [])));
+    english.sections.forEach((/** @type {any} */ section) => assert.ok(!generatedPageSectionIds.has(section.id), `${slug} section ID ${section.id} conflicts with a generated page section`));
+    const sectionItemIds = english.sections.flatMap((/** @type {any} */ section) => section.blocks.flatMap((/** @type {any} */ block) => block.items.map((/** @type {any} */ item) => item.id)));
+    const sectionLegacyIds = english.sections.flatMap((/** @type {any} */ section) => section.blocks.flatMap((/** @type {any} */ block) => block.items.flatMap((/** @type {any} */ item) => item.legacyIds ?? [])));
     assert.equal(new Set([...sectionItemIds, ...sectionLegacyIds]).size, sectionItemIds.length + sectionLegacyIds.length, `${slug} current and legacy anchors must be unique`);
-    sectionItemIds.forEach((id) => assert.match(id, slugIdPattern, `${slug} section-item ID must be a stable slug: ${id}`));
+    sectionItemIds.forEach((/** @type {any} */ id) => assert.match(id, slugIdPattern, `${slug} section-item ID must be a stable slug: ${id}`));
   }
 });
 
@@ -639,6 +683,7 @@ test("English copy reuses stable terminology and source IDs without duplicating 
   for (const slug of englishModuleSlugs) {
     const publication = getPublishedModule(slug);
     assert.ok(publication, `${slug} must remain a canonical published module`);
+    /** @type {any} */
     const english = englishModuleRegistry[slug];
     publication.requiredTerms.forEach((termId) => assert.ok(english.terms[termId], `${slug} missing required English term ${termId}`));
     Object.entries(english.terms).forEach(([termId, copy]) => {
@@ -677,7 +722,7 @@ test("English pages reuse the established Chinese design system", async () => {
   ["modulePageHero moduleBriefHero", "moduleArticleLayout", "moduleBriefSection", "evidenceGrid", "qaList"].forEach((className) => assert.match(englishModulePage, new RegExp(className)));
   assert.match(englishModulePage, /ModuleReadingNav/);
   assert.match(englishModulePage, /ModuleHeroMetrics/);
-  const cssImports = (source) => [...source.matchAll(/^import\s+["']([^"']+\.css)["'];?$/gm)].map((match) => match[1]);
+  const cssImports = (/** @type {string} */ source) => [...source.matchAll(/^import\s+["']([^"']+\.css)["'];?$/gm)].map((match) => match[1]);
   assert.deepEqual(cssImports(englishLayout), cssImports(chineseLayout), "English and Chinese root layouts must share the same visual system");
   assert.doesNotMatch(`${englishHome}\n${englishModulePage}`, /import\s+["'][^"']+\.css["']/, "English routes must not introduce route-specific stylesheets");
 });
@@ -729,11 +774,12 @@ test("English module pages render the canonical knowledge view before the shared
   assert.match(englishModulePage, /usesFocusedReadingProfile \? renderRelatedSection\(/, "focused pages must place related modules after the main argument");
   for (const slug of englishModuleSlugs) assert.ok(getPublishedModule(slug), `${slug} needs a canonical bilingual publication contract`);
   for (const [slug, module] of Object.entries(englishModuleRegistry)) {
-    if (!module.primer) continue;
-    assert.equal(module.primer.id, getPublishedModule(slug).knowledgeView, `${slug} explicit primer must use the canonical knowledge-view ID`);
-    assertReadablePrimerItems(module.primer.steps, ["detail", "signal"], `${slug} explicit primer mechanisms`);
-    assertReadablePrimerItems(module.primer.checks, ["detail"], `${slug} explicit primer decision checks`);
-    module.primer.termIds.forEach((termId) => assert.ok(module.terms[termId], `${slug} primer term must resolve to English copy`));
+    const primer = /** @type {any} */ (module.primer);
+    if (!primer) continue;
+    assert.equal(primer.id, (/** @type {any} */ (getPublishedModule(slug))).knowledgeView, `${slug} explicit primer must use the canonical knowledge-view ID`);
+    assertReadablePrimerItems(primer.steps, ["detail", "signal"], `${slug} explicit primer mechanisms`);
+    assertReadablePrimerItems(primer.checks, ["detail"], `${slug} explicit primer decision checks`);
+    primer.termIds.forEach((/** @type {any} */ termId) => assert.ok(module.terms[termId], `${slug} primer term must resolve to English copy`));
   }
 });
 
@@ -741,12 +787,12 @@ test("English content representation is assessed block by block without a visual
   assert.deepEqual(Object.keys(englishRepresentationAssessment).sort(), [...englishModuleSlugs].sort());
 
   for (const [slug, englishModule] of Object.entries(englishModuleRegistry)) {
-    const expectedBlockCount = englishModule.sections.reduce((total, section) => total + section.blocks.length, 0);
+    const expectedBlockCount = englishModule.sections.reduce((/** @type {number} */ total, /** @type {any} */ section) => total + section.blocks.length, 0);
     const assessment = englishRepresentationAssessment[slug];
     assert.equal(assessment.blocks.length, expectedBlockCount, `${slug} must assess every English content block`);
     assert.equal(
-      assessment.blocks.filter((block) => block.representation === "editorial-steps").length,
-      englishModule.sections.flatMap((section) => section.blocks).filter((block) => block.type === "steps").length - assessment.visualStepCount,
+      assessment.blocks.filter((/** @type {any} */ block) => block.representation === "editorial-steps").length,
+      englishModule.sections.flatMap((/** @type {any} */ section) => section.blocks).filter((/** @type {any} */ block) => block.type === "steps").length - assessment.visualStepCount,
       `${slug} must keep non-relational step content as readable prose`,
     );
   }
@@ -757,11 +803,11 @@ test("shared English readers preserve every authored section in authored order w
     const englishModule = englishModuleRegistry[slug];
     const groups = buildEnglishSectionGroups(englishModule);
     assert.deepEqual(
-      groups.flatMap((group) => group.sections).map((section) => section.id),
-      englishModule.sections.map((section) => section.id),
+      groups.flatMap((/** @type {any} */ group) => group.sections).map((/** @type {any} */ section) => section.id),
+      englishModule.sections.map((/** @type {any} */ section) => section.id),
       `${slug} must retain every authored section in its authored order`,
     );
-    assert.equal(new Set(groups.map((group) => group.id)).size, groups.length, `${slug} needs stable, non-duplicated reader anchors`);
+    assert.equal(new Set(groups.map((/** @type {any} */ group) => group.id)).size, groups.length, `${slug} needs stable, non-duplicated reader anchors`);
     for (const group of groups) {
       assert.ok(group.label.trim(), `${slug} group ${group.id} needs a readable label`);
       assert.ok(group.eyebrow.trim(), `${slug} group ${group.id} needs readable context`);
@@ -770,8 +816,8 @@ test("shared English readers preserve every authored section in authored order w
 
   const mcpGroups = buildEnglishSectionGroups(englishModuleRegistry.mcp);
   assert.deepEqual(
-    mcpGroups.flatMap((group) => group.sections).map((section) => section.id),
-    englishModuleRegistry.mcp.sections.map((section) => section.id),
+    mcpGroups.flatMap((/** @type {any} */ group) => group.sections).map((/** @type {any} */ section) => section.id),
+    englishModuleRegistry.mcp.sections.map((/** @type {any} */ section) => section.id),
     "MCP must not lose or reorder authored argument sections",
   );
 
@@ -784,20 +830,20 @@ test("shared English readers preserve every authored section in authored order w
 test("a dedicated focused English module keeps its complete authored reader instead of a preview", () => {
   const rag = englishModuleRegistry.rag;
   const ragGroups = buildEnglishSectionGroups(rag);
-  assert.deepEqual(selectVisibleEnglishSectionGroups(rag).map((group) => group.id), ragGroups.map((group) => group.id));
+  assert.deepEqual(selectVisibleEnglishSectionGroups(rag).map((/** @type {any} */ group) => group.id), ragGroups.map((/** @type {any} */ group) => group.id));
   assert.equal(selectVisibleEnglishEvidenceCards(rag).length, rag.evidenceCards.length);
   assert.equal(selectVisibleEnglishQuestions(rag).length, rag.qa.length);
 
   const mcp = englishModuleRegistry.mcp;
   const visibleMcpGroups = selectVisibleEnglishSectionGroups(mcp);
-  const authoredMcpGroupIds = new Set(buildEnglishSectionGroups(mcp).map((group) => group.id));
-  assert.ok(visibleMcpGroups.every((group) => authoredMcpGroupIds.has(group.id)), "MCP preview groups must project from the authored reader");
+  const authoredMcpGroupIds = new Set(buildEnglishSectionGroups(mcp).map((/** @type {any} */ group) => group.id));
+  assert.ok(visibleMcpGroups.every((/** @type {any} */ group) => authoredMcpGroupIds.has(group.id)), "MCP preview groups must project from the authored reader");
   const visibleMcpEvidence = selectVisibleEnglishEvidenceCards(mcp);
   const visibleMcpQuestions = selectVisibleEnglishQuestions(mcp);
   assert.ok(visibleMcpEvidence.length, "MCP preview must retain source-backed evidence");
   assert.ok(visibleMcpQuestions.length, "MCP preview must retain readable questions");
-  assert.ok(visibleMcpEvidence.every((card) => mcp.evidenceCards.some((candidate) => candidate.id === card.id)), "MCP preview evidence must project from the authored collection");
-  assert.ok(visibleMcpQuestions.every((question) => mcp.qa.some((candidate) => candidate.id === question.id)), "MCP preview questions must project from the authored collection");
+  assert.ok(visibleMcpEvidence.every((/** @type {any} */ card) => mcp.evidenceCards.some((candidate) => candidate.id === card.id)), "MCP preview evidence must project from the authored collection");
+  assert.ok(visibleMcpQuestions.every((/** @type {any} */ question) => mcp.qa.some((candidate) => candidate.id === question.id)), "MCP preview questions must project from the authored collection");
 });
 
 test("reviewed English production modules retain direct professional copy and controlled acceptance terms", async () => {
@@ -858,6 +904,7 @@ test("reviewed English production modules retain direct professional copy and co
 });
 
 test("Batch 10 English content preserves governance and model-selection boundaries", () => {
+  /** @type {any} */
   const governance = englishModuleRegistry["ai-governance"];
   findById(governance.qa, "china-private-deployment-triage", "Governance questions");
   findById(governance.qa, "claim-intake-governance-boundary", "Governance questions");
@@ -869,25 +916,26 @@ test("Batch 10 English content preserves governance and model-selection boundari
   assert.match(JSON.stringify(governance), /Successful generation, content review, labeling, and business approval for publication are (?:four )?distinct control states/);
   assert.doesNotMatch(JSON.stringify(governance), /Generation succeeding|align filing thresholds/);
   const governanceLab = governance.sections
-    .find((section) => section.id === "governance-study-guide")
-    .blocks.flatMap((block) => block.items)
-    .find((item) => item.id === "governance-lab-china-delivery-evidence");
+    .find((/** @type {any} */ section) => section.id === "governance-study-guide")
+    .blocks.flatMap((/** @type {any} */ block) => block.items)
+    .find((/** @type {any} */ item) => item.id === "governance-lab-china-delivery-evidence");
   assertIncludesSourceIds(governanceLab, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-ai-rmf"], "Governance China delivery lab");
   const governanceLabeling = governance.sections
-    .find((section) => section.id === "governance-deep-dive")
-    .blocks.flatMap((block) => block.items)
-    .find((item) => item.id === "governance-obligation-labeling");
+    .find((/** @type {any} */ section) => section.id === "governance-deep-dive")
+    .blocks.flatMap((/** @type {any} */ block) => block.items)
+    .find((/** @type {any} */ item) => item.id === "governance-obligation-labeling");
   assertIncludesSourceIds(governanceLabeling, ["china-ai-content-labeling-2026-08-05", "china-ai-service-management"], "Governance labeling obligation");
 
+  /** @type {any} */
   const modelLandscape = englishModuleRegistry["model-landscape"];
   findById(modelLandscape.qa, "platform-catalog-claim-boundary", "Model-landscape questions");
   findById(modelLandscape.qa, "domestic-international-model-comparison", "Model-landscape questions");
   const maasTable = modelLandscape.sections
-    .find((section) => section.id === "deep-dive")
-    .blocks.find((block) => block.type === "table" && block.items.some((item) => item.id === "maas-region-delivery-gates"));
+    .find((/** @type {any} */ section) => section.id === "deep-dive")
+    .blocks.find((/** @type {any} */ block) => block.type === "table" && block.items.some((/** @type {any} */ item) => item.id === "maas-region-delivery-gates"));
   assert.ok(maasTable);
   assertReadableItems(maasTable.items, "MaaS procurement dimensions");
-  assert.ok(maasTable.items.every((item) => item.sourceIds?.length), "every MaaS procurement dimension must render its source links");
+  assert.ok(maasTable.items.every((/** @type {any} */ item) => item.sourceIds?.length), "every MaaS procurement dimension must render its source links");
   assertIncludesSourceIds(
     findById(maasTable.items, "maas-region-delivery-gates", "MaaS procurement dimensions"),
     ["nist-genai-profile", "openai-models", "google-models", "anthropic-models"],
@@ -913,12 +961,13 @@ test("Batch 11 English content preserves content-delivery, multimodal, and claim
   assert.match(securityCopy, /does not independently establish the truth of assertions, a signer's real-world identity or authority/);
   assert.match(securityCopy, /parse it in isolation, retain provenance and trust labels/);
 
+  /** @type {any} */
   const multimodal = englishModuleRegistry.multimodal;
-  const multimodalCurriculum = multimodal.sections.find((section) => section.id === "multimodal-curriculum");
-  const multimodalChapters = multimodalCurriculum.blocks.find((block) => block.items.some((item) => item.id === "chapter-barge-in-state-recovery"));
+  const multimodalCurriculum = multimodal.sections.find((/** @type {any} */ section) => section.id === "multimodal-curriculum");
+  const multimodalChapters = multimodalCurriculum.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "chapter-barge-in-state-recovery"));
   assertReadableItems(multimodalChapters.items, "Multimodal curriculum");
-  const multimodalPractice = multimodal.sections.find((section) => section.id === "multimodal-practice");
-  const multimodalLabs = multimodalPractice.blocks.find((block) => block.items.some((item) => item.id === "lab-barge-in-state-recovery"));
+  const multimodalPractice = multimodal.sections.find((/** @type {any} */ section) => section.id === "multimodal-practice");
+  const multimodalLabs = multimodalPractice.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "lab-barge-in-state-recovery"));
   assertReadableItems(multimodalLabs.items, "Multimodal practice labs");
   assertIncludesSourceIds(
     findById(multimodalChapters.items, "chapter-barge-in-state-recovery", "Multimodal curriculum"),
@@ -928,23 +977,25 @@ test("Batch 11 English content preserves content-delivery, multimodal, and claim
   assert.match(JSON.stringify(multimodal), /Generation, content review, disclosure and distribution requirements, authorized release, and post-release accountability are independent states/);
   assert.match(JSON.stringify(multimodal), /C2PA validation checks the integrity of recorded provenance assertions and their binding to an asset/);
 
+  /** @type {any} */
   const solution = englishModuleRegistry["solution-patterns"];
   const prohibitedClaimAction = findById(solution.qa, "claim-intake-prohibited-actions", "Solution-pattern questions");
   assert.equal(prohibitedClaimAction.addedAt, "2026-08-05");
-  const solutionCurriculum = solution.sections.find((section) => section.id === "solution-pattern-curriculum");
-  const solutionChapters = solutionCurriculum.blocks.find((block) => block.items.some((item) => item.id === "solution-chapter-china-delivery-evidence"));
+  const solutionCurriculum = solution.sections.find((/** @type {any} */ section) => section.id === "solution-pattern-curriculum");
+  const solutionChapters = solutionCurriculum.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "solution-chapter-china-delivery-evidence"));
   assertReadableItems(solutionChapters.items, "Solution-pattern curriculum");
   const chinaChapter = findById(solutionChapters.items, "solution-chapter-china-delivery-evidence", "Solution-pattern curriculum");
   assertIncludesSourceIds(chinaChapter, ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-genai-profile"], "Solution China delivery chapter");
   const claimsBlueprint = solution.sections
-    .find((section) => section.id === "solution-deep-dive")
-    .blocks.find((block) => block.items.some((item) => item.id === "solution-claims-intake-exit"));
+    .find((/** @type {any} */ section) => section.id === "solution-deep-dive")
+    .blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "solution-claims-intake-exit"));
   assertReadableItems(claimsBlueprint.items, "Solution claims-intake blueprint");
   assert.match(JSON.stringify(solution), /must not automatically assess damage, deny a claim, determine eligibility or amount, or initiate payment/);
   assert.doesNotMatch(JSON.stringify(solution), /filing or registration triage/);
 });
 
 test("Batch 12 English content preserves protocol, memory, and evaluation boundaries", () => {
+  /** @type {any} */
   const a2a = englishModuleRegistry.a2a;
   [
     "a2a-concepts", "a2a-specification", "a2a-mcp-boundary", "mcp-tasks-extension", "anthropic-effective-agents",
@@ -955,16 +1006,26 @@ test("Batch 12 English content preserves protocol, memory, and evaluation bounda
   assert.match(a2aCopy, /protocol-level COMPLETED state/);
   assert.match(a2aCopy, /reconcile side effects with the business system/);
   assert.match(a2aCopy, /messageId ≠ exactly once/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /SubscribeToTask.*no resume cursor or historical replay.*ListTasks.*pagination/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /Task is already terminal.*SubscribeToTask MUST return UnsupportedOperationError/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /For each configured webhook.*MUST attempt push delivery at least once.*MAY retry failed deliveries.*MAY stop.*successful at-least-once delivery is not guaranteed/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /pushNotifications is false or absent.*PushNotificationNotSupportedError/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /Server requires an Extension marked required.*Client did not declare support.*MUST return ExtensionSupportRequiredError/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /unsupported version of an optional Extension.*SHOULD ignore.*MUST NOT fall back to another version/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /contextId is absent.*MAY generate one.*rejects that value.*MUST return an error rather than silently replace it/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /MAY generate one.*MUST include a generated value.*returned Task or Message/s);
   assert.match(a2aCopy, /server-generated contextId values as opaque/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /taskId in a client Message MUST reference an existing accessible Task.*cannot create a new Task/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(a2aCopy, /only taskId is supplied.*MUST infer contextId.*both are supplied but do not match.*MUST reject/s);
   assert.match(a2aCopy, /nonexistent or inaccessible taskId causes the Agent to return TaskNotFoundError/);
   assert.match(a2aCopy, /Extended Agent Card is not an Extension/);
@@ -972,56 +1033,60 @@ test("Batch 12 English content preserves protocol, memory, and evaluation bounda
   assertIncludesEvidenceSources(findById(a2a.qa, "extension-versus-extended-card", "A2A questions"), ["a2a-agent-discovery", "a2a-extensions", "a2a-specification"], "A2A Extension question");
   assert.doesNotMatch(a2aCopy, /mcp-architecture|a2a-spec-1-0-0/);
 
+  /** @type {any} */
   const agent = englishModuleRegistry["ai-agent"];
   [
     "openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026",
   ].forEach((sourceId) => assert.ok(agent.sources[sourceId], `AI Agent must retain source copy for ${sourceId}`));
-  const memorySection = agent.sections.find((section) => section.id === "agent-memory-poisoning");
-  const memoryLifecycle = memorySection.blocks.find((block) => block.items.some((item) => item.id === "agent-memory-write-trust"));
+  const memorySection = agent.sections.find((/** @type {any} */ section) => section.id === "agent-memory-poisoning");
+  const memoryLifecycle = memorySection.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "agent-memory-write-trust"));
   assertReadableItems(memoryLifecycle.items, "Agent memory lifecycle");
   assertIncludesSourceIds(findById(memoryLifecycle.items, "agent-memory-write-trust", "Agent memory lifecycle"), ["aws-agentcore-memory", "nist-genai-profile", "owasp-llm-top-ten"], "Agent memory-write boundary");
-  const lowCodeSection = agent.sections.find((section) => section.id === "agent-low-code-choice");
-  const lowCodeDecisions = lowCodeSection.blocks.find((block) => block.items.some((item) => item.id === "agent-delivery-tool-protocol"));
+  const lowCodeSection = agent.sections.find((/** @type {any} */ section) => section.id === "agent-low-code-choice");
+  const lowCodeDecisions = lowCodeSection.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "agent-delivery-tool-protocol"));
   assertReadableItems(lowCodeDecisions.items, "Agent delivery decisions");
   assertIncludesSourceIds(findById(lowCodeDecisions.items, "agent-delivery-tool-protocol", "Agent delivery decisions"), ["mcp-specification-2026-07-28"], "Agent tool-protocol decision");
-  const harnessSection = agent.sections.find((section) => section.id === "agent-harness-engineering");
-  const planeMatrix = harnessSection.blocks.find((block) => block.items.some((item) => item.id === "harness-plane-evidence"));
+  const harnessSection = agent.sections.find((/** @type {any} */ section) => section.id === "agent-harness-engineering");
+  const planeMatrix = harnessSection.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "harness-plane-evidence"));
   assertReadableItems(planeMatrix.items, "Agent execution-control-evidence planes");
   assertIncludesSourceIds(findById(planeMatrix.items, "harness-plane-evidence", "Agent planes"), ["openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026"], "Agent evidence plane");
-  const runtimeSection = agent.sections.find((section) => section.id === "agent-production-runtime");
-  const safeExit = runtimeSection.blocks.find((block) => block.items.some((item) => item.id === "agent-safe-exit-detect"));
+  const runtimeSection = agent.sections.find((/** @type {any} */ section) => section.id === "agent-production-runtime");
+  const safeExit = runtimeSection.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "agent-safe-exit-detect"));
   assertReadableItems(safeExit.items, "Agent Safe Exit sequence");
   assertIncludesEvidenceSources(findById(agent.qa, "blocked-task-safe-exit", "Agent questions"), ["openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026"], "Agent Safe Exit question");
   const agentCopy = JSON.stringify(agent);
   assert.match(agentCopy, /Lab attack rates do not predict production incidence/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(agentCopy, /no impact to OpenAI customer data.*does not cover the affected Hugging Face systems or data/s);
 
+  /** @type {any} */
   const evaluation = englishModuleRegistry.evaluation;
-  const evaluationCurriculum = evaluation.sections.find((section) => section.id === "evaluation-curriculum");
-  const courseChapters = evaluationCurriculum.blocks.find((block) => block.items.some((item) => item.id === "chapter-evaluation-handoff"));
+  const evaluationCurriculum = evaluation.sections.find((/** @type {any} */ section) => section.id === "evaluation-curriculum");
+  const courseChapters = evaluationCurriculum.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "chapter-evaluation-handoff"));
   assertReadableItems(courseChapters.items, "Evaluation curriculum");
   assertIncludesSourceIds(findById(courseChapters.items, "chapter-evaluation-handoff", "Evaluation curriculum"), ["nist-ai-800-4", "opentelemetry-genai-semconv"], "Evaluation handoff chapter");
-  const benchmarkAtlas = evaluation.sections.find((section) => section.id === "evaluation-benchmark-atlas");
-  const benchmarkFamilies = benchmarkAtlas.blocks.find((block) => block.items.some((item) => item.id === "benchmark-general-qa"));
+  const benchmarkAtlas = evaluation.sections.find((/** @type {any} */ section) => section.id === "evaluation-benchmark-atlas");
+  const benchmarkFamilies = benchmarkAtlas.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "benchmark-general-qa"));
   assertReadableItems(benchmarkFamilies.items, "Evaluation benchmark families");
-  const benchmarkBoundary = benchmarkAtlas.blocks.find((block) => block.items.some((item) => item.id === "benchmark-atlas-boundary"));
+  const benchmarkBoundary = benchmarkAtlas.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "benchmark-atlas-boundary"));
   assertIncludesSourceIds(
     findById(benchmarkBoundary.items, "benchmark-atlas-boundary", "Evaluation benchmark boundary"),
     ["swe-bench", "terminal-bench", "beir-2021", "webarena-2024", "harness-bench-2026", "longvideobench-2024", "openai-eval-best-practices"],
     "Evaluation benchmark boundary",
   );
-  const evaluationStudyGuide = evaluation.sections.find((section) => section.id === "evaluation-study-guide");
-  const evaluationRoute = evaluationStudyGuide.blocks.find((block) => block.items.some((item) => item.id === "route-freeze-complete-evaluation-contract"));
+  const evaluationStudyGuide = evaluation.sections.find((/** @type {any} */ section) => section.id === "evaluation-study-guide");
+  const evaluationRoute = evaluationStudyGuide.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "route-freeze-complete-evaluation-contract"));
   assertReadableItems(evaluationRoute.items, "Evaluation learning route", { allowBoundaryOmission: true });
   findById(evaluationRoute.items, "route-freeze-complete-evaluation-contract", "Evaluation learning route");
   findById(evaluationRoute.items, "route-report-uncertainty-and-handoff", "Evaluation learning route");
-  const evaluationLabs = evaluationStudyGuide.blocks.find((block) => block.items.some((item) => item.id === "lab-refund-agent-contract"));
+  const evaluationLabs = evaluationStudyGuide.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "lab-refund-agent-contract"));
   assertReadableItems(evaluationLabs.items, "Evaluation practice labs");
   assert.match(JSON.stringify(evaluation), /A leaderboard is a screening input/);
   assert.doesNotMatch(JSON.stringify(evaluation), /cost per accepted/i);
 });
 
 test("Batch 13 English content preserves data, tuning, and MCP boundaries", () => {
+  /** @type {any} */
   const data = englishModuleRegistry["data-engineering"];
   const crossBorderData = findById(data.qa, "cross-border-vectorized-data", "Data-engineering questions");
   assert.equal(crossBorderData.addedAt, "2026-08-05");
@@ -1030,17 +1095,17 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
     "docling-report", "w3c-prov-o", "openlineage-spec", "iso-iec-5259-2", "nist-zero-trust", "hnsw-2016", "nist-genai-profile",
     "china-personal-information-protection-law", "china-data-cross-border-2024", "pp-ocr-2020", "opentelemetry-semconv",
   ].forEach((sourceId) => assert.ok(data.sources[sourceId], `Data Engineering must retain source copy for ${sourceId}`));
-  const dataCurriculum = data.sections.find((section) => section.id === "curriculum");
-  const dataChapters = dataCurriculum.blocks.find((block) => block.items.some((item) => item.id === "curriculum-data-readiness-triage"));
+  const dataCurriculum = data.sections.find((/** @type {any} */ section) => section.id === "curriculum");
+  const dataChapters = dataCurriculum.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "curriculum-data-readiness-triage"));
   assertReadableItems(dataChapters.items, "Data-engineering curriculum");
   assertIncludesSourceIds(findById(dataChapters.items, "curriculum-data-readiness-triage", "Data-engineering curriculum"), ["nist-genai-profile", "nist-zero-trust", "w3c-prov-o"], "Data-readiness triage chapter");
-  const dataPractice = data.sections.find((section) => section.id === "study-guide");
-  const dataLabs = dataPractice.blocks.find((block) => block.items.some((item) => item.id === "lab-data-readiness-triage"));
+  const dataPractice = data.sections.find((/** @type {any} */ section) => section.id === "study-guide");
+  const dataLabs = dataPractice.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "lab-data-readiness-triage"));
   assertReadableItems(dataLabs.items, "Data-engineering practice labs");
-  const dataPrinciples = data.sections.find((section) => section.id === "principles");
-  const dataPrincipleItems = dataPrinciples.blocks.find((block) => block.items.some((item) => item.id === "principle-cross-region-flow"));
+  const dataPrinciples = data.sections.find((/** @type {any} */ section) => section.id === "principles");
+  const dataPrincipleItems = dataPrinciples.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "principle-cross-region-flow"));
   assertReadableItems(dataPrincipleItems.items, "Data-engineering principles", { allowBoundaryOmission: true });
-  const dataResponsibilityBoundary = dataPrinciples.blocks.find((block) => block.items.some((item) => item.id === "data-engineering-boundary"));
+  const dataResponsibilityBoundary = dataPrinciples.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "data-engineering-boundary"));
   const dataResponsibilityItem = findById(dataResponsibilityBoundary.items, "data-engineering-boundary", "Data-engineering responsibility boundary");
   assert.ok(dataResponsibilityItem.title?.trim(), "Data-engineering responsibility handoff needs a readable title");
   assert.ok(dataResponsibilityItem.body?.trim(), "Data-engineering responsibility handoff needs readable body copy");
@@ -1048,22 +1113,24 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
   assert.match(JSON.stringify(data), /Chunking, embeddings, vectorization, or caching do not by themselves change the data classification/);
   assert.doesNotMatch(JSON.stringify(data), /Governability|withdrawable|Acceptance:/);
 
+  /** @type {any} */
   const fineTuning = englishModuleRegistry["fine-tuning"];
   assertIncludesEvidenceSources(findById(fineTuning.qa, "prove-tuning-effectiveness", "Fine-tuning questions"), ["nist-genai-profile", "openai-eval-best-practices", "hf-trl-sft-trainer"], "Fine-tuning effectiveness question");
-  const tuningCurriculum = fineTuning.sections.find((section) => section.id === "tuning-curriculum");
-  const tuningChapters = tuningCurriculum.blocks.find((block) => block.items.some((item) => item.id === "curriculum-preference-verifiable-reward"));
+  const tuningCurriculum = fineTuning.sections.find((/** @type {any} */ section) => section.id === "tuning-curriculum");
+  const tuningChapters = tuningCurriculum.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "curriculum-preference-verifiable-reward"));
   assertReadableItems(tuningChapters.items, "Fine-tuning curriculum");
   assertIncludesSourceIds(findById(tuningChapters.items, "curriculum-preference-verifiable-reward", "Fine-tuning curriculum"), ["deepseek-r1-2025", "dpo-2023", "hf-trl-dpo-trainer", "nist-genai-profile"], "Fine-tuning preference chapter");
-  const tuningPractice = fineTuning.sections.find((section) => section.id === "tuning-practice");
-  const tuningLabs = tuningPractice.blocks.find((block) => block.items.some((item) => item.id === "lab-lora-release-gate"));
+  const tuningPractice = fineTuning.sections.find((/** @type {any} */ section) => section.id === "tuning-practice");
+  const tuningLabs = tuningPractice.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "lab-lora-release-gate"));
   assertReadableItems(tuningLabs.items, "Fine-tuning practice labs");
   assertIncludesSourceIds(findById(tuningLabs.items, "lab-lora-release-gate", "Fine-tuning practice labs"), ["hf-trl-peft", "lora-2021", "qlora-2023", "nist-genai-profile", "finops-unit-economics"], "Fine-tuning LoRA release lab");
   assert.equal(fineTuning.primer.layout, "lifecycle");
-  assert.ok(fineTuning.primer.steps.some((step) => step.title === "Canary, observe, roll back, or stop"), "Fine-tuning primer must retain its release-and-rollback decision");
+  assert.ok(fineTuning.primer.steps.some((/** @type {any} */ step) => step.title === "Canary, observe, roll back, or stop"), "Fine-tuning primer must retain its release-and-rollback decision");
   const fineTuningCopy = JSON.stringify(fineTuning);
   assert.match(fineTuningCopy, /claims-intake|Completion criterion:|Define the evaluation before training/);
   assert.doesNotMatch(fineTuningCopy, /claim-intake|cost per accepted|Acceptance:|Define the exam/);
 
+  /** @type {any} */
   const mcp = englishModuleRegistry.mcp;
   assert.ok(Object.hasOwn(mcp.sources, "mcp-2026-07-28-rc"));
   ["mcp-mrtr-2026-07-28", "mcp-list-cache-2026-07-28", "mcp-http-routing-2026-07-28"].forEach((sourceId) => {
@@ -1075,18 +1142,25 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
   assert.match(mcpTasks.depth, /Server advertise it through server\/discover/);
   const mcpCopy = JSON.stringify(mcp);
   assert.match(mcpCopy, /MCP 2026-07-28 is the current final specification/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcpCopy, /input_required.*new JSON-RPC id.*inputResponses.*requestState/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcpCopy, /prompts\/get, resources\/read, and tools\/call may return input_required.*every InputRequiredResult MUST contain at least one/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcpCopy, /resultType: complete results for server\/discover.*resources\/templates\/list.*require ttlMs/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcpCopy, /input_required.*MRTR retries.*MUST NOT be cached/s);
   assert.match(mcpCopy, /private responses MUST NOT be reused across authorization contexts such as different access tokens/);
   assert.match(mcpCopy, /Mcp-Method.*Mcp-Name/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcpCopy, /notification POSTs.*core protocol defines no Client-to-Server notifications over Streamable HTTP/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcpCopy, /tasks\/get, tasks\/update, and tasks\/cancel.*Mcp-Name.*params\.taskId/s);
   assert.doesNotMatch(mcpCopy, /As of August 1, 2026|both parties can opt in/);
 });
 
 test("2026-09-04 Agent, MCP, and A2A additions preserve exact bilingual evidence mappings", () => {
+  /** @type {Record<string, { questions: Array<[string, string, string[]]>; evidenceCard: [string, string, string] }>} */
   const additions = {
     "ai-agent": {
       questions: [
@@ -1142,15 +1216,16 @@ test("2026-09-04 Agent, MCP, and A2A additions preserve exact bilingual evidence
 });
 
 test("Batch 14 English content preserves model mechanisms and predictive lifecycle controls", () => {
+  /** @type {any} */
   const llm = englishModuleRegistry.llm;
   assert.equal(llm.primer.id, "theory-atlas");
   assert.equal(llm.primer.layout, "pipeline");
   ["Tokenize the request", "Aggregate context with attention", "Select the output sequence"].forEach((title) => {
-    assert.ok(llm.primer.steps.some((step) => step.title === title && step.detail?.trim()), `LLM primer must retain ${title}`);
+    assert.ok(llm.primer.steps.some((/** @type {any} */ step) => step.title === title && step.detail?.trim()), `LLM primer must retain ${title}`);
   });
   for (const termId of llm.primer.termIds) assert.ok(llm.terms[termId], `LLM primer term must resolve: ${termId}`);
-  const llmCurriculum = llm.sections.find((section) => section.id === "curriculum");
-  const llmChapters = llmCurriculum.blocks.find((block) => block.items.some((item) => item.id === "curriculum-attention-heads"));
+  const llmCurriculum = llm.sections.find((/** @type {any} */ section) => section.id === "curriculum");
+  const llmChapters = llmCurriculum.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "curriculum-attention-heads"));
   assertReadableItems(llmChapters.items, "LLM curriculum");
   assertIncludesSourceIds(findById(llmChapters.items, "curriculum-attention-heads", "LLM curriculum"), ["transformer-2017", "gqa-2023", "attention-not-explanation-2019"], "LLM attention-heads chapter");
   assertIncludesSourceIds(findById(llmChapters.items, "curriculum-autoregressive-generation", "LLM curriculum"), ["deepseek-r1-2025", "openai-model-spec-hidden-cot", "nist-genai-profile"], "LLM autoregressive-generation chapter");
@@ -1159,17 +1234,18 @@ test("Batch 14 English content preserves model mechanisms and predictive lifecyc
   assert.match(llmCopy, /returned reasoning summary is not a verbatim chain of thought/);
   assert.doesNotMatch(llmCopy, /Ask the customer:|repeated-transfer|recognizable capability|any supported reasoning configuration|Acceptance:/);
 
+  /** @type {any} */
   const predictive = englishModuleRegistry["predictive-ai-mlops"];
   assert.equal(predictive.primer.id, "predictive-model-lifecycle");
   assert.equal(predictive.primer.layout, "lifecycle");
-  assert.ok(predictive.primer.steps.some((step) => step.title?.trim() && step.detail?.trim()), "Predictive primer must retain an inspectable lifecycle step");
-  const predictiveCurriculum = predictive.sections.find((section) => section.id === "predictive-curriculum");
-  const predictiveChapters = predictiveCurriculum.blocks.find((block) => block.items.some((item) => item.id === "predictive-chapter-feature-pipelines"));
+  assert.ok(predictive.primer.steps.some((/** @type {any} */ step) => step.title?.trim() && step.detail?.trim()), "Predictive primer must retain an inspectable lifecycle step");
+  const predictiveCurriculum = predictive.sections.find((/** @type {any} */ section) => section.id === "predictive-curriculum");
+  const predictiveChapters = predictiveCurriculum.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "predictive-chapter-feature-pipelines"));
   assertReadableItems(predictiveChapters.items, "Predictive AI curriculum");
   assertIncludesSourceIds(findById(predictiveChapters.items, "predictive-chapter-feature-pipelines", "Predictive AI curriculum"), ["aws-sagemaker-feature-store", "google-mlops-predictive-ai"], "Predictive feature-pipelines chapter");
   assertIncludesSourceIds(findById(predictiveChapters.items, "predictive-chapter-governance", "Predictive AI curriculum"), ["google-mlops-predictive-ai", "nist-genai-profile"], "Predictive governance chapter");
-  const predictivePractice = predictive.sections.find((section) => section.id === "predictive-study-guide");
-  const predictiveLabs = predictivePractice.blocks.find((block) => block.items.some((item) => item.id === "predictive-lab-drift"));
+  const predictivePractice = predictive.sections.find((/** @type {any} */ section) => section.id === "predictive-study-guide");
+  const predictiveLabs = predictivePractice.blocks.find((/** @type {any} */ block) => block.items.some((/** @type {any} */ item) => item.id === "predictive-lab-drift"));
   assertReadableItems(predictiveLabs.items, "Predictive AI practice labs");
   assertIncludesSourceIds(findById(predictiveLabs.items, "predictive-lab-leakage", "Predictive AI practice labs"), ["google-mlops-predictive-ai"], "Predictive leakage lab");
   const skewLab = findById(predictiveLabs.items, "predictive-lab-drift", "Predictive AI practice labs");
@@ -1221,7 +1297,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.match(enRag, /EnglishModulePage[^>]*reader="unified"/, "English RAG must opt into the shared task-led reader");
   assert.match(enModulePage, /DenseModuleReadingModes/);
   assert.match(enModulePage, /locale="en"/);
-  for (const groupId of buildEnglishSectionGroups(englishModuleRegistry.rag).map((group) => group.id)) {
+  for (const groupId of buildEnglishSectionGroups(englishModuleRegistry.rag).map((/** @type {any} */ group) => group.id)) {
     assert.match(enModulePage, new RegExp(`"${groupId}"`), `English RAG reader mapping must retain ${groupId}`);
   }
   const chineseUnifiedReaders = publishedModuleSlugs

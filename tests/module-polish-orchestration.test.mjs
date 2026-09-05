@@ -25,15 +25,18 @@ const cliPath = path.join(
 const gitObjectIdSource = "(?:[0-9a-f]{40}|[0-9a-f]{64})";
 const gitObjectIdPattern = new RegExp(`^${gitObjectIdSource}$`);
 
+/** @param {string} relativePath */
 async function readJson(relativePath) {
   return JSON.parse(await readFile(path.join(root, relativePath), "utf8"));
 }
 
+/** @param {string} filePath @param {unknown} value */
 async function writeJson(filePath, value) {
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+/** @param {string} command @param {string[]} args @param {Record<string, unknown>} [options] */
 function runProcess(command, args, options = {}) {
   return spawnSync(command, args, {
     encoding: "utf8",
@@ -42,6 +45,7 @@ function runProcess(command, args, options = {}) {
   });
 }
 
+/** @param {string} fixtureRoot @param {string[]} args */
 function runCli(fixtureRoot, args) {
   return runProcess(process.execPath, [cliPath, ...args], {
     cwd: fixtureRoot,
@@ -52,6 +56,7 @@ function runCli(fixtureRoot, args) {
   });
 }
 
+/** @param {any} result @param {string} label */
 function assertSucceeded(result, label) {
   assert.equal(
     result.status,
@@ -60,11 +65,16 @@ function assertSucceeded(result, label) {
   );
 }
 
+/** @param {any} result @param {RegExp} pattern @param {string} label */
 function assertRejected(result, pattern, label) {
   assert.notEqual(result.status, 0, `${label} unexpectedly succeeded`);
   assert.match(`${result.stderr}\n${result.stdout}`, pattern, `${label} returned the wrong failure`);
 }
 
+/**
+ * @param {any} t
+ * @param {{ targetedCommand?: string; fullCommand?: string; gitObjectFormat?: string | null }} [options]
+ */
 async function createFixture(t, {
   targetedCommand = "scripts/pass.mjs",
   fullCommand = "node scripts/pass.mjs",
@@ -231,11 +241,13 @@ async function createFixture(t, {
   return fixtureRoot;
 }
 
+/** @param {string} fixtureRoot */
 async function prepareFixture(fixtureRoot) {
   const prepared = runCli(fixtureRoot, ["prepare", "batch-01-foundations"]);
   assertSucceeded(prepared, "prepare fixture batch");
 }
 
+/** @param {string} fixtureRoot */
 function advanceModulesToReady(fixtureRoot) {
   assertSucceeded(
     runCli(fixtureRoot, ["set-batch", "batch-01-foundations", "in-progress", "fixture run"]),
@@ -253,6 +265,7 @@ function advanceModulesToReady(fixtureRoot) {
   }
 }
 
+/** @param {string} fixtureRoot */
 function stageFixture(fixtureRoot) {
   assertSucceeded(
     runProcess("git", ["add", "-A"], { cwd: fixtureRoot }),
@@ -262,7 +275,7 @@ function stageFixture(fixtureRoot) {
 
 test("module polish plan covers every live module exactly once", async () => {
   const plan = await readJson("knowledge/module-polish/plan.json");
-  const plannedSlugs = plan.batches.flatMap((batch) => batch.modules);
+  const plannedSlugs = plan.batches.flatMap((/** @type {any} */ batch) => batch.modules);
 
   assert.equal(
     plannedSlugs.length,
@@ -286,7 +299,7 @@ test("batch order is contiguous and dependency-safe", async () => {
     readJson("knowledge/module-polish/plan.json"),
     readJson("knowledge/schemas/module-polish-plan.schema.json"),
   ]);
-  const batchIds = new Set(plan.batches.map((batch) => batch.id));
+  const batchIds = new Set(plan.batches.map((/** @type {any} */ batch) => batch.id));
 
   assert.equal(
     schema.properties.batches.items.properties.modules.maxItems,
@@ -295,7 +308,7 @@ test("batch order is contiguous and dependency-safe", async () => {
   );
 
   assert.equal(batchIds.size, plan.batches.length, "batch IDs must be unique");
-  plan.batches.forEach((batch, index) => {
+  plan.batches.forEach((/** @type {any} */ batch, /** @type {number} */ index) => {
     assert.equal(batch.order, index, `batch ${batch.id} must retain contiguous order`);
     assert.ok(batch.modules.length >= 1, `${batch.id} must contain at least one module`);
 
@@ -311,7 +324,7 @@ test("batch order is contiguous and dependency-safe", async () => {
     );
     for (const dependencyId of batch.dependsOn) {
       assert.ok(batchIds.has(dependencyId), `${batch.id} depends on unknown batch ${dependencyId}`);
-      const dependency = plan.batches.find((candidate) => candidate.id === dependencyId);
+      const dependency = plan.batches.find((/** @type {any} */ candidate) => candidate.id === dependencyId);
       assert.ok(dependency.order < batch.order, `${batch.id} must not depend on itself or a later batch`);
     }
   });
@@ -325,16 +338,16 @@ test("RAG is the completed calibration batch and progress mirrors the plan", asy
 
   assert.equal(progress.planId, plan.planId);
   assert.deepEqual(
-    progress.batches.map((batch) => batch.id),
-    plan.batches.map((batch) => batch.id),
+    progress.batches.map((/** @type {any} */ batch) => batch.id),
+    plan.batches.map((/** @type {any} */ batch) => batch.id),
     "progress batch order must match the approved plan",
   );
 
   for (const batch of plan.batches) {
-    const tracked = progress.batches.find((candidate) => candidate.id === batch.id);
+    const tracked = progress.batches.find((/** @type {any} */ candidate) => candidate.id === batch.id);
     assert.ok(tracked, `progress is missing ${batch.id}`);
     assert.deepEqual(
-      tracked.modules.map((module) => module.slug),
+      tracked.modules.map((/** @type {any} */ module) => module.slug),
       batch.modules,
       `${batch.id} progress modules must match the plan exactly`,
     );
@@ -346,7 +359,7 @@ test("RAG is the completed calibration batch and progress mirrors the plan", asy
   assert.deepEqual(calibration.modules, ["rag"]);
   assert.equal(calibrationProgress.status, "complete");
   assert.deepEqual(
-    calibrationProgress.modules.map(({ slug, status }) => ({ slug, status })),
+    calibrationProgress.modules.map((/** @type {any} */ { slug, status }) => ({ slug, status })),
     [{ slug: "rag", status: "complete" }],
   );
 });
@@ -365,7 +378,7 @@ test("configured plan, progress, and schema paths exist", async () => {
 
 test("the live CLI validates the repository plan", async () => {
   const plan = await readJson("knowledge/module-polish/plan.json");
-  const moduleCount = plan.batches.flatMap((batch) => batch.modules).length;
+  const moduleCount = plan.batches.flatMap((/** @type {any} */ batch) => batch.modules).length;
   const result = runProcess(process.execPath, [cliPath, "validate"], { cwd: root });
   assertSucceeded(result, "module-polish validate");
   assert.equal(
@@ -411,7 +424,7 @@ test("validate refuses a plan reached through a symlink", async (t) => {
   await rename(planPath, targetPath);
   try {
     await symlink("plan.target.json", planPath);
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     if (["EACCES", "ENOSYS", "EPERM"].includes(error.code)) {
       t.skip(`symlinks are unavailable: ${error.code}`);
       return;
@@ -433,7 +446,7 @@ test("validate refuses a publication registry reached through a symlink", async 
   await rename(registryPath, targetPath);
   try {
     await symlink("module-publication.target.mjs", registryPath);
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     if (["EACCES", "ENOSYS", "EPERM"].includes(error.code)) {
       t.skip(`symlinks are unavailable: ${error.code}`);
       return;
@@ -460,9 +473,9 @@ test("brief emits only project-relative paths and rejects a module from another 
   const brief = JSON.parse(result.stdout);
   assert.equal(brief.mode, "read-only");
   assert.ok(brief.deliverableFields.includes("evidenceGapsAndPrimarySources"));
-  assert.ok(brief.evidenceGate.some((item) => /primary sources/i.test(item)));
+  assert.ok(brief.evidenceGate.some((/** @type {any} */ item) => /primary sources/i.test(item)));
   assert.ok(brief.prohibitedActions.includes("edit files"));
-  assert.deepEqual(brief.modules.map((module) => module.slug), ["llm", "data-engineering"]);
+  assert.deepEqual(brief.modules.map((/** @type {any} */ module) => module.slug), ["llm", "data-engineering"]);
   for (const moduleEntry of brief.modules) {
     for (const readPath of moduleEntry.readPaths) {
       assert.equal(path.isAbsolute(readPath), false, `brief leaked an absolute path: ${readPath}`);
@@ -521,15 +534,15 @@ test("brief and frozen baseline include content owners imported by an adapter", 
     ),
   );
   assert.ok(
-    runtime.criticalFiles.some((entry) => entry.path === ownerPath),
+    runtime.criticalFiles.some((/** @type {any} */ entry) => entry.path === ownerPath),
     "the prepared baseline must freeze the real imported content owner",
   );
   assert.ok(
-    runtime.criticalFiles.some((entry) => entry.path === "app/module-extension-views.mjs"),
+    runtime.criticalFiles.some((/** @type {any} */ entry) => entry.path === "app/module-extension-views.mjs"),
     "the prepared baseline must freeze shared public module views",
   );
   assert.ok(
-    runtime.criticalFiles.some((entry) => entry.path === "app/knowledge-relations.mjs"),
+    runtime.criticalFiles.some((/** @type {any} */ entry) => entry.path === "app/knowledge-relations.mjs"),
     "the prepared baseline must freeze shared public knowledge relations",
   );
 
@@ -569,7 +582,7 @@ test("content-owner discovery refuses a symlinked owner", async (t) => {
   await rename(ownerPath, targetPath);
   try {
     await symlink("module-briefs-fixture.target.mjs", ownerPath);
-  } catch (error) {
+  } catch (/** @type {any} */ error) {
     if (["EACCES", "ENOSYS", "EPERM"].includes(error.code)) {
       t.skip(`symlinks are unavailable: ${error.code}`);
       return;
@@ -772,7 +785,7 @@ test("a verified batch can reopen only with a recovery note", async (t) => {
   );
   assert.equal(progress.batches[1].status, "in-progress");
   assert.deepEqual(
-    progress.batches[1].modules.map((module) => module.status),
+    progress.batches[1].modules.map((/** @type {any} */ module) => module.status),
     ["ready", "ready"],
   );
 });

@@ -65,6 +65,7 @@ async function render(path = "/") {
   );
 }
 
+/** @param {string} path */
 async function renderHtml(path) {
   const response = await render(path);
   assert.equal(response.status, 200, `${path} 应可正常访问`);
@@ -72,14 +73,17 @@ async function renderHtml(path) {
   return response.text();
 }
 
+/** @param {string} value */
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/** @param {string} value */
 function escapeHtmlText(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 }
 
+/** @param {string} html @param {string} label */
 function serverRenderedReadingPanels(html, label) {
   const panels = [...html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bmoduleModePanel\b[^"]*")(?=[^>]*\bdata-reading-mode="([^"]+)")[^>]*>/g)].map(([tag, mode]) => ({ tag, mode }));
   assert.ok(panels.length > 0, `${label} must declare at least one reading task`);
@@ -90,6 +94,7 @@ function serverRenderedReadingPanels(html, label) {
   return panels;
 }
 
+/** @param {string} html @param {string} mode @param {string} label */
 function readingPanelHtml(html, mode, label) {
   const marker = `data-reading-mode="${mode}"`;
   const start = html.indexOf(marker);
@@ -98,6 +103,7 @@ function readingPanelHtml(html, mode, label) {
   return html.slice(start, next >= 0 ? next : undefined);
 }
 
+/** @param {any[]} modules @param {Record<string, any>} terms */
 function deriveSharedTermModuleLinks(modules, terms) {
   const links = [];
 
@@ -114,12 +120,14 @@ function deriveSharedTermModuleLinks(modules, terms) {
   return links.sort((left, right) => right.termIds.length - left.termIds.length || left.id.localeCompare(right.id));
 }
 
+/** @param {string} html @param {string} path */
 function extractControlDataPlane(html, path) {
   const controlDataPlane = html.match(/<section class="controlDataPlane"[\s\S]*?<\/section>/)?.[0];
   assert.ok(controlDataPlane, `${path} 必须渲染控制面步骤区`);
   return controlDataPlane;
 }
 
+/** @param {string} html @param {string} path */
 function assertValidGridSpans(html, path) {
   const spanDeclarations = [...html.matchAll(/--(?:module|concept|mechanic|balanced|evidence|qa-evidence|related|brief|reference|result|search)-span:([^;"']+)/g)];
 
@@ -138,26 +146,30 @@ const publishedModules = publishedModuleRegistry.map((module) => {
   return { ...module, id: module.slug, cards: content.evidenceCards, qa: content.qa, deepDives: content.deepDives };
 });
 
+/** @param {string} slug */
 function getPublishedModule(slug) {
   const publishedModule = publishedModules.find((candidate) => candidate.slug === slug);
   assert.ok(publishedModule, `缺少发布模块：${slug}`);
   return publishedModule;
 }
 
+/** @param {{ cards: any[]; qa: any[]; deepDives: any[] }} moduleContent */
 function collectModuleSourceIds({ cards, qa, deepDives }) {
   return new Set([
     ...cards.map((card) => card.sourceId),
-    ...qa.flatMap((item) => item.evidence.map((reference) => reference.sourceId)),
+    ...qa.flatMap((item) => item.evidence.map((/** @type {any} */ reference) => reference.sourceId)),
     ...deepDives.flatMap((block) => block.sourceIds),
   ]);
 }
 
+/** @param {string | undefined} value @param {string} label @param {(v: string) => string | null} formatter @param {string} prefix */
 function assertOptionalContentDate(value, label, formatter, prefix) {
   if (value == null) return;
   assert.ok(isValidContentUpdatedAt(value), `${label} 必须是策略生效后的有效日期：${value}`);
   assert.equal(formatter(value), `${prefix} ${value}`);
 }
 
+/** @param {{ addedAt?: string | null; q: string }[]} qa */
 function legacyUndatedQuestionSetSha256(qa) {
   const identities = qa
     .filter((item) => !item.addedAt)
@@ -166,6 +178,7 @@ function legacyUndatedQuestionSetSha256(qa) {
   return createHash("sha256").update(JSON.stringify(identities), "utf8").digest("hex");
 }
 
+/** @param {any} item @param {string} label */
 function assertNoItemDateMetadata(item, label) {
   assert.equal(Object.hasOwn(item, "updatedAt"), false, `${label} 不得显示逐项最近更新时间`);
   assert.equal(Object.hasOwn(item, "addedAt"), false, `${label} 不得误用新增问答日期`);
@@ -212,7 +225,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
       assert.equal(Object.hasOwn(item, "updatedAt"), false, `${publication.slug} / ${item.q} 不得把既有题改写误标为 updatedAt`);
       assertOptionalContentDate(item.addedAt, `${publication.slug} / ${item.q} / addedAt`, formatQuestionAddedAt, "新增于");
       if (requiresInitialQuestionDates) {
-        assert.ok(item.addedAt >= publication.introducedAt, `${publication.slug} 在日期策略生效后引入，问答 addedAt 不得早于 introducedAt`);
+        assert.ok(/** @type {string} */ (item.addedAt) >= publication.introducedAt, `${publication.slug} 在日期策略生效后引入，问答 addedAt 不得早于 introducedAt`);
       }
     }
     assert.equal(
@@ -258,6 +271,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
   assert.doesNotMatch(components, /block\.updatedAt|chapter\.updatedAt/);
   assert.match(questionIndex, /addedAt: item\.addedAt \?\? null/);
   assert.match(questionsPage, /value=\{item\.addedAt \?\? undefined\}/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.questionAddedAt[^}]*font-size:\s*12px/s);
   assert.doesNotMatch(styles, /\.deepDiveUpdatedAt/);
   assert.match(v2Styles, /\.qaAddedAt/);
@@ -349,7 +363,7 @@ test("homepage leads from scenario to questions with links to every independent 
 test("coding agent landscape separates product facts, benchmark evidence, and freshness", async () => {
   const html = await renderHtml("/coding-agents");
   const claims = JSON.parse(await readFile(new URL("../knowledge/claims/index.json", import.meta.url), "utf8"));
-  const claimIds = new Set(claims.items.map((item) => item.id));
+  const claimIds = new Set(claims.items.map((/** @type {any} */ item) => item.id));
 
   assert.equal(codingAgentLandscapePolicy.productCount, codingAgentProducts.length);
   assert.equal(codingAgentLandscapePolicy.reviewCadenceDays, 30);
@@ -457,8 +471,8 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
     "aa-models-2026-08-13", "aa-methodology-v4-1-1", "terminal-bench-v2-1", "scicode",
     "scicode-verified-2026", "gdpval-aa-v2", "tau3-banking",
   ];
-  const componentAverage = (left, right) => left === null || right === null ? null : Number(((left + right) / 2).toFixed(2));
-  const assertScoreRange = (value, label) => {
+  const componentAverage = (/** @type {number | null} */ left, /** @type {number | null} */ right) => left === null || right === null ? null : Number(((left + right) / 2).toFixed(2));
+  const assertScoreRange = (/** @type {number | null} */ value, /** @type {string} */ label) => {
     if (value !== null) assert.ok(value >= 0 && value <= 100, `${label} 越界`);
   };
 
@@ -505,9 +519,10 @@ test("model-radar snapshots keep the candidate pool, formulas, versions, and evi
     assert.equal(new Set(model.sourceRefs).size, model.sourceRefs.length, `${model.id} 来源重复`);
     assert.deepEqual(model.sourceRefs, requiredSourceRefs, `${model.id} 必须覆盖完整来源集合`);
     for (const sourceRef of model.sourceRefs) {
-      assert.ok(modelRadarSources[sourceRef], `${model.id} 来源键不可解析：${sourceRef}`);
-      assert.equal(modelRadarSources[sourceRef].asOf, snapshot.asOf, `${sourceRef} 必须属于同一捕获快照`);
-      assert.ok(sourceLedger[modelRadarSources[sourceRef].sourceId], `${sourceRef} 必须解析到 canonical sourceLedger`);
+      const sourceEntry = modelRadarSources[/** @type {any} */ (sourceRef)];
+      assert.ok(sourceEntry, `${model.id} 来源键不可解析：${sourceRef}`);
+      assert.equal(sourceEntry.asOf, snapshot.asOf, `${sourceRef} 必须属于同一捕获快照`);
+      assert.ok(sourceLedger[sourceEntry.sourceId], `${sourceRef} 必须解析到 canonical sourceLedger`);
     }
   }
 
@@ -538,10 +553,14 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   assert.match(moduleHtml, /系统学习/);
   assert.match(moduleHtml, /现场查证/);
   assert.match(readingModeSource, /String\(index \+ 1\)\.padStart\(2, "0"\)/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(readingModeSource, /ArrowLeft.*ArrowRight.*Home.*End/s);
   assert.match(globalStyles, /--readable:\s*820px/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.moduleResult\s*\{[^}]*display:\s*grid[^}]*grid-template-areas:/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.moduleSearch\s*\{[^}]*grid-template-columns:/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /@media \(max-width:\s*720px\)[\s\S]*\.topbar\s*\{[^}]*flex-wrap:\s*wrap/s);
   assert.doesNotMatch(styles, /url\s*\(/i, "V3 视觉系统不得依赖远程或运行时图片资源");
   assert.doesNotMatch(styles, /\/(?:Users|home)\//, "V3 样式不得包含本机绝对路径");
@@ -648,8 +667,8 @@ test("public dynamic knowledge graph and backend coverage gates derive from stab
     "全局总览必须完整呈现模块与术语注册表派生出的每一对共享术语关系",
   );
 
-  for (const typeId of ["primary-owner", "contextual-use", ...allowedExplicitTypes]) {
-    assert.ok(knowledgeRelationTypes[typeId], `知识图谱缺少关系类型说明：${typeId}`);
+  for (const typeId of /** @type {any[]} */ (["primary-owner", "contextual-use", ...allowedExplicitTypes])) {
+    assert.ok(knowledgeRelationTypes[/** @type {keyof typeof knowledgeRelationTypes} */ (typeId)], `知识图谱缺少关系类型说明：${typeId}`);
   }
 
   const html = await renderHtml("/knowledge-graph");
@@ -687,10 +706,15 @@ test("evidence cards keep facts, findings, boundaries, and sources readable", as
   const sourceIndex = componentSource.indexOf("对应来源 ·");
   assert.ok(metricIndex >= 0 && metricIndex < findingIndex && findingIndex < boundaryIndex && boundaryIndex < sourceIndex, "证据卡阅读顺序必须是事实标签、结论、边界、来源");
 
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(22px,2vw,30px\)/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(globalStyles, /\.metricFinding\s*\{[^}]*font-size:\s*16px/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(globalStyles, /\.metricBoundary\s*\{[^}]*font-size:\s*14px/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(globalStyles, /\.metricCard\s*\{[^}]*min-height:\s*0/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.doesNotMatch(globalStyles, /\.metric\s*\{[^}]*font-size:\s*clamp\(4\dpx/s, "证据事实标签不得恢复为封面级字号");
 });
 
@@ -754,10 +778,12 @@ test("focused pilots use relationship-driven reading paths instead of standalone
   assert.match(mcp, /input_required/);
   assert.match(mcp, /requestState/);
   assert.match(mcp, /server\/discover、tools\/list、prompts\/list、resources\/list、resources\/templates\/list 与 resources\/read 的 resultType: (?:&quot;|\")complete(?:&quot;|\") 结果必须携带/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcp, /resultType: (?:&quot;|\")input_required(?:&quot;|\").*MRTR 重试也不得缓存/s);
   assert.match(mcp, /Mcp-Method/);
   assert.match(mcp, /Mcp-Name/);
   assert.match(mcp, /notification POST 的该头要求/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcp, /tasks\/get、tasks\/update 与 tasks\/cancel.*params\.taskId/s);
   assert.doesNotMatch(mcp, /会话、能力协商与结构化消息|状态变更用 Tool|只读内容优先 Resource/);
   assert.doesNotMatch(mcp, /class="mcpResponsibilityMap"/);
@@ -860,7 +886,9 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.match(relationSource, /<caption className="srOnly">\{block\.title\}<\/caption>/, "关系矩阵必须声明隐藏表名");
   assert.equal((relationSource.match(/scope="col"/g) ?? []).length, 4, "关系矩阵四列必须声明列标题");
   assert.match(relationSource, /<th scope="row"><button/, "关系矩阵对象列必须声明行标题");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(fieldbookStyles, /\.moduleReadingExperience\[data-module-reader="unified"\]\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 不能裁掉 sticky 元素");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(fieldbookStyles, /\[data-module-content="unified"\] \.moduleReadingHost > \.section\s*\{[^}]*overflow:\s*visible;/s, "统一 reader 的正文祖先不能破坏 sticky 定位");
   assert.doesNotMatch(denseStyles, /#fff\b/, "统一 reader 必须消费共享 surface token");
   const ragTables = ragRoute.match(/<table>/g) ?? [];
@@ -1142,7 +1170,7 @@ test("standard brief modules preserve their authored content in the unified read
     for (const question of englishModule.qa) {
       assert.match(enHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `${moduleCase.slug} must preserve ${question.id}`);
     }
-    for (const id of [...buildEnglishSectionGroups(englishModule).map((group) => group.id), "evidence", "qa", "related-modules"]) {
+    for (const id of [...buildEnglishSectionGroups(englishModule).map((/** @type {any} */ group) => group.id), "evidence", "qa", "related-modules"]) {
       assert.match(enHtml, new RegExp(`<section aria-labelledby="${id}-section-title"[^>]*id="${id}"`), `${moduleCase.slug} #${id} must own an accessible heading`);
       assert.equal((enHtml.match(new RegExp(`id="${id}-section-title"`, "g")) ?? []).length, 1, `${moduleCase.slug} #${id} heading ID must be unique`);
     }
@@ -1195,7 +1223,7 @@ test("AI Agent and MCP preserve complete authored packs in the unified English r
     assert.match(enHtml, new RegExp(`id="${moduleCase.enPrimerId}"`));
     const englishModule = englishModuleRegistry[moduleCase.slug];
     assert.ok(englishModule, `${moduleCase.slug} must have an English module`);
-    for (const id of [...buildEnglishSectionGroups(englishModule).map((group) => group.id), "evidence", "qa", "related-modules"]) {
+    for (const id of [...buildEnglishSectionGroups(englishModule).map((/** @type {any} */ group) => group.id), "evidence", "qa", "related-modules"]) {
       assert.equal((enHtml.match(new RegExp(`id="${id}"`, "g")) ?? []).length, 1, `${moduleCase.slug} 必须完整保留 #${id}`);
     }
     assert.equal((enHtml.match(/<article class="metricCard[^"]*" id="evidence-[^"]+"/g) ?? []).length, englishModule.evidenceCards.length);
@@ -1391,6 +1419,7 @@ test("registered core knowledge views render as web-native visuals without makin
 
 test("content representation is assessed per relationship without a visual-count quota", async () => {
   assert.deepEqual(Object.keys(moduleRepresentationAssessment), publishedModuleSlugs);
+  /** @type {Record<string, string>} */
   const dedicatedDeepDiveRenderers = {
     mcp: "mcpArchitectureExplorer",
   };
@@ -1544,7 +1573,7 @@ test("English RAG renders its complete dedicated reader and its source ledger ca
   }
   for (const card of visibleEvidence) assert.match(ragHtml, new RegExp(`id="evidence-${escapeRegExp(card.id)}"`), `RAG must render its ${card.id} evidence card`);
   for (const question of visibleQuestions) assert.match(ragHtml, new RegExp(`id="qa-${escapeRegExp(question.id)}"`), `RAG must render its ${question.id} question`);
-  const primerTarget = visibleGroups.find((group) => /(?:production|deep)/.test(group.id))?.id ?? visibleGroups[0]?.id;
+  const primerTarget = visibleGroups.find((/** @type {any} */ group) => /(?:production|deep)/.test(group.id))?.id ?? visibleGroups[0]?.id;
   assert.ok(primerTarget);
   assert.match(ragHtml, new RegExp(`href="#${escapeRegExp(primerTarget)}"`));
   assert.equal((ragHtml.match(/class="qaItem"/g) ?? []).length, rag.qa.length);
@@ -1661,17 +1690,22 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
 
   assert.match(solution, /data-knowledge-view="decision-blueprint"/);
   assert.match(solution, /把业务目标变成可以验收的方案/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(solution, /业务结果.*数据与证据.*模型判断.*编排与状态.*规则与动作.*人工责任.*持续评估与日常运营.*经济与退出/s);
   assert.match(solution, /TCO/);
   assert.match(solution, /七类场景，七套验收重点/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(solution, /客服.*企业搜索.*内容生成.*AI Coding.*数字人.*ChatBI.*会议助手/s);
   assert.match(solution, /到问题库继续筛选/);
   assert.doesNotMatch(solution, /需求决策契约/);
 
   assert.match(security, /data-knowledge-view="threat-path"/);
   assert.match(security, /沿一条攻击路径看清每道防线/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(security, /不可信内容进入.*进入模型上下文.*应用决定是否执行.*外部系统状态变化/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(security, /IAM.*ACL.*DLP/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(security, /指令.*数据.*模型与组件.*工具与 Agent.*输出与运营/s);
   assert.match(security, /恶意简历进入招聘 Agent 后，如何限制权限/);
   assert.match(security, /ATS 动作由确定性门控制/);
@@ -1682,10 +1716,13 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.match(tuning, /data-knowledge-view="tuning-lifecycle"/);
   assert.match(tuning, /微调适用性与完整发布过程/);
   assert.match(tuning, /理赔材料初审/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(tuning, /Prompt \/ Schema.*RAG.*Tool \/ 规则.*Fine-tuning.*换基础模型/s);
   assert.match(tuning, /权威状态、规则或动作/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(tuning, /SFT.*PEFT.*LoRA.*QLoRA.*DPO/s);
   assert.match(tuning, /三种参数更新方式/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(tuning, /数据.*训练.*任务.*服务/s);
   assert.match(tuning, /每个被接受初审成本|停止条件/);
   assert.match(tuning, /模型不获得赔付授权|最终批准归授权人员/);
@@ -1698,18 +1735,25 @@ test("solution, security, and fine-tuning use distinct problem-specific knowledg
   assert.doesNotMatch(tuning, /微调闭环|反馈闭环/);
 
   const solutionCurriculum = moduleCurriculumContent["solution-patterns"].chapters.map((chapter) => chapter.title).join("；");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(solutionCurriculum, /最小充分闭环.*责任架构.*客服.*企业搜索.*PoC 契约.*资产交接/s, "场景方案课程应覆盖从方案判断到交付交接的实际问题");
   const tuningCurriculum = moduleCurriculumContent["fine-tuning"].chapters.map((chapter) => chapter.title).join("；");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(tuningCurriculum, /失败分流.*数据.*训练曲线.*偏好优化.*验收.*Adapter/s, "微调课程应覆盖方法选择、数据、训练诊断与发布制品");
   const securityCurriculum = moduleCurriculumContent.security.chapters.map((chapter) => chapter.title).join("；");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(securityCurriculum, /不可接受损失.*恶意简历.*候选人数据.*ATS 业务授权.*供应链.*验证控制措施.*事件证据/s, "安全课程必须覆盖招聘场景的攻击路径、授权、验证与恢复");
-  const securityRoute = moduleLearningContent.security.route.map((step) => step.title).join("；");
+  const securityRoute = moduleLearningContent.security.route.map((/** @type {any} */ step) => step.title).join("；");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(securityRoute, /损失和攻击路径.*内容到权限.*控制和交接.*遏制与恢复/s, "安全学习路线必须形成从损失到恢复的闭环");
-  const securityLabs = moduleLearningContent.security.labs.map((lab) => lab.title).join("；");
+  const securityLabs = moduleLearningContent.security.labs.map((/** @type {any} */ lab) => lab.title).join("；");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(securityLabs, /恶意简历.*向量数据隔离与删除.*ATS 越权和结果未知/s, "安全实战必须分别验证威胁、数据边界和事件恢复");
-  const solutionRoute = moduleLearningContent["solution-patterns"].route.map((step) => step.title).join("；");
+  const solutionRoute = moduleLearningContent["solution-patterns"].route.map((/** @type {any} */ step) => step.title).join("；");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(solutionRoute, /结果.*最小充分闭环.*责任架构.*阶段.*单位经济/s, "场景方案的路线应推进到运营与退出，而非重复同一判断");
-  const tuningLabs = moduleLearningContent["fine-tuning"].labs.map((lab) => lab.title).join("；");
+  const tuningLabs = moduleLearningContent["fine-tuning"].labs.map((/** @type {any} */ lab) => lab.title).join("；");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(tuningLabs, /理赔初审.*PEFT.*训练数据.*训练曲线/s, "微调实战应覆盖路线选择、发布、数据和诊断，而非用数量凑齐栏目");
 });
 
@@ -1790,6 +1834,7 @@ test("Agent route explains the controlled loop, cloud runtime, and evidence-back
   assert.match(html, /思考 · Reason/);
   assert.match(html, /行动 · Act/);
   assert.match(html, /观察 · Observe/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /感知（Perceive）.*观察（Observe）/s);
   assert.match(html, /计划、决策摘要、工具调用、环境结果、策略判断与停止原因/);
   assert.match(html, /规划、记忆与工具：让四个动作持续运转/);
@@ -1867,13 +1912,20 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /模型差异、提示版本与发布控制/);
   assert.match(html, /提示词工程与云服务机会/);
   assert.match(html, /失败症状与处理层/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /冻结基线.*控制变更.*离线回归.*灰度观察.*回滚与运营/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /观察到的失败.*优先路线.*主要责任模块/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /资格、限额或状态转换.*确定性规则与授权.*应用工作流/s);
   assert.match(html, /结构正确、事实正确、业务有效和获得授权必须分开验收/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /事实与证据正确.*业务有效.*授权有效.*工具契约有效.*事务可接受/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /Release Bundle 是本知识库.*推荐的控制模式.*不是跨厂商标准/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(englishHtml, /Eligibility, limits, or state transition.*Deterministic rules and authorization.*Application workflow/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(englishHtml, /Factual and evidence correctness.*Business validity.*Authorization validity.*Tool-contract validity.*Transaction acceptance/s);
   assert.match(englishHtml, /Release Bundle is this fieldbook.{0,120}recommended[\s\S]*not a cross-provider standard/i);
   assert.match(labSource, /输出事故事实、缺件、证据坐标和初审说明草稿[\s\S]*不会作最终赔付裁决/);
@@ -1886,10 +1938,11 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(html, /Prompt 装配实验/);
   assert.match(html, /坏提示 Bad Prompt/);
 
+  /** @type {any} */
   const caseStudy = moduleContentRegistry["prompt-engineering"].caseStudy;
   assert.ok(caseStudy, "Prompt 应把贯穿案例登记为可审计 caseStudy");
-  assert.ok(caseStudy.stages.some((stage) => stage.title?.trim() && stage.detail?.trim()), "Prompt 案例需要至少一个可复核阶段");
-  const failureRouteNames = caseStudy.failureRoutes.map((route) => route.route);
+  assert.ok(caseStudy.stages.some((/** @type {any} */ stage) => stage.title?.trim() && stage.detail?.trim()), "Prompt 案例需要至少一个可复核阶段");
+  const failureRouteNames = caseStudy.failureRoutes.map((/** @type {any} */ route) => route.route);
   for (const route of [
     "Prompt、示例与 Schema",
     "RAG 与证据时效",
@@ -1916,6 +1969,7 @@ test("Model landscape route uses the claim-intake case to prove selection and ex
 
   assert.match(html, /data-knowledge-view="selection-coordinate"/);
   assert.match(html, /模型选型的业务损失坐标/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /任务与损失.*硬门与身份.*同条件试点.*组合、发布与退出/s);
   assert.match(html, /模型始终不拥有赔付批准权/);
   assert.match(html, /建立理赔初审候选可行域/);
@@ -2059,12 +2113,14 @@ test("Batch 09 routes render platform-product and minimum-sufficient-loop eviden
   assert.match(solution, /最小充分闭环/);
   assert.match(solution, /RAG、Agent、MCP、A2A、Gateway 或平台/);
   assert.match(solution, /八层责任/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(solution, /PoC 证伪.*Pilot 验证.*Production 验证/s);
   assert.match(solutionEn, /Minimum sufficient loop/);
   assert.match(solutionEn, /RAG for current attributable knowledge/);
   assert.match(solutionEn, /eight responsibility layers/);
   assert.match(solutionEn, /Worked example: verifiable customer-service resolution/);
   assert.match(solutionEn, /resolved cases, human transfers, abandonment, false commitments, and rework/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(solutionEn, /Go, Hold, No-Go.*Exit/is);
 });
 
@@ -2079,18 +2135,18 @@ test("Batch 09 control views expose every step and focused search entries resolv
 
   const platformView = moduleExtensionViews["ai-infra-platform"];
   const chinesePlatformView = getModuleExtensionView("ai-infra-platform");
-  const englishPlatformPrinciples = englishModuleRegistry["ai-infra-platform"].sections
-    .find((section) => section.id === "principles")
-    ?.blocks.find((block) => block.type === "cards")
-    ?.items ?? [];
+  const englishPlatformPrinciples = /** @type {any} */ (
+    englishModuleRegistry["ai-infra-platform"].sections
+      .find((/** @type {any} */ section) => section.id === "principles")
+  )?.blocks.find((/** @type {any} */ block) => block.type === "cards")?.items ?? [];
   const chineseControlDataPlane = extractControlDataPlane(platform, "/modules/ai-infra-platform");
   const englishControlDataPlane = extractControlDataPlane(platformEn, "/en/modules/ai-infra-platform");
 
   assert.ok(platformView, "ai-infra-platform 必须注册控制面知识视图");
   assert.ok(chinesePlatformView, "ai-infra-platform 必须提供中文控制面知识视图");
   assert.deepEqual(
-    chinesePlatformView.steps.map(({ code, title }) => ({ code, title })),
-    platformView.steps.map(({ code, title }) => ({ code, title })),
+    chinesePlatformView.steps.map((/** @type {any} */ { code, title }) => ({ code, title })),
+    platformView.steps.map((/** @type {any} */ { code, title }) => ({ code, title })),
     "中文控制面步骤必须完整呈现注册表中的 code 与标题",
   );
   assert.equal(englishPlatformPrinciples.length, platformView.steps.length, "英文控制面步骤必须覆盖注册表定义的全部阶段");
@@ -2137,10 +2193,10 @@ test("Batch 09 control views expose every step and focused search entries resolv
   const enSearchIndex = buildKnowledgeSearchEntries("en");
   const solutionGroups = buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]);
   const solutionSectionEntries = enSearchIndex.filter((entry) => entry.type === "Module section" && entry.id.startsWith("section-solution-patterns-"));
-  const expectedSolutionItems = solutionGroups.flatMap((group) => group.sections.flatMap((section) => section.blocks.flatMap((block) => block.items))).length;
+  const expectedSolutionItems = solutionGroups.flatMap((/** @type {any} */ group) => group.sections.flatMap((/** @type {any} */ section) => section.blocks.flatMap((/** @type {any} */ block) => block.items))).length;
   assert.equal(solutionSectionEntries.length, expectedSolutionItems, "solution-patterns search must keep every section item");
-  assert.ok(solutionGroups.some((group) => group.role === "learning"));
-  assert.ok(solutionGroups.some((group) => group.role === "curriculum"));
+  assert.ok(solutionGroups.some((/** @type {any} */ group) => group.role === "learning"));
+  assert.ok(solutionGroups.some((/** @type {any} */ group) => group.role === "curriculum"));
   assert.match(solutionEn, /id="curriculum"/);
   assert.match(solutionEn, /id="study-guide"/);
   assert.equal((solutionEn.match(/class="qaItem"/g) ?? []).length, englishModuleRegistry["solution-patterns"].qa.length);
@@ -2157,6 +2213,7 @@ test("LLM foundations questions cover the theory readers need for architecture d
   assert.match(html, /同一段中文、英文或代码，为什么在不同模型里占用的 Token 数不同/);
   assert.match(html, /模型输入里的 Embedding，和向量数据库里的 Embedding 是一回事吗/);
   assert.match(html, /预训练主要学习预测下一个 Token，模型为什么后来会遵循指令/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(html, /参数量越大，模型能力就一定越强吗.*MoE/s);
   assert.match(html, /KV Cache 是什么，为什么长上下文会迅速吃掉并发容量/);
 });
@@ -2277,9 +2334,13 @@ test("all public page families use the shared A / Mist design contract", async (
   assert.doesNotMatch(v3Styles, /^:root\s*\{/m, "V3 不应重新定义全站 token");
   assert.doesNotMatch(homeStyles, /\.fieldbookHomeZh\b/, "首页设计应同时服务中英文页面");
   assert.match(homeStyles, /\.fieldbookHome\s*\{/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2,\s*\.fieldbookHome \.timeBudgetPathsV2\s*\{[^}]*max-width:\s*1360px;[^}]*border:\s*0;[^}]*border-radius:\s*16px;/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2::before,\s*\.fieldbookHome \.timeBudgetPathsV2::before,/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(homeStyles, /\.fieldbookHome \.learningPathsV2::after,\s*\.fieldbookHome \.timeBudgetPathsV2::after,/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.doesNotMatch(homeStyles, /\.fieldbookHome \.timeBudgetPathsV2::before,\s*\.fieldbookHome \.timeBudgetPathsV2::after\s*\{\s*display:\s*none;/s);
   assert.match(designLanguage, /全站设计语言：雾灰青 A/);
   assert.match(designLanguage, /动态知识关系图/);
@@ -2287,6 +2348,7 @@ test("all public page families use the shared A / Mist design contract", async (
     v3Styles.indexOf(".fieldbookTheme.modulePage .tableWrap {") > v3Styles.indexOf(".fieldbookTheme.modulePage :where(.conceptGrid, .mechanicGrid, .tableWrap"),
     "模块表格的横向滚动覆盖必须位于通用卡片裁剪规则之后",
   );
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v3Styles, /\.fieldbookTheme\.modulePage \.tableWrap\s*\{[^}]*overflow-x:\s*auto;/s);
 });
 
@@ -2445,7 +2507,7 @@ test("every published module claim resolves to a unique, grouped, and verified s
       freshness.status !== "invalid" && freshness.status !== "future",
       `来源日期格式必须合法且不得在未来：${sourceId} / ${freshness.status} / ${freshness.ageDays ?? "?"} 天`,
     );
-    assert.ok([30, 90, 180].includes(freshness.reviewCycleDays));
+    assert.ok([30, 90, 180].includes(/** @type {number} */ (freshness.reviewCycleDays)));
     assert.ok(source.grade && source.kind && source.shortTitle && source.title && source.note);
     assert.ok(allowedGrades.has(source.grade), `未知证据类别：${sourceId} / ${source.grade}`);
   }
@@ -2553,19 +2615,19 @@ test("every shared module has a source-backed learning route and practical labs"
 
   for (const publishedModuleEntry of sharedModules) {
     const learning = requireModuleLearning(publishedModuleEntry.slug);
-    const curriculum = requireModuleCurriculum(publishedModuleEntry.slug);
+    const curriculum = /** @type {any} */ (requireModuleCurriculum(publishedModuleEntry.slug));
     const referenceModule = referenceModules.find((candidate) => candidate.id === publishedModuleEntry.slug);
     assert.ok(referenceModule, `学习路线缺少 Reference 分组：${publishedModuleEntry.slug}`);
     const moduleSourceIds = new Set(referenceModule.sourceIds);
 
-    assert.ok(learning.outcomes.some((outcome) => outcome.trim()), `学习结果不足：${publishedModuleEntry.slug}`);
-    assert.ok(learning.route.some((step) => step.title.trim() && step.learn.trim() && step.checkpoint.trim()), `学习路线缺少可复核步骤：${publishedModuleEntry.slug}`);
-    assert.equal(new Set(learning.route.map((step) => step.title)).size, learning.route.length, `学习路线不应重复同一判断：${publishedModuleEntry.slug}`);
-    assert.ok(learning.labs.some((lab) => lab.title.trim() && lab.deliverable.trim()), `实战任务不足：${publishedModuleEntry.slug}`);
-    assert.equal(new Set(learning.labs.map((lab) => lab.title)).size, learning.labs.length, `实战任务不应靠同义改写重复：${publishedModuleEntry.slug}`);
+    assert.ok(learning.outcomes.some((/** @type {any} */ outcome) => outcome.trim()), `学习结果不足：${publishedModuleEntry.slug}`);
+    assert.ok(learning.route.some((/** @type {any} */ step) => step.title.trim() && step.learn.trim() && step.checkpoint.trim()), `学习路线缺少可复核步骤：${publishedModuleEntry.slug}`);
+    assert.equal(new Set(learning.route.map((/** @type {any} */ step) => step.title)).size, learning.route.length, `学习路线不应重复同一判断：${publishedModuleEntry.slug}`);
+    assert.ok(learning.labs.some((/** @type {any} */ lab) => lab.title.trim() && lab.deliverable.trim()), `实战任务不足：${publishedModuleEntry.slug}`);
+    assert.equal(new Set(learning.labs.map((/** @type {any} */ lab) => lab.title)).size, learning.labs.length, `实战任务不应靠同义改写重复：${publishedModuleEntry.slug}`);
     assert.ok(curriculum.lead.trim(), `课程地图导语不足：${publishedModuleEntry.slug}`);
-    assert.ok(curriculum.chapters.some((chapter) => chapter.title.trim()), `课程地图覆盖不足：${publishedModuleEntry.slug}`);
-    assert.equal(new Set(curriculum.chapters.map((chapter) => chapter.title)).size, curriculum.chapters.length, `课程主题不应重复：${publishedModuleEntry.slug}`);
+    assert.ok(curriculum.chapters.some((/** @type {any} */ chapter) => chapter.title.trim()), `课程地图覆盖不足：${publishedModuleEntry.slug}`);
+    assert.equal(new Set(curriculum.chapters.map((/** @type {any} */ chapter) => chapter.title)).size, curriculum.chapters.length, `课程主题不应重复：${publishedModuleEntry.slug}`);
 
     for (const chapter of curriculum.chapters) {
       assert.ok(chapter.title && chapter.en && chapter.explanation && chapter.decision && chapter.boundary, `课程主题不完整：${publishedModuleEntry.slug}`);
@@ -2582,7 +2644,7 @@ test("every shared module has a source-backed learning route and practical labs"
     }
     for (const lab of learning.labs) {
       assert.ok(lab.title && lab.scenario && lab.deliverable && lab.acceptance, `实战任务不完整：${publishedModuleEntry.slug}`);
-      assert.ok(lab.tasks.some((task) => task.trim()), `实战任务缺少可执行动作：${publishedModuleEntry.slug} / ${lab.title}`);
+      assert.ok(lab.tasks.some((/** @type {any} */ task) => task.trim()), `实战任务缺少可执行动作：${publishedModuleEntry.slug} / ${lab.title}`);
       assert.equal(new Set(lab.tasks).size, lab.tasks.length, `实战任务不应重复同一个动作：${publishedModuleEntry.slug} / ${lab.title}`);
       assert.ok(lab.sourceIds.length > 0, `实战任务缺少依据：${publishedModuleEntry.slug} / ${lab.title}`);
       assert.equal(new Set(lab.sourceIds).size, lab.sourceIds.length, `实战任务来源重复：${publishedModuleEntry.slug} / ${lab.title}`);
@@ -2685,9 +2747,13 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(moduleComponents, /"--qa-evidence-span": gridSpan\(row\.length\)/);
   assert.match(moduleComponents, /data-importance="critical"/);
   assert.match(moduleComponents, /className="balancedGridCell"/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.mechanicGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.balancedGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.sourceItem\s*\{[^}]*position:\s*relative/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.sourceAnchorAlias\s*\{[^}]*position:\s*absolute/s);
   for (const [source, variable] of [[styles, "module"], [styles, "concept"], [styles, "mechanic"], [styles, "balanced"], [styles, "evidence"], [styles, "qa-evidence"], [styles, "related"], [styles, "brief"], [styles, "reference"], [v2Styles, "result"], [v2Styles, "search"]]) {
     assert.match(source, new RegExp(`var\\(--${variable}-span,\\s*12\\)`), `--${variable}-span 必须有通栏 fallback`);
@@ -2695,6 +2761,7 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(v2Styles, /container-type:\s*inline-size/);
   assert.match(v2Styles, /@container \(max-width: 900px\)/);
   assert.match(v2Styles, /@container \(max-width: 620px\)/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v2Styles, /\.subHead h2, \.subHead h3\s*\{[^}]*5cqi[^}]*text-wrap:\s*balance/s);
   assert.match(homepage, /explorerModules/);
   assert.match(homepage, /publishedModuleSlugs\.map/);
@@ -2711,23 +2778,33 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(interactions, /export function SystemLens/);
   assert.match(interactions, /export function QaFilterShell/);
   assert.match(interactions, /export function ReferenceFilterShell/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v2Styles, /\.moduleResultGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v2Styles, /@media \(max-width: 720px\)[\s\S]*?\.moduleResult,[\s\S]*?grid-column:\s*span 12;/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*font-size:\s*var\(--module-title-size,/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.moduleHeroTitle\s*\{[^}]*line-height:\s*1;/s);
   assert.doesNotMatch(styles, /#[a-z-]+-title\s*\{/);
   assert.match(styles, /\.layer:nth-child\(7n \+ 1\)/);
   assert.match(styles, /\.layer:nth-child\(7n\)/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.relatedModuleGrid\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.flow\s*\{[^}]*grid-auto-flow:\s*column;[^}]*grid-auto-columns:\s*minmax\(180px,1fr\);/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.doesNotMatch(styles, /\.flow\s*\{[^}]*grid-template-columns:\s*repeat\(\d+,/s);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.flow\s*\{[^}]*grid-auto-flow:\s*row;[^}]*grid-template-columns:\s*1fr;/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(styles, /\.referenceModuleNav\s*\{[^}]*grid-template-columns:\s*repeat\(12,/s);
   assert.match(styles, /\.relatedModuleGrid\[data-odd="true"\] > a:last-child,[\s\S]*?\.referenceModuleNav\[data-odd="true"\] > a:last-child\s*\{\s*grid-column:\s*span 12;/);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{\s*display:\s*flex;[^}]*width:\s*100%;/);
   assert.match(styles, /@media \(max-width: 720px\)[\s\S]*?\.mechanicGrid article,[\s\S]*?grid-column:\s*span 12;/);
   assert.doesNotMatch(styles, /@media \(max-width: 720px\)[\s\S]*?\.toplinks\s*\{[^}]*display:\s*none;/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks\s*\{[^}]*display:\s*grid;[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);[^}]*overflow:\s*visible;/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v3Styles, /\.fieldbookTheme\[lang="en"\]:not\(\.fieldbookHome\) \.topbar \.toplinks a\s*\{[^}]*white-space:\s*normal;/s);
 });
 
@@ -2775,7 +2852,7 @@ test("public page shells expose one real skip target after navigation without de
   }
   const renderedPublicPageShells = await Promise.all(publicPageShells.map(async (page) => ({ ...page, html: await renderHtml(page.path) })));
   for (const { id, locale, path, html } of renderedPublicPageShells) {
-    const { label } = skipLinkContracts[locale];
+    const { label } = skipLinkContracts[/** @type {keyof typeof skipLinkContracts} */ (locale)];
     assert.match(html, new RegExp(`<a class="skipLink" href="#main-content">${escapeRegExp(label)}</a>`), `${id} 必须渲染本地化 skip link`);
     assert.equal((html.match(/class="skipLink" href="#main-content"/g) ?? []).length, 1, `${path} 必须只有一个 skip link`);
     assert.equal((html.match(/id="main-content"/g) ?? []).length, 1, `${path} 必须只有一个主内容跳转目标`);
@@ -2821,10 +2898,15 @@ test("shared responsive interactions preserve explicit state, keyboard safety, a
   assert.match(englishReader, /sectionId\.endsWith\("-curriculum"\)/);
   assert.match(englishReader, /<h3>\{title \?\? "Critical boundary"\}<\/h3>/);
 
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v3Styles, /\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow:\s*auto;/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(v3Styles, /@media \(max-width: 980px\)[\s\S]*?\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow-x:\s*auto;[^}]*overflow-y:\s*hidden;/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.doesNotMatch(v3Styles, /\.fieldbookTheme\.modulePage \.moduleReadingNav\s*\{[^}]*overflow:\s*hidden;/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(graphStyles, /@media \(max-width: 600px\)[\s\S]*?\.canvas\s*\{\s*bottom:\s*140px;/s);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(graphStyles, /\.canvasControls button\s*\{\s*width:\s*44px;\s*height:\s*44px;/s);
 });
 

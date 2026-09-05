@@ -40,6 +40,7 @@ for (const line of result.stdout.split("\n")) {
 const total = [...errorCountByFile.values()].reduce((sum, count) => sum + count, 0);
 
 if (asUpdate) {
+  /** @type {Record<string, any>} */
   const baseline = {};
   for (const [file, count] of [...errorCountByFile.entries()].sort()) baseline[file] = count;
   writeFileSync(baselinePath, `${JSON.stringify(baseline, null, 2)}\n`);
@@ -52,21 +53,12 @@ const baseline = existsSync(baselinePath)
   : {};
 
 const offenders = [];
-let improved = false;
 for (const [file, count] of errorCountByFile) {
   const limit = baseline[file];
   if (limit === undefined) {
     offenders.push(file);
   } else if (count > limit) {
     offenders.push(file);
-  } else if (count < limit) {
-    improved = true;
-  }
-}
-for (const file of Object.keys(baseline)) {
-  if (!errorCountByFile.has(file)) {
-    // 基线里的文件已零错误：同样属于收紧提示。
-    improved = true;
   }
 }
 
@@ -83,6 +75,10 @@ if (offenders.length > 0) {
   process.exit(1);
 }
 
-if (improved) console.log("提示：有文件的错误数低于基线，可以运行 npm run typecheck -- --update 收紧基线");
-console.log(`typecheck: ${total} errors within baseline (${errorCountByFile.size} files)`);
+// 无基线模式：任何错误即失败（S2-T1 起 typecheck-baseline.json 已删除）。
+if (total > 0) {
+  console.error("typecheck: FAIL 无基线模式下不允许任何类型错误");
+  process.exit(1);
+}
+console.log("typecheck: no type errors");
 process.exit(0);

@@ -234,6 +234,7 @@ const baseModuleCurriculumContent = Object.freeze({
   },
 });
 
+/** @type {Record<string, import("./content-types").Curriculum>} */
 export const moduleCurriculumContent = Object.freeze(Object.fromEntries(
   Object.entries(baseModuleCurriculumContent).map(([slug, content]) => [
     slug,
@@ -246,6 +247,9 @@ export const moduleCurriculumContent = Object.freeze(Object.fromEntries(
 
 export const moduleCurriculumSlugs = Object.freeze(Object.keys(moduleCurriculumContent));
 
+/**
+ * @param {string} slug
+ */
 export function requireModuleCurriculum(slug) {
   const content = moduleCurriculumContent[slug];
   if (!content) throw new Error(`Missing module curriculum content: ${slug}`);

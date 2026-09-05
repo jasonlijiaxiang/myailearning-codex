@@ -19,8 +19,9 @@ const openness = Object.freeze({
   "开放权重": "Open-weight",
 });
 
+/** @param {any} model */
 function localizeModel(model) {
-  const localizedOpenness = openness[model.openness];
+  const localizedOpenness = openness[/** @type {keyof typeof openness} */ (model.openness)];
   if (!localizedOpenness) throw new Error(`Missing English openness label: ${model.openness}`);
   return Object.freeze({
     ...model,
@@ -31,8 +32,8 @@ function localizeModel(model) {
       "coding-index": "Terminal + scientific coding",
       "agentic-index": "Autonomous execution + tool use",
     }),
-    evidence: Object.freeze(model.sourceRefs.map((sourceRef) => {
-      const label = evidenceLabels[sourceRef];
+    evidence: Object.freeze(/** @type {any[]} */ (model.sourceRefs).map((sourceRef) => {
+      const label = evidenceLabels[/** @type {keyof typeof evidenceLabels} */ (sourceRef)];
       if (!label) throw new Error(`Missing English model-radar evidence label: ${sourceRef}`);
       return label;
     })),

@@ -22,22 +22,35 @@ const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const sourceCopyFields = ["kind", "note", "shortTitle"];
 const nonUsEditorialSpellings = /\b(?:analys(?:e|ed|es|ing)|anonymis(?:e|ed|es|ing|ation)|artefacts?|(?:un)?authoris(?:ation|ations|e|ed|es|ing)|behaviou(?:r|rs|ral|rally)|catalogu(?:e|ed|es|ing)|centralis(?:e|ed|es|ing|ation)|colou(?:r|rs|red|ring)|customis(?:e|ed|es|ing|ation)|defence|emphasis(?:e|ed|es|ing)|favour(?:s|ed|ing|able)?|fulfil(?:s|led|ling|ment)?|generalis(?:e|ed|es|ing|ation)|judgement|labell(?:ed|ing)|labou(?:r|rs|red|ring)|licence|localis(?:e|ed|es|ing|ation)|maximis(?:e|ed|es|ing|ation)|memoris(?:e|ed|es|ing|ation)|minimis(?:e|ed|es|ing|ation)|modelled|modelling|normalis(?:e|ed|es|ing|ation)|optimis(?:e|ed|es|ing|ation|ations)|organis(?:e|ed|es|ing|ation|ations|ational)|personalis(?:e|ed|es|ing|ation)|practise|practised|practising|prioritis(?:e|ed|es|ing|ation)|programme|quantis(?:e|ed|es|ing|ation)|recognis(?:e|ed|es|ing)|serialis(?:e|ed|es|ing|ation)|specialis(?:e|ed|es|ing|ation)|standardis(?:e|ed|es|ing|ation)|summaris(?:e|ed|es|ing|ation)|synchronis(?:e|ed|es|ing|ation|ations)|synthes(?:ise|ised|ises|ising)|towards|utilis(?:e|ed|es|ing|ation)|vectoris(?:e|ed|es|ing|ation)|visualis(?:e|ed|es|ing|ation))\b/i;
 
+/**
+ * @param {any} value
+ * @param {Set<any>} [result]
+ */
 function collectSourceIds(value, result = new Set()) {
   if (Array.isArray(value)) value.forEach((item) => collectSourceIds(item, result));
   else if (value && typeof value === "object") {
     if (typeof value.sourceId === "string") result.add(value.sourceId);
-    if (Array.isArray(value.sourceIds)) value.sourceIds.forEach((sourceId) => result.add(sourceId));
+    if (Array.isArray(value.sourceIds)) value.sourceIds.forEach((/** @type {any} */ sourceId) => result.add(sourceId));
     Object.values(value).forEach((item) => collectSourceIds(item, result));
   }
   return result;
 }
 
+/**
+ * @param {Array<{ id: string }>} items
+ * @param {string} label
+ */
 function assertUniqueIds(items, label) {
   const ids = items.map((item) => item.id);
   assert.equal(new Set(ids).size, ids.length, `${label} IDs must be unique`);
   ids.forEach((id) => assert.match(id, slugPattern, `${label} ID must be a stable slug: ${id}`));
 }
 
+/**
+ * @param {any} items
+ * @param {string[]} fields
+ * @param {string} label
+ */
 function assertReadablePrimerItems(items, fields, label) {
   assert.ok(items?.length, `${label} must include authored content`);
   const titles = new Set();
@@ -51,6 +64,7 @@ function assertReadablePrimerItems(items, fields, label) {
   }
 }
 
+/** @param {any[]} values */
 function multiset(values) {
   return [...values.reduce((counts, value) => {
     counts.set(value, (counts.get(value) ?? 0) + 1);
@@ -58,13 +72,15 @@ function multiset(values) {
   }, new Map()).entries()].sort(([left], [right]) => left.localeCompare(right));
 }
 
+/** @param {any} item */
 function questionEvidenceSignature(item) {
   return JSON.stringify({
     addedAt: item.addedAt ?? null,
-    sourceIds: item.evidence.map((entry) => entry.sourceId).sort(),
+    sourceIds: item.evidence.map((/** @type {any} */ entry) => entry.sourceId).sort(),
   });
 }
 
+/** @param {any} card */
 function evidenceCardSignature(card) {
   return card.sourceId;
 }
@@ -93,7 +109,7 @@ for (const file of files) {
     assert.equal(englishModule.primer.id, publication.knowledgeView, `${slug} English primer must reuse the canonical knowledge-view ID`);
     assertReadablePrimerItems(englishModule.primer.steps, ["detail", "signal"], `${slug} English primer mechanisms`);
     assertReadablePrimerItems(englishModule.primer.checks, ["detail"], `${slug} English primer decision checks`);
-    englishModule.primer.termIds.forEach((termId) => assert.ok(englishModule.terms[termId], `${slug} primer has unknown localized term ${termId}`));
+    englishModule.primer.termIds.forEach((/** @type {string} */ termId) => assert.ok(englishModule.terms[termId], `${slug} primer has unknown localized term ${termId}`));
   }
   const serializedModule = JSON.stringify(englishModule);
   assert.doesNotMatch(serializedModule, /[\u3400-\u9fff]/, `${slug} contains unexplained Chinese prose`);
@@ -120,10 +136,10 @@ for (const file of files) {
   }
 
   assertUniqueIds(englishModule.sections, `${slug} section`);
-  const sectionItemIds = englishModule.sections.flatMap((section) => section.blocks.flatMap((block) => block.items.map((item) => item.id)));
+  const sectionItemIds = /** @type {string[]} */ (englishModule.sections.flatMap((/** @type {any} */ section) => section.blocks.flatMap((/** @type {any} */ block) => block.items.map((/** @type {any} */ item) => item.id))));
   assert.equal(new Set(sectionItemIds).size, sectionItemIds.length, `${slug} section-item IDs must be unique`);
   sectionItemIds.forEach((id) => assert.match(id, slugPattern, `${slug} section-item ID must be a stable slug: ${id}`));
-  englishModule.sections.forEach((section) => assert.ok(!["evidence", "qa"].includes(section.id), `${slug} section ID ${section.id} conflicts with a generated page section`));
+  englishModule.sections.forEach((/** @type {any} */ section) => assert.ok(!["evidence", "qa"].includes(section.id), `${slug} section ID ${section.id} conflicts with a generated page section`));
 
   for (const termId of publication.requiredTerms) {
     assert.ok(englishModule.terms[termId], `${slug} missing required term ${termId}`);

@@ -22,21 +22,28 @@ const modulePilotViewsUrl = new URL("../app/module-pilot-views.tsx", import.meta
 const designLanguageUrl = new URL("../docs/DESIGN-LANGUAGE.md", import.meta.url);
 const appUrl = new URL("../app/", import.meta.url);
 
-const normalize = (value) => value.trim().replace(/\s+/g, " ").toLowerCase();
-const stripComments = (source) => source.replace(/\/\*[\s\S]*?\*\//g, "");
+/**
+ * @typedef {{ selector: string, declarations: Map<string, string[]> }} ParsedCssRule
+ */
 
+const normalize = (/** @type {string} */ value) => value.trim().replace(/\s+/g, " ").toLowerCase();
+const stripComments = (/** @type {string} */ source) => source.replace(/\/\*[\s\S]*?\*\//g, "");
+
+/** @param {string} css @param {string} token */
 function tokenValues(css, token) {
   const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return [...stripComments(css).matchAll(new RegExp(`${escaped}\\s*:\\s*([^;]+);`, "g"))]
     .map((match) => normalize(match[1]));
 }
 
+/** @param {string} css @param {string} token */
 function tokenValue(css, token) {
   const values = tokenValues(css, token);
   assert.equal(values.length, 1, `${token} 必须在 globals.css 唯一声明一次`);
   return values[0];
 }
 
+/** @param {string} selectorList */
 function splitSelectorList(selectorList) {
   const selectors = [];
   let current = "";
@@ -64,6 +71,7 @@ function splitSelectorList(selectorList) {
   return selectors;
 }
 
+/** @param {string} css @param {RegExp} atRulePattern */
 function atRuleBodies(css, atRulePattern) {
   const source = stripComments(css);
   const bodies = [];
@@ -91,6 +99,7 @@ function atRuleBodies(css, atRulePattern) {
   return bodies;
 }
 
+/** @param {string} css */
 function cssRules(css) {
   const rules = [];
   const source = stripComments(css);
@@ -111,6 +120,7 @@ function cssRules(css) {
   return rules;
 }
 
+/** @param {ParsedCssRule[]} rules @param {string} selector */
 function declarationsFor(rules, selector) {
   const matches = rules.filter((rule) => rule.selector === selector);
   assert.ok(matches.length > 0, `缺少共享样式角色：${selector}`);
@@ -123,6 +133,7 @@ function declarationsFor(rules, selector) {
   return declarations;
 }
 
+/** @param {ParsedCssRule[]} rules @param {string} selector @param {Record<string, string[]>} contract */
 function assertRole(rules, selector, contract) {
   const declarations = declarationsFor(rules, selector);
   for (const [property, allowedValues] of Object.entries(contract)) {
@@ -138,6 +149,7 @@ function assertRole(rules, selector, contract) {
   }
 }
 
+/** @param {ParsedCssRule[]} rules @param {string} selector @param {string} expected */
 function assertFinalFontSize(rules, selector, expected) {
   const matches = rules.filter((rule) => rule.selector === selector);
   assert.ok(matches.length > 0, `缺少字号发布门槛：${selector}`);
@@ -225,6 +237,7 @@ test("the unified Header and Hero own every typography and interaction role", as
   const muted = "var(--fb-chrome-muted)";
   const meta = "var(--fb-chrome-meta)";
 
+  /** @type {Array<[string, Record<string, string[]>]>} */
   const roles = [
     [".hero .brand", { color: [ink], "font-family": [ui], "font-size": ["15px", "14px"], "font-weight": ["780"], "letter-spacing": ["-.02em"], "line-height": ["1.2"] }],
     [".hero .siteLinks a", { color: [muted], "font-family": [ui], "font-size": ["13px"], "font-weight": ["680"], "letter-spacing": ["0"], "line-height": ["1.2"] }],
@@ -246,6 +259,7 @@ test("the unified Header and Hero own every typography and interaction role", as
   const mobileBodies = atRuleBodies(css, /max-width\s*:\s*720px/i);
   assert.equal(mobileBodies.length, 1, "共享外壳必须只有一个 720px 移动断点契约");
   const mobileRules = cssRules(mobileBodies[0]);
+  /** @type {Array<[string, Record<string, string[]>]>} */
   const mobileRoles = [
     [".hero .brand", { "font-size": ["14px"] }],
     [".hero .identity h1 > span", { "font-size": ["clamp(48px, 15vw, 64px)"] }],
@@ -300,10 +314,12 @@ test("the shared scaffold keeps module CSS outside the Header boundary", async (
   const heroIndex = componentSource.indexOf("<UnifiedModuleHero {...hero} />");
   const contentIndex = componentSource.indexOf('data-module-content="unified"');
   assert.ok(heroIndex > 0 && contentIndex > heroIndex, "共享 Hero 必须是模块内容根的前置兄弟节点");
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(componentSource, /<main[^>]+id="main-content"[^>]+data-module-content="unified"/s);
   assert.doesNotMatch(componentSource, /--fb-[a-z0-9-]+\s*:/, "共享组件不得按模块内联覆盖全站基础 Token");
   assert.match(sharedChineseSource, /if \(!unifiedConfig\) throw new Error\(`Missing unified reader configuration for published brief:/);
   assert.match(sharedChineseSource, /const directories = buildBriefModuleDirectories\(/);
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(sharedChineseSource, /return \(\s*<UnifiedBriefModulePage\b/s);
   assert.doesNotMatch(sharedChineseSource, /\bModuleReadingModes\b/, "中文 brief route 不得保留旧阅读器回退");
   assert.doesNotMatch(sharedChineseSource, /<ReadingProgress\b/, "中文 brief route 不得复制旧版页面外壳");
@@ -345,6 +361,7 @@ test("knowledge prose keeps its release typography floor across every module fam
     readFile(inferenceStylesUrl, "utf8"),
   ]);
 
+  /** @type {Array<[ParsedCssRule[], string]>} */
   const sixteenPixelKnowledge = [
     [cssRules(denseReader), ".boundary p"],
     [cssRules(fieldbookV2), ".briefPrinciples strong"],
@@ -361,6 +378,7 @@ test("knowledge prose keeps its release typography floor across every module fam
   ];
   for (const [rules, selector] of sixteenPixelKnowledge) assertFinalFontSize(rules, selector, "16px");
 
+  /** @type {Array<[ParsedCssRule[], string]>} */
   const fourteenPixelSupport = [
     [cssRules(fieldbookV3), ".fieldbookTheme.modulePage .qaBasisList small"],
     [cssRules(agentReader), ".reader :global(.mechanicGrid small)"],
@@ -370,6 +388,7 @@ test("knowledge prose keeps its release typography floor across every module fam
   ];
   for (const [rules, selector] of fourteenPixelSupport) assertFinalFontSize(rules, selector, "14px");
 
+  // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(fieldbookV3, /\.solutionCapabilityMatrixRow p::before\s*\{[^}]*content:\s*attr\(data-label\)/s, "窄屏责任矩阵必须显示每个字段标签");
   assert.doesNotMatch(fieldbookV3, /\.solutionCapabilityMatrixRow p:nth-child\(3\)\s*\{\s*display:\s*none;/, "窄屏责任矩阵不得隐藏常见选择");
 });

@@ -33,17 +33,26 @@ function loadWaivers() {
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed.waivers) ? parsed.waivers : [];
   } catch (error) {
-    console.error(`sources-report: 无法读取 knowledge/source-waivers.json：${error.message}`);
+    console.error(`sources-report: 无法读取 knowledge/source-waivers.json：${/** @type {Error} */ (error).message}`);
     process.exit(2);
   }
 }
 
+/**
+ * @param {any} source
+ * @param {any} freshness
+ */
 function dueDateOf(source, freshness) {
   if (!freshness.reviewCycleDays) return null;
   const verifiedAt = Date.parse(`${source.verifiedAt}T00:00:00Z`);
   return new Date(verifiedAt + freshness.reviewCycleDays * DAY_MS);
 }
 
+/**
+ * @param {string} sourceId
+ * @param {Date} now
+ * @param {any[]} waivers
+ */
 function isWaived(sourceId, now, waivers) {
   const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
   return waivers.some((waiver) => {

@@ -1,5 +1,15 @@
 import { agentPlatformQaExpansion } from "./module-content-agent-platforms.mjs";
 
+/**
+ * @param {string} q
+ * @param {string} a
+ * @param {string} depth
+ * @param {string} ask
+ * @param {string} tag
+ * @param {string} basis
+ * @param {any[]} evidence
+ * @param {string | undefined} [addedAt]
+ */
 const qa = (q, a, depth, ask, tag, basis, evidence, addedAt) => Object.freeze({
   q,
   a,
@@ -43,6 +53,7 @@ const finopsSettlementQa = qa(
       "2026-07-21",
     );
 
+/** @type {Record<string, readonly any[]>} */
 export const moduleQaExpansion = Object.freeze({
   ...agentPlatformQaExpansion,
   "predictive-ai-mlops": Object.freeze([

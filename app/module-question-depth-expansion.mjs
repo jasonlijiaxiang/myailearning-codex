@@ -1,7 +1,17 @@
 // 与 module-briefs-governance-mlops.mjs 保持同一写法，供从模块正文迁入的题内依据使用。
+/**
+ * @param {string} sourceId
+ * @param {string} supports
+ */
 const evidence = (sourceId, supports) => ({ sourceId, supports: supports.includes("支持") ? supports : `支持${supports}` });
 
+/**
+ * @param {any[]} items
+ */
 const freezeItems = (items) => Object.freeze(items.map((item) => Object.freeze(item)));
+/**
+ * @param {any[]} items
+ */
 const freezeQa = (items) => freezeItems(items.map((item) => ({ ...item, evidence: freezeItems(item.evidence) })));
 
 /**
@@ -10,6 +20,7 @@ const freezeQa = (items) => freezeItems(items.map((item) => ({ ...item, evidence
  * 这里刻意不使用统一题数：每个模块先列出尚未被既有问题覆盖的架构、
  * 风险、运营与采购判断，再决定需要多少问题。
  */
+/** @type {Record<string, readonly any[]>} */
 export const moduleQuestionDepthExpansion = Object.freeze({
   "ai-governance": freezeQa([
     { q: "私有化部署给内部员工用，是不是就不用做中国监管分诊了？", a: "不是。私有化或内部使用只是分诊输入，不自动得出“不用管监管”的结论。", depth: "暂行办法第二条以“向境内公众提供生成式人工智能服务”为适用边界；但同一服务还可能涉及数据、个人信息、深度合成标识、内容安全等义务，责任主体和触发条件要逐项核验。先填场景卡：受众与区域、主体角色、部署方式、模型来源、数据流和输出用途，再把具体结论交给专业人员和主管机关口径。", ask: "服务对象是谁、谁扮演提供者/使用者/部署者、数据是否会出境或对外传播？", tag: "适用分诊", basis: "暂行办法适用范围 + 角色核验", evidence: [evidence("china-ai-service-management", "第二条明确本办法适用于向境内公众提供生成式人工智能服务的场景。"), evidence("china-data-cross-border-2024", "第十条保留告知、单独同意与个人信息保护影响评估等出境相关义务。")], addedAt: "2026-08-05" },

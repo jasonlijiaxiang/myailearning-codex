@@ -117,7 +117,13 @@ export const evidenceCards = [
   },
 ];
 
+/**
+ * @param {any[]} items
+ */
 const freezeLearningItems = (items) => Object.freeze(items.map((item) => Object.freeze(item)));
+/**
+ * @param {any[]} items
+ */
 const freezeLearningLabs = (items) => freezeLearningItems(items.map((item) => ({
   ...item,
   tasks: Object.freeze(item.tasks),

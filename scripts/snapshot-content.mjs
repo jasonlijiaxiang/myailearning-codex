@@ -15,7 +15,7 @@ import { questionDirectoryItems } from "../app/question-index.mjs";
 
 // S0-T3 会把 searchText 从 questionDirectoryItems 移到搜索索引，快照一律剔除该字段，
 // 使哈希不因该字段的存放位置变化而改变。
-const items = questionDirectoryItems.map((item) => {
+const items = questionDirectoryItems.map((/** @type {any} */ item) => {
   const copy = { ...item };
   delete copy.searchText;
   return copy;
@@ -37,9 +37,14 @@ const payload = {
 };
 
 // 确定性序列化：对象键排序，数组保持原序。
+/**
+ * @param {any} value
+ * @returns {any}
+ */
 function stable(value) {
   if (Array.isArray(value)) return value.map(stable);
   if (value && typeof value === "object") {
+    /** @type {Record<string, any>} */
     const out = {};
     for (const key of Object.keys(value).sort()) out[key] = stable(value[key]);
     return out;

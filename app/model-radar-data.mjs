@@ -13,6 +13,7 @@
  * neighbour, treating an unavailable result as zero, or joining versions.
  */
 
+/** @type {Record<string, any>} */
 const sourceRegistry = Object.freeze({
   "aa-models-2026-08-13": Object.freeze({
     sourceId: "artificial-analysis-models",
@@ -83,14 +84,24 @@ const modelDefinitions = [
   { id: "k-exaone-2-0-0803", name: "K-EXAONE 2.0 0803", provider: "LG AI Research", openness: "专有模型", intelligence: 30.9845435318094, gdpval: 0.23955, tauBanking: 0.115463917525773, terminalBench: 0.404494382022472, sciCode: 0.409722222222222 },
 ];
 
+/**
+ * @param {number | null | undefined} value
+ */
 function asPercent(value) {
   return value === null || value === undefined ? null : Number((value * 100).toFixed(2));
 }
 
+/**
+ * @param {number | null} left
+ * @param {number | null} right
+ */
 function average(left, right) {
   return left === null || right === null ? null : Number(((left + right) / 2).toFixed(2));
 }
 
+/**
+ * @param {any} item
+ */
 function makeBenchmarkScores(item) {
   return Object.freeze({
     "intelligence-index": item.intelligence,
@@ -99,6 +110,9 @@ function makeBenchmarkScores(item) {
   });
 }
 
+/**
+ * @param {any} item
+ */
 function makeModel(item) {
   const coding = average(asPercent(item.terminalBench), asPercent(item.sciCode));
   const agentic = average(asPercent(item.gdpval), asPercent(item.tauBanking));

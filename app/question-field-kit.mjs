@@ -27,6 +27,9 @@ export const scenarioDefinitions = Object.freeze([
   Object.freeze({ id: "governance-assurance", zh: "治理、审计与上线证据" }),
 ]);
 
+/**
+ * @param {any} entry
+ */
 const fieldQuestion = (entry) => Object.freeze({
   selectionOrigin: "current-library-curation",
   ...entry,
@@ -437,11 +440,15 @@ const intentKeywordRules = Object.freeze([
   }),
 ]);
 
+/**
+ * @param {string} tag
+ */
 function defaultIntentForTag(tag) {
   const match = intentKeywordRules.find((rule) => rule.pattern.test(tag));
   return match?.intentId ?? "concept-mechanism";
 }
 
+/** @type {Record<string, string>} */
 const questionIntentOverrides = Object.freeze({
   "ai-agent-9": "data-security-access",
   "ai-agent-11": "evaluation-acceptance",
@@ -505,6 +512,12 @@ export const fallbackScripts = Object.freeze([
   }),
 ]);
 
+/**
+ * @param {string} moduleId
+ * @param {number} questionNumber
+ * @param {string} tag
+ * @param {string | null} [overrideKey]
+ */
 export function resolveQuestionIntent(moduleId, questionNumber, tag, overrideKey = null) {
   const override = overrideKey ? questionIntentOverrides[overrideKey] : undefined;
   return override ?? fieldQuestionByRef[`${moduleId}-${questionNumber}`]?.intentId ?? defaultIntentForTag(tag);

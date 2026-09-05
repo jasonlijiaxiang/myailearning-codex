@@ -19,6 +19,7 @@ const REVIEWED_HIGH_OVERLAP_PAIRS = new Map([
 ]);
 const HIGH_OVERLAP_THRESHOLD = 0.55;
 
+/** @param {string} value */
 function normalizeQuestion(value) {
   return value
     .normalize("NFKC")
@@ -26,6 +27,7 @@ function normalizeQuestion(value) {
     .replace(/[\p{P}\p{S}\s]+/gu, "");
 }
 
+/** @param {string} value */
 function bigrams(value) {
   const normalized = normalizeQuestion(value);
   const result = new Set();
@@ -35,6 +37,7 @@ function bigrams(value) {
   return result;
 }
 
+/** @param {Set<string>} left @param {Set<string>} right */
 function diceSimilarity(left, right) {
   if (left.size === 0 && right.size === 0) return 1;
   let intersection = 0;
@@ -42,6 +45,7 @@ function diceSimilarity(left, right) {
   return (2 * intersection) / (left.size + right.size);
 }
 
+/** @param {{ key: string }} left @param {{ key: string }} right */
 function pairKey(left, right) {
   return [left.key, right.key].sort().join("::");
 }

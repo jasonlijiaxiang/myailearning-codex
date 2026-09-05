@@ -34,7 +34,7 @@ const allItems: EnglishPilotDirectoryItem[] = englishQuestions.map(directoryItem
 type EnglishQuestionsSearchParams = { module?: string };
 
 export default async function EnglishQuestionsPage({ searchParams }: { searchParams?: Promise<EnglishQuestionsSearchParams> }) {
-  const resolvedSearchParams = await (searchParams ?? Promise.resolve({}));
+  const resolvedSearchParams = await (searchParams ?? Promise.resolve({})) as EnglishQuestionsSearchParams;
   const requestedModule = resolvedSearchParams.module;
   const selectedModule = requestedModule && englishModuleRegistry[requestedModule] ? englishModuleRegistry[requestedModule] : null;
   const items = selectedModule

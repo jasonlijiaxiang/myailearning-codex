@@ -6,6 +6,7 @@ const reviewRules = Object.freeze([
   Object.freeze({ pattern: /论文|教材|研究综述|技术报告|任务特定研究|厂商实验|风险管理框架|架构指南|工程指南|实践指南|开放定义|开放标准|互联网标准|国际标准|推荐标准/, days: 180 }),
 ]);
 
+/** @param {string} value */
 export function parseIsoDate(value) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!match) return null;
@@ -22,12 +23,14 @@ export function parseIsoDate(value) {
   return date;
 }
 
+/** @param {any} source */
 export function reviewCycleDaysFor(source) {
   const rule = reviewRules.find((candidate) => candidate.pattern.test(source.kind));
   if (!rule) throw new Error(`No freshness review rule for source kind: ${source.kind}`);
   return rule.days;
 }
 
+/** @param {any} source */
 export function sourceFreshness(source, now = new Date()) {
   const verifiedAt = parseIsoDate(source.verifiedAt);
   if (!verifiedAt) return { status: "invalid", reviewCycleDays: null, ageDays: null };

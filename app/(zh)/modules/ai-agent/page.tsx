@@ -583,7 +583,7 @@ export default function AgentModulePage() {
               <article><span>CONTROLLED WRITE</span><h4>受控副作用</h4><p>只开放可逆或低风险写入，验证审批绑定、幂等、重复消息、结果未知、部分成功、补偿和恢复。</p></article>
               <article><span>OPERATIONS</span><h4>灰度与运营交接</h4><p>按风险分别验收成功率、接管率、P95 和成功任务成本；通过当前检查后再扩大自治，不预设固定天数。</p></article>
             </div>
-            <div className="gates"><h4>建议的通过 / 暂停条件</h4><dl className={agentStyles.releaseGateLedger}>{releaseAcceptanceGates.map((gate, index) => <div className={gate.releaseBlocking ? agentStyles.releaseGatePrimary : undefined} key={gate.name}><dt><span>{String(index + 1).padStart(2, "0")}</span>{gate.name}</dt><dd>{gate.check}</dd></div>)}</dl><p>带“上线硬门”标识的条件各自按业务风险和签字阈值执行；任何策略违规或高风险误执行都应暂停。运营、性能、成本与恢复证据也要与场景接受条件一致；总体平均不能掩盖高风险场景失败。</p></div>
+            <div className="gates"><h4>建议的通过 / 暂停条件</h4><dl className={agentStyles.releaseGateLedger}>{releaseAcceptanceGates.map((gate, index) => <div className={(gate as { releaseBlocking?: boolean }).releaseBlocking ? agentStyles.releaseGatePrimary : undefined} key={gate.name}><dt><span>{String(index + 1).padStart(2, "0")}</span>{gate.name}</dt><dd>{gate.check}</dd></div>)}</dl><p>带“上线硬门”标识的条件各自按业务风险和签字阈值执行；任何策略违规或高风险误执行都应暂停。运营、性能、成本与恢复证据也要与场景接受条件一致；总体平均不能掩盖高风险场景失败。</p></div>
             <div className="architectureNotes">
               <p><strong>价值侧</strong>：只计算经权威终态验证的周期缩短、返工减少、首次材料完整率提升和可释放人工。</p>
               <p><strong>完整 TCO</strong>：模型、检索、工具、平台、评估、人工接管、运营、安全与残余风险共同计入；不使用通用 ROI 数字替代客户基线。</p>

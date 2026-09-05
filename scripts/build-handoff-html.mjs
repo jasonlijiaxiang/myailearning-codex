@@ -9,6 +9,7 @@ const SOURCE_PATH = path.join(PROJECT_ROOT, "HANDOFF.md");
 const OUTPUT_PATH = path.join(PROJECT_ROOT, "HANDOFF-READ-FIRST.html");
 const CHECK_ONLY = process.argv.includes("--check");
 
+/** @param {any} value */
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -18,6 +19,10 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+/**
+ * @param {any} value
+ * @returns {string}
+ */
 function plainText(value) {
   return value
     .replace(/`([^`]+)`/g, "$1")
@@ -26,6 +31,10 @@ function plainText(value) {
     .trim();
 }
 
+/**
+ * @param {string} value
+ * @returns {string}
+ */
 function safeHref(value) {
   try {
     const url = new URL(value);
@@ -35,9 +44,14 @@ function safeHref(value) {
   }
 }
 
+/**
+ * @param {string} value
+ * @returns {string}
+ */
 function renderInline(value) {
+  /** @type {string[]} */
   const tokens = [];
-  const hold = (html) => {
+  const hold = (/** @type {string} */ html) => {
     const token = `\u0000HANDOFF${tokens.length}\u0000`;
     tokens.push(html);
     return token;
@@ -57,6 +71,7 @@ function renderInline(value) {
   return protectedText.replace(/\u0000HANDOFF(\d+)\u0000/g, (_, index) => tokens[Number(index)]);
 }
 
+/** @returns {(value: string) => string} */
 function createSlugger() {
   const counts = new Map();
   return (value) => {
@@ -71,6 +86,10 @@ function createSlugger() {
   };
 }
 
+/**
+ * @param {string} line
+ * @returns {string[]}
+ */
 function splitTableRow(line) {
   return line
     .trim()
@@ -80,11 +99,13 @@ function splitTableRow(line) {
     .map((cell) => cell.trim());
 }
 
+/** @param {string} line */
 function isTableDivider(line) {
   const cells = splitTableRow(line);
   return cells.length > 1 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
 }
 
+/** @param {string} markdown */
 function renderMarkdown(markdown) {
   const lines = markdown.replaceAll("\r\n", "\n").split("\n");
   const slug = createSlugger();
@@ -192,12 +213,17 @@ function renderMarkdown(markdown) {
   return { html: html.join("\n"), headings };
 }
 
+/**
+ * @param {Array<{ id: string; label: string }>} headings
+ * @param {string} className
+ */
 function navMarkup(headings, className) {
   return `<nav class="${className}" aria-label="使用指南目录"><ol>${headings.map(({ id, label }) => (
     `<li><a href="#${id}">${escapeHtml(label)}</a></li>`
   )).join("")}</ol></nav>`;
 }
 
+/** @param {Array<{ id: string; label: string }>} headings */
 function platformLinks(headings) {
   const wanted = [
     ["macOS", "macos-本地使用"],
@@ -211,6 +237,7 @@ function platformLinks(headings) {
   }).join("");
 }
 
+/** @param {string} markdown */
 function buildDocument(markdown) {
   const sourceHash = createHash("sha256").update(markdown).digest("hex");
   const normalized = markdown.replaceAll("\r\n", "\n");

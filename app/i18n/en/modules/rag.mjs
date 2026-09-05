@@ -5,15 +5,41 @@ import {
   ragQa as canonicalQa,
 } from "../../../rag-content.mjs";
 
+/**
+ * @param {string} title
+ * @param {string | undefined} intro
+ * @param {any[]} items
+ */
 const cards = (title, intro, items) => ({ type: "cards", title, intro, items });
+/**
+ * @param {string} title
+ * @param {string | undefined} intro
+ * @param {any[]} items
+ */
 const steps = (title, intro, items) => ({ type: "steps", title, intro, items });
+/**
+ * @param {string} title
+ * @param {string | undefined} intro
+ * @param {string[]} columns
+ * @param {any[]} items
+ */
 const table = (title, intro, columns, items) => ({ type: "table", title, intro, columns, items });
+/**
+ * @param {string} id
+ * @param {string} title
+ * @param {string} body
+ */
 const boundary = (id, title, body) => ({
   type: "boundary",
   title,
   items: [{ id, title, body }],
 });
 
+/**
+ * @param {any} item
+ * @param {string | ((item: any) => string | undefined)} key
+ * @param {string} label
+ */
 const keyOf = (item, key, label) => {
   const value = typeof key === "function" ? key(item) : item?.[key];
   if (typeof value !== "string" || !value.trim()) {
@@ -22,6 +48,11 @@ const keyOf = (item, key, label) => {
   return value;
 };
 
+/**
+ * @param {readonly any[]} items
+ * @param {string | ((item: any) => string | undefined)} key
+ * @param {string} label
+ */
 const indexUnique = (items, key, label) => {
   if (!Array.isArray(items)) throw new Error(`${label} must be an array`);
   const indexed = new Map();
@@ -33,6 +64,9 @@ const indexUnique = (items, key, label) => {
   return indexed;
 };
 
+/**
+ * @param {{ canonicalItems: readonly any[]; canonicalKey: string | ((item: any) => string | undefined); englishItems: readonly any[]; englishKey: string | ((item: any) => string | undefined); canonicalKeyByEnglishKey: Record<string, string>; label: string; }} params
+ */
 const resolveCompleteProjection = ({
   canonicalItems,
   canonicalKey,
@@ -69,6 +103,11 @@ const resolveCompleteProjection = ({
   return resolved;
 };
 
+/**
+ * @param {Map<string, any>} left
+ * @param {Map<string, any>} right
+ * @param {string} label
+ */
 const assertSameIdentities = (left, right, label) => {
   for (const identity of left.keys()) {
     if (!right.has(identity)) throw new Error(`${label} is missing ${identity}`);
@@ -80,6 +119,7 @@ const assertSameIdentities = (left, right, label) => {
 
 const canonicalDeepDivesByTitle = indexUnique(canonicalDeepDives, "title", "RAG deep dives");
 const canonicalLabsByTitle = indexUnique(canonicalLearningContent.labs, "title", "RAG learning labs");
+/** @type {Record<string, string>} */
 const ragDeepDiveCanonicalTitlesById = Object.freeze({
   "deep-query-policy": "这次请求应该回答、追问还是停下",
   "deep-lifecycle-consistency": "知识变化只有传播到最终回答，才算在 RAG 中生效",
@@ -92,6 +132,7 @@ const ragDeepDiveEnglishBlockTitlesById = Object.freeze({
   "deep-evidence-compiler": "Compile evidence at claim level",
   "deep-offline-handoff": "Accept the offline evidence handoff before exposing an index",
 });
+/** @type {Record<string, string>} */
 const ragLabCanonicalTitlesById = Object.freeze({
   "learning-lab-data-readiness": "完成一次 RAG 数据就绪审阅",
   "learning-lab-retrieval-routes": "比较四条检索路线",
@@ -99,6 +140,11 @@ const ragLabCanonicalTitlesById = Object.freeze({
   "learning-lab-economics-decision": "把 RAG PoC 结论写成经济决定",
 });
 
+/**
+ * @param {Map<string, any>} canonicalByTitle
+ * @param {string} canonicalTitle
+ * @param {string} label
+ */
 const canonicalSourceIdsFor = (canonicalByTitle, canonicalTitle, label) => {
   const canonical = canonicalByTitle.get(canonicalTitle);
   if (!canonical) throw new Error(`${label} is not mapped to a canonical title`);
@@ -106,11 +152,17 @@ const canonicalSourceIdsFor = (canonicalByTitle, canonicalTitle, label) => {
   return canonical.sourceIds;
 };
 
+/**
+ * @param {string} id
+ */
 const deepDiveSourceIds = (id) => canonicalSourceIdsFor(
   canonicalDeepDivesByTitle,
   ragDeepDiveCanonicalTitlesById[id],
   `RAG deep dive ${id}`,
 );
+/**
+ * @param {string} id
+ */
 const labSourceIds = (id) => canonicalSourceIdsFor(
   canonicalLabsByTitle,
   ragLabCanonicalTitlesById[id],
@@ -1026,6 +1078,9 @@ const ragQaCanonicalQuestionsById = Object.freeze({
   "production-quality-regression": "RAG 上线几个月后效果变差，应该怎样排查？",
   "latency-and-cost": "怎样控制延迟和成本？",
 });
+/**
+ * @param {any} copy
+ */
 const supportTextBySourceId = (copy) => {
   if (!copy.supports || Array.isArray(copy.supports)) {
     throw new Error(`RAG English QA ${copy.id} must key support text by source ID`);
@@ -1067,7 +1122,7 @@ const qa = Object.freeze(qaCopy.map((copy) => {
     ask: copy.ask,
     tag: copy.tag,
     basis: copy.basis,
-    evidence: Object.freeze(canonical.evidence.map((item) => Object.freeze({ sourceId: item.sourceId, supports: supportsBySourceId.get(item.sourceId) }))),
+    evidence: Object.freeze(canonical.evidence.map((/** @type {any} */ item) => Object.freeze({ sourceId: item.sourceId, supports: supportsBySourceId.get(item.sourceId) }))),
     ...(canonical.addedAt ? { addedAt: canonical.addedAt } : {}),
   });
 }));

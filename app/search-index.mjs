@@ -61,7 +61,7 @@ function buildChineseEntries() {
   }
 
   for (const [slug, learning] of Object.entries(moduleLearningContent)) {
-    learning.labs.forEach((lab, index) => {
+    learning.labs.forEach((/** @type {any} */ lab, /** @type {number} */ index) => {
       entries.push({
         id: `lab-${slug}-${index + 1}`,
         type: "实战练习",
@@ -161,6 +161,7 @@ function buildEnglishEntries() {
   return entries;
 }
 
+/** @param {string} locale */
 export function buildKnowledgeSearchEntries(locale) {
   if (locale === "zh") return buildChineseEntries();
   if (locale === "en") return buildEnglishEntries();
@@ -168,6 +169,7 @@ export function buildKnowledgeSearchEntries(locale) {
 }
 
 // 每道问题的检索文本：键与问题查询页条目的 key 对齐，页面按需加载后做关键词匹配。
+/** @param {string} locale */
 export function buildQuestionSearchText(locale) {
   if (locale === "zh") {
     return Object.fromEntries(questionDirectoryItems.map((item) => [item.key, [

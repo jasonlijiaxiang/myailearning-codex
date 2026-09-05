@@ -59,7 +59,7 @@ let cli;
 try {
   cli = resolveVinextCli();
 } catch (error) {
-  console.error(`Unable to resolve vinext: ${error.message}`);
+  console.error(`Unable to resolve vinext: ${/** @type {Error} */ (error).message}`);
   process.exit(1);
 }
 

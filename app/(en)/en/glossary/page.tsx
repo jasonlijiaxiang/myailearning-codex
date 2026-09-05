@@ -14,7 +14,7 @@ export const metadata: Metadata = englishPageMetadata({
   zhPath: "/glossary",
 });
 
-const items: EnglishPilotDirectoryItem[] = Object.entries(englishTermCopy).map(([termId, copy]) => {
+const items: EnglishPilotDirectoryItem[] = Object.entries(englishTermCopy as unknown as Record<string, { name: string; abbr?: string; definition: string }>).map(([termId, copy]) => {
   const canonical = terminology[termId];
   if (!canonical) throw new Error(`Unknown English termId: ${termId}`);
   const relatedModulePath = canonical.moduleSlugs.map((slug) => englishModulePath(slug) ?? `/modules/${slug}`).at(0) ?? "/en";

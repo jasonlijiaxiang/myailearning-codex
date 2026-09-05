@@ -53,6 +53,7 @@ const localizedModules = [
 
 const moduleEntries = localizedModules.map((localizedModule) => [localizedModule.slug, Object.freeze(localizedModule)]);
 
+/** @type {Record<string, import("../../content-types").EnglishModule>} */
 export const englishModuleRegistry = Object.freeze(Object.fromEntries(moduleEntries));
 
 const registeredSlugs = Object.keys(englishModuleRegistry).sort();
@@ -61,16 +62,22 @@ if (JSON.stringify(registeredSlugs) !== JSON.stringify(expectedSlugs)) {
   throw new Error(`English module registry mismatch: expected ${expectedSlugs.join(", ")}; received ${registeredSlugs.join(", ")}`);
 }
 
+/** @param {string} slug */
 export function requireEnglishModule(slug) {
   const localizedModule = englishModuleRegistry[slug];
   if (!localizedModule) throw new Error(`Unknown English module: ${slug}`);
   return localizedModule;
 }
 
+/**
+ * @param {string} field
+ * @returns {Readonly<Record<string, any>>}
+ */
 function mergeLocalizedMap(field) {
+  /** @type {Map<string, any[]>} */
   const variantsById = new Map();
   for (const localizedModule of Object.values(englishModuleRegistry)) {
-    for (const [id, value] of Object.entries(localizedModule[field] ?? {})) {
+    for (const [id, value] of Object.entries(/** @type {Record<string, any>} */ (localizedModule[field] ?? {}))) {
       const variants = variantsById.get(id) ?? [];
       const serialized = JSON.stringify(value);
       const existing = variants.find((variant) => variant.serialized === serialized);
@@ -80,9 +87,10 @@ function mergeLocalizedMap(field) {
     }
   }
 
+  /** @type {Record<string, any>} */
   const merged = {};
   const conflictIds = new Set();
-  const ownerMap = englishCopyOwners[field] ?? {};
+  const ownerMap = /** @type {Record<string, string>} */ (englishCopyOwners[/** @type {keyof typeof englishCopyOwners} */ (field)] ?? {});
 
   for (const [id, variants] of variantsById) {
     if (variants.length === 1) {
@@ -94,11 +102,12 @@ function mergeLocalizedMap(field) {
     conflictIds.add(id);
     const ownerSlug = ownerMap[id];
     if (!ownerSlug) throw new Error(`Unresolved English ${field} conflict: ${id}`);
+    /** @type {any} */
     const ownerModule = englishModuleRegistry[ownerSlug];
     if (!ownerModule?.[field]?.[id]) throw new Error(`Invalid English ${field} owner for ${id}: ${ownerSlug}`);
 
-    if (field === "sources" && englishSourceCopyOverrides[id]) {
-      const override = englishSourceCopyOverrides[id];
+    if (field === "sources" && /** @type {Record<string, any>} */ (englishSourceCopyOverrides)[id]) {
+      const override = /** @type {Record<string, any>} */ (englishSourceCopyOverrides)[id];
       if (JSON.stringify(Object.keys(override).sort()) !== JSON.stringify(["kind", "note", "shortTitle"])) {
         throw new Error(`Invalid English source override fields: ${id}`);
       }

@@ -4,6 +4,7 @@
  * dedicated 模块保留深度定制页面；brief 模块共享导航、证据与问答能力，
  * 但正文根据内容选择流程、循环、分层、光谱或决策矩阵，不强迫同一版式。
  */
+/** @type {Array<[string, string, string[], "brief" | "dedicated", string, string]>} */
 const moduleSpecs = [
   ["solution-patterns", "solution-patterns-title", ["solution-patterns", "ai-finops", "finops", "unit-economics", "cost-allocation", "cost-to-serve", "cost-anomaly"], "brief", "2026-08-31", "2026-07-17"],
   ["model-landscape", "model-landscape-title", ["model-landscape", "model-routing", "access-spectrum", "capability-matrix", "model-lifecycle"], "brief", "2026-08-13", "2026-07-17"],
@@ -32,6 +33,7 @@ const moduleSpecs = [
 
 // 2026-07-20 日期策略生效前无 addedAt 问题的稳定身份集合摘要。
 // 摘要算法见 MODULE-BUILD-STANDARD；新增问题必须携带 addedAt，不能用同数量替换绕过。
+/** @type {Record<string, string>} */
 const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
   "solution-patterns": "52a7b6302cb7bafde13c1d47e1f25e06eb103debf951508a765d7ae67341f110",
   "model-landscape": "710518d2e7495dd0a4ab3b5a5f4ca5a6eb25398ffc81ebedb832aaf4b7be4f12",
@@ -58,6 +60,7 @@ const moduleLegacyUndatedQuestionSetSha256 = Object.freeze({
   "ai-infra-compute": "5739e718d368d17dd46a01cd35bcc7eb1c7d158c3bd84b3a66153abf1343ef9e",
 });
 
+/** @type {Record<string, string>} */
 const moduleKnowledgeViews = Object.freeze({
   "solution-patterns": "decision-blueprint",
   "model-landscape": "selection-coordinate",
@@ -86,6 +89,7 @@ const moduleKnowledgeViews = Object.freeze({
 
 const focusedReadingModules = new Set(["solution-patterns", "rag", "mcp", "llm-inference"]);
 
+/** @type {Record<string, readonly string[]>} */
 const moduleQaCoverageTags = Object.freeze({
   "solution-patterns": Object.freeze([
     "方案边界", "PoC 验收", "TCO", "场景选择", "架构组合", "智能客服", "企业搜索",
@@ -234,10 +238,16 @@ export const publishedModuleSlugs = Object.freeze(publishedModules.map((module) 
 const dedicatedModuleSlugs = Object.freeze(publishedModules.filter((module) => module.routeKind === "dedicated").map((module) => module.slug));
 
 
+/**
+ * @param {string} slug
+ */
 export function hasDedicatedModule(slug) {
   return dedicatedModuleSlugs.includes(slug);
 }
 
+/**
+ * @param {string} slug
+ */
 export function getPublishedModule(slug) {
   return publishedModules.find((module) => module.slug === slug);
 }

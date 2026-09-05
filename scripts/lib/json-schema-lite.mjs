@@ -1,3 +1,4 @@
+/** @param {any} value */
 function valueType(value) {
   if (value === null) return "null";
   if (Array.isArray(value)) return "array";
@@ -5,6 +6,11 @@ function valueType(value) {
   return typeof value;
 }
 
+/**
+ * @param {any} value
+ * @param {string | string[]} expected
+ * @returns {boolean}
+ */
 function matchesType(value, expected) {
   if (Array.isArray(expected)) return expected.some((type) => matchesType(value, type));
   if (expected === "number") return typeof value === "number" && Number.isFinite(value);
@@ -12,14 +18,29 @@ function matchesType(value, expected) {
   return valueType(value) === expected;
 }
 
+/**
+ * @param {any} left
+ * @param {any} right
+ */
 function sameValue(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+/**
+ * @param {any} value
+ * @param {any} schema
+ */
 function matchesSchema(value, schema) {
   return validateJsonSchema(value, schema, "$", []).length === 0;
 }
 
+/**
+ * @param {any} value
+ * @param {any} schema
+ * @param {string} [path]
+ * @param {string[]} [errors]
+ * @returns {string[]}
+ */
 export function validateJsonSchema(value, schema, path = "$", errors = []) {
   if (!schema || typeof schema !== "object") return errors;
 
@@ -30,7 +51,7 @@ export function validateJsonSchema(value, schema, path = "$", errors = []) {
   if (Object.hasOwn(schema, "const") && !sameValue(value, schema.const)) {
     errors.push(`${path}: must equal ${JSON.stringify(schema.const)}`);
   }
-  if (schema.enum && !schema.enum.some((candidate) => sameValue(value, candidate))) {
+  if (schema.enum && !schema.enum.some((/** @type {any} */ candidate) => sameValue(value, candidate))) {
     errors.push(`${path}: value ${JSON.stringify(value)} is not in enum`);
   }
   if (schema.pattern && typeof value === "string" && !new RegExp(schema.pattern).test(value)) {
@@ -90,6 +111,11 @@ export function validateJsonSchema(value, schema, path = "$", errors = []) {
   return errors;
 }
 
+/**
+ * @param {any} value
+ * @param {any} schema
+ * @param {string} [label]
+ */
 export function assertJsonSchema(value, schema, label = "value") {
   const errors = validateJsonSchema(value, schema, label);
   if (errors.length) throw new Error(`Schema validation failed:\n${errors.map((error) => `  - ${error}`).join("\n")}`);

@@ -1,6 +1,9 @@
 const VERIFIED_AT = "2026-08-23";
 const NEXT_REVIEW_AT = "2026-09-22";
 
+/**
+ * @param {any} item
+ */
 function product(item) {
   return Object.freeze({
     status: "active",

@@ -33,6 +33,7 @@ const englishUpdatedDates = Object.freeze({
   "ai-infra-compute": "2026-08-01",
 });
 
+/** @param {string} slug */
 export function getEnglishUpdatedAt(slug) {
-  return englishUpdatedDates[slug] ?? null;
+  return englishUpdatedDates[/** @type {keyof typeof englishUpdatedDates} */ (slug)] ?? null;
 }

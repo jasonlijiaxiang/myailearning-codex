@@ -88,8 +88,8 @@ type RelatedModule = {
 
 export function InferenceModulePage() {
   const brief = requireModuleBrief("llm-inference") as InferenceBrief;
-  const curriculum = requireModuleCurriculum("llm-inference") as ModuleCurriculumContent;
-  const learning = requireModuleLearning("llm-inference") as ModuleLearningContent;
+  const curriculum = requireModuleCurriculum("llm-inference") as unknown as ModuleCurriculumContent;
+  const learning = requireModuleLearning("llm-inference") as unknown as ModuleLearningContent;
   const publication = getPublishedModule("llm-inference");
   const learningSourceIds = [...new Set([
     ...curriculum.chapters.flatMap((chapter) => chapter.sourceIds),
@@ -190,7 +190,7 @@ export function InferenceModulePage() {
         learningOutcomes={learning.outcomes}
         learningRoute={learning.route}
         sourceTitles={sourceTitles}
-        updatedAt={publication?.updatedAt}
+        updatedAt={publication?.updatedAt as string | null | undefined}
       />
     </UnifiedModuleScaffold>
   );

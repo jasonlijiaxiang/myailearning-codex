@@ -1,5 +1,12 @@
 const freeze = Object.freeze;
+/**
+ * @param {any[]} values
+ */
 const items = (values) => freeze(values.map((value) => freeze(value)));
+/**
+ * @param {string} id
+ * @param {any} value
+ */
 const question = (id, value) => freeze({ ...value, id, evidence: items(value.evidence) });
 
 export const englishModule = freeze({

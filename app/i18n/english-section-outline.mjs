@@ -15,22 +15,27 @@ const focusedEnglishModuleSlugs = Object.freeze(
 
 // Kept for the English module pages: the legacy branch still renders the full
 // authored selection for modules without a unified reader config.
+/** @param {any} module */
 export function selectVisibleEnglishSectionGroups(module, sectionGroups = buildEnglishSectionGroups(module)) {
   return sectionGroups;
 }
 
+/** @param {any} module */
 export function selectVisibleEnglishEvidenceCards(module) {
   return module.evidenceCards;
 }
 
+/** @param {any} module */
 export function selectVisibleEnglishQuestions(module) {
   return module.qa;
 }
 
+/** @param {any} module */
 export function usesFocusedEnglishPreview(module) {
   return focusedEnglishModuleSlugs.includes(module.slug) && !hasDedicatedModule(module.slug);
 }
 
+/** @param {any} section */
 export function classifySharedSection(section) {
   if (/(?:study-guide|study|practice|learning-studio)/.test(section.id)) return "learning";
   if (/(?:curriculum|course-map)/.test(section.id)) return "curriculum";
@@ -40,9 +45,10 @@ export function classifySharedSection(section) {
   return "deep";
 }
 
+/** @param {any} module */
 export function buildEnglishSectionGroups(module) {
   if (hasDedicatedModule(module.slug)) {
-    return module.sections.map((section) => ({
+    return /** @type {any[]} */ (module.sections).map((section) => ({
       role: "authored",
       id: section.id,
       label: section.title,
@@ -51,6 +57,7 @@ export function buildEnglishSectionGroups(module) {
     }));
   }
 
+  /** @type {any[]} */
   const grouped = [];
   for (const section of module.sections) {
     const role = classifySharedSection(section);
@@ -72,11 +79,11 @@ export function buildEnglishSectionGroups(module) {
   // section outside that group does not already use it. This preserves an
   // authored section's public anchor while still letting a same-group section
   // be represented by the outer group container.
-  const authoredSectionIds = new Set(module.sections.map((section) => section.id));
+  const authoredSectionIds = new Set(/** @type {any[]} */ (module.sections).map((section) => section.id));
   const allocatedIds = new Set();
   return grouped.map((group) => {
-    const ownSectionIds = new Set(group.sections.map((section) => section.id));
-    const baseId = sharedSectionRoles[group.role].id;
+    const ownSectionIds = new Set(/** @type {any[]} */ (group.sections).map((section) => section.id));
+    const baseId = /** @type {any} */ (sharedSectionRoles[/** @type {keyof typeof sharedSectionRoles} */ (group.role)]).id;
     let suffix = 1;
     let id = baseId;
     while (

@@ -15,10 +15,11 @@ function parseLimit() {
   return Number.isInteger(value) && value > 0 ? value : null;
 }
 
+/** @param {string} href */
 async function probe(href) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
-  const attempt = async (method) => {
+  const attempt = async (/** @type {string} */ method) => {
     try {
       const response = await fetch(href, { method, redirect: "follow", signal: controller.signal, headers: { "user-agent": "fieldbook-source-link-check/1.0" } });
       return { status: response.status, ok: response.ok };
@@ -38,6 +39,7 @@ async function probe(href) {
 const entries = Object.entries(sourceLedger);
 const limit = parseLimit();
 const targets = limit ? entries.slice(0, limit) : entries;
+/** @type {Array<{ sourceId: string; href: string; status: number; reachable: boolean }>} */
 const results = [];
 
 let cursor = 0;

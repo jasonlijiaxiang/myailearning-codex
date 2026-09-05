@@ -40,8 +40,8 @@ export function McpModuleExperience() {
 
   const brief = requireModuleBrief("mcp");
   const registry = requireModuleContent("mcp");
-  const curriculum = requireModuleCurriculum("mcp");
-  const learning = requireModuleLearning("mcp");
+  const curriculum = requireModuleCurriculum("mcp") as unknown as McpExperienceData["curriculum"];
+  const learning = requireModuleLearning("mcp") as unknown as McpExperienceData["learning"];
   const publication = getPublishedModule("mcp");
   if (!publication) throw new Error("Missing MCP publication entry");
   const ledger = sourceLedger as Record<string, SourceLedgerEntry | undefined>;
@@ -74,11 +74,11 @@ export function McpModuleExperience() {
       zh: knowledgeModule.zh.replace(/^MCP\s*·\s*/, ""),
       en: knowledgeModule.en,
       layerName: knowledgeModule.layerName,
-      titleId: publication.titleId,
-      updatedAt: publication.updatedAt,
+      titleId: publication.titleId as string,
+      updatedAt: publication.updatedAt as string | null,
       knowledgeView: publication.knowledgeView ?? "mcp-host-server-boundary",
     },
-    terms: publication.requiredTerms.map((termId) => {
+    terms: (publication.requiredTerms as unknown as readonly string[]).map((termId) => {
       const term = terminology[termId];
       if (!term) throw new Error(`Unknown MCP term: ${termId}`);
       return { id: termId, zh: term.zh, en: term.en, description: term.description };
@@ -92,7 +92,7 @@ export function McpModuleExperience() {
     cloudHooks: brief.cloudHooks,
     qa: registry.qa,
     evidenceCards: registry.evidenceCards,
-    deepDives: registry.deepDives,
+    deepDives: registry.deepDives as unknown as McpExperienceData["deepDives"],
     curriculum,
     learning,
     sources,

@@ -14,6 +14,7 @@ const KB_TOOL = path.join(
 );
 const NPM = process.platform === "win32" ? "npm.cmd" : "npm";
 
+/** @param {string} executable @param {string[]} args @param {string} cwd */
 function run(executable, args, cwd) {
   const env = { ...process.env };
   delete env.PORTABLE_KB_TEST_ROOT;
@@ -31,6 +32,7 @@ function run(executable, args, cwd) {
   });
 }
 
+/** @param {Buffer} archive */
 function storedZipEntries(archive) {
   const entries = new Map();
   let offset = 0;
@@ -51,6 +53,7 @@ function storedZipEntries(archive) {
   return entries;
 }
 
+/** @param {Map<string, Buffer>} entries @param {string} destination */
 async function extractStoredEntries(entries, destination) {
   for (const [name, data] of entries) {
     assert.ok(name && !name.includes("\\") && !path.posix.isAbsolute(name));
@@ -76,7 +79,7 @@ test("the real portable archive installs, validates, and builds from a fresh no-
     const archive = await fs.readFile(archivePath);
     const entries = storedZipEntries(archive);
     const manifest = JSON.parse(entries.get("PORTABLE-MANIFEST.json").toString("utf8"));
-    const paths = new Set(manifest.files.map((file) => file.path));
+    const paths = new Set(manifest.files.map((/** @type {any} */ file) => file.path));
     assert.equal(manifest.siteBindingIncluded, false);
     assert.ok(paths.has("HANDOFF-READ-FIRST.html"));
     assert.ok(paths.has("HANDOFF.md"));
@@ -85,7 +88,7 @@ test("the real portable archive installs, validates, and builds from a fresh no-
     assert.ok(!paths.has(".openai/hosting.json"));
     assert.ok(![...paths].some((name) => name.startsWith("knowledge/private-inbox/")));
     assert.ok(![...paths].some((name) => (
-      name.split("/").some((segment) => [".git", "node_modules", "dist"].includes(segment))
+      name.split("/").some((/** @type {string} */ segment) => [".git", "node_modules", "dist"].includes(segment))
     )));
 
     const extracted = path.join(root, "extracted");

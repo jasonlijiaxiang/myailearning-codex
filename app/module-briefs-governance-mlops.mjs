@@ -1,3 +1,7 @@
+/**
+ * @param {string} sourceId
+ * @param {string} supports
+ */
 const evidence = (sourceId, supports) => ({ sourceId, supports: supports.includes("支持") ? supports : `支持${supports}` });
 
 export const predictiveAiMlopsBrief = {
@@ -140,7 +144,7 @@ export const aiGovernanceBrief = {
     { q: "如何给招聘 AI 做风险分级？", a: "按具体用途和影响分级，不按模型名称。写作辅助与候选人筛选、评分、排序不能共用同一层级。", depth: "候选人排序会影响个人机会，应在组织内进入高影响层级并增加影响评估、独立验证、人工监督、申诉、事件和更高批准。欧盟委员会把就业和简历筛选列为高风险用途示例，但案例系统的具体法律分类仍需结合 intended purpose、角色和完整法源判断。", ask: "系统只是整理信息，还是会建议、排序、淘汰或实质影响进入下一轮？", tag: "风险分级", basis: "情境风险 + 有边界的法规线索", evidence: [evidence("nist-ai-rmf", "强调将风险管理纳入具体 AI 产品、服务和系统的生命周期。"), evidence("eu-ai-act-implementation-2026-08-05", "官方页面把就业与候选人筛选列为高风险用途示例；不替代具体法律分类。")] },
     { q: "使用第三方招聘模型后，治理责任是否转给供应商？", a: "不会。供应商负责承诺范围，采用方仍对具体用途、数据、配置、集成、人工流程和最终决定负责。", depth: "采购要验证版本、地域、数据处理、评估、事件通知、分包商、停服与退出；上线后监控供应商变化是否使原批准失效。认证和合同材料只能证明其明确范围，不能覆盖客户自己的 ATS 集成与决策流程。", ask: "合同是否承诺版本变更、数据边界、事件协作和可退出性？", tag: "第三方治理", basis: "共享责任 + 持续治理", evidence: [evidence("iso-iec-42001", "标准同时适用于提供或使用 AI 产品与服务的组织。"), evidence("nist-ai-rmf", "风险框架覆盖 AI 产品、服务和系统的开发与使用。")] },
     { q: "欧盟 AI Act 的时间表可以一次写死吗？", a: "不可以。2026 年正式修法已改变部分高风险规则的适用时点，动态页面和相关事实记录都要事件驱动更新。", depth: "截至 2026-08-05，AI Act 已自 2026-08-02 起适用；Regulation (EU) 2026/1744 已于 2026-07-27 生效。Chapter III Sections 1–3（Article 6(5) 除外）对按 Article 6(2)/Annex III 分类的系统自 2027-12-02 适用，对按 Article 6(1)/Annex I 分类的系统自 2028-08-02 适用；委员会页面另列透明度规则于 2026 年 8 月、禁止事项第 9 条于 2026 年 12 月生效。不能把它简化为这些系统的全部义务都延期。具体角色、分类和义务由法务确认。", ask: "组织扮演什么角色，招聘用途落在哪项正式分类，谁负责跟踪后续法源变化？", tag: "法规时效", basis: "委员会实施页面 + 正式修法", evidence: [evidence("eu-ai-act-implementation-2026-08-05", "提供当前实施入口与招聘用途示例。"), evidence("eu-ai-act-2026-1744", "正式修订文本限定了适用章节、Article 6(5) 例外、分类与 2027/2028 时点。")] },
-    { q: "怎样避免招聘 AI 治理变成只填表？", a: "让每项声明连接到可测试控制和运行证据，并让投诉、事件或重大变化触发重新决定。", depth: "证据包要连接用途、候选人群、数据与模型版本、切片评估、安全测试、人工监督、审批、例外、申诉、事件和退役证明。抽样验证文档与生产实际一致，而不是只检查字段是否填写。", ask: "哪三项关键控制能从政策一路追到当前 ATS 工作流和实际运行结果？", tag: "治理落地", basis: "持续保证", evidence: [evidence("iso-iec-42001", "要求建立、实施、维护并持续改进管理体系。"), evidence("nist-ai-rmf", "将风险管理贯穿设计、开发、使用与评估。")] },].map((item) => ({ ...item, addedAt: item.addedAt ?? "2026-07-21" })),
+    { q: "怎样避免招聘 AI 治理变成只填表？", a: "让每项声明连接到可测试控制和运行证据，并让投诉、事件或重大变化触发重新决定。", depth: "证据包要连接用途、候选人群、数据与模型版本、切片评估、安全测试、人工监督、审批、例外、申诉、事件和退役证明。抽样验证文档与生产实际一致，而不是只检查字段是否填写。", ask: "哪三项关键控制能从政策一路追到当前 ATS 工作流和实际运行结果？", tag: "治理落地", basis: "持续保证", evidence: [evidence("iso-iec-42001", "要求建立、实施、维护并持续改进管理体系。"), evidence("nist-ai-rmf", "将风险管理贯穿设计、开发、使用与评估。")] },].map((/** @type {any} */ item) => ({ ...item, addedAt: item.addedAt ?? "2026-07-21" })),
   evidenceCards: [
     { metric: "动态状态", title: "NIST AI RMF 1.0 正在修订", finding: "NIST 官方页面当前明确标注 AI RMF 1.0 is being revised，并保留 1.0、Playbook 与 GenAI Profile 的入口。", boundary: "修订状态不使现有框架失效，但动态结论必须设置复核。", sourceId: "nist-ai-rmf", accent: true },
     { metric: "体系对象", title: "ISO/IEC 42001 管理组织过程", finding: "ISO 官方说明该标准规定建立、实施、维护和持续改进 AI 管理体系的要求。", boundary: "管理体系标准不是单个模型正确率、安全性或法律合规的保证。", sourceId: "iso-iec-42001" },

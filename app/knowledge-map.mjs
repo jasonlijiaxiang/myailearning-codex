@@ -117,6 +117,7 @@ export const moduleList = layers.flatMap((layer) =>
  * 历史地址继续解析为合并后的主要模块，避免同事保存的旧链接失效。
  * 别名不出现在知识地图，也不形成第二份内容。
  */
+/** @type {Record<string, string>} */
 export const legacyModuleAliases = Object.freeze({
   "scenario-solution-library": "solution-patterns",
   "industry-blueprint": "solution-patterns",
@@ -144,10 +145,16 @@ export const legacyModuleAliases = Object.freeze({
   "inference-stack": "llm-inference",
 });
 
+/**
+ * @param {string} slug
+ */
 function resolveModuleSlug(slug) {
   return legacyModuleAliases[slug] ?? slug;
 }
 
+/**
+ * @param {string} slug
+ */
 export function getModuleBySlug(slug) {
   const canonicalSlug = resolveModuleSlug(slug);
   const knowledgeModule = moduleList.find((item) => item.slug === canonicalSlug);
