@@ -2695,11 +2695,17 @@ test("source freshness rejects impossible, future, and overdue verification date
 });
 
 test("every shared module has a source-backed learning route and practical labs", async () => {
-  const sharedModules = publishedModuleRegistry.filter((module) => module.routeKind === "brief");
+  const briefModules = publishedModuleRegistry.filter((module) => module.routeKind === "brief");
+  // 共享学习与课程内容以内容注册表为准：mcp / a2a / llm-inference 路由改为
+  // dedicated 后仍保留共享课程与学习内容（其专用页面与 Reference 分组继续使用）。
+  const sharedModules = publishedModuleRegistry.filter((module) => Object.hasOwn(moduleLearningContent, module.slug));
   assert.deepEqual([...moduleLearningSlugs].sort(), sharedModules.map((module) => module.slug).sort());
   assert.deepEqual([...moduleCurriculumSlugs].sort(), sharedModules.map((module) => module.slug).sort());
   assert.equal(Object.keys(moduleLearningContent).length, sharedModules.length);
   assert.equal(Object.keys(moduleCurriculumContent).length, sharedModules.length);
+  for (const briefModule of briefModules) {
+    assert.ok(moduleLearningSlugs.includes(briefModule.slug), `brief 模块缺少共享学习内容：${briefModule.slug}`);
+  }
   for (const sharedModule of sharedModules) {
     assert.ok(requireModuleContent(sharedModule.slug).qa.length > 0, `${sharedModule.slug} 缺少客户问答覆盖`);
   }

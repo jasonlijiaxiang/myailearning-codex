@@ -1,4 +1,5 @@
 import { moduleList } from "./knowledge-map.mjs";
+import { moduleManifests } from "./modules/index.mjs";
 import { moduleContentRegistry } from "./module-content-registry.mjs";
 import { moduleCurriculumContent } from "./module-curriculum-content.mjs";
 import { moduleLearningContent } from "./module-learning-content.mjs";
@@ -2041,82 +2042,16 @@ export const modelRadarBenchmarkGuides = Object.freeze({
   }),
 });
 
-const referenceShortTitles = Object.freeze({
-  "solution-patterns": "Solution Patterns & AI FinOps",
-  "model-landscape": "Model Landscape",
-  rag: "RAG",
-  "ai-agent": "Agent",
-  veadk: "VeADK",
-  agentkit: "AgentKit",
-  multimodal: "Multimodal",
-  mcp: "MCP",
-  a2a: "A2A",
-  evaluation: "Evaluation",
-  "ai-governance": "AI Governance",
-  security: "Security",
-  "ai-gateway": "AI Gateway",
-  "ai-ops": "AI Application Engineering & GenAIOps",
-  "predictive-ai-mlops": "Predictive AI & MLOps",
-  llm: "LLM",
-  "prompt-engineering": "Prompt",
-  "fine-tuning": "Fine-tuning",
-  "llm-training": "LLM Training",
-  "llm-inference": "LLM Inference",
-  "data-engineering": "Data Engineering",
-  "ai-infra-platform": "Infra Platform",
-  "ai-infra-compute": "Infra Compute",
-});
+// Reference 分组短标题与补充来源 ID 按模块维护在 app/modules/<slug>/manifest.mjs，本文件派生。
+const referenceShortTitles = Object.freeze(Object.fromEntries(
+  moduleManifests.map((manifest) => [manifest.slug, manifest.referenceShortTitle]),
+));
 
-const additionalSourceIds = Object.freeze({
-  "model-landscape": ["intelligence-index", "coding-index", "agentic-index", "artificial-analysis-models", "artificial-analysis-methodology", "terminal-bench-v21", "scicode", "scicode-verified-2026", "gdpval-aa-v2", "tau3-banking", "arena-leaderboard", "livebench", "gpqa-diamond", "humanity-last-exam", "swe-bench", "terminal-bench", "swe-rebench", "bfcl", "webarena-2024", "financebench"],
-  veadk: [
-    "veadk-agent-source-2026-08-15", "veadk-runner-source-2026-08-15",
-    "veadk-agentkit-integration-2026-08-15", "veadk-short-term-memory-2026-08-15",
-    "veadk-builtin-tools-2026-08-15",
-  ],
-  agentkit: [
-    "agentkit-platform-overview-2026-08-15", "agentkit-cli-overview-2026-08-15",
-    "agentkit-cli-commands-2026-08-15", "agentkit-config-reference-2026-08-15",
-    "agentkit-runtime-quickstart-2026-08-15", "agentkit-memory-quickstart-2026-08-15",
-    "mem0-oss-overview-2026-08-15", "mem0-platform-vs-oss-2026-08-15",
-  ],
-  mcp: ["mcp-2026-07-28-rc", "mcp-specification-2026-07-28", "mcp-changelog-2026-07-28", "mcp-mrtr-2026-07-28", "mcp-list-cache-2026-07-28", "mcp-http-routing-2026-07-28", "mcp-server-overview-2026-07-28", "mcp-tools-2026-07-28", "mcp-resources-2026-07-28", "mcp-prompts-2026-07-28", "mcp-tasks-extension"],
-  a2a: ["a2a-agent-discovery", "a2a-extensions"],
-  multimodal: ["gb-45438-2025", "china-ai-content-labeling"],
-  "ai-governance": ["eu-ai-act"],
-  rag: [
-    "bm25-book", "dpr-2020", "rrf-2009", "beir-2021", "mteb-2023", "miracl-2023",
-    "clirmatrix-2020", "hnsw-2016", "rag-survey", "graphrag", "chunking-study",
-    "rag-original-2020", "bert-reranker", "fid-2021", "replug-2024", "self-rag",
-    "lost-middle", "contextual-retrieval", "ragas", "nist-genai-profile", "nist-aml-100-2e2025",
-    "nist-zero-trust", "finops-unit-economics", "finops-ai-tools-considerations",
-    "owasp-prompt-injection", "owasp-vector-weaknesses", "docling-report", "pp-ocr-2020",
-    "colpali-2025", "fine-tuning-or-retrieval", "opentelemetry-semconv",
-    "opentelemetry-genai-observability-2026",
-  ],
-  "ai-agent": [
-    "openai-agent-guide", "openai-model-spec-hidden-cot", "anthropic-effective-agents", "react-2023",
-    "webarena-2024", "google-agent-platform", "aws-agentcore", "aws-agentcore-memory",
-    "azure-foundry-agent-service", "opentelemetry-semconv", "nist-genai-profile", "nist-zero-trust",
-    "mcp-architecture", "a2a-concepts", "openai-function-calling",
-    "openai-harness-engineering", "anthropic-agent-evals", "microsoft-agent-harness", "nist-agent-standards",
-    "openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026",
-    "harness-bench-2026", "configuring-agentic-coding-tools", "swe-bench", "terminal-bench", "swe-rebench",
-    "product-codex-docs", "product-claude-code-docs", "product-github-copilot-coding-agent", "product-cursor-docs",
-    "product-kiro-cli", "product-devin-docs", "product-openhands-docs", "product-cline-docs", "product-aider-docs",
-    "product-opencode-docs", "product-antigravity-migration", "product-gemini-cli-individual-transition",
-    "product-antigravity-cli-migration", "product-gemini-cli-releases", "product-qwen-code-docs", "product-kimi-code-docs",
-    "product-codebuddy-docs", "product-comate-agent-docs", "product-tongyi-lingma", "product-qoder-cn-series",
-    "product-qoder-cn-ide", "product-qoder-cn-ide-changelog",
-  ],
-  "prompt-engineering": [
-    "openai-prompting-guide", "openai-structured-outputs", "openai-function-calling",
-    "google-prompt-introduction", "google-prompt-strategies", "google-system-instructions",
-    "anthropic-prompt-overview", "openai-model-spec-hidden-cot", "openai-prompt-caching",
-    "anthropic-effective-agents", "react-2023", "nist-genai-profile", "nist-zero-trust",
-    "owasp-prompt-injection",
-  ],
-});
+const additionalSourceIds = Object.freeze(Object.fromEntries(
+  moduleManifests
+    .filter((manifest) => manifest.additionalSourceIds.length > 0)
+    .map((manifest) => [manifest.slug, manifest.additionalSourceIds]),
+));
 
 /** @param {string} slug */
 function contentSourceIds(slug) {

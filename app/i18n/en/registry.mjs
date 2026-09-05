@@ -22,10 +22,17 @@ import { englishModule as dataEngineering } from "./modules/data-engineering.mjs
 import { englishModule as aiInfraPlatform } from "./modules/ai-infra-platform.mjs";
 import { englishModule as aiInfraCompute } from "./modules/ai-infra-compute.mjs";
 import { englishModuleSlugs } from "../locale-config.mjs";
+import { moduleManifests } from "../../modules/index.mjs";
 import { englishCopyOwners, englishSourceCopyOverrides } from "./shared-copy-policy.mjs";
 import { englishSupplementalSourceCopy } from "./reference-ledger-copy.mjs";
 
-const localizedModules = [
+/**
+ * 英文模块正文仍在 i18n/en/modules/<slug>.mjs 维护；模块数组的顺序与完整性
+ * 从 manifest 注册表派生，避免与发布模块集合漂移。
+ */
+/** @type {Record<string, any>} */
+const englishModuleBySlug = {};
+for (const localizedModule of [
   solutionPatterns,
   modelLandscape,
   rag,
@@ -49,7 +56,16 @@ const localizedModules = [
   dataEngineering,
   aiInfraPlatform,
   aiInfraCompute,
-];
+]) {
+  englishModuleBySlug[localizedModule.slug] = localizedModule;
+}
+Object.freeze(englishModuleBySlug);
+
+const localizedModules = moduleManifests.map((manifest) => {
+  const localizedModule = englishModuleBySlug[manifest.slug];
+  if (!localizedModule) throw new Error(`English module missing for published module: ${manifest.slug}`);
+  return localizedModule;
+});
 
 const moduleEntries = localizedModules.map((localizedModule) => [localizedModule.slug, Object.freeze(localizedModule)]);
 

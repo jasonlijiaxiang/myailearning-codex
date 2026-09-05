@@ -157,20 +157,22 @@ export default async function ModulePage({ params }: ModulePageProps) {
   const { slug } = await params;
   const currentModule = getModuleBySlug(slug);
   if (!currentModule) notFound();
-  if (currentModule.canonicalSlug === "llm-inference") {
-    const { InferenceModulePage } = await import("../../../inference-module-page");
-    return <InferenceModulePage />;
-  }
-  // Static routes own MCP and A2A, but historical aliases still resolve through
-  // this dynamic route. Preserve their canonical specialized reader instead of
-  // treating their absence from the generic presentation config as an error.
-  if (currentModule.canonicalSlug === "mcp") {
-    const { McpModuleExperience } = await import("../../../mcp-module-experience");
-    return <McpModuleExperience />;
-  }
-  if (currentModule.canonicalSlug === "a2a") {
-    const { A2AModuleExperience } = await import("../../../a2a-module-experience");
-    return <A2AModuleExperience />;
+
+  // 专用模块的正式地址由静态路由承载（mcp / a2a / llm-inference 各有独立页面）；
+  // 历史别名仍经本动态路由解析，继续渲染合并后主要模块的专用页面，避免旧链接失效。
+  if (currentModule.requestedSlug !== currentModule.canonicalSlug) {
+    if (currentModule.canonicalSlug === "mcp") {
+      const { McpModuleExperience } = await import("../../../mcp-module-experience");
+      return <McpModuleExperience />;
+    }
+    if (currentModule.canonicalSlug === "a2a") {
+      const { A2AModuleExperience } = await import("../../../a2a-module-experience");
+      return <A2AModuleExperience />;
+    }
+    if (currentModule.canonicalSlug === "llm-inference") {
+      const { InferenceModulePage } = await import("../../../inference-module-page");
+      return <InferenceModulePage />;
+    }
   }
   if (hasDedicatedModule(currentModule.canonicalSlug)) notFound();
 

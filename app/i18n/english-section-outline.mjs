@@ -1,4 +1,12 @@
-import { hasDedicatedModule, publishedModules } from "../module-publication.mjs";
+import { publishedModules } from "../module-publication.mjs";
+import { moduleManifests } from "../modules/index.mjs";
+
+// 英文统一 reader 的“自撰分组/共享分组”跟随英文内容形态：没有 brief 的模块
+// 拥有完整自撰分组。mcp、a2a、llm-inference 的中文路由虽然改为 dedicated，
+// 其英文内容仍是共享分组形态，因此这里按“是否有 brief”而不是中文 routeKind 判断。
+const englishAuthoredModuleSlugs = Object.freeze(
+  moduleManifests.filter((manifest) => !manifest.brief).map((manifest) => manifest.slug),
+);
 
 export const sharedSectionRoles = Object.freeze({
   learning: Object.freeze({ id: "study-guide", label: "Learning & practice", eyebrow: "Know how to master it" }),
@@ -32,7 +40,7 @@ export function selectVisibleEnglishQuestions(module) {
 
 /** @param {any} module */
 export function usesFocusedEnglishPreview(module) {
-  return focusedEnglishModuleSlugs.includes(module.slug) && !hasDedicatedModule(module.slug);
+  return focusedEnglishModuleSlugs.includes(module.slug) && !englishAuthoredModuleSlugs.includes(module.slug);
 }
 
 /** @param {any} section */
@@ -47,7 +55,7 @@ export function classifySharedSection(section) {
 
 /** @param {any} module */
 export function buildEnglishSectionGroups(module) {
-  if (hasDedicatedModule(module.slug)) {
+  if (englishAuthoredModuleSlugs.includes(module.slug)) {
     return /** @type {any[]} */ (module.sections).map((section) => ({
       role: "authored",
       id: section.id,

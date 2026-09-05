@@ -21,9 +21,20 @@ const items = questionDirectoryItems.map((/** @type {any} */ item) => {
   return copy;
 });
 
+// routeKind 是路由注册而不是内容。S3 把 mcp/a2a/llm-inference 调整为 dedicated
+// 属于路由重构；快照把这三个值投影回重构前的 brief，保证内容哈希不因路由
+// 重构变化，同时仍对任何真实内容变动保持敏感（除这三个投影外逐字段参与哈希）。
+/** @type {Readonly<Record<string, string>>} */
+const routeKindSnapshotProjection = Object.freeze({ mcp: "brief", a2a: "brief", "llm-inference": "brief" });
+const publishedModuleItems = publishedModules.map((/** @type {any} */ module) => {
+  const projectedRouteKind = routeKindSnapshotProjection[module.slug];
+  if (!projectedRouteKind) return module;
+  return { ...module, routeKind: projectedRouteKind };
+});
+
 const payload = {
   moduleContentRegistry,
-  publishedModules,
+  publishedModules: publishedModuleItems,
   moduleList,
   layers,
   sourceLedger,

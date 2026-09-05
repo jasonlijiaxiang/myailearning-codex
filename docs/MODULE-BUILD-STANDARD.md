@@ -334,10 +334,10 @@ HTML 不是 PPT 的逐页搬运，也不是把幻灯片纵向拼成长页。PPT 
 2. 在统一术语表登记首次中英对照；
 3. 建立 Reference 分组并完成来源核验；
 4. 完成客户问答、题内依据和按需证据卡，并在 `app/module-content-registry.mjs` 登记；
-5. 在 `app/module-publication.mjs` 登记 path、主标题、术语和内容契约；
+5. 建立 `app/modules/<slug>/manifest.mjs`：一个文件登记该模块的 slug、中英文名、主标题、知识地图层级、路由形态、首次发布与更新日期、必需术语、知识视图、阅读与视觉画像、问答覆盖标签、内容契约、Reference 短标题与补充来源、英文同步日期，以及 brief / 课程 / 学习 / 扩展视图 / 现场条目等正文引用（正文仍留在原内容文件，manifest 只引用不复制），并在 `app/modules/index.mjs` 登记一行导出；
 6. 运行通用质量检查并完成人工内容评审。
 
-首页入口、专用路由判断和测试名单只从发布注册表派生，不再分别手工维护。全站只保留一个面向读者的知识关系入口：公开动态图谱负责关系探索，首页知识地图负责全量层级浏览；图谱覆盖率、共享术语主干和健康检查保留为后台质量门禁，不另设一个功能重叠的公开总览页。
+`app/module-publication.mjs`、`app/knowledge-map.mjs` 的模块列表、`app/module-content-registry.mjs`、`app/module-discovery.mjs`、`app/unified-brief-module-config.mjs`、`app/english-update-dates.mjs`、`app/reference-content.mjs` 的模块表、`app/i18n/en/registry.mjs` 的模块数组与英文阅读器配置表全部从 `app/modules/<slug>/manifest.mjs` 派生；首页入口、专用路由判断和测试名单只从发布注册表派生，不再分别手工维护。全站只保留一个面向读者的知识关系入口：公开动态图谱负责关系探索，首页知识地图负责全量层级浏览；图谱覆盖率、共享术语主干和健康检查保留为后台质量门禁，不另设一个功能重叠的公开总览页。
 
 ## 11. 发布验收清单
 
