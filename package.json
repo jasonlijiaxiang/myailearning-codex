@@ -9,7 +9,7 @@
     "dev": "node scripts/run-vinext.mjs dev",
     "build": "node scripts/run-vinext.mjs build",
     "start": "node scripts/run-vinext.mjs start",
-    "test": "npm run module:polish:validate && npm run test:bilingual && npm run build && node --test tests/design-language-contract.test.mjs tests/rendered-html.test.mjs tests/question-overlap.test.mjs tests/module-polish-orchestration.test.mjs tests/question-field-kit.test.mjs tests/portable-release.test.mjs && npm run sources:report",
+    "test": "npm run module:polish:validate && npm run test:bilingual && npm run build && node --test tests/design-language-contract.test.mjs tests/rendered-html.test.mjs tests/page-budget.test.mjs tests/question-overlap.test.mjs tests/module-polish-orchestration.test.mjs tests/question-field-kit.test.mjs tests/portable-release.test.mjs && npm run sources:report",
     "snapshot:content": "node scripts/snapshot-content.mjs",
     "sources:report": "node scripts/sources-report.mjs",
     "stage0:validate": "node scripts/stage0-validate.mjs",

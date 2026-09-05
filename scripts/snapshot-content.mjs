@@ -15,7 +15,11 @@ import { questionDirectoryItems } from "../app/question-index.mjs";
 
 // S0-T3 会把 searchText 从 questionDirectoryItems 移到搜索索引，快照一律剔除该字段，
 // 使哈希不因该字段的存放位置变化而改变。
-const items = questionDirectoryItems.map(({ searchText: _searchText, ...rest }) => rest);
+const items = questionDirectoryItems.map((item) => {
+  const copy = { ...item };
+  delete copy.searchText;
+  return copy;
+});
 
 const payload = {
   moduleContentRegistry,

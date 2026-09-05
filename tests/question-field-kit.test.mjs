@@ -9,6 +9,7 @@ import {
   scenarioDefinitions,
 } from "../app/question-field-kit.mjs";
 import { questionDirectoryItems } from "../app/question-index.mjs";
+import { buildQuestionSearchText } from "../app/search-index.mjs";
 import { filterQuestionDirectoryItems } from "../app/question-filter.mjs";
 import { timeBudgetPaths } from "../app/home-learning-paths.mjs";
 
@@ -86,12 +87,13 @@ test("fieldQuestionByRef is keyed consistently with the canonical question keys"
 });
 
 test("customer phrases stay aliases and join the shared search projection", () => {
+  const searchTextByKey = buildQuestionSearchText("zh");
   for (const field of fieldQuestions) {
     const item = itemsByKey.get(`${field.questionRef.moduleId}-${field.questionRef.questionNumber}`);
     for (const phrase of field.customerPhrases) {
       assert.ok(typeof phrase === "string" && phrase.trim(), `${field.fieldId} 的客户口语不得为空`);
       assert.ok(
-        item.searchText.includes(phrase),
+        searchTextByKey[item.key].includes(phrase),
         `客户口语必须进入正式问题的搜索投影：${phrase}`,
       );
     }
@@ -116,7 +118,6 @@ test("field-kit view filters to field questions and composes with intent", () =>
     key: item.key,
     moduleId: item.moduleId,
     tag: item.tag,
-    text: item.searchText,
     intentId: item.intentId,
     tier: item.tier,
   }));

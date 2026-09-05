@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -61,6 +61,21 @@ try {
 } catch (error) {
   console.error(`Unable to resolve vinext: ${error.message}`);
   process.exit(1);
+}
+
+// build 与 dev 在启动 vinext 前先同步生成 public/search/*.json；失败则退出。
+if (command === "build" || command === "dev") {
+  const buildSearchIndex = spawnSync(
+    process.execPath,
+    [path.join(PROJECT_ROOT, "scripts", "build-search-index.mjs")],
+    { cwd: PROJECT_ROOT, encoding: "utf8" },
+  );
+  if (buildSearchIndex.stdout) process.stdout.write(buildSearchIndex.stdout);
+  if (buildSearchIndex.stderr) process.stderr.write(buildSearchIndex.stderr);
+  if (buildSearchIndex.status !== 0) {
+    console.error(`Unable to build search index (exit ${buildSearchIndex.status})`);
+    process.exit(buildSearchIndex.status ?? 1);
+  }
 }
 
 const child = spawn(process.execPath, [cli, command, ...forwardedArguments], {

@@ -683,7 +683,7 @@ test("English home and knowledge graph expose the same interactive discovery cap
   ]);
   assert.match(englishHome, /KnowledgeSearchLaunch/);
   assert.match(englishHome, /ModuleExplorer/);
-  assert.match(englishHome, /knowledgeSearchEntries/);
+  assert.match(englishHome, /knowledgeIndexUrl="\/search\/knowledge\.en\.json"/);
   assert.match(englishHome, /learningPathsV2/);
   assert.match(englishHome, /\/en\/knowledge-graph/);
   assert.match(englishGraph, /KnowledgeConstellation/);

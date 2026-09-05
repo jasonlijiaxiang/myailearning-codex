@@ -14,7 +14,7 @@ import { CONTENT_UPDATE_POLICY_EFFECTIVE_DATE, formatModuleUpdatedAt, formatQues
 import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app/knowledge-map.mjs";
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy } from "../app/knowledge-graph/graph-data.mjs";
-import { exposesLongFormSearchSections, searchableEnglishSectionGroups, searchableQuestions } from "../app/home-search-visibility.mjs";
+import { buildKnowledgeSearchEntries, buildQuestionSearchText } from "../app/search-index.mjs";
 import { englishModuleRegistry, englishQuestions } from "../app/i18n/en/registry.mjs";
 import {
   buildEnglishSectionGroups,
@@ -1489,7 +1489,7 @@ test("English question directory links every published question to its visible m
   const invalidScopeHtml = await renderHtml("/en/questions?module=not-a-module");
 
   for (const englishModule of Object.values(englishModuleRegistry)) {
-    const exactIds = new Set(searchableQuestions(englishModule.slug, englishModule.qa, "en").map((item) => item.id));
+    const exactIds = new Set(englishModule.qa.map((item) => item.id));
     assert.deepEqual(exactIds, new Set(englishModule.qa.map((item) => item.id)), `${englishModule.slug} search must include every question`);
     for (const item of englishQuestions.filter((question) => question.moduleSlug === englishModule.slug)) {
       assert.ok(exactIds.has(item.id), `${englishModule.slug}:${item.id} must remain searchable`);
@@ -1618,17 +1618,18 @@ test("English pages publish route-specific English sharing metadata", async () =
 });
 
 test("question directory combines keyword, module, and category filters", () => {
-  const filterItems = questionDirectoryItems.map((item) => ({ key: item.key, moduleId: item.moduleId, tag: item.tag, text: item.searchText }));
-  const quantization = filterQuestionDirectoryItems(filterItems, { query: "量化" });
-  const mcp = filterQuestionDirectoryItems(filterItems, { moduleId: "mcp" });
-  const inferenceCache = filterQuestionDirectoryItems(filterItems, { query: "缓存", moduleId: "llm-inference" });
-  const evaluationSlice = filterQuestionDirectoryItems(filterItems, { moduleId: "evaluation", tag: "切片评估" });
+  const textByKey = buildQuestionSearchText("zh");
+  const filterItems = questionDirectoryItems.map((item) => ({ key: item.key, moduleId: item.moduleId, tag: item.tag }));
+  const quantization = filterQuestionDirectoryItems(filterItems, { query: "量化", textByKey });
+  const mcp = filterQuestionDirectoryItems(filterItems, { moduleId: "mcp", textByKey });
+  const inferenceCache = filterQuestionDirectoryItems(filterItems, { query: "缓存", moduleId: "llm-inference", textByKey });
+  const evaluationSlice = filterQuestionDirectoryItems(filterItems, { moduleId: "evaluation", tag: "切片评估", textByKey });
 
   assert.ok(quantization.length > 0, "关键词查询必须返回真实匹配的知识条目");
   assert.equal(new Set(quantization.map((item) => item.key)).size, quantization.length, "关键词查询结果不得重复");
-  assert.ok(quantization.every((item) => item.text.includes("量化")), "关键词查询结果必须保留匹配上下文");
+  assert.ok(quantization.every((item) => textByKey[item.key].includes("量化")), "关键词查询结果必须保留匹配上下文");
   assert.equal(mcp.length, moduleContentRegistry.mcp.qa.length, "模块筛选必须返回该模块全部问题");
-  assert.ok(inferenceCache.length > 0 && inferenceCache.every((item) => item.moduleId === "llm-inference" && item.text.includes("缓存")), "关键词与模块筛选必须组合生效");
+  assert.ok(inferenceCache.length > 0 && inferenceCache.every((item) => item.moduleId === "llm-inference" && textByKey[item.key].includes("缓存")), "关键词与模块筛选必须组合生效");
   assert.equal(evaluationSlice.length, 1, "类别筛选必须准确定位独立问题主题");
 });
 
@@ -2051,11 +2052,12 @@ test("Batch 09 routes render platform-product and minimum-sufficient-loop eviden
 });
 
 test("Batch 09 control views expose every step and focused search entries resolve to visible anchors", async () => {
-  const [platform, platformEn, solutionEn, homepageSource] = await Promise.all([
+  const [platform, platformEn, solutionEn, homepageSource, searchIndexBuilderSource] = await Promise.all([
     renderHtml("/modules/ai-infra-platform"),
     renderHtml("/en/modules/ai-infra-platform"),
     renderHtml("/en/modules/solution-patterns"),
     readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../scripts/build-search-index.mjs", import.meta.url), "utf8"),
   ]);
 
   const platformView = moduleExtensionViews["ai-infra-platform"];
@@ -2095,19 +2097,31 @@ test("Batch 09 control views expose every step and focused search entries resolv
       `英文控制面缺少步骤：${code} ${step.title}`,
     );
   }
-  assert.match(homepageSource, /searchableQuestions\(slug, content\.qa\)/);
-  assert.match(homepageSource, /exposesLongFormSearchSections\(slug\)/);
+  assert.match(searchIndexBuilderSource, /buildKnowledgeSearchEntries\("zh"\)/);
+  assert.match(homepageSource, /knowledgeIndexUrl="\/search\/knowledge\.zh\.json"/);
 
+  const zhSearchIndex = buildKnowledgeSearchEntries("zh");
   for (const publication of publishedModuleRegistry.filter((module) => module.readingProfile === "focused")) {
-    const questions = searchableQuestions(publication.slug, moduleContentRegistry[publication.slug].qa);
-    assert.deepEqual(questions, moduleContentRegistry[publication.slug].qa, `${publication.slug} search must retain every formal question`);
-    assert.equal(exposesLongFormSearchSections(publication.slug), true);
+    const qaEntries = zhSearchIndex.filter((entry) => entry.type === "客户问答" && entry.id.startsWith(`qa-${publication.slug}-`));
+    assert.equal(
+      qaEntries.length,
+      moduleContentRegistry[publication.slug].qa.length,
+      `${publication.slug} search must retain every formal question`,
+    );
+    const curriculum = moduleCurriculumContent[publication.slug];
+    if (curriculum) {
+      const curriculumEntries = zhSearchIndex.filter((entry) => entry.type === "课程章节" && entry.id.startsWith(`curriculum-${publication.slug}-`));
+      assert.equal(curriculumEntries.length, curriculum.chapters.length, `${publication.slug} search must keep long-form sections discoverable`);
+    }
     const html = await renderHtml(publication.path);
-    questions.forEach((_, index) => assert.match(html, new RegExp(`id="qa-${index + 1}"`)));
+    moduleContentRegistry[publication.slug].qa.forEach((_, index) => assert.match(html, new RegExp(`id="qa-${index + 1}"`)));
   }
 
-  const solutionGroups = searchableEnglishSectionGroups("solution-patterns", buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]));
-  assert.deepEqual(solutionGroups.map((group) => group.id), buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]).map((group) => group.id));
+  const enSearchIndex = buildKnowledgeSearchEntries("en");
+  const solutionGroups = buildEnglishSectionGroups(englishModuleRegistry["solution-patterns"]);
+  const solutionSectionEntries = enSearchIndex.filter((entry) => entry.type === "Module section" && entry.id.startsWith("section-solution-patterns-"));
+  const expectedSolutionItems = solutionGroups.flatMap((group) => group.sections.flatMap((section) => section.blocks.flatMap((block) => block.items))).length;
+  assert.equal(solutionSectionEntries.length, expectedSolutionItems, "solution-patterns search must keep every section item");
   assert.ok(solutionGroups.some((group) => group.role === "learning"));
   assert.ok(solutionGroups.some((group) => group.role === "curriculum"));
   assert.match(solutionEn, /id="curriculum"/);
@@ -2623,11 +2637,12 @@ test("balances arbitrary CSS Grid counts without fractional or missing spans", (
 });
 
 test("keeps module systems dynamically balanced, searchable, and navigable on mobile", async () => {
-  const [styles, v2Styles, v3Styles, homepage, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
+  const [styles, v2Styles, v3Styles, homepage, searchIndexSource, interactions, genericModuleRoute, referencesRoute, moduleComponents, publicationRegistry] = await Promise.all([
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v2.css", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-v3.css", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/search-index.mjs", import.meta.url), "utf8"),
     readFile(new URL("../app/fieldbook-interactions.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/modules/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/(zh)/references/page.tsx", import.meta.url), "utf8"),
@@ -2666,12 +2681,12 @@ test("keeps module systems dynamically balanced, searchable, and navigable on mo
   assert.match(v2Styles, /\.subHead h2, \.subHead h3\s*\{[^}]*5cqi[^}]*text-wrap:\s*balance/s);
   assert.match(homepage, /explorerModules/);
   assert.match(homepage, /publishedModuleSlugs\.map/);
-  assert.match(homepage, /knowledgeSearchEntries/);
-  assert.match(homepage, /Object\.entries\(moduleCurriculumContent\)/);
-  assert.match(homepage, /Object\.entries\(moduleLearningContent\)/);
-  assert.match(homepage, /type: "课程章节" as const/);
-  assert.match(homepage, /type: "实战练习" as const/);
-  assert.match(homepage, /<ModuleExplorer[\s\S]*?modules=\{explorerModules\}[\s\S]*?knowledgeEntries=\{knowledgeSearchEntries\}/);
+  assert.match(homepage, /knowledgeIndexUrl="\/search\/knowledge\.zh\.json"/);
+  assert.match(homepage, /<ModuleExplorer[\s\S]*?modules=\{explorerModules\}[\s\S]*?knowledgeIndexUrl=/);
+  assert.match(searchIndexSource, /Object\.entries\(moduleCurriculumContent\)/);
+  assert.match(searchIndexSource, /Object\.entries\(moduleLearningContent\)/);
+  assert.match(searchIndexSource, /type: "课程章节"/);
+  assert.match(searchIndexSource, /type: "实战练习"/);
   assert.match(publicationRegistry, /export const publishedModules/);
   assert.match(publicationRegistry, /contentContract/);
   assert.match(interactions, /export function ModuleExplorer/);
