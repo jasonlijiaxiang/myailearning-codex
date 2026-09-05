@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 
 import { ReadingProgress } from "./fieldbook-interactions";
-import { englishModulePath } from "./i18n/locale-config.mjs";
 import { ModuleHeroMetrics } from "./module-content-components";
 import styles from "./unified-module-reader.module.css";
 
@@ -84,7 +83,8 @@ export function UnifiedModuleHero({
 }: UnifiedModuleHeroProps) {
   const copy = heroCopyByLocale[locale];
   const isEnglish = locale === "en";
-  const languagePath = isEnglish ? `/modules/${slug}` : englishModulePath(slug);
+  // 直接拼路径，避免把发布注册表（locale-config → module-publication → manifests）拉进客户端图。
+  const languagePath = isEnglish ? `/modules/${slug}` : `/en/modules/${slug}`;
   const homePath = isEnglish ? "/en" : "/";
   const sourcesPath = isEnglish ? `/en/references?module=${slug}` : `/references#module-${slug}`;
   const glossaryPath = isEnglish ? "/en/glossary" : "/glossary";

@@ -1285,7 +1285,7 @@ test("English routes and all Chinese module page families expose reciprocal lang
   assert.match(ragZh, /UnifiedModuleScaffold/);
   assert.doesNotMatch(ragZh, /<nav className="topbar"|<ReadingProgress\b/, "RAG must not duplicate the shared page shell");
   assert.match(agentZh, /UnifiedModuleScaffold/);
-  assert.match(unifiedHero, /englishModulePath/);
+  assert.match(unifiedHero, /`\/en\/modules\/\$\{slug\}`/, "Unified hero must build the English module path without pulling the publication registry into the client graph");
   assert.match(unifiedHero, /`\/en\/references\?module=\$\{slug\}`/, "English unified modules must use the real scoped source-ledger URL");
   assert.doesNotMatch(unifiedHero, /\/en\/references#module-/, "English unified modules must not point to a nonexistent source anchor");
   assert.match(promptZh, /UnifiedModuleScaffold/);
