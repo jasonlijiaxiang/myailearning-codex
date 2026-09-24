@@ -10,7 +10,7 @@
     },
     "model-landscape": {
       "status": "aligned",
-      "enSyncedCommit": "90b428e2759d90fb53e4fee2a94341fd085a91d2"
+      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393"
     },
     "rag": {
       "status": "deferred",
@@ -21,7 +21,7 @@
     },
     "ai-agent": {
       "status": "aligned",
-      "enSyncedCommit": "73db768e98fadfc85cd7f597c0d25534c4241a72"
+      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393"
     },
     "multimodal": {
       "status": "deferred",
@@ -32,7 +32,7 @@
     },
     "mcp": {
       "status": "aligned",
-      "enSyncedCommit": "5b4c4b9dc661e7a1c31335f0a8f85a92c57bd2f4"
+      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393"
     },
     "a2a": {
       "status": "aligned",
