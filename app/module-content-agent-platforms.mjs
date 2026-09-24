@@ -15,7 +15,7 @@ const datedQa = (value) => freeze({
   ...value,
   evidence: list(value.evidence.map((/** @type {any} */ reference) => ({
     ...reference,
-    supports: `该来源支持以下判断：${reference.supports.replace(/^(?:说明|支持)/, "").trim()}`,
+    supports: reference.supports.trim(),
   }))),
   addedAt: "2026-08-15",
 });
@@ -285,11 +285,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "veadk-agentkit-integration-2026-08-15",
-            "supports": "该来源支持以下判断：VeADK 到 AgentKit 应用的集成入口。"
+            "supports": "集成示例用 create_agentkit_app(root_agent) 生成应用入口；创建入口不等于部署 Runtime。"
           },
           {
             "sourceId": "agentkit-platform-overview-2026-08-15",
-            "supports": "该来源支持以下判断：AgentKit 的应用交付与运行范围。"
+            "supports": "平台概览把应用定义与构建、部署、运行分开，说明 AgentKit 承担交付与运行生命周期。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -304,11 +304,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "veadk-agent-source-2026-08-15",
-            "supports": "该来源支持以下判断：当前 Agent 类的继承关系，不能外推未来版本。"
+            "supports": "固定源码中 VeADK Agent 继承 Google ADK LlmAgent；未来版本仍需重新核对。"
           },
           {
             "sourceId": "veadk-runner-source-2026-08-15",
-            "supports": "该来源支持以下判断：当前 Runner 实现关系，升级后需复核。"
+            "supports": "固定源码中 VeADK Runner 继承 Google ADK Runner，并在其执行入口周围增加处理逻辑。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -323,11 +323,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "veadk-runner-source-2026-08-15",
-            "supports": "该来源支持以下判断：Runner 的执行职责。"
+            "supports": "Runner 连接 session_service，并通过 run_async 产出执行事件；事件流不证明业务终态。"
           },
           {
             "sourceId": "veadk-short-term-memory-2026-08-15",
-            "supports": "该来源支持以下判断：短期会话后端与作用域。"
+            "supports": "短期记忆文档用 session_id 续接会话，并列出内存、SQLite、MySQL 与 PostgreSQL 后端。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -342,11 +342,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "veadk-builtin-tools-2026-08-15",
-            "supports": "该来源支持以下判断：内置 Tool 的接入方式，不证明业务授权。"
+            "supports": "内置工具示例把 web_search 放进 Agent 的 tools 列表，并说明模型按请求决定是否调用；业务授权需另验。"
           },
           {
             "sourceId": "veadk-agent-source-2026-08-15",
-            "supports": "该来源支持以下判断：Agent 的工具配置关系。"
+            "supports": "固定源码为 Agent 声明 tools 配置项；配置可用工具不等于为当前用户授权。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -361,7 +361,7 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "veadk-short-term-memory-2026-08-15",
-            "supports": "该来源支持以下判断：短期记忆后端选项与本地数据库边界。"
+            "supports": "文档将 SQLite 列为本地文件持久化，将 MySQL、PostgreSQL 列为分布式后端；多实例正确性仍需实测。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -376,15 +376,15 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "veadk-short-term-memory-2026-08-15",
-            "supports": "该来源支持以下判断：短期会话与可选持久化后端。"
+            "supports": "ShortTermMemory 管理 Session，并可按 backend 选择内存、本地文件或数据库持久化。"
           },
           {
             "sourceId": "agentkit-memory-quickstart-2026-08-15",
-            "supports": "该来源支持以下判断：长期记忆资源的接入路径。"
+            "supports": "快速入门先创建 Memory 资源、取得连接信息，再由应用配置读写；这不是权威业务记录。"
           },
           {
             "sourceId": "mem0-platform-vs-oss-2026-08-15",
-            "supports": "该来源支持以下判断：记忆服务交付方式，不证明检索内容是权威事实。"
+            "supports": "Mem0 文档区分托管 Platform 与自建 OSS 的基础设施责任；两者都不使记忆成为权威事实。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -399,15 +399,15 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "veadk-agentkit-integration-2026-08-15",
-            "supports": "该来源支持以下判断：VeADK 到 AgentKit App 的封装入口。"
+            "supports": "集成文档展示 create_agentkit_app 包装 root_agent，后面仍有配置与 launch 步骤。"
           },
           {
             "sourceId": "agentkit-cli-overview-2026-08-15",
-            "supports": "该来源支持以下判断：构建和部署属于后续生命周期。"
+            "supports": "CLI 概览把 build、deploy 和组合两步的 launch 列为独立命令。"
           },
           {
             "sourceId": "agentkit-runtime-quickstart-2026-08-15",
-            "supports": "该来源支持以下判断：云端 Runtime 仍有独立部署和调用步骤。"
+            "supports": "Runtime 快速入门分别演示本地调用、平台部署和部署后的 invoke，适配成功不能代替这些步骤。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -671,11 +671,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-platform-overview-2026-08-15",
-            "supports": "该来源支持以下判断：AgentKit 的平台定位。"
+            "supports": "平台概览区分应用定义与执行，并列出从初始化、调试到云端部署的 CLI 生命周期。"
           },
           {
             "sourceId": "veadk-agentkit-integration-2026-08-15",
-            "supports": "该来源支持以下判断：VeADK 与 AgentKit 的集成入口。"
+            "supports": "VeADK 集成文档用 create_agentkit_app 包装 root_agent，再通过 AgentKit 命令部署。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -690,11 +690,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-platform-overview-2026-08-15",
-            "supports": "该来源支持以下判断：Agent 应用是平台交付的基本单位。"
+            "supports": "平台概览以 agentkit.yaml 描述应用元数据、依赖、运行环境和所需服务，再交由 CLI 与平台执行。"
           },
           {
             "sourceId": "agentkit-config-reference-2026-08-15",
-            "supports": "该来源支持以下判断：应用配置字段与资源绑定。"
+            "supports": "配置参考列出 entry_point、dependencies_file、runtime_envs 与部署模式等字段；业务错误语义仍需应用定义。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -709,11 +709,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-cli-overview-2026-08-15",
-            "supports": "该来源支持以下判断：CLI 生命周期定位。"
+            "supports": "CLI 概览将 build 定义为镜像构建、deploy 定义为目标部署，launch 组合两步。"
           },
           {
             "sourceId": "agentkit-cli-commands-2026-08-15",
-            "supports": "该来源支持以下判断：当前 build、deploy、launch 等命令语义。"
+            "supports": "命令参考分别给出 build、deploy、launch 的用法与选项；实际执行应以安装版本为准。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -728,11 +728,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-runtime-quickstart-2026-08-15",
-            "supports": "该来源支持以下判断：Runtime 创建与调用流程，不能单独证明业务上线。"
+            "supports": "快速入门从本地调试走到 config、launch 和 invoke；这些步骤不包含客户业务验收。"
           },
           {
             "sourceId": "agentkit-platform-overview-2026-08-15",
-            "supports": "该来源支持以下判断：平台能力范围，不能替客户完成生产验收。"
+            "supports": "平台概览描述应用构建、部署和运行能力，没有给出客户任务成功或 SLO 的通过线。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -747,15 +747,15 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-runtime-quickstart-2026-08-15",
-            "supports": "该来源支持以下判断：Runtime 是云端运行环境，外部状态仍需单独设计。"
+            "supports": "Runtime 文档展示云端部署和调用，未给多实例会话一致性的验收结果。"
           },
           {
             "sourceId": "veadk-short-term-memory-2026-08-15",
-            "supports": "该来源支持以下判断：短期会话后端，并区分本地与分布式持久化选项。"
+            "supports": "短期记忆文档区分进程内、本地 SQLite 与 MySQL、PostgreSQL 后端，并用 session_id 续接会话。"
           },
           {
             "sourceId": "agentkit-memory-quickstart-2026-08-15",
-            "supports": "该来源支持以下判断：按用户范围接入 Memory；调用方标识仍需由可信认证建立。"
+            "supports": "示例用传入的 user_id 和 session_id 读写 Memory；文档没有证明这些标识已通过认证。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -770,15 +770,15 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-memory-quickstart-2026-08-15",
-            "supports": "该来源支持以下判断：AgentKit Memory 的创建、连接和使用流程。"
+            "supports": "快速入门先在控制台创建记忆资源，再取端点或集合信息并配置应用读写。"
           },
           {
             "sourceId": "mem0-oss-overview-2026-08-15",
-            "supports": "该来源支持以下判断：Mem0 OSS 的开源与自托管形态。"
+            "supports": "Mem0 OSS 文档要求采用方在自己的环境配置并运行记忆层；可用性和数据保护由采用方负责。"
           },
           {
             "sourceId": "mem0-platform-vs-oss-2026-08-15",
-            "supports": "该来源支持以下判断：OSS 与 Platform 的能力和责任差异。"
+            "supports": "Mem0 对照页区分托管基础设施与自建向量库、模型及 Embedding；不能据此推断 AgentKit 的内部实现。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -793,11 +793,11 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-platform-overview-2026-08-15",
-            "supports": "该来源支持以下判断：平台覆盖运行治理能力，不能替客户定义 SLO。"
+            "supports": "平台概览说明构建、部署与在线运行范围，但没有定义客户任务的质量或 SLO 门槛。"
           },
           {
             "sourceId": "agentkit-runtime-quickstart-2026-08-15",
-            "supports": "该来源支持以下判断：Runtime 部署与调用入口，不能替代外部压力和业务验收。"
+            "supports": "Runtime 快速入门演示本地调试、平台部署与 invoke；未提供客户负载压测或业务终态结果。"
           }
         ],
         "addedAt": "2026-08-15"
@@ -891,11 +891,11 @@ export const agentPlatformLearning = freeze({
 
 export const agentPlatformQaExpansion = freeze({
   veadk: freeze([
-    datedQa({ q: "怎样区分短期记忆、长期记忆和权威业务事实？", a: "短期记忆服务当前会话，长期记忆保存跨会话的受治理信息，当前事实由对应的权威来源确认。", depth: "长期记忆条目需要主体、来源、用途、时间、有效期、纠错和删除；检索只提供相关候选，余额、订单、权限和政策版本仍应查询各自的权威记录。", ask: "这条信息由谁产生、多久有效、谁能更正删除，错误时会影响什么决定？", tag: "状态分层", basis: "短期记忆机制 + 权威事实边界", evidence: [{ sourceId: veadkSources.memory, supports: "说明短期会话与可选持久化后端。" }, { sourceId: agentkitSources.memory, supports: "说明长期记忆资源的接入路径。" }, { sourceId: agentkitSources.mem0Compare, supports: "说明记忆服务交付方式，不证明检索内容是权威事实。" }] }),
-    datedQa({ q: "`create_agentkit_app` 与本地调试入口有什么不同，调用成功是否等于已经上云？", a: "前者把 root_agent 显式封装为 AgentKit App；本地调试入口主要服务开发，两者调用成功都不等于 Runtime 已部署。", depth: "正式上云还要完成构建、Runtime、目标配置、Region、环境变量、资源绑定、可信身份、网络、云端回归、观测和回退。", ask: "当前证据覆盖本地 App、构建、Runtime 还是业务上线中的哪一层？", tag: "应用适配", basis: "官方集成、CLI 与 Runtime 文档", evidence: [{ sourceId: veadkSources.integration, supports: "说明 VeADK 到 AgentKit App 的封装入口。" }, { sourceId: agentkitSources.cli, supports: "说明构建和部署属于后续生命周期。" }, { sourceId: agentkitSources.runtime, supports: "说明云端 Runtime 仍有独立部署和调用步骤。" }] }),
+    datedQa({ q: "怎样区分短期记忆、长期记忆和权威业务事实？", a: "短期记忆服务当前会话，长期记忆保存跨会话的受治理信息，当前事实由对应的权威来源确认。", depth: "长期记忆条目需要主体、来源、用途、时间、有效期、纠错和删除；检索只提供相关候选，余额、订单、权限和政策版本仍应查询各自的权威记录。", ask: "这条信息由谁产生、多久有效、谁能更正删除，错误时会影响什么决定？", tag: "状态分层", basis: "短期记忆机制 + 权威事实边界", evidence: [{ sourceId: veadkSources.memory, supports: "ShortTermMemory 管理 Session，并可选择内存、本地文件或数据库后端。" }, { sourceId: agentkitSources.memory, supports: "快速入门展示 Memory 资源创建、连接信息和应用读写步骤。" }, { sourceId: agentkitSources.mem0Compare, supports: "Mem0 对照页区分托管与自建责任，未把记忆列为权威业务事实。" }] }),
+    datedQa({ q: "`create_agentkit_app` 与本地调试入口有什么不同，调用成功是否等于已经上云？", a: "前者把 root_agent 显式封装为 AgentKit App；本地调试入口主要服务开发，两者调用成功都不等于 Runtime 已部署。", depth: "正式上云还要完成构建、Runtime、目标配置、Region、环境变量、资源绑定、可信身份、网络、云端回归、观测和回退。", ask: "当前证据覆盖本地 App、构建、Runtime 还是业务上线中的哪一层？", tag: "应用适配", basis: "官方集成、CLI 与 Runtime 文档", evidence: [{ sourceId: veadkSources.integration, supports: "集成示例用 create_agentkit_app(root_agent) 构造应用入口，随后才配置并 launch。" }, { sourceId: agentkitSources.cli, supports: "CLI 把 build、deploy 和 launch 分别列为构建、部署与组合执行命令。" }, { sourceId: agentkitSources.runtime, supports: "Runtime 快速入门分开展示本地调用、平台部署和部署后的 invoke。" }] }),
   ]),
   agentkit: freeze([
-    datedQa({ q: "AgentKit Memory 的控制面和数据面怎样区分，Mem0 OSS 与 Platform 又怎样选择？", a: "AgentKit Memory 的资源创建和绑定属于控制面，端点、凭据、网络与实际读写属于数据面。若另行评估 Mem0，再比较它的 Platform 与 OSS；现有来源不证明二者存在产品映射。", depth: "两层配置都要验证；如果选定后端异步处理写入，还要记录从写入确认到可检索的时间。Mem0 文档只用于比较它自己的托管与自建边界。自建 Mem0 仍需检查 LLM、Embedding、向量库、Telemetry 和出站网络，不能因 OSS 就默认全链路私有。", ask: "客户需要托管速度还是全链路数据控制，谁承担 HA、备份、升级、删除和观测？", tag: "Memory 架构", basis: "AgentKit Memory + Mem0 官方对比", evidence: [{ sourceId: agentkitSources.memory, supports: "说明 AgentKit Memory 的创建、连接和使用流程。" }, { sourceId: agentkitSources.mem0Oss, supports: "说明 Mem0 OSS 的开源与自托管形态。" }, { sourceId: agentkitSources.mem0Compare, supports: "说明 OSS 与 Platform 的能力和责任差异。" }] }),
-    datedQa({ q: "AgentKit 的观测、评测、外部压测和客户 SLO 分别解决什么？", a: "观测提供运行证据，评测衡量任务质量，外部压测施加可控负载，SLO 记录客户可接受的服务目标。", depth: "Trace 用于定位模型、工具和 Memory 步骤；评测集比较任务质量与轨迹；k6、Locust 等工具施加并发负载。由 SLO 推导错误预算后持续跟踪消耗，恢复结果另行与 RTO 对照，成本作为独立经营约束。当前模块只定义待执行验收，不声称已有云端结果。", ask: "客户当前缺的是定位证据、质量基线、容量上限还是正式 SLO？", tag: "可观测与性能", basis: "平台运行能力 + 独立验收分工", evidence: [{ sourceId: agentkitSources.overview, supports: "说明平台覆盖运行治理能力，不能替客户定义 SLO。" }, { sourceId: agentkitSources.runtime, supports: "说明 Runtime 部署与调用入口，不能替代外部压力和业务验收。" }] }),
+    datedQa({ q: "AgentKit Memory 的控制面和数据面怎样区分，Mem0 OSS 与 Platform 又怎样选择？", a: "AgentKit Memory 的资源创建和绑定属于控制面，端点、凭据、网络与实际读写属于数据面。若另行评估 Mem0，再比较它的 Platform 与 OSS；现有来源不证明二者存在产品映射。", depth: "两层配置都要验证；如果选定后端异步处理写入，还要记录从写入确认到可检索的时间。Mem0 文档只用于比较它自己的托管与自建边界。自建 Mem0 仍需检查 LLM、Embedding、向量库、Telemetry 和出站网络，不能因 OSS 就默认全链路私有。", ask: "客户需要托管速度还是全链路数据控制，谁承担 HA、备份、升级、删除和观测？", tag: "Memory 架构", basis: "AgentKit Memory + Mem0 官方对比", evidence: [{ sourceId: agentkitSources.memory, supports: "快速入门先创建记忆资源，再取连接信息并配置应用读写。" }, { sourceId: agentkitSources.mem0Oss, supports: "Mem0 OSS 由采用方在自己的环境配置和运行，基础设施仍需自行负责。" }, { sourceId: agentkitSources.mem0Compare, supports: "Mem0 对照页列出托管与自建的基础设施差异，未说明 AgentKit 内部如何实现。" }] }),
+    datedQa({ q: "AgentKit 的观测、评测、外部压测和客户 SLO 分别解决什么？", a: "观测提供运行证据，评测衡量任务质量，外部压测施加可控负载，SLO 记录客户可接受的服务目标。", depth: "Trace 用于定位模型、工具和 Memory 步骤；评测集比较任务质量与轨迹；k6、Locust 等工具施加并发负载。由 SLO 推导错误预算后持续跟踪消耗，恢复结果另行与 RTO 对照，成本作为独立经营约束。当前模块只定义待执行验收，不声称已有云端结果。", ask: "客户当前缺的是定位证据、质量基线、容量上限还是正式 SLO？", tag: "可观测与性能", basis: "平台运行能力 + 独立验收分工", evidence: [{ sourceId: agentkitSources.overview, supports: "概览说明应用构建、部署和在线运行范围，没有给出客户 SLO 门槛。" }, { sourceId: agentkitSources.runtime, supports: "快速入门演示本地调试、平台部署与 invoke，未提供客户负载结果。" }] }),
   ]),
 });

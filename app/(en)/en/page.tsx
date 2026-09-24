@@ -65,6 +65,7 @@ const explorerLabels = {
   knowledgeHeading: "Open the matching knowledge directly",
   showingPrefix: "Showing",
   showingSuffix: "matches",
+  showMore: "Show more",
   indexLoading: "Loading knowledge index…",
   indexError: "Knowledge index failed to load; module filtering still works",
   emptyTitle: "No module matches this search",

@@ -601,7 +601,7 @@ function LearningPanel({
         <div className="learningStart"><h2>把示例变成证据</h2><p>先用估算器理解变量方向；随后将目标模型、请求切片、硬件和 SLO 写进 Run Pack，在真实压测里验证曲线、失败与恢复。</p></div>
         <div className="learningLabList">
           <h2>动手做一遍</h2>
-          {learningLabs.map((lab, index) => <article key={lab.title}>
+          {learningLabs.map((lab, index) => <article id={`lab-llm-inference-${index + 1}`} key={lab.title}>
             <span>{String(index + 1).padStart(2, "0")}</span><div><h3>{lab.title}</h3><p>{lab.scenario}</p><ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol><dl><div><dt>交付物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div></dl><LearningSourceLinks sourceIds={lab.sourceIds} sourceTitles={sourceTitles}/></div>
           </article>)}
         </div>

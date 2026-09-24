@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { DenseModuleReadingModes, type DenseChapterLink, type ReadingModeId } from "./dense-module-reading-modes";
+import { curriculumChapterAnchor, learningLabAnchor } from "./knowledge-anchor.mjs";
 import styles from "./a2a-module-experience.module.css";
 import { requireModuleBrief } from "./module-brief-content.mjs";
 import { requireModuleCurriculum } from "./module-curriculum-content.mjs";
@@ -357,7 +358,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
           <span>REFERENCE MAP</span>
           <h2>原始主题与本页学习主线</h2>
         </header>
-        <ModuleCurriculumAtlas content={curriculum} sourceLedger={sourceLedger} />
+        <ModuleCurriculumAtlas content={curriculum} sourceLedger={sourceLedger} slug="a2a" />
       </section>
 
       <section className={styles.learnLead}>
@@ -593,8 +594,8 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
       <section className={styles.chapter} id="a2a-chapter-11">
         <SectionHeader number="11" eyebrow="PRACTICE" title="动手验证交付契约" lead="不以网络连通验收，而以恢复、边界和交付证据决定采用。" />
         <div className={styles.labList}>
-          {learning.labs.map((lab) => (
-            <article key={lab.title}>
+          {learning.labs.map((lab, index) => (
+            <article id={`lab-a2a-${index + 1}`} key={lab.title}>
               <span>验证练习 · 可追溯依据</span>
               <h3>{lab.title}</h3>
               <p>{lab.scenario}</p>
@@ -790,7 +791,9 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
         field={<FieldView evidenceCards={sourceContent.evidenceCards} questionGroups={sourceContent.fieldQuestionGroups} />}
         hashGroups={{
           quick: ["principle", "a2a-handoff-title", "quick-boundary-title"],
-          learn: ["study-guide", "curriculum", ...chapters.map((chapter) => chapter.id)],
+          learn: ["study-guide", "curriculum", ...chapters.map((chapter) => chapter.id),
+            ...sourceContent.curriculum.chapters.map((chapter, index) => curriculumChapterAnchor("a2a", index, chapter.en)),
+            ...sourceContent.learning.labs.map((_, index) => learningLabAnchor("a2a", index))],
           field: ["field-checklist-title", "qa", "evidence", "cloud", "related-modules"],
         }}
         learn={<LearnView curriculum={sourceContent.curriculum} learning={sourceContent.learning} />}

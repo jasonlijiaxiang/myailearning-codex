@@ -962,6 +962,25 @@ export const llmInferenceBrief = {
           "supports": "支持依据使用情境与系统限制配置风险控制。"
         }
       ]
+    },
+    {
+      "q": "推理模型没有显示答案，为什么仍产生了 Token 用量？",
+      "a": "模型可能先消耗内部推理或思考 Token；生成上限用尽时，可见正文会为空或被截断，费用仍可能产生。",
+      "depth": "OpenAI Responses API 将推理 Token 计入 output_tokens、max_output_tokens 和上下文，并按输出 Token 计费；耗尽上限时可返回 incomplete。Gemini Interactions API 分别报告 total_thought_tokens 与 total_output_tokens，max_output_tokens 也包含思考 Token。排查时核对响应终态、用量拆分与可见正文长度，为正文留余量，再按具体模型支持的方式调整推理强度。两家 API 的用量字段不能直接等同。",
+      "ask": "当前模型与 API 返回什么终态？内部推理和可见输出各用了多少 Token，给正文留了多少余量？",
+      "tag": "推理预算",
+      "basis": "OpenAI 与 Gemini 官方 API 文档",
+      "evidence": [
+        {
+          "sourceId": "openai-reasoning-guide",
+          "supports": "支持推理 Token 计入输出用量、生成上限与上下文并按输出 Token 计费，额度耗尽可使响应 incomplete 且正文为空或不完整。"
+        },
+        {
+          "sourceId": "google-gemini-thinking",
+          "supports": "支持 Gemini Interactions API 将思考 Token 计入生成上限、单独报告其用量并计费；额度耗尽可返回 incomplete 与空白或截断正文。"
+        }
+      ],
+      "addedAt": "2026-09-24"
     }
   ],
   "evidenceCards": [
@@ -2906,7 +2925,7 @@ export const aiInfraPlatformBrief = {
     {
       "question": "何时采用 Kubernetes DRA？",
       "signal": "静态设备插件难以表达设备属性、结构化参数、共享或跨厂商资源声明。",
-      "recommendation": "把 1.34 已稳定的核心 API 与 1.36 中分别处于 Stable、Beta、Alpha 的可选能力拆开；确认集群版本、驱动和厂商支持后，在非关键池验证 ResourceClaim、准备、健康、升级和恢复。",
+      "recommendation": "把 1.34 已稳定的核心 API、1.37 已稳定的扩展资源兼容能力和其余可选特性分开；确认集群版本、驱动和厂商支持后，在非关键池验证 ResourceClaim、准备、健康、升级和恢复。",
       "boundary": "DRA 改善资源声明和分配，不自动证明驱动生产就绪，也不解决队列公平、作业编排或模型服务。"
     },
     {
@@ -3115,8 +3134,8 @@ export const aiInfraPlatformBrief = {
     },
     {
       "q": "DRA 会取代 Device Plugin 吗？现在是否应该立即迁移？",
-      "a": "DRA 核心 API 已在 Kubernetes 1.34 进入稳定 v1，但 1.36 的可选能力仍分布在 Stable、Beta 和 Alpha；这不代表应立即替换所有 Device Plugin。",
-      "depth": "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化、健康或节点侧准备，再验证目标集群版本与 DRA 驱动。迁移测试覆盖 ResourceClaim 生命周期、调度失败、设备准备、节点升级、配额、监控与回滚；把核心 API、可选特性成熟度和厂商支持矩阵分开判断。DRA 也不替代队列和模型服务。",
+      "a": "DRA 核心 API 在 Kubernetes 1.34 稳定，1.37 又让 DRA 驱动能承接传统扩展资源请求；是否迁移仍取决于驱动和所需功能。",
+      "depth": "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化、健康或节点侧准备。1.37 的扩展资源兼容允许现有 Pod 继续使用传统资源名，不要求工作负载都改写为 ResourceClaim；但驱动是否支持、其他可选特性的成熟度仍需逐项核验。迁移测试覆盖声明生命周期、调度失败、设备准备、节点升级、配额、监控与回滚。DRA 也不替代队列和模型服务。",
       "ask": "现有设备分配具体卡在哪？目标 Kubernetes 版本和硬件驱动是否已支持所需功能？",
       "tag": "DRA",
       "basis": "Kubernetes 官方设备资源模型",
@@ -3128,6 +3147,10 @@ export const aiInfraPlatformBrief = {
         {
           "sourceId": "kubernetes-dra-1-36",
           "supports": "支持 Kubernetes 1.36 的 DRA 可选能力仍分别处于 Stable、Beta 和 Alpha，并持续扩展驱动与设备生命周期；不证明具体驱动生产就绪。"
+        },
+        {
+          "sourceId": "kubernetes-dra-1-37",
+          "supports": "记录扩展资源兼容能力在 1.37 进入 GA；现有扩展资源 Pod 可通过 DRA 驱动分配，但实际迁移仍须验证驱动。"
         },
         {
           "sourceId": "kubernetes-dra",

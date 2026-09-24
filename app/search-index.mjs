@@ -10,11 +10,15 @@ import { moduleList } from "./knowledge-map.mjs";
 import { sourceLedger, referenceModules } from "./reference-content.mjs";
 import { terminology } from "./terminology.mjs";
 import { questionDirectoryItems } from "./question-index.mjs";
+import { curriculumChapterAnchor, learningLabAnchor } from "./knowledge-anchor.mjs";
 
 const moduleNames = new Map(moduleList.map((module) => [module.slug, module.zh]));
+const questionPhrases = new Map(questionDirectoryItems.map((item) => [item.key, item.customerPhrases]));
 const sourceModules = new Map();
+const sourceModuleSlugs = new Map();
 referenceModules.forEach((module) => module.sourceIds.forEach((sourceId) => {
   sourceModules.set(sourceId, [...(sourceModules.get(sourceId) ?? []), module.zh]);
+  sourceModuleSlugs.set(sourceId, [...(sourceModuleSlugs.get(sourceId) ?? []), module.id]);
 }));
 
 // 搜索是发现入口而不是课程表：不因模块使用聚焦阅读器而隐藏问题、实验或机制。
@@ -26,6 +30,7 @@ function buildChineseEntries() {
     const relatedNames = term.moduleSlugs.map((slug) => moduleNames.get(slug)).filter(Boolean);
     entries.push({
       id: `term-${termId}`,
+      moduleSlugs: term.moduleSlugs,
       type: "专业术语",
       title: `${term.zh} · ${term.en}${term.abbr ? `（${term.abbr}）` : ""}`,
       subtitle: `${relatedNames.join(" / ")} · 术语库`,
@@ -38,23 +43,26 @@ function buildChineseEntries() {
     content.qa.forEach((item, index) => {
       entries.push({
         id: `qa-${slug}-${index + 1}`,
+        moduleSlugs: [slug],
         type: "客户问答",
         title: item.q,
         subtitle: `${moduleNames.get(slug)} · ${item.tag}`,
         href: `/modules/${slug}#qa-${index + 1}`,
-        keywords: `${moduleNames.get(slug)} ${item.q} ${item.tag}`,
+        keywords: `${moduleNames.get(slug)} ${item.q} ${item.tag} ${(questionPhrases.get(`${slug}-${index + 1}`) ?? []).join(" ")}`,
       });
     });
   }
 
   for (const [slug, curriculum] of Object.entries(moduleCurriculumContent)) {
-    for (const chapter of curriculum.chapters) {
+    for (const [index, chapter] of curriculum.chapters.entries()) {
+      const anchor = curriculumChapterAnchor(slug, index, chapter.en);
       entries.push({
-        id: `curriculum-${slug}-${chapter.en.toLocaleLowerCase("en-US").replace(/[^a-z0-9]+/g, "-")}`,
+        id: anchor,
+        moduleSlugs: [slug],
         type: "课程章节",
         title: chapter.title,
         subtitle: `${moduleNames.get(slug)} · ${chapter.en}`,
-        href: `/modules/${slug}#curriculum`,
+        href: `/modules/${slug}#${anchor}`,
         keywords: `${moduleNames.get(slug)} ${chapter.title} ${chapter.en} ${chapter.explanation} ${chapter.decision} ${chapter.boundary}`,
       });
     }
@@ -62,12 +70,14 @@ function buildChineseEntries() {
 
   for (const [slug, learning] of Object.entries(moduleLearningContent)) {
     learning.labs.forEach((/** @type {any} */ lab, /** @type {number} */ index) => {
+      const anchor = learningLabAnchor(slug, index);
       entries.push({
-        id: `lab-${slug}-${index + 1}`,
+        id: anchor,
+        moduleSlugs: [slug],
         type: "实战练习",
         title: lab.title,
         subtitle: `${moduleNames.get(slug)} · 可验收练习`,
-        href: `/modules/${slug}#study-guide`,
+        href: `/modules/${slug}#${anchor}`,
         keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
       });
     });
@@ -76,12 +86,14 @@ function buildChineseEntries() {
   for (const [slug, content] of Object.entries(moduleContentRegistry)) {
     if (Object.hasOwn(moduleLearningContent, slug) || !("learning" in content) || !content.learning) continue;
     content.learning.labs.forEach((lab, index) => {
+      const anchor = learningLabAnchor(slug, index);
       entries.push({
-        id: `lab-${slug}-${index + 1}`,
+        id: anchor,
+        moduleSlugs: [slug],
         type: "实战练习",
         title: lab.title,
         subtitle: `${moduleNames.get(slug)} · 可验收练习`,
-        href: `/modules/${slug}#practice`,
+        href: `/modules/${slug}#${anchor}`,
         keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
       });
     });
@@ -90,6 +102,7 @@ function buildChineseEntries() {
   for (const [sourceId, source] of Object.entries(sourceLedger)) {
     entries.push({
       id: `source-${sourceId}`,
+      moduleSlugs: sourceModuleSlugs.get(sourceId) ?? [],
       type: "来源证据",
       title: source.title,
       subtitle: `${source.grade} 类证据 · ${(sourceModules.get(sourceId) ?? []).join(" / ")}`,
@@ -107,6 +120,7 @@ function buildEnglishEntries() {
   for (const [termId, term] of Object.entries(englishTermCopy)) {
     entries.push({
       id: `term-${termId}`,
+      moduleSlugs: terminology[termId]?.moduleSlugs ?? [],
       type: "Technical term",
       title: `${term.name}${term.abbr ? ` (${term.abbr})` : ""}`,
       subtitle: "Field glossary",
@@ -119,6 +133,7 @@ function buildEnglishEntries() {
     for (const item of englishModule.qa) {
       entries.push({
         id: `qa-${englishModule.slug}-${item.id}`,
+        moduleSlugs: [englishModule.slug],
         type: "Customer question",
         title: item.q,
         subtitle: `${englishModule.title} · ${item.tag}`,
@@ -135,6 +150,7 @@ function buildEnglishEntries() {
           for (const item of contentBlock.items) {
             entries.push({
               id: `section-${englishModule.slug}-${item.id}`,
+              moduleSlugs: [englishModule.slug],
               type: "Module section",
               title: item.title,
               subtitle: `${englishModule.title} · ${section.title}`,
@@ -150,6 +166,7 @@ function buildEnglishEntries() {
   for (const [sourceId, source] of Object.entries(englishSourceCopy)) {
     entries.push({
       id: `source-${sourceId}`,
+      moduleSlugs: sourceModuleSlugs.get(sourceId) ?? [],
       type: "Source evidence",
       title: source.shortTitle,
       subtitle: `${sourceLedger[sourceId]?.grade ?? ""} evidence · ${source.kind}`,

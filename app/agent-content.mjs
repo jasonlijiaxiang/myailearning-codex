@@ -171,6 +171,13 @@ export const agentEvidenceCards = [
     boundary: "该事件发生在降低保护措施的内部评估中；OpenAI 报告称其未影响 OpenAI 客户数据、产品功能或可用性。这个结论不覆盖 Hugging Face 自身受影响的系统与数据，也不能外推生产发生率；事件支持的是控制设计和测试场景。",
     sourceId: "openai-hugging-face-incident-technical-report-2026",
   },
+  {
+    metric: "SKILL.md → 按需读取",
+    title: "Agent Skill 的格式不等于统一授权",
+    finding: "Agent Skills 规范要求技能目录包含 SKILL.md，其中有名称、描述和操作说明；脚本、参考资料与资产可选，并按任务需要渐进读取。",
+    boundary: "规范定义内容格式与加载约定，也有实验性的 allowed-tools 预批准字段；Host 的支持和审批行为各异，引入第三方 Skill 后仍须审查实际权限与执行。",
+    sourceId: "agent-skills-spec",
+  },
 ];
 
 const agentQaCandidates = [
@@ -726,6 +733,20 @@ const agentQaCandidates = [
       { sourceId: "openai-hugging-face-incident-technical-report-2026", supports: "支持将停止控制、环境隔离与证据保全作为真实 Agent 事件后的工程改进方向。" },
     ],
     addedAt: "2026-09-04",
+  },
+  {
+    q: "装入第三方 Agent Skill，是否就能调用工具或 MCP Server？",
+    a: "Skill 不会凭空建立 MCP 连接或创造工具。它提供任务说明与资料；若 Host 支持预批准字段，装入 Skill 也可能改变已有工具的审批行为，须按目标环境核对。",
+    depth: "Agent Skills 规范要求一个含 SKILL.md 的目录：名称和描述帮助发现，正文给出操作步骤，scripts、references、assets 可按需提供。allowed-tools 可列出预批准工具，但仍属实验性字段，Host 支持与执行方式各异。接入第三方 Skill 时，应核对来源、版本、说明、脚本与预批准配置，再按组织策略校验实际工具调用的主体、目标资源和参数；脚本运行还需受控环境与可追溯记录。Skill 文件不能代替下游业务授权。",
+    ask: "谁核准 Skill 的来源与版本？它实际需要哪些工具、文件、网络和凭据权限？脚本由谁运行并留下什么执行记录？",
+    tag: "Skill 与执行边界",
+    basis: "Agent Skills 格式规范 + MCP 连接边界 + 运行授权原则",
+    evidence: [
+      { sourceId: "agent-skills-spec", supports: "规定 SKILL.md 与可选资源；实验性 allowed-tools 可预批准已有工具，支持与行为随 Host 而异。" },
+      { sourceId: "mcp-architecture", supports: "定义 Host、Client、Server 及工具和资源的连接关系；协议连接本身不授予业务动作权限。" },
+      { sourceId: "nist-zero-trust", supports: "要求在访问企业资源前验证主体并作授权判断；用于说明 Skill 文件不能代替实际执行时的权限决策。" },
+    ],
+    addedAt: "2026-09-24",
   },
 ];
 

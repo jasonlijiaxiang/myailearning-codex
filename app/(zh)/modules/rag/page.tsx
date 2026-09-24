@@ -6,6 +6,7 @@ import Link from "next/link";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleLearningStudio, ModuleQaList, ModuleUpdatedAt } from "../../../module-content-components";
 import { DenseModuleReadingModes } from "../../../dense-module-reading-modes";
+import { learningLabAnchor } from "../../../knowledge-anchor.mjs";
 import { RagRetrievalLab } from "../../../flagship-labs";
 import { sourceLedger } from "../../../reference-content.mjs";
 import { RagArchitecturePrimer } from "../../../module-pilot-views";
@@ -57,7 +58,7 @@ export default function RagModulePage() {
               moduleName="RAG · 检索增强生成"
               hashGroups={{
                 quick: ["fit", "knowledge-location"],
-                learn: ["evidence-contract", "evidence-lifecycle", "model-selection", "measurement", "production", "extensions", "practice"],
+                learn: ["evidence-contract", "evidence-lifecycle", "model-selection", "measurement", "production", "extensions", "practice", ...learning.labs.map((_, index) => learningLabAnchor("rag", index))],
                 field: ["cloud", "evidence", "qa", "related-modules"],
               }}
               readerId="module-reading"
@@ -147,7 +148,7 @@ export default function RagModulePage() {
 
                   <div className="subsection" id="practice" data-quality-section="learning">
                     <div className="subHead"><span>07</span><div><p className="kicker">LEARNING BY DELIVERABLE</p><h3>RAG 实战产物与通过标准</h3></div></div>
-                    <ModuleLearningStudio content={learning} sourceLedger={sourceLedger} />
+                    <ModuleLearningStudio content={learning} sourceLedger={sourceLedger} slug="rag" />
                   </div>
                 </>
               )}

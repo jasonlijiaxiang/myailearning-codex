@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getModuleBySlug, legacyModuleAliases, moduleList } from "../../../knowledge-map.mjs";
+import { curriculumChapterAnchor, learningLabAnchor } from "../../../knowledge-anchor.mjs";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { requireModuleBrief } from "../../../module-brief-content.mjs";
 import { ModuleCurriculumAtlas, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleLearningStudio, ModuleQaList, ModuleSectionHeader, ModuleUpdatedAt } from "../../../module-content-components";
@@ -221,12 +222,12 @@ export default async function ModulePage({ params }: ModulePageProps) {
 
       <section className="subsection moduleBriefSection curriculumSection" id="curriculum" data-quality-section="curriculum">
         <div className="subHead"><span>主题</span><div><h2>主题地图</h2></div></div>
-        <ModuleCurriculumAtlas content={curriculumContent} sourceLedger={sourceLedger} />
+        <ModuleCurriculumAtlas content={curriculumContent} sourceLedger={sourceLedger} slug={currentModule.canonicalSlug} />
       </section>
 
       <section className="subsection moduleBriefSection learningStudioSection" id="study-guide" data-quality-section="study-guide">
         <div className="subHead"><span>应用</span><div><h2>把判断做成产物</h2></div></div>
-        <ModuleLearningStudio content={learningContent} sourceLedger={sourceLedger} />
+        <ModuleLearningStudio content={learningContent} sourceLedger={sourceLedger} slug={currentModule.canonicalSlug} />
       </section>
 
       {hasDeepDives ? (
@@ -279,6 +280,10 @@ export default async function ModulePage({ params }: ModulePageProps) {
       criticalBoundary={brief.criticalBoundary}
       directories={directories}
       field={fieldContent}
+      hashGroups={{ learn: [
+        ...curriculumContent.chapters.map((chapter, index) => curriculumChapterAnchor(currentModule.canonicalSlug, index, chapter.en)),
+        ...learningContent.labs.map((_, index) => learningLabAnchor(currentModule.canonicalSlug, index)),
+      ] }}
       footer={pageFooter}
       hero={{
         anchorId: "top",

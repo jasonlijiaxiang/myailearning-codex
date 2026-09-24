@@ -7,7 +7,7 @@ import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useSt
 import type { GraphLayer, GraphModule, GraphRelationType, GraphTerm } from "../graph-types";
 import styles from "./knowledge-constellation.module.css";
 
-type Relation = { id: string; from: string; to: string; type: string; explanation: string; direction: string; status: string };
+type Relation = { id: string; from: string; to: string; type: string; explanation: string; explanationEn?: string; sourceId?: string; kind?: "module"; direction: string; status: string };
 type Focus = { kind: "module" | "term"; id: string };
 type Neighbor = {
   key: string;
@@ -16,7 +16,9 @@ type Neighbor = {
   title: string;
   subtitle: string;
   relationType: string;
-  explanation: string;
+  explanation?: string;
+  explicit: boolean;
+  sourceId?: string;
 };
 type Point = Neighbor & { x: number; y: number };
 
@@ -32,11 +34,11 @@ const graphCopy = {
     noResults: "没有找到匹配的模块或术语。",
     chooseModule: "选择模块",
     scopePrefix: "当前显示",
-    scopeSuffix: "条明确的一跳关系。",
+    scopeSuffix: "个相邻节点，含术语关联。",
     layerRail: "知识层与模块",
     closeRail: "关闭模块列表",
-    edgeSuffix: "条一跳关系",
-    edgeTitle: "的明确一跳关系",
+    edgeSuffix: "个相邻节点",
+    edgeTitle: "的相邻节点",
     edgeDescription: "选择节点后仅点亮与它直接相连的模块或术语，其他模块作为背景位置参考。",
     enterModule: "进入模块",
     canvasControls: "画布控制",
@@ -51,8 +53,14 @@ const graphCopy = {
     selected: "选中",
     primaryOwner: "主要归属",
     currentlyShowing: "当前显示",
-    relationCount: "条关系",
-    relationExplanation: "关系解释",
+    relationCountOne: "条明确关系",
+    relationCount: "条明确关系",
+    relationExplanation: "机制与责任关系",
+    overview: "模块概述",
+    moduleCatalog: "相关模块",
+    termCatalog: "术语归属与相关使用",
+    source: "相关来源",
+    referencesHref: "/references",
     enterPrimary: "进入主要模块",
     viewGlossary: "在术语库查看",
     glossaryHref: "/glossary",
@@ -67,11 +75,11 @@ const graphCopy = {
     noResults: "No matching module or term was found.",
     chooseModule: "Choose a module",
     scopePrefix: "Showing",
-    scopeSuffix: "explicit direct relationships.",
+    scopeSuffix: "nearby nodes, including concept links.",
     layerRail: "Knowledge layers and modules",
     closeRail: "Close module list",
-    edgeSuffix: "direct relationships",
-    edgeTitle: "— explicit direct relationships",
+    edgeSuffix: "nearby nodes",
+    edgeTitle: "— nearby nodes",
     edgeDescription: "Selecting a node highlights only its directly connected modules or terms; other modules remain as positional context.",
     enterModule: "Open module",
     canvasControls: "Canvas controls",
@@ -86,8 +94,14 @@ const graphCopy = {
     selected: "Selected",
     primaryOwner: "Primary owner",
     currentlyShowing: "Currently showing",
-    relationCount: "relationships",
-    relationExplanation: "Relationship explanation",
+    relationCountOne: "explained relationship",
+    relationCount: "explained relationships",
+    relationExplanation: "Mechanisms and responsibilities",
+    overview: "Module overview",
+    moduleCatalog: "Related modules",
+    termCatalog: "Concept ownership and use",
+    source: "Related source",
+    referencesHref: "/en/references",
     enterPrimary: "Open primary module",
     viewGlossary: "View in glossary",
     glossaryHref: "/en/glossary",
@@ -213,11 +227,10 @@ export function KnowledgeConstellation({
   }, [deferredQuery, locale, modules, terms]);
 
   const neighbors = useMemo<Neighbor[]>(() => {
-    if (focus.kind === "module") {
-      return terms.flatMap((term) => {
+    const catalogNeighbors: Neighbor[] = focus.kind === "module"
+      ? terms.flatMap((term) => {
         if (!term.moduleIds.includes(focus.id) || term.id === focus.id) return [];
         const relationType = term.primaryModuleId === focus.id ? "primary-owner" : "contextual-use";
-        const owner = moduleById.get(term.primaryModuleId);
         return [{
           key: `term:${term.id}`,
           kind: "term" as const,
@@ -225,45 +238,48 @@ export function KnowledgeConstellation({
           title: term.abbr ?? term.zh,
           subtitle: term.abbr ? term.zh : term.en,
           relationType,
-          explanation: language === "en"
-            ? relationType === "primary-owner"
-              ? `${moduleById.get(focus.id)?.zh} is the primary module for ${term.zh}.`
-              : `${moduleById.get(focus.id)?.zh} uses ${term.zh} in a specific decision context; the primary explanation belongs to ${owner?.zh ?? "its owning module"}.`
-            : relationType === "primary-owner"
-              ? `${moduleById.get(focus.id)?.zh} 是“${term.zh}”的主要归属模块。`
-              : `${moduleById.get(focus.id)?.zh} 在局部判断中使用“${term.zh}”；主要解释位于“${owner?.zh ?? "其归属模块"}”。`,
+          explicit: false,
         }];
-      });
-    }
-    const selected = termById.get(focus.id);
-    if (!selected) return [];
-    const moduleNeighbors: Neighbor[] = selected.moduleIds.flatMap((id) => {
+      })
+      : (termById.get(focus.id)?.moduleIds ?? []).flatMap((id) => {
       const knowledgeModule = moduleById.get(id);
       if (!knowledgeModule) return [];
-      const relationType = selected.primaryModuleId === id ? "primary-owner" : "contextual-use";
+      const relationType = termById.get(focus.id)?.primaryModuleId === id ? "primary-owner" : "contextual-use";
       return [{
         key: `module:${id}`,
-        kind: "module",
+        kind: "module" as const,
         id,
         title: knowledgeModule.zh,
         subtitle: knowledgeModule.en,
         relationType,
-        explanation: language === "en"
-          ? relationType === "primary-owner" ? `${knowledgeModule.zh} is the primary owner of this concept.` : `${knowledgeModule.zh} uses this concept in a specific decision context.`
-          : relationType === "primary-owner" ? `“${knowledgeModule.zh}”是该知识点的主要归属模块。` : `“${knowledgeModule.zh}”在局部判断中使用该知识点。`,
+        explicit: false,
       }];
     });
-    const semanticNeighbors: Neighbor[] = relations.flatMap((relation) => {
+
+    const explainedNeighbors: Neighbor[] = relations.flatMap((relation) => {
+      if (relation.kind === "module" ? focus.kind !== "module" : focus.kind !== "term") return [];
       if (relation.from !== focus.id && relation.to !== focus.id) return [];
       const id = relation.from === focus.id ? relation.to : relation.from;
-      const term = termById.get(id);
-      if (!term || selected.moduleIds.includes(id)) return [];
+      const kind: Focus["kind"] = relation.kind === "module" ? "module" : "term";
+      const item = kind === "module" ? moduleById.get(id) : termById.get(id);
+      if (!item) return [];
       const explanation = language === "en"
-        ? `${relationTypes[relation.type]?.description ?? "This is an explicit direct relationship."} Here, ${selected.zh} connects directly to ${term.zh}.`
+        ? relation.explanationEn ?? `${relationTypes[relation.type]?.description ?? "Direct relationship."} ${relation.from} → ${relation.to}.`
         : relation.explanation;
-      return [{ key: `term:${id}:${relation.type}`, kind: "term", id, title: term.abbr ?? term.zh, subtitle: term.abbr ? term.zh : term.en, relationType: relation.type, explanation }];
+      return [{
+        key: `${kind}:${id}:${relation.type}`,
+        kind,
+        id,
+        title: kind === "module" ? item.zh : (item as GraphTerm).abbr ?? item.zh,
+        subtitle: kind === "module" ? item.en : (item as GraphTerm).abbr ? item.zh : item.en,
+        relationType: relation.type,
+        explanation,
+        explicit: true,
+        sourceId: relation.sourceId,
+      }];
     });
-    return [...moduleNeighbors, ...semanticNeighbors];
+    const explainedNodeKeys = new Set(explainedNeighbors.map((neighbor) => `${neighbor.kind}:${neighbor.id}`));
+    return [...explainedNeighbors, ...catalogNeighbors.filter((neighbor) => !explainedNodeKeys.has(`${neighbor.kind}:${neighbor.id}`))];
   }, [focus, language, moduleById, relationTypes, relations, termById, terms]);
 
   const points = useMemo<Point[]>(() => neighbors.map((neighbor, index) => {
@@ -290,6 +306,15 @@ export function KnowledgeConstellation({
   const primaryModule = selectedModule ?? moduleById.get(selectedTerm?.primaryModuleId ?? "");
   const selectedModuleTitle = selectedModule ? splitModuleTitle(selectedModule.zh) : null;
   const activeEdgeCount = points.length;
+  const explainedNeighbors = neighbors.filter((neighbor) => neighbor.explicit);
+  const catalogNeighbors = neighbors.filter((neighbor) => !neighbor.explicit);
+  const showRelationsFirst = focus.kind === "module" && explainedNeighbors.length > 0;
+  const catalogTitle = focus.kind === "module" ? copy.termCatalog : copy.moduleCatalog;
+  const catalogList = (
+    <ul>{catalogNeighbors.map((neighbor) => (
+      <li key={`${neighbor.key}:catalog`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button></li>
+    ))}</ul>
+  );
 
   return (
     <section className={`${styles.explorer} ${motionPaused ? styles.paused : ""}`} aria-label={copy.graphAria}>
@@ -387,9 +412,14 @@ export function KnowledgeConstellation({
         <aside className={styles.inspector} aria-label={copy.inspector}>
           <div className={styles.handle} aria-hidden="true" />
           <header><span>{copy.selected}{language === "en" ? " " : ""}{focus.kind === "module" ? copy.module : copy.term}</span><h2>{selectedTitle}</h2><p>{selectedSubtitle}</p></header>
-          <p className={styles.description}>{selectedDescription}</p>
-          <div className={styles.meta}><span>{copy.primaryOwner}</span><strong>{primaryModule?.zh}</strong><span>{copy.currentlyShowing}</span><strong>{activeEdgeCount} {copy.relationCount}</strong></div>
-          <section><h3>{copy.relationExplanation}</h3><ul>{neighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.explanation}</p></li>)}</ul></section>
+          {!showRelationsFirst ? <p className={styles.description}>{selectedDescription}</p> : null}
+          <div className={styles.meta}>{selectedTerm ? <><span>{copy.primaryOwner}</span><strong>{primaryModule?.zh}</strong></> : null}<span>{copy.currentlyShowing}</span><strong>{explainedNeighbors.length} {explainedNeighbors.length === 1 ? copy.relationCountOne : copy.relationCount}</strong></div>
+          {explainedNeighbors.length ? <section style={{ maxHeight: "none", overflow: "visible" }}><h3>{copy.relationExplanation}</h3><ul>{explainedNeighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.explanation}</p>{neighbor.sourceId ? <Link href={`${copy.referencesHref}#source-${neighbor.sourceId}`} style={{ color: "var(--cyan)", fontSize: 12, textUnderlineOffset: 3 }}>{copy.source} ↗</Link> : null}</li>)}</ul></section> : null}
+          {showRelationsFirst ? <p className={styles.description}><strong>{copy.overview} · </strong>{selectedDescription}</p> : null}
+          {catalogNeighbors.length ? explainedNeighbors.length
+            ? <details key={`${focus.kind}:${focus.id}:catalog`}><summary>{catalogTitle} · {catalogNeighbors.length}</summary>{catalogList}</details>
+            : <section><h3>{catalogTitle}</h3>{catalogList}</section>
+            : null}
           <nav>
             <Link href={primaryModule?.href ?? copy.homeHref}>{copy.enterPrimary}</Link>
             <Link href={`${copy.glossaryHref}#term-${selectedTerm?.id ?? selectedModule?.id}`}>{copy.viewGlossary}</Link>

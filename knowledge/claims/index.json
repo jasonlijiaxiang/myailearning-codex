@@ -39,36 +39,36 @@
     },
     {
       "id": "model-landscape.aa-ranking-snapshot-2026-08-13",
-      "claim": "在 2026-08-13 01:18:07 UTC 捕获的 Artificial Analysis 公开模型页默认 Intelligence Index 视图前 20 个模型配置中，Claude Opus 5 (Adaptive Reasoning, Max Effort) 以 63.0532452071291 位列第一。",
-      "scope": "这是指定捕获时点、默认页面候选池与指定推理配置的快照，不是该次抓取全部 604 个可用推理配置的全球总榜；排名、分数、方法和默认候选池会变化。",
+      "claim": "本库保存的 2026-08-13 01:18:07 UTC Artificial Analysis Intelligence Index v4.1.1 默认视图快照，在所记录的 20 个模型配置中显示 Claude Opus 5 (Adaptive Reasoning, Max Effort) 约 63.1 分，位列这组配置首位；这不是当前排名。",
+      "scope": "精确数值来自本库冻结快照，原始官网响应未独立归档，今天无法从动态模型页重建；只用于说明当时展示，不代表全部模型配置或 2026-09-24 已更新的 v4.3.2 榜单。",
       "sourceIds": ["artificial-analysis-models", "artificial-analysis-methodology"],
-      "evidenceGrade": "A",
-      "verifiedAt": "2026-08-13",
-      "reviewBy": "2026-09-12",
-      "reviewCadenceDays": 30,
+      "evidenceGrade": "B",
+      "verifiedAt": "2026-09-24",
+      "reviewBy": "2027-03-23",
+      "reviewCadenceDays": 180,
       "owner": "knowledge-curation",
-      "status": "watch"
+      "status": "replaced"
     },
     {
       "id": "model-landscape.aa-agentic-component-reconciliation-2026-08-13",
-      "claim": "截至 2026-08-13，Artificial Analysis 公开页面的 GDPval-AA v2 与 τ³-Banking 组件字段按 50/50 直接平均，无法复现 Artificial Analysis 另行发布的 Agentic Index 总分。",
-      "scope": "仅记录该捕获时点的公开数据不一致；可能原因尚未得到来源确认，因此不推断哪一侧已更新，也不修改官方总分。本页只把组件均值标为 Agentic Composite。",
+      "claim": "本库 2026-08-13 v4.1.1 快照把 GDPval-AA v2 与 τ³-Banking 组件的等权均值标作 Agentic Composite；Artificial Analysis 自 v4.3 起用 AutomationBench-AA 替代 τ³-Banking，旧复算不适用于当前指数。",
+      "scope": "本库只保存旧组件数据，未保存当时官网 Agentic Index 总分，因此不再断言旧组件均值与官方总分的差异；历史复算不能与现行方法或分数直接拼接。",
       "sourceIds": ["artificial-analysis-models", "artificial-analysis-methodology", "gdpval-aa-v2", "tau3-banking"],
       "evidenceGrade": "B",
-      "verifiedAt": "2026-08-13",
-      "reviewBy": "2026-09-12",
-      "reviewCadenceDays": 30,
+      "verifiedAt": "2026-09-24",
+      "reviewBy": "2027-03-23",
+      "reviewCadenceDays": 180,
       "owner": "knowledge-curation",
-      "status": "watch"
+      "status": "replaced"
     },
     {
       "id": "model-landscape.scicode-validity-risk-2026-08-13",
-      "claim": "2026-08-05 发布的 SciCode-Verified 预印本报告：对原版 SciCode 测试问题的领域专家审计发现 263 个缺陷，其中 192 个分布在 91% 的主问题中，会错误拒绝正确且遵循指令的解答。",
-      "scope": "这是独立预印本对原版 benchmark 有效性的重大质疑，不是 SciCode 上游或 Artificial Analysis 已正式采纳的替代序列；现有分数保留但必须提示风险，不与修正版结果直接拼接。",
+      "claim": "2026-08-05 的 SciCode-Verified v1 预印本作者报告：审计原版 SciCode 的 65 道主问题，发现 263 处缺陷，其中 192 处分布在 91% 的主问题中，按作者分析会误拒正确且遵循指令的解答。",
+      "scope": "这是独立预印本的审计结论；Artificial Analysis 当前方法仍纳入 SciCode，v4.2 调整的是运行超时与脚本隔离，不能说已采用修正版。现有分数保留风险提示，不与修正版结果拼接。",
       "sourceIds": ["scicode", "scicode-verified-2026"],
       "evidenceGrade": "B",
-      "verifiedAt": "2026-08-13",
-      "reviewBy": "2026-09-12",
+      "verifiedAt": "2026-09-24",
+      "reviewBy": "2026-10-24",
       "reviewCadenceDays": 30,
       "owner": "knowledge-curation",
       "status": "watch"
@@ -425,12 +425,12 @@
     },
     {
       "id": "platform.dify-community-enterprise-boundary-2026-08-08",
-      "claim": "截至 2026-08-08，Dify 官方仓库采用基于 Apache License 2.0、带多租户服务和前端标识附加条件的 Dify Open Source License；Dify 当期企业方案页把 Community 与 Enterprise 的商业授权、工作区、SSO、安全控制、维护、支持和协商 SLA 等能力分别列示。",
-      "scope": "这是厂商当期许可证和产品页面的范围记录，不判断 Dify 是否满足任何第三方软件开源定义，不把页面能力视为具体客户合同承诺；版本、许可证与采购条款变化时必须重新核验。",
+      "claim": "截至 2026-09-24，Dify LICENSE 基于 Apache License 2.0，附加多租户运营与前端标识条件，并明确允许符合条件的商业使用；企业方案页把 Community 列为单工作区，Enterprise 列为商业授权、多工作区、SSO、高级安全控制、官方维护与专业支持，SLA 由 Dify 合作伙伴协商。",
+      "scope": "定价页把 Community 定位为个人和非商业项目，这不等同许可证禁止所有商业使用；页面能力也不是客户合同承诺。具体版本、许可证、部署方式与采购条款须分别核验。",
       "sourceIds": ["dify-open-source-license", "dify-enterprise-pricing"],
       "evidenceGrade": "A",
-      "verifiedAt": "2026-08-08",
-      "reviewBy": "2026-09-07",
+      "verifiedAt": "2026-09-24",
+      "reviewBy": "2026-10-24",
       "reviewCadenceDays": 30,
       "owner": "knowledge-curation",
       "status": "active"
@@ -473,63 +473,63 @@
     },
     {
       "id": "coding-agent.codex-active-2026-07-23",
-      "claim": "截至 2026-08-23，OpenAI 官方文档提供 Codex CLI、IDE 扩展与 Codex cloud，并把本地与云端工作、规则、Skills、沙箱、权限和扩展纳入 Codex 产品面。",
+      "claim": "截至 2026-09-24，OpenAI 官方文档提供 Codex CLI、IDE 扩展与 Codex cloud，并把本地与云端工作、规则、Skills、沙箱、权限和扩展纳入 Codex 产品面。",
       "scope": "只确认当前官方产品入口与文档面，不承诺具体模型、套餐、区域或客户任务效果。",
-      "sourceIds": ["product-codex-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-codex-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.claude-code-active-2026-07-23",
-      "claim": "截至 2026-08-23，Anthropic 官方文档将 Claude Code 定义为可读取代码库、编辑文件并运行命令的 Agentic Coding Tool，并提供 Terminal、IDE、Desktop 与 Web 产品面。",
+      "claim": "截至 2026-09-24，Anthropic 官方文档将 Claude Code 定义为可读取代码库、编辑文件并运行命令的 Agentic Coding Tool，并提供 Terminal、IDE、Desktop 与 Web 产品面。",
       "scope": "只确认当前官方入口与能力边界；模型、账户计划、提供方、权限、区域、数据处理和企业控制能力须分别核验。",
-      "sourceIds": ["product-claude-code-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-claude-code-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.github-agents-active-2026-07-23",
-      "claim": "截至 2026-08-23，GitHub 官方文档提供第三方 Coding Agent 与 Copilot cloud agent 并行的异步开发任务入口，可从 Issue 或提示发起任务并创建 Pull Request，也可通过 Pull Request 评论要求 Agent 继续迭代；该能力仍处于 public preview。",
+      "claim": "截至 2026-09-24，GitHub 官方文档提供第三方 Coding Agent 与 Copilot cloud agent 并行的异步开发任务入口，可从 Issue 或提示发起任务并创建 Pull Request，也可通过 Pull Request 评论要求 Agent 继续迭代；该能力仍处于 public preview。",
       "scope": "当前支持的 Agent、模型、套餐、组织策略、Actions 分钟、AI credits 与预览期能力必须分别核验。",
-      "sourceIds": ["product-github-copilot-coding-agent"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-github-copilot-coding-agent"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.cursor-active-2026-07-23",
-      "claim": "截至 2026-08-23，Cursor 官方文档将 Cursor 定位为 Coding Agent，并覆盖 Agent、Rules、Skills、MCP、Cloud Agents 与 CLI 等产品面。",
+      "claim": "截至 2026-09-24，Cursor 官方文档将 Cursor 定位为 Coding Agent，并覆盖 Agent、Rules、Skills、MCP、Cloud Agents 与 CLI 等产品面。",
       "scope": "不承诺具体模型、云端任务、插件、Subagents、Hooks、SDK、权限、价格或企业治理能力持续不变。",
-      "sourceIds": ["product-cursor-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-cursor-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.kiro-active-2026-07-23",
-      "claim": "截至 2026-08-23，Kiro 官方文档持续提供 Kiro CLI，并将其与 IDE、Web 入口组织为结构化的软件开发 Agent 工作流。",
+      "claim": "截至 2026-09-24，Kiro 官方文档持续提供 Kiro CLI，并将其与 IDE、Web 入口组织为结构化的软件开发 Agent 工作流。",
       "scope": "CLI 2.x 到 3.0 的 session、hooks、Agent 配置和权限兼容性，以及模型、账户、区域与企业能力，须按目标版本持续核验。",
-      "sourceIds": ["product-kiro-cli"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-kiro-cli"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.devin-active-2026-07-23",
-      "claim": "截至 2026-08-23，Cognition 官方文档提供 Devin 的 Web 与托管 Workspace 软件工程任务入口，同时提供本地 Devin CLI 以及向 Cloud Devin handoff 的工作流。",
+      "claim": "截至 2026-09-24，Cognition 官方文档提供 Devin 的 Web 与托管 Workspace 软件工程任务入口，同时提供本地 Devin CLI 以及向 Cloud Devin handoff 的工作流。",
       "scope": "不承诺具体模型、自治程度、集成、套餐、数据处理或客户任务成功率；本地 CLI 与云端托管路径须分别评估。",
-      "sourceIds": ["product-devin-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-devin-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.openhands-active-2026-07-23",
-      "claim": "截至 2026-08-23，OpenHands 官方提供开源的 Software Agent SDK，可通过 Python 与 REST API 组合面向代码的 Agent、工具和本地或远程工作区，并支持在本地或云端运行。",
+      "claim": "截至 2026-09-24，OpenHands 官方提供开源的 Software Agent SDK，可通过 Python 与 REST API 组合面向代码的 Agent、工具和本地或远程工作区，并支持在本地或云端运行。",
       "scope": "开源可检查性不等于企业支持、安全加固或生产托管保证；部署、模型、权限和运维责任取决于采用方式。",
-      "sourceIds": ["product-openhands-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-openhands-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.cline-active-2026-07-23",
-      "claim": "截至 2026-08-23，Cline 官方将其描述为运行于编辑器与终端的开源 Coding Agent，可读写文件、执行终端命令和使用浏览器，并提供 CLI、VS Code、JetBrains、Kanban 与 SDK 等工作入口。",
+      "claim": "截至 2026-09-24，Cline 官方将其描述为运行于编辑器与终端的开源 Coding Agent，可读写文件、执行终端命令和使用浏览器，并提供 CLI、VS Code、JetBrains、Kanban 与 SDK 等工作入口。",
       "scope": "模型、提供方、审批、成本和权限由具体用户环境决定；审批可配置，不表示所有动作始终需要人工确认。",
-      "sourceIds": ["product-cline-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-cline-docs", "product-cline-cli-reference"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.aider-active-2026-07-23",
-      "claim": "截至 2026-08-23，Aider 官方仍将其定位为终端中的 AI 结对编程工具，深度集成本地 Git 工作流，并可连接多数云端或本地 LLM。",
+      "claim": "截至 2026-09-24，Aider 官方仍将其定位为终端中的 AI 结对编程工具，深度集成本地 Git 工作流，并可连接多数云端或本地 LLM。",
       "scope": "Aider 的交互式终端形态不能直接等同云端异步自治 Agent。",
-      "sourceIds": ["product-aider-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-aider-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.opencode-active-2026-07-23",
-      "claim": "截至 2026-08-23，OpenCode 官方提供开源 AI Coding Agent，可通过终端、桌面应用或 IDE 扩展使用，并支持配置多种模型提供方与本地模型。",
+      "claim": "截至 2026-09-24，OpenCode 官方提供开源 AI Coding Agent，可通过终端、桌面应用或 IDE 扩展使用，并支持配置多种模型提供方与本地模型。",
       "scope": "企业身份、隔离、遥测、支持和模型服务责任取决于部署。",
-      "sourceIds": ["product-opencode-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-opencode-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.antigravity-transition-2026-07-23",
@@ -539,33 +539,33 @@
     },
     {
       "id": "coding-agent.antigravity-lifecycle-2026-08-23",
-      "claim": "截至 2026-08-23，Google 已于 2026-06-18 停止 Gemini CLI 为 Google AI Pro、Ultra 和免费个人账户提供请求，并将这些个人终端入口迁移到已上线的 Antigravity CLI；Gemini CLI 仍面向 Standard 或 Enterprise 许可证、Google Cloud 与付费 API key 路径提供支持，官方开源仓库也仍在发布版本。Antigravity CLI 与 Antigravity 2.0 共享核心 Agent 引擎。",
+      "claim": "截至 2026-09-24，Google 已于 2026-06-18 停止 Gemini CLI 为 Google AI Pro、Ultra 和免费个人账户提供请求，并将这些个人终端入口迁移到已上线的 Antigravity CLI；Gemini CLI 仍面向 Standard 或 Enterprise 许可证、Google Cloud 与付费 API key 路径提供支持，官方开源仓库也仍在发布版本。Antigravity CLI 与 Antigravity 2.0 共享核心 Agent 引擎。",
       "scope": "这是按账户、许可证和认证路径区分的生命周期状态，不是 Gemini CLI 的统一更名或全面停服；迁移兼容、plugins、Skills、MCP、themes 与企业能力须按具体版本复核。",
-      "sourceIds": ["product-gemini-cli-individual-transition", "product-antigravity-cli-migration", "product-gemini-cli-releases"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "watch", "supersedes": "coding-agent.antigravity-transition-2026-07-23"
+      "sourceIds": ["product-gemini-cli-individual-transition", "product-antigravity-migration", "product-antigravity-cli-migration", "product-gemini-cli-releases"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "watch", "supersedes": "coding-agent.antigravity-transition-2026-07-23"
     },
     {
       "id": "coding-agent.qwen-code-active-2026-07-23",
-      "claim": "截至 2026-08-23，Qwen 官方持续提供开源智能编码 Agent Qwen Code；终端是核心入口，官方文档同时覆盖 IDE、GitHub Actions、桌面端、Daemon 与 SDK 等使用形态。",
+      "claim": "截至 2026-09-24，Qwen 官方持续提供开源智能编码 Agent Qwen Code；终端是核心入口，官方文档同时覆盖 IDE、GitHub Actions、桌面端、Daemon 与 SDK 等使用形态。",
       "scope": "Qwen Code、Qwen 模型服务和 Qoder CN（原通义灵码）是不同产品面，认证、配额和数据边界按接入方式核验。",
-      "sourceIds": ["product-qwen-code-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-qwen-code-docs", "product-qwen-code-desktop-2026"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.kimi-code-active-2026-07-23",
-      "claim": "截至 2026-08-23，Kimi 官方持续提供 Kimi Code 智能编程服务，产品形态包括 CLI、VS Code 扩展及面向第三方开发工具的 API 接入；CLI 可读取和编辑文件、执行命令并自主完成开发任务。",
-      "scope": "不同入口的会员权益、认证、模型、账户、网络、工具权限和套餐能力须分别复核；旧 Python 或 uv CLI 已不再维护。",
-      "sourceIds": ["product-kimi-code-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "claim": "截至 2026-09-24，Kimi 官方提供 Kimi Code Desktop、Node.js CLI、VS Code 扩展及面向第三方开发工具的 API 接入；CLI 可读取和编辑文件、执行命令并自主完成开发任务。",
+      "scope": "不同入口的会员权益、认证、模型、账户、网络、工具权限和套餐能力须分别复核；旧 Python/uv CLI 已由 Node.js CLI 替代并停止维护。",
+      "sourceIds": ["product-kimi-code-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.codebuddy-active-2026-07-23",
-      "claim": "截至 2026-08-23，腾讯 CodeBuddy 官方文档持续提供 CLI 与 IDE 产品面，并覆盖 MCP、Sub-Agents、Agent Teams、Skills、Hooks、插件、检查点、权限控制与 Bash 沙箱等能力入口。",
+      "claim": "截至 2026-09-24，腾讯 CodeBuddy 官方文档持续提供 CLI 与 IDE 产品面，并覆盖 MCP、Sub-Agents、Agent Teams、Skills、Hooks、插件、检查点、权限控制与 Bash 沙箱等能力入口。",
       "scope": "CLI 与 IDE 产品面不必然一致；具体版本、模型、权限模式、企业部署和数据治理能力须按目标环境核验。",
-      "sourceIds": ["product-codebuddy-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-codebuddy-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.comate-active-2026-07-23",
-      "claim": "截至 2026-08-23，百度官方持续提供文心快码 Comate 的 IDE 智能编程 Agent，并在官方文档中覆盖 Agents、Subagents、Rules、Memory、MCP、检查点与回退等能力入口。",
+      "claim": "截至 2026-09-24，百度官方持续提供文心快码 Comate 的 IDE 智能编程 Agent，并在官方文档中覆盖 Agents、Subagents、Rules、Memory、MCP、检查点与回退等能力入口。",
       "scope": "插件、AI IDE、个人版、企业版与 VPC 版的企业控制、数据边界、模型和语言栈效果须在目标版本与 PoC 中分别核验。",
-      "sourceIds": ["product-comate-agent-docs"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
+      "sourceIds": ["product-comate-agent-docs"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active"
     },
     {
       "id": "coding-agent.tongyi-lingma-active-2026-07-23",
@@ -575,9 +575,9 @@
     },
     {
       "id": "coding-agent.qoder-cn-ide-active-2026-08-23",
-      "claim": "截至 2026-08-23，阿里云原“智能编码助手通义灵码”（Lingma）已更名为 Qoder CN 系列；其编码桌面应用现名 Qoder CN IDE，并继续提供 JetBrains 插件，官方文档明确 VS Code 插件已停止维护。",
+      "claim": "截至 2026-09-24，阿里云原“智能编码助手通义灵码”（Lingma）已更名为 Qoder CN 系列；其编码桌面应用现名 Qoder CN IDE，并继续提供 JetBrains 插件，官方文档明确 VS Code 插件已停止维护。",
       "scope": "这里只描述品牌与客户端生命周期；Qoder CN IDE、JetBrains 插件、Qoder CN CLI 与 Cloud Agents 是不同产品面，模型、credits、套餐、企业控制和数据策略须分别核验。",
-      "sourceIds": ["product-qoder-cn-series", "product-qoder-cn-ide", "product-qoder-cn-ide-changelog"], "evidenceGrade": "A", "verifiedAt": "2026-08-23", "reviewBy": "2026-09-22", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active", "supersedes": "coding-agent.tongyi-lingma-active-2026-07-23"
+      "sourceIds": ["product-qoder-cn-series", "product-qoder-cn-ide", "product-qoder-cn-ide-changelog"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active", "supersedes": "coding-agent.tongyi-lingma-active-2026-07-23"
     }
   ]
 }

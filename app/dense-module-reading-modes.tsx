@@ -111,6 +111,12 @@ function scrollHashTargetIntoView(hash: string) {
     const previousBehavior = root.style.scrollBehavior;
     root.style.scrollBehavior = "auto";
     target.scrollIntoView({ block: "start" });
+    const modeHeader = target.closest('[data-module-reader="unified"]')?.querySelector<HTMLElement>(".moduleModeHeader");
+    const qaToolbar = target.closest(".qaExplorer")?.querySelector<HTMLElement>(".qaToolbar");
+    const stickyBottom = Math.max(0, ...[modeHeader, qaToolbar].flatMap((element) =>
+      element && window.getComputedStyle(element).position === "sticky" ? [element.getBoundingClientRect().bottom] : []));
+    const overlap = stickyBottom + 12 - target.getBoundingClientRect().top;
+    if (overlap > 0) window.scrollBy(0, -overlap);
     root.style.scrollBehavior = previousBehavior;
   };
   revealTarget();

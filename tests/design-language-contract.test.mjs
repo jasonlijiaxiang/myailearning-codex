@@ -279,6 +279,73 @@ test("the sanctioned dark scheme overrides keep the light palette untouched", as
   assert.equal(lightTokenValue(globals, "--fb-accent"), "#a8d84f");
 });
 
+test("reader surfaces follow the light and dark palette with their text", async () => {
+  const [fieldbook, agentReader, mcpStyles, inferenceStyles, a2aStyles] = await Promise.all([
+    readFile(fieldbookV3StylesUrl, "utf8"),
+    readFile(agentReaderStylesUrl, "utf8"),
+    readFile(mcpStylesUrl, "utf8"),
+    readFile(inferenceStylesUrl, "utf8"),
+    readFile(a2aStylesUrl, "utf8"),
+  ]);
+  const fieldbookRules = cssRules(fieldbook);
+  const agentRules = cssRules(agentReader);
+  /** @type {Array<[ParsedCssRule[], string, string, string]>} */
+  const surfaceRoles = [
+    [fieldbookRules, ".fieldbookTheme.modulePage .moduleModeTabs button", "background", "var(--fb-surface)"],
+    [fieldbookRules, ".fieldbookTheme.modulePage .qaAnswer", "background", "var(--fb-surface)"],
+    [fieldbookRules, ".fieldbookTheme.modulePage .qaEvidenceDisclosure .qaBasis", "background", "var(--fb-surface)"],
+    [fieldbookRules, ".curriculumChapter[open] summary", "background", "linear-gradient(90deg,var(--fb-accent-soft) 0,var(--fb-surface) 66%)"],
+    [fieldbookRules, ".curriculumChapterBody dl > div", "background", "var(--fb-mist)"],
+    [fieldbookRules, ".modulePilot .deepDiveSources", "background", "var(--fb-mist)"],
+    [fieldbookRules, ".termHintRow", "background", "var(--fb-surface)"],
+    [fieldbookRules, ".focusedTermStrip", "background", "var(--fb-mist)"],
+    [fieldbookRules, ".solutionDecisionLoop li.isActive button", "background", "linear-gradient(180deg,var(--fb-surface) 0%,var(--fb-accent-soft) 100%)"],
+    [fieldbookRules, ".mcpArchitectureBand--protocol", "background", "var(--fb-mint)"],
+    [fieldbookRules, ".inferencePhaseDetail", "background", "var(--fb-mist)"],
+    [fieldbookRules, ".focusedBoundary", "background", "var(--fb-accent-soft)"],
+    [fieldbookRules, ".solutionDecisionLoop button > span", "color", "var(--fb-meta)"],
+    [agentRules, ".heroLedger", "background", "var(--fb-surface)"],
+    [agentRules, ".knowledgeRows", "background", "var(--fb-surface)"],
+    [agentRules, ".harnessLayerLedger", "background", "var(--fb-surface)"],
+    [agentRules, ".knowledgeIdentity b", "color", "var(--fb-surface)"],
+  ];
+  for (const [rules, selector, property, expected] of surfaceRoles) {
+    const values = declarationsFor(rules, selector).get(property) ?? [];
+    assert.equal(values.at(-1), expected, `${selector} must keep ${property} paired with the dark-aware surface`);
+  }
+  const curriculumText = /** @type {string[]} */ (declarationsFor(fieldbookRules, ".curriculumCore .curriculumEssence").get("color") ?? []);
+  assert.ok(curriculumText.length >= 2, "curriculum text needs desktop and mobile rules");
+  assert.ok(curriculumText.every((value) => value === "var(--fb-body)"), "curriculum text must stay readable at mobile breakpoints");
+  for (const selector of [".moduleKnowledgeExplorer", ".llmGenerationExplorer"]) {
+    const declarations = declarationsFor(fieldbookRules, selector);
+    assert.equal(declarations.get("background")?.at(-1), "#fff", `${selector} keeps its self-contained light palette`);
+    assert.equal(declarations.get("color")?.at(-1), "var(--visual-navy)", `${selector} must pair that palette with dark text`);
+  }
+  const mcpRules = cssRules(mcpStyles);
+  for (const selector of [".modeContent", ".page :global(.mcpArchitectureExplorer .focusedNarrative)"]) {
+    const declarations = declarationsFor(mcpRules, selector);
+    assert.equal(declarations.get("background")?.at(-1), "#fff", `${selector} keeps the dedicated MCP light palette`);
+    assert.equal(declarations.get("color")?.at(-1), "var(--mcp-ink)", `${selector} pairs its palette with dark text`);
+  }
+  const inferenceSurface = declarationsFor(cssRules(inferenceStyles), ".inferenceContentScope");
+  assert.equal(inferenceSurface.get("background")?.at(-1), "#fff", "the dedicated inference reader keeps its local light surface");
+  assert.equal(inferenceSurface.get("color")?.at(-1), "var(--if-ink)", "the inference surface pairs with its local dark text");
+  const a2aRules = cssRules(a2aStyles);
+  for (const selector of [".quickView", ".learnView", ".fieldView"]) {
+    const declarations = declarationsFor(a2aRules, selector);
+    assert.equal(declarations.get("background")?.at(-1), "var(--a2a-paper)", `${selector} keeps the A2A light surface`);
+    assert.equal(declarations.get("color")?.at(-1), "var(--a2a-ink)", `${selector} pairs it with dark text`);
+  }
+  const a2aAtlas = declarationsFor(a2aRules, ".page .learnView :global(.curriculumChapter)");
+  assert.equal(a2aAtlas.get("background")?.at(-1), "var(--a2a-paper)", "the shared atlas keeps A2A's local light surface");
+  assert.equal(a2aAtlas.get("color")?.at(-1), "var(--a2a-ink)", "the atlas pairs that surface with dark text");
+  assert.equal(declarationsFor(a2aRules, ".page .learnView :global(.curriculumAtlasLead)").get("color")?.at(-1), "var(--a2a-ink-2)");
+  assert.equal(declarationsFor(a2aRules, ".page .learnView :global(.curriculumChapterBody dl > div:last-child)").get("background")?.at(-1), "var(--a2a-risk-soft)");
+  assert.equal(declarationsFor(a2aRules, ".page .learnView :global(.deepDiveSources)").get("background")?.at(-1), "var(--a2a-paper)", "A2A source links need the same light reading surface");
+  assert.equal(declarationsFor(a2aRules, ".page .learnView :global(.deepDiveSources a)").get("color")?.at(-1), "var(--a2a-ink-2)", "A2A source links need dark text");
+  assert.equal(declarationsFor(a2aRules, ".forkQuestion p").get("color")?.at(-1), "var(--a2a-ink)", "the bright A2A decision card needs dark explanatory text");
+});
+
 test("every site-wide token is declared once and documented", async () => {
   const [globals, designLanguage] = await Promise.all([
     readFile(globalsUrl, "utf8"),

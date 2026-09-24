@@ -754,8 +754,8 @@ export const englishModule = Object.freeze({
     Object.freeze({
       id: "dify-community-enterprise-boundary",
       q: "Dify Community can be self-hosted without a subscription. Why might an enterprise pay?",
-      a: "Free self-hosting and enterprise delivery are different choices. Dify's own license sets conditions that can matter for customer-facing and branded use, while its current Enterprise page advertises commercial authorization and organization-level features, support, and negotiated service levels.",
-      depth: "Start with the exact Dify version, deployment model, workspace or tenant design, need to change frontend branding, identity and security controls, support commitment, and required license rights. Read the license and the target contract together. Do not infer a customer's rights or operating commitments from a plan-comparison page.",
+      a: "The LICENSE explicitly permits commercial use subject to additional terms. Enterprise delivery may still require different authorization, workspaces, identity controls, support, and a contractual service level.",
+      depth: "Start with the exact Dify version, deployment model, workspace or tenant design, need to change frontend branding, identity and security controls, support commitment, and required license rights. The LICENSE restricts operation of a multi-tenant environment without written authorization and removal or modification of frontend logo and copyright information. Read the license and the target contract together; the Enterprise page says SLA terms are negotiated with Dify partners. Do not infer a customer's rights or operating commitments from a plan-comparison page.",
       ask: "Will the service be multi-tenant, require frontend changes, need multiple workspaces or SSO, or depend on a contractual support and service-level commitment?",
       tag: "Procurement boundary",
       basis: "Current Dify license plus plan comparison",
@@ -917,7 +917,7 @@ export const englishModule = Object.freeze({
     "dify-open-source-license": Object.freeze({
       kind: "Official license",
       shortTitle: "Dify Open Source License",
-      note: "Dify's official repository states that its modified Apache License 2.0 includes additional conditions for operating a multi-tenant environment without written authorization and for removing or modifying frontend logo or copyright information. Access to or self-hosting of the code does not remove those license conditions.",
+      note: "Dify's repository LICENSE explicitly permits commercial use subject to additional terms. Those terms cover multi-tenant operation without written authorization and removal or modification of frontend logo or copyright information; self-hosting does not remove them.",
     }),
     "dify-enterprise-pricing": Object.freeze({
       kind: "Product specification",
@@ -937,7 +937,7 @@ export const englishModule = Object.freeze({
     "agentic-index": Object.freeze({
       kind: "Project composite index · task-specific research",
       shortTitle: "Agentic Composite",
-      note: "This page gives the displayed GDPval-AA v2 and τ³-Banking components equal weight. In the 2026-08-13 v4.1.1 capture, the Artificial Analysis Agentic Index score did not equal that displayed-component average, and the public sources do not explain the discrepancy. The two remain distinct, and neither establishes production-agent fitness.",
+      note: "This page equally weights GDPval-AA v2 and τ³-Banking from its August 13, 2026 v4.1.1 historical snapshot. The repository did not preserve the then-published Agentic Index score, so it cannot claim a discrepancy. Artificial Analysis replaced the banking component in v4.3; the old calculation is not the current index or evidence of production-agent fitness.",
     }),
     "artificial-analysis-models": Object.freeze({
       kind: "Model catalog",
@@ -947,7 +947,7 @@ export const englishModule = Object.freeze({
     "artificial-analysis-methodology": Object.freeze({
       kind: "Benchmark methodology",
       shortTitle: "Artificial Analysis Methodology",
-      note: "Documents the Artificial Analysis Intelligence Index v4.1.1 inputs, capability categories, weights, patch changes, and version boundary. The page's Coding and Agentic composites are transparent component recalculations, not substitutes for the separately published Artificial Analysis index fields.",
+      note: "The live page documents the current v4.3.2 methodology and its version history. The fieldbook's August 13 snapshot belongs to v4.1.1; the page cannot reconstruct that historical HTTP response or score table. Its Coding and Agentic composites are fieldbook calculations from preserved components.",
     }),
     "terminal-bench-v21": Object.freeze({
       kind: "Task-specific research",

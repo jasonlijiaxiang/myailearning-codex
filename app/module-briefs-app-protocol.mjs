@@ -972,7 +972,7 @@ export const multimodalBrief = {
         {
           "name": "停止播放",
           "en": "Stop Playback",
-          "mechanism": "立即停止当前 TTS 播放，避免新指令被覆盖或产生双通道噪声。",
+          "mechanism": "立即停止当前 TTS 播放，记录实际播到的音频位置。OpenAI Realtime 启用 VAD 时，WebRTC/SIP 会自动截断未播缓冲，WebSocket 客户端须按已播进度发送截断事件；关闭 VAD 的按键说话模式下，WebRTC/SIP 客户端发送 output_audio_buffer.clear，WebSocket 客户端停止本地播放并发送 conversation.item.truncate。",
           "decision": "停止后是否还有缓冲内容在音箱侧继续出声？",
           "boundary": "停止播放不等于取消生成任务。"
         },
@@ -999,6 +999,7 @@ export const multimodalBrief = {
         }
       ],
       "sourceIds": [
+        "openai-realtime-conversations",
         "nist-genai-profile",
         "opentelemetry-genai-semconv"
       ]
@@ -1260,11 +1261,15 @@ export const multimodalBrief = {
     {
       "q": "实时语音为什么不能只比较模型首包速度？",
       "a": "用户体验由端点检测、网络、模型、工具、语音合成、打断和状态恢复共同决定。",
-      "depth": "应测从用户停止说话到系统开始回应的端到端延迟，并测试用户打断后能否停止播报、取消旧任务和正确续接上下文。涉及查询或交易时，还要把工具执行和人工转接纳入任务成功率。",
+      "depth": "应测从用户停止说话到系统开始回应的端到端延迟，并测试用户打断后能否停止播报、取消旧任务和正确续接上下文。OpenAI Realtime 启用 VAD 时，WebRTC/SIP 服务端自动截断未播缓冲；WebSocket 客户端停止播放并按已播位置发送 conversation.item.truncate。关闭 VAD 做按键说话时，客户端还需主动取消旧响应；WebRTC/SIP 发送 output_audio_buffer.clear，WebSocket 停止本地播放并发送 conversation.item.truncate。音频截断不提供逐字精确对齐的截断转写，恢复上下文须以实际播放位置为准。这是该 API 的实现，不宜照搬到其他语音栈。",
       "ask": "电话还是 App？是否需要打断、转人工、录音、工具调用和多语言？",
       "tag": "实时交互",
       "basis": "端到端系统评估",
       "evidence": [
+        {
+          "sourceId": "openai-realtime-conversations",
+          "supports": "区分启用 VAD 的自动打断与关闭 VAD 后 WebSocket、WebRTC/SIP 各自的客户端操作；音频截断不提供精确对齐的转写。"
+        },
         {
           "sourceId": "opentelemetry-semconv",
           "supports": "支持以 Trace 关联多个处理阶段，而不是只观察单个模型请求。"
@@ -1553,6 +1558,12 @@ export const mcpBrief = {
       "en": "Tools, Resources & Prompts",
       "explanation": "Tools 是模型控制的可调用操作，Resources 是应用控制的可寻址上下文，Prompts 是用户控制的可选择模板；Tool 可以只读，三类原语都可能承载敏感或不可信内容。",
       "decision": "按控制主体选择原语，并在能力清单中另列数据范围、敏感性、副作用、授权、幂等与审计字段。"
+    },
+    {
+      "zh": "MCP Apps 的交互视图",
+      "en": "MCP Apps Interaction View",
+      "explanation": "MCP Apps 扩展让 Tool 关联 ui:// 资源，Host 在沙箱视图中呈现界面。Tool 默认同时对模型与 App 可见；仅供 App 调用须显式标记，并由 Host 对模型隐藏。界面不会改变底层业务授权。",
+      "decision": "需要表单、可视化或分步确认时，先核对目标 Host 对扩展的支持，再分别设计模型可见 Tool、App 专用 Tool 和用户确认路径。"
     },
     {
       "zh": "能力协商与生命周期",
@@ -2160,6 +2171,19 @@ export const mcpBrief = {
           "supports": "支持 A2A Task 作为独立 Agent 协作对象，语义边界不同。"
         }
       ]
+    },
+    {
+      "q": "MCP Apps 的界面能否代替 Tool 的授权和确认？",
+      "a": "不能。MCP Apps 让 Tool 关联 ui:// 资源，并由支持扩展的 Host 在沙箱视图呈现；它负责交互，不会自动授予用户或 App 执行业务动作的权限。",
+      "depth": "先确认目标 Host 是否支持扩展和所需视图能力。Tool 的可见性默认同时包含 model 与 app；只供 App 调用时须显式标为 app，Host 也须从模型工具列表隐藏它。表单可以收集参数或呈现结果，但提交动作仍需按真实用户、租户、资源和操作做服务端授权；高影响写入保留明确确认、幂等、执行状态与审计。沙箱限制视图运行环境，不能代替下游 API 的权限检查。",
+      "ask": "目标 Host 支持 MCP Apps 吗？哪些 Tool 对模型可见，哪些只供 App 使用，最终写入由谁授权？",
+      "tag": "交互扩展",
+      "basis": "MCP Apps 扩展 + 业务授权边界",
+      "evidence": [
+        { "sourceId": "mcp-apps-2026-01-26", "supports": "定义 ui:// 资源和 Host 沙箱视图；Tool 默认同时对 model 与 app 可见，App 专用须显式标记并由 Host 隐藏。" },
+        { "sourceId": "mcp-authorization", "supports": "定义受保护资源和授权流程；界面呈现本身不授权业务操作。" }
+      ],
+      "addedAt": "2026-09-24"
     }
   ],
   "evidenceCards": [
@@ -3242,14 +3266,14 @@ export const securityBrief = {
     {
       "zh": "简历始终是不可信内容",
       "en": "Resume as Untrusted Content",
-      "explanation": "候选人可在 PDF、隐藏文本或图片中放入间接提示注入；上传者已认证，也不改变内容的信任等级。",
+      "explanation": "候选人可在简历正文或解析后文本中夹带恶意指令；图片、隐藏层和其他文件表示也需按独立输入路径测试。上传者已认证，仍不改变内容的信任等级。",
       "decision": "记录来源、版本和完整性，隔离解析，最小化上下文，并让外部内容只能成为候选证据。"
     },
     {
       "zh": "检索使用当前身份与 ACL",
       "en": "Authorized Retrieval",
       "explanation": "职位政策、候选人材料、切块、Embedding、缓存和日志仍有访问与删除边界，不能因进入向量库而混用。",
-      "decision": "按招聘人员、职位和候选人执行检索时 ACL、隔离、来源验证与撤权传播。"
+      "decision": "先在候选生成与索引查询阶段应用当前身份和 ACL，再排序与装配证据；核对缓存隔离、来源与撤权传播。"
     },
     {
       "zh": "模型只形成有据提案",
@@ -3473,7 +3497,7 @@ export const securityBrief = {
     {
       "q": "候选人在简历中藏入恶意指令，能不能靠更强的系统提示解决？",
       "a": "不能保证。提示可以降低部分风险，但模型仍可能把不可信内容误当指令，必须在模型外限制权限和影响范围。",
-      "depth": "OWASP 直接给出简历筛选中的间接注入场景：恶意内容可藏在 PDF、隐藏文字或图片中。系统要保留来源与信任标签、隔离解析、最小化上下文并检测可疑内容；更关键的是，让候选人资料只能影响有据提案，跨候选人读取与 ATS 高影响动作必须经过独立 ACL、参数校验和业务授权。",
+      "depth": "OWASP 的简历筛选示例说明：攻击者控制的简历文字可能诱导模型偏离筛选任务。PDF 隐藏层、图片文字和 OCR 是另外需要实测的输入路径，不能都归到该单一示例。系统保留来源与信任标签、隔离解析并限制上下文；跨候选人读取与 ATS 高影响动作必须经过独立 ACL、参数校验和业务授权。",
       "ask": "一份简历从解析到检索、模型和 ATS 会跨过哪些信任边界？",
       "tag": "提示注入",
       "basis": "OWASP 威胁定义 + 外部控制",
@@ -3487,7 +3511,7 @@ export const securityBrief = {
     {
       "q": "候选人材料存进向量库后，数据风险真的降低了吗？",
       "a": "不能这样判断。向量化不是匿名化，向量、元数据、原文和检索结果仍可能敏感，删除原文也不会自动清除所有派生数据。",
-      "depth": "简历会形成切块、Embedding、索引、缓存、日志和评估样本。必须把招聘人员、职位、候选人和用途写进权限边界，执行写入准入、检索时 ACL 与隔离。Data Engineering 负责副本清单和撤权删除传播；Security 要求客户定义时限、失败处理与负向探针作为验收证据。OWASP 支持向量访问、投毒和泄露风险，但不提供通用删除 SLA。",
+      "depth": "简历会形成切块、Embedding、索引、缓存、日志和评估样本。把招聘人员、职位、候选人和用途写进权限边界；在索引查询与候选生成时先执行 ACL，再做相似度排序，避免无权片段进入后续缓存或模型上下文。Data Engineering 负责副本清单和撤权删除传播；Security 用客户定义的时限、失败处理与负向探针验收。OWASP 说明向量访问、投毒和泄露风险，不提供通用删除 SLA。",
       "ask": "一份简历会复制到哪些位置，谁可以跨职位读取，撤权和删除怎样证明完成？",
       "tag": "RAG 安全",
       "basis": "向量与 Embedding 风险",
@@ -3501,7 +3525,7 @@ export const securityBrief = {
     {
       "q": "怎样避免招聘 Agent 越权修改 ATS 或错误淘汰候选人？",
       "a": "模型只提出动作意图，应用使用真实身份做授权、参数校验和执行；按动作风险决定自动、确认或禁止。",
-      "depth": "招聘人员已登录只证明身份，不表示 Agent 可以读取所有职位或修改所有候选人字段。要区分发起人、代表主体、职位范围、允许字段和凭据受众；生成草稿可以自动化，评分发布、淘汰、状态变化和对外通知应预览并由有权招聘人员确认。执行后回读 ATS 权威状态，结果未知时先查询再重试。",
+      "depth": "招聘人员已登录只证明身份，不表示 Agent 可以读取所有职位或修改所有候选人字段。要区分发起人、代表主体、职位范围、允许字段和凭据受众；生成草稿可以自动化，评分发布、淘汰、状态变化和对外通知应预览并由有权招聘人员确认。ACS 可用运行时挂点承载策略，但上线仍需逐条证明挂点覆盖、失联时拒绝、ATS 服务端授权和执行后权威状态。结果未知时先查询再重试。",
       "ask": "ATS 调用以谁的身份执行，哪些字段允许写，谁能改变候选人状态，失败怎样补偿？",
       "tag": "Agent 安全",
       "basis": "最小权限 + 行动控制",
@@ -3513,6 +3537,10 @@ export const securityBrief = {
         {
           "sourceId": "mcp-security",
           "supports": "支持工具调用场景中的混淆代理、令牌和权限风险需要独立控制。"
+        },
+        {
+          "sourceId": "owasp-agent-control-standard",
+          "supports": "定义运行时中间件策略挂点；不证明挂点覆盖、故障行为或 ATS 业务授权。"
         }
       ]
     },
@@ -3533,8 +3561,8 @@ export const securityBrief = {
           "supports": "支持采用多层缓解而非依赖单一检测或提示。"
         },
         {
-          "sourceId": "owasp-llm-top-ten",
-          "supports": "支持测试覆盖多类生成式 AI 应用风险，而不只检查内容过滤。"
+          "sourceId": "owasp-llm-top-ten-2026",
+          "supports": "新版风险目录帮助检查注入、过度授权和隐藏上下文等攻击面是否被测试覆盖。"
         }
       ]
     },
@@ -3547,8 +3575,8 @@ export const securityBrief = {
       "basis": "通用风险目录 + 系统威胁模型",
       "evidence": [
         {
-          "sourceId": "owasp-llm-top-ten",
-          "supports": "支持生成式 AI 应用的常见风险分类，可用于初始覆盖检查。"
+          "sourceId": "owasp-llm-top-ten-2026",
+          "supports": "提供 2026 年生成式 AI 应用风险分类，可用于初始覆盖检查；不定义项目验收线。"
         },
         {
           "sourceId": "nist-genai-profile",
@@ -3644,6 +3672,19 @@ export const securityBrief = {
         }
       ],
       "addedAt": "2026-08-05"
+    },
+    {
+      "q": "招聘 Agent 记住了恶意简历内容，为什么下一次任务还会受影响？",
+      "a": "因为持久记忆、摘要或共享上下文可能把一次不可信输入带进后续任务；每次重新检索和授权，也不能自动清除已被污染的状态。",
+      "depth": "OWASP ASI06 讨论记忆与上下文投毒，并以编码 Agent 的跨会话影响说明持续性；这不是招聘 ATS 已发生同类事故的证据。对于招聘系统，应区分一次性上下文与可持久写入的记忆，限制候选人材料写入共享记忆，记录写入来源、版本和作用域，允许隔离、撤销和重建。演练让恶意简历进入记忆后，检查下一次职位任务是否仍能影响检索、工具参数或 ATS 提案；最终动作仍由当前身份和策略授权。",
+      "ask": "哪些内容会跨任务保存，谁能写入和撤销记忆，污染后怎样定位受影响会话并重建？",
+      "tag": "Agent 记忆",
+      "basis": "ASI06 持久上下文风险 + 招聘系统威胁推演",
+      "evidence": [
+        { "sourceId": "owasp-asi06-memory", "supports": "以编码 Agent 案例解释不可信内容进入持久记忆后可跨会话影响后续行为；招聘场景是本模块的威胁推演。" },
+        { "sourceId": "nist-zero-trust", "supports": "支持后续资源访问仍需按当前主体与资源重新授权，不能因记忆内容获得权限。" }
+      ],
+      "addedAt": "2026-09-24"
     }
   ],
   "evidenceCards": [
@@ -3677,11 +3718,11 @@ export const securityBrief = {
       "sourceId": "nist-genai-profile"
     },
     {
-      "metric": "10 类常见风险",
+      "metric": "2026 风险目录",
       "title": "风险目录帮助威胁建模防止漏项",
-      "finding": "提示注入、敏感信息、供应链、投毒、输出处理、过度授权与向量弱点需要跨层检查。",
+      "finding": "提示注入、敏感信息、供应链、投毒、过度授权、隐藏上下文暴露与向量弱点需要跨层检查。",
       "boundary": "目录只提供共同语言，不能替代系统特有的数据流、损失分析和控制测试。",
-      "sourceId": "owasp-llm-top-ten"
+      "sourceId": "owasp-llm-top-ten-2026"
     },
     {
       "metric": "准备 / 检测 / 响应 / 恢复",

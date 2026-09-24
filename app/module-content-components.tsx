@@ -6,6 +6,7 @@ import { DeepDiveRelationView } from "./deep-dive-relation-view";
 import { QaFilterShell } from "./fieldbook-interactions";
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
 import { requireDeepDiveRepresentation } from "./deep-dive-representation.mjs";
+import { curriculumChapterAnchor, learningLabAnchor } from "./knowledge-anchor.mjs";
 
 type SourceSummary = {
   grade: string;
@@ -291,16 +292,18 @@ export function ModuleDeepDiveBlocks({
 export function ModuleCurriculumAtlas({
   content,
   sourceLedger,
+  slug,
 }: {
   content: ModuleCurriculumContent;
   sourceLedger: SourceLedger;
+  slug: string;
 }) {
   return (
     <div className="curriculumAtlas" data-curriculum-representation="progressive-outline">
       <p className="curriculumAtlasLead">{content.lead}</p>
       <div className="curriculumOutline">
         {content.chapters.map((chapter, index) => (
-          <details className="curriculumChapter" open={index === 0} key={chapter.title}>
+          <details className="curriculumChapter" id={curriculumChapterAnchor(slug, index, chapter.en)} open={index === 0} key={chapter.title}>
             <summary>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div>
@@ -329,9 +332,11 @@ export function ModuleCurriculumAtlas({
 export function ModuleLearningStudio({
   content,
   sourceLedger,
+  slug,
 }: {
   content: ModuleLearningContent;
   sourceLedger: SourceLedger;
+  slug: string;
 }) {
   return (
     <div className="learningStudio">
@@ -368,8 +373,8 @@ export function ModuleLearningStudio({
           <h3 id="learning-labs-title">可复核练习</h3>
         </div>
         <BalancedGrid className="learningLabGrid" maxColumns={2}>
-          {content.labs.map((lab) => (
-            <article className="learningLab" key={lab.title}>
+          {content.labs.map((lab, index) => (
+            <article className="learningLab" id={learningLabAnchor(slug, index)} key={lab.title}>
               <header><span>练习</span><h4>{lab.title}</h4></header>
               <p className="learningLabScenario"><strong>情境</strong>{lab.scenario}</p>
               <ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>

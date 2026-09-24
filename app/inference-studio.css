@@ -22,7 +22,7 @@
 .inferenceStudio [hidden] { display: none; }
 .inferenceStudio a { text-underline-offset: 3px; }
 .inferenceStudio footer { min-height: 0; }
-.inferenceContentScope { min-height: 0; overflow: visible; background: transparent; }
+.inferenceContentScope { min-height: 0; overflow: visible; background: #fff; color: var(--if-ink); }
 .inferenceTopbar {
   position: sticky;
   top: 0;
@@ -300,7 +300,7 @@
 .inferenceContentScope .learningRoute > ol > li:not(:last-child)::after { content: ""; top: 15px; right: 16px; bottom: auto; left: 42px; width: auto; height: 1px; border: 0; border-radius: 0; background: var(--if-line-strong); }
 .fieldbookTheme.modulePage.inferenceStudio .learningRoute li:last-child::after,
 .inferenceContentScope .learningRoute li:last-child::after { display: none; }
-.learningRoute li > span { position: relative; z-index: 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--if-line-strong); border-radius: 50%; background: #fff; font-size: 12px; font-weight: 800; }
+.learningRoute li > span { position: relative; z-index: 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--if-line-strong); border-radius: 50%; background: #fff; color: var(--if-ink); font-size: 12px; font-weight: 800; }
 .learningRoute li.isActive > span { border-color: var(--if-lime); background: var(--if-lime); }
 .learningRoute li div { position: relative; z-index: 2; width: fit-content; padding: 1px 14px 0 0; display: grid; background: #fff; }
 .learningRoute li strong { font-size: 11px; }

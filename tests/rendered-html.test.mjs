@@ -509,7 +509,7 @@ test("English decision tools preserve canonical facts without exposing Chinese r
   assert.match(radarHtml, /Agentic Composite/);
   assert.match(radarHtml, /Claude Opus 5 \(Adaptive Reasoning, Max Effort\)/);
   assert.match(radarHtml, /Grok 4\.6 \(high\)/);
-  assert.match(radarHtml, /not a global top 20 across all 604 available inference configurations in that capture/i);
+  assert.match(radarHtml, /not the global top 20 across all 604 configurations available in that capture/i);
   assert.match(radarHtml, /captured[\s\S]{0,80}01:18:07 UTC/i);
   assert.doesNotMatch(radarHtml, /configuration\.。|snapshot\.\./);
   assert.match(radarHtml, /href="\/en\/references#source-intelligence-index"/);
@@ -2322,7 +2322,7 @@ test("Batch 09 control views expose every step and focused search entries resolv
     );
     const curriculum = moduleCurriculumContent[publication.slug];
     if (curriculum) {
-      const curriculumEntries = zhSearchIndex.filter((entry) => entry.type === "课程章节" && entry.id.startsWith(`curriculum-${publication.slug}-`));
+      const curriculumEntries = zhSearchIndex.filter((entry) => entry.type === "课程章节" && entry.href.startsWith(`/modules/${publication.slug}#`));
       assert.equal(curriculumEntries.length, curriculum.chapters.length, `${publication.slug} search must keep long-form sections discoverable`);
     }
     const html = await renderHtml(publication.path);
@@ -2750,7 +2750,7 @@ test("every published module claim resolves to a unique, grouped, and verified s
       for (const reference of item.evidence) {
         assert.ok(sourceIds.has(reference.sourceId), `question cites an unknown source: ${reference.sourceId}`);
         assert.ok(moduleSourceIds.has(reference.sourceId), `question sources are not in the ${publishedModule.id} group: ${reference.sourceId}`);
-        assert.match(reference.supports, /支持/, `sources must state what they support: ${item.q}`);
+        assert.ok(reference.supports?.trim().length >= 10, `sources must explain their relevance: ${item.q}`);
       }
     }
 

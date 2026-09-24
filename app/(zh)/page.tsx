@@ -183,7 +183,7 @@ export default function Home() {
       <section className="timeBudgetPathsV2" id="time-budget-paths" aria-labelledby="time-budget-paths-title">
         <header>
           <h2 id="time-budget-paths-title">从时间开始</h2>
-          <p>从 10 分钟现场速查到系统学习，每条路径都只指向正式问题、模块和实战入口；不新增第二份答案内容。</p>
+          <p>按手头时间选择入口：会前先找到问题和边界，时间充裕时沿场景读透机制并完成练习。</p>
         </header>
         <div className="timeBudgetPathList">
           {timeBudgetPaths.map((path) => (

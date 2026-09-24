@@ -191,7 +191,7 @@
 .panel { min-width: 0; }
 .panel[hidden] { display: none; }
 
-.quickView, .learnView, .fieldView { min-width: 0; }
+.quickView, .learnView, .fieldView { min-width: 0; background: var(--a2a-paper); color: var(--a2a-ink); }
 .modeIntro {
   padding: clamp(26px, 2.5vw, 38px);
   display: grid;
@@ -290,6 +290,19 @@ article.sendNode { align-self: center; border: 2px solid var(--a2a-ink); backgro
 .curriculumHeader { padding: 8px 22px 0; }
 .curriculumHeader h2 { margin: 4px 0 0; font-family: var(--font-serif), serif; font-size: clamp(24px, 2vw, 31px); font-weight: 500; line-height: 1.2; }
 .curriculumAtlas > :global(.curriculumAtlas) { padding: 14px 22px 24px; }
+.page .learnView :global(.curriculumAtlasLead) { background: transparent; color: var(--a2a-ink-2); }
+.page .learnView :global(.curriculumChapter) { background: var(--a2a-paper); color: var(--a2a-ink); }
+.page .learnView :global(.curriculumChapter[open] summary) { background: linear-gradient(90deg, var(--a2a-lime-soft), var(--a2a-paper)); }
+.page .learnView :global(.curriculumChapter summary > span),
+.page .learnView :global(.curriculumChapter summary > div:not(.curriculumCore) > p),
+.page .learnView :global(.curriculumChapterBody dt) { color: var(--a2a-muted); }
+.page .learnView :global(.curriculumEssence),
+.page .learnView :global(.curriculumDecision),
+.page .learnView :global(.curriculumChapterBody dd) { color: var(--a2a-ink-2); }
+.page .learnView :global(.curriculumChapterBody dl > div) { background: var(--a2a-mist); }
+.page .learnView :global(.curriculumChapterBody dl > div:last-child) { background: var(--a2a-risk-soft); }
+.page .learnView :global(.deepDiveSources) { background: var(--a2a-paper); color: var(--a2a-ink-2); }
+.page .learnView :global(.deepDiveSources a) { color: var(--a2a-ink-2); }
 
 .learnLead {
   padding: clamp(30px, 3vw, 44px);
@@ -359,9 +372,11 @@ article.sendNode { align-self: center; border: 2px solid var(--a2a-ink); backgro
 
 .decisionFork { display: grid; grid-template-columns: 190px 54px minmax(0, 1fr); align-items: center; }
 .forkQuestion { padding: 18px; border: 2px solid var(--a2a-ink); background: var(--a2a-lime); }
-.forkQuestion span, .decisionFork > div article span { color: var(--a2a-muted); font-size: 12px; font-weight: 800; }
+.forkQuestion span { color: var(--a2a-ink); font-size: 12px; font-weight: 800; }
+.decisionFork > div article span { color: var(--a2a-muted); font-size: 12px; font-weight: 800; }
 .forkQuestion h3, .decisionFork > div h3 { margin: 6px 0 8px; font-size: 18px; }
-.forkQuestion p, .decisionFork > div p { margin: 0; color: var(--a2a-muted); font-size: 12px; }
+.forkQuestion p { margin: 0; color: var(--a2a-ink); font-size: 12px; }
+.decisionFork > div p { margin: 0; color: var(--a2a-muted); font-size: 12px; }
 .decisionFork > div { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--a2a-line-strong); }
 .decisionFork > div article { min-height: 150px; padding: 17px; }
 .decisionFork > div article + article { border-left: 1px solid var(--a2a-line); }

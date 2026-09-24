@@ -1,8 +1,8 @@
 /*
  * Model Radar data contract.
  *
- * The snapshot below is transcribed from Artificial Analysis' public model
- * page. The three displayed indices deliberately keep their provenance
+ * The historical snapshot below is transcribed from Artificial Analysis' public model
+ * page. Its original HTTP response was not archived independently. The three displayed indices deliberately keep their provenance
  * separate: Intelligence is the official AA v4.1.1 score; Coding Composite
  * and Agentic Composite are fieldbook calculations from the official
  * component values using the 50/50 formulas shown on the page. Artificial
@@ -39,7 +39,7 @@ const sourceRegistry = Object.freeze({
     sourceId: "scicode",
     label: "SciCode",
     asOf: "2026-08-13",
-    version: "Artificial Analysis 当前公开结果",
+    version: "Artificial Analysis 2026-08-13 历史快照",
   }),
   "scicode-verified-2026": Object.freeze({
     sourceId: "scicode-verified-2026",
@@ -196,12 +196,12 @@ export const modelRadarBenchmarkScales = Object.freeze({
 
 export const modelRadarPolicy = Object.freeze({
   verifiedAt: "2026-08-13",
-  cadence: "只保留仍能找到原始来源的快照",
-  candidatePool: "本快照冻结 Artificial Analysis 公开模型页默认 Intelligence Index 视图在 2026-08-13 01:18:07 UTC 捕获的前 20 个模型配置；它不是该次抓取全部 604 个可用推理配置的全局 Top 20。",
+  cadence: "按方法版本复核；历史快照不自动代表当前榜单",
+  candidatePool: "本库保留 Artificial Analysis 默认 Intelligence Index 视图在 2026-08-13 01:18:07 UTC 记录的前 20 个模型配置；原始 HTTP 响应未独立归档，精确数值不能从当前动态官网重建，也不是当时全部 604 个配置的全局 Top 20。",
   eligibility: "Intelligence Index 采用 Artificial Analysis v4.1.1 官方分数；两个 Composite 仅在两个组成 benchmark 都有同一模型快照结果时计算",
   score: "Intelligence Index 为官方分数；Coding Composite = (Terminal-Bench v2.1 + SciCode) / 2；Agentic Composite = (GDPval-AA v2 + τ³-Banking) / 2",
   confidence: "缺失证据显示为 —，不记零、不用同系列或相近版本代替；两个 50/50 Composite 是本页复算值，与 Artificial Analysis 另行发布的同名字段分开阅读",
-  retention: "最近两周与最近三个月内能找到的原始快照；找不到就不补",
+  retention: "只保留版本和采集时点明确的历史数据；现行榜单需重新核验",
 });
 
 export const modelRadarBenchmarkSourceIds = Object.freeze([

@@ -59,6 +59,11 @@ export const englishSupplementalSourceCopy = Object.freeze({
     shortTitle: "Cline",
     note: "Documents Cline as an open-source coding agent for editors and terminals, with CLI, VS Code, JetBrains, Kanban, and SDK entry points. Model-provider choice, configurable approvals, extensions, and execution boundaries are controlled by the user's environment.",
   }),
+  "product-cline-cli-reference": Object.freeze({
+    kind: "Official technical documentation",
+    shortTitle: "Cline CLI Reference",
+    note: "Documents the CLI --auto-approve setting and its different default in ACP mode. Approval behavior must be checked for the entry point and configuration in use.",
+  }),
   "product-aider-docs": Object.freeze({
     kind: "Official technical documentation",
     shortTitle: "Aider",
@@ -82,7 +87,7 @@ export const englishSupplementalSourceCopy = Object.freeze({
   "product-antigravity-cli-migration": Object.freeze({
     kind: "Official product documentation",
     shortTitle: "Antigravity CLI Migration Guide",
-    note: "Documents migration from Gemini CLI to Antigravity CLI and places Antigravity CLI and Antigravity 2.0 on a shared core agent engine. Verify plugin, Skill, MCP, theme, compatibility, and enterprise behavior for the target version.",
+    note: "Documents configuration migration and compatibility boundaries from Gemini CLI to Antigravity CLI. A separate official announcement supports the shared-agent-engine relationship; verify plugins, Skills, MCP, themes, and enterprise behavior for the target version.",
   }),
   "product-gemini-cli-releases": Object.freeze({
     kind: "Official source repository",
@@ -92,12 +97,17 @@ export const englishSupplementalSourceCopy = Object.freeze({
   "product-qwen-code-docs": Object.freeze({
     kind: "Official product documentation",
     shortTitle: "Qwen Code",
-    note: "Documents Qwen Code with an open-source CLI at its core and IDE, GitHub Actions, desktop, daemon, and SDK surfaces. Verify service availability, authentication, quotas, data boundaries, and version compatibility for the chosen integration.",
+    note: "Documents Qwen Code with an open-source CLI at its core and IDE, GitHub Actions, daemon, and SDK surfaces. The desktop launch is supported by a separate official announcement. Verify service availability, authentication, quotas, data boundaries, and version compatibility.",
+  }),
+  "product-qwen-code-desktop-2026": Object.freeze({
+    kind: "Official release announcement",
+    shortTitle: "Qwen Code Desktop",
+    note: "The August 6, 2026 Qwen Code update announced Desktop v0.1.0 packages for macOS, Windows, and Linux. It establishes the launch, not current version or long-term availability.",
   }),
   "product-kimi-code-docs": Object.freeze({
     kind: "Official product documentation",
     shortTitle: "Kimi Code",
-    note: "Introduces Kimi Code through CLI, VS Code, and API entry points for third-party developer tools. Authentication, accounts, networking, models, tool permissions, and plan capabilities differ by surface; the older Python CLI is no longer maintained.",
+    note: "Introduces Kimi Code Desktop, the Node.js CLI, VS Code, and API entry points for third-party developer tools. Authentication, accounts, networking, models, tool permissions, and plan capabilities differ by surface; the older Python/uv CLI is no longer maintained.",
   }),
   "product-codebuddy-docs": Object.freeze({
     kind: "Official product documentation",
@@ -126,7 +136,7 @@ export const englishSupplementalSourceCopy = Object.freeze({
   }),
   "product-qoder-cn-ide-changelog": Object.freeze({
     kind: "Official announcement",
-    shortTitle: "Qoder CN changelog",
-    note: "Records the Qoder CN IDE name for the coding desktop application from August 14, 2026. The changelog establishes naming and lifecycle timing, not complete feature, plan, or enterprise-control coverage.",
+    shortTitle: "Qoder CN IDE changelog",
+    note: "The desktop client changelog records the August 14, 2026 rename and later versions. It establishes naming and version timing, not complete feature, plan, or enterprise-control coverage.",
   }),
 });

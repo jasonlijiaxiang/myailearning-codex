@@ -74,15 +74,15 @@ export const englishModelRadarBenchmarkGuides = Object.freeze({
     summary: "A transparent fieldbook composite that weights knowledge-work delivery and tool-mediated stateful tasks equally.",
     what: "Agentic Composite = (GDPval-AA v2 + τ³-Banking) / 2. The first measures complex knowledge-work deliverables; the second measures tool use, rule-following, and backend state changes.",
     usefulFor: "A signal for whether a model can plan, call tools, and move a multi-step task toward a verifiable result.",
-    limitation: "This page's component average does not reproduce the Artificial Analysis Agentic Index score. In the 2026-08-13 v4.1.1 capture, that score did not equal the average of the displayed component fields. The public sources do not explain the discrepancy. Neither value replaces customer workflow, authorization, security, or human acceptance.",
+    limitation: "This is the fieldbook's calculation from its 2026-08-13 v4.1.1 component snapshot. The official Agentic Index total from that capture was not preserved, so a discrepancy cannot be asserted. Artificial Analysis has since changed the underlying evaluations; this historical composite is not comparable with its current index or a customer's workflow, authorization, security, and human acceptance.",
     readScore: "Read the value only as an average of the two displayed public task slices. Inspect the method version, task configuration, review method, and exact model version before comparing ranks.",
   }),
 });
 
 export const englishModelRadarPolicy = Object.freeze({
   verifiedAt: modelRadarPolicy.verifiedAt,
-  retention: "Keep only snapshots whose original source can still be located from the last two weeks or three months; do not reconstruct a missing snapshot",
-  candidatePool: "This snapshot freezes the first 20 model configurations captured from the default Artificial Analysis Intelligence Index view at 2026-08-13 01:18:07 UTC. It is not a global top 20 across all 604 available inference configurations in that capture.",
+  retention: "Keep historical data only with a stated method version and capture time; verify the current leaderboard separately.",
+  candidatePool: "The fieldbook retains 20 model configurations recorded from the default Artificial Analysis Intelligence Index view at 2026-08-13 01:18:07 UTC. The original HTTP response was not archived independently, so exact values cannot be reconstructed from today's dynamic site. These were not the global top 20 across all 604 configurations available in that capture.",
   eligibility: "Intelligence uses the official Artificial Analysis v4.1.1 score. The two composites are calculated only when both component benchmarks have results for the same model snapshot.",
   score: "Intelligence is the official score. Coding Composite = (Terminal-Bench v2.1 + SciCode) / 2. Agentic Composite = (GDPval-AA v2 + τ³-Banking) / 2.",
   confidence: "Missing evidence displays as —. The page neither assigns zero nor substitutes a related model or version. The two 50/50 composites are page-level recalculations and must be read separately from the Artificial Analysis Coding Index and Agentic Index fields.",

@@ -415,7 +415,7 @@ function LearnView({ data }: { data: McpExperienceData }) {
         <header className={styles.sectionHeader}><span>LAB</span><div><h2>可复核练习</h2><p>每项练习都有情境、任务、交付物和通过标准，可直接进入 PoC 计划。</p></div></header>
         <div className={styles.labGrid}>
           {data.learning.labs.map((lab, index) => (
-            <article key={lab.title}>
+            <article id={`lab-mcp-${index + 1}`} key={lab.title}>
               <header><span>LAB {String(index + 1).padStart(2, "0")}</span><h3>{lab.title}</h3></header>
               <p><strong>情境</strong>{lab.scenario}</p>
               <ol className={styles.labTasks}>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>

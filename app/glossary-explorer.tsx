@@ -25,25 +25,40 @@ export type GlossaryGroupItem = {
   en: string;
 };
 
+function matchScore(item: GlossaryTermItem, query: string) {
+  if (!query) return 0;
+  const zh = item.zh.toLocaleLowerCase("zh-CN");
+  const en = item.en.toLocaleLowerCase("zh-CN");
+  const abbr = item.abbr?.toLocaleLowerCase("zh-CN") ?? "";
+  if (zh === query || en === query || abbr === query) return 100;
+  if (zh.includes(query) || en.includes(query) || abbr.includes(query)) return 60;
+  if (item.description.toLocaleLowerCase("zh-CN").includes(query)) return 20;
+  return item.modules.some((module) => `${module.zh} ${module.en}`.toLocaleLowerCase("zh-CN").includes(query)) ? 5 : -1;
+}
+
 export function GlossaryExplorer({ groups, terms }: { groups: GlossaryGroupItem[]; terms: GlossaryTermItem[] }) {
   const [query, setQuery] = useState("");
   const [groupId, setGroupId] = useState("all");
   const normalizedQuery = query.trim().toLocaleLowerCase("zh-CN");
 
-  const visibleTerms = useMemo(() => terms.filter((item) => {
-    const inGroup = groupId === "all" || item.groupId === groupId;
-    const haystack = `${item.zh} ${item.en} ${item.abbr ?? ""} ${item.description} ${item.modules.map((module) => `${module.zh} ${module.en}`).join(" ")}`.toLocaleLowerCase("zh-CN");
-    return inGroup && (!normalizedQuery || haystack.includes(normalizedQuery));
-  }), [groupId, normalizedQuery, terms]);
-
-  const visibleIds = useMemo(() => new Set(visibleTerms.map((item) => item.id)), [visibleTerms]);
+  const visibleTerms = useMemo(() => terms.filter((item) =>
+    (groupId === "all" || item.groupId === groupId) && matchScore(item, normalizedQuery) >= 0
+  ).sort((left, right) => matchScore(right, normalizedQuery) - matchScore(left, normalizedQuery)), [groupId, normalizedQuery, terms]);
+  const visibleGroups = useMemo(() => {
+    if (!normalizedQuery) return groups;
+    const bestScore = (group: GlossaryGroupItem) => {
+      const firstMatch = visibleTerms.find((item) => item.groupId === group.id);
+      return firstMatch ? matchScore(firstMatch, normalizedQuery) : -1;
+    };
+    return [...groups].sort((left, right) => bestScore(right) - bestScore(left));
+  }, [groups, normalizedQuery, visibleTerms]);
   const hasFilter = Boolean(normalizedQuery) || groupId !== "all";
 
   return (
     <div className="glossaryExplorer">
       <div className="glossaryToolbar">
         <label className="glossarySearch">
-          <span>搜索中文、英文、缩写或说明</span>
+          <span>搜索名称、缩写、说明或相关模块</span>
           <input
             type="search"
             value={query}
@@ -66,8 +81,8 @@ export function GlossaryExplorer({ groups, terms }: { groups: GlossaryGroupItem[
       </div>
 
       <div className="glossaryGroupList">
-        {groups.map((group, groupIndex) => {
-          const groupTerms = terms.filter((item) => item.groupId === group.id && visibleIds.has(item.id));
+        {visibleGroups.map((group, groupIndex) => {
+          const groupTerms = visibleTerms.filter((item) => item.groupId === group.id);
           if (groupTerms.length === 0) return null;
           return (
             <section className="glossaryGroup" aria-labelledby={`glossary-group-${group.id}`} key={group.id}>
@@ -87,7 +102,6 @@ export function GlossaryExplorer({ groups, terms }: { groups: GlossaryGroupItem[
                     <p className="glossaryTermDescription">{item.description}</p>
                     <nav aria-label={`${item.zh}相关页面`}>
                       {item.modules.map((module) => <Link href={`/modules/${module.slug}`} key={module.slug}>{module.zh}</Link>)}
-                      <Link href={`/references#module-${item.modules[0]?.slug ?? "solution-patterns"}`}>依据 ↗</Link>
                     </nav>
                   </article>
                 ))}

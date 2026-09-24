@@ -46,7 +46,7 @@ export const terminology = Object.freeze({
 
   "prompt-engineering": term("提示词工程", "Prompt Engineering", "通过任务说明、示例、约束和输出格式，引导模型在一次或一类请求中稳定执行目标。", ["prompt-engineering"]),
   "context-engineering": term("上下文工程", "Context Engineering", "为一次模型调用选择、组织和治理指令、数据、工具与历史状态的系统工程。", ["prompt-engineering", "ai-agent"]),
-  instructions: term("明确且稳定的指令", "Instructions", "定义角色、目标、优先级和不可违反边界的高优先级规则。", ["prompt-engineering"]),
+  instructions: term("明确且稳定的指令", "Instructions", "向模型说明角色、目标和行为优先级；授权与业务硬规则仍由应用强制执行。", ["prompt-engineering"]),
   context: term("动态上下文", "Context", "随用户、任务和环境变化而装配的事实、历史、检索证据与运行状态。", ["prompt-engineering", "ai-agent"]),
   "tools-schema": term("能力接口", "Tools & Schema", "用结构化名称、参数、类型和结果约定描述模型可以请求的外部能力。", ["prompt-engineering", "ai-agent"]),
   "structured-outputs": term("结构化输出", "Structured Outputs", "让模型输出符合预定结构或 Schema，便于应用校验、解析和后续处理。", ["prompt-engineering", "ai-agent"]),
@@ -158,7 +158,7 @@ export const terminology = Object.freeze({
   dpo: term("直接偏好优化", "Direct Preference Optimization", "使用偏好对让模型更倾向获选回答，适合能比较好坏但难写唯一答案的任务。", ["fine-tuning"], "DPO"),
   "llm-inference": term("大模型推理", "LLM Inference", "把训练好的模型作为服务运行，处理提示、调度请求并逐步生成输出。", ["llm-inference"]),
   batching: term("连续批处理", "Continuous Batching", "在每轮生成中动态加入已就绪请求并移出已完成请求，以改善吞吐和硬件利用率；仍需控制排队、公平与尾延迟。", ["llm-inference", "ai-infra-platform"]),
-  quantization: term("量化", "Quantization", "用更低位宽表示权重或激活，以降低显存与计算成本，但需要验证精度和运行兼容性。", ["llm-inference", "model-landscape"]),
+  quantization: term("量化", "Quantization", "用更低位宽表示权重或激活，通常可减少显存占用；速度和总成本收益取决于实现与负载，仍需验证精度和兼容性。", ["llm-inference", "model-landscape"]),
   ttft: term("首个 Token 时间", "Time to First Token", "从请求发出到收到首个输出 Token 的时间，反映提示处理与排队体验。", ["llm-inference"], "TTFT"),
   tpot: term("每个输出 Token 时间", "Time per Output Token", "首个 Token 之后生成每个 Token 的平均时间，直接影响持续输出速度。", ["llm-inference"], "TPOT"),
 

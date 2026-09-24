@@ -4,6 +4,7 @@ import Link from "next/link";
 import { type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
+import { rankKnowledgeSearch } from "./knowledge-search-match.mjs";
 import { filterQuestionDirectoryItems } from "./question-filter.mjs";
 
 export type ExplorerModule = {
@@ -21,6 +22,7 @@ export type ExplorerModule = {
 
 export type KnowledgeSearchEntry = {
   id: string;
+  moduleSlugs?: string[];
   type: string;
   title: string;
   subtitle: string;
@@ -61,6 +63,7 @@ type ModuleExplorerLabels = {
   knowledgeHeading: string;
   showingPrefix: string;
   showingSuffix: string;
+  showMore: string;
   indexLoading: string;
   indexError: string;
   emptyTitle: string;
@@ -92,6 +95,7 @@ const defaultModuleExplorerLabels: ModuleExplorerLabels = {
   knowledgeHeading: "直接进入知识内容",
   showingPrefix: "显示",
   showingSuffix: "条匹配",
+  showMore: "继续显示",
   indexLoading: "正在加载索引",
   indexError: "知识索引加载失败，仍可按模块筛选",
   emptyTitle: "没有直接匹配的模块",
@@ -149,6 +153,7 @@ export function ModuleExplorer({
   const [layer, setLayer] = useState("all");
   const [indexState, setIndexState] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [knowledgeEntries, setKnowledgeEntries] = useState<KnowledgeSearchEntry[] | null>(null);
+  const [knowledgeLimit, setKnowledgeLimit] = useState(12);
   const searchRef = useRef<HTMLInputElement>(null);
   const layers = useMemo(() => {
     const seen = new Map<string, string>();
@@ -157,12 +162,12 @@ export function ModuleExplorer({
   }, [modules]);
 
   const visible = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase(locale);
-    return modules.filter((item) => {
-      const inLayer = layer === "all" || item.layerNo === layer;
-      const haystack = `${item.title ?? item.zh} ${item.subtitle ?? item.en} ${item.zh} ${item.en} ${item.layerName} ${item.summary} ${item.cue}`.toLocaleLowerCase(locale);
-      return inLayer && (!normalized || haystack.includes(normalized));
-    });
+    const inLayer = modules.filter((item) => layer === "all" || item.layerNo === layer);
+    return rankKnowledgeSearch(inLayer, query, locale, (item) => ({
+      title: item.title ?? item.zh,
+      subtitle: `${item.subtitle ?? item.en} ${item.zh} ${item.en}`,
+      keywords: `${item.layerName} ${item.summary} ${item.cue}`,
+    }));
   }, [layer, locale, modules, query]);
 
   // 首次输入或聚焦搜索框时 fetch 一次静态索引并缓存；失败保留模块筛选。
@@ -181,13 +186,17 @@ export function ModuleExplorer({
   }, [indexState, knowledgeIndexUrl]);
 
   const knowledgeMatches = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase(locale);
-    if (!normalized || !knowledgeEntries) return [];
-    return knowledgeEntries
-      .filter((item) => `${item.title} ${item.subtitle} ${item.keywords}`.toLocaleLowerCase(locale).includes(normalized));
-  }, [knowledgeEntries, locale, query]);
+    if (!query.trim() || !knowledgeEntries) return [];
+    const allowedSlugs = new Set(modules.filter((item) => layer === "all" || item.layerNo === layer).map((item) => item.slug));
+    const inLayer = layer === "all" ? knowledgeEntries : knowledgeEntries.filter((item) => {
+      const slugs = item.moduleSlugs ?? item.href.match(/\/modules\/([^/#]+)/)?.slice(1) ?? [];
+      return slugs.some((slug) => allowedSlugs.has(slug));
+    });
+    return rankKnowledgeSearch(inLayer, query, locale, (item) => item);
+  }, [knowledgeEntries, layer, locale, modules, query]);
+  const displayedKnowledgeMatches = knowledgeMatches.slice(0, knowledgeLimit);
   const visibleRows = useMemo(() => balanceGridRows(visible, 3), [visible]);
-  const knowledgeMatchRows = useMemo(() => balanceGridRows(knowledgeMatches, 2), [knowledgeMatches]);
+  const knowledgeMatchRows = useMemo(() => balanceGridRows(displayedKnowledgeMatches, 2), [displayedKnowledgeMatches]);
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -206,6 +215,7 @@ export function ModuleExplorer({
     const receiveSearch = (event: Event) => {
       const value = event instanceof CustomEvent && typeof event.detail === "string" ? event.detail : "";
       setQuery(value);
+      setKnowledgeLimit(12);
       window.requestAnimationFrame(() => searchRef.current?.focus());
     };
     window.addEventListener("fieldbook:search", receiveSearch);
@@ -239,16 +249,16 @@ export function ModuleExplorer({
             ref={searchRef}
             type="search"
             value={query}
-            onChange={(event) => { setQuery(event.target.value); if (event.target.value.trim()) void loadKnowledgeIndex(); }}
+            onChange={(event) => { setQuery(event.target.value); setKnowledgeLimit(12); if (event.target.value.trim()) void loadKnowledgeIndex(); }}
             onFocus={() => void loadKnowledgeIndex()}
             placeholder={labels.placeholder}
           />
           <kbd>⌘ K</kbd>
         </label>
         <div className="layerFilters" aria-label={labels.filterAria}>
-          <button type="button" aria-pressed={layer === "all"} className={layer === "all" ? "active" : ""} onClick={() => setLayer("all")}>{labels.allLayers}</button>
+          <button type="button" aria-pressed={layer === "all"} className={layer === "all" ? "active" : ""} onClick={() => { setLayer("all"); setKnowledgeLimit(12); }}>{labels.allLayers}</button>
           {layers.map((item) => (
-            <button type="button" aria-pressed={layer === item.no} className={layer === item.no ? "active" : ""} onClick={() => setLayer(item.no)} key={item.no}>
+            <button type="button" aria-pressed={layer === item.no} className={layer === item.no ? "active" : ""} onClick={() => { setLayer(item.no); setKnowledgeLimit(12); }} key={item.no}>
               {item.name.replace("层", "")}
             </button>
           ))}
@@ -257,12 +267,12 @@ export function ModuleExplorer({
 
       <div className="moduleExplorerStatus" aria-live="polite">
         <span>{labels.foundPrefix} {visible.length} {labels.moduleNoun}{query ? `, ${labels.knowledgeHitsPrefix} ${knowledgeMatches.length} ${labels.knowledgeHitsSuffix}` : ""}</span>
-        <div>{query && indexState === "loading" ? <span className="indexStatus">{labels.indexLoading}</span> : null}{query && indexState === "error" ? <span className="indexStatus">{labels.indexError}</span> : null}<Link href={questionsHref}>{labels.questionsLink}</Link>{query || layer !== "all" ? <button type="button" onClick={() => { setQuery(""); setLayer("all"); }}>{labels.clear}</button> : null}</div>
+        <div>{query && indexState === "loading" ? <span className="indexStatus">{labels.indexLoading}</span> : null}{query && indexState === "error" ? <span className="indexStatus">{labels.indexError}</span> : null}<Link href={questionsHref}>{labels.questionsLink}</Link>{query || layer !== "all" ? <button type="button" onClick={() => { setQuery(""); setLayer("all"); setKnowledgeLimit(12); }}>{labels.clear}</button> : null}</div>
       </div>
 
       {query && knowledgeMatches.length > 0 ? (
         <div className="knowledgeSearchResults" aria-label={labels.knowledgeAria}>
-          <header><strong>{labels.knowledgeHeading}</strong><span>{labels.showingPrefix} {knowledgeMatches.length} {labels.showingSuffix}</span></header>
+          <header><strong>{labels.knowledgeHeading}</strong><span>{labels.showingPrefix} {displayedKnowledgeMatches.length} / {knowledgeMatches.length} {labels.showingSuffix}</span></header>
           <div data-count={knowledgeMatches.length} data-odd={knowledgeMatches.length % 2 === 1 ? "true" : "false"}>
             {knowledgeMatchRows.flatMap((row) => row.map((item) => (
               <Link href={item.href} key={item.id} style={{ "--search-span": gridSpan(row.length) } as CSSProperties}>
@@ -273,6 +283,7 @@ export function ModuleExplorer({
               </Link>
             )))}
           </div>
+          {displayedKnowledgeMatches.length < knowledgeMatches.length ? <button className="knowledgeSearchMore" type="button" onClick={() => setKnowledgeLimit((limit) => limit + 12)}>{labels.showMore} ↓</button> : null}
         </div>
       ) : null}
 
