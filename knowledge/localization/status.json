@@ -32,11 +32,11 @@
     },
     "mcp": {
       "status": "aligned",
-      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393"
+      "enSyncedCommit": "435c207a4e1686f9e19be2ed40c6a2436ce86cd4"
     },
     "a2a": {
       "status": "aligned",
-      "enSyncedCommit": "bda98cd65249f73b00172c4918630f1608df945c"
+      "enSyncedCommit": "435c207a4e1686f9e19be2ed40c6a2436ce86cd4"
     },
     "evaluation": {
       "status": "deferred",
