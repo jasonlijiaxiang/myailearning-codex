@@ -90,7 +90,7 @@ export const promptDeepDives = [
 export const promptEvidenceCards = [
   {
     metric: "4",
-    title: "类常见提示组成",
+    title: "四类常见提示组成",
     finding: "Google Cloud 将任务、系统指令、少样本示例与上下文信息列为常见组成；其中只有任务是每次请求的核心必需项。",
     boundary: "这是厂商官方的实用分类，不是跨模型统一协议；具体字段、角色名称和优先级要以所选模型 API 为准。",
     sourceId: "google-prompt-introduction",

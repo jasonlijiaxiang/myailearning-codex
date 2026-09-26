@@ -62,7 +62,7 @@ const agentkitSources = {
 export const agentPlatformBriefs = {
   "veadk": {
     "slug": "veadk",
-    "definition": "VeADK 是面向 Agent 应用的开源 Python 开发套件，用代码组合模型、指令、工具、会话与记忆，并把请求交给 Runner。一次可复查的交付包含版本化 root_agent、Runner 配置、事件 Trace 和 Session 作用域测试。",
+    "definition": "VeADK 是面向 Agent 应用的开源 Python 开发套件。开发者用代码组合模型、指令、工具、会话与记忆，由 Runner 执行；应用版本和运行结果应能复查。",
     "position": "它位于模型与业务服务之上、AgentKit 应用和云端 Runtime 之下，负责 Agent 逻辑与开发期执行，不替代企业身份、业务授权、共享状态、发布治理或权威业务系统。",
     "presentation": "loop",
     "principleTitle": "一次 VeADK Run 会留下哪些对象和事件",
@@ -441,7 +441,7 @@ export const agentPlatformBriefs = {
   },
   "agentkit": {
     "slug": "agentkit",
-    "definition": "AgentKit 是面向 Agent 应用的开发与运行平台，通过 SDK、CLI 和控制面管理应用配置、镜像构建、Runtime 与 Memory。发布记录绑定源码、依赖、配置摘要、镜像、Runtime 版本、资源引用、云端回归和回退结果。",
+    "definition": "AgentKit 管理 Agent 应用的构建、云端运行和状态资源。它用 SDK、CLI 和控制面连接应用配置、镜像与 Runtime；发布时还需保留可回查的版本、运行与回退证据。",
     "position": "它上接 VeADK 等框架产出的 Agent 应用，下接模型、Memory、网络、身份和云基础设施，负责应用及资源生命周期，不替代 Agent 逻辑、业务授权、权威数据、外部压测或客户自己的上线决定。",
     "presentation": "pipeline",
     "principleTitle": "App 制品与 Runtime 运行记录",
@@ -541,8 +541,8 @@ export const agentPlatformBriefs = {
             "name": "冻结配置",
             "en": "Freeze Config",
             "mechanism": "登记目标标识、Region、环境变量和资源引用。",
-            "decision": "敏感值只保留安全引用。",
-            "boundary": "配置文件保存凭据引用，秘密由安全存储注入。"
+            "decision": "标记含敏感值的配置，并核对目标环境的密钥注入方式。",
+            "boundary": "Memory 快速入门在 runtime_envs 中使用凭据占位符；配置参考明确反对硬编码真实密钥。含密钥配置不得提交 Git，目标环境的安全注入方式仍需核验。"
           },
           {
             "name": "构建候选",
@@ -762,7 +762,7 @@ export const agentPlatformBriefs = {
       },
       {
         "q": "AgentKit Memory 的控制面和数据面怎样区分，Mem0 OSS 与 Platform 又怎样选择？",
-        "a": "AgentKit Memory 的资源创建和绑定属于控制面，端点、凭据、网络与实际读写属于数据面。若另行评估 Mem0，再比较它的 Platform 与 OSS；现有来源不证明二者存在产品映射。",
+        "a": "AgentKit Memory 的资源创建和绑定属于控制面，端点、凭据、网络与实际读写属于数据面。官方快速入门展示 Mem0 类型资源与 VeADK 的 mem0 示例，但不证明默认后端。若另外评估 Mem0 的交付方式，需要托管服务减少运维时可考虑 Platform；若能自行负责部署、安全和恢复，可考虑 OSS。",
         "depth": "两层配置都要验证；如果选定后端异步处理写入，还要记录从写入确认到可检索的时间。Mem0 文档只用于比较它自己的托管与自建边界。自建 Mem0 仍需检查 LLM、Embedding、向量库、Telemetry 和出站网络，不能因 OSS 就默认全链路私有。",
         "ask": "客户需要托管速度还是全链路数据控制，谁承担 HA、备份、升级、删除和观测？",
         "tag": "Memory 架构",
@@ -770,7 +770,7 @@ export const agentPlatformBriefs = {
         "evidence": [
           {
             "sourceId": "agentkit-memory-quickstart-2026-08-15",
-            "supports": "快速入门先在控制台创建记忆资源，再取端点或集合信息并配置应用读写。"
+            "supports": "快速入门展示 Mem0 类型记忆资源的连接信息，以及 VeADK 使用 mem0 后端的应用示例。"
           },
           {
             "sourceId": "mem0-oss-overview-2026-08-15",
@@ -852,7 +852,7 @@ export const agentPlatformCurriculum = freeze({
       { title: "配置与部署目标", en: "Configuration & Target", explanation: "配置声明应用入口、依赖、环境、目标标识、Region 与外部资源引用，并作为构建和部署的显式输入。", decision: "在目标环境分别验证资源访问、网络和数据边界。", boundary: "控制面字段不证明隔离、连通或数据驻留。", sourceIds: [agentkitSources.config] },
       { title: "Runtime 与版本", en: "Runtime Lifecycle", explanation: "Runtime 承载可识别的应用版本，提供资源状态与调用入口，但 Ready 只说明平台资源状态。", decision: "把 Ready、可调用、任务成功、恢复和回退分层验收。", boundary: "平台状态不等于业务上线。", sourceIds: [agentkitSources.runtime] },
       { title: "Memory 控制面与数据面", en: "Memory Control & Data Planes", explanation: "Memory 的资源关联、连接鉴权、用户作用域和实际读写分属控制面与数据面，需要分别验证。", decision: "部署脚本分别校验绑定、端点、凭据和网络。", boundary: "列出资源不等于可读写或召回正确。", sourceIds: [agentkitSources.memory] },
-      { title: "Mem0 托管与 OSS", en: "Managed & OSS Memory", explanation: "单独评估 Mem0 时，它的托管 Platform 与 OSS 在功能、数据边界、定制和运维责任上不同。", decision: "用同一隔离、质量、延迟、删除和 TCO 合同比较。", boundary: "这些文档不证明 AgentKit Memory 使用或由 Mem0 运营；自建 Mem0 也不代表整条模型与向量链都不出域。", sourceIds: [agentkitSources.mem0Oss, agentkitSources.mem0Compare] },
+      { title: "Mem0 托管与 OSS", en: "Managed & OSS Memory", explanation: "单独评估 Mem0 时，它的托管 Platform 与 OSS 在功能、数据边界、定制和运维责任上不同。", decision: "用同一隔离、质量、延迟、删除和 TCO 合同比较。", boundary: "AgentKit 快速入门有 Mem0 类型资源和示例后端；Mem0 产品对比不证明 AgentKit 的默认后端、运营主体或 SLA。自建 Mem0 也不代表整条模型与向量链都不出域。", sourceIds: [agentkitSources.memory, agentkitSources.mem0Oss, agentkitSources.mem0Compare] },
       { title: "观测、评测与发布", en: "Operate & Release", explanation: "日志、Trace、指标、质量评测和外部负载测试共同形成放量证据，并分别回答故障、质量、容量与恢复问题。", decision: "定义任务成功与尾延迟指标及目标，由 SLO 推导错误预算；把恢复和单位成本作为独立运营约束。", boundary: "观测不制造压力，评测不等于容量测试。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
     ],
   }),
@@ -895,7 +895,7 @@ export const agentPlatformQaExpansion = freeze({
     datedQa({ q: "`create_agentkit_app` 与本地调试入口有什么不同，调用成功是否等于已经上云？", a: "前者把 root_agent 显式封装为 AgentKit App；本地调试入口主要服务开发，两者调用成功都不等于 Runtime 已部署。", depth: "正式上云还要完成构建、Runtime、目标配置、Region、环境变量、资源绑定、可信身份、网络、云端回归、观测和回退。", ask: "当前证据覆盖本地 App、构建、Runtime 还是业务上线中的哪一层？", tag: "应用适配", basis: "官方集成、CLI 与 Runtime 文档", evidence: [{ sourceId: veadkSources.integration, supports: "集成示例用 create_agentkit_app(root_agent) 构造应用入口，随后才配置并 launch。" }, { sourceId: agentkitSources.cli, supports: "CLI 把 build、deploy 和 launch 分别列为构建、部署与组合执行命令。" }, { sourceId: agentkitSources.runtime, supports: "Runtime 快速入门分开展示本地调用、平台部署和部署后的 invoke。" }] }),
   ]),
   agentkit: freeze([
-    datedQa({ q: "AgentKit Memory 的控制面和数据面怎样区分，Mem0 OSS 与 Platform 又怎样选择？", a: "AgentKit Memory 的资源创建和绑定属于控制面，端点、凭据、网络与实际读写属于数据面。若另行评估 Mem0，再比较它的 Platform 与 OSS；现有来源不证明二者存在产品映射。", depth: "两层配置都要验证；如果选定后端异步处理写入，还要记录从写入确认到可检索的时间。Mem0 文档只用于比较它自己的托管与自建边界。自建 Mem0 仍需检查 LLM、Embedding、向量库、Telemetry 和出站网络，不能因 OSS 就默认全链路私有。", ask: "客户需要托管速度还是全链路数据控制，谁承担 HA、备份、升级、删除和观测？", tag: "Memory 架构", basis: "AgentKit Memory + Mem0 官方对比", evidence: [{ sourceId: agentkitSources.memory, supports: "快速入门先创建记忆资源，再取连接信息并配置应用读写。" }, { sourceId: agentkitSources.mem0Oss, supports: "Mem0 OSS 由采用方在自己的环境配置和运行，基础设施仍需自行负责。" }, { sourceId: agentkitSources.mem0Compare, supports: "Mem0 对照页列出托管与自建的基础设施差异，未说明 AgentKit 内部如何实现。" }] }),
+    datedQa({ q: "AgentKit Memory 的控制面和数据面怎样区分，Mem0 OSS 与 Platform 又怎样选择？", a: "AgentKit Memory 的资源创建和绑定属于控制面，端点、凭据、网络与实际读写属于数据面。官方快速入门展示 Mem0 类型资源与 VeADK 的 mem0 示例，但不证明默认后端。若另外评估 Mem0 的交付方式，需要托管服务减少运维时可考虑 Platform；若能自行负责部署、安全和恢复，可考虑 OSS。", depth: "两层配置都要验证；如果选定后端异步处理写入，还要记录从写入确认到可检索的时间。Mem0 文档只用于比较它自己的托管与自建边界。自建 Mem0 仍需检查 LLM、Embedding、向量库、Telemetry 和出站网络，不能因 OSS 就默认全链路私有。", ask: "客户需要托管速度还是全链路数据控制，谁承担 HA、备份、升级、删除和观测？", tag: "Memory 架构", basis: "AgentKit Memory + Mem0 官方对比", evidence: [{ sourceId: agentkitSources.memory, supports: "快速入门展示 Mem0 类型资源连接信息，以及 VeADK 使用 mem0 后端的示例。" }, { sourceId: agentkitSources.mem0Oss, supports: "Mem0 OSS 由采用方在自己的环境配置和运行，基础设施仍需自行负责。" }, { sourceId: agentkitSources.mem0Compare, supports: "Mem0 对照页列出托管与自建的基础设施差异，未说明 AgentKit 内部如何实现。" }] }),
     datedQa({ q: "AgentKit 的观测、评测、外部压测和客户 SLO 分别解决什么？", a: "观测提供运行证据，评测衡量任务质量，外部压测施加可控负载，SLO 记录客户可接受的服务目标。", depth: "Trace 用于定位模型、工具和 Memory 步骤；评测集比较任务质量与轨迹；k6、Locust 等工具施加并发负载。由 SLO 推导错误预算后持续跟踪消耗，恢复结果另行与 RTO 对照，成本作为独立经营约束。当前模块只定义待执行验收，不声称已有云端结果。", ask: "客户当前缺的是定位证据、质量基线、容量上限还是正式 SLO？", tag: "可观测与性能", basis: "平台运行能力 + 独立验收分工", evidence: [{ sourceId: agentkitSources.overview, supports: "概览说明应用构建、部署和在线运行范围，没有给出客户 SLO 门槛。" }, { sourceId: agentkitSources.runtime, supports: "快速入门演示本地调试、平台部署与 invoke，未提供客户负载结果。" }] }),
   ]),
 });

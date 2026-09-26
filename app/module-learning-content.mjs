@@ -310,18 +310,18 @@ export const moduleLearningContent = Object.freeze({
   "solution-patterns": {
     "outcomes": [
       "把业务目标、当前基线、权威终态和约束写成可验收契约",
-      "用需求门选择最小充分闭环并分配八层责任",
+      "只加入确有必要的组件，并说明八层责任各归谁",
       "设计能输出 Go、Hold、No-Go 或 Exit 的阶段证据",
       "用完整成本、单位达标结果、运营责任和退出条件共同决定投资"
     ],
     "route": [
       {
-        "title": "冻结结果、基线与约束包络",
+        "title": "写清结果、现状与限制",
         "learn": "识别用户、当前流程、权威终态、不可接受损失以及质量、风险、SLO、恢复、成本和迁移约束。",
         "checkpoint": "能写出不依赖模型名称且可对照现状的成功定义。"
       },
       {
-        "title": "选择最小充分闭环",
+        "title": "只加入真正需要的组件",
         "learn": "从无 AI、规则和单次模型开始，只为证据、动作、动态路径、互操作或共享治理缺口增加能力。",
         "checkpoint": "能解释每个组件的必要条件与移除后果。"
       },
@@ -818,18 +818,18 @@ export const moduleLearningContent = Object.freeze({
       },
       {
         "title": "验证交付与扩展语义",
-        "learn": "区分读取幂等、SendMessage 可选去重、仅非终态可调用且无恢复游标的 SubscribeToTask、按每个已配置 webhook 至少尝试一次但不保证成功送达的 Push，并分清 Extended Agent Card 与 Extension。",
-        "checkpoint": "未知写结果会先查询，终态 Task 改用 GetTask；缺少 Push 能力时返回指定错误，重复通知按自有投递键或双方契约幂等处理，需要重放时有自有事件存储或明确扩展。"
+        "learn": "区分仅非终态可调用且无恢复游标的 SubscribeToTask、按每个已配置 webhook 至少尝试一次但不保证成功送达的 Push，以及 Extended Agent Card 与 Extension。",
+        "checkpoint": "终态 Task 改用 GetTask；缺少 Push 能力时返回指定错误，重复通知按自有投递键或双方契约去重，需要重放时使用自有事件存储或明确扩展。"
       },
       {
-        "title": "最后处理信任与运营",
+        "title": "核对信任与运营边界",
         "learn": "验证 Card 来源与可选签名、调用身份、Extension、产物权限和跨域审计。",
         "checkpoint": "能在不暴露内部 Prompt 的情况下证明任务执行边界。"
       },
       {
-        "title": "补齐恢复与取消",
-        "learn": "用权威任务状态、幂等键、部分产物和人工接管处理不确定结果。",
-        "checkpoint": "网络超时后不会盲目重复高风险动作。"
+        "title": "处理未知结果、取消与人工接管",
+        "learn": "区分读取重试与 SendMessage 可选去重；用已知任务或业务标识查状态，再按幂等契约决定重试、取消或人工接管。",
+        "checkpoint": "网络超时后不会盲目重复高风险动作；无可查询标识时按事先约定的恢复流程处理。"
       },
       {
         "title": "验证采用收益",
@@ -1111,19 +1111,19 @@ export const moduleLearningContent = Object.freeze({
         "checkpoint": "应用无需感知每个供应商的全部差异。"
       },
       {
-        "title": "再添加策略而非魔法",
+        "title": "明确路由、限流与回退规则",
         "learn": "显式定义路由、限流、预算、缓存、回退和护栏条件。",
         "checkpoint": "每个策略都有失败模式、观测信号和回滚。"
-      },
-      {
-        "title": "最后验证端到端结果",
-        "learn": "关联应用任务、网关决策、模型调用、工具动作和业务终态。",
-        "checkpoint": "能证明降本没有以质量、隐私或可靠性为代价。"
       },
       {
         "title": "把策略当作发布资产",
         "learn": "统一版本化路由、限流、重试、护栏、缓存、日志和例外。",
         "checkpoint": "一次请求可以还原当时命中的完整策略。"
+      },
+      {
+        "title": "验证端到端结果",
+        "learn": "关联应用任务、网关决策、模型调用、工具动作和业务终态。",
+        "checkpoint": "能证明降本没有以质量、隐私或可靠性为代价。"
       },
       {
         "title": "演练网关自身故障",
@@ -1581,14 +1581,14 @@ export const moduleLearningContent = Object.freeze({
         "checkpoint": "能解释一张卡的并发为何不是固定数字。"
       },
       {
-        "title": "最后做运行包络与发布验证",
-        "learn": "针对交互、长上下文、Agent 和批处理分别测试稳态、突发、过载、长跑、故障与恢复。",
-        "checkpoint": "优化结论包含质量、Goodput、成本、准入、排空和回滚。"
-      },
-      {
         "title": "拆开时间账与显存账",
         "learn": "分别计算排队、Prefill、Decode、传输，以及权重、KV、工作区和余量。",
         "checkpoint": "能解释慢在哪里、容量被什么占用。"
+      },
+      {
+        "title": "测试运行包络与发布条件",
+        "learn": "针对交互、长上下文、Agent 和批处理分别测试稳态、突发、过载、长跑、故障与恢复。",
+        "checkpoint": "优化结论包含质量、Goodput、成本、准入、排空和回滚。"
       },
       {
         "title": "把优化作为版本发布",

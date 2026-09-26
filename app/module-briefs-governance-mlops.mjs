@@ -1,6 +1,6 @@
 export const predictiveAiMlopsBrief = {
   "slug": "predictive-ai-mlops",
-  "definition": "预测式 AI（Predictive AI）用历史数据学习分类、回归、排序、预测或异常检测关系；MLOps 连接训练、评估、注册、部署、监控与更新，并为预测时点、标签窗口、数据快照、特征定义、代码与环境、模型包、发布状态、预测结果和成熟真值保存一条可重放的版本链。",
+  "definition": "预测式 AI（Predictive AI）从历史数据学习规律，用于分类、数值预测、排序和异常检测。MLOps 管理模型从训练、评估到部署、监控和更新的过程，让预测结果能追溯到当时的数据、特征、代码和模型版本。",
   "position": "位于数据工程、业务应用与 AI 平台之间，覆盖传统机器学习和深度学习预测系统；它与生成式 AI 共用数据、评估、发布和观测底座，Prompt、RAG 与 Agent 则保留各自的运行对象和质量证据。",
   "presentation": "lifecycle",
   "principleTitle": "预测记录怎样对上成熟真值",

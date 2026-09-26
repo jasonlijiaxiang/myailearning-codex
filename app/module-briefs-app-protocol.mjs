@@ -1963,8 +1963,8 @@ export const mcpBrief = {
     },
     {
       "q": "MCP 2026-07-28 已经无状态，工具执行中还需要用户补充信息怎么办？",
-      "a": "使用 Multi Round-Trip Requests：prompts/get、resources/read 与 tools/call 可返回 input_required；inputRequests 与不透明 requestState 各自可选，但每个 InputRequiredResult 至少必须包含其中一项。Client 用新的 JSON-RPC id 重试原操作，对收到的 inputRequests 提交相应 inputResponses；仅在收到 requestState 时原样回传，未收到时不得自行添加。需要跨时段耐久执行时再采用 Tasks 扩展。",
-      "depth": "Host 应限制补参轮数、时间和字段，在可信界面向用户显示是哪一个 Server 请求信息，并拒绝通过 Form / 带内补参收集密码或令牌；确需敏感交互时使用在 MCP Client 外完成的 URL mode。若存在 requestState，实现应将它绑定到原用户、操作和上下文，双方都不能把它当成授权。MRTR、Tasks、列表缓存和业务状态是四套不同契约：无状态只取消隐式协议会话，不表示一次交互不能跨轮，也不表示 Server 可以隐式记住一切。",
+      "a": "可以。Server 返回 input_required 时，若带有 inputRequests，Client 按请求类型完成处理：elicitation/create 可能需要在可信界面向用户询问，sampling/createMessage 与 roots/list 则走各自的处理器。若只带 requestState，Client 可以直接重试。每次重试原操作都用新的 JSON-RPC id，并只原样回传收到的 requestState。此机制适用于 prompts/get、resources/read 和 tools/call；耐久执行另用 Tasks 扩展。",
+      "depth": "inputRequests 与不透明 requestState 各自可选，但每个 InputRequiredResult 至少要有一项。Server 只能请求 Client 已声明支持的类型；Client 只对收到的 inputRequests 提交相应 inputResponses，没有 requestState 时不能自行添加。Host 应限制往返轮数、时间和字段，显示请求来自哪个 Server；密码或令牌不能通过 Form 或带内补参收集，确需敏感交互时改用在 MCP Client 外完成的 URL mode。若存在 requestState，应把它绑定到原用户、操作和上下文，不能当作授权。MRTR、Tasks、列表缓存与业务状态是四套契约；无状态取消的是隐式协议会话，不妨碍明确的多轮交互。",
       "ask": "补参由谁展示和验证，存在 requestState 时多久失效，何时转成 Task，重新调用时怎样复核授权？",
       "tag": "长任务",
       "basis": "2026-07-28 MRTR + Tasks 边界",
@@ -2512,7 +2512,7 @@ export const a2aBrief = {
     {
       "q": "contextId、taskId、messageId、referenceTaskIds 和业务单号分别负责什么？",
       "a": "messageId 标识一条消息，taskId 标识服务端跟踪的工作，contextId 归组相关交互，referenceTaskIds 显式引用旧任务；taskId 由服务端生成，客户端只能引用既有且可访问的 Task。未提供 contextId 时，Agent 可以生成，生成后必须在返回的 Task 或 Message 中带回；客户端提供时，Agent 可以接受并保留。业务单号仍由权威业务系统生成并负责交易语义。",
-      "depth": "客户端提供的 taskId 必须引用既有且可访问的 Task，不能用于创建新 Task；否则 Agent 返回 TaskNotFoundError。仅给 taskId 时，Agent 必须从 Task 推断 contextId；同时给出 taskId 与 contextId 时必须匹配，否则拒绝 Message。Agent 自行生成 contextId 后必须在返回的 Task 或 Message 中带回，客户端应将服务端生成值视为不透明标识。终态 Task 不能改写或恢复。需要修订时，发送不带旧 taskId 的新 Message，可保留 contextId 并通过 referenceTaskIds 引用旧 Task；SendMessage 仍可能返回 Message 或 Task，只有返回 Task 时服务端才生成新 taskId。Agent 若拒绝客户端提供的 contextId，必须报错而不能静默替换；客户端除非理解其语义，否则不应主动提供。客户端保存新旧对象、业务单号、A2A / MCP / Run ID 和验收事件的映射。任何协议 ID 都不自动继承权限，也不能独自证明业务完成。",
+      "depth": "续接时若 taskId 不存在或不可访问，返回 TaskNotFoundError；只给 taskId 时从 Task 推断 contextId，两者都给却不匹配则拒绝 Message。Agent 若拒绝客户端提供的 contextId，必须报错，不得静默替换；客户端也不应随意自造。终态 Task 不再修改。修订要发不带旧 taskId 的新 Message，可用 contextId 和 referenceTaskIds 保留谱系；SendMessage 仍可能只返回 Message，只有返回 Task 时才有新 taskId。客户端保存协议 ID、业务单号和验收事件的映射，ID 本身既不授权，也不证明业务完成。",
       "ask": "每类 ID 由谁生成或接受，哪些非法组合必须失败，终态后如何用新 Message 保留谱系，哪个业务 ID 能回读权威结果？",
       "tag": "可靠性",
       "basis": "A2A 标识与任务生命周期",
@@ -2737,8 +2737,8 @@ export const a2aBrief = {
     {
       "metric": "messageId ≠ exactly-once",
       "title": "未知写结果要先查状态再决定重试",
-      "finding": "SendMessage 可由服务端选择基于 messageId 去重；SubscribeToTask 只适用于非终态 Task，请求没有恢复游标或历史重放，终态 Task 应通过 GetTask 查询；ListTasks 分页游标不能恢复订阅。对于每个已配置 webhook，Push 必须至少尝试一次，但失败后可停止，重试还可能产生重复通知；缺少 Push 能力时配置操作返回 PushNotificationNotSupportedError。",
-      "boundary": "协议级标识不能替代业务幂等、权威状态查询、自有事件存储和补偿。",
+      "finding": "SendMessage 超时后结果未知。服务端可以按 messageId 去重，但规范没有承诺业务动作只执行一次；应先用已知的 contextId、taskId 或业务操作号查询状态，再按双方约定的幂等规则重试。",
+      "boundary": "messageId 不能替代业务幂等与补偿；没有可查询标识时，按双方事先约定的恢复流程处理。订阅与 Push 的投递、重放和去重语义要分别验收。",
       "sourceId": "a2a-specification"
     }
   ]
@@ -3253,7 +3253,7 @@ export const evaluationBrief = {
 
 export const securityBrief = {
   "slug": "security",
-  "definition": "AI 安全（AI Security）记录不可信 Source 到高影响 Sink 的攻击路径，并用信任标签、检索 ACL、确定性授权、控制验证与恢复事件限制模型、数据、Agent、工具和供应链的影响范围。",
+  "definition": "AI 安全（AI Security）覆盖模型、数据、工具、凭据和供应链。不可信内容可能诱导模型泄露数据或越权执行，密钥泄漏和依赖污染也有各自的攻击路径；防护要能被验证，事故发生后还要能遏制和恢复。",
   "position": "位于工程保障层，负责攻击路径、技术控制、对抗性验证、遏制和取证；AI Governance 定义用途门禁、证据与残余风险决策权，获授权的招聘业务负责人决定用途和候选人高影响状态，Evaluation 负责测量结果，AI Ops 负责发布、停止与恢复。ATS 只执行限域权限并保存权威状态，不承担业务责任。",
   "presentation": "stack",
   "principleTitle": "恶意简历进入 ATS 时的控制证据",

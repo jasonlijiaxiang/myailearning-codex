@@ -42,7 +42,7 @@ export const agentPlatformSourceCopy = Object.freeze({
   "agentkit-config-reference-2026-08-15": Object.freeze({
     kind: "Official configuration reference",
     shortTitle: "AgentKit Configuration Reference",
-    note: "Documents application and Runtime configuration surfaces. A configured resource reference does not prove data-plane reachability, authorization, or correct behavior.",
+    note: "Documents application and Runtime configuration surfaces and warns against committing configurations with secrets. It does not establish default secret-store injection or prove data-plane reachability and authorization.",
   }),
   "agentkit-runtime-quickstart-2026-08-15": Object.freeze({
     kind: "Official product documentation",
@@ -52,7 +52,7 @@ export const agentPlatformSourceCopy = Object.freeze({
   "agentkit-memory-quickstart-2026-08-15": Object.freeze({
     kind: "Official product documentation",
     shortTitle: "AgentKit Memory Quickstart",
-    note: "Documents memory resource creation and application integration. A binding does not prove retrieval freshness, identity isolation, deletion behavior, or source-of-truth status.",
+    note: "Shows Mem0-type memory resource connection information and a VeADK mem0 backend example. It does not establish AgentKit's default backend, operator, regional availability, or SLA, nor prove identity isolation or deletion behavior.",
   }),
   "mem0-oss-overview-2026-08-15": Object.freeze({
     kind: "Official project documentation",

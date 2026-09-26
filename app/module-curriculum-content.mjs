@@ -351,8 +351,9 @@ export const moduleCurriculumContent = Object.freeze({
         "en": "Managed & OSS Memory",
         "explanation": "单独评估 Mem0 时，它的托管 Platform 与 OSS 在功能、数据边界、定制和运维责任上不同。",
         "decision": "用同一隔离、质量、延迟、删除和 TCO 合同比较。",
-        "boundary": "这些文档不证明 AgentKit Memory 使用或由 Mem0 运营；自建 Mem0 也不代表整条模型与向量链都不出域。",
+        "boundary": "AgentKit 快速入门展示 Mem0 类型资源与示例后端；Mem0 产品对比不证明 AgentKit 的默认后端、运营主体或 SLA。自建 Mem0 也不代表整条模型与向量链都不出域。",
         "sourceIds": [
+          "agentkit-memory-quickstart-2026-08-15",
           "mem0-oss-overview-2026-08-15",
           "mem0-platform-vs-oss-2026-08-15"
         ]
@@ -371,7 +372,7 @@ export const moduleCurriculumContent = Object.freeze({
     ]
   },
   "solution-patterns": {
-    "lead": "场景方案不是通用架构图，而是从业务结果与当前基线出发，用可测约束选择最小充分闭环，再把责任、证据、运营、完整成本与退出连成一条可决策路径。",
+    "lead": "从客户想改变的工作和当前做法出发，先选能交付结果的最简单方案，再写清责任、验收、运行成本与退出方式。",
     "chapters": [
       {
         "title": "先冻结结果、基线与权威终态",
@@ -1684,14 +1685,15 @@ export const moduleCurriculumContent = Object.freeze({
         ]
       },
       {
-        "title": "Decoder-only、因果掩码与 MoE",
+        "title": "Decoder-only、MoE 与混合架构",
         "en": "Architecture Variants",
-        "explanation": "Decoder-only 用因果掩码保证每个位置只看此前 Token，适合统一生成；MoE 让每个 Token 只激活部分专家，增加参数容量但引入路由、负载均衡和分布式通信。",
+        "explanation": "Decoder-only 用因果掩码让每个位置只看此前 Token；MoE 让每个 Token 只激活部分专家。Jamba 等混合架构还会交错注意力与其他序列层，KV Cache 需求须按实际注意力层测算。",
         "decision": "从任务和服务特性理解架构取舍，不用参数量独立判断质量。",
         "boundary": "总参数、激活参数和实际推理成本不是同一指标，MoE 也不自动更快。",
         "sourceIds": [
           "transformer-2017",
           "switch-transformer-2022",
+          "jamba-hybrid-2024",
           "nist-genai-profile"
         ]
       },
@@ -2171,7 +2173,7 @@ export const moduleCurriculumContent = Object.freeze({
     ]
   },
   "ai-infra-platform": {
-    "lead": "AI 基础设施平台是一项面向内部用户的产品：它用稳定自助契约把异构设备、准入、放置、开发环境、作业与服务生命周期、隔离、恢复和资源经济连成一条受支持路径。",
+    "lead": "开发者应能自己申请算力、运行作业、看清排队原因，并在故障后恢复。平台在后台管理设备、准入、环境、隔离和成本，为这些日常任务提供受支持的路径。",
     "chapters": [
       {
         "title": "把平台作为可自助使用的产品",

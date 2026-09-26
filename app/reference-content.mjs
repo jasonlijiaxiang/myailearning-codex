@@ -90,8 +90,8 @@ export const sourceLedger = {
     kind: "官方文档",
     shortTitle: "AgentKit Configuration",
     title: "AgentKit CLI configurations (pinned documentation)",
-    note: "固定到指定提交，核验 AgentKit 应用与部署配置字段；示例值和默认值不是生产建议，身份、网络、资源与数据边界仍需按环境复核。",
-    verifiedAt: "2026-08-15",
+    note: "固定到指定提交，核验 AgentKit 应用与部署配置字段；文档提醒含密钥配置不要提交 Git，但不能证明目标环境默认从安全存储注入。身份、网络和数据边界仍需按环境复核。",
+    verifiedAt: "2026-09-26",
     href: "https://github.com/volcengine/agentkit-sdk-python/blob/f39d363ea9a3fd6d1cd79f8dea14342ba846194a/docs/content/2.agentkit-cli/3.configurations.md",
   },
   "agentkit-runtime-quickstart-2026-08-15": {
@@ -108,8 +108,8 @@ export const sourceLedger = {
     kind: "官方文档",
     shortTitle: "AgentKit Memory Quickstart",
     title: "AgentKit Memory quickstart (pinned documentation)",
-    note: "固定到指定提交，核验独立记忆资源的创建与 Agent 应用绑定入口；它不等同于 Session、Knowledge 或权威业务记录，也不保证删除、驻留和恢复要求。",
-    verifiedAt: "2026-08-15",
+    note: "固定到指定提交，展示 Mem0 类型记忆资源连接信息和 VeADK mem0 后端示例；不证明 AgentKit 的默认后端、运营主体、地域或 SLA，也不保证删除、驻留和恢复要求。",
+    verifiedAt: "2026-09-26",
     href: "https://github.com/volcengine/agentkit-sdk-python/blob/f39d363ea9a3fd6d1cd79f8dea14342ba846194a/docs/content/6.memory/1.memory_quickstart.md",
   },
   "mem0-oss-overview-2026-08-15": {
@@ -1063,6 +1063,12 @@ export const sourceLedger = {
     title: "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
     note: "研究稀疏 Mixture-of-Experts 路线，以路由器为每个 Token 选择部分专家；支持区分总参数与激活参数，不证明 MoE 模型必然优于稠密模型。",
     verifiedAt: "2026-07-20", href: "https://www.jmlr.org/papers/v23/21-0998.html",
+  },
+  "jamba-hybrid-2024": {
+    grade: "A", kind: "论文", shortTitle: "Jamba Hybrid Architecture",
+    title: "Jamba: A Hybrid Transformer-Mamba Language Model",
+    note: "论文展示交错注意力与 Mamba 层的混合架构；减少注意力层会改变 KV Cache 需求，但其性能和显存结果只适用于论文配置与实验条件。",
+    verifiedAt: "2026-09-26", href: "https://arxiv.org/abs/2403.19887",
   },
   "chinchilla-2022": {
     grade: "A", kind: "论文", shortTitle: "Chinchilla Scaling",

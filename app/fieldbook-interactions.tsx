@@ -6,6 +6,7 @@ import { type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboard
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { rankKnowledgeSearch } from "./knowledge-search-match.mjs";
 import { filterQuestionDirectoryItems } from "./question-filter.mjs";
+import { moduleSearchFeedback, questionFilterCount } from "./search-result-feedback.mjs";
 
 export type ExplorerModule = {
   slug: string;
@@ -197,6 +198,7 @@ export function ModuleExplorer({
   const displayedKnowledgeMatches = knowledgeMatches.slice(0, knowledgeLimit);
   const visibleRows = useMemo(() => balanceGridRows(visible, 3), [visible]);
   const knowledgeMatchRows = useMemo(() => balanceGridRows(displayedKnowledgeMatches, 2), [displayedKnowledgeMatches]);
+  const feedback = moduleSearchFeedback({ moduleCount: visible.length, knowledgeCount: knowledgeMatches.length, query, indexState, labels });
 
   useEffect(() => {
     const focusSearch = (event: KeyboardEvent) => {
@@ -266,7 +268,7 @@ export function ModuleExplorer({
       </div>
 
       <div className="moduleExplorerStatus" aria-live="polite">
-        <span>{labels.foundPrefix} {visible.length} {labels.moduleNoun}{query ? `, ${labels.knowledgeHitsPrefix} ${knowledgeMatches.length} ${labels.knowledgeHitsSuffix}` : ""}</span>
+        <span>{feedback.status}</span>
         <div>{query && indexState === "loading" ? <span className="indexStatus">{labels.indexLoading}</span> : null}{query && indexState === "error" ? <span className="indexStatus">{labels.indexError}</span> : null}<Link href={questionsHref}>{labels.questionsLink}</Link>{query || layer !== "all" ? <button type="button" onClick={() => { setQuery(""); setLayer("all"); setKnowledgeLimit(12); }}>{labels.clear}</button> : null}</div>
       </div>
 
@@ -305,7 +307,7 @@ export function ModuleExplorer({
           );
         }))}
       </div>
-      {visible.length === 0 ? <div className="emptySearch"><strong>{labels.emptyTitle}</strong><p>{labels.emptyBody}</p></div> : null}
+      {feedback.showEmpty ? <div className="emptySearch"><strong>{labels.emptyTitle}</strong><p>{labels.emptyBody}</p></div> : null}
     </section>
   );
 }
@@ -459,7 +461,6 @@ export function QaFilterShell({
     const normalized = query.trim().toLocaleLowerCase("zh-CN");
     return items.filter((item) => (tag === "all" || item.tag === tag) && (!normalized || item.text.toLocaleLowerCase("zh-CN").includes(normalized))).length;
   }, [items, query, tag]);
-  const displayedCount = matchingCount;
 
   useEffect(() => {
     const details = [...(rootRef.current?.querySelectorAll<HTMLDetailsElement>("details[data-qa-tag]") ?? [])];
@@ -495,7 +496,7 @@ export function QaFilterShell({
           <button type="button" aria-pressed={tag === "all"} className={tag === "all" ? "active" : ""} onClick={() => setTag("all")}>全部</button>
           {uniqueTags.map((item) => <button type="button" aria-pressed={tag === item} className={tag === item ? "active" : ""} onClick={() => setTag(item)} key={item}>{item}</button>)}
         </div>
-        <p aria-live="polite">当前显示 {displayedCount} / {matchingCount} 个问题</p>
+        <p aria-live="polite">{questionFilterCount(matchingCount, items.length)}</p>
       </div>
       {children}
       {matchingCount === 0 && <div className="emptySearch"><strong>没有匹配的问题</strong><p>清除筛选，或换一个更短的关键词。</p></div>}

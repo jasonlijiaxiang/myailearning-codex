@@ -1496,7 +1496,7 @@ test("remaining modules complete their own knowledge views, learning expansions,
   // 中文值即注册表审计基线本身（与内容快照哈希一致），按类别压成单行以控制测试文件中文行数。
   const completionMarkers = {
     curriculum: { "model-landscape": ["退出演练与供应连续性"], multimodal: ["长视频的候选检索与时序证据"], mcp: ["错误、进度与可观测"], a2a: ["幂等、取消与恢复", "采用边界与迁移"], evaluation: ["评估契约与可重放结果", "重复试验、不确定性与硬门"], "ai-gateway": ["策略变更与证据化发布"], "ai-ops": ["遥测数据与隐私", "从告警到确认业务恢复"], "llm-training": ["实验谱系与可复现制品"], "llm-inference": ["版本发布与请求连续性"], "data-engineering": ["为不同用途准备数据制品"], "ai-infra-platform": ["Goodput、资源成本与业务 ROI"], "ai-infra-compute": ["端到端基准与交付验收"] },
-    learningRoute: { "model-landscape": ["把选择变成可回退、可退出的发布证据"], multimodal: [], mcp: ["验证错误与恢复", "建立目录与下线责任"], a2a: ["补齐恢复与取消", "验证采用收益"], evaluation: [], "ai-gateway": ["把策略当作发布资产", "演练网关自身故障"], "ai-ops": [], "llm-training": [], "llm-inference": ["拆开时间账与显存账", "把优化作为版本发布"], "data-engineering": [], "ai-infra-platform": ["设计训练和推理的共享边界"], "ai-infra-compute": [] },
+    learningRoute: { "model-landscape": ["把选择变成可回退、可退出的发布证据"], multimodal: [], mcp: ["验证错误与恢复", "建立目录与下线责任"], a2a: ["处理未知结果、取消与人工接管", "验证采用收益"], evaluation: [], "ai-gateway": ["把策略当作发布资产", "演练网关自身故障"], "ai-ops": [], "llm-training": [], "llm-inference": ["拆开时间账与显存账", "把优化作为版本发布"], "data-engineering": [], "ai-infra-platform": ["设计训练和推理的共享边界"], "ai-infra-compute": [] },
     learningLabs: { "model-landscape": ["验证一次受控模型路由"], multimodal: ["处理一份跨模态证据冲突工单"], mcp: ["评审一个企业 MCP Server"], a2a: ["验收一次外部 Agent 的版本变更"], evaluation: ["校准评分器并裁决分歧样本"], "ai-gateway": ["排查一次网关放大故障"], "ai-ops": ["编写 AI 事故运行手册"], "llm-training": ["复盘一次长训练中断"], "llm-inference": ["诊断一次首字延迟退化"], "data-engineering": ["排查一次知识更新未生效"], "ai-infra-platform": ["设计训练与在线推理混部策略"], "ai-infra-compute": ["验证一条算力瓶颈假设"] },
     qa: { "model-landscape": ["公开 Benchmark 应该怎样用于模型候选初筛，而不是直接选出赢家？", "怎样为模型停服或不可用准备替代方案？"], multimodal: ["文档 OCR 字符准确率很高，为什么表格问答仍可能错误？"], mcp: ["MCP 工具返回成功，为什么业务动作仍可能失败？", "企业应该允许客户端自动安装任意 MCP Server 吗？"], a2a: ["A2A 的取消请求，是否保证远端任务已经停止？", "多 Agent 架构应该由一个编排者控制，还是允许点对点协作？"], evaluation: ["评估集版本升级时，怎样接纳线上失败又保护盲留出集？"], "ai-gateway": ["AI 网关的策略应该怎样安全上线？", "模型提供方故障时，AI 网关应该自动切到任意可用模型吗？"], "ai-ops": ["AI 事故恢复后，为什么还要核对业务系统状态？", "观测数据保留越多，是否越容易排查 AI 问题？"], "llm-training": ["训练恢复后 Loss 连续，为什么还不能证明状态正确？"], "llm-inference": ["模型权重能装进显存，为什么并发一上来仍会 OOM？", "量化后吞吐提高，为什么仍可能不值得上线？"], "data-engineering": ["同一份数据能否同时用于 RAG、评估和训练？"], "ai-infra-platform": ["GPU 利用率很高，为什么训练和推理产出仍可能很差？", "训练和在线推理可以长期混在同一个 GPU 资源池吗？"], "ai-infra-compute": ["为什么不能直接用峰值 FLOPS 比较 AI 加速器？", "多加一倍 GPU，为什么训练速度没有接近翻倍？"] },
   };
@@ -2146,7 +2146,7 @@ test("Batch 06 routes render the Message-or-Task, gateway-control, and AI Ops re
   assert.match(a2aEnSource, /successful at-least-once delivery is not guaranteed/);
   assert.match(a2aEnSource, /For each configured webhook/);
   assert.match(a2aEnSource, /PushNotificationNotSupportedError/);
-  assert.match(a2aEnSource, /taskId and contextId[^.]*MUST match/);
+  assert.match(a2aEnSource, /when both IDs are supplied they MUST match/);
   assert.match(a2aEnSource, /MUST include a generated value in (?:its )?returned Task or Message/);
   assert.match(a2aEnSource, /server-generated (?:contextId )?values as opaque/);
   assert.match(a2aEnSource, /TaskNotFoundError/);

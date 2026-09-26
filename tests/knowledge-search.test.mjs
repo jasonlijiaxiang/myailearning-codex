@@ -4,6 +4,21 @@ import test from "node:test";
 import { rankKnowledgeSearch } from "../app/knowledge-search-match.mjs";
 import { buildKnowledgeSearchEntries } from "../app/search-index.mjs";
 import { moduleList } from "../app/knowledge-map.mjs";
+import { moduleSearchFeedback, questionFilterCount } from "../app/search-result-feedback.mjs";
+
+test("search feedback keeps knowledge matches visible when no module title matches", () => {
+  const labels = { foundPrefix: "找到", moduleNoun: "个模块", knowledgeHitsPrefix: "另有", knowledgeHitsSuffix: "条知识命中" };
+  assert.deepEqual(moduleSearchFeedback({ moduleCount: 0, knowledgeCount: 22, query: "向量数据库", indexState: "ready", labels }), {
+    status: "找到 22 条知识命中",
+    showEmpty: false,
+  });
+  assert.equal(moduleSearchFeedback({ moduleCount: 0, knowledgeCount: 0, query: "陌生词", indexState: "loading", labels }).showEmpty, false);
+  assert.equal(moduleSearchFeedback({ moduleCount: 0, knowledgeCount: 0, query: "陌生词", indexState: "ready", labels }).showEmpty, true);
+});
+
+test("question filter count retains the unfiltered total", () => {
+  assert.equal(questionFilterCount(1, 11), "当前显示 1 / 11 个问题");
+});
 
 test("a reader's Chinese question finds related knowledge without an exact sentence match", () => {
   const entries = buildKnowledgeSearchEntries("zh");
