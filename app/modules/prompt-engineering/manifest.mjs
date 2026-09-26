@@ -154,7 +154,7 @@ export default Object.freeze({
   layerNo: "07",
   routeKind: "dedicated",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-07-30",
+  updatedAt: "2026-09-25",
   requiredTerms: Object.freeze(["prompt-engineering","context-engineering","instructions","context","tools-schema","structured-outputs","prompt-injection"]),
   knowledgeView: "context-assembly",
   readingProfile: null,

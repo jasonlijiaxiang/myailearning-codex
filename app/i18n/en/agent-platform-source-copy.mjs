@@ -7,7 +7,7 @@ export const agentPlatformSourceCopy = Object.freeze({
   "veadk-runner-source-2026-08-15": Object.freeze({
     kind: "Official source code",
     shortTitle: "VeADK Runner Source",
-    note: "Shows the current default VeADK Runner path, its Google ADK Runner base, and its session-facing execution surface. Optional runtime modes, application behavior, and compatibility still depend on the tested backend, dependency set, and configuration.",
+    note: "The pinned Runner source shows its Google ADK base, session path, default user ID veadk_default_user, which needs an authenticated override in multi-user services, and debug logging of thinking text and tool content. Production identity and log handling require explicit controls; optional runtime modes still need separate tests.",
   }),
   "veadk-agentkit-integration-2026-08-15": Object.freeze({
     kind: "Official integration documentation",

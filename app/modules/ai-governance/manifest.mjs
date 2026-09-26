@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "05",
   routeKind: "brief",
   introducedAt: "2026-07-21",
-  updatedAt: "2026-08-05",
+  updatedAt: "2026-09-24",
   requiredTerms: Object.freeze(["ai-governance","ai-inventory","ai-risk-tiering","impact-assessment","human-oversight","governance-evidence","continuous-assurance"]),
   knowledgeView: "governance-assurance-loop",
   readingProfile: null,

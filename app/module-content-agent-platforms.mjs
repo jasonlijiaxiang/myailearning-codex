@@ -77,7 +77,7 @@ export const agentPlatformBriefs = {
         "zh": "Runner 执行循环",
         "en": "Runner Execution Loop",
         "explanation": "Runner 组织模型调用、工具请求、观察结果、事件与停止条件，使一次请求成为有状态执行。",
-        "decision": "Run 报告分别记录模型输出、结束原因和业务系统回读的终态。"
+        "decision": "Run 报告分别记录模型输出、结束原因和业务系统回读的终态；调试日志可能包含思考文本、Tool 参数与响应，生产采集须脱敏并限制访问和保留。"
       },
       {
         "zh": "工具合同",
@@ -89,7 +89,7 @@ export const agentPlatformBriefs = {
         "zh": "会话作用域",
         "en": "Session Scope",
         "explanation": "应用、用户和会话标识共同限定一段短期上下文与事件历史。",
-        "decision": "生产身份由可信服务端验证并绑定，Session 测试覆盖同会话、换会话、换用户和重启。"
+        "decision": "Runner 默认 user_id 仅供开发；多用户入口由可信服务端传入真实主体，Session 测试覆盖同会话、换会话、换用户和重启。"
       },
       {
         "zh": "分层状态",
@@ -316,14 +316,14 @@ export const agentPlatformBriefs = {
       {
         "q": "Runner 和 Session 分别负责什么？",
         "a": "Runner 负责一次执行循环，Session 保存特定应用、用户和会话范围内的事件与状态。",
-        "depth": "Runner 读取 Session、调用模型和工具并追加事件；Session 不授予业务权限，也不自动跨会话共享历史。",
+        "depth": "Runner 读取 Session、调用模型和工具并追加事件；默认 user_id 不能作为已认证用户身份；多用户服务必须由认证链传入真实主体，并测试同一 session_id 在不同用户下的隔离，确保不能读取或续接他人历史。Session 不授予业务权限，也不自动跨会话共享历史。调试日志可能包含思考文本、Tool 参数和响应，生产采集应最小化、脱敏并限制访问与保留。",
         "ask": "任务状态需要保留多久，哪些事件要跨实例恢复？",
         "tag": "执行与状态",
         "basis": "官方 Runner 与短期记忆文档",
         "evidence": [
           {
             "sourceId": "veadk-runner-source-2026-08-15",
-            "supports": "Runner 连接 session_service，并通过 run_async 产出执行事件；事件流不证明业务终态。"
+            "supports": "Runner 连接 session_service 并产出事件；固定源码还显示默认 user_id 与 debug 日志内容，事件流不证明业务终态。"
           },
           {
             "sourceId": "veadk-short-term-memory-2026-08-15",

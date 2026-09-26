@@ -1,6 +1,6 @@
 export const solutionPatternsBrief = {
   "slug": "solution-patterns",
-  "definition": "场景解决方案（Solution Pattern）是从业务结果、当前基线与约束出发，对最小充分闭环的能力、责任、证据、运行经济和退出方式所作的可复用决策蓝图。 成本归因与优化门槛也要在方案中写清，而不是留到上线后才补账。",
+  "definition": "场景解决方案（Solution Pattern）从业务结果、当前基线和约束出发，说明系统最少要做什么、由谁负责、怎样验收、花多少钱，以及何时退出。成本归因与优化门槛也要在方案中写清。",
   "position": "位于方案与选型层，主责回答为什么做、系统最少承担什么责任、RAG、Agent、MCP、A2A、Gateway 或平台在何种条件下才需要，以及怎样验收、运营和退出；具体模型比较、切片检索、Agent 循环和协议机制由相关模块展开。",
   "presentation": "decision",
   "principleTitle": "从客户结果组织方案",
@@ -51,7 +51,7 @@ export const solutionPatternsBrief = {
       "zh": "禁止动作先于能力",
       "en": "Prohibited Actions First",
       "explanation": "高影响行业场景先写死模型不能做什么，再定义它能做什么；允许动作必须绑定授权检索、带引用建议与人工最终决定。",
-      "decision": "把禁止动作写入场景合同与发布门，所有模块使用同一表述。"
+      "decision": "把禁止动作写入场景合同、工具授权和发布验收，保持三者一致。"
     },
     {
       "zh": "稳定归因",
@@ -772,7 +772,7 @@ export const solutionPatternsBrief = {
     {
       "q": "理赔初审助手哪些事绝对不能做？",
       "a": "不能自动核赔、定损、拒赔、确定资格、决定金额或发起付款。",
-      "depth": "教学蓝图中 AI 只负责材料接收、质量检查、事实与证据提取、缺件提示和带引用的初审建议；最终决定由授权人工或确定性业务系统作出并写入权威系统。所有模块必须使用同一禁止动作表述；本案例是教学蓝图，不是保险行业生产标准，行业时限、阈值与法规结论需官方法源和专业审查。",
+      "depth": "教学蓝图中 AI 只负责材料接收、质量检查、事实与证据提取、缺件提示和带引用的初审建议；最终决定由授权人工或确定性业务系统作出并写入权威系统。场景合同、工具授权与发布门应使用同一禁止动作清单；本案例是教学蓝图，不是保险行业生产标准，行业时限、阈值与法规结论需官方法源和专业审查。",
       "ask": "方案中哪些动作被授权给 AI，谁对最终决定签字，禁止动作如何进入发布门？",
       "tag": "禁止动作",
       "basis": "教学蓝图 + 确定性最终决定",
@@ -810,14 +810,14 @@ export const solutionPatternsBrief = {
       "title": "验收建立在客户样本上",
       "finding": "公开 Benchmark 适合初筛，客户 Golden Set 和真实流程才决定场景可用性。",
       "boundary": "评估集需要代表高价值、边界和失败样本，不能只选容易问题。",
-      "sourceId": "ragas"
+      "sourceId": "openai-eval-best-practices"
     },
     {
       "metric": "每个成功任务",
       "title": "用业务单位计算 TCO",
       "finding": "把模型、工具、基础设施、失败重试和人工运营合并，才能比较方案的真实经济性。",
       "boundary": "成本结论依赖客户负载和架构，不能把单一 PoC 账单外推为采购承诺。",
-      "sourceId": "opentelemetry-genai-semconv"
+      "sourceId": "finops-unit-economics"
     },
     {
       "metric": "权限 + 证据",
@@ -2244,7 +2244,7 @@ export const a2aBrief = {
       "zh": "能力发现",
       "en": "Agent Card & Discovery",
       "explanation": "Agent Card 描述身份、地址、技能、输入输出和安全要求，让调用方在委派前判断能力与接入方式。",
-      "decision": "准入记录保存 Card 来源、域名、签名、有效期和验证结果；自声明技能只进入候选能力清单。"
+      "decision": "准入记录保存 Card 来源、域名、版本、抓取与复核时间、缓存刷新条件，以及可选签名的验证结果；自声明技能只进入候选能力清单。"
     },
     {
       "zh": "有状态任务",
@@ -2855,9 +2855,9 @@ export const evaluationBrief = {
         },
         {
           "name": "推理与数学",
-          "mechanism": "符号、逻辑与多步推理，反映思考链与预算调参空间。",
-          "decision": "用于判断推理模型是否值得按任务启用思考预算。",
-          "boundary": "单点成绩不反映延迟成本；overthinking 会降低收益。"
+          "mechanism": "符号、逻辑与多步推理；公开成绩通常只覆盖指定运行条件。",
+          "decision": "在同一任务集上比较不同思考预算的质量、时延、Token 与每个成功任务成本。",
+          "boundary": "单点成绩看不出预算曲线，更多推理 Token 不保证更高的业务收益。"
         },
         {
           "name": "编码",
@@ -2891,7 +2891,8 @@ export const evaluationBrief = {
         "webarena-2024",
         "harness-bench-2026",
         "longvideobench-2024",
-        "openai-eval-best-practices"
+        "openai-eval-best-practices",
+        "google-gemini-thinking"
       ]
     },
     {
@@ -3076,7 +3077,7 @@ export const evaluationBrief = {
       "evidence": [
         {
           "sourceId": "ragas",
-          "supports": "支持用 Context Recall、Context Precision 与 Faithfulness 等维度区分检索和生成问题。"
+          "supports": "原论文提出 Faithfulness、Answer Relevance 与 Context Relevance 三维度；召回与精度须另按检索数据和指标定义评估。"
         }
       ]
     },

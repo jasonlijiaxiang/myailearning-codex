@@ -852,7 +852,8 @@ test("reviewed English production modules retain direct professional copy and co
   assert.match(gateway, /historical traffic samples minimized for the stated purpose/);
   assert.match(gateway, /No—not on its own\./);
   assert.match(gateway, /task success rate/);
-  assert.match(gateway, /least-privilege downstream scope for its tenant, project, model, and task/);
+  assert.match(gateway, /Run tokens cover every gateway in an account/);
+  assert.match(gateway, /Data and tool resources still validate the real principal, scope, and business conditions/);
 
   const { sources: aiOpsSources, ...aiOpsReaderCopy } = englishModuleRegistry["ai-ops"];
   assert.ok(aiOpsSources);
@@ -1157,6 +1158,22 @@ test("Batch 13 English content preserves data, tuning, and MCP boundaries", () =
   // @ts-expect-error es2017 目标不识别 dotAll 标志，正则本体不可改
   assert.match(mcpCopy, /tasks\/get, tasks\/update, and tasks\/cancel.*Mcp-Name.*params\.taskId/s);
   assert.doesNotMatch(mcpCopy, /As of August 1, 2026|both parties can opt in/);
+});
+
+test("reviewed evidence stays attached to the claim each source actually supports", () => {
+  const evaluation = englishModuleRegistry.evaluation;
+  const ragDiagnosis = findById(evaluation.qa, "rag-retrieval-versus-generation", "RAG diagnosis");
+  assert.deepEqual(ragDiagnosis.evidence.map((/** @type {any} */ entry) => entry.sourceId), ["ragas"]);
+  assert.match(ragDiagnosis.evidence[0].supports, /faithfulness, answer relevance, and context relevance/);
+  assert.match(ragDiagnosis.evidence[0].supports, /recall and precision need separate definitions/);
+
+  const solutionCards = englishModuleRegistry["solution-patterns"].evidenceCards;
+  assert.equal(findById(solutionCards, "solution-customer-samples", "Customer samples").sourceId, "openai-eval-best-practices");
+  assert.equal(findById(solutionCards, "solution-unit-tco", "Unit economics").sourceId, "finops-unit-economics");
+
+  const tuning = findById(englishModuleRegistry["fine-tuning"].qa, "dynamic-or-merged-adapter", "Adapter serving");
+  assertIncludesEvidenceSources(tuning, ["vllm-lora-serving"], "Adapter serving");
+  assert.match(tuning.depth, /Selecting a registered adapter differs from adding or removing one/);
 });
 
 test("2026-09-04 Agent, MCP, and A2A additions preserve exact bilingual evidence mappings", () => {

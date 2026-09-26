@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "04",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-08-01",
+  updatedAt: "2026-09-24",
   requiredTerms: Object.freeze([slug,"model-routing","rate-limiting","semantic-cache","guardrails"]),
   knowledgeView: "gateway-policy-data-plane",
   readingProfile: null,

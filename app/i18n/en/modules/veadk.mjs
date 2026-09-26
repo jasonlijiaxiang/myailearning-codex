@@ -29,7 +29,7 @@ export const englishModule = Object.freeze({
           title: "Recommended learning route",
           items: Object.freeze([
             Object.freeze({ id: "route-read-inheritance", title: "Inspect the current framework lineage", body: "Confirm the concrete VeADK Agent and Runner bases in the pinned source snapshot, then record the dependency combination used by the application.", decision: "Checkpoint: an upstream upgrade cannot enter production without import, session, tool, streaming, and error-path regression tests." }),
-            Object.freeze({ id: "route-run-event-trace", title: "Run one event trace", body: "Create a root agent, invoke it through the Runner, and retain session, model, tool-request, tool-result, error, and final-response events.", decision: "Checkpoint: the trace identifies the component that owns every state transition and side effect." }),
+            Object.freeze({ id: "route-run-event-trace", title: "Run one event trace", body: "Create a root agent and invoke it through the Runner. Retain only the session, model, tool, error, and response fields needed to explain the run; debug logging can include thinking text and tool content.", decision: "Checkpoint: events identify state and side-effect owners while sensitive fields are redacted and access and retention are limited." }),
             Object.freeze({ id: "route-test-tool-authority", title: "Test a read tool and a controlled write tool", body: "Keep the built-in web tools on their documented import paths. Put identity, authorization, parameter validation, idempotency, and result verification around any business write.", decision: "Checkpoint: a model request never serves as proof of permission or completion." }),
             Object.freeze({ id: "route-test-state-boundaries", title: "Test session and memory separately", body: "Replay a conversation across processes, then test long-term memory ingestion and retrieval without using either store as the source of truth for business state.", decision: "Checkpoint: replica changes preserve session continuity, while authoritative facts still come from the owning system." }),
             Object.freeze({ id: "route-adapt-and-verify", title: "Adapt the root agent and verify the deployed path", body: "Wrap the same root agent with create_agentkit_app, then test health, invocation, identity propagation, shared state, traces, failure recovery, and load in the target runtime.", decision: "Checkpoint: local route success and cloud release evidence are recorded as different milestones." }),
@@ -175,12 +175,12 @@ export const englishModule = Object.freeze({
       id: "veadk-runner-session-role",
       q: "What do the Runner and Session do during execution?",
       a: "The Runner coordinates an agent invocation and its event flow; the session service preserves the active interaction state that the invocation reads and updates.",
-      depth: "Trace request identity, session lookup or creation, model turns, tool requests and results, errors, and final response as related but distinct events. Session continuity is an application property that depends on the configured backend. Neither a final response nor persisted history proves the correctness of an external business result.",
+      depth: "Trace request identity, session lookup or creation, model turns, tool requests and results, errors, and final response as distinct events. The Runner's default user ID is not an authenticated subject. A multi-user service must pass the real subject and verify cross-user isolation even when session IDs match, so one user cannot read or continue another user's history. Debug logs can contain thinking text and tool arguments or results, so collect minimally, redact, and restrict access and retention. Session continuity depends on the configured backend, and persisted history does not prove a business result.",
       ask: "Can the team trace one invocation across Runner events, session reads and writes, tool effects, and the authoritative terminal state?",
       tag: "Agent execution",
       basis: "Runner event flow plus session persistence",
       evidence: Object.freeze([
-        Object.freeze({ sourceId: "veadk-runner-source-2026-08-15", supports: "Shows the Runner's current relationship to Google ADK execution and session services." }),
+        Object.freeze({ sourceId: "veadk-runner-source-2026-08-15", supports: "Shows the Runner's session path, development default user ID, and debug logging of model and tool content." }),
         Object.freeze({ sourceId: "veadk-short-term-memory-2026-08-15", supports: "Documents short-term session backends and the multi-instance continuity boundary." }),
       ]),
       addedAt: "2026-08-15",

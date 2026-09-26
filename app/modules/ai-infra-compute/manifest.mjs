@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "09",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-08-31",
+  updatedAt: "2026-09-24",
   requiredTerms: Object.freeze(["ai-infra-compute","heterogeneous-compute","vram","hbm","scale-up","scale-out","tco"]),
   knowledgeView: "compute-bottleneck-path",
   readingProfile: null,

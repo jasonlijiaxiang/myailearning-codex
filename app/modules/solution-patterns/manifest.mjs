@@ -17,7 +17,7 @@ export default Object.freeze({
   layerNo: "01",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-08-31",
+  updatedAt: "2026-09-24",
   requiredTerms: Object.freeze(["solution-patterns","ai-finops","finops","unit-economics","cost-allocation","cost-to-serve","cost-anomaly"]),
   knowledgeView: "decision-blueprint",
   readingProfile: "focused",

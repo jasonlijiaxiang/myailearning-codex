@@ -27,9 +27,9 @@ export const sourceLedger = {
     kind: "官方源码",
     shortTitle: "VeADK Runner Source",
     title: "VeADK Runner implementation (pinned source)",
-    note: "固定到指定提交，核验 Runner 从 Agent 与会话服务建立执行入口并产出运行事件；事件流与调用完成不等于业务事务成功、持久化或可恢复。",
-    verifiedAt: "2026-08-15",
-    href: "https://github.com/volcengine/veadk-python/blob/3be05c48a0360b86003f6f67808c943b5a33c4d3/veadk/runner.py#L24-L329",
+    note: "固定到指定提交，核验 Runner 的会话与事件路径。默认 user_id 为 veadk_default_user，多用户应用需由可信入口覆盖；debug 日志可能包含思考文本、工具参数和响应。事件流与调用完成不等于业务事务成功、持久化或可恢复。",
+    verifiedAt: "2026-09-24",
+    href: "https://github.com/volcengine/veadk-python/blob/3be05c48a0360b86003f6f67808c943b5a33c4d3/veadk/runner.py#L99-L475",
   },
   "veadk-agentkit-integration-2026-08-15": {
     grade: "P",
@@ -638,9 +638,27 @@ export const sourceLedger = {
     kind: "法规标准",
     shortTitle: "促进和规范数据跨境流动规定",
     title: "促进和规范数据跨境流动规定",
-    note: "国家互联网信息办公室令第 16 号，自公布之日（2024 年 3 月 22 日）起施行；规定数据出境安全评估、个人信息出境标准合同与个人信息保护认证的申报门槛和免申报情形，第十条保留告知、单独同意与个人信息保护影响评估等义务；具体通道与量级判断需按数据分类和当期监管口径核验。",
+    note: "国家互联网信息办公室令第 16 号，自公布之日（2024 年 3 月 22 日）起施行；规定数据出境安全评估、个人信息出境标准合同与个人信息保护认证的申报门槛和免申报情形，第十条保留适用的告知、同意与个人信息保护影响评估等义务；具体通道与量级判断需按数据分类和当期监管口径核验。",
     verifiedAt: "2026-08-05",
     href: "https://www.gov.cn/gongbao/2024/issue_11366/202405/content_6954192.html",
+  },
+  "china-network-data-security-regulation-2025": {
+    grade: "O", kind: "法规标准", shortTitle: "网络数据安全管理条例",
+    title: "网络数据安全管理条例",
+    note: "2025 年 1 月 1 日施行；第三十五条列出个人信息出境的多种条件，第三十七条规定重要数据出境评估边界。三种出境机制并非穷尽全部适用条件。",
+    verifiedAt: "2026-09-24", href: "https://www.cac.gov.cn/2024-09/30/c_1729384452307680.htm",
+  },
+  "china-small-pi-processors-2026": {
+    grade: "O", kind: "法规标准", shortTitle: "小型个人信息处理者简化措施",
+    title: "小型个人信息处理者个人信息保护简化措施规定",
+    note: "2026 年 9 月 1 日施行；第二条限定为境内处理不满 10 万人个人信息的处理者，第十条规定特定出境免办情形、排除重要数据，并保留适用的告知与同意义务。主体处理人数与年度出境人数是不同计数。",
+    verifiedAt: "2026-09-24", href: "https://www.cac.gov.cn/2026-07/24/c_1786638889704872.htm",
+  },
+  "china-data-cross-border-faq-2026-07": {
+    grade: "O", kind: "官方文档", shortTitle: "数据出境问答（2026 年 7 月）",
+    title: "数据出境安全管理政策法规问答（2026年7月）",
+    note: "国家网信办明确：个人信息出境符合《个人信息保护法》第十三条第一款第二至七项时无需取得个人同意，但仍须履行出境告知；是否适用须按具体处理目的和法律基础核对。",
+    verifiedAt: "2026-09-24", href: "https://www.cac.gov.cn/2026-07/24/c_1786638883119336.htm",
   },
   "china-personal-information-protection-law": {
     grade: "O",
@@ -681,10 +699,10 @@ export const sourceLedger = {
   "eu-ai-act-implementation-2026-08-05": {
     grade: "O",
     kind: "法规标准",
-    shortTitle: "EU AI Act（2026-08-05 核验）",
+    shortTitle: "EU AI Act（2026-09-24 核验）",
     title: "European AI Act — Regulatory Framework",
     note: "欧盟委员会页面把招聘和候选人筛选列为高风险用途示例，并确认 AI Act 自 2026-08-02 起适用、经 2026 年正式修法调整的部分高风险规则时点（Annex III 自 2027-12-02、Annex I 自 2028-08-02）；页面是动态实施入口，不能替代正式法律文本或针对具体系统的法律意见。",
-    verifiedAt: "2026-08-05",
+    verifiedAt: "2026-09-24",
     href: "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
     versionOf: "eu-ai-act",
     localeScope: "zh-CN",
@@ -815,6 +833,12 @@ export const sourceLedger = {
     verifiedAt: "2026-07-30",
     href: "https://huggingface.co/docs/trl/peft_integration",
   },
+  "vllm-lora-serving": {
+    grade: "P", kind: "官方文档", shortTitle: "vLLM LoRA Serving",
+    title: "vLLM — LoRA Adapters",
+    note: "区分启动时注册并按请求选择 LoRA，与通过管理 API 或插件在运行时增删 LoRA；官方警告后者有安全风险，生产中仅应在隔离且完全可信的环境内启用。具体选项随 vLLM 版本变化。",
+    verifiedAt: "2026-09-24", href: "https://docs.vllm.ai/en/latest/features/lora/",
+  },
   "openai-agent-guide": {
     grade: "B",
     kind: "指南",
@@ -904,6 +928,12 @@ export const sourceLedger = {
     note: "为 traces、metrics、logs、events 和资源定义核心与跨组件语义命名；GenAI 专用约定已迁往独立仓库，业务成功、审批与风险字段仍需项目自行扩展。",
     verifiedAt: "2026-08-01",
     href: "https://opentelemetry.io/docs/specs/semconv/",
+  },
+  "opentelemetry-trace-links": {
+    grade: "O", kind: "可观测规范", shortTitle: "OpenTelemetry Span Links",
+    title: "OpenTelemetry Overview — Links between spans",
+    note: "Span link 可关联同一或不同 trace 的因果步骤，包括长时异步处理；业务任务 ID 与权威业务终态仍由应用定义，规范不要求所有异步步骤拆分 trace。",
+    verifiedAt: "2026-09-24", href: "https://opentelemetry.io/docs/specs/otel/overview/#links-between-spans",
   },
   "opentelemetry-tail-sampling": {
     grade: "O",
@@ -1313,8 +1343,8 @@ export const sourceLedger = {
   "a2a-specification": {
     grade: "O", kind: "官方文档", shortTitle: "A2A Specification",
     title: "A2A Protocol Specification",
-    note: "A2A 最新规范入口，覆盖 Message 或 Task 响应、精确任务状态、contextId 生成后随响应返回、标识校验、仅非终态可订阅、Push 能力与逐 webhook 投递尝试、required Extension 的精确错误、逐请求 Major.Minor 版本、协议绑定、取消与更新；协议合规不证明 Push 成功、业务验收、授权或副作用回滚，具体实现仍需逐项核验。",
-    verifiedAt: "2026-09-04", href: "https://a2a-protocol.org/latest/specification/",
+    note: "A2A 最新规范入口，覆盖 Message 或 Task 响应、精确任务状态、contextId 生成后随响应返回、标识校验、仅非终态可订阅、Push 能力与逐 webhook 投递尝试、required Extension 的精确错误、逐请求 Major.Minor 版本、协议绑定、取消与更新。Agent Card 签名可选，没有通用有效期字段；刷新依 HTTP 缓存头或实现策略。协议合规不证明 Push 成功、业务验收、授权或副作用回滚，具体实现仍需逐项核验。",
+    verifiedAt: "2026-09-24", href: "https://a2a-protocol.org/latest/specification/",
   },
   "a2a-release-1-0-1": {
     grade: "O", kind: "协议规范", shortTitle: "A2A v1.0.1 Release",
@@ -1421,26 +1451,26 @@ export const sourceLedger = {
   "cloudflare-ai-gateway-authentication": {
     grade: "P", kind: "官方文档", shortTitle: "AI Gateway Authentication",
     title: "Authentication — Cloudflare AI Gateway",
-    note: "说明网关令牌验证与对上游提供方凭据的集中管理；这些机制保护网关和提供方接入，但不会自动建立最终用户、工作负载与下游业务资源之间的授权链。",
-    verifiedAt: "2026-08-01", href: "https://developers.cloudflare.com/ai-gateway/configuration/authentication/",
+    note: "说明网关令牌验证与上游提供方凭据代管。AI Gateway Run Token 按账户授权，不能限制到单个 Gateway；跨网关或租户隔离需分账户或使用 Worker binding。Authenticated Gateway 关闭时，无令牌请求仍可成功。网关认证也不代替最终用户、工作负载和业务资源之间的授权链。",
+    verifiedAt: "2026-09-24", href: "https://developers.cloudflare.com/ai-gateway/configuration/authentication/",
   },
   "cloudflare-ai-gateway-caching": {
     grade: "P", kind: "官方文档", shortTitle: "AI Gateway Caching",
     title: "Caching — Cloudflare AI Gateway",
-    note: "说明对相同请求进行缓存与返回命中结果的产品机制；它不是语义缓存规范，也不替应用定义租户隔离、当前授权、版本、时效与失效策略。",
-    verifiedAt: "2026-08-01", href: "https://developers.cloudflare.com/ai-gateway/features/caching/",
+    note: "默认精确缓存键由提供方、端点、模型、提供方认证头和完整请求体组成，不单列网关调用方身份；自定义 cf-aig-cache-key 会覆盖默认键，同键共享响应。应用须自行定义租户隔离、当前授权、版本、时效与失效策略；该机制不是语义缓存。",
+    verifiedAt: "2026-09-24", href: "https://developers.cloudflare.com/ai-gateway/features/caching/",
   },
   "cloudflare-ai-gateway-spend-limits": {
     grade: "P", kind: "官方文档", shortTitle: "AI Gateway Spend Limits",
     title: "Spend limits — Cloudflare AI Gateway",
-    note: "说明按时间区间与成本设置网关消费上限的产品能力；消费限制不能替代请求、Token、并发、提供方配额、任务质量与业务预算的联合治理。",
-    verifiedAt: "2026-08-01", href: "https://developers.cloudflare.com/ai-gateway/features/spend-limits/",
+    note: "Beta 消费阈值按请求完成后的估算费用累计，最终一致；并发突发可短时越过阈值，估算金额不等于提供方账单。它不能替代请求、Token、并发、提供方配额、任务质量与业务预算的联合治理。",
+    verifiedAt: "2026-09-24", href: "https://developers.cloudflare.com/ai-gateway/features/spend-limits/",
   },
   "cloudflare-ai-gateway-dynamic-routing": {
     grade: "P", kind: "官方文档", shortTitle: "AI Gateway Dynamic Routing",
     title: "Dynamic routing — Cloudflare AI Gateway",
-    note: "说明按请求属性和端点配置执行动态路由的产品能力；路由可配置不等于候选模型在质量、地域、工具、安全或错误语义上等价。",
-    verifiedAt: "2026-08-01", href: "https://developers.cloudflare.com/ai-gateway/features/dynamic-routing/",
+    note: "说明按请求属性和端点配置执行动态路由的产品能力。该功能当前标为 Beta，须经 OpenAI-compatible 端点调用，尚不支持 REST API；普通单模型 chat 的兼容端点虽标 Deprecated，动态路由仍需使用它。路由可配置不等于候选模型在质量、地域、工具、安全或错误语义上等价。",
+    verifiedAt: "2026-09-24", href: "https://developers.cloudflare.com/ai-gateway/features/dynamic-routing/",
   },
   "azure-apim-ai-gateway": {
     grade: "P", kind: "官方文档", shortTitle: "Azure APIM AI Gateway",
@@ -1550,6 +1580,12 @@ export const sourceLedger = {
     note: "针对 DGX H100 SuperPOD 给出电力、散热、机柜密度、网络布线、气流和运维协同要求；它直接证明机架空间不是完整设施验收，但具体数值仅适用于该参考架构，不能外推到其他加速器或客户站点。",
     verifiedAt: "2026-07-22", href: "https://docs.nvidia.com/dgx-superpod/design-guides/dgx-superpod-data-center-design-h100/latest/index.html",
   },
+  "nvidia-dgx-h100-electrical": {
+    grade: "P", kind: "指南", shortTitle: "DGX H100 Electrical Design",
+    title: "Electrical Specifications — NVIDIA DGX SuperPOD H100 Data Center Design",
+    note: "该 H100 参考架构按总峰值校核冗余供电：每条独立输入路径至少承载总峰值的一半，两条路径汇合的上游节点承载完整峰值。持续功耗和机架空间不能单独确定容量；数值与拓扑不得外推到其他系统。",
+    verifiedAt: "2026-09-26", href: "https://docs.nvidia.com/dgx-superpod/design-guides/dgx-superpod-data-center-design-h100/latest/electrical.html",
+  },
   "kubernetes-dra-1-34-ga": {
     grade: "O", kind: "官方文档", shortTitle: "Kubernetes DRA GA",
     title: "Kubernetes v1.34: DRA has graduated to GA",
@@ -1603,6 +1639,12 @@ export const sourceLedger = {
     title: "Document-Level Access Control — Azure AI Search",
     note: "区分通用字符串 Security Filters 与基于 Entra 的原生 ACL/RBAC、Purview、SharePoint 权限方案；后三类依赖 2026-05-01-preview 或 Preview SDK，并存在权限变化同步时滞、数据源和主体限制，不能表述为自动继承全部源系统授权。",
     verifiedAt: "2026-07-29", href: "https://learn.microsoft.com/en-us/azure/search/search-document-level-access-overview",
+  },
+  "opensearch-alias-atomic": {
+    grade: "P", kind: "官方文档", shortTitle: "OpenSearch 原子别名切换",
+    title: "Manage Aliases API — OpenSearch Documentation",
+    note: "OpenSearch 可在单次原子事务中执行多个索引别名操作，包括从旧索引切到新索引；该保证不覆盖缓存、在途请求、撤权与删除传播，也不能外推到其他后端。",
+    verifiedAt: "2026-09-24", href: "https://docs.opensearch.org/latest/api-reference/alias/aliases-api/",
   },
   "azure-search-index-alias": {
     grade: "P", kind: "官方文档", shortTitle: "Azure Index Alias",

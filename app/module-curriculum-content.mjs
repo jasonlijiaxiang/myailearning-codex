@@ -1560,11 +1560,12 @@ export const moduleCurriculumContent = Object.freeze({
         "title": "任务级 Trace 与 OTel",
         "en": "End-to-end Tracing",
         "explanation": "一次任务可能穿过网关、检索、多个模型、工具和人工等待。OpenTelemetry 的 GenAI 语义已迁入独立仓库并继续演进；团队应固定约定版本，在 Collector 归一化字段，并把业务终态与审批作为项目扩展。",
-        "decision": "以任务为根关联所有技术调用和业务结果，同时治理遥测 Schema 版本。",
+        "decision": "以稳定业务任务 ID 关联技术调用和权威业务结果；连续调用传播 trace 上下文，排队或人工等待后的新 trace 可用 span link 关联。治理遥测 Schema 版本。",
         "boundary": "Trace 完整不代表应永久保存敏感原文；标准字段也不自动表达业务成功、风险和责任。",
         "sourceIds": [
           "opentelemetry-semconv",
           "opentelemetry-genai-semconv",
+          "opentelemetry-trace-links",
           "nist-zero-trust"
         ]
       },
@@ -1690,6 +1691,7 @@ export const moduleCurriculumContent = Object.freeze({
         "boundary": "总参数、激活参数和实际推理成本不是同一指标，MoE 也不自动更快。",
         "sourceIds": [
           "transformer-2017",
+          "switch-transformer-2022",
           "nist-genai-profile"
         ]
       },
@@ -1819,13 +1821,14 @@ export const moduleCurriculumContent = Object.freeze({
       {
         "title": "Adapter 是需要治理的发布制品",
         "en": "Adapter Operations",
-        "explanation": "Adapter 要绑定基础模型、Tokenizer、聊天模板、量化、推理运行时、训练数据和评估报告。动态加载便于多版本和回滚；合并权重简化单模型部署但会产生新的完整制品。",
+        "explanation": "Adapter 要绑定基础模型、Tokenizer、聊天模板、量化、推理运行时、训练数据和评估报告。已注册 Adapter 可按请求选择；运行时增删是额外的管理能力。合并权重简化单模型部署，但会产生新的完整制品。",
         "decision": "把训练、评估、服务、灰度和回滚信息写入同一发布清单。",
-        "boundary": "更换基座或模板后不能假设原 Adapter 的行为、兼容与安全表现不变。",
+        "boundary": "更换基座或模板后不能假设原 Adapter 的行为、兼容与安全表现不变；运行时增删接口还需单独控制管理权限。",
         "sourceIds": [
           "lora-2021",
           "qlora-2023",
-          "hf-trl-peft"
+          "hf-trl-peft",
+          "vllm-lora-serving"
         ]
       }
     ]
@@ -1841,7 +1844,8 @@ export const moduleCurriculumContent = Object.freeze({
         "boundary": "阶段名称相同不代表厂商使用相同数据、算法或效果。",
         "sourceIds": [
           "instructgpt-2022",
-          "dpo-2023"
+          "dpo-2023",
+          "deepseek-r1-2025"
         ]
       },
       {

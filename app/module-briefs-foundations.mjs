@@ -1260,6 +1260,10 @@ export const llmTraining = {
         {
           "sourceId": "dpo-2023",
           "supports": "支持以直接偏好优化替代部分传统 RLHF 训练流程的研究路线。"
+        },
+        {
+          "sourceId": "deepseek-r1-2025",
+          "supports": "支持特定模型家族在数学、代码等可验证任务上的奖励训练；不是通用后训练配方。"
         }
       ]
     },
@@ -1552,6 +1556,7 @@ export const fineTuning = {
         "lora-2021",
         "qlora-2023",
         "hf-trl-peft",
+        "vllm-lora-serving",
         "nist-genai-profile"
       ],
       "columnLabels": {
@@ -1569,11 +1574,11 @@ export const fineTuning = {
           "boundary": "大量低流量定制会产生空闲容量和版本运维成本。"
         },
         {
-          "name": "共享底座、动态加载 Adapter",
-          "en": "Shared Base with Dynamic Adapters",
-          "mechanism": "多个任务共享同一基础模型权重，运行时按请求加载或选择 Adapter，以减少重复显存和模型副本。",
-          "decision": "适合底座一致、租户较多且流量分散的场景；应验证路由、热加载、批处理、缓存和租户授权。",
-          "boundary": "共享提高利用率，也扩大错误路由、跨租户缓存和单点故障的影响范围。"
+          "name": "共享底座、按请求选择 Adapter",
+          "en": "Shared Base with Selected Adapters",
+          "mechanism": "多个任务共享基础模型权重；服务启动前注册的 Adapter 可由请求选择。新增或移除 Adapter 的运行时管理是另一项能力，不能与按请求选择混为一谈。",
+          "decision": "适合底座一致、租户较多且流量分散的场景；先验证已注册版本的路由、批处理、缓存和租户授权。只有确有在线增删需求时才评估运行时加载能力。",
+          "boundary": "共享提高利用率，也扩大错误路由、跨租户缓存和单点故障的影响范围。vLLM 的运行时增删 LoRA 接口有安全风险警告，只能在隔离且完全可信的环境中启用。"
         },
         {
           "name": "合并 Adapter 后部署",
@@ -1825,15 +1830,15 @@ export const fineTuning = {
     },
     {
       "q": "Adapter 应该动态加载，还是合并进基础模型？",
-      "a": "多任务、多租户和快速回滚通常适合动态加载；任务单一且运行时不支持时可考虑合并。",
-      "depth": "动态 Adapter 共享基座、节省重复权重并便于切换，但要验证路由、缓存、批处理和租户隔离。合并后服务链更简单，却会生成新的完整权重制品，回滚和来源追踪都要保留原基座与 Adapter。两种方式都需重新测试质量、显存、延迟和并发。",
-      "ask": "需要同时服务多少定制版本？运行时是否支持安全路由和热加载，回滚目标多快？",
+      "a": "多任务、多租户可先采用共享底座并按请求选择已注册 Adapter；任务单一或运行时不支持时可评估合并。",
+      "depth": "请求选择已注册 Adapter 与通过管理接口在线加载或卸载不同；后者需要更严格的管理面隔离，vLLM 官方警告其运行时更新接口有安全风险。共享底座要验证路由、缓存、批处理和租户隔离；合并会生成新的完整权重制品。两种方式都要测质量、显存、延迟和并发，并保留原基座与 Adapter 用于回滚。",
+      "ask": "同时服务多少定制版本？只需选择预注册版本，还是确需在线增删？管理接口如何隔离，回滚目标多快？",
       "tag": "Adapter 部署",
       "basis": "多版本服务 + 可回滚制品",
       "evidence": [
         {
-          "sourceId": "hf-trl-peft",
-          "supports": "支持 LoRA/QLoRA 等 PEFT 适配器与训练流程集成。"
+          "sourceId": "vllm-lora-serving",
+          "supports": "区分启动时注册后按请求选择与通过管理接口运行时增删 Adapter，并警告后者的安全风险。"
         },
         {
           "sourceId": "lora-2021",

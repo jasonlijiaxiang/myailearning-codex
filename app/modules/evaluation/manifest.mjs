@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "05",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-08-31",
+  updatedAt: "2026-09-24",
   requiredTerms: Object.freeze(["evaluation","evaluation-contract","golden-set","observability","evaluation-layers","llm-as-judge"]),
   knowledgeView: "evaluation-flywheel",
   readingProfile: null,

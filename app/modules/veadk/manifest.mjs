@@ -17,7 +17,7 @@ export default Object.freeze({
   layerNo: "04",
   routeKind: "brief",
   introducedAt: "2026-08-15",
-  updatedAt: "2026-08-31",
+  updatedAt: "2026-09-25",
   requiredTerms: Object.freeze(["veadk","google-adk","agent-runner","short-term-memory","root-agent","agentkit-app-adapter","tool-loop"]),
   knowledgeView: "agent-definition-runtime-bridge",
   readingProfile: null,
