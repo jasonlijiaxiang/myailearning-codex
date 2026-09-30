@@ -610,7 +610,9 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   ]);
 
   assert.match(layoutSource, /import "\.\.\/fieldbook-v3\.css"/);
-  assert.doesNotMatch(html, /class="heroSearch"/, "the homepage must keep exactly one question-first entry");
+  assert.match(html, /class="heroSearch"/, "the first viewport must launch the shared knowledge search");
+  assert.equal((html.match(/class="moduleSearch"/g) ?? []).length, 1, "the hero launcher must use one shared result explorer");
+  assert.match(interactionSource, /window\.dispatchEvent\(new CustomEvent<string>\("fieldbook:search"/);
   assert.match(html, /class="moduleSearch"/);
   assert.match(html, /<input[^>]*placeholder="[^"]+"/);
   assert.match(interactionSource, /export function KnowledgeSearchLaunch/);

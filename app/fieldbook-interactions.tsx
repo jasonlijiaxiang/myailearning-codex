@@ -5,7 +5,7 @@ import { type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboard
 
 import { balanceGridRows, gridSpan } from "./layout-utils.mjs";
 import { rankKnowledgeSearch } from "./knowledge-search-match.mjs";
-import { filterQuestionDirectoryItems } from "./question-filter.mjs";
+import { filterQuestionDirectoryItems, matchesModuleQuestion } from "./question-filter.mjs";
 import { moduleSearchFeedback, questionFilterCount } from "./search-result-feedback.mjs";
 
 export type ExplorerModule = {
@@ -217,8 +217,9 @@ export function ModuleExplorer({
     const receiveSearch = (event: Event) => {
       const value = event instanceof CustomEvent && typeof event.detail === "string" ? event.detail : "";
       setQuery(value);
+      setLayer("all");
       setKnowledgeLimit(12);
-      window.requestAnimationFrame(() => searchRef.current?.focus());
+      window.requestAnimationFrame(() => searchRef.current?.focus({ preventScroll: true }));
     };
     window.addEventListener("fieldbook:search", receiveSearch);
     return () => window.removeEventListener("fieldbook:search", receiveSearch);
@@ -457,25 +458,22 @@ export function QaFilterShell({
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("all");
   const uniqueTags = useMemo(() => [...new Set(items.map((item) => item.tag))], [items]);
-  const matchingCount = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase("zh-CN");
-    return items.filter((item) => (tag === "all" || item.tag === tag) && (!normalized || item.text.toLocaleLowerCase("zh-CN").includes(normalized))).length;
-  }, [items, query, tag]);
+  const matchingItems = useMemo(() => items.map((item) => matchesModuleQuestion(item, query, tag)), [items, query, tag]);
+  const matchingCount = matchingItems.filter(Boolean).length;
 
   useEffect(() => {
     const details = [...(rootRef.current?.querySelectorAll<HTMLDetailsElement>("details[data-qa-tag]") ?? [])];
-    const normalized = query.trim().toLocaleLowerCase("zh-CN");
     details.forEach((item) => {
-      const text = item.textContent?.toLocaleLowerCase("zh-CN") ?? "";
-      const matches = (tag === "all" || item.dataset.qaTag === tag) && (!normalized || text.includes(normalized));
-      item.hidden = !matches;
+      item.hidden = !matchingItems[Number(item.dataset.qaIndex)];
     });
-  }, [query, tag]);
+  }, [matchingItems]);
 
   useEffect(() => {
     const revealTarget = () => {
       const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
       if (!(target instanceof HTMLDetailsElement) || !target.dataset.qaTag) return;
+      setQuery("");
+      setTag("all");
       target.hidden = false;
       target.open = true;
       window.requestAnimationFrame(() => {

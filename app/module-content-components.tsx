@@ -7,6 +7,7 @@ import { QaFilterShell } from "./fieldbook-interactions";
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
 import { requireDeepDiveRepresentation } from "./deep-dive-representation.mjs";
 import { curriculumChapterAnchor, learningLabAnchor } from "./knowledge-anchor.mjs";
+import { moduleQuestionSearchText } from "./question-filter.mjs";
 
 type SourceSummary = {
   grade: string;
@@ -447,11 +448,11 @@ export function ModuleQaList({
   return (
     <QaFilterShell
       directoryHref={directoryHref}
-      items={items.map((item) => ({ tag: item.tag, text: `${item.q} ${item.a} ${item.depth} ${item.ask}` }))}
+      items={items.map((item) => ({ tag: item.tag, text: moduleQuestionSearchText(item, sourceLedger) }))}
     >
       <div className="qaList">
         {items.map((item, index) => (
-        <details id={`qa-${index + 1}`} key={item.q} open={index === 0} data-qa-tag={item.tag}>
+        <details id={`qa-${index + 1}`} key={item.q} open={index === 0} data-qa-tag={item.tag} data-qa-index={index}>
           <summary>
             <span className="qaNo">Q{String(index + 1).padStart(2, "0")}</span>
             <span className="qaQuestion"><strong>{item.q}</strong><QuestionAddedAt value={item.addedAt} className="qaAddedAt" /></span>

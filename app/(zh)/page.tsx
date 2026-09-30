@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { ModuleExplorer, ReadingProgress, type ExplorerModule } from "../fieldbook-interactions";
+import { KnowledgeSearchLaunch, ModuleExplorer, ReadingProgress, type ExplorerModule } from "../fieldbook-interactions";
 import { chinesePageMetadata } from "../i18n/chinese-page-metadata";
 import { layers, moduleList } from "../knowledge-map.mjs";
 import { moduleDiscovery } from "../module-discovery.mjs";
@@ -106,6 +106,7 @@ export default function Home() {
           <div className="heroCopy">
             <h1><span>讲清 AI 技术，</span><span>心中有数，丝毫不慌</span></h1>
             <p className="heroLead">理解方案背后的原理和适用限制，用它们回答客户追问。</p>
+            <KnowledgeSearchLaunch />
             <div className="heroActions">
               <a className="homePrimaryAction" href="#learning-paths">按任务开始 <span>→</span></a>
               <a className="homeSecondaryAction" href="#available-modules">直接找问题 <span>→</span></a>

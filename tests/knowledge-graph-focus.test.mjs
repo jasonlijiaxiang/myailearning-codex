@@ -3,6 +3,14 @@ import test from "node:test";
 
 import { graphModuleRelations, graphModules, graphRelations } from "../app/knowledge-graph/graph-data.mjs";
 import { referenceModules, sourceLedger } from "../app/reference-content.mjs";
+import { edgePath } from "../app/knowledge-graph/edge-geometry.mjs";
+
+test("directed edges keep source-to-target flow when the target is focused", () => {
+  const point = { x: 250, y: 100 };
+  assert.match(edgePath(point), /^M500 350 Q.* 250\.000 100\.000$/);
+  assert.match(edgePath({ ...point, incoming: true }), /^M250\.000 100\.000 Q.* 500 350$/);
+  assert.equal(edgePath(point).split(" Q")[1].split(" ").slice(0, 2).join(" "), edgePath({ ...point, incoming: true }).split(" Q")[1].split(" ").slice(0, 2).join(" "));
+});
 
 test("cross-module graph explanations keep stable nodes, distinct edges, and verified sources", () => {
   const moduleIds = new Set(graphModules.map((module) => module.id));

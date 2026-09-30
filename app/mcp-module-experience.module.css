@@ -294,6 +294,7 @@
 .qaTabs button span { min-width: 22px; height: 22px; border: 1px solid var(--mcp-line-strong); display: grid; place-items: center; font-size: 10px; }
 .qaTabs button[aria-selected="true"] { border-bottom-color: var(--mcp-accent); color: var(--mcp-accent-dark); }
 .fieldQaList { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.fieldQaList[hidden] { display: none; }
 
 .evidenceGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid var(--mcp-line-strong); border-left: 1px solid var(--mcp-line-strong); }
 .evidenceGrid > article { min-width: 0; padding: 17px 18px; border-right: 1px solid var(--mcp-line-strong); border-bottom: 1px solid var(--mcp-line-strong); content-visibility: auto; contain-intrinsic-size: auto 260px; }

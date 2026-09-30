@@ -11,6 +11,7 @@ import { sourceLedger, referenceModules } from "./reference-content.mjs";
 import { terminology } from "./terminology.mjs";
 import { questionDirectoryItems } from "./question-index.mjs";
 import { curriculumChapterAnchor, learningLabAnchor } from "./knowledge-anchor.mjs";
+import { moduleQuestionSearchText } from "./question-filter.mjs";
 
 const moduleNames = new Map(moduleList.map((module) => [module.slug, module.zh]));
 const questionPhrases = new Map(questionDirectoryItems.map((item) => [item.key, item.customerPhrases]));
@@ -48,7 +49,7 @@ function buildChineseEntries() {
         title: item.q,
         subtitle: `${moduleNames.get(slug)} · ${item.tag}`,
         href: `/modules/${slug}#qa-${index + 1}`,
-        keywords: `${moduleNames.get(slug)} ${item.q} ${item.tag} ${(questionPhrases.get(`${slug}-${index + 1}`) ?? []).join(" ")}`,
+        keywords: `${moduleNames.get(slug)} ${moduleQuestionSearchText(item, sourceLedger)} ${(questionPhrases.get(`${slug}-${index + 1}`) ?? []).join(" ")}`,
       });
     });
   }

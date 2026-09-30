@@ -185,6 +185,25 @@
 }
 
 .fieldbookHome .heroActions { margin-top: 28px; gap: 14px; }
+
+.fieldbookHome .heroV2:has(.heroGridWithArtwork) { min-height: 0; }
+.fieldbookHome .heroGridWithArtwork { min-height: 0; padding-top: 36px; gap: 28px; }
+.fieldbookHome .heroSearch { margin-top: 22px; }
+.fieldbookHome .heroSearch > label { color: var(--home-muted); font-size: 14px; }
+.fieldbookHome .heroSearch > div {
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  min-height: 52px;
+  border: 1px solid var(--home-line);
+  border-radius: 8px;
+  background: var(--home-surface);
+  overflow: hidden;
+}
+.fieldbookHome .heroSearch > div:focus-within { outline: 3px solid var(--home-link); outline-offset: 3px; }
+.fieldbookHome .heroSearch > div > span { color: var(--home-link); padding-left: 12px; }
+.fieldbookHome .heroSearch input { padding: 13px 10px; color: var(--home-ink); font-size: 16px; }
+.fieldbookHome .heroSearch input::placeholder { color: var(--home-placeholder); }
+.fieldbookHome .heroSearch button { min-width: 70px; background: var(--home-mist); color: var(--home-link); border-left: 1px solid var(--home-line); }
+.fieldbookHome .heroSearch button:hover { background: var(--home-mint); }
 .fieldbookHome .homePrimaryAction,
 .fieldbookHome .homeSecondaryAction {
   min-height: 46px;
@@ -633,6 +652,9 @@
     margin-top: 4px;
   }
 
+  .fieldbookHome .heroGridWithArtwork .heroFlightIllustration { width: min(100%, 460px); justify-self: center; }
+  .fieldbookHome .heroGridWithArtwork h1 { font-size: clamp(46px, 4vw, 60px); }
+
   .fieldbookHomeEn .heroGridV2 {
     max-width: 1360px;
     grid-template-columns: minmax(0, 1.45fr) minmax(340px, .62fr);
@@ -758,6 +780,7 @@
   .fieldbookHome .heroFlightArtwork { width: 112%; }
   .fieldbookHome .heroFlightSignal { right: 10%; }
   .fieldbookHome .heroActions { align-items: stretch; flex-direction: column; gap: 10px; }
+  .fieldbookHome .heroSearch button { grid-column: auto; border-top: 0; border-left: 1px solid var(--home-line); }
   .fieldbookHome .homePrimaryAction,
   .fieldbookHome .homeSecondaryAction { justify-content: space-between; }
   .fieldbookHome .heroDecisionPanel { border-radius: 10px; }

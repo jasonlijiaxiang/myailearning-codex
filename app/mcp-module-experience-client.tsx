@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
 import { DenseModuleReadingModes } from "./dense-module-reading-modes";
+import { learningLabAnchor } from "./knowledge-anchor.mjs";
 import { UnifiedModuleScaffold } from "./unified-module-hero";
 import styles from "./mcp-module-experience.module.css";
 
@@ -415,7 +416,7 @@ function LearnView({ data }: { data: McpExperienceData }) {
         <header className={styles.sectionHeader}><span>LAB</span><div><h2>可复核练习</h2><p>每项练习都有情境、任务、交付物和通过标准，可直接进入 PoC 计划。</p></div></header>
         <div className={styles.labGrid}>
           {data.learning.labs.map((lab, index) => (
-            <article id={`lab-mcp-${index + 1}`} key={lab.title}>
+            <article id={learningLabAnchor("mcp", index)} key={lab.title}>
               <header><span>LAB {String(index + 1).padStart(2, "0")}</span><h3>{lab.title}</h3></header>
               <p><strong>情境</strong>{lab.scenario}</p>
               <ol className={styles.labTasks}>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
@@ -588,7 +589,7 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
         field={<FieldView data={data} />}
         hashGroups={{
           quick: ["principle", "mcp-decisions", "mcp-principles"],
-          learn: ["study-guide", "curriculum", ...data.curriculum.chapters.map((_, index) => `mcp-chapter-${index + 1}`), "mcp-relationships", "mcp-contract-dossier", "mcp-labs"],
+          learn: ["study-guide", "curriculum", ...data.curriculum.chapters.map((_, index) => `mcp-chapter-${index + 1}`), "mcp-relationships", "mcp-contract-dossier", "mcp-labs", ...data.learning.labs.map((_, index) => learningLabAnchor("mcp", index))],
           field: ["qa", "mcp-field-qa", "evidence", "mcp-field-evidence", "cloud", "mcp-field-cloud", "related-modules"],
         }}
         learn={<LearnView data={data} />}

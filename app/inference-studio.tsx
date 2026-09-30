@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { DenseModuleReadingModes, type DenseChapterLink } from "./dense-module-reading-modes";
+import { learningLabAnchor } from "./knowledge-anchor.mjs";
 
 type MetricId = "input" | "concurrency" | "ttft" | "tpot" | "goodput" | "oom";
 
@@ -555,7 +556,6 @@ function LearningPanel({
       const chapterIndex = hash === "capacity-experiment" ? capacityTopicIndex : topicIds.indexOf(hash);
       if (chapterIndex < 0 || chapterIndex >= curriculum.chapters.length) return;
       setOpenChapters((current) => new Set([...current, chapterIndex]));
-      window.requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: "start" }));
     };
     revealLinkedChapter();
     window.addEventListener("hashchange", revealLinkedChapter);
@@ -601,7 +601,7 @@ function LearningPanel({
         <div className="learningStart"><h2>把示例变成证据</h2><p>先用估算器理解变量方向；随后将目标模型、请求切片、硬件和 SLO 写进 Run Pack，在真实压测里验证曲线、失败与恢复。</p></div>
         <div className="learningLabList">
           <h2>动手做一遍</h2>
-          {learningLabs.map((lab, index) => <article id={`lab-llm-inference-${index + 1}`} key={lab.title}>
+          {learningLabs.map((lab, index) => <article id={learningLabAnchor("llm-inference", index)} key={lab.title}>
             <span>{String(index + 1).padStart(2, "0")}</span><div><h3>{lab.title}</h3><p>{lab.scenario}</p><ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol><dl><div><dt>交付物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div></dl><LearningSourceLinks sourceIds={lab.sourceIds} sourceTitles={sourceTitles}/></div>
           </article>)}
         </div>
@@ -684,7 +684,7 @@ export function InferenceStudio({ criticalBoundary, curriculum, field, learningL
         directories={inferenceDirectories}
         hashGroups={{
           quick: ["principle", "latency-heatmap", "request-timeline", "selected-metric", "oom-case", ...quickMetricHashes],
-          learn: ["study-guide", "curriculum", "capacity-experiment", "practice", ...learningTopicHashes],
+          learn: ["study-guide", "curriculum", "capacity-experiment", "practice", ...learningTopicHashes, ...learningLabs.map((_, index) => learningLabAnchor("llm-inference", index))],
           field: ["field-guide", "mechanism-index", "decision-guide", "deep-dive", "evidence", "boundary", "cloud", "qa", "related-modules"],
         }}
         readerId="module-reading"

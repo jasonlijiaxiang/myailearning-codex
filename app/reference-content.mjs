@@ -1397,8 +1397,8 @@ export const sourceLedger = {
   "openai-realtime-conversations": {
     grade: "P", kind: "官方文档", shortTitle: "OpenAI Realtime Conversations",
     title: "Realtime conversations — OpenAI API",
-    note: "启用 VAD 时 WebRTC/SIP 自动截断，WebSocket 客户端按已播位置截断；关闭 VAD 的按键说话模式下，前者由客户端发送 output_audio_buffer.clear，后者停止本地播放并发送 conversation.item.truncate。音频截断不产生精确对齐的转写。",
-    verifiedAt: "2026-09-24", href: "https://developers.openai.com/api/docs/guides/realtime-conversations",
+    note: "VAD 启用且 interrupt_response=true 时，WebRTC/SIP 自动截断，WebSocket 客户端按已播位置截断；关闭 VAD 或自动打断时，客户端须主动取消旧响应，并清理输出缓冲或本地播放。音频截断不产生精确对齐的转写。",
+    verifiedAt: "2026-09-30", href: "https://developers.openai.com/api/docs/guides/realtime-conversations",
   },
   "google-gemini-thinking": {
     grade: "P", kind: "官方文档", shortTitle: "Gemini Thinking",

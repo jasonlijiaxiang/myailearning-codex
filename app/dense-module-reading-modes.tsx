@@ -258,7 +258,7 @@ export function DenseModuleReadingModes({
       if (window.location.hash !== anchor.hash) {
         window.history.pushState(window.history.state, "", `${window.location.pathname}${window.location.search}${anchor.hash}`);
       }
-      revealHash(anchor.hash);
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
     };
     handleHashChange();
     window.addEventListener("hashchange", handleHashChange);

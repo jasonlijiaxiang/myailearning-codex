@@ -620,6 +620,43 @@ test("deep links resolve through real DOM ancestors", async () => {
   assert.match(readerSource, /target instanceof HTMLDetailsElement\) target\.open = true/);
   assert.match(readerSource, /window\.history\.replaceState\(window\.history\.state/);
   assert.match(readerSource, /requestAnimationFrame\(\(\) => \{[\s\S]*revealTarget\(\);[\s\S]*requestAnimationFrame\(revealTarget\)/);
+  assert.match(readerSource, /dispatchEvent\(new HashChangeEvent\("hashchange"\)\)/, "intercepted links must notify nested chapter readers");
+});
+
+test("lazy learning panels declare exercise ownership before mounting", async () => {
+  const owners = [
+    ["mcp-module-experience-client.tsx", "mcp", "data.learning.labs"],
+    ["inference-studio.tsx", "llm-inference", "learningLabs"],
+  ];
+  for (const [file, slug, collection] of owners) {
+    const source = await readFile(new URL(file, appUrl), "utf8");
+    assert.ok(source.includes(`id={learningLabAnchor("${slug}", index)}`), `${file} must render the canonical exercise ID`);
+    const hashGroups = source.slice(source.indexOf("hashGroups={{"), source.indexOf("field:", source.indexOf("hashGroups={{")));
+    assert.ok(hashGroups.includes(`...${collection}.map((_, index) => learningLabAnchor("${slug}", index))`), `${file} must register every exercise in the learning mode`);
+  }
+});
+
+test("MCP category panels respect hidden state after enhancement", async () => {
+  const css = await readFile(mcpStylesUrl, "utf8");
+  assert.match(css, /\.fieldQaList\[hidden\]\s*\{\s*display:\s*none/);
+});
+
+test("question visibility and count share the same search corpus", async () => {
+  const interactionSource = await readFile(qaInteractionComponentUrl, "utf8");
+  const qaSource = interactionSource.slice(interactionSource.indexOf("export function QaFilterShell"), interactionSource.indexOf("export function", interactionSource.indexOf("export function QaFilterShell") + 20));
+  assert.match(qaSource, /items\.map\(\(item\) => matchesModuleQuestion\(item, query, tag\)\)/);
+  assert.match(qaSource, /matchingItems\.filter\(Boolean\)\.length/);
+  assert.match(qaSource, /item\.hidden = !matchingItems\[Number\(item\.dataset\.qaIndex\)\]/);
+  assert.doesNotMatch(qaSource, /textContent/, "DOM text must not create a second search corpus");
+});
+
+test("Chinese homepage exposes working search in the hero", async () => {
+  const html = await renderHtml("/");
+  const hero = html.slice(html.indexOf('id="top"'), html.indexOf('id="learning-paths"'));
+  assert.match(hero, /role="search"/);
+  assert.match(hero, /id="hero-knowledge-search"/);
+  const homeCss = await readFile(new URL("home-refresh.css", appUrl), "utf8");
+  assert.match(homeCss, /\.fieldbookHome \.heroSearch > div:focus-within/);
 });
 
 test("English reader sections own accessible headings", async () => {

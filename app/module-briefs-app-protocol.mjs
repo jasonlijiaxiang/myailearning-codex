@@ -972,7 +972,7 @@ export const multimodalBrief = {
         {
           "name": "停止播放",
           "en": "Stop Playback",
-          "mechanism": "立即停止当前 TTS 播放，记录实际播到的音频位置。OpenAI Realtime 启用 VAD 时，WebRTC/SIP 会自动截断未播缓冲，WebSocket 客户端须按已播进度发送截断事件；关闭 VAD 的按键说话模式下，WebRTC/SIP 客户端发送 output_audio_buffer.clear，WebSocket 客户端停止本地播放并发送 conversation.item.truncate。",
+          "mechanism": "立即停止当前 TTS 播放，记录实际播到的音频位置。OpenAI Realtime 启用 VAD 且 turn_detection.interrupt_response=true 时，WebRTC/SIP 会自动截断未播缓冲，WebSocket 客户端须按已播进度发送截断事件；关闭 VAD 或关闭自动打断时，客户端主动取消旧响应，WebRTC/SIP 发送 output_audio_buffer.clear，WebSocket 停止本地播放并发送 conversation.item.truncate。",
           "decision": "停止后是否还有缓冲内容在音箱侧继续出声？",
           "boundary": "停止播放不等于取消生成任务。"
         },
@@ -1261,7 +1261,7 @@ export const multimodalBrief = {
     {
       "q": "实时语音为什么不能只比较模型首包速度？",
       "a": "用户体验由端点检测、网络、模型、工具、语音合成、打断和状态恢复共同决定。",
-      "depth": "应测从用户停止说话到系统开始回应的端到端延迟，并测试用户打断后能否停止播报、取消旧任务和正确续接上下文。OpenAI Realtime 启用 VAD 时，WebRTC/SIP 服务端自动截断未播缓冲；WebSocket 客户端停止播放并按已播位置发送 conversation.item.truncate。关闭 VAD 做按键说话时，客户端还需主动取消旧响应；WebRTC/SIP 发送 output_audio_buffer.clear，WebSocket 停止本地播放并发送 conversation.item.truncate。音频截断不提供逐字精确对齐的截断转写，恢复上下文须以实际播放位置为准。这是该 API 的实现，不宜照搬到其他语音栈。",
+      "depth": "应测从用户停止说话到系统开始回应的端到端延迟，并测试用户打断后能否停止播报、取消旧任务和正确续接上下文。OpenAI Realtime 启用 VAD 且 turn_detection.interrupt_response=true 时，WebRTC/SIP 服务端自动截断未播缓冲；WebSocket 客户端停止播放并按已播位置发送 conversation.item.truncate。关闭 VAD 做按键说话，或保留 VAD 但关闭自动打断时，客户端还需主动取消旧响应；WebRTC/SIP 发送 output_audio_buffer.clear，WebSocket 停止本地播放并发送 conversation.item.truncate。音频截断不提供逐字精确对齐的截断转写，恢复上下文须以实际播放位置为准。这是该 API 的实现，不宜照搬到其他语音栈。",
       "ask": "电话还是 App？是否需要打断、转人工、录音、工具调用和多语言？",
       "tag": "实时交互",
       "basis": "端到端系统评估",

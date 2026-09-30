@@ -140,7 +140,7 @@
 .inspector li button { width: 100%; padding: 0; display: flex; justify-content: space-between; border: 0; background: transparent; color: var(--text); font: inherit; cursor: pointer; }
 .inspector li button span { color: var(--cyan); font-size: 10px; }
 .inspector li button strong { font-size: 13px; }
-.inspector li p { margin: 5px 0 0; color: var(--subtle); font-size: 12px; line-height: 1.55; }
+.inspector li p { margin: 8px 0 0; color: var(--subtle); font-size: 16px; line-height: 1.65; }
 .inspector nav { position: sticky; bottom: -18px; margin: 16px -17px -18px; padding: 12px 17px 18px; display: grid; gap: 7px; background: linear-gradient(transparent, #132d36 20%); }
 .inspector nav a { min-height: 44px; display: grid; place-items: center; border: 1px solid rgba(159, 196, 202, .42); color: var(--text); font-size: 13px; text-decoration: none; }
 .inspector nav a:first-child { background: var(--cyan); border-color: var(--cyan); color: #153047; }
@@ -156,7 +156,7 @@
 @keyframes nodeIn { from { opacity: 0; transform: translate(-50%, -50%) scale(.72); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
 
 @media (max-width: 1180px) {
-  .workspace { grid-template-columns: 210px minmax(540px, 1fr) 270px; }
+  .workspace { grid-template-columns: 210px minmax(0, 1fr) 270px; }
   .scopeNote { display: none; }
   .toolbar { grid-template-columns: minmax(260px, 1fr) auto; }
 }

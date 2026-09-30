@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import type { GraphLayer, GraphModule, GraphRelationType, GraphTerm } from "../graph-types";
+import { edgePath } from "../edge-geometry.mjs";
 import styles from "./knowledge-constellation.module.css";
 
 type Relation = { id: string; from: string; to: string; type: string; explanation: string; explanationEn?: string; sourceId?: string; kind?: "module"; direction: string; status: string };
@@ -19,6 +20,8 @@ type Neighbor = {
   explanation?: string;
   explicit: boolean;
   sourceId?: string;
+  incoming?: boolean;
+  directionLabel?: string;
 };
 type Point = Neighbor & { x: number; y: number };
 
@@ -116,12 +119,6 @@ function focusKey(focus: Focus) {
 function splitModuleTitle(title: string) {
   const [lead, detail] = title.split(" · ", 2);
   return detail ? { lead, detail } : { lead: title, detail: "" };
-}
-
-function edgePath(point: Pick<Point, "x" | "y">) {
-  const controlX = 500 + (point.x - 500) * .48;
-  const controlY = 350 + (point.y - 350) * .35 - 22;
-  return `M500 350 Q${controlX.toFixed(3)} ${controlY.toFixed(3)} ${point.x.toFixed(3)} ${point.y.toFixed(3)}`;
 }
 
 function parseFocus(value: string | null, modules: Map<string, GraphModule>, terms: Map<string, GraphTerm>): Focus | null {
@@ -276,6 +273,10 @@ export function KnowledgeConstellation({
         explanation,
         explicit: true,
         sourceId: relation.sourceId,
+        incoming: relation.direction === "directed" && relation.to === focus.id,
+        directionLabel: relation.direction === "directed"
+          ? `${(kind === "module" ? moduleById.get(relation.from) : termById.get(relation.from))?.zh ?? relation.from} → ${(kind === "module" ? moduleById.get(relation.to) : termById.get(relation.to))?.zh ?? relation.to}`
+          : undefined,
       }];
     });
     const explainedNodeKeys = new Set(explainedNeighbors.map((neighbor) => `${neighbor.kind}:${neighbor.id}`));
@@ -364,7 +365,7 @@ export function KnowledgeConstellation({
                 {points.map((point) => (
                   <g key={point.key} className={styles[`edge_${point.relationType}`] ?? ""}>
                     <path d={edgePath(point)} />
-                    <circle className={styles.particle} r="3"><animateMotion dur={`${(2.2 + (point.x % 4) * .25).toFixed(2)}s`} repeatCount="indefinite" path={edgePath(point)} /></circle>
+                    {point.directionLabel ? <circle className={styles.particle} r="3"><animateMotion dur={`${(2.2 + (point.x % 4) * .25).toFixed(2)}s`} repeatCount="indefinite" path={edgePath(point)} /></circle> : null}
                   </g>
                 ))}
               </svg>
@@ -414,7 +415,7 @@ export function KnowledgeConstellation({
           <header><span>{copy.selected}{language === "en" ? " " : ""}{focus.kind === "module" ? copy.module : copy.term}</span><h2>{selectedTitle}</h2><p>{selectedSubtitle}</p></header>
           {!showRelationsFirst ? <p className={styles.description}>{selectedDescription}</p> : null}
           <div className={styles.meta}>{selectedTerm ? <><span>{copy.primaryOwner}</span><strong>{primaryModule?.zh}</strong></> : null}<span>{copy.currentlyShowing}</span><strong>{explainedNeighbors.length} {explainedNeighbors.length === 1 ? copy.relationCountOne : copy.relationCount}</strong></div>
-          {explainedNeighbors.length ? <section style={{ maxHeight: "none", overflow: "visible" }}><h3>{copy.relationExplanation}</h3><ul>{explainedNeighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.explanation}</p>{neighbor.sourceId ? <Link href={`${copy.referencesHref}#source-${neighbor.sourceId}`} style={{ color: "var(--cyan)", fontSize: 12, textUnderlineOffset: 3 }}>{copy.source} ↗</Link> : null}</li>)}</ul></section> : null}
+          {explainedNeighbors.length ? <section style={{ maxHeight: "none", overflow: "visible" }}><h3>{copy.relationExplanation}</h3><ul>{explainedNeighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.directionLabel ? <strong>{neighbor.directionLabel}<br /></strong> : null}{neighbor.explanation}</p>{neighbor.sourceId ? <Link href={`${copy.referencesHref}#source-${neighbor.sourceId}`} style={{ color: "var(--cyan)", fontSize: 12, textUnderlineOffset: 3 }}>{copy.source} ↗</Link> : null}</li>)}</ul></section> : null}
           {showRelationsFirst ? <p className={styles.description}><strong>{copy.overview} · </strong>{selectedDescription}</p> : null}
           {catalogNeighbors.length ? explainedNeighbors.length
             ? <details key={`${focus.kind}:${focus.id}:catalog`}><summary>{catalogTitle} · {catalogNeighbors.length}</summary>{catalogList}</details>
