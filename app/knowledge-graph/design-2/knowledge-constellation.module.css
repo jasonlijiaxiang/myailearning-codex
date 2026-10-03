@@ -69,7 +69,7 @@
 .rail h2 span { color: var(--layer-color); font-variant-numeric: tabular-nums; }
 .rail section > button { width: 100%; min-height: 44px; padding: 6px 8px; display: grid; grid-template-columns: 7px 1fr; gap: 0 8px; align-items: center; border: 1px solid transparent; background: transparent; color: #d3dfdf; font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
 .rail section > button i { grid-row: 1 / 3; width: 6px; height: 6px; border-radius: 50%; background: var(--layer-color); box-shadow: 0 0 10px color-mix(in srgb, var(--layer-color) 65%, transparent); }
-.rail section > button small { color: #9bb0b5; font-size: 10px; }
+.rail section > button small { color: #9bb0b5; font-size: 14px; }
 .rail section > button:hover, .rail section > button:focus-visible { background: rgba(159, 196, 202, .07); }
 .rail section > button[aria-pressed="true"] { border-color: color-mix(in srgb, var(--layer-color) 65%, transparent); background: rgba(112, 151, 160, .17); color: var(--text); }
 
@@ -91,9 +91,9 @@
 .node { z-index: 5; width: 124px; min-height: 70px; padding: 9px 11px; border: 1px solid rgba(159, 196, 202, .54); border-radius: 50%; background: radial-gradient(circle at 45% 40%, rgba(89, 137, 147, .42), rgba(15, 39, 47, .95) 68%); color: var(--text); box-shadow: 0 0 18px rgba(109, 157, 166, .13); opacity: 0; animation: nodeIn 480ms cubic-bezier(.2, .9, .2, 1) forwards; animation-delay: var(--delay); }
 .node:hover, .node:focus-visible { z-index: 9; border-color: var(--lime); box-shadow: 0 0 24px rgba(159, 196, 202, .3); transform: translate(-50%, -50%) scale(1.06); }
 .node small, .node strong, .node span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.node small { margin-bottom: 3px; color: var(--cyan); font-size: 10px; }
-.node strong { font-size: 13px; }
-.node span { margin-top: 2px; color: var(--subtle); font-size: 10px; }
+.node small { margin-bottom: 3px; color: var(--cyan); font-size: 14px; }
+.node strong { font-size: 20px; }
+.node span { margin-top: 2px; color: var(--subtle); font-size: 14px; }
 .node_contextual-use { border-color: rgba(142, 180, 154, .58); }
 .node_prerequisite { border-color: rgba(141, 169, 193, .62); }
 .node_component { border-color: rgba(131, 182, 176, .62); }
@@ -122,7 +122,7 @@
 .canvasControls button:first-child { border-top: 0; }
 .canvasControls button:hover, .canvasControls button:focus-visible, .canvasControls button[aria-pressed="true"] { color: var(--text); background: rgba(159, 196, 202, .1); }
 .legend { position: absolute; z-index: 14; left: 14px; bottom: 18px; max-width: calc(100% - 86px); padding: 9px 11px; display: flex; gap: 8px 14px; flex-wrap: wrap; border: 1px solid rgba(173, 201, 204, .22); background: rgba(14, 34, 42, .88); }
-.legend span { display: inline-flex; gap: 6px; align-items: center; color: var(--subtle); font-size: 10px; }
+.legend span { display: inline-flex; gap: 6px; align-items: center; color: var(--subtle); font-size: 14px; }
 .legend i { width: 18px; border-top: 1px solid currentColor; }
 
 .inspector { max-height: 720px; overflow: auto; padding: 18px 17px; border-left: 1px solid var(--stroke); scrollbar-width: thin; }
@@ -130,7 +130,7 @@
 .inspector header > span { color: var(--cyan); font-size: 12px; letter-spacing: .1em; }
 .inspector h2 { margin: 8px 0 0; font-family: var(--font-serif), serif; font-size: 24px; font-weight: 500; }
 .inspector header p { margin: 5px 0 0; color: var(--subtle); font-size: 12px; }
-.description { margin: 15px 0 0; color: #c3d2e4; font-size: 14px; line-height: 1.75; }
+.description { margin: 15px 0 0; color: #c3d2e4; font-size: 16px; line-height: 1.75; }
 .meta { margin-top: 16px; padding-block: 12px; display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; border-block: 1px solid var(--stroke); }
 .meta span { color: var(--subtle); font-size: 12px; }
 .meta strong { font-size: 13px; font-weight: 600; }
@@ -138,7 +138,7 @@
 .inspector ul { margin: 0; padding: 0; list-style: none; }
 .inspector li { padding: 9px 0; border-top: 1px solid rgba(122, 166, 218, .13); }
 .inspector li button { width: 100%; padding: 0; display: flex; justify-content: space-between; border: 0; background: transparent; color: var(--text); font: inherit; cursor: pointer; }
-.inspector li button span { color: var(--cyan); font-size: 10px; }
+.inspector li button span { color: var(--cyan); font-size: 14px; }
 .inspector li button strong { font-size: 13px; }
 .inspector li p { margin: 8px 0 0; color: var(--subtle); font-size: 16px; line-height: 1.65; }
 .inspector nav { position: sticky; bottom: -18px; margin: 16px -17px -18px; padding: 12px 17px 18px; display: grid; gap: 7px; background: linear-gradient(transparent, #132d36 20%); }
@@ -199,13 +199,13 @@
   .canvas { bottom: 140px; }
   .graphPlane { transform: translate(-50%, -50%) scale(calc(var(--graph-scale) * .56)); }
   .node { width: 128px; min-height: 70px; }
-  .node small { font-size: 10px; }
+  .node small { font-size: 14px; }
   .node strong { font-size: 15px; }
-  .node span { font-size: 10px; }
+  .node span { font-size: 14px; }
   .focusNode strong { font-size: 23px; }
   .ambientModule span { display: none; }
   .legend { left: 10px; right: 10px; bottom: 64px; max-width: none; padding: 7px 9px; gap: 5px 9px; }
-  .legend span { font-size: 10px; }
+  .legend span { font-size: 14px; }
   .legend i { width: 12px; }
   .canvasControls { right: 10px; bottom: 10px; display: flex; }
   .canvasControls button { width: 44px; height: 44px; }
@@ -219,4 +219,33 @@
 @media (prefers-reduced-motion: reduce) {
   .page *, .page *::before, .page *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   .particle { display: none; }
+}
+
+/* Compensate for the graph's fit and zoom so text retains its reading size. */
+.graphPlane { --graph-fit: 1; }
+.node strong { font-size: calc(16px / var(--graph-scale) / var(--graph-fit)); }
+.node small, .node span, .focusNode > span, .focusNode small { font-size: calc(14px / var(--graph-scale) / var(--graph-fit)); }
+.focusNode strong .moduleTitleLead { font-size: calc(20px / var(--graph-scale) / var(--graph-fit)); }
+.focusNode strong .moduleTitleDetail { font-size: calc(17px / var(--graph-scale) / var(--graph-fit)); }
+.focusAction { font-size: calc(16px / var(--graph-scale) / var(--graph-fit)); }
+@media (min-width: 901px) and (max-height: 800px) { .graphPlane { --graph-fit: .8; } }
+@media (min-width: 601px) and (max-width: 900px) { .graphPlane { --graph-fit: .78; } }
+
+/* Narrow workspaces use a readable node map instead of a scaled poster. */
+@media (max-width: 1180px) {
+  .canvasShell { height: auto; padding-bottom: 146px; }
+  .canvas { position: relative; inset: auto; overflow: visible; }
+  .graphPlane { position: relative; left: auto; top: auto; width: auto; height: auto; margin: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; transform: none; }
+  .edges, .ambientModule { display: none; }
+  .node { position: static; width: auto; min-height: 94px; padding: 12px; border-radius: 8px; transform: none; opacity: 1; animation: none; }
+  .node:hover, .node:focus-visible { transform: none; }
+  .node strong { font-size: 16px; white-space: normal; line-height: 1.5; }
+  .node small, .node span { font-size: 14px; }
+  .focusNode { position: static; order: -1; grid-column: 1 / -1; width: auto; min-height: 150px; border-radius: 12px; transform: none; animation: none; }
+  .focusNode strong .moduleTitleLead { font-size: 22px; }
+  .focusNode strong .moduleTitleDetail { font-size: 18px; }
+  .focusNode > span, .focusNode small { font-size: 14px; }
+  .focusAction { min-height: 44px; font-size: 16px; }
+  .canvasControls button:nth-child(-n+3) { display: none; }
+  .legend { bottom: 64px; }
 }

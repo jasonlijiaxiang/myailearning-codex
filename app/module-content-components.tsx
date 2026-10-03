@@ -8,6 +8,7 @@ import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-m
 import { requireDeepDiveRepresentation } from "./deep-dive-representation.mjs";
 import { curriculumChapterAnchor, learningLabAnchor } from "./knowledge-anchor.mjs";
 import { moduleQuestionSearchText } from "./question-filter.mjs";
+import { WorkedExample, type WorkedExampleContent } from "./worked-example";
 
 type SourceSummary = {
   grade: string;
@@ -56,6 +57,7 @@ export type ModuleLearningContent = {
     deliverable: string;
     acceptance: string;
     sourceIds: readonly string[];
+    workedExample?: WorkedExampleContent;
   }>;
 };
 
@@ -356,7 +358,7 @@ export function ModuleLearningStudio({
       <div className="learningRoute" aria-labelledby="learning-route-title">
         <div className="learningStudioHeading">
           <p className="miniLabel">ACTION PATH</p>
-          <h3 id="learning-route-title">把主题推进到检查点</h3>
+          <h3 id="learning-route-title">学习顺序与掌握检查</h3>
         </div>
         <ol>
           {content.route.map((step, index) => (
@@ -383,6 +385,7 @@ export function ModuleLearningStudio({
                 <div><dt>产物</dt><dd>{lab.deliverable}</dd></div>
                 <div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div>
               </dl>
+              <WorkedExample example={lab.workedExample} />
               <DeepDiveSourceLinks sourceIds={lab.sourceIds} sourceLedger={sourceLedger} />
             </article>
           ))}

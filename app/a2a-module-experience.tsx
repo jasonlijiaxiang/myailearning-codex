@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WorkedExample, type WorkedExampleContent } from "./worked-example";
 
 import { DenseModuleReadingModes, type DenseChapterLink, type ReadingModeId } from "./dense-module-reading-modes";
 import { curriculumChapterAnchor, learningLabAnchor } from "./knowledge-anchor.mjs";
@@ -37,6 +38,7 @@ type SourceEvidenceCard = {
 };
 
 type SourceLab = {
+  workedExample?: WorkedExampleContent;
   title: string;
   scenario: string;
   tasks: readonly string[];
@@ -76,7 +78,7 @@ const taskStates = [
   { code: "TASK_STATE_INPUT_REQUIRED", label: "等待补件", kind: "interrupt", meaning: "缺少业务输入；补齐后恢复同一个 Task。" },
   { code: "TASK_STATE_AUTH_REQUIRED", label: "等待授权", kind: "interrupt", meaning: "需要新的授权或确认；不得静默扩大原授权。" },
   { code: "TASK_STATE_COMPLETED", label: "技术完成", kind: "terminal", meaning: "提供方结束执行，不代表产物合格或业务接受。" },
-  { code: "TASK_STATE_FAILED", label: "执行失败", kind: "terminal", meaning: "任务以失败结束；修订工作另建相关 Task。" },
+  { code: "TASK_STATE_FAILED", label: "执行失败", kind: "terminal", meaning: "任务以失败结束；修订请求另行发起并保留关联。" },
   { code: "TASK_STATE_CANCELED", label: "已取消", kind: "terminal", meaning: "协议任务已终止，不证明下游副作用已回滚。" },
   { code: "TASK_STATE_REJECTED", label: "已拒绝", kind: "terminal", meaning: "提供方拒绝受理；调用方需重新判断范围或能力。" },
 ] as const;
@@ -85,7 +87,7 @@ const deliveryRows = [
   { mode: "直接 Message", when: "即时、自包含，不需要后续跟踪", state: "不创建 Task", client: "保持一次请求", guard: "仍保存身份、输入和响应证据" },
   { mode: "阻塞等待", when: "短任务且超时包络明确", state: "可返回 Task 终态", client: "连接保持在线", guard: "网络超时不等于任务失败" },
   { mode: "轮询", when: "客户端无法长连或需主动控制节奏", state: "按 Task ID 查询", client: "可离线后恢复", guard: "设置退避、TTL 和终态停止条件" },
-  { mode: "Streaming / 订阅", when: "需要低延迟状态或内容增量", state: "状态仍由 Task 保存", client: "维持流或重连", guard: "游标、顺序和断线恢复需测试" },
+  { mode: "Streaming / 订阅", when: "需要低延迟状态或内容增量", state: "状态仍由 Task 保存", client: "断线后查询，再订阅非终态任务", guard: "订阅首帧是当前快照；规范不提供恢复游标或历史重放" },
   { mode: "Push", when: "客户端不在线，服务端主动通知", state: "回调只传更新", client: "提供受控回调地址", guard: "验证地址、认证、幂等、限流与重放" },
 ] as const;
 
@@ -183,13 +185,8 @@ function loadA2ASourceContent() {
   return { qa: brief.qa, evidenceCards: brief.evidenceCards, curriculum, learning, fieldQuestionGroups };
 }
 
-const sources = [
-  { id: "a2a-concepts", title: "A2A Core Concepts", type: "官方 · 核心概念", proves: "Message / Task、Part、Artifact 与生命周期对象边界。" },
-  { id: "a2a-specification", title: "A2A Protocol Specification", type: "官方 · 规范", proves: "协议操作、TaskState、逐请求版本、Binding、取消与错误语义。" },
-  { id: "a2a-release-1-0-1", title: "A2A v1.0.1 Release", type: "官方 · 发布记录", proves: "v1.0.1 是规范补丁发布，不参与线上 Major.Minor 协商。" },
-  { id: "a2a-mcp-boundary", title: "A2A and MCP", type: "官方 · 边界说明", proves: "A2A 面向独立 Agent；MCP 面向工具、资源和应用连接。" },
-  { id: "opentelemetry-semconv", title: "OpenTelemetry Semantic Conventions", type: "官方 · 遥测规范", proves: "用 Trace Context 关联跨服务调用的通用机制。" },
-] as const;
+const sourceIds = ["a2a-concepts", "a2a-specification", "a2a-release-1-0-1", "a2a-mcp-boundary", "opentelemetry-semconv"] as const;
+const sources = sourceIds.map((id) => ({ id, ...sourceLedger[id] }));
 
 function FlowArrow({ label }: { label?: string }) {
   return (
@@ -270,7 +267,7 @@ function QuickView({ knowledgeView, terms }: { knowledgeView: string; terms: Rea
         <header className={styles.compactHeader}>
           <span>01 / MESSAGE OR TASK</span>
           <h2 id="a2a-handoff-title">SendMessage 之后，远端决定返回对象</h2>
-          <p>直接 Message 与创建 Task 都从同一个 SendMessage 节点分叉。只有进入 Task 后，才讨论补件、授权、取消和恢复。</p>
+          <p>即时响应与需跟踪的工作都通过 SendMessage 发起，认证与操作授权覆盖两条路径；Task 路径另有补件、任务级授权中断、取消和恢复。</p>
         </header>
         <div className={styles.handoffFlow}>
           <article className={styles.domainNode}>
@@ -363,7 +360,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
 
       <section className={styles.learnLead}>
         <p>LEARNING SPINE</p>
-        <h2>以同一跨域任务为主线，固定 Agent Card、Message / Task 分叉、九个 TaskState、恢复策略、身份链和三层验收</h2>
+        <h2>A2A 对象、状态与交付方式</h2>
         <div>
           <span>对象模型</span>
           <span>运行与恢复</span>
@@ -437,7 +434,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
           <FlowArrow />
           <div>
             <article><span>无需跟踪</span><h3>直接 Message</h3><p>即时、自包含；不创建 Task，不保证产生 Artifact。</p><strong>保存：调用身份、输入、响应、版本与 Binding</strong></article>
-            <article><span>需要跟踪</span><h3>创建 Task</h3><p>等待外部系统、人、补件、授权，或需要断线恢复、取消、状态审计。</p><strong>保存：Task ID、状态事件、游标、幂等键与验收记录</strong></article>
+            <article><span>需要跟踪</span><h3>创建 Task</h3><p>等待外部系统、人、补件、授权，或需要断线恢复、取消、状态审计。</p><strong>保存：Task ID、应用事件记录、业务幂等键与验收记录</strong></article>
           </div>
         </div>
         <details className={styles.detailBlock} open>
@@ -490,7 +487,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
             {taskStates.filter((state) => state.kind === "terminal").map((state) => <article key={state.code}><span>{state.label}</span><code>{state.code}</code><p>{state.meaning}</p></article>)}
           </div>
         </div>
-        <Boundary title="状态边界">INPUT_REQUIRED 与 AUTH_REQUIRED 在补齐条件后恢复同一个 Task。任何终态都不可继续写入；若需要修订，创建新的相关 Task，并由客户端维护关联。</Boundary>
+        <Boundary title="状态边界">INPUT_REQUIRED 与 AUTH_REQUIRED 在补齐条件后恢复同一个 Task。终态任务不再续跑；修订时发送不带旧 taskId 的新 Message，可保留 contextId 并引用旧 Task。服务端可能直接返回 Message 或创建新 Task，调用方分别验收并保存关联。</Boundary>
       </section>
 
       <section className={styles.chapter} id="a2a-chapter-6">
@@ -503,7 +500,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
           </table>
         </div>
         <div className={styles.deliveryChecks}>
-          <article><strong>流式断线</strong><p>按 Task ID 查询或重订阅；游标和事件顺序要进入契约测试。</p></article>
+          <article><strong>流式断线</strong><p>先用 GetTask 查询当前状态。若仍是非终态且对端声明 streaming，可再 SubscribeToTask，首帧返回当前快照。若订阅前已进入终态，按 UnsupportedOperationError 回到 GetTask 验收。断线期间历史由应用事件记录补齐，不能假定协议会重放。</p></article>
           <article><strong>Push 回调</strong><p>验证地址与服务身份；回调事件可重复，消费端必须幂等。</p></article>
           <article><strong>大文件</strong><p>优先受控对象引用，绑定短时访问、校验值、数据分类和保留期。</p></article>
         </div>
@@ -520,7 +517,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
           <article>
             <span>场景 B · 后续请求超时</span>
             <h3>已持有 taskId</h3>
-            <ol><li>先按 Task ID 查询当前状态</li><li>恢复轮询或订阅，不盲目重建 Task</li><li>终态后的修订另建相关 Task</li></ol>
+            <ol><li>先按 Task ID 查询当前状态</li><li>恢复轮询或订阅，不盲目重建 Task</li><li>终态后的修订发送新 Message，分别处理直接响应或新 Task</li></ol>
           </article>
           <article>
             <span>场景 C · CancelTask</span>
@@ -601,6 +598,7 @@ function LearnView({ curriculum, learning }: { curriculum: A2ASourceCurriculum; 
               <p>{lab.scenario}</p>
               <ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
               <dl><div><dt>产物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过</dt><dd>{lab.acceptance}</dd></div></dl>
+              <WorkedExample example={lab.workedExample} />
               <LabSourceLinks sourceIds={lab.sourceIds} />
             </article>
           ))}
@@ -700,7 +698,7 @@ function FieldView({
           <div className={styles.sourceRows}>
             {sources.map((source) => (
               <Link href={`/references#source-${source.id}`} key={source.id}>
-                <span>{source.type}</span><strong>{source.title}</strong><p>{source.proves}</p><small>查看已核验来源</small>
+                <span>{source.kind}</span><strong>{source.title}</strong><p>{source.note}</p><small>查看已核验来源</small>
               </Link>
             ))}
           </div>

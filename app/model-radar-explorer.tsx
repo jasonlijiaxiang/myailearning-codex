@@ -185,7 +185,7 @@ export function ModelRadarExplorer({
   candidatePool,
   locale = "zh",
   referencesHref = "/references",
-  modelLandscapeHref = "/modules/model-landscape#qa-1",
+  modelLandscapeHref = "/modules/model-landscape?view=field#qa-1",
 }: {
   snapshots: readonly Snapshot[];
   benchmarks: readonly Benchmark[];

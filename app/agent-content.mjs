@@ -3,7 +3,7 @@ export const agentDeepDives = [
     kind: "sequence",
     eyebrow: "RUN LIFECYCLE",
     title: "一次 Agent Run 怎样留下可恢复状态",
-    intro: "模型的一次输出、框架的一次运行和业务任务完成是三个层次。Run 必须有显式状态、转换条件、责任主体和不可变终态。",
+    intro: "模型输出、运行器结束和业务任务完成分别记录。这里采用显式状态并保留终态历史：每次转换都有触发事件、负责组件和证据；后续修复另建关联 Run。",
     items: [
       { name: "创建运行实例", en: "Created", mechanism: "绑定任务目标、调用者身份、输入快照、预算、策略与版本，生成唯一 Run ID。", decision: "能否在数小时后准确恢复当时的权限、工具和模型配置？", boundary: "Conversation ID 只代表会话，不必然代表一次业务任务。" },
       { name: "执行与建立检查点", en: "Running / Checkpoint", mechanism: "模型提出决策，应用执行工具并在每次外部动作和结果验证后保存状态与工具调用记录。", decision: "崩溃后能否区分动作未执行、已执行或结果未知？", boundary: "模型输出 final_output 只结束运行器循环，不证明业务后置条件成立。" },

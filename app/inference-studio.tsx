@@ -14,6 +14,8 @@ import {
 
 import { DenseModuleReadingModes, type DenseChapterLink } from "./dense-module-reading-modes";
 import { learningLabAnchor } from "./knowledge-anchor.mjs";
+import { estimateTeachingMemory } from "./inference-teaching-model.mjs";
+import { WorkedExample, type WorkedExampleContent } from "./worked-example";
 
 type MetricId = "input" | "concurrency" | "ttft" | "tpot" | "goodput" | "oom";
 
@@ -33,6 +35,7 @@ type LearningStep = {
 };
 
 type LearningLab = {
+  workedExample?: WorkedExampleContent;
   title: string;
   scenario: string;
   tasks: readonly string[];
@@ -63,7 +66,7 @@ const metricDefinitions: Array<{ id: MetricId; label: string; color: string; det
   { id: "concurrency", label: "并发", color: "#339fe3", detail: "并发会增加排队与动态显存压力；可服务并发不是一张卡的固定常数。" },
   { id: "ttft", label: "TTFT", color: "#aa91e5", detail: "本页服务端 TTFT 包含排队与 Prefill；用户端口径还要加入口和首包网络。" },
   { id: "tpot", label: "TPOT", color: "#58c7b4", detail: "每输出 Token 时间反映持续生成速度，单位应为 ms/token。" },
-  { id: "goodput", label: "Goodput", color: "#f49a28", detail: "有效吞吐（Goodput）只统计同时满足质量与时延目标的请求。" },
+  { id: "goodput", label: "Goodput", color: "#f49a28", detail: "本图按达标请求的输出 Token 计有效吞吐，单位 token/s；按请求计数则用请求/s。分子都只取质量与时延同时合格的请求。" },
   { id: "oom", label: "OOM", color: "#ef5b50", detail: "权重可加载不代表容量安全；KV Cache、工作区、碎片和运行余量都要入账。" },
 ];
 
@@ -135,15 +138,16 @@ function workloadMetrics(workload: Workload) {
   const queue = 0.06 + Math.pow(workload.concurrency / 32, 0.6) * 0.32 + inputPower * 0.0133;
   const prefill = 0.32 + inputPower * 0.115 + concurrencyPressure * 0.115;
   const network = 0.1;
-  const concurrencyPower = Math.log2(workload.concurrency / 32);
-  const memory = Math.max(18, 21.1 + inputPower * 7.5 + concurrencyPower * 6.2);
+  const memoryEstimate = estimateTeachingMemory({ ...workload, outputTokens: quickOutputTokens });
+  const memory = memoryEstimate.memoryGiB;
   const tpotMs = 24.1 + inputPower * 1.7 + concurrencyPressure * 2.9;
-  const decode = 0.03 + (tpotMs / 1000) * quickOutputTokens;
+  const decode = 0.03 + (tpotMs / 1000) * (quickOutputTokens - 1);
   const ttft = queue + prefill;
   const total = ttft + decode + network;
-  const oom = memory > 61.5;
+  const oom = memoryEstimate.exceedsBudget;
   const rawThroughput = workload.concurrency * 1000 / tpotMs;
-  const sloPassRate = oom ? 0.15 : clamp(0.88 - Math.max(0, total - 2) * 0.08, 0.35, 0.9);
+  // A declared classroom assumption, never a measured percentile or pass rate.
+  const sloPassRate = !oom && ttft <= 2 && tpotMs <= 40 ? 0.8 : 0;
   const goodput = rawThroughput * sloPassRate;
   return { queue, prefill, ttft, decode, network, total, memory, tpotMs, goodput, rawThroughput, oom };
 }
@@ -226,10 +230,10 @@ function Heatmap({
                 const index = row * inputOptions.length + column;
                 return (
                   <button
-                    aria-label={`${input.label} 输入，并发 ${concurrency}，${metrics.oom ? "超过示例显存安全线" : `示例延迟 ${formatSeconds(metrics.total)}`}`}
+                    aria-label={`${input.label} 输入，并发 ${concurrency}，${metrics.oom ? "超过教学显存预算" : `示例延迟 ${formatSeconds(metrics.total)}`}`}
                     aria-selected={isSelected}
                     className={`heatmapCell heatLevel--${level}${metrics.oom ? " isRisk" : ""}${isSelected ? " isSelected" : ""}`}
-                    data-memory-gb={metrics.memory.toFixed(1)}
+                    data-memory-gib={metrics.memory.toFixed(1)}
                     key={input.label}
                     onClick={() => onSelect(workload)}
                     onKeyDown={(event) => moveCell(event, row, column)}
@@ -269,7 +273,7 @@ function RequestTimeline({ workload }: { workload: Workload }) {
     { label: "排队等待", en: "Queueing", value: metrics.queue, start: 0, color: "#b7a5e8" },
     { label: "Prefill", en: "首 Token 处理", value: metrics.prefill, start: metrics.queue, color: "#58c7b4" },
     { label: "解码生成", en: "Decode", value: metrics.decode, start: metrics.ttft, color: "#3bb7a3" },
-    { label: "网络传输", en: "输出链路", value: metrics.network, start: metrics.ttft + metrics.decode, color: "#76c9ea" },
+    { label: "流式传输", en: "与生成重叠", value: metrics.decode + metrics.network, start: metrics.ttft, color: "#76c9ea" },
   ];
   return (
     <section className="requestTimeline" id="request-timeline" aria-labelledby="timeline-title">
@@ -277,7 +281,7 @@ function RequestTimeline({ workload }: { workload: Workload }) {
       <span className="anchorAlias" id="metric-tpot" aria-hidden="true" />
       <header>
         <div><h3 id="timeline-title">请求时间线</h3><p>所选单元格：输入 {workload.inputLabel} × 并发 {workload.concurrency}</p></div>
-        <output><span>端到端延迟（P95）</span><strong>{formatSeconds(metrics.total)}</strong></output>
+        <output><span>端到端延迟（示例）</span><strong>{formatSeconds(metrics.total)}</strong></output>
       </header>
       <div className="timelineScale" aria-hidden="true">
         {Array.from({ length: chartMax + 1 }, (_, tick) => <span key={tick} style={{ left: `${(tick / chartMax) * 100}%` }}>{tick}</span>)}
@@ -298,8 +302,8 @@ function RequestTimeline({ workload }: { workload: Workload }) {
           </div>
         ))}
       </div>
-      <div className="timelineTotal"><span>总时延（P95）</span><strong>{formatSeconds(metrics.total)}</strong></div>
-      <p className="inferenceFigureNote">本页 TTFT 从服务收到请求算到模型产生首 Token，等于排队 + Prefill；若从用户端测量，还要计入入口与首包网络。TPOT 是平均每个输出 Token 的生成时间。四段相加等于这组固定输出 {quickOutputTokens} Token 的示例总时延。</p>
+      <div className="timelineTotal"><span>总时延（示例）</span><strong>{formatSeconds(metrics.total)}</strong></div>
+      <p className="inferenceFigureNote">服务端 TTFT = 排队 + Prefill；用户端还要加入口与首包网络。流式输出随生成传输，两段会重叠，不能把整段网络耗时再串行相加。TTFT 已包含首 Token，剩余生成时间按（输出数 − 1）× TPOT 计算，另加 0.03 秒结束处理和 0.1 秒链路尾延迟。时间来自假设的服务曲线，没有请求样本，不能计算 P95 或 P99。</p>
     </section>
   );
 }
@@ -325,8 +329,8 @@ function MetricInspector({
       <header><h3 id="selected-metric-title">所选指标</h3><button aria-label="关闭指标说明" onClick={onClose} ref={closeButtonRef} type="button">×</button></header>
       <div className="inspectorMetric"><i style={{ "--metric-color": metric.color } as CSSProperties} /><strong>{metric.label}</strong><p>{metric.detail}</p></div>
       <section><h4>当前选择</h4><dl><div><dt>输入长度</dt><dd>{workload.inputLabel} Token</dd></div><div><dt>并发</dt><dd>{workload.concurrency} 请求</dd></div></dl></section>
-      <section><h4>指标值（P95）</h4><dl><div><dt>TTFT</dt><dd>{metrics.ttft.toFixed(2)} s</dd></div><div><dt>TPOT</dt><dd>{metrics.tpotMs.toFixed(1)} ms/token</dd></div><div><dt>有效吞吐（Goodput）</dt><dd>{metrics.goodput.toFixed(0)} token/s <small>≤ 原始吞吐 {metrics.rawThroughput.toFixed(0)}</small></dd></div><div><dt>OOM 状态</dt><dd className={metrics.oom ? "isDanger" : "isSafe"}>{metrics.oom ? "风险" : "安全"}</dd></div></dl></section>
-      <section className="memoryGauge"><h4>显存占用（估算）</h4><div><i style={{ width: `${clamp(memoryPercent, 0, 100)}%` }} /></div><p><strong>{metrics.memory.toFixed(1)}</strong> / 64 GB <span>{Math.round(memoryPercent)}%</span></p></section>
+      <section><h4>教学示例值</h4><dl><div><dt>TTFT</dt><dd>{metrics.ttft.toFixed(2)} s</dd></div><div><dt>TPOT</dt><dd>{metrics.tpotMs.toFixed(1)} ms/token</dd></div><div><dt>达标 Token 吞吐</dt><dd>{metrics.goodput.toFixed(0)} token/s <small>原始吞吐 {metrics.rawThroughput.toFixed(0)}</small></dd></div><div><dt>显存预算</dt><dd className={metrics.oom ? "isDanger" : "isSafe"}>{metrics.oom ? "超出假设预算" : "预算内，仍需实测"}</dd></div></dl><p>假设 TTFT ≤ 2 秒、TPOT ≤ 40 ms/token 时，80% 输出通过质量检查；预算不足时不计达标吞吐。实际达标率须逐请求测量。</p></section>
+      <section className="memoryGauge"><h4>显存占用（估算）</h4><div><i style={{ width: `${clamp(memoryPercent, 0, 100)}%` }} /></div><p><strong>{metrics.memory.toFixed(1)}</strong> / 64 GiB <span>{Math.round(memoryPercent)}%</span></p><small>另预留 4 GiB；完整架构假设见容量实验。</small></section>
       <button className="capacityLink" onClick={onCapacity} type="button">查看容量实验 <span>→</span></button>
       <footer><strong>证据与来源</strong><a href="#evidence">查看测量边界与来源 ↗</a><small>示例估算 · 非实测数据</small></footer>
     </aside>
@@ -345,14 +349,14 @@ function CaseReview() {
           <h3>症状</h3><ul><li>CUDA out of memory 增多</li><li>排队与 TTFT 的 P95 同时上升</li><li>重试进一步放大瞬时到达率</li></ul>
         </div>
         <figure className="memoryTrendFigure">
-          <figcaption><strong>示例证据：显存使用趋势</strong><span>示意图 · GB</span></figcaption>
-          <svg role="img" aria-label="并发升高后显存超过 64GB 安全阈值的示意趋势" viewBox="0 0 620 220">
+          <figcaption><strong>示例证据：显存使用趋势</strong><span>示意图 · GiB</span></figcaption>
+          <svg role="img" aria-label="并发升高后显存超过 60 GiB 教学预算的示意趋势" viewBox="0 0 620 220">
             <defs><linearGradient id="memory-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#339fe3" stopOpacity=".22"/><stop offset="1" stopColor="#339fe3" stopOpacity="0"/></linearGradient></defs>
             <g className="chartGrid"><path d="M42 30H600M42 78H600M42 126H600M42 174H600"/><path d="M42 30V190M154 30V190M266 30V190M378 30V190M490 30V190M600 30V190"/></g>
-            <path className="chartThreshold" d="M42 70H600"/><text x="48" y="61">OOM 安全线（64 GB）</text>
+            <path className="chartThreshold" d="M42 70H600"/><text x="48" y="61">教学预算（60 GiB）</text>
             <path fill="url(#memory-area)" d="M42 170 86 168 130 165 174 170 218 158 262 145 306 132 350 124 394 115 438 92 468 48 490 82 512 36 534 88 556 60 578 66 600 58 600 190 42 190Z"/>
             <path className="chartLine" d="M42 170 86 168 130 165 174 170 218 158 262 145 306 132 350 124 394 115 438 92 468 48 490 82 512 36 534 88 556 60 578 66 600 58"/>
-            <circle cx="468" cy="48" r="6"/><text x="480" y="43">首次出现 OOM</text>
+            <circle cx="468" cy="48" r="6"/><text x="480" y="43">示例故障点</text>
           </svg>
         </figure>
         <aside className="caseAction">
@@ -371,7 +375,6 @@ function SingleRequestDiagram() {
     { name: "请求输入", en: "Prompt", detail: "Token 化 · 长度与模板" },
     { name: "Prefill", en: "预填充", detail: "并行处理输入 · 建立 KV" },
     { name: "Decode", en: "解码生成", detail: "逐 Token 生成 · 受 TPOT 影响" },
-    { name: "KV Cache", en: "显存", detail: "保存历史状态 · 支撑复用" },
   ];
   return (
     <div className="singleRequestDiagram" aria-label="Prefill、Decode 与 KV Cache 关系图">
@@ -385,7 +388,8 @@ function SingleRequestDiagram() {
           {index < stages.length - 1 ? <span aria-hidden="true">→</span> : null}
         </div>
       ))}
-      <footer><strong>关键指标</strong><span>TTFT · 首 token 时间</span><span>TPOT（ms/token）</span><span>吞吐（token/s）</span><span>显存（GB）</span></footer>
+      <aside className="requestSharedCache"><strong>KV Cache · 键值缓存</strong><p>Prefill 建立输入 Token 的缓存；Decode 持续读取历史缓存，并追加新 Token 的 K、V。它贯穿两段计算，不是生成结束后的独立步骤。</p></aside>
+      <footer><strong>关键指标</strong><span>TTFT · 首 token 时间</span><span>TPOT（ms/token）</span><span>吞吐（token/s）</span><span>显存（GiB）</span></footer>
       <p className="srOnly">键值缓存 · Key-Value Cache；连续批处理 · Continuous Batching；首个 Token 时间 · Time to First Token；每个输出 Token 时间 · Time per Output Token。</p>
     </div>
   );
@@ -406,9 +410,9 @@ function estimateCapacityMetrics(run: CapacityInputs) {
   const concurrencyEfficiency = clamp(0.358 + Math.log2(run.concurrency) * 0.02, 0.358, 0.5);
   const engineLimit = Math.max(320, 1400 - inputPower * 20 - outputPower * 15);
   const throughput = Math.round(Math.min(rawThroughput * concurrencyEfficiency, engineLimit));
-  const concurrencyPower = Math.log2(run.concurrency / 32);
-  const memory = Math.max(18, 21.1 + inputPower * 7.5 + concurrencyPower * 6.2 + outputPower * 5.3);
-  return { queue, prefill, ttft, tpot, throughput, rawThroughput, memory, unsafe: memory > 61.5 || ttft > 2 };
+  const memoryEstimate = estimateTeachingMemory(run);
+  const memory = memoryEstimate.memoryGiB;
+  return { queue, prefill, ttft, tpot, throughput, rawThroughput, memory, kvGiB: memoryEstimate.kvGiB, unsafe: memoryEstimate.exceedsBudget || ttft > 2 };
 }
 
 function CapacityExperiment() {
@@ -452,27 +456,30 @@ function CapacityExperiment() {
 
   return (
     <div className="capacityExperiment" id="capacity-experiment">
-      <form onSubmit={(event) => { event.preventDefault(); executeExperiment(); }}>
+      <header className="capacityAssumptions">
         <p className="capacityTeachingLabel">因果教学示例 · 确定性估算 · 非压测结果</p>
         <h3>容量关系估算器</h3>
-        <label>教学标称配置<select defaultValue="qwen"><option value="qwen">Qwen2.5-7B-Instruct · BF16 · 单卡 64 GB</option></select></label>
+        <p><strong>架构假设：</strong>32 层完整注意力、8 个 KV 头、头维度 128、BF16；权重 14 GiB，工作区 6 GiB，设备 64 GiB，另留 4 GiB。无前缀共享、淘汰或 KV 量化，所有活跃序列等长。教学门槛为显存预算 60 GiB、TTFT ≤ 2 秒，不是产品默认值。</p>
+        <p>KV 每 Token = 2 × 32 × 8 × 128 × 2 = 131,072 字节。KV GiB = 每 Token 字节数 × 并发 ×（输入 + 输出）÷ 2³⁰；总缓存序列长度（输入 + 输出）或并发翻倍，KV 部分随之翻倍。时间和吞吐仍是假设曲线，不能预测具体硬件。</p>
+      </header>
+      <form onSubmit={(event) => { event.preventDefault(); executeExperiment(); }}>
+        <h4>调整负载</h4>
         <fieldset><legend>输入长度（Token）</legend><div>{inputOptions.map((input) => <button aria-pressed={inputTokens === input.tokens} key={input.label} onClick={() => setInputTokens(input.tokens)} type="button">{input.label}</button>)}</div></fieldset>
         <label className="capacityRange">并发（请求数）<output>{concurrency}</output><input aria-label="并发请求数" max="128" min="1" onChange={(event) => setConcurrency(Number(event.target.value))} step="1" type="range" value={concurrency}/><span><small>1</small><small>32</small><small>64</small><small>128</small></span></label>
         <fieldset><legend>输出长度（Token）</legend><div>{outputOptions.map((output) => <button aria-pressed={outputTokens === output} key={output} onClick={() => setOutputTokens(output)} type="button">{output >= 1024 ? `${output / 1024}K` : output}</button>)}</div></fieldset>
         <button className="runExperiment" type="submit">更新示例估算</button>
-        <p>只模拟“输入、输出和并发升高会怎样挤压排队、时间和显存”的方向关系；它不读取模型、引擎或硬件，因此不能替代压测。</p>
       </form>
       <section className="capacityResults" aria-live="polite">
         <header><h4>估算输出</h4><span>{run.inputTokens / 1024}K 输入 · {run.concurrency} 并发 · 输出 {run.outputTokens}</span></header>
         <div className="capacityMetricCards">
-          <article><span>TTFT（P95）</span><strong>≈ {result.ttft.toFixed(2)}<small>s</small></strong><p>排队 + Prefill</p></article>
-          <article><span>TPOT（平均）</span><strong>≈ {result.tpot.toFixed(1)}<small>ms/token</small></strong><p>持续生成速度</p></article>
-          <article><span>吞吐（平均）</span><strong>≈ {result.throughput}<small>token/s</small></strong><p>聚合输出速度</p></article>
-          <article><span>显存占用</span><strong>≈ {result.memory.toFixed(1)}<small>/ 64 GB</small></strong><p>{Math.round((result.memory / 64) * 100)}% 教学估算</p></article>
+          <article><span>TTFT（示例）</span><strong>≈ {result.ttft.toFixed(2)}<small>s</small></strong><p>排队 + Prefill</p></article>
+          <article><span>TPOT（示例）</span><strong>≈ {result.tpot.toFixed(1)}<small>ms/token</small></strong><p>持续生成速度</p></article>
+          <article><span>吞吐（示例）</span><strong>≈ {result.throughput}<small>token/s</small></strong><p>{result.memory + 4 > 64 ? "忽略显存约束的假设曲线；当前负载超预算" : "假设曲线，仍需实测"}</p></article>
+          <article><span>显存占用</span><strong>≈ {result.memory.toFixed(1)}<small>/ 64 GiB</small></strong><p>权重 14 + 工作区 6 + KV {result.kvGiB.toFixed(1)} GiB；另留 4 GiB</p></article>
         </div>
         <figure className="capacityTrend">
-          <figcaption><strong>因果趋势示意</strong><span>当前点：并发 {run.concurrency}</span></figcaption>
-          <svg role="img" aria-label="教学估算中，随着并发变化的 TTFT、TPOT 与吞吐趋势" viewBox="0 0 660 250">
+          <figcaption><strong>负载关系示意</strong><span>当前点：并发 {run.concurrency}</span></figcaption>
+          <svg role="img" aria-label="教学估算中，随着并发变化的 TTFT、TPOT 与吞吐趋势，各自归一化" viewBox="0 -20 660 290">
             <g className="chartGrid"><path d="M54 28H620M54 78H620M54 128H620M54 178H620M54 228H620"/><path d="M54 28V228M166 28V228M278 28V228M390 28V228M502 28V228M620 28V228"/></g>
             <path className="trendTtft" d={trend.path.ttft}/>
             <path className="trendTpot" d={trend.path.tpot}/>
@@ -481,15 +488,16 @@ function CapacityExperiment() {
             <circle className="trendCurrentPoint trendCurrentPoint--ttft" cx={trend.currentX} cy={trend.currentY.ttft} r="4"/>
             <circle className="trendCurrentPoint trendCurrentPoint--tpot" cx={trend.currentX} cy={trend.currentY.tpot} r="4"/>
             <circle className="trendCurrentPoint trendCurrentPoint--throughput" cx={trend.currentX} cy={trend.currentY.throughput} r="4"/>
-            <text className="trendCurrentLabel" x={Math.min(trend.currentX + 8, 570)} y="22">当前点</text>
+            <text className="trendCurrentLabel" x={Math.min(trend.currentX + 8, 510)} y="22">当前点</text>
             <g className="trendAxisLabels"><text x="48" y="245">1</text><text x="190" y="245">32</text><text x="334" y="245">64</text><text x="602" y="245">128</text><text x="8" y="20">延迟</text><text x="585" y="20">吞吐</text></g>
           </svg>
           <div><span className="legendTtft">TTFT</span><span className="legendTpot">TPOT</span><span className="legendThroughput">吞吐</span></div>
+          <p className="inferenceFigureNote">三条曲线各自归一化，只用于观察变化方向，不能横向比较高低。具体示例值读上方卡片；超过显存预算时，吞吐曲线也不代表可用容量。</p>
         </figure>
       </section>
       <aside className={`capacityConclusion${result.unsafe ? " isUnsafe" : ""}`}>
         <header><span>{result.unsafe ? "!" : "✓"}</span><h4>教学示例判断</h4></header>
-        <p>{result.unsafe ? "当前组合越过示例安全线，应先降低并发、缩短输入或分池，再重新验证。" : "当前组合仍在示例安全线内，但上线前仍需用真实流量完成稳态、突发和故障测试。"}</p>
+        <p>{result.unsafe ? "当前组合超过 60 GiB 教学显存预算或 2 秒 TTFT 目标，应先降低并发、缩短输入或分池，再重新验证。" : "当前组合满足教学显存预算与时间目标，上线前仍需用真实流量完成稳态、突发和故障测试。"}</p>
         <h5>建议</h5><ul><li>以 P95 / P99 与拒绝率确定并发上限</li><li>按输入长度和优先级分层准入</li><li>记录模型、模板、引擎、硬件与日期</li></ul>
         <section className="capacityRunPack" aria-labelledby="capacity-run-pack-title">
           <h5 id="capacity-run-pack-title">真实压测的 Run Pack：最小字段</h5>
@@ -602,7 +610,7 @@ function LearningPanel({
         <div className="learningLabList">
           <h2>动手做一遍</h2>
           {learningLabs.map((lab, index) => <article id={learningLabAnchor("llm-inference", index)} key={lab.title}>
-            <span>{String(index + 1).padStart(2, "0")}</span><div><h3>{lab.title}</h3><p>{lab.scenario}</p><ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol><dl><div><dt>交付物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div></dl><LearningSourceLinks sourceIds={lab.sourceIds} sourceTitles={sourceTitles}/></div>
+            <span>{String(index + 1).padStart(2, "0")}</span><div><h3>{lab.title}</h3><p>{lab.scenario}</p><ol>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol><dl><div><dt>交付物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div></dl><WorkedExample example={lab.workedExample}/><LearningSourceLinks sourceIds={lab.sourceIds} sourceTitles={sourceTitles}/></div>
           </article>)}
         </div>
         <a href="#curriculum">返回知识地图 ↑</a>

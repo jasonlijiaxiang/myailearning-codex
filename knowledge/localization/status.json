@@ -9,8 +9,11 @@
       "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
     },
     "model-landscape": {
-      "status": "aligned",
-      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393"
+      "status": "deferred",
+      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393",
+      "openedAt": "2026-10-03",
+      "expiresAt": "2026-12-31",
+      "reason": "本轮中文机制、教学案例与演示已修订；用户明确暂不做英文版，保留最后真实同步基线，等待独立英文更新与审校。"
     },
     "rag": {
       "status": "deferred",
@@ -20,8 +23,11 @@
       "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
     },
     "ai-agent": {
-      "status": "aligned",
-      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393"
+      "status": "deferred",
+      "enSyncedCommit": "c13a232bd669ec0162b798ea532506847feed393",
+      "openedAt": "2026-10-03",
+      "expiresAt": "2026-12-31",
+      "reason": "本轮中文机制、教学案例与演示已修订；用户明确暂不做英文版，保留最后真实同步基线，等待独立英文更新与审校。"
     },
     "multimodal": {
       "status": "deferred",
@@ -31,12 +37,18 @@
       "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
     },
     "mcp": {
-      "status": "aligned",
-      "enSyncedCommit": "435c207a4e1686f9e19be2ed40c6a2436ce86cd4"
+      "status": "deferred",
+      "enSyncedCommit": "435c207a4e1686f9e19be2ed40c6a2436ce86cd4",
+      "openedAt": "2026-10-03",
+      "expiresAt": "2026-12-31",
+      "reason": "本轮中文机制、教学案例与演示已修订；用户明确暂不做英文版，保留最后真实同步基线，等待独立英文更新与审校。"
     },
     "a2a": {
-      "status": "aligned",
-      "enSyncedCommit": "435c207a4e1686f9e19be2ed40c6a2436ce86cd4"
+      "status": "deferred",
+      "enSyncedCommit": "435c207a4e1686f9e19be2ed40c6a2436ce86cd4",
+      "openedAt": "2026-10-03",
+      "expiresAt": "2026-12-31",
+      "reason": "本轮中文机制、教学案例与演示已修订；用户明确暂不做英文版，保留最后真实同步基线，等待独立英文更新与审校。"
     },
     "evaluation": {
       "status": "deferred",

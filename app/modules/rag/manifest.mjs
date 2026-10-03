@@ -160,7 +160,7 @@ export default Object.freeze({
   layerNo: "02",
   routeKind: "dedicated",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["rag","retrieval","augmentation","generation","sparse-retrieval","dense-retrieval","reranking","grounding"]),
   knowledgeView: "application-architecture",
   readingProfile: "focused",

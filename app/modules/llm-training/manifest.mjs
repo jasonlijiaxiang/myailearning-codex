@@ -17,7 +17,7 @@ export default Object.freeze({
   layerNo: "07",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-26",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["llm-training","distributed-training","evaluation"]),
   knowledgeView: "training-supply-chain",
   readingProfile: null,

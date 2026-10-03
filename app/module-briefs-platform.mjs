@@ -507,7 +507,7 @@ export const aiGatewayBrief = {
 
 export const llmInferenceBrief = {
   "slug": "llm-inference",
-  "definition": "大模型推理（LLM Inference）把模型、Tokenizer、模板、量化制品、引擎和调度配置组合成一个可发布服务。容量包记录请求长度与到达分布、KV Cache 预算、TTFT、TPOT、拒绝率、Goodput 和回滚方式。",
+  "definition": "大模型推理（LLM Inference）使用训练好的模型处理输入，并根据已有上下文逐Token生成输出。推理服务还要安排多个请求共享设备，在质量、等待时间、显存与成本之间选择合适的运行方式。",
   "position": "位于模型制品与 AI 应用之间：上接 AI 网关、RAG、Agent 或批处理任务，下接 GPU、加速器、网络和存储；重点是在真实负载、质量和 SLO 约束下交付 Goodput 与单位达标结果成本。",
   "presentation": "pipeline",
   "principleTitle": "排队、Prefill、Decode 与显存账",
@@ -1100,7 +1100,7 @@ export const aiOpsBrief = {
       "question": "平台应统一到什么程度？",
       "signal": "各团队重复建设评估、发布、观测和凭据，但应用模式与风险不同。",
       "recommendation": "统一清单、评估执行、发布门、遥测和证据接口，允许 RAG、Agent、多模态保留专用流水线。",
-      "boundary": "统一控制面不应把所有应用强制成同一模型、框架、指标或卡片数量。"
+      "boundary": "平台统一版本清单、评估接口、遥测字段和发布流程；各应用按任务特点选择模型、框架和验收指标。"
     },
     {
       "question": "扩展现有 APM，还是采购 AI 专用可观测平台？",
@@ -2420,7 +2420,7 @@ export const dataEngineeringBrief = {
 
 export const aiInfraComputeBrief = {
   "slug": "ai-infra-compute",
-  "definition": "AI 算力基础设施（AI Compute Infrastructure）连接加速器、显存与主机内存、紧耦合互联、跨域网络、存储、电力和散热。选型交付物是一份工作负载包络、端到端 Profile、缩放曲线和设施就绪清单。",
+  "definition": "AI算力基础设施（AI Compute Infrastructure）由加速器、内存、互联、网络、存储、电力与散热组成。模型能持续跑多快，取决于这些环节能否及时提供数据、交换状态并承受负载，不能只看一张GPU的峰值规格。",
   "position": "处于 AI 技术栈最底层，为推理引擎和 AI 平台提供可交付容量；它从工作负载包络出发回答整条数据通路能否持续达标，不负责上层作业调度、模型路由、完整方案 ROI 或应用质量。",
   "presentation": "stack",
   "principleTitle": "沿计算、内存、互联和设施定位容量",
@@ -2889,7 +2889,7 @@ export const aiInfraComputeBrief = {
 
 export const aiInfraPlatformBrief = {
   "slug": "ai-infra-platform",
-  "definition": "AI 基础设施平台（AI Infrastructure Platform）让开发者和运维团队通过工作负载合同申请异构算力、网络、存储与运行时。平台记录准入结果、排队原因、设备放置、恢复动作、Goodput 和成本归属。",
+  "definition": "AI基础设施平台（AI Infrastructure Platform）让多个团队申请算力、运行训练或推理任务、查看排队原因，并在故障后恢复。它把设备、环境、配额、调度和运行记录统一管理，让同一批资源能被有秩序地使用。",
   "position": "位于物理算力与训练、推理工作负载之间：平台控制层提供能力目录、API、模板、策略、配额、版本和审计，工作负载执行层承载 Notebook、训练作业、批处理和模型服务副本。它拥有资源、作业与服务运行生命周期，不拥有硬件采购、训练状态正确性、推理引擎内部机制、请求路由、模型质量或项目 ROI。",
   "presentation": "stack",
   "principleTitle": "一份工作负载合同怎样落到队列和运行证据",

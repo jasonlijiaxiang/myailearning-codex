@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "08",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-26",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["data-engineering","document-intelligence","dense-retrieval","data-contract","data-lineage","deletion-propagation"]),
   knowledgeView: "ai-data-lineage",
   readingProfile: null,

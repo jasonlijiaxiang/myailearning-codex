@@ -196,7 +196,7 @@ export function KnowledgeConstellation({
   useEffect(() => {
     function syncFocusFromUrl() {
       const next = parseFocus(new URLSearchParams(window.location.search).get("node"), moduleById, termById);
-      if (next) setFocus(next);
+      setFocus(next ?? DEFAULT_FOCUS);
     }
     queueMicrotask(syncFocusFromUrl);
     window.addEventListener("popstate", syncFocusFromUrl);
@@ -209,7 +209,7 @@ export function KnowledgeConstellation({
     setRailOpen(false);
     const url = new URL(window.location.href);
     url.searchParams.set("node", focusKey(next));
-    window.history.replaceState({}, "", url);
+    if (url.href !== window.location.href) window.history.pushState(window.history.state, "", url);
   }, []);
 
   const searchResults = useMemo(() => {
@@ -415,7 +415,7 @@ export function KnowledgeConstellation({
           <header><span>{copy.selected}{language === "en" ? " " : ""}{focus.kind === "module" ? copy.module : copy.term}</span><h2>{selectedTitle}</h2><p>{selectedSubtitle}</p></header>
           {!showRelationsFirst ? <p className={styles.description}>{selectedDescription}</p> : null}
           <div className={styles.meta}>{selectedTerm ? <><span>{copy.primaryOwner}</span><strong>{primaryModule?.zh}</strong></> : null}<span>{copy.currentlyShowing}</span><strong>{explainedNeighbors.length} {explainedNeighbors.length === 1 ? copy.relationCountOne : copy.relationCount}</strong></div>
-          {explainedNeighbors.length ? <section style={{ maxHeight: "none", overflow: "visible" }}><h3>{copy.relationExplanation}</h3><ul>{explainedNeighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.directionLabel ? <strong>{neighbor.directionLabel}<br /></strong> : null}{neighbor.explanation}</p>{neighbor.sourceId ? <Link href={`${copy.referencesHref}#source-${neighbor.sourceId}`} style={{ color: "var(--cyan)", fontSize: 12, textUnderlineOffset: 3 }}>{copy.source} ↗</Link> : null}</li>)}</ul></section> : null}
+          {explainedNeighbors.length ? <section style={{ maxHeight: "none", overflow: "visible" }}><h3>{copy.relationExplanation}</h3><ul>{explainedNeighbors.map((neighbor) => <li key={`${neighbor.key}:detail`}><button type="button" onClick={() => selectFocus({ kind: neighbor.kind, id: neighbor.id })}><span>{relationTypes[neighbor.relationType]?.label}</span><strong>{neighbor.title}</strong></button><p>{neighbor.directionLabel ? <strong>{neighbor.directionLabel}<br /></strong> : null}{neighbor.explanation}</p>{neighbor.sourceId ? <Link href={`${copy.referencesHref}#source-${neighbor.sourceId}`} style={{ color: "var(--cyan)", fontSize: 14, textUnderlineOffset: 3 }}>{copy.source} ↗</Link> : null}</li>)}</ul></section> : null}
           {showRelationsFirst ? <p className={styles.description}><strong>{copy.overview} · </strong>{selectedDescription}</p> : null}
           {catalogNeighbors.length ? explainedNeighbors.length
             ? <details key={`${focus.kind}:${focus.id}:catalog`}><summary>{catalogTitle} · {catalogNeighbors.length}</summary>{catalogList}</details>

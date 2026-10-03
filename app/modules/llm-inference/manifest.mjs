@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "07",
   routeKind: "dedicated",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["llm-inference","kv-cache","batching","quantization","ttft","tpot","goodput"]),
   knowledgeView: "latency-capacity-map",
   readingProfile: "focused",

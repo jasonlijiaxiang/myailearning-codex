@@ -1,6 +1,6 @@
 export const modelLandscape = {
   "slug": "model-landscape",
-  "definition": "模型格局与选型（Model Landscape）用候选登记表连接业务任务、不可接受错误、交付约束、模型版本和退出方案。交付物包括候选短名单、淘汰理由、同条件试点结果与备用路线。",
+  "definition": "模型格局与选型（Model Landscape）比较不同模型在目标任务上的能力、错误、延迟与完整成本。地域、数据处理、接口和许可证等条件会先排除不适用的候选；通过同条件试点后，再决定采用与备用路线。",
   "position": "解决方案层：负责模型候选与路线资格；Evaluation 负责量尺和测量，AI Gateway 负责运行时路由，AI FinOps 负责完整投资判断。",
   "presentation": "spectrum",
   "principleTitle": "候选模型怎样进入同条件试点",
@@ -42,9 +42,9 @@ export const modelLandscape = {
       "decision": "官方产品文档只作为当期能力声明，不能外推为合规、SLA 或数据处理承诺。"
     },
     {
-      "zh": "动态事实进记录与合同",
+      "zh": "报价与采购前重新核对产品条件",
       "en": "Dynamic Facts to Records & Contracts",
-      "explanation": "模型目录、版本、价格、配额、SLA、弃用时间线和数据处理政策变化快，不写死推荐；每个变化面单独成为带核验日期与复核日期的动态事实记录，采购约束写进客户合同核验。",
+      "explanation": "模型版本、地域、价格、配额和数据处理条款会变化。对客比较保留核验日期与对应条款；采购前再次确认，把客户依赖的条件写进合同。",
       "decision": "平台能力与价格属于快变事实，报价与采购决策前应重新核验当期官方文档；不能从平台能力反推客户合规。"
     }
   ],
@@ -620,7 +620,7 @@ export const modelLandscape = {
 
 export const llm = {
   "slug": "llm",
-  "definition": "大语言模型原理（Large Language Model Foundations）沿一次生成请求解释 Token、位置、注意力、Transformer 块、logits 与采样。学习产物是一份可回放的请求记录：实际输入、分词结果、上下文、生成配置和分阶段时延都能对应到模型机理。",
+  "definition": "大语言模型（Large Language Model，LLM）将文本切成Token，根据前文估计下一个Token的概率，再按生成设置逐步输出。模型学习了训练材料中的统计规律；流畅表达不代表事实、权限或业务判断已得到验证。",
   "position": "模型基础层：为 Model Landscape、Prompt、RAG、Agent、训练和推理平台提供共同的机理语言，并帮助把应用症状转交给正确责任层。",
   "presentation": "stack",
   "principleTitle": "沿一条请求看 Token、上下文与生成",
@@ -1049,7 +1049,7 @@ export const llm = {
 
 export const llmTraining = {
   "slug": "llm-training",
-  "definition": "大模型训练（LLM Training）把基础权重、Tokenizer、数据、目标函数、优化器、分布式拓扑、Checkpoint 和评估绑定到一份 Run manifest。一次训练交付候选模型、恢复验证和阶段评估记录，供后续推理发布使用。",
+  "definition": "大模型训练（LLM Training）让模型在样本上预测输出，计算预测与目标的差距，再通过反向传播和优化器更新参数。预训练、监督微调与偏好优化使用不同数据和目标；训练结果还要经过独立评估，才能决定是否部署。",
   "position": "模型基础层与算力底座层的连接模块：负责训练路线、完整 Run 合同、分布式执行与恢复证据；Fine-tuning 负责适配方法，Evaluation 负责独立量尺，AI Ops 负责候选模型之后的跨组件发布与线上运营。",
   "presentation": "pipeline",
   "principleTitle": "一份训练 Run 如何形成候选模型",
@@ -1484,7 +1484,7 @@ export const llmTraining = {
 
 export const fineTuning = {
   "slug": "fine-tuning",
-  "definition": "微调工程（Fine-tuning）处理稳定、可重复、可标注的行为缺口。实验包记录轻量方案基线、训练数据、基座与 Adapter、评估切片、目标端点、回滚点和停止条件。",
+  "definition": "微调（Fine-tuning）在已有模型上使用任务数据继续训练，改变回答方式或任务表现。它适合可重复、可标注的行为缺口；最新事实、访问权限和业务状态仍由外部数据与应用控制提供。",
   "position": "模型定制层：负责训练是否值得、数据与方法合同、微调专属验收和制品兼容清单；不负责实时知识、执行授权、完整 ROI 或最终风险批准。",
   "presentation": "loop",
   "principleTitle": "问题分流、训练与 Adapter 发布",
@@ -1498,7 +1498,7 @@ export const fineTuning = {
     {
       "zh": "全参与参数高效微调是不同投资级别",
       "en": "Full and Parameter-Efficient Tuning Differ in Scope",
-      "explanation": "参数高效微调（PEFT）是一类只训练少量附加参数的方法；LoRA 是其中一种，QLoRA 在量化且冻结的底座上训练 LoRA。全参微调更新范围、资源与回归面更大。",
+      "explanation": "参数高效微调（PEFT）通过新增少量参数，或只更新基座的一小部分参数来适配任务。LoRA用低秩矩阵表示权重增量；QLoRA在量化且冻结的底座上训练LoRA。全参微调的更新范围、资源与回归面更大。",
       "decision": "开放权重且运行时兼容时，可把 LoRA/QLoRA 作为参数高效候选；托管能力或全参路线仍按数据边界、目标和支持矩阵决定。"
     },
     {

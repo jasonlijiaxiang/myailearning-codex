@@ -74,7 +74,7 @@ export default function PromptEngineeringModulePage() {
                         <article><p className="miniLabel">WHOLE RUN</p><h4>Harness Engineering</h4><p>解决“整个任务怎样运行、行动、验证、恢复和受控”，把模型置于可执行的反馈循环中。</p></article>
                         <article><p className="miniLabel">WHOLE PRODUCT</p><h4>Agent Engineering</h4><p>解决“怎样把模型、Harness、业务系统、体验、治理和运营做成完整产品”。</p></article>
                       </BalancedGrid>
-                      <p className="paperBoundary"><strong>边界：</strong>四者不是互斥职位或成熟度等级。Prompt 与 Context 是 Harness 每次调用的重要输入；Harness 是 Agent 产品的运行与控制层；Agent Engineering 再把业务流程、用户体验和长期运营纳入交付。<Link href="/modules/ai-agent#harness">进入 Agent 模块查看 Harness 机制与评估方法 ↗</Link></p>
+                      <p className="paperBoundary"><strong>边界：</strong>四者不是互斥职位或成熟度等级。Prompt 与 Context 是 Harness 每次调用的重要输入；Harness 是 Agent 产品的运行与控制层；Agent Engineering 再把业务流程、用户体验和长期运营纳入交付。<Link href="/modules/ai-agent?view=learn#harness">进入 Agent 模块查看 Harness 机制与评估方法 ↗</Link></p>
                       <div className="principleDepth">
                         <header className="principleDepthIntro"><p className="miniLabel">PRESALES MECHANISM</p><h4>从“写一句话”升级为“构造一次受控调用”</h4><p>生产请求不是单一文字，而是由不同责任方提供的多段输入。技术售前应先解释每段信息的来源、信任级别和生命周期，再讨论措辞优化。</p></header>
                         <div className="ragMechanism" aria-label="提示调用的三类输入">

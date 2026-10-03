@@ -13,6 +13,30 @@ import { moduleLearningContent } from "./module-learning-content.mjs";
 
 /** @type {Record<string, import("./content-types").Source>} */
 export const sourceLedger = {
+  "hf-peft-methods": {
+    grade: "P", kind: "官方文档", shortTitle: "PEFT 方法分类",
+    title: "Hugging Face PEFT: parameter efficient fine-tuning methods",
+    note: "支持PEFT包含提示方法、选择性层更新与Adapter方法，不能把全部PEFT限定为附加参数；分类不证明客户任务收益、成本或兼容性。",
+    verifiedAt: "2026-10-03", href: "https://huggingface.co/docs/peft/en/methods/overview",
+  },
+  "nist-exact-binomial": {
+    grade: "P", kind: "官方文档", shortTitle: "NIST 精确二项区间",
+    title: "NIST Dataplot: exact binomial confidence limits",
+    note: "支持二项比例的单侧与双侧精确置信界限。零失败算例由二项概率计算，假定独立同分布及稳定概率；不提供AI上线阈值，不证明真实任务分布已覆盖。",
+    verifiedAt: "2026-10-03", href: "https://itl.nist.gov/div898/software/dataplot/refman2/auxillar/exacbino.htm",
+  },
+  "pytorch-autograd-tutorial": {
+    grade: "P", kind: "官方文档", shortTitle: "PyTorch 自动微分",
+    title: "PyTorch: automatic differentiation with torch.autograd",
+    note: "支持损失、计算图与反向传播梯度的基本机制；教学概率算例不代表真实训练结果，本文不承诺单个Token概率每次更新都上升。",
+    verifiedAt: "2026-10-03", href: "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html",
+  },
+  "vllm-metrics-current-2026-10-03": {
+    grade: "P", kind: "官方文档", shortTitle: "vLLM 指标取样口径",
+    title: "vLLM metrics: inter-token latency and time per output token",
+    note: "核对流式事件间隔与按请求TPOT的不同取样口径，投机解码可使一次事件包含多个Token；字段随版本变化，固定v0.12文档仍单独保留，不混用为同一版本契约。",
+    verifiedAt: "2026-10-03", href: "https://docs.vllm.ai/en/latest/design/metrics/",
+  },
   "veadk-agent-source-2026-08-15": {
     grade: "P",
     kind: "官方源码",

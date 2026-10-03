@@ -425,7 +425,7 @@ export const predictiveAiMlopsBrief = {
 
 export const aiGovernanceBrief = {
   "slug": "ai-governance",
-  "definition": "AI 治理、风险与合规（AI Governance, Risk & Compliance）把每个 AI 用途保存为一项可撤销决定：记录 owner、证据版本、批准范围、运行条件、到期日，以及投诉、事件或重大变更触发的复审。",
+  "definition": "AI治理、风险与合规（AI Governance, Risk & Compliance）按具体用途识别AI会影响谁、可能造成什么后果，并落实评估、批准、人工监督与补救。上线条件绑定用途与版本；发生重大变化后重新审查。",
   "position": "横跨方案、数据、模型、应用、安全、评估、运营与采购层；本模块负责用途清单、组织风险分层、影响评估要求、批准与例外机制、复审和退役。获授权的业务责任人作出用途决定并接受权限范围内的残余业务风险；Security 负责技术威胁控制，Evaluation 负责测量证据，AI Ops 负责发布和恢复，法务或隐私专业人员负责具体法律适用性结论。",
   "presentation": "control",
   "principleTitle": "职位描述写作与候选人排序需要两份用途记录和两条批准链",
@@ -470,13 +470,13 @@ export const aiGovernanceBrief = {
       "zh": "法规结论与工程控制分开",
       "en": "Separate Legal Conclusions from Controls",
       "explanation": "法规义务（如训练数据来源、内容标识、违法内容处置、出境申报）要分别映射到工程控制、留存证据和责任人；不能因为实施了某个控制就宣称已经合规，也不能用产品能力反推法定义务。",
-      "decision": "每条拟写结论都绑定 conclusionId → sourceId → 条款 → 主体/触发/例外/时间 → reviewer；未核验或需专业确认的保持 hold。"
+      "decision": "每项法规判断都记录正式条款、适用主体、触发条件、例外、生效时间和专业复核人；无法确认时保留为待核验项，不作为上线依据。"
     },
     {
-      "zh": "动态事实独立版本化",
+      "zh": "法规变化后的重新核验",
       "en": "Dynamic Facts to Records",
-      "explanation": "生效日期、申报门槛、备案触发条件等事实写成带核验日期和复核日期的独立记录，正文引用该记录 ID。",
-      "decision": "法规状态记录到达 reviewBy、临近生效或出现替代规则时进入复核队列，过期结论从确定性正文撤下。"
+      "explanation": "生效日期、申报条件或备案要求变化时，重新核对官方资料，并更新受影响用途的义务与批准条件。",
+      "decision": "报价、签约或上线前再次核验当期规定；出现新规、监管通知或场景变化时，由指定人员复审原判断。"
     }
   ],
   "decisions": [
@@ -683,7 +683,7 @@ export const aiGovernanceBrief = {
           "en": "Obligation → Control → Evidence",
           "mechanism": "把训练数据来源、内容标识、违法内容处置、投诉举报、安全评估与算法备案等义务分别落到数据工程、内容管线、安全控制、运营证据与责任人。",
           "decision": "每条义务记录条款定位、触发条件、例外、核验日期与 reviewer。",
-          "boundary": "未核验或需专业确认的保持 hold，不进入确定性正文。"
+          "boundary": "未核验或需专业确认的判断保持待确认，不作为上线或免责的依据。"
         },
         {
           "name": "运行复核与升级",
@@ -1179,7 +1179,7 @@ export const governanceMlopsLearning = {
     labs: [
       { title: "组装招聘 AI 治理决策包", scenario: "第三方 LLM 已用于写职位描述，业务希望追加简历筛选、评分和候选人排序。", tasks: ["拆分用途并登记人群、决定、数据、模型、ATS、供应商和地区", "完成影响评估与组织风险分层，列出需法务确认的分类问题", "分配业务、治理、安全、评估、AI Ops 与人工监督责任", "形成批准、条件批准、Hold 或 No-Go 建议"], deliverable: "版本化治理状态、证据包、批准条件与复审触发器", acceptance: "写作与筛选不共用一个风险结论；任何未决法律分类都明确交给专业人员。", sourceIds: ["nist-ai-rmf", "iso-iec-42001", "iso-iec-42005", "eu-ai-act-implementation-2026-08-05"] },
       { title: "设计可操作的人工监督与申诉", scenario: "招聘人员可以看到模型排序，却不知道证据、如何覆盖结果或怎样处理候选人申诉。", tasks: ["定义人工必须看到的信息与禁止自动化决定", "设计覆盖、停止、超时、申诉和补救状态", "为正常、偏差、证据冲突和系统故障建立测试"], deliverable: "人工监督控制、运行证据与失效路径", acceptance: "人工拥有足够信息、权限和时限纠正结果；一次 Approve 点击不被当作完整治理。", sourceIds: ["iso-iec-42005", "eu-ai-act-implementation-2026-08-05"] },
-      { title: "复核动态法规与批准复审", scenario: "产品材料仍沿用旧 EU 时间线，同时模型、ATS 字段和供应商条款已经变化。", tasks: ["用委员会实施页与正式修法核对日期", "把法律判断、组织 tier 和工程控制分开", "枚举哪些变化触发暂停与复审并设置 owner、reviewBy 和事件触发器", "定义补证后恢复、限域或退役的重新决定"], deliverable: "法规 claim、批准复审矩阵和待法务确认项", acceptance: "不使用永久合规标签；时间线能回到当前法源，受影响批准先暂停并在补证后形成新决定，系统分类不由知识库自动给出。", sourceIds: ["eu-ai-act-implementation-2026-08-05", "eu-ai-act-2026-1744"] },
+      { title: "复核动态法规与批准复审", scenario: "产品材料仍沿用旧 EU 时间线，同时模型、ATS 字段和供应商条款已经变化。", tasks: ["用委员会实施页与正式修法核对日期", "把法律判断、组织 tier 和工程控制分开", "列出会触发暂停或复审的变化，指定负责人、检查期限和事件通知方式。", "定义补证后恢复、限域或退役的重新决定"], deliverable: "法规依据、批准复审矩阵和待法务确认项", acceptance: "不使用永久合规标签；时间线能回到当前法源，受影响批准先暂停并在补证后形成新决定，系统分类不由知识库自动给出。", sourceIds: ["eu-ai-act-implementation-2026-08-05", "eu-ai-act-2026-1744"] },
       { title: "组装中国交付义务证据包", scenario: "客户准备在国内发布生成内容服务，要求上线前把义务、控制和证据一次理清。", tasks: ["按受众、主体角色、部署方式、模型来源和数据流完成分诊", "把内容标识、日志、申诉、人工复核、事件处置映射为控制与证据", "列出必须由法律、安全和业务复核的未决项并设置复核人"], deliverable: "中国交付分诊表、义务—控制—证据映射和上线证据包", acceptance: "不出现“已合规”或“无需备案”的绝对结论；每项义务都有证据产物、责任人和复核日期。", sourceIds: ["china-ai-content-labeling-2026-08-05", "gb-45438-2025", "nist-ai-rmf"] },
     ],
   },

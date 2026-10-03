@@ -126,7 +126,7 @@ const brief = {
     },
   ],
   engineeringScopes: [
-    { scope: "一次交互", name: "Prompt Engineering", question: "这一轮应该怎样告诉模型？", input: "任务说明、示例与约束", owner: "Prompt 负责人", owns: "任务说明、示例、约束与输出契约。", boundary: "不决定上下文选择，也不执行工具或业务规则。" },
+    { scope: "一次交互", name: "Prompt Engineering", question: "这一轮应该怎样告诉模型？", input: "任务说明、示例与约束", owner: "Prompt 负责人", owns: "任务说明、示例、约束与输出契约。", boundary: "提示词可以包含示例与上下文安排；实际工具执行和业务授权仍由应用控制。" },
     { scope: "每次调用", name: "Context Engineering", question: "每一步应该让模型看到什么？", input: "身份、历史、证据与工具定义", owner: "应用 / 数据团队", owns: "身份、历史、证据、工具定义与当前状态的选择和装配。", boundary: "不负责任务循环、授权与故障恢复。" },
     { scope: "完整任务", name: "Harness Engineering", question: "整个任务如何运行、行动、验证、恢复和受控？", input: "动作意图、工具契约、状态与策略", owner: "Agent 平台 / 应用团队", owns: "运行循环、工具执行、状态、权限、预算、验证、恢复和观测。", boundary: "不定义业务成功，也不代替业务 Owner 验收。" },
     { scope: "完整产品", name: "Agent 工程 · Agent Engineering", question: "如何把模型、Harness 与业务系统做成可运营产品？", input: "业务流程、体验、风险与 SLO", owner: "业务 Owner + 产品 + 工程", owns: "业务流程、体验、组织责任、发布、治理与长期运营。", boundary: "各责任团队仍需分别签字并完成运营交接。" },
@@ -275,7 +275,7 @@ export default Object.freeze({
   layerNo: "02",
   routeKind: "dedicated",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["ai-agent","harness","harness-engineering","agent-engineering","perceive","reason","act","observe","planning","memory","tools"]),
   knowledgeView: "control-architecture",
   readingProfile: null,

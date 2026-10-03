@@ -34,7 +34,7 @@ export const questionDirectoryItems = Object.freeze(questionDirectoryModules.fla
       moduleZh: moduleEntry.zh,
       moduleEn: moduleEntry.en,
       moduleHref: moduleEntry.href,
-      originalHref: `${moduleEntry.href}#qa-${number}`,
+      originalHref: `${moduleEntry.href}?view=field#qa-${number}`,
       tag: item.tag,
       question: item.q,
       answer: item.a,

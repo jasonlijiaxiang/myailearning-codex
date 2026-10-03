@@ -113,7 +113,7 @@
   margin: 12px 0 0;
   color: var(--fb-chrome-muted);
   font-family: var(--fb-font-ui);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
   letter-spacing: normal;
   line-height: 1.65;
@@ -179,7 +179,7 @@
   letter-spacing: .07em;
   line-height: 1.35;
 }
-.hero .factLedger dd { margin: 5px 0 0; color: var(--fb-chrome-ink); font-family: var(--fb-font-ui); font-size: 13px; font-weight: 720; letter-spacing: normal; line-height: 1.45; }
+.hero .factLedger dd { margin: 5px 0 0; color: var(--fb-chrome-ink); font-family: var(--fb-font-ui); font-size: 16px; font-weight: 720; letter-spacing: normal; line-height: 1.45; }
 
 @media (min-width: 721px) and (max-width: 1100px) {
   .heroGrid { min-height: 257px; }
@@ -237,12 +237,12 @@
   .hero .identity h1 > span { font-size: clamp(48px, 15vw, 64px); }
   .hero .identity h1 > small { margin-top: 10px; font-size: 17px; }
   .hero .definition { font-size: 18px; line-height: 1.55; }
-  .hero .position { margin-top: 8px; font-size: 13px; line-height: 1.6; }
+  .hero .position { margin-top: 8px; font-size: 16px; line-height: 1.6; }
   .hero .summary :global(.moduleHeroMetrics) { margin-top: 15px; }
   .hero .summary :global(.moduleHeroMetrics > div) { padding: 10px; }
   .hero .summary :global(.moduleHeroMetrics dt) { font-size: 9px; }
   .hero .summary :global(.moduleHeroMetrics dd strong) { font-size: 23px; }
   .factLedger { grid-template-columns: 1fr 1fr; }
   .factLedger > div { padding: 10px 11px; }
-  .hero .factLedger dd { font-size: 12px; }
+  .hero .factLedger dd { font-size: 16px; }
 }

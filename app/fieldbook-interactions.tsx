@@ -835,6 +835,7 @@ export function ReferenceFilterShell({ items, children }: { items: ReferenceFilt
   const rootRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [grade, setGrade] = useState("all");
+  const [revealedHash, setRevealedHash] = useState<string | null>(null);
   const grades = useMemo(() => [...new Set(items.map((item) => item.grade))], [items]);
   const visibleItems = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase("zh-CN");
@@ -852,22 +853,52 @@ export function ReferenceFilterShell({ items, children }: { items: ReferenceFilt
     root.querySelectorAll<HTMLElement>("[data-reference-module]").forEach((section) => {
       section.hidden = !visibleItems.some((item) => item.moduleId === section.dataset.referenceModule);
     });
-  }, [visibleItems, visibleKeys]);
+    if (revealedHash) {
+      const target = document.getElementById(revealedHash);
+      if (target && !target.closest("[hidden]")) target.scrollIntoView({ block: "start" });
+    }
+  }, [revealedHash, visibleItems, visibleKeys]);
+
+  useEffect(() => {
+    const revealTarget = (hash: string) => {
+      let id: string;
+      try { id = decodeURIComponent(hash.replace(/^#/, "")); } catch { return; }
+      const target = document.getElementById(id);
+      if (!target || !rootRef.current?.contains(target) || !target.closest("[hidden]")) return;
+      setQuery("");
+      setGrade("all");
+      setRevealedHash(id);
+    };
+    const onHashChange = () => revealTarget(window.location.hash);
+    const onClick = (event: MouseEvent) => {
+      const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
+      if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && anchor?.hash) revealTarget(anchor.hash);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    window.addEventListener("popstate", onHashChange);
+    document.addEventListener("click", onClick);
+    return () => {
+      window.removeEventListener("hashchange", onHashChange);
+      window.removeEventListener("popstate", onHashChange);
+      document.removeEventListener("click", onClick);
+    };
+  }, []);
 
   return (
     <div className="referenceExplorer" ref={rootRef}>
       <div className="referenceToolbar">
         <div>
           <p className="kicker">SEARCH THE EVIDENCE</p>
-          <h2>查找来源，而不是翻阅长名单</h2>
+          <h2>按标题、模块或适用边界查找来源</h2>
         </div>
-        <label><span>检索标题、边界或模块</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="例如：权限、Reranker、Agent 评估……" /></label>
+        <label><span>检索标题、边界或模块</span><input type="search" value={query} onChange={(event) => { setRevealedHash(null); setQuery(event.target.value); }} placeholder="例如：权限、Reranker、Agent 评估……" /></label>
         <div className="referenceGradeFilters" aria-label="按证据类别筛选">
-          <button type="button" aria-pressed={grade === "all"} className={grade === "all" ? "active" : ""} onClick={() => setGrade("all")}>全部类别</button>
-          {grades.map((item) => <button type="button" aria-pressed={grade === item} className={grade === item ? "active" : ""} onClick={() => setGrade(item)} key={item}>{item} 类证据</button>)}
+          <button type="button" aria-pressed={grade === "all"} className={grade === "all" ? "active" : ""} onClick={() => { setRevealedHash(null); setGrade("all"); }}>全部类别</button>
+          {grades.map((item) => <button type="button" aria-pressed={grade === item} className={grade === item ? "active" : ""} onClick={() => { setRevealedHash(null); setGrade(item); }} key={item}>{item} 类证据</button>)}
         </div>
         <p aria-live="polite">当前显示 {visibleItems.length} 条来源，分布在 {visibleModules} 个模块</p>
-        {(query || grade !== "all") && <button className="referenceClear" type="button" onClick={() => { setQuery(""); setGrade("all"); }}>清除筛选</button>}
+        {revealedHash ? <p role="status">已清除筛选，显示链接指向的来源。</p> : null}
+        {(query || grade !== "all") && <button className="referenceClear" type="button" onClick={() => { setRevealedHash(null); setQuery(""); setGrade("all"); }}>清除筛选</button>}
       </div>
       {children}
       {visibleItems.length === 0 && <div className="emptySearch referenceEmpty"><strong>没有匹配的来源</strong><p>缩短关键词或清除证据类别筛选。</p></div>}

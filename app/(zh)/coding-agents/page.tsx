@@ -37,7 +37,7 @@ export default function CodingAgentsPage() {
           brand="presales"
           links={[
             { href: "/", label: "知识库首页" },
-            { href: "/modules/ai-agent#harness", label: "Harness 章节" },
+            { href: "/modules/ai-agent?view=learn#harness", label: "Harness 章节" },
             { href: "#products", label: "产品雷达" },
             { href: "/references", label: "Reference" },
             { href: "/en/coding-agents", label: "English", hrefLang: "en", lang: "en" },

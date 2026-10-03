@@ -73,8 +73,8 @@ test("Chinese chapter and practice search results link to distinct item anchors"
   assert.ok(entries.length > 0);
   assert.equal(new Set(entries.map((entry) => entry.href)).size, entries.length);
   assert.ok(entries.every((entry) => entry.href.endsWith(`#${entry.id}`)));
-  assert.ok(entries.some((entry) => entry.href.startsWith("/modules/mcp#mcp-chapter-")));
-  assert.ok(entries.some((entry) => entry.href.startsWith("/modules/llm-inference#inference-topic-")));
+  assert.ok(entries.some((entry) => entry.href.startsWith("/modules/mcp?view=learn#mcp-chapter-")));
+  assert.ok(entries.some((entry) => entry.href.startsWith("/modules/llm-inference?view=learn#inference-topic-")));
 });
 
 test("knowledge results retain module ownership for layer filtering", () => {

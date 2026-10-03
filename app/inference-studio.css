@@ -317,7 +317,7 @@
 .learningChapters > article > button > i { font-size: 18px; font-style: normal; transition: transform .18s ease; }
 .learningChapters > article.isOpen > button > i { transform: rotate(180deg); }
 .learningChapters > article > div { padding: 0 14px 14px; }
-.singleRequestDiagram { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border: 1px solid var(--if-line); }
+.singleRequestDiagram { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid var(--if-line); }
 .requestStage { position: relative; min-width: 0; padding: 14px 14px 12px; }
 .requestStage + .requestStage { border-left: 1px solid var(--if-line); }
 .requestStage header { display: flex; justify-content: space-between; gap: 8px; }
@@ -356,7 +356,7 @@
 .capacityExperiment form > p { margin: 9px 0 0; color: var(--if-muted); font-size: 8px; line-height: 1.5; }
 .capacityResults > header { display: flex; justify-content: space-between; gap: 10px; }
 .capacityResults > header span { color: var(--if-muted); font-size: 9px; }
-.capacityMetricCards { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border: 1px solid var(--if-line); }
+.capacityMetricCards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid var(--if-line); }
 .capacityMetricCards article { min-width: 0; padding: 9px; }
 .capacityMetricCards article + article { border-left: 1px solid var(--if-line); }
 .capacityMetricCards span { display: block; color: var(--if-muted); font-size: 8px; }
@@ -708,3 +708,35 @@
 .inferenceDecisionGuide details b,
 .inferenceFieldContent .focusedCloudRows small,
 .inferenceFigureNote { font-size: 14px; }
+
+/* Metric values, labels and capacity assumptions are reading content. */
+.inferenceStudio .metricInspector dt, .inferenceStudio .metricInspector dd,
+.inferenceStudio .metricInspector section p,
+.inferenceStudio .capacityExperiment label, .inferenceStudio .capacityExperiment legend,
+.inferenceStudio .capacityRunPack h5, .inferenceStudio .capacityRunPack dt,
+.inferenceStudio .capacityTeachingLabel { font-size: 16px; line-height: 1.65; }
+.inferenceStudio .metricInspector small { font-size: 14px; line-height: 1.55; }
+
+.requestSharedCache { grid-column: 1 / -1; padding: 16px; border-top: 1px solid var(--if-line); background: var(--fb-mint); font-size: 16px; line-height: 1.7; }
+.requestSharedCache p { margin: 8px 0 0; }
+.inferenceStudio .requestStage header strong,
+.inferenceStudio .requestStage p,
+.inferenceStudio .learningChapters > article > button > strong { font-size: 16px; line-height: 1.7; }
+.inferenceStudio .requestStage header small,
+.inferenceStudio .requestStage--0 > div span,
+.inferenceStudio .singleRequestDiagram footer,
+.inferenceStudio .learningChapters > article > button > small { font-size: 14px; line-height: 1.6; }
+.inferenceStudio .singleRequestDiagram footer { flex-wrap: wrap; }
+.capacityExperiment > .capacityAssumptions { grid-column: 1 / -1; border-left: 0; border-bottom: 1px solid var(--if-line); }
+.capacityExperiment > form { border-left: 0; }
+.capacityAssumptions p { margin: 10px 0 0; font-size: 16px; line-height: 1.75; }
+.inferenceStudio .capacityAssumptions h3, .inferenceStudio .capacityExperiment form h4 { font-size: 18px; }
+.capacityResults { align-self: start; }
+.capacityMetricCards { grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); }
+.capacityMetricCards article { border: 1px solid var(--if-line); }
+.capacityTrend svg { height: auto; }
+.inferenceStudio .capacityTrend figcaption,
+.inferenceStudio .capacityTrend > div span,
+.inferenceStudio .capacityResults > header span,
+.inferenceStudio .capacityMetricCards span { font-size: 14px; line-height: 1.6; }
+.capacityTrend .trendAxisLabels, .capacityTrend .trendCurrentLabel { font-size: 28px; }

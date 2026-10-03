@@ -17,7 +17,7 @@ export default Object.freeze({
   layerNo: "07",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["fine-tuning","sft","peft","lora","qlora","dpo","evaluation"]),
   knowledgeView: "tuning-lifecycle",
   readingProfile: null,

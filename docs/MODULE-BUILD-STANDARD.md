@@ -425,4 +425,12 @@ HTML 不是 PPT 的逐页搬运，也不是把幻灯片纵向拼成长页。PPT 
 26. **共享外壳级联**：`globals.css` 是全部 `--fb-*` 基础 Token 的唯一声明者；专题页面需要不同色值时使用自己的语义前缀。`UnifiedModuleScaffold` 必须让 Header / Hero 位于模块正文根之外。共享 Header 每个文字角色直接映射颜色与排版 Token，模块 CSS 禁止穿透 `data-module-hero="unified"`。
 27. **Brief 批次接入**：共享 `brief` 模块只通过集中配置显式接入 `UnifiedBriefModulePage` 与英文 unified reader。已迁移的 Solution Patterns / Model Landscape / Multimodal / VeADK / AgentKit / Evaluation / AI Governance / Security / AI Gateway / AI Ops / Predictive AI / MLOps / LLM / Fine-tuning / LLM Training / Data Engineering / AI Compute / Infra Platform，以及专用 LLM Inference / Prompt Engineering / AI Agent / MCP / A2A，必须保留 Primer、课程或专用 authored group、证据、QA、相关模块和稳定锚点；focused profile 只有在显式完整投影契约下才能进入统一 reader。专用 Primer 与共享壳必须显式交接 CriticalBoundary 所有权，不能重复渲染或靠 CSS 隐藏；历史 knowledge-view Hash 与交互选择 Hash 必须由 route-local、唯一的真实 DOM 锚点承接，交互历史使用 `pushState` 并在 Back 回到无选择 Hash 时同步恢复默认界面状态，不能全局给 Primer 补可能冲突的 ID；`role="table"` 的视觉表格本身必须有可访问名称，手写宽表使用命名且可聚焦的 region、caption 与行列 scope。英文内容分区使用自身可见标题作为 accessible name，问答深链先展开目标并在响应式布局提交后复核定位。renderer 迁移不得改写内容 owner、日期或关闭尚未完成的本地化延期。每批同时验证中文与英文、嵌套 Hash、Back / Forward、移动端、折叠集合深链复位、可聚焦横滚表格和唯一页面外壳。
 
+## 教学推演与原生阅读地址（2026-10-03）
+
+- 实战任务需要解释性案例时，通过共享 `WorkedExample` 记录假设、推演、结果和限制，数量按知识需要决定。构造数字不冒充真实客户结果；计算器只保留能改变理解的参数，并提供可访问标签与服务端初值。
+- 图解按机制安排关系：KV 贯穿 Prefill 与 Decode，网络可与流式生成重叠。预算超限不等于确定 OOM 点，没有请求样本不报告 P95/P99，解释单位和指标分母。
+- 每种阅读任务提供原生 `?view=` 地址与完整 SSR 正文，未增强时所有视图链接均可键盘操作。新问答、章节和练习深链携带视图参数；旧裸 hash 由客户端兼容并规范化，不宣称服务端可以识别 fragment。
+- SSR 正文不得只出现在等待脚本搬移的隐藏流式容器；空 `Suspense` fallback 会让“HTML 含有文本”与“禁用脚本可读”产生差异。结构门禁检查隐藏容器，发布前另用禁用脚本的真实浏览器验证正文可见。
+- 导航保留 `history.state`，Back / Forward 还原视图。来源锚点因筛选隐藏时解除筛选并定位；下一次主动筛选取消旧定位状态。
+
 以上检查验证结构和数据完整性，不能替代对术语准确性、论证边界、云服务价值与客户回答质量的人工审阅。

@@ -2,6 +2,7 @@
 
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { WorkedExample, type WorkedExampleContent } from "./worked-example";
 
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
 import { DenseModuleReadingModes } from "./dense-module-reading-modes";
@@ -105,6 +106,7 @@ export type McpExperienceData = {
     outcomes: readonly string[];
     route: ReadonlyArray<{ title: string; learn: string; checkpoint: string }>;
     labs: ReadonlyArray<{
+      workedExample?: WorkedExampleContent;
       title: string;
       scenario: string;
       tasks: readonly string[];
@@ -316,7 +318,7 @@ function McpToolContractDossier({ sources }: { sources: Record<string, SourceInf
       </header>
       <div className={styles.dossierGrid}>
         <article>
-          <header><span>01</span><div><h3>先让模型看见可检查的输入合同</h3><p>Tool 的名称、用途和 JSON Schema 是发现与调用的边界；只读提示不是授权本身。</p></div></header>
+          <header><span>01</span><div><h3>工具名称、用途与输入契约</h3><p>Tool 的名称、用途和 JSON Schema 是发现与调用的边界；只读提示不是授权本身。</p></div></header>
           <pre aria-label="教学 Tool 定义示例"><code>{`{
   "name": "ticket.get",
   "description": "Read one ticket by its authoritative ID.",
@@ -339,17 +341,23 @@ function McpToolContractDossier({ sources }: { sources: Record<string, SourceInf
   "id": "req-7",
   "method": "tools/call",
   "params": {
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientCapabilities": {}
+    },
     "name": "ticket.get",
     "arguments": { "ticketId": "INC-1042" }
   }
 }
 
 // 结果示意：content 给人读，structuredContent 给应用校验。
-{ "result": {
+{ "jsonrpc": "2.0", "id": "req-7", "result": {
+  "resultType": "complete",
   "content": [{ "type": "text", "text": "INC-1042 is open" }],
   "structuredContent": { "ticketId": "INC-1042", "status": "open" },
   "isError": false
 } }`}</code></pre>
+          <p className={styles.dossierRule}><strong>协议检查：</strong>这里展示 JSON-RPC 消息体；通过 Streamable HTTP 发送时还须提供 MCP-Protocol-Version、Mcp-Method 和本例的 Mcp-Name，并校验头与正文一致。2026-07-28 请求自带协议版本和客户端能力；响应 ID 对应原请求，resultType 声明结果类型。这些字段不授予访问工单的权限。越权租户即使参数通过 Schema，也应由授权系统拒绝，且不得返回工单内容。</p>
           <p className={styles.dossierRule}><strong>验收：</strong>客户端把结构化结果与权威工单记录的 ID、状态、更新时间对齐；自然语言摘要不能单独作为业务事实。</p>
         </article>
         <article>
@@ -363,7 +371,7 @@ function McpToolContractDossier({ sources }: { sources: Record<string, SourceInf
           <p className={styles.dossierRule}><strong>最小交付：</strong>Tool Schema、一次调用捕获、授权/资源回读记录、失败处置表与各项 Owner。</p>
         </article>
       </div>
-      <SourceDisclosure sourceIds={["mcp-tools-2026-07-28", "mcp-authorization", "mcp-security"]} sources={sources} label="查看本示例的协议与安全依据" />
+      <SourceDisclosure sourceIds={["mcp-specification-2026-07-28", "mcp-http-routing-2026-07-28", "mcp-tools-2026-07-28", "mcp-authorization", "mcp-security"]} sources={sources} label="查看本示例的协议与安全依据" />
     </section>
   );
 }
@@ -421,6 +429,7 @@ function LearnView({ data }: { data: McpExperienceData }) {
               <p><strong>情境</strong>{lab.scenario}</p>
               <ol className={styles.labTasks}>{lab.tasks.map((task) => <li key={task}>{task}</li>)}</ol>
               <dl><div><dt>产物</dt><dd>{lab.deliverable}</dd></div><div><dt>通过标准</dt><dd>{lab.acceptance}</dd></div></dl>
+              <WorkedExample example={lab.workedExample} />
               <SourceDisclosure sourceIds={lab.sourceIds} sources={data.sources} label="查看实验依据" />
             </article>
           ))}

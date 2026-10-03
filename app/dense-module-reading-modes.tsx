@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, type KeyboardEvent, type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useSearchParams } from "next/navigation";
 
 import styles from "./dense-module-reading-modes.module.css";
 import type { UnifiedModuleLocale } from "./unified-module-hero";
@@ -59,6 +60,10 @@ const readerCopyByLocale: Record<UnifiedModuleLocale, {
     experience: (moduleName) => `${moduleName} reading modes`,
   },
 };
+
+const subscribeToHydration = () => () => {};
+const clientIsEnhanced = () => true;
+const serverIsEnhanced = () => false;
 
 type ModeMap<T> = Partial<Record<ReadingModeId, T>>;
 
@@ -178,18 +183,20 @@ export function DenseModuleReadingModes({
   modeDescriptions?: ModeMap<string>;
   locale?: UnifiedModuleLocale;
 }) {
+  const enhanced = useSyncExternalStore(subscribeToHydration, clientIsEnhanced, serverIsEnhanced);
   const copy = readerCopyByLocale[locale];
   const readingModes = useMemo(() => modeDefinitions?.length ? modeDefinitions : copy.modes, [copy.modes, modeDefinitions]);
   const firstReadingMode = readingModes[0];
   if (!firstReadingMode) throw new Error("A module reader needs at least one declared reading task.");
   const modeIds = useMemo(() => readingModes.map((mode) => mode.id), [readingModes]);
   if (new Set(modeIds).size !== modeIds.length) throw new Error("A module reader cannot reuse a reading-task ID.");
-  const resolvedDefaultMode = modeIds.includes(defaultMode) ? defaultMode : firstReadingMode.id;
+  const searchParams = useSearchParams();
+  const urlMode = searchParams.get("view");
+  const resolvedDefaultMode = urlMode && modeIds.includes(urlMode) ? urlMode : modeIds.includes(defaultMode) ? defaultMode : firstReadingMode.id;
   const [requestedMode, setActiveMode] = useState<ReadingModeId>(resolvedDefaultMode);
-  // The server render is the no-JavaScript reading path: it carries only the
-  // default reading task. The other tasks mount on first selection (or on a
-  // deep link into their content) and stay mounted afterwards, so switching
-  // keeps their scroll and interaction state.
+  // Each task has a native ?view= URL and is rendered on the server. Client
+  // enhancement retains panels after first selection without duplicating
+  // all task bodies in the initial HTML.
   const [mountedModes, setMountedModes] = useState<readonly ReadingModeId[]>(() => [resolvedDefaultMode]);
   const [activeAnchor, setActiveAnchor] = useState<string | undefined>();
   const [pendingHashReveal, setPendingHashReveal] = useState<{
@@ -198,7 +205,7 @@ export function DenseModuleReadingModes({
     requestId: number;
   } | null>(null);
   const tabsId = useId();
-  const tabsRef = useRef<Array<HTMLButtonElement | null>>([]);
+  const tabsRef = useRef<Array<HTMLAnchorElement | null>>([]);
   const hashRevealRequestRef = useRef(0);
   const directoryByMode = useMemo<ModeMap<readonly DenseChapterLink[]>>(() => Object.fromEntries(
     readingModes.map((mode) => [mode.id, directories?.[mode.id] ?? chapters]),
@@ -231,6 +238,11 @@ export function DenseModuleReadingModes({
       return;
     }
     const targetId = hash.replace(/^#/, "");
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("view") !== nextMode) {
+      url.searchParams.set("view", nextMode);
+      window.history.replaceState(window.history.state, "", url);
+    }
     setActiveMode(nextMode);
     setActiveAnchor(directoryAnchorForTarget(targetId, nextMode, directoryByMode) ?? targetId);
     setPendingHashReveal({
@@ -241,7 +253,13 @@ export function DenseModuleReadingModes({
   }, [directoryByMode, hashGroups, modeIds, resolvedDefaultMode]);
 
   useEffect(() => {
-    const handleHashChange = () => revealHash(window.location.hash);
+    const handleHashChange = () => {
+      const selected = new URLSearchParams(window.location.search).get("view");
+      setActiveMode(selected && modeIds.includes(selected) ? selected : resolvedDefaultMode);
+      setActiveAnchor(undefined);
+      if (window.location.hash && modeForHash(window.location.hash, hashGroups, directoryByMode, modeIds)) revealHash(window.location.hash);
+      else setPendingHashReveal(null);
+    };
     const handleDocumentClick = (event: MouseEvent) => {
       const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
       if (
@@ -256,18 +274,23 @@ export function DenseModuleReadingModes({
       ) return;
       event.preventDefault();
       if (window.location.hash !== anchor.hash) {
-        window.history.pushState(window.history.state, "", `${window.location.pathname}${window.location.search}${anchor.hash}`);
+        const url = new URL(window.location.href);
+        url.searchParams.set("view", modeForHash(anchor.hash, hashGroups, directoryByMode, modeIds)!);
+        url.hash = anchor.hash;
+        window.history.pushState(window.history.state, "", url);
       }
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     };
     handleHashChange();
     window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("popstate", handleHashChange);
     document.addEventListener("click", handleDocumentClick);
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("popstate", handleHashChange);
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [directoryByMode, hashGroups, modeIds, revealHash]);
+  }, [directoryByMode, hashGroups, modeIds, resolvedDefaultMode, revealHash]);
 
   useEffect(() => {
     if (!pendingHashReveal || pendingHashReveal.mode !== activeMode) return;
@@ -296,11 +319,14 @@ export function DenseModuleReadingModes({
 
   function activateMode(nextMode: ReadingModeId) {
     setActiveMode(nextMode);
-    if (window.location.hash) window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}`);
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", nextMode);
+    url.hash = "";
+    if (url.href !== window.location.href) window.history.pushState(window.history.state, "", url);
     window.requestAnimationFrame(() => document.getElementById(readerId)?.scrollIntoView({ block: "start" }));
   }
 
-  function moveTab(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+  function moveTab(event: KeyboardEvent<HTMLAnchorElement>, index: number) {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
     let nextIndex = index;
@@ -331,24 +357,30 @@ export function DenseModuleReadingModes({
           <span>{copy.readingTask}</span>
           <strong>{moduleName}</strong>
         </div>
-        <div className="moduleModeTabs" role="tablist" aria-label={copy.readingModes}>
+        <div className="moduleModeTabs" role={enhanced ? "tablist" : undefined} aria-label={copy.readingModes}>
           {readingModes.map((mode, index) => (
-            <button
-              aria-controls={`${tabsId}-${mode.id}`}
-              aria-selected={activeMode === mode.id}
+            <a
+              href={`?${new URLSearchParams({ ...Object.fromEntries(searchParams), view: mode.id })}#${readerId}`}
+              aria-controls={enhanced && mountedModes.includes(mode.id) ? `${tabsId}-${mode.id}` : undefined}
+              aria-selected={enhanced ? activeMode === mode.id : undefined}
+              aria-current={!enhanced && activeMode === mode.id ? "page" : undefined}
+              data-reading-selected={activeMode === mode.id ? "true" : "false"}
               id={`${tabsId}-${mode.id}-tab`}
               key={mode.id}
-              onClick={() => activateMode(mode.id)}
+              onClick={(event) => {
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                event.preventDefault();
+                activateMode(mode.id);
+              }}
               onKeyDown={(event) => moveTab(event, index)}
               ref={(node) => { tabsRef.current[index] = node; }}
-              role="tab"
-              tabIndex={activeMode === mode.id ? 0 : -1}
-              type="button"
+              role={enhanced ? "tab" : undefined}
+              tabIndex={!enhanced || activeMode === mode.id ? 0 : -1}
             >
               <span>{String(index + 1).padStart(2, "0")}</span>
               <strong>{mode.label}</strong>
               <small>{mode.eyebrow}</small>
-            </button>
+            </a>
           ))}
         </div>
       </header>
@@ -380,11 +412,11 @@ export function DenseModuleReadingModes({
               hidden={activeMode !== mode.id}
               id={`${tabsId}-${mode.id}`}
               key={mode.id}
-              role="tabpanel"
+              role={enhanced ? "tabpanel" : "region"}
               data-reading-mode={mode.id}
               tabIndex={0}
             >
-              <Suspense fallback={null}>{panels[mode.id]}</Suspense>
+              {panels[mode.id]}
             </div>
           ))}
         </div>

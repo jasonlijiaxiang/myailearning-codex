@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "06",
   routeKind: "brief",
   introducedAt: "2026-07-21",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["predictive-ai-mlops","feature-store","model-registry","point-in-time-correctness","training-serving-skew","model-drift"]),
   knowledgeView: "predictive-model-lifecycle",
   readingProfile: null,

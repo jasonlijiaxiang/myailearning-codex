@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "02",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-30",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["multimodal","vision-transformer","ocr","asr","document-intelligence"]),
   knowledgeView: "multimodal-evidence-pipeline",
   readingProfile: null,

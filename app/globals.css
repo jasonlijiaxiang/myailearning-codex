@@ -715,3 +715,21 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
   .qaList details > * { display: grid; }
 }
 }
+
+/* Worked examples belong to the learning task and use the shared reading palette. */
+.learningWorkedExample { margin-top: 20px; border-top: 1px solid var(--fb-line); }
+.learningWorkedExample > summary { padding: 14px 0; min-height: 48px; color: var(--fb-link); font-size: 16px; font-weight: 700; cursor: pointer; }
+.learningWorkedExample > summary:focus-visible { outline: 2px solid var(--fb-link); outline-offset: 3px; }
+.learningWorkedExample > div { padding: 0 0 16px; }
+.learningWorkedExample p, .learningWorkedExample li { color: var(--fb-ink); font-size: 16px; line-height: 1.8; overflow-wrap: anywhere; }
+.learningWorkedExample li + li { margin-top: 10px; }
+.learningWorkedExample .learningExampleBoundary { padding: 12px 16px; border-left: 3px solid var(--fb-accent); background: var(--fb-mist); }
+.mechanismCalculator { margin-top: 20px; padding: 18px; border: 1px solid var(--fb-line); border-radius: var(--fb-radius-panel); background: var(--fb-mist); }
+.mechanismCalculator h5 { margin: 0 0 16px; color: var(--fb-ink); font-size: 18px; line-height: 1.5; }
+.mechanismCalculator label { display: grid; gap: 8px; color: var(--fb-ink); font-size: 16px; }
+.mechanismCalculator select { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid var(--fb-line); color: var(--fb-ink); background: var(--fb-surface); font: inherit; }
+.mechanismCalculator select:focus-visible { outline: 2px solid var(--fb-link); outline-offset: 2px; }
+.mechanismCalculator output { display: block; margin: 16px 0; color: var(--fb-ink); font-size: 20px; font-weight: 700; }
+.mechanismCalculator ol { list-style: none; padding: 0; }
+.mechanismCalculator li { display: grid; grid-template-columns: 1fr auto; gap: 6px; padding: 8px 0; }
+.mechanismCalculator li i { grid-column: 1 / -1; height: 6px; background: var(--fb-accent); }

@@ -81,7 +81,7 @@ export default function GlossaryPage() {
 
       <section className="glossaryDirectorySection" id="glossary-directory" aria-labelledby="glossary-directory-title">
         <div className="glossaryDirectoryIntro">
-          <div><p className="kicker">SEARCH BY CONCEPT</p><h2 id="glossary-directory-title">按知识关系查词，不按字母背词</h2></div>
+          <div><p className="kicker">SEARCH BY CONCEPT</p><h2 id="glossary-directory-title">查找术语定义与相关模块</h2></div>
           <p>可以搜索中文、英文、缩写或说明，也可以按模型、检索、Agent、安全、训练和交付等主题筛选。每个术语都提供继续阅读的模块和来源入口。</p>
         </div>
         <GlossaryExplorer groups={groups} terms={terms} />

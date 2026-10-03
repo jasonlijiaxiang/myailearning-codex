@@ -291,7 +291,7 @@ test("reader surfaces follow the light and dark palette with their text", async 
   const agentRules = cssRules(agentReader);
   /** @type {Array<[ParsedCssRule[], string, string, string]>} */
   const surfaceRoles = [
-    [fieldbookRules, ".fieldbookTheme.modulePage .moduleModeTabs button", "background", "var(--fb-surface)"],
+    [fieldbookRules, ".fieldbookTheme.modulePage .moduleModeTabs :is(button, a)", "background", "var(--fb-surface)"],
     [fieldbookRules, ".fieldbookTheme.modulePage .qaAnswer", "background", "var(--fb-surface)"],
     [fieldbookRules, ".fieldbookTheme.modulePage .qaEvidenceDisclosure .qaBasis", "background", "var(--fb-surface)"],
     [fieldbookRules, ".curriculumChapter[open] summary", "background", "linear-gradient(90deg,var(--fb-accent-soft) 0,var(--fb-surface) 66%)"],
@@ -434,13 +434,13 @@ test("the unified Hero desktop typography roles follow the contract", async () =
     [".hero .identity h1 > small", { color: [ink], "font-family": [ui], "font-size": ["clamp(17px, 1.45vw, 21px)", "17px"], "font-weight": ["760"], "letter-spacing": ["-.015em"], "line-height": ["1.35"] }],
     [".hero .identity h1 > small em", { color: [muted], "font-family": [ui], "font-size": ["1em"], "font-weight": ["570"], "letter-spacing": ["-.015em"], "line-height": ["1.35"] }],
     [".hero .definition", { color: [ink], "font-family": [editorial], "font-size": ["clamp(19px, 1.55vw, 24px)", "18px"], "font-weight": ["500"], "letter-spacing": ["normal"], "line-height": ["1.55"] }],
-    [".hero .position", { color: [muted], "font-family": [ui], "font-size": ["14px", "13px"], "font-weight": ["400"], "letter-spacing": ["normal"], "line-height": ["1.65", "1.6"] }],
+    [".hero .position", { color: [muted], "font-family": [ui], "font-size": ["16px"], "font-weight": ["400"], "letter-spacing": ["normal"], "line-height": ["1.65", "1.6"] }],
     [".hero .summary :global(.moduleHeroMetrics dt)", { color: [meta], "font-family": [ui], "font-size": ["11px", "9px"], "font-weight": ["800"], "letter-spacing": [".06em"], "line-height": ["1.35"] }],
     [".hero .summary :global(.moduleHeroMetrics dd)", { color: [ink], "font-family": [ui], "font-size": ["13px"], "font-weight": ["400"], "letter-spacing": ["normal"], "line-height": ["1.35"] }],
     [".hero .summary :global(.moduleHeroMetrics dd strong)", { color: ["var(--fb-chrome-link)"], "font-family": [editorial], "font-size": ["24px", "23px"], "font-weight": ["500"], "letter-spacing": ["normal"], "line-height": ["1"] }],
     [".hero .summary :global(.moduleHeroMetrics dd span)", { color: [muted], "font-family": [ui], "font-size": ["13px"], "font-weight": ["400"], "letter-spacing": ["normal"], "line-height": ["1.35"] }],
     [".hero .factLedger dt", { color: [meta], "font-family": [code], "font-size": ["10px"], "font-weight": ["700"], "letter-spacing": [".07em"], "line-height": ["1.35"] }],
-    [".hero .factLedger dd", { color: [ink], "font-family": [ui], "font-size": ["13px", "12px"], "font-weight": ["720"], "letter-spacing": ["normal"], "line-height": ["1.45"] }],
+    [".hero .factLedger dd", { color: [ink], "font-family": [ui], "font-size": ["16px"], "font-weight": ["720"], "letter-spacing": ["normal"], "line-height": ["1.45"] }],
     [".hero .mobileMenu a", { color: [ink], "font-family": [ui], "font-size": ["13px"], "font-weight": ["700"], "letter-spacing": ["normal"], "line-height": ["1.35"] }],
   ];
   for (const [selector, contract] of roles) assertRole(rules, selector, contract);
@@ -457,10 +457,10 @@ test("the unified Hero keeps exactly one 720px mobile contract", async () => {
     [".hero .identity h1 > span", { "font-size": ["clamp(48px, 15vw, 64px)"] }],
     [".hero .identity h1 > small", { "font-size": ["17px"] }],
     [".hero .definition", { "font-size": ["18px"], "line-height": ["1.55"] }],
-    [".hero .position", { "font-size": ["13px"], "line-height": ["1.6"] }],
+    [".hero .position", { "font-size": ["16px"], "line-height": ["1.6"] }],
     [".hero .summary :global(.moduleHeroMetrics dt)", { "font-size": ["9px"] }],
     [".hero .summary :global(.moduleHeroMetrics dd strong)", { "font-size": ["23px"] }],
-    [".hero .factLedger dd", { "font-size": ["12px"] }],
+    [".hero .factLedger dd", { "font-size": ["16px"] }],
   ];
   for (const [selector, contract] of mobileRoles) assertRole(mobileRules, selector, contract);
 });
@@ -727,7 +727,7 @@ test("rendered module pages carry the unified Hero and reader chrome", async () 
   assert.match(html, /Cloud × AI \/ Presales Fieldbook/);
   assert.match(html, /<dl class="moduleHeroMetrics" aria-label="[^"]+">/);
   assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/);
-  assert.match(html, /role="tablist" aria-label="[^"]+"/);
+  assert.match(html, /class="moduleModeTabs"[^>]*aria-label="[^"]+"/);
   assert.match(html, /<summary aria-label="[^"]+"><span><\/span><span><\/span><span><\/span><\/summary>/);
 });
 

@@ -964,7 +964,7 @@ export const moduleCurriculumContent = Object.freeze({
         "en": "Identity & Authorization",
         "explanation": "经认证的 Client 主体、最终用户身份和 Server 自身身份可能同时存在；clientInfo 只是 Client 自报的软件名称与版本等元数据，不是认证身份。生产调用要明确代表谁、允许做什么、Token 面向哪个资源，以及何时需要用户确认或审批；2026-07-28 正式规范加入 issuer 校验、客户端类型和凭据绑定等授权强化。",
         "decision": "让每次高影响调用可追到主体、授权依据和参数，并在迁移测试中验证新的授权约束。",
-        "boundary": "规范要求已经生效，但不能假设所有 SDK 与产品都已实现；OAuth 登录成功或 clientInfo 声明也不等于 Tool 内部业务授权已完成。",
+        "boundary": "规范要求已经生效，但不能假设所有 SDK 与产品都已实现；取得 OAuth access token 或提供 clientInfo 声明也不等于 Tool 内部业务授权已完成。",
         "sourceIds": [
           "mcp-authorization",
           "mcp-specification-2026-07-28",
@@ -1741,10 +1741,11 @@ export const moduleCurriculumContent = Object.freeze({
       {
         "title": "全参、PEFT、LoRA 与 QLoRA",
         "en": "Adaptation Methods",
-        "explanation": "PEFT 是只训练少量附加参数的一类方法；LoRA 学习低秩增量，QLoRA 在量化且冻结的底座上训练 LoRA。全参更新全部权重，投资和制品管理最重。",
+        "explanation": "PEFT通过新增少量参数，或只更新基座的一小部分参数适配任务；LoRA学习低秩增量，QLoRA在量化且冻结的底座上训练LoRA。全参更新全部权重，需要另行评估训练资源与回归范围。",
         "decision": "按模型控制权、运行时兼容、目标、数据、算力和回滚条件选择最小充分方法。",
         "boundary": "PEFT 与 LoRA 不是同义词；参数效率也不保证数据需求低、质量保持或推理成本下降。",
         "sourceIds": [
+          "hf-peft-methods",
           "hf-trl-peft",
           "lora-2021",
           "qlora-2023"

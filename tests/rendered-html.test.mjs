@@ -15,7 +15,7 @@ import { getModuleBySlug, layers, legacyModuleAliases, moduleList } from "../app
 import { explicitTermRelations, knowledgeRelationTypes, termPrimaryModules } from "../app/knowledge-relations.mjs";
 import { graphHealth, graphModuleCoverage, graphOverviewLinks, graphOverviewPolicy } from "../app/knowledge-graph/graph-data.mjs";
 import { buildKnowledgeSearchEntries, buildQuestionSearchText } from "../app/search-index.mjs";
-import { englishModuleRegistry, englishQuestions } from "../app/i18n/en/registry.mjs";
+import { englishModuleRegistry, englishQuestions, englishSourceCopy } from "../app/i18n/en/registry.mjs";
 import {
   buildEnglishSectionGroups,
   selectVisibleEnglishEvidenceCards,
@@ -103,16 +103,43 @@ function serverRenderedReadingPanels(html, label) {
   for (const panel of panels) {
     assert.doesNotMatch(panel.tag, /\shidden(?:\s|=|>)/i, `${label} must expose ${panel.mode} before JavaScript enhancement`);
   }
-  // On-demand reading contract: the server document renders exactly the default
-  // reading task; the other tasks mount when the reader first activates them.
-  assert.equal(panels.length, 1, `${label} must server-render exactly one reading task (the default)`);
-  const activeTab = html.match(/<button\b(?=[^>]*\brole="tab")(?=[^>]*\baria-selected="true")[^>]*>/)?.[0];
+  // The requested native view is complete in SSR; client selection retains
+  // visited panels without duplicating all task bodies in the initial document.
+  assert.equal(panels.length, 1, `${label} must server-render exactly one selected reading task`);
+  const activeTab = html.match(/<a\b(?=[^>]*\bdata-reading-selected="true")[^>]*>/)?.[0];
   assert.ok(activeTab, `${label} must mark its default reading task as selected`);
-  const selectedControls = activeTab.match(/aria-controls="([^"]+)"/)?.[1];
+  const selectedControls = activeTab.match(/id="([^"]+)-tab"/)?.[1];
   assert.ok(selectedControls, `${label} selected tab must name its panel`);
   assert.equal(panels[0].id, selectedControls, `${label} must expose the default reading task in the server HTML`);
   return panels;
 }
+
+test("every declared Chinese reading task has a complete native URL before enhancement", async () => {
+  for (const publication of publishedModuleRegistry) {
+    const initial = await renderHtml(publication.path);
+    const nativeLinks = [...initial.matchAll(/<a\b(?=[^>]*\bdata-reading-selected="(?:true|false)")[^>]*>/g)].map(([tag]) => ({
+      tag,
+      href: tag.match(/href="([^"]+)"/)?.[1]?.replaceAll("&amp;", "&"),
+    }));
+    assert.ok(nativeLinks.length > 0, `${publication.slug}: native reading links`);
+    for (const { tag, href } of nativeLinks) {
+      assert.ok(href, `${publication.slug}: link URL`);
+      assert.doesNotMatch(tag, /tabindex="-1"/, "all native views must be keyboard reachable without JavaScript");
+      const url = new URL(href, `http://localhost${publication.path}`);
+      const html = await renderHtml(`${url.pathname}${url.search}`);
+      assert.doesNotMatch(html, /<div\b(?=[^>]*\bhidden(?:\s|=|>))(?=[^>]*\bid="S:)[^>]*>/, `${publication.slug}${url.search}: reading content must not wait in a script-revealed streaming container`);
+      const [panel] = serverRenderedReadingPanels(html, `${publication.slug}${url.search}`);
+      assert.equal(panel.mode, url.searchParams.get("view"));
+      assert.doesNotMatch(html, /<a\b[^>]*\brole="tab"/, "tab semantics start only when keyboard enhancement is available");
+      if (panel.mode === "field") {
+        for (const item of questionDirectoryItems.filter((item) => item.moduleId === publication.slug)) {
+          const targetId = new URL(item.originalHref, "http://localhost").hash.slice(1);
+          assert.match(html, new RegExp(`id="${escapeRegExp(targetId)}"`), `${publication.slug}: question target ${targetId}`);
+        }
+      }
+    }
+  }
+});
 
 /**
  * The systematic-study and field panels mount on demand and render from the
@@ -617,8 +644,8 @@ test("v3 reading system keeps discovery functional, compact, and portable", asyn
   assert.match(html, /<input[^>]*placeholder="[^"]+"/);
   assert.match(interactionSource, /export function KnowledgeSearchLaunch/);
   assert.match(moduleHtml, /class="moduleReadingExperience"/);
-  assert.match(moduleHtml, /role="tablist" aria-label="[^"]+"/);
-  assert.equal((moduleHtml.match(/role="tab"/g) ?? []).length, 3, "the reading tablist must expose exactly the three registered reading tasks");
+  assert.match(moduleHtml, /class="moduleModeTabs"[^>]*aria-label="[^"]+"/);
+  assert.equal((moduleHtml.match(/data-reading-selected="(?:true|false)"/g) ?? []).length, 3, "the reading tablist must expose exactly the three registered reading tasks");
   assert.match(readingModeSource, /String\(index \+ 1\)\.padStart\(2, "0"\)/);
   // @ts-expect-error the es2017 target does not recognize the dotAll flag; the regex body must not change
   assert.match(readingModeSource, /ArrowLeft.*ArrowRight.*Home.*End/s);
@@ -1406,12 +1433,12 @@ test("inference reader preserves its interactive system view inside the unified 
   assert.match(enHtml, /id="llm-inference-english-primer-title"/);
   assert.equal((html.match(/role="gridcell"/g) ?? []).length, 56, "the inference heatmap must cover 7 input lengths × 8 concurrency steps");
   assert.equal((html.match(/<button[^>]*aria-selected="true"[^>]*role="gridcell"/g) ?? []).length, 1, "the server first paint must keep exactly one selected heatmap cell");
-  assert.match(html, /data-memory-gb="18\.0"/, "low-load memory estimates must not fall below the sample BF16 baseline");
+  assert.match(html, /data-memory-gib="20\.1"/, "low-load memory follows the declared weights, workspace and linear KV estimate");
   assert.match(html, /ms\/token/);
   assert.match(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section \{ padding: 12px 0 0; \}[\s\S]*?\.metricInspector > \.capacityLink \{ display: flex; \}[\s\S]*?\.metricInspector > footer \{ display: grid; \}/, "narrow screens must not drop the inference metrics, capacity link, or sources");
   assert.doesNotMatch(studioStyles, /@media \(max-width: 760px\) \{[\s\S]*?\.metricInspector > section,[\s\S]*?display: none;/, "narrow screens must not hide the metric-inspector semantics with display:none");
   assert.match(html, /<dt>TTFT<\/dt><dd>1\.20<!-- --> s<\/dd>/);
-  assert.match(html, /<dd>849<!-- --> token\/s[\s\S]*?997<\/small>/);
+  assert.match(html, /<dd>798<!-- --> token\/s[\s\S]*?997<\/small>/);
   // Capacity estimates mount with the learn task; their approximate marker is
   // asserted in the client source so the numbers never pose as load-test reads.
   assert.match(studioSource, /≈ \{result\.ttft\.toFixed\(2\)\}/);
@@ -1748,15 +1775,15 @@ test("English RAG renders its complete dedicated reader and its source ledger ca
   assert.equal((scopedReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, sourceIds.length);
   for (const sourceId of sourceIds) assert.match(scopedReferencesHtml, new RegExp(`id="source-${escapeRegExp(sourceId)}"`));
   assert.doesNotMatch(scopedReferencesHtml, new RegExp(`id="source-${escapeRegExp(unrelatedSourceId)}"`));
-  assert.equal((allReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(sourceLedger).length);
-  assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(sourceLedger).length);
+  assert.equal((allReferencesHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(englishSourceCopy).length);
+  assert.equal((invalidScopeHtml.match(/class="questionDirectoryItem"/g) ?? []).length, Object.keys(englishSourceCopy).length);
 });
 
 test("English Reference scopes preserve the canonical module-ledger source order", async () => {
   const pages = await Promise.all(referenceModules.map((module) => renderHtml(`/en/references?module=${module.id}`)));
   for (const [index, module] of referenceModules.entries()) {
     const renderedSourceIds = [...pages[index].matchAll(/<article class="questionDirectoryItem" id="source-([^"]+)"/g)].map((match) => match[1]);
-    assert.deepEqual(renderedSourceIds, module.sourceIds, `${module.id} must render its complete canonical Reference group in order`);
+    assert.deepEqual(renderedSourceIds, module.sourceIds.filter((sourceId) => Object.hasOwn(englishSourceCopy, sourceId)), `${module.id} must render every independently localized source in canonical order`);
   }
 });
 
@@ -2051,7 +2078,7 @@ test("Prompt Engineering route covers context boundaries, release governance, an
   assert.match(promptEnSource, /Eligibility, limits, or state transition[\s\S]*Deterministic rules and authorization[\s\S]*Application workflow/);
   assert.match(promptEnSource, /Factual and evidence correctness[\s\S]*Business validity[\s\S]*Authorization validity[\s\S]*Tool-contract validity[\s\S]*Transaction acceptance/);
   assert.match(promptEnSource, /A Release Bundle is this fieldbook[\s\S]*not a cross-provider standard/);
-  assert.match(labSource, /不会作最终赔付裁决/);
+  assert.match(labSource, /应用.*(?:校验|验证)|(?:校验|验证).*应用/);
   assert.doesNotMatch(html, /class="qaEvidenceDisclosure"/, "Prompt must defer its QA disclosures to the on-demand field task");
   assert.match(html, /data-knowledge-view="context-assembly"/, "Prompt must keep its interactive quick primer view");
   assert.doesNotMatch(html, /<input[^>]*type="search"/, "Prompt must defer its QA search to the on-demand field task");
@@ -2324,7 +2351,7 @@ test("Batch 09 control views expose every step and focused search entries resolv
     );
     const curriculum = moduleCurriculumContent[publication.slug];
     if (curriculum) {
-      const curriculumEntries = zhSearchIndex.filter((entry) => entry.type === "课程章节" && entry.href.startsWith(`/modules/${publication.slug}#`));
+      const curriculumEntries = zhSearchIndex.filter((entry) => entry.type === "课程章节" && entry.href.startsWith(`/modules/${publication.slug}?view=learn#`));
       assert.equal(curriculumEntries.length, curriculum.chapters.length, `${publication.slug} search must keep long-form sections discoverable`);
     }
     const html = await renderHtml(publication.path);
@@ -2419,7 +2446,7 @@ test("every published module passes the shared reader, terminology, and depth co
     assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/);
     assert.match(html, /class="readingProgress"/, `${publishedModule.slug} is missing the reading progress`);
     assert.match(html, /class="moduleReadingExperience"/, `${publishedModule.slug} is missing the task reader`);
-    assert.match(html, /role="tablist" aria-label="[^"]+"/, `${publishedModule.slug} is missing the accessible reading-task choice`);
+    assert.match(html, /class="moduleModeTabs"[^>]*aria-label="[^"]+"/, `${publishedModule.slug} is missing the accessible reading-task choice`);
     assert.match(html, /INTERACTIVE SYSTEM VIEW|data-knowledge-explorer="interactive"/, `${publishedModule.slug} is missing a mechanism or decision view`);
     assert.match(html, />现场查证</, `${publishedModule.slug} is missing the on-demand field task that owns the searchable practice pack`);
     assert.match(html, /href="(?:\/questions(?:\?[^\"]*)?|#qa)"/, `${publishedModule.slug} is missing the question directory entry`);

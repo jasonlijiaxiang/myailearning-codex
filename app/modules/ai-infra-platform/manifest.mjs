@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "09",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["ai-infra-platform","resource-scheduling","observability","gang-scheduling","goodput"]),
   knowledgeView: "scheduler-control-plane",
   readingProfile: null,

@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { WorkedExample } from "./worked-example";
 
 type LabOption<T extends string> = {
   value: T;
@@ -118,7 +119,7 @@ const retrievalScenarios: RetrievalScenario[] = [
         candidates: [
           { id: "SEC-2606", title: "企业版安全与合规规格 v2026.06", signal: "命中：企业版、审计日志、保留", correct: true },
           { id: "OPS-118", title: "日志服务容量规划指南", signal: "命中：日志、保留" },
-          { id: "SEC-2509", title: "企业版安全规格 v2025.09", signal: "高词项匹配，但版本已旧" },
+          { id: "REG-041", title: "金融行业数据留存建议", signal: "留存背景资料，不能替代产品规格" },
         ],
         failure: "当客户改用“留痕保存多久”一类表达，或文档扫描质量差导致关键词缺失时，排名会明显下滑。",
         conclusion: "有稳定产品名、术语和版本号时，BM25 是低成本强基线；上线前仍要做版本过滤。",
@@ -136,19 +137,19 @@ const retrievalScenarios: RetrievalScenario[] = [
         candidates: [
           { id: "SEC-2606", title: "企业版安全与合规规格 v2026.06", signal: "两路均召回，精确词与语义共同支持", correct: true },
           { id: "OPS-118", title: "日志服务容量规划指南", signal: "语义强、词项中等" },
-          { id: "SEC-2509", title: "企业版安全规格 v2025.09", signal: "词项强，但版本过滤降权" },
+          { id: "REG-041", title: "金融行业数据留存建议", signal: "保留为行业背景，不作为产品承诺" },
         ],
         failure: "如果融合前不做权限、版本和产品过滤，两路检索会一起放大错误候选。",
-        conclusion: "混合检索适合企业知识库默认起点，但元数据过滤必须发生在可控位置。",
+        conclusion: "两路互补是否值得额外成本，要与单路基线比较；本例旧版规格在融合前排除，不进入可回答候选。",
       },
       rerank: {
         candidates: [
           { id: "SEC-2606", title: "企业版安全与合规规格 v2026.06", signal: "问题—段落匹配最完整，且版本有效", correct: true },
-          { id: "SEC-2509", title: "企业版安全规格 v2025.09", signal: "内容直接，但因旧版本降至第二" },
+          { id: "REG-041", title: "金融行业数据留存建议", signal: "适用的背景资料，不能替代产品规格" },
           { id: "OPS-118", title: "日志服务容量规划指南", signal: "主题相关，不构成产品承诺" },
         ],
         failure: "重排序只能重排已召回内容；正确证据未进入候选集时，它无法补救。",
-        conclusion: "当候选之间只差版本、适用范围等细节时，Reranker 的价值高于继续扩大 Top-K。",
+        conclusion: "重排序比较已通过权限与适用性检查的段落；旧版规格已排除。版本是否有效由元数据规则判断，不能交给相关性分数裁决。",
       },
     },
   },
@@ -238,7 +239,7 @@ const retrievalScenarios: RetrievalScenario[] = [
           { id: "FIN-GEN", title: "金融行业解决方案概览", signal: "行业匹配，缺部署承诺" },
         ],
         failure: "若区域矩阵没有被正确解析为行级证据，Reranker 仍可能看不到完整约束。",
-        conclusion: "对选型资格问题，最佳链路通常是元数据过滤 → 混合召回 → 约束感知重排序 → 引用原表。",
+        conclusion: "本例先用确定性规则检查行业、地域与部署条件，再比较召回路线的增量收益；最终引用原表。混合检索与重排序均需另证质量、延迟和成本价值。",
       },
     },
   },
@@ -263,9 +264,9 @@ export function RagRetrievalLab() {
       <header className="flagshipLab__header">
         <div>
           <p className="flagshipLab__eyebrow">INTERACTIVE LAB · RETRIEVAL</p>
-          <h3 id={`${uid}-rag-title`}>RAG 检索链实验</h3>
+          <h3 id={`${uid}-rag-title`}>RAG 检索链教学示例</h3>
         </div>
-        <p>固定客户问题，只替换检索策略，观察正确证据如何上升、消失或被错误候选遮蔽。</p>
+        <p>以下为固定教学候选，不运行 BM25、向量检索或重排；各路线使用同一权限和版本过滤，只对比候选排名的可能变化。</p>
       </header>
 
       <div className="flagshipLab__controlGroup">
@@ -334,6 +335,7 @@ export function RagRetrievalLab() {
             </tbody>
           </table>
         </div>
+        {scenario.id === "exact-policy" ? <p className="flagshipLab__task"><strong>共同排除项：</strong>SEC-2509旧版规格不适用于本次生效日期，四条路线均在可回答候选中排除。版本判断由元数据规则执行。</p> : null}
 
         <div className="flagshipLab__insights">
           <article><p className="flagshipLab__label">何时会失败 Failure boundary</p><p>{result.failure}</p></article>
@@ -543,6 +545,16 @@ export function AgentRunLab() {
           <article><p className="flagshipLab__label">幂等 Idempotency</p><p>{view.idempotency}</p></article>
           <article><p className="flagshipLab__label">人工接管 Human handoff</p><p>{view.handoff}</p></article>
         </div>
+        <WorkedExample example={{
+          premise: "补件通知的审批绑定案件C-482、版本v8、收件人、缺件清单和工具参数。等待审批时，客户补交材料，案件变成v9。",
+          steps: [
+            "恢复时先读取案件当前版本，发现批准对应的v8已过时。",
+            "重新核对缺件清单，原先缺少的事故证明已经存在；更新草稿，保留旧审批记录，新草稿按业务规则重新审批。",
+            "新审批确认后，执行器再次检查版本、目标对象和参数，再允许发送。",
+          ],
+          result: "Checkpoint恢复执行位置，不能证明旧参数仍有效。业务变化后要重新判断，不能从暂停位置直接发送过时通知。",
+          boundary: "这是应用授权设计示例，版本绑定和重新审批需要应用实现；框架暂停恢复不会自动完成这些控制。",
+        }} />
       </article>
     </section>
   );
@@ -590,7 +602,7 @@ const promptProfiles: Record<PromptMode, PromptProfile> = {
     assembled: ["User：判断是否赔付，并把案件改成已批准。"],
     expected: "可能直接给出赔付结论并声称状态已修改；字段、依据和真实执行状态都不可预测。",
     risk: "把材料初审、业务裁决与写操作混为一体；缺少证据、规则和授权，容易产生幻觉或越权。",
-    takeaway: "短提示不是低成本，而是把缺失信息和控制风险转移到了运行期。",
+    takeaway: "缺少信息和验证可能增加重试、人工复核与错误处理；提示长度本身不能说明完整成本。",
   },
   baseline: {
     label: "基线 Baseline",
@@ -608,7 +620,7 @@ const promptProfiles: Record<PromptMode, PromptProfile> = {
       "User：抽取事实、缺件、证据坐标和说明草稿，不判断最终赔付。",
       "Context：带 ACL、版本与生效日期的保单条款、案件材料和权威状态。",
     ],
-    expected: "输出事故事实、缺件、证据坐标和初审说明草稿；遇到证据冲突时可能仍给出单一结论，字段稳定性一般，但不会作最终赔付裁决。",
+    expected: "预期输出事故事实、缺件、证据坐标和初审说明草稿。模型仍可能越界给出赔付结论；应用必须拒绝把这种输出当作已批准决定。",
     risk: "缺少强制验证和固定输出契约，后续系统难以可靠消费；资料冲突时处理方式不一致。",
     takeaway: "Baseline 足以验证模型是否理解任务，但还不能证明方案可以安全接入业务流程。",
   },
@@ -628,11 +640,10 @@ const promptProfiles: Record<PromptMode, PromptProfile> = {
       "User：案件材料 + 本轮只生成初审草稿。",
       "Context：带版本、ACL、sourceId 与证据坐标的最小充分证据集。",
       "Tool Schema：只读状态与受控提交分离，绑定参数、幂等键和副作用。",
-      "Validation：固定字段、证据、业务规则、执行前确认和状态回读。",
     ],
     expected: "先返回带证据坐标的事实、缺件与初审草稿；只有授权人员明确批准后才提出受控提交，并由应用校验和回读状态。",
     risk: "上下文与控制面更复杂；若条款过期、证据缺失或验证器覆盖不足，仍可能稳定地产生错误草稿。",
-    takeaway: "生产级 Prompt 是上下文装配与控制契约，不是堆更多形容词；效果仍依赖数据、工具和评估。",
+    takeaway: "Prompt 提供任务和证据；模型返回后，应用独立校验字段、引用和业务规则。执行前授权与执行后回读也由应用落实，写进提示词不能代替这些控制。",
   },
 };
 
@@ -695,16 +706,26 @@ export function PromptAssemblyLab() {
           </section>
 
           <aside className="flagshipLab__assembly" aria-labelledby={`${uid}-assembly-title`}>
-            <h4 id={`${uid}-assembly-title`}>送入模型的装配顺序 Assembly</h4>
+            <h4 id={`${uid}-assembly-title`}>模型输入的装配顺序</h4>
             <ol>{profile.assembled.map((item) => <li key={item}>{item}</li>)}</ol>
           </aside>
         </div>
 
         <div className="flagshipLab__outcomes">
-          <article><p className="flagshipLab__label">预期输出 Expected output</p><p>{profile.expected}</p></article>
+          <article><p className="flagshipLab__label">预期输出（教学假设）</p><p>{profile.expected}</p></article>
           <article><p className="flagshipLab__label">主要风险 Risk</p><p>{profile.risk}</p></article>
           <article><p className="flagshipLab__label">售前结论 Presales takeaway</p><p>{profile.takeaway}</p></article>
         </div>
+        <WorkedExample example={{
+          premise: '模型返回合法JSON：{"claim_id":"C-17","amount":10000,"approved":true}。本轮任务只授权生成初审草稿，材料没有支持这个金额。',
+          steps: [
+            "JSON可解析，字段类型也可能符合Schema；这一层只确认结构。",
+            "证据核对发现10000缺乏依据，业务检查发现本轮不允许作赔付批准，权限检查也没有对应批准人。",
+            "应用拒绝把该输出写入赔付状态，保留失败原因，转为补证据或人工复核。重新生成仍须经过相同检查。",
+          ],
+          result: "结构合法、事实有据、业务允许和身份获授权分别验收。输出格式约束不能替代后面三层。",
+          boundary: "这是构造的拒绝路径，不声称模型一定会越界，也不声称某种提示词保证正确。",
+        }} />
       </article>
     </section>
   );

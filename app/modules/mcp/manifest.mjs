@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "03",
   routeKind: "dedicated",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-26",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["mcp","tool-discovery","identity-authorization","mcp-protocol-roles","mcp-primitives"]),
   knowledgeView: "mcp-host-server-boundary",
   readingProfile: "focused",

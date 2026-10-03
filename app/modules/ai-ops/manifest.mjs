@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "04",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["ai-ops","ai-application-engineering","genaiops","ai-release-manifest","configuration-bundle","release-evaluation","shadow-traffic","observability","golden-set","cost-allocation","cost-anomaly"]),
   knowledgeView: "operations-feedback-loop",
   readingProfile: null,

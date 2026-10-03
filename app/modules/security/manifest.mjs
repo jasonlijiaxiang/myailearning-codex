@@ -17,7 +17,7 @@ export default Object.freeze({
   layerNo: "05",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["security","guardrails","identity-authorization","prompt-injection"]),
   knowledgeView: "threat-path",
   readingProfile: null,

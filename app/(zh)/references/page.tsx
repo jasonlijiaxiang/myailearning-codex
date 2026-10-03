@@ -89,7 +89,7 @@ export default function ReferencesPage() {
             <h1>来源与证据资料库<br />Reference Library</h1>
             <p className="heroLead">
               所有模块用到的论文、标准、教材、官方产品文档、厂商实验与行业指南都集中在这里。
-              正文只引用稳定的来源标识；每项来源的原文、证据类别、适用条件和最近核验日期都可以在本页找到。
+              按模块查找原始论文、标准与官方资料，核对它们支持的结论、适用条件和最近核验日期。
             </p>
             <div className="heroActions">
               <a className="primaryButton" href="#reference-modules">按模块查看来源</a>

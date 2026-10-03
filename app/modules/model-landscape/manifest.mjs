@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "01",
   routeKind: "brief",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-24",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["model-landscape","model-routing","access-spectrum","capability-matrix","model-lifecycle"]),
   knowledgeView: "selection-coordinate",
   readingProfile: null,

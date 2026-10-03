@@ -28,14 +28,14 @@ function referenceItem(sourceId: string, copy: (typeof englishSourceCopy)[keyof 
 }
 
 const itemsBySourceId = new Map(Object.entries(englishSourceCopy).map(([sourceId, copy]) => [sourceId, referenceItem(sourceId, copy)]));
-const allItems = Object.keys(sourceLedger).map((sourceId) => {
+// Chinese-only additions remain pending until their independent English copy exists.
+const allItems = Object.keys(sourceLedger).flatMap((sourceId) => {
   const item = itemsBySourceId.get(sourceId);
-  if (!item) throw new Error(`Canonical source has no English ledger copy: ${sourceId}`);
-  return item;
+  return item ? [item] : [];
 });
 const referenceSourceIdsByModule = new Map(referenceModules.map((module) => {
   if (!englishModuleRegistry[module.id]) throw new Error(`Reference group has no English module: ${module.id}`);
-  return [module.id, module.sourceIds] as const;
+  return [module.id, module.sourceIds.filter((sourceId) => itemsBySourceId.has(sourceId))] as const;
 }));
 
 function requireReferenceItem(sourceId: string) {

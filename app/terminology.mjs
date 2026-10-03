@@ -151,7 +151,7 @@ export const terminology = Object.freeze({
   "distributed-training": term("分布式训练", "Distributed Training", "把模型、数据或计算切分到多个加速器，同时处理通信、同步和故障恢复。", ["llm-training", "ai-infra-platform"]),
   "fine-tuning": term("微调", "Fine-tuning", "在基础模型上继续训练，使其更稳定地表现目标任务、格式或行为。", ["fine-tuning", "llm-training"]),
   sft: term("监督微调", "Supervised Fine-tuning", "用输入和理想输出示范继续训练模型，使其更稳定地执行目标任务。", ["fine-tuning", "llm-training"], "SFT"),
-  peft: term("参数高效微调", "Parameter-Efficient Fine-Tuning", "冻结大部分基础模型参数，只训练少量附加参数以适配目标任务的一类微调方法。", ["fine-tuning"], "PEFT"),
+  peft: term("参数高效微调", "Parameter-Efficient Fine-Tuning", "冻结大部分基础模型参数，通过新增少量参数或选择性更新已有参数适配目标任务的一类微调方法。", ["fine-tuning"], "PEFT"),
   rlhf: term("基于人类反馈的强化学习", "Reinforcement Learning from Human Feedback", "利用人工偏好训练奖励信号，再通过强化学习调整模型行为的后训练方法。", ["fine-tuning", "llm-training"], "RLHF"),
   lora: term("低秩适配", "Low-Rank Adaptation", "冻结大部分模型参数，只训练小型低秩矩阵的参数高效微调方法。", ["fine-tuning"], "LoRA"),
   qlora: term("量化低秩适配", "Quantized Low-Rank Adaptation", "在量化且冻结的基础模型上训练 LoRA Adapter，以降低微调显存需求。", ["fine-tuning"], "QLoRA"),

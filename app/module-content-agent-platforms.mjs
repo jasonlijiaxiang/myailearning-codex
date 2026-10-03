@@ -1,64 +1,4 @@
-// Portable VeADK and AgentKit module content; central registries import these exports.
-const freeze = Object.freeze;
-/**
- * @param {any[]} values
- */
-const list = (values) => freeze(values.map((value) => freeze(value)));
-/**
- * @param {string[]} values
- */
-const strings = (values) => freeze([...values]);
-/**
- * @param {any} value
- */
-const datedQa = (value) => freeze({
-  ...value,
-  evidence: list(value.evidence.map((/** @type {any} */ reference) => ({
-    ...reference,
-    supports: reference.supports.trim(),
-  }))),
-  addedAt: "2026-08-15",
-});
-/**
- * @param {any} value
- */
-const curriculum = (value) => freeze({
-  ...value,
-  chapters: freeze(value.chapters.map((/** @type {any} */ chapter) => freeze({
-    ...chapter,
-    sourceIds: strings(chapter.sourceIds),
-  }))),
-});
-/**
- * @param {any} value
- */
-const learning = (value) => freeze({
-  outcomes: strings(value.outcomes),
-  route: list(value.route),
-  labs: freeze(value.labs.map((/** @type {any} */ lab) => freeze({
-    ...lab,
-    tasks: strings(lab.tasks),
-    sourceIds: strings(lab.sourceIds),
-  }))),
-});
-
-const veadkSources = {
-  agent: "veadk-agent-source-2026-08-15",
-  runner: "veadk-runner-source-2026-08-15",
-  integration: "veadk-agentkit-integration-2026-08-15",
-  memory: "veadk-short-term-memory-2026-08-15",
-  tools: "veadk-builtin-tools-2026-08-15",
-};
-const agentkitSources = {
-  overview: "agentkit-platform-overview-2026-08-15",
-  cli: "agentkit-cli-overview-2026-08-15",
-  commands: "agentkit-cli-commands-2026-08-15",
-  config: "agentkit-config-reference-2026-08-15",
-  runtime: "agentkit-runtime-quickstart-2026-08-15",
-  memory: "agentkit-memory-quickstart-2026-08-15",
-  mem0Oss: "mem0-oss-overview-2026-08-15",
-  mem0Compare: "mem0-platform-vs-oss-2026-08-15",
-};
+// VeADK and AgentKit briefs consumed by the shared content registry.
 export const agentPlatformBriefs = {
   "veadk": {
     "slug": "veadk",
@@ -516,7 +456,7 @@ export const agentPlatformBriefs = {
       }
     ],
     "deepDiveTitle": "一条 AgentKit 发布记录包含什么",
-    "deepDiveLead": "发布证据包可以先用 app v0.3、镜像摘要、目标 Region、Runtime 版本、Memory 资源 ID、50 条云端回归、并发 10 和一次恢复演练把字段走通。它定义的是要记录什么，不代表云端验证已经完成；当前模块仍把 Trace、负载与恢复结果标为待执行。",
+    "deepDiveLead": "示例发布记录包含应用版本、镜像摘要、目标地域、Runtime 版本、状态资源和验证结果。回归规模与并发负载由客户目标决定；是否放量取决于云端任务、权限、负载和恢复测试。",
     "deepDives": [
       {
         "kind": "sequence",
@@ -786,7 +726,7 @@ export const agentPlatformBriefs = {
       {
         "q": "AgentKit 的观测、评测、外部压测和客户 SLO 分别解决什么？",
         "a": "观测提供运行证据，评测衡量任务质量，外部压测施加可控负载，SLO 记录客户可接受的服务目标。",
-        "depth": "Trace 用于定位模型、工具和 Memory 步骤；评测集比较任务质量与轨迹；k6、Locust 等工具施加并发负载。由 SLO 推导错误预算后持续跟踪消耗，恢复结果另行与 RTO 对照，成本作为独立经营约束。当前模块只定义待执行验收，不声称已有云端结果。",
+        "depth": "Trace 用于定位模型、工具和 Memory 步骤；评测集比较任务质量与轨迹；k6、Locust 等工具施加并发负载。由 SLO 推导错误预算后持续跟踪消耗，恢复结果另行与 RTO 对照，成本作为独立经营约束。上线前需取得目标环境中的验证结果。",
         "ask": "客户当前缺的是定位证据、质量基线、容量上限还是正式 SLO？",
         "tag": "可观测与性能",
         "basis": "平台运行能力 + 独立验收分工",
@@ -823,79 +763,10 @@ export const agentPlatformBriefs = {
         "metric": "目标 Runtime",
         "title": "云部署和运行证据需要目标环境实测",
         "finding": "Runtime 快速开始给出了部署与调用路径，可在此基础上执行应用、依赖和运营测试。",
-        "boundary": "本模块只给出待执行实验；未产生云端回归、Trace、负载和恢复结果前，不应声明生产就绪。",
+        "boundary": "上线前需取得目标环境中的云端回归、Trace、负载和恢复证据；本地调用与 Runtime 状态不能替代这些结果。",
         "sourceId": "agentkit-runtime-quickstart-2026-08-15",
         "accent": true
       }
     ]
   }
 };
-
-export const agentPlatformCurriculum = freeze({
-  veadk: curriculum({
-    lead: "VeADK 课程围绕一份可回放 Run 展开：root_agent 版本、Runner 事件、Tool 合同、Session 三元组、长期记忆写入和 AgentKit App 入口共同进入记录。",
-    chapters: [
-      { title: "Agent 定义与版本", en: "Agent Definition", explanation: "VeADK Agent 当前在 Google ADK 的 LlmAgent 接口上增加模型、记忆与平台适配配置，这些字段共同形成可运行候选。", decision: "把模型与所有模型外配置绑定到同一评估版本。", boundary: "对象可导入不证明行为、权限或业务结果。", sourceIds: [veadkSources.agent] },
-      { title: "Runner、事件与停止", en: "Runner & Events", explanation: "Runner 接收根 Agent、会话与记忆服务，执行模型—工具—观察循环，并以事件流输出模型与工具处理过程。", decision: "为调用、时间、Token、失败和停止设置预算。", boundary: "运行结束不等于业务终态成立。", sourceIds: [veadkSources.runner] },
-      { title: "Tool 接入与控制", en: "Tools", explanation: "官方内置 Tool 通过明确函数入口提供常用能力，Agent 的 tools 配置再把选定函数暴露给模型调用。", decision: "通用能力复用官方实现，业务动作使用明确合同。", boundary: "模型可见不等于用户授权。", sourceIds: [veadkSources.tools, veadkSources.agent] },
-      { title: "Session 与短期记忆", en: "Session & Short-term Memory", explanation: "应用、用户和会话标识共同限定事件历史的读取范围，具体后端决定持久化、实例间共享和恢复能力。", decision: "按实例数、恢复和隔离目标选存储。", boundary: "SQLite 不自动形成多实例生产状态。", sourceIds: [veadkSources.memory] },
-      { title: "上下文工程", en: "Context Engineering", explanation: "历史、工具定义和 Tool Result 会进入后续调用并影响质量、时延和成本。", decision: "治理选择、长度、压缩和 Session 切分。", boundary: "更大窗口不保证证据被正确使用。", sourceIds: [veadkSources.runner, veadkSources.tools] },
-      { title: "长期记忆与权威事实", en: "Long-term Memory", explanation: "长期记忆通过独立写入与检索支持跨会话召回，召回内容是否真实、当前有效，仍须回到相应权威来源确认。", decision: "写入前定义主体、来源、用途、有效期、纠错和删除。", boundary: "检索相关不等于事实真实。", sourceIds: [agentkitSources.memory] },
-      { title: "AgentKit 应用适配", en: "AgentKit Integration", explanation: "集成入口把 root_agent 封装成 AgentKit 可接收的 App，并形成后续构建与 Runtime 调用所需的应用边界。", decision: "分别验收本地应用合同与云端 Runtime。", boundary: "适配成功不等于上云和生产就绪。", sourceIds: [veadkSources.integration] },
-    ],
-  }),
-  agentkit: curriculum({
-    lead: "AgentKit 课程以一份发布记录为主线，检查 App 合同、CLI 输出、镜像摘要、Runtime 版本、目标配置、Memory 绑定、身份网络、云端回归和回退结果。",
-    chapters: [
-      { title: "平台定位与应用合同", en: "Platform & App Contract", explanation: "AgentKit 管理应用和云端运行资源，应用入口连接框架代码与 Runtime。", decision: "在干净环境中重建本地应用候选，并保存入口、依赖和调用结果。", boundary: "平台不替代业务逻辑与授权。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
-      { title: "CLI 生命周期", en: "CLI Lifecycle", explanation: "CLI 把项目初始化、配置校验、构建、部署和快捷发布串成明确命令，但每一步生成的对象和失败含义不同。", decision: "按团队发布控制选择单步或 launch。", boundary: "快捷命令不消除阶段证据。", sourceIds: [agentkitSources.cli, agentkitSources.commands] },
-      { title: "配置与部署目标", en: "Configuration & Target", explanation: "配置声明应用入口、依赖、环境、目标标识、Region 与外部资源引用，并作为构建和部署的显式输入。", decision: "在目标环境分别验证资源访问、网络和数据边界。", boundary: "控制面字段不证明隔离、连通或数据驻留。", sourceIds: [agentkitSources.config] },
-      { title: "Runtime 与版本", en: "Runtime Lifecycle", explanation: "Runtime 承载可识别的应用版本，提供资源状态与调用入口，但 Ready 只说明平台资源状态。", decision: "把 Ready、可调用、任务成功、恢复和回退分层验收。", boundary: "平台状态不等于业务上线。", sourceIds: [agentkitSources.runtime] },
-      { title: "Memory 控制面与数据面", en: "Memory Control & Data Planes", explanation: "Memory 的资源关联、连接鉴权、用户作用域和实际读写分属控制面与数据面，需要分别验证。", decision: "部署脚本分别校验绑定、端点、凭据和网络。", boundary: "列出资源不等于可读写或召回正确。", sourceIds: [agentkitSources.memory] },
-      { title: "Mem0 托管与 OSS", en: "Managed & OSS Memory", explanation: "单独评估 Mem0 时，它的托管 Platform 与 OSS 在功能、数据边界、定制和运维责任上不同。", decision: "用同一隔离、质量、延迟、删除和 TCO 合同比较。", boundary: "AgentKit 快速入门有 Mem0 类型资源和示例后端；Mem0 产品对比不证明 AgentKit 的默认后端、运营主体或 SLA。自建 Mem0 也不代表整条模型与向量链都不出域。", sourceIds: [agentkitSources.memory, agentkitSources.mem0Oss, agentkitSources.mem0Compare] },
-      { title: "观测、评测与发布", en: "Operate & Release", explanation: "日志、Trace、指标、质量评测和外部负载测试共同形成放量证据，并分别回答故障、质量、容量与恢复问题。", decision: "定义任务成功与尾延迟指标及目标，由 SLO 推导错误预算；把恢复和单位成本作为独立运营约束。", boundary: "观测不制造压力，评测不等于容量测试。", sourceIds: [agentkitSources.overview, agentkitSources.runtime] },
-    ],
-  }),
-});
-
-export const agentPlatformLearning = freeze({
-  veadk: learning({
-    outcomes: ["解释 Agent、Runner、Tool、Session 与 Memory 的责任", "选择合适的短期与长期状态后端", "诊断 Tool、上下文和记忆召回问题", "把 root_agent 封装为 AgentKit App 并说明生产缺口"],
-    route: [
-      { title: "建立执行心智模型", learn: "沿 Agent 定义、Runner、Tool 与事件理解一次请求。", checkpoint: "能区分模型提议、应用执行和业务终态。" },
-      { title: "验证 Session 与作用域", learn: "比较同会话、换会话、换用户和重启。", checkpoint: "能解释隔离键和后端生命周期。" },
-      { title: "拆分短期、长期与权威事实", learn: "为三类状态指定来源、用途、纠错和删除。", checkpoint: "不会把检索结果直接写成业务事实。" },
-      { title: "治理 Tool 与上下文", learn: "观察 Tool Event、历史增长和调用预算。", checkpoint: "能提出长度、循环、压缩和 Session 切分策略。" },
-      { title: "适配 AgentKit App", learn: "冻结入口和依赖，并设计本地与云端两套验收。", checkpoint: "不会把应用适配写成已完成云部署。" },
-    ],
-    labs: [
-      { title: "建立 Session 持久化与隔离实验", scenario: "构造覆盖同/跨用户、同/跨会话与进程重启正反例的最小隔离矩阵，并写入无个人含义的随机标记；样本规模由风险与所需证据决定，不用于容量估算。", tasks: ["配置 SQLite 短期记忆并生成无个人含义的随机标记", "验证同会话、换会话、换用户和重启", "查询事件并记录 app/user/session 三元组、后端与时间"], deliverable: "Session 隔离矩阵、事件查询和生产后端差距清单", acceptance: "所有正反例符合声明作用域，并明确单机结果不能外推多实例。", sourceIds: [veadkSources.memory, veadkSources.runner] },
-      { title: "分析 Tool Event 与上下文预算", scenario: "一次任务可能多次调用搜索或业务 Tool，历史和结果持续进入上下文。", tasks: ["触发至少一次 Tool Call 与 Tool Result", "比较调用前后上下文、时延和事件", "设计结果截断、最大调用数、压缩和切分策略"], deliverable: "执行序列、上下文预算和治理决策记录", acceptance: "能区分已观察的事件与尚待实现的生产策略。", sourceIds: [veadkSources.runner, veadkSources.tools] },
-    ],
-  }),
-  agentkit: learning({
-    outcomes: ["解释 App、CLI、Runtime、目标配置与 Memory 的关系", "把本地 Agent 候选转换为可重复构建输入", "分层验收 Runtime、外置状态、身份和业务终态", "为待执行的上云、可观测和容量实验定义证据"],
-    route: [
-      { title: "冻结 AgentKit App 合同", learn: "明确入口、依赖、配置、接口和错误。", checkpoint: "能在全新环境重建本地候选。" },
-      { title: "理解 CLI 生命周期", learn: "区分 init、config、build、deploy 与 launch。", checkpoint: "能说明每个阶段产生的制品和失败证据。" },
-      { title: "配置 Runtime 与目标范围", learn: "明确目标标识、Region、环境、身份、网络与资源绑定。", checkpoint: "会分别验证控制面字段、资源访问、网络隔离和数据地域。" },
-      { title: "分层验证 Memory", learn: "分别检查控制面关联、数据面访问、用户隔离和异步可见。", checkpoint: "能比较托管与 OSS 的责任边界。" },
-      { title: "设计发布与运营证据", learn: "把云端回归、Trace、评测、外部压测和回退结果关联到同一发布版本，再与 SLO 对照。", checkpoint: "能把 Ready 与业务上线严格分开。" },
-    ],
-    labs: [
-      { title: "建立 AgentKit App 与 Memory 本地验收", scenario: "一个可运行 Agent 需要形成稳定应用入口并连接独立 Memory。", tasks: ["冻结入口、依赖和非敏感配置合同", "分别检查健康、Agent 调用和直接 Memory 查询", "设计同用户跨 Session 与不同用户负例"], deliverable: "应用接口合同、Memory 分层检查表和云端待办", acceptance: "本地结论只覆盖 App 合同，不宣称 Runtime 已上线。", sourceIds: [veadkSources.integration, agentkitSources.memory, agentkitSources.config] },
-      { title: "设计 Runtime 发布验收", scenario: "本地 App 尚未形成云端部署、Trace、负载和恢复证据。演示方案应按正式 SLO、风险和目标负载确定最小回归集、负载条件与故障演练范围，而非继承课程固定数字。", tasks: ["运行 build/deploy 或 launch 并记录镜像摘要与 Runtime 版本", "执行云端模型、Tool、Session、Memory、身份和网络回归", "收集平台遥测和质量评测，用外部压力工具生成与目标负载相称的压力，演练故障、恢复与回退并对照 SLO"], deliverable: "云端回归、Trace、负载曲线、恢复记录与 Go/Hold/No-Go 建议", acceptance: "任务成功与 P95 达到目标，权限负例正确，错误预算消耗在策略范围内，恢复满足 RTO，且回退可用后才允许放量。", sourceIds: [agentkitSources.commands, agentkitSources.runtime, agentkitSources.overview] },
-    ],
-  }),
-});
-
-export const agentPlatformQaExpansion = freeze({
-  veadk: freeze([
-    datedQa({ q: "怎样区分短期记忆、长期记忆和权威业务事实？", a: "短期记忆服务当前会话，长期记忆保存跨会话的受治理信息，当前事实由对应的权威来源确认。", depth: "长期记忆条目需要主体、来源、用途、时间、有效期、纠错和删除；检索只提供相关候选，余额、订单、权限和政策版本仍应查询各自的权威记录。", ask: "这条信息由谁产生、多久有效、谁能更正删除，错误时会影响什么决定？", tag: "状态分层", basis: "短期记忆机制 + 权威事实边界", evidence: [{ sourceId: veadkSources.memory, supports: "ShortTermMemory 管理 Session，并可选择内存、本地文件或数据库后端。" }, { sourceId: agentkitSources.memory, supports: "快速入门展示 Memory 资源创建、连接信息和应用读写步骤。" }, { sourceId: agentkitSources.mem0Compare, supports: "Mem0 对照页区分托管与自建责任，未把记忆列为权威业务事实。" }] }),
-    datedQa({ q: "`create_agentkit_app` 与本地调试入口有什么不同，调用成功是否等于已经上云？", a: "前者把 root_agent 显式封装为 AgentKit App；本地调试入口主要服务开发，两者调用成功都不等于 Runtime 已部署。", depth: "正式上云还要完成构建、Runtime、目标配置、Region、环境变量、资源绑定、可信身份、网络、云端回归、观测和回退。", ask: "当前证据覆盖本地 App、构建、Runtime 还是业务上线中的哪一层？", tag: "应用适配", basis: "官方集成、CLI 与 Runtime 文档", evidence: [{ sourceId: veadkSources.integration, supports: "集成示例用 create_agentkit_app(root_agent) 构造应用入口，随后才配置并 launch。" }, { sourceId: agentkitSources.cli, supports: "CLI 把 build、deploy 和 launch 分别列为构建、部署与组合执行命令。" }, { sourceId: agentkitSources.runtime, supports: "Runtime 快速入门分开展示本地调用、平台部署和部署后的 invoke。" }] }),
-  ]),
-  agentkit: freeze([
-    datedQa({ q: "AgentKit Memory 的控制面和数据面怎样区分，Mem0 OSS 与 Platform 又怎样选择？", a: "AgentKit Memory 的资源创建和绑定属于控制面，端点、凭据、网络与实际读写属于数据面。官方快速入门展示 Mem0 类型资源与 VeADK 的 mem0 示例，但不证明默认后端。若另外评估 Mem0 的交付方式，需要托管服务减少运维时可考虑 Platform；若能自行负责部署、安全和恢复，可考虑 OSS。", depth: "两层配置都要验证；如果选定后端异步处理写入，还要记录从写入确认到可检索的时间。Mem0 文档只用于比较它自己的托管与自建边界。自建 Mem0 仍需检查 LLM、Embedding、向量库、Telemetry 和出站网络，不能因 OSS 就默认全链路私有。", ask: "客户需要托管速度还是全链路数据控制，谁承担 HA、备份、升级、删除和观测？", tag: "Memory 架构", basis: "AgentKit Memory + Mem0 官方对比", evidence: [{ sourceId: agentkitSources.memory, supports: "快速入门展示 Mem0 类型资源连接信息，以及 VeADK 使用 mem0 后端的示例。" }, { sourceId: agentkitSources.mem0Oss, supports: "Mem0 OSS 由采用方在自己的环境配置和运行，基础设施仍需自行负责。" }, { sourceId: agentkitSources.mem0Compare, supports: "Mem0 对照页列出托管与自建的基础设施差异，未说明 AgentKit 内部如何实现。" }] }),
-    datedQa({ q: "AgentKit 的观测、评测、外部压测和客户 SLO 分别解决什么？", a: "观测提供运行证据，评测衡量任务质量，外部压测施加可控负载，SLO 记录客户可接受的服务目标。", depth: "Trace 用于定位模型、工具和 Memory 步骤；评测集比较任务质量与轨迹；k6、Locust 等工具施加并发负载。由 SLO 推导错误预算后持续跟踪消耗，恢复结果另行与 RTO 对照，成本作为独立经营约束。当前模块只定义待执行验收，不声称已有云端结果。", ask: "客户当前缺的是定位证据、质量基线、容量上限还是正式 SLO？", tag: "可观测与性能", basis: "平台运行能力 + 独立验收分工", evidence: [{ sourceId: agentkitSources.overview, supports: "概览说明应用构建、部署和在线运行范围，没有给出客户 SLO 门槛。" }, { sourceId: agentkitSources.runtime, supports: "快速入门演示本地调试、平台部署与 invoke，未提供客户负载结果。" }] }),
-  ]),
-});

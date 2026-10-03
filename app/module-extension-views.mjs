@@ -56,7 +56,7 @@ export const moduleExtensionViews = Object.freeze({
     controlPlaneStepCodes: Object.freeze(["CLIENT", "SERVER"]),
     eyebrow: "HOST–SERVER BOUNDARY",
     title: "MCP 交换能力，业务系统决定授权",
-    intro: "协议让 Host 发现和调用 Server 提供的工具、资源与提示；身份、同意、业务权限和动作后果仍由协议外的确定性系统承担。",
+    intro: "协议让 Host 发现和调用 Server 的工具、资源与提示，并为 HTTP 传输提供授权规范。实际身份、同意、资源权限和动作控制由 Client、授权服务器、MCP Server 与业务系统共同执行。",
     termIds: Object.freeze(["mcp", "api", "iam", "acl"]),
     steps: Object.freeze([
       Object.freeze({ code: "HOST", title: "Host", en: "User-facing Control", detail: "掌握用户意图、Client 生命周期、上下文选择和确认体验。", signal: "不得把不可信 Server 内容提升为高优先级指令。" }),
@@ -134,7 +134,7 @@ export const moduleExtensionViews = Object.freeze({
       Object.freeze({ title: "状态外置", detail: "多实例必须共享 Session 后端；容器本地状态不构成生产连续性。" }),
       Object.freeze({ title: "上线证据", detail: "Runtime、模型、工具、记忆和业务终态要在同一版本下联合验收。" }),
     ]),
-    application: "把云上部署拆成应用合同、制品、Runtime、状态资源和运营证据五个验收对象；当前先保留待执行清单，不把本地联调写成已经上线。",
+    application: "按应用契约、镜像、Runtime、状态资源和运行结果分别验收，保留每一步的配置、测试与回退记录。",
     links: Object.freeze([{ href: "#curriculum", label: "查看平台分层" }, { href: "#deep-dive", label: "查看部署生命周期" }, { href: "#study-guide", label: "执行云端验收" }]),
   }),
   evaluation: Object.freeze({

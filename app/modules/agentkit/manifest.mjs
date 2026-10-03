@@ -17,7 +17,7 @@ export default Object.freeze({
   layerNo: "04",
   routeKind: "brief",
   introducedAt: "2026-08-15",
-  updatedAt: "2026-09-26",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["agentkit","agentkit-runtime","agent-application","runtime-binding","deployment-mode","build-deploy-lifecycle","managed-agent-memory","agentkit-app-adapter"]),
   knowledgeView: "application-runtime-lifecycle",
   readingProfile: null,

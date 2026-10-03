@@ -104,7 +104,7 @@ export default function Home() {
 
         <div className="heroGrid heroGridV2 heroGridWithArtwork">
           <div className="heroCopy">
-            <h1><span>讲清 AI 技术，</span><span>心中有数，丝毫不慌</span></h1>
+            <h1><span>理解 AI 原理，</span><span>做出有依据的方案</span></h1>
             <p className="heroLead">理解方案背后的原理和适用限制，用它们回答客户追问。</p>
             <KnowledgeSearchLaunch />
             <div className="heroActions">

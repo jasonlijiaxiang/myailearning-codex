@@ -1,6 +1,6 @@
 export const solutionPatternsBrief = {
   "slug": "solution-patterns",
-  "definition": "场景解决方案（Solution Pattern）从业务结果、当前基线和约束出发，说明系统最少要做什么、由谁负责、怎样验收、花多少钱，以及何时退出。成本归因与优化门槛也要在方案中写清。",
+  "definition": "场景解决方案（Solution Patterns）把客户想改善的业务结果，拆成系统需要完成的步骤、使用的数据、承担的责任和验收方法。方案还要说明完整成本、失败处置和退出路径，使一次演示能够进一步验证为可运营的业务系统。",
   "position": "位于方案与选型层，主责回答为什么做、系统最少承担什么责任、RAG、Agent、MCP、A2A、Gateway 或平台在何种条件下才需要，以及怎样验收、运营和退出；具体模型比较、切片检索、Agent 循环和协议机制由相关模块展开。",
   "presentation": "decision",
   "principleTitle": "从客户结果组织方案",
@@ -107,12 +107,12 @@ export const solutionPatternsBrief = {
       "question": "客户侧谁为方案结果负责？",
       "signal": "能列出业务决策人、数据与 IT Owner、知识与口径运营人、安全与合规签字人，以及各自要确认的事项。",
       "recommendation": "把四角角色写进启动契约：业务结果与损失函数、数据/身份/权限/环境、规则/术语/评估样本/争议、上线条件/责任/专业复核各有人确认。",
-      "boundary": "角色可兼任但责任不能消失；没有安全合规签字的上线决定不属于方案范畴。"
+      "boundary": "角色可兼任但责任不能消失；上线批准须覆盖场景所需的安全与合规责任，具体签署程序由组织和适用要求确定。"
     },
     {
       "question": "PoC 通过后上生产为什么还要继续投入？",
       "signal": "PoC 已验证最大技术或数据假设，但生产还需要高可用、权限、审计、评估回归、运营与责任交接。",
-      "recommendation": "把 PoC 视为模型与数据两层样板墙，生产件还包括入口、保障与运营三层；按生产验收线逐项补证据。",
+      "recommendation": "PoC 用于验证技术或数据假设；生产验收还需补齐入口控制、可靠性、运营与责任交接，并逐项取得证据。",
       "boundary": "演示成功不等于生产就绪；缺少生产层的验收线不能进入 Pilot。"
     },
     {
@@ -125,7 +125,7 @@ export const solutionPatternsBrief = {
       "question": "内容生成方案验收时，怎样才算可上线？",
       "signal": "方案能生成看起来不错的图片、视频或文案，但审核、标识、发布与撤回责任尚未定义。",
       "recommendation": "把五状态门连成验收链：生成成功、审核通过、标识与分发要求满足、业务批准发布、发布后的撤回/更正/申诉与事件责任；为每个门定义证据、owner 与失败动作，并把素材授权列为前置条件。",
-      "boundary": "视觉或语言质量好不能证明可发布；实时或批量场景都不能跳过强制审核与标识门。"
+      "boundary": "视觉或语言质量好不能证明可发布；适用的审核、标识与发布责任不能因实时或批量处理而省略。"
     },
     {
       "question": "AI 是否需要独立 FinOps 范围？",
@@ -254,35 +254,35 @@ export const solutionPatternsBrief = {
         {
           "name": "材料接收与身份授权检查",
           "en": "Receive & Verify Identity",
-          "mechanism": "输入申请表、扫描件、照片与补充材料；权威来源是提交人身份、代理关系和授权记录。AI 允许校验身份、登记材料批次并做格式预检。",
+          "mechanism": "输入申请表、扫描件、照片与补充材料。入口通过身份服务核验提交人、代理关系与授权；AI 可以辅助登记材料批次和格式预检，不能自行确认身份或赋予权限。",
           "decision": "受理系统与人工确认身份和授权；登记材料来源、版本与时间。",
-          "boundary": "AI 不把无授权材料转入检索；身份或授权校验失败时转人工，不自动放行。"
+          "boundary": "入口必须阻止无授权材料进入检索；身份或授权核验失败时交由获授权人员处理，不能靠模型放行。"
         },
         {
           "name": "文件质量、完整性、来源与溯源",
           "en": "Quality & Provenance",
-          "mechanism": "AI 允许检测模糊、缺页、格式异常、重复和来源信息，并登记文件哈希与溯源。",
+          "mechanism": "解析管线检测模糊、缺页、格式异常和重复，登记文件哈希与来源；AI 可辅助发现异常，来源声明仍需核验。",
           "decision": "低质量材料要求重传或人工补录；每份材料保留稳定资产身份。",
           "boundary": "AI 不跳过低质量材料，也不把解析结果冒充原始证据。"
         },
         {
           "name": "授权权威源检索",
           "en": "Authorized Retrieval",
-          "mechanism": "AI 允许按案件、角色和当前权限检索保单、条款与业务记录，并把检索结果与来源绑定。",
+          "mechanism": "检索服务按案件、角色和当前权限筛选保单、条款与业务记录，再把结果与来源绑定，提供给 AI 初审。",
           "decision": "检索时 ACL 与租户隔离；无权限内容连存在性都不暴露。",
-          "boundary": "AI 不跨客户检索，也不因相关度或向量接近而获得读取权。"
+          "boundary": "检索授权层必须隔离客户数据；相关度、向量接近和模型判断都不能授予读取权。"
         },
         {
           "name": "事实提取与缺件提示",
           "en": "Extract & Missing Items",
-          "mechanism": "AI 允许抽取事实、定位证据坐标、列出缺件、不一致与不确定性。",
+          "mechanism": "AI 从已授权材料中抽取事实、定位证据坐标，列出缺件、不一致和不确定性；这些结果进入后续规则与人工核验。",
           "decision": "证据冲突或无法定位的内容标记为待人工裁决，不进入初审结论。",
           "boundary": "AI 不推断资格或责任；提取正确不等于业务事实成立。"
         },
         {
           "name": "生成带引用初审建议",
           "en": "Cited Intake Suggestion",
-          "mechanism": "AI 允许生成带引用、缺件清单和不确定性的初审说明草稿。",
+          "mechanism": "AI 生成带引用、缺件清单和不确定性的初审说明草稿，绑定案件与材料版本。",
           "decision": "每个建议绑定材料、保单条款与证据坐标；缺证据时拒答或转人工。",
           "boundary": "AI 不决定资格与金额；草稿再流畅也不具备决定效力。"
         },
@@ -1653,7 +1653,7 @@ export const mcpBrief = {
         {
           "name": "用双版本契约测试固定协议路径",
           "en": "Version Before Capability",
-          "mechanism": "2026-07-28 的每个请求必须携带 protocolVersion 与 clientCapabilities，Client 还应通过 clientInfo 自报软件名称与版本等元数据；Server 必须实现 server/discover。Client 可用它预取能力，同时兼容新旧协议的 stdio Client 应先用它探测当前协议支持；clientInfo 不提供认证身份。2025-11-25 等旧版通过 initialize/initialized 与 Mcp-Session-Id 建立协议会话。",
+          "mechanism": "2026-07-28 的每个请求必须携带 protocolVersion 与 clientCapabilities，Client 还应通过 clientInfo 自报软件名称与版本等元数据；Server 必须实现 server/discover。Client 可用它预取能力，同时兼容新旧协议的 stdio Client 应先用它探测当前协议支持；clientInfo 不提供认证身份。2025-11-25 等旧版通过 initialize/initialized 建立协议会话；其中 Streamable HTTP Server 可选择签发 MCP-Session-Id，stdio 不使用该 HTTP 头。",
           "decision": "为两条协议路径各保留请求轨迹和契约测试；网关记录协议、SDK 模式、Server、扩展与 Tool Schema 版本。",
           "boundary": "2026-07-28 已是正式规范，但客户端不能据此假设具体实现已支持，也不能根据上一次请求无限期假设能力不变。"
         },
@@ -2054,8 +2054,8 @@ export const mcpBrief = {
     },
     {
       "q": "用户完成 OAuth 登录，是否就代表 Agent 可以调用该 MCP Server 的所有工具？",
-      "a": "不代表。登录确认主体，具体资源、动作、租户和风险仍需逐次授权。",
-      "depth": "把用户同意、客户端身份、Server scope 和业务系统权限分开。高风险写入使用窄 scope、当前资源授权和必要的动作确认；Server 不能把一次宽泛登录转换成永久全权令牌。",
+      "a": "不代表。OAuth 授权建立令牌对应的访问范围；MCP Server 仍须校验受众和 scope，业务系统继续检查资源、动作、租户和当前权限。",
+      "depth": "把用户同意、客户端身份、Server scope 和业务系统权限分开。高风险写入使用窄 scope、当前资源授权和必要的动作确认；Server 不能把一次宽泛授权转换成永久全权令牌。",
       "ask": "身份由谁签发？每个工具最终在哪一层检查资源级权限？",
       "tag": "授权链",
       "basis": "身份认证 + 资源授权",

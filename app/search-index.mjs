@@ -48,7 +48,7 @@ function buildChineseEntries() {
         type: "客户问答",
         title: item.q,
         subtitle: `${moduleNames.get(slug)} · ${item.tag}`,
-        href: `/modules/${slug}#qa-${index + 1}`,
+        href: `/modules/${slug}?view=field#qa-${index + 1}`,
         keywords: `${moduleNames.get(slug)} ${moduleQuestionSearchText(item, sourceLedger)} ${(questionPhrases.get(`${slug}-${index + 1}`) ?? []).join(" ")}`,
       });
     });
@@ -63,7 +63,7 @@ function buildChineseEntries() {
         type: "课程章节",
         title: chapter.title,
         subtitle: `${moduleNames.get(slug)} · ${chapter.en}`,
-        href: `/modules/${slug}#${anchor}`,
+        href: `/modules/${slug}?view=learn#${anchor}`,
         keywords: `${moduleNames.get(slug)} ${chapter.title} ${chapter.en} ${chapter.explanation} ${chapter.decision} ${chapter.boundary}`,
       });
     }
@@ -78,15 +78,15 @@ function buildChineseEntries() {
         type: "实战练习",
         title: lab.title,
         subtitle: `${moduleNames.get(slug)} · 可验收练习`,
-        href: `/modules/${slug}#${anchor}`,
-        keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
+        href: `/modules/${slug}?view=learn#${anchor}`,
+        keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance} ${lab.workedExample ? [lab.workedExample.premise, ...lab.workedExample.steps, lab.workedExample.result, lab.workedExample.boundary].join(" ") : ""}`,
       });
     });
   }
 
   for (const [slug, content] of Object.entries(moduleContentRegistry)) {
     if (Object.hasOwn(moduleLearningContent, slug) || !("learning" in content) || !content.learning) continue;
-    content.learning.labs.forEach((lab, index) => {
+    content.learning.labs.forEach((/** @type {any} */ lab, index) => {
       const anchor = learningLabAnchor(slug, index);
       entries.push({
         id: anchor,
@@ -94,8 +94,8 @@ function buildChineseEntries() {
         type: "实战练习",
         title: lab.title,
         subtitle: `${moduleNames.get(slug)} · 可验收练习`,
-        href: `/modules/${slug}#${anchor}`,
-        keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance}`,
+        href: `/modules/${slug}?view=learn#${anchor}`,
+        keywords: `${moduleNames.get(slug)} ${lab.title} ${lab.scenario} ${lab.tasks.join(" ")} ${lab.deliverable} ${lab.acceptance} ${lab.workedExample ? [lab.workedExample.premise, ...lab.workedExample.steps, lab.workedExample.result, lab.workedExample.boundary].join(" ") : ""}`,
       });
     });
   }

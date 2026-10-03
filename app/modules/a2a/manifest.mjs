@@ -18,7 +18,7 @@ export default Object.freeze({
   layerNo: "03",
   routeKind: "dedicated",
   introducedAt: "2026-07-17",
-  updatedAt: "2026-09-26",
+  updatedAt: "2026-10-03",
   requiredTerms: Object.freeze(["a2a","agent-card","a2a-message","a2a-task","artifact","agent-collaboration","identity-authorization"]),
   knowledgeView: "delegated-task-lifecycle",
   readingProfile: null,
