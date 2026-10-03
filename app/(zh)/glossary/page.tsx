@@ -9,8 +9,8 @@ import { glossaryGroups, glossaryTermIds, requireTerm } from "../../terminology.
 import { SiteFooter, SiteNav, type SiteNavItem, type SiteFooterLink } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "专业术语库 | 云计算 × AI 平台售前知识库",
-  description: "集中查询云计算、生成式 AI、RAG、Agent、模型训练推理、安全治理与售前交付的中英文专业术语。",
+  title: "专业术语库 | AI 学习手册",
+  description: "查询生成式 AI、RAG、Agent、模型训练推理、安全治理等中英文专业术语。",
   path: "/glossary",
   enPath: "/en/glossary",
 });
@@ -39,7 +39,7 @@ const terms: GlossaryTermItem[] = glossaryGroups.flatMap((group) => group.termId
 const abbreviationCount = terms.filter((term) => term.abbr).length;
 
 const glossaryNavLinks: readonly SiteNavItem[] = [
-  { href: "/", label: "知识库首页" },
+  { href: "/", label: "首页" },
   { href: "/questions", label: "问题查询" },
   { href: "#glossary-directory", label: "术语目录" },
   { href: "/references", label: "来源与证据 / Reference" },
@@ -47,8 +47,8 @@ const glossaryNavLinks: readonly SiteNavItem[] = [
 ];
 
 const glossaryFooterLinks: readonly SiteFooterLink[] = [
-  { href: "/", label: "知识库首页" },
-  { href: "/questions", label: "客户问题查询" },
+  { href: "/", label: "首页" },
+  { href: "/questions", label: "问答查询" },
   { href: "/references", label: "来源与证据" },
 ];
 
@@ -57,14 +57,14 @@ export default function GlossaryPage() {
     <main className="fieldbookTheme glossaryPage">
       <ReadingProgress />
       <header className="hero glossaryHero" id="top">
-        <SiteNav locale="zh" ariaLabel="术语库导航" brandAriaLabel="返回云与 AI 售前知识库首页" links={glossaryNavLinks} />
+        <SiteNav locale="zh" ariaLabel="术语库导航" brandAriaLabel="返回 AI 学习手册首页" links={glossaryNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="glossaryHeroGrid">
           <div className="heroCopy">
             <p className="eyebrow">FIELD GLOSSARY · 专业术语库</p>
             <h1>把术语讲清楚，<br />再做架构与选型</h1>
-            <p className="heroLead">这里统一说明云与 AI 售前术语。每个词条包含中英文名称、简短定义和相关模块；有通行缩写时一并列出，并可继续查看机制、边界、客户问答与证据。</p>
+            <p className="heroLead">这里统一说明 AI 术语。每个词条包含中英文名称、简短定义和相关模块；有通行缩写时一并列出，并可继续查看机制、边界、问答与证据。</p>
             <div className="heroActions">
               <a className="primaryButton" href="#glossary-directory">搜索全部术语</a>
               <Link className="textButton" href="/#available-modules">从问题开始 <span>↗</span></Link>

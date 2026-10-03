@@ -15,7 +15,7 @@ export type UnifiedModuleLocale = "zh-CN" | "en";
 const heroCopyByLocale = {
   "zh-CN": {
     navigation: "模块导航",
-    brandAria: "返回云与 AI 售前知识库首页",
+    brandAria: "返回 AI 学习手册首页",
     home: "首页",
     questions: "本模块问答",
     sources: "来源",
@@ -85,6 +85,11 @@ export function UnifiedModuleHero({
 }: UnifiedModuleHeroProps) {
   const copy = heroCopyByLocale[locale];
   const isEnglish = locale === "en";
+  // H1 以完整中文模块名为第一语义；缩写仅在「纯拉丁、中文名与英文名中均未出现」时作为副行前缀。
+  const showShortTitle = !isEnglish
+    && /^[A-Za-z0-9 .-]+$/.test(shortTitle)
+    && !zhTitle.includes(shortTitle)
+    && !enTitle.includes(shortTitle);
   // 直接拼路径，避免把发布注册表（locale-config → module-publication → manifests）拉进客户端图。
   const languagePath = alternateLanguagePath === undefined
     ? (isEnglish ? `/modules/${slug}` : `/en/modules/${slug}`)
@@ -116,7 +121,7 @@ export function UnifiedModuleHero({
     <header className={styles.hero} data-module-hero="unified" id={anchorId} aria-labelledby={titleId} lang={isEnglish ? "en" : undefined}>
       <nav className={styles.siteNav} aria-label={copy.navigation}>
         <Link className={styles.brand} href={homePath} aria-label={copy.brandAria}>
-          Cloud × AI / Presales Fieldbook
+          {isEnglish ? "Cloud × AI / Presales Fieldbook" : "AI Fieldbook"}
         </Link>
         <div className={styles.siteLinks}>{navigationLinks}</div>
         <details key={slug} className={styles.mobileMenu}>
@@ -128,8 +133,14 @@ export function UnifiedModuleHero({
       <div className={styles.heroGrid}>
         <div className={styles.identity}>
           <h1 id={titleId}>
-            <span>{shortTitle}</span>
-            {isEnglish ? <small>{enTitle}</small> : <small>{zhTitle}<em lang="en"> · {enTitle}</em></small>}
+            {isEnglish ? (
+              <><span>{shortTitle}</span><small>{enTitle}</small></>
+            ) : (
+              <>
+                <span>{zhTitle}</span>
+                <small>{showShortTitle ? <em>{shortTitle} · </em> : null}<em lang="en">{enTitle}</em></small>
+              </>
+            )}
           </h1>
         </div>
         <div className={styles.summary}>

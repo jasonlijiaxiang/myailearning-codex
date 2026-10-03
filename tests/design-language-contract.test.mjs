@@ -733,7 +733,9 @@ test("rendered module pages carry the unified Hero and reader chrome", async () 
   assert.match(html, /data-module-reader="unified"/);
   assert.match(html, /<header\b[^>]*\bdata-module-hero="unified"/);
   assert.match(html, /<nav[^>]*aria-label="[^"]+"/);
-  assert.match(html, /Cloud × AI \/ Presales Fieldbook/);
+  assert.match(html, /AI Fieldbook/);
+  const h1Match = html.match(/<h1[^>]*>\s*<span>([^<]+)<\/span><small>/);
+  assert.ok(h1Match && /[一-鿿]/.test(h1Match[1]), `H1 must lead with the Chinese module name: ${h1Match?.[1]}`);
   assert.match(html, /<dl class="moduleHeroMetrics" aria-label="[^"]+">/);
   assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/);
   assert.match(html, /class="moduleModeTabs"[^>]*aria-label="[^"]+"/);

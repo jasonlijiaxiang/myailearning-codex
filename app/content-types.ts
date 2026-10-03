@@ -214,7 +214,7 @@ export type AgentMechanicItem = {
   failure: string;
   control: string;
   cloud: string;
-  presales: string;
+  takeaway: string;
 };
 
 export type RagModuleBrief = {

@@ -73,7 +73,7 @@ type ModuleExplorerLabels = {
 
 const defaultSearchLaunchLabels: SearchLaunchLabels = {
   ariaLabel: "搜索知识库",
-  label: "搜索模块、术语、课程、客户问题和来源",
+  label: "搜索模块、术语、课程、问答和来源",
   placeholder: "例如：权限继承、KV Cache、Agent 工具调用……",
   submit: "搜索",
 };
@@ -81,8 +81,8 @@ const defaultSearchLaunchLabels: SearchLaunchLabels = {
 const defaultModuleExplorerLabels: ModuleExplorerLabels = {
   kicker: "START WITH THE QUESTION",
   title: "从问题开始",
-  intro: "不必按目录顺序学习。输入客户正在讨论的技术、场景或风险，直接进入相关模块。",
-  searchLabel: "输入客户问题、技术或风险",
+  intro: "不必按目录顺序学习。输入你正在研究的技术、场景或风险，直接进入相关模块。",
+  searchLabel: "输入问题、技术或风险",
   placeholder: "例如：知识更新、量化、工具调用、GPU 利用率……",
   filterAria: "按知识层筛选",
   allLayers: "全部",
@@ -90,7 +90,7 @@ const defaultModuleExplorerLabels: ModuleExplorerLabels = {
   moduleNoun: "个模块",
   knowledgeHitsPrefix: "另有",
   knowledgeHitsSuffix: "条知识命中",
-  questionsLink: "查询全部客户问题 ↗",
+  questionsLink: "查询全部问答 ↗",
   clear: "清除筛选",
   knowledgeAria: "知识内容搜索结果",
   knowledgeHeading: "直接进入知识内容",
@@ -489,7 +489,7 @@ export function QaFilterShell({
   return (
     <div className="qaExplorer" ref={rootRef}>
       <div className="qaToolbar">
-        <label><span>搜索客户问题</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="输入关键词，如：成本、权限、准确率……" /></label>
+        <label><span>搜索问答</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="输入关键词，如：成本、权限、准确率……" /></label>
         <div className="qaTagFilters" aria-label="按问题类型筛选">
           <button type="button" aria-pressed={tag === "all"} className={tag === "all" ? "active" : ""} onClick={() => setTag("all")}>全部</button>
           {uniqueTags.map((item) => <button type="button" aria-pressed={tag === item} className={tag === item ? "active" : ""} onClick={() => setTag(item)} key={item}>{item}</button>)}
@@ -664,7 +664,7 @@ export function QuestionDirectoryShell({
     if (detail.displayPhrase) {
       const phrase = document.createElement("p");
       phrase.className = "questionDirectoryPhrase";
-      phrase.textContent = `客户常这样说：${detail.displayPhrase}`;
+      phrase.textContent = `也可以这样问：${detail.displayPhrase}`;
       body.append(phrase);
     }
 
@@ -681,7 +681,7 @@ export function QuestionDirectoryShell({
     askSection.className = "questionDirectoryAsk";
     const askLabel = document.createElement("p");
     askLabel.className = "answerLabel";
-    askLabel.textContent = "售前下一问";
+    askLabel.textContent = "追问";
     const askCopy = document.createElement("p");
     askCopy.textContent = detail.ask;
     askSection.append(askLabel, askCopy);
@@ -802,16 +802,16 @@ export function QuestionDirectoryShell({
     <div className="questionDirectoryExplorer" ref={rootRef}>
       <div className="questionDirectoryToolbar">
         <label className="questionDirectorySearch">
-          <span>搜索所有客户问题</span>
+          <span>搜索所有问答</span>
           <input ref={searchRef} type="search" value={query} onChange={(event) => { setQuery(event.target.value); if (event.target.value.trim()) void loadQuestionIndex(); }} onFocus={() => void loadQuestionIndex()} placeholder="例如：模型切换、权限、量化、GPU 利用率……" />
           <kbd>⌘ K</kbd>
         </label>
         <label><span>模块</span><select value={moduleId} onChange={(event) => { setModuleId(event.target.value); setTag("all"); }}><option value="all">{allModulesLabel}</option>{modules.map((directoryModule) => <option value={directoryModule.id} key={directoryModule.id}>{directoryModule.label}（{directoryModule.count}）</option>)}</select></label>
         <label><span>问题类别</span><select value={tag} onChange={(event) => setTag(event.target.value)}><option value="all">全部类别</option>{availableTags.map((item) => <option value={item} key={item}>{item}</option>)}</select></label>
         <label><span>问题意图</span><select value={intentId} onChange={(event) => setIntentId(event.target.value)}><option value="all">全部意图</option>{intentDefinitions.map((intent) => <option value={intent.id} key={intent.id}>{intent.zh}</option>)}</select></label>
-        <div className="questionDirectoryViewTabs" aria-label="现场精选筛选">
+        <div className="questionDirectoryViewTabs" aria-label="精选内容筛选">
           <button type="button" aria-pressed={view === "all"} className={view === "all" ? "active" : ""} onClick={() => setView("all")}>全部 {directoryReady ? directoryItems.length : moduleTotal}</button>
-          <button type="button" aria-pressed={view === "field-kit"} className={view === "field-kit" ? "active" : ""} onClick={() => setView("field-kit")}>现场精选 {directoryReady ? fieldKitCount : "…"}</button>
+          <button type="button" aria-pressed={view === "field-kit"} className={view === "field-kit" ? "active" : ""} onClick={() => setView("field-kit")}>精选 {directoryReady ? fieldKitCount : "…"}</button>
           <button type="button" aria-pressed={view === "core"} className={view === "core" ? "active" : ""} onClick={() => setView("core")}>核心 {directoryReady ? coreCount : "…"}</button>
           <button type="button" aria-pressed={view === "situational"} className={view === "situational" ? "active" : ""} onClick={() => setView("situational")}>场景 {directoryReady ? situationalCount : "…"}</button>
         </div>

@@ -89,7 +89,7 @@ export function ModuleHeroMetrics({
     ariaLabel: "模块内容概览",
     sections: "阅读章节",
     sectionUnit: "章",
-    questions: "客户问题",
+    questions: "问答",
     questionUnit: "题",
     evidence: "证据卡",
     evidenceUnit: "张",

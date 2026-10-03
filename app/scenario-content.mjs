@@ -2746,7 +2746,7 @@ export const scenarioContent = deepFreeze({
           "detail": "观察业务终态、再次来电、接管和放弃，明确分母。"
         }
       ],
-      "application": "售前用一条订单号更正加插话的真实来电，检查音频识别、有效播放、后台动作和人工接管，形成路线选择与上线验收。",
+      "application": "用一条订单号加插话的真实来电，检查音频识别、有效播放、后台动作和人工接管，形成路线选择与上线验收。",
       "links": [
         {
           "href": "#deep-dive",
@@ -2758,7 +2758,7 @@ export const scenarioContent = deepFreeze({
         },
         {
           "href": "#qa",
-          "label": "查看客户问题"
+          "label": "查看问答"
         }
       ]
     }
@@ -3535,7 +3535,7 @@ export const scenarioContent = deepFreeze({
           "detail": "重复、更正、超时、权限和审批继续由应用控制。"
         }
       ],
-      "application": "售前交付字段契约、真实文档切片、审阅队列与草稿接口验收，比较自动误接收与人工容量，避免只展示 OCR 字符准确率。",
+      "application": "交付字段契约、真实文档切片、审阅队列与草稿接口验收，比较自动误接收与人工容量，避免只展示 OCR 字符准确率。",
       "links": [
         {
           "href": "#deep-dive",
@@ -3547,7 +3547,7 @@ export const scenarioContent = deepFreeze({
         },
         {
           "href": "#qa",
-          "label": "查看客户问题"
+          "label": "查看问答"
         }
       ]
     }

@@ -487,7 +487,7 @@ function FieldQa({ data }: { data: McpExperienceData }) {
   return (
     <section className={styles.fieldQa} id="qa" data-quality-section="qa">
       <span className={styles.anchorAlias} id="mcp-field-qa" />
-      <header className={styles.sectionHeader}><span>01</span><div><h2>客户问题</h2><p>短答案先给结论，技术机制、追问和证据继续展开。<Link href="/questions?module=mcp">搜索客户问题</Link></p></div></header>
+      <header className={styles.sectionHeader}><span>01</span><div><h2>问答</h2><p>短答案先给结论，技术机制、追问和证据继续展开。<Link href="/questions?module=mcp">搜索问答</Link></p></div></header>
       <div className={styles.qaTabs} role="tablist" aria-label="现场问答分类">
         {groups.map((item, index) => {
           return <button aria-controls={`mcp-qa-panel-${item.id}`} aria-selected={activeCategory === item.id} id={`mcp-qa-tab-${item.id}`} key={item.id} onClick={() => setCategory(item.id)} onKeyDown={(event) => moveCategory(event, index)} ref={(node) => { tabsRef.current[index] = node; }} role="tab" tabIndex={activeCategory === item.id ? 0 : -1} type="button"><strong>{item.label}</strong><span>{item.items.length}</span></button>;
@@ -529,9 +529,9 @@ function FieldView({ data }: { data: McpExperienceData }) {
 
       <section className={styles.cloudSection} id="cloud" data-quality-section="cloud">
         <span className={styles.anchorAlias} id="mcp-field-cloud" />
-        <header className={styles.sectionHeader}><span>03</span><div><h2>云能力与责任</h2><p>按 Server 运行、身份网关、API / 数据适配、运营安全四个责任面，逐项核对云能力、交付责任与客户问题。</p></div></header>
+        <header className={styles.sectionHeader}><span>03</span><div><h2>云能力与责任</h2><p>按 Server 运行、身份网关、API / 数据适配、运营安全四个责任面，逐项核对云能力、交付责任与问答。</p></div></header>
         <div className={styles.cloudTable} role="table" aria-label="MCP 云能力与责任">
-          <div className={styles.cloudHead} role="row"><strong role="columnheader">责任阶段</strong><strong role="columnheader">云服务与能力</strong><strong role="columnheader">交付价值</strong><strong role="columnheader">现场追问</strong></div>
+          <div className={styles.cloudHead} role="row"><strong role="columnheader">责任阶段</strong><strong role="columnheader">云服务与能力</strong><strong role="columnheader">交付价值</strong><strong role="columnheader">追问</strong></div>
           {data.cloudHooks.map((item) => <div className={styles.cloudRow} role="row" key={item.stage}><strong role="cell">{item.stage}</strong><p role="cell">{item.services}</p><p role="cell">{item.value}</p><p role="cell">{item.discover}</p></div>)}
         </div>
       </section>
@@ -591,7 +591,7 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
           ],
           learn: learnDirectory,
           field: [
-            { id: "qa", label: "现场问答", eyebrow: "分类回答" },
+            { id: "qa", label: "问答", eyebrow: "分类回答" },
             { id: "evidence", label: "证据与范围", eyebrow: "来源与范围" },
             { id: "cloud", label: "云能力与责任", eyebrow: "交付矩阵" },
             { id: "related-modules", label: "相关模块", eyebrow: "责任连接" },
@@ -610,7 +610,7 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
         readerId="mcp-reading"
       />
 
-      <footer className={styles.footer}><strong>MCP · 模型上下文协议</strong><p>主题学习、协议工件与现场查证<ModuleUpdatedAt value={data.module.updatedAt ?? undefined} /></p><a href="#mcp-reading">返回阅读任务 ↑</a></footer>
+      <footer className={styles.footer}><strong>MCP · 模型上下文协议</strong><p>主题学习、协议工件与查证<ModuleUpdatedAt value={data.module.updatedAt ?? undefined} /></p><a href="#mcp-reading">返回阅读任务 ↑</a></footer>
     </UnifiedModuleScaffold>
   );
 }

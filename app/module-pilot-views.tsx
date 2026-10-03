@@ -80,7 +80,7 @@ export function RagArchitecturePrimer() {
       <RagDualChainExplorer offline={ragKnowledgeSteps} online={ragServingSteps} />
       <TermHintRow label="RAG 关键术语" termIds={["rag", "retrieval", "augmentation", "generation", "sparse-retrieval", "dense-retrieval", "reranking", "grounding"]} />
       <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>向量检索只是候选发现手段之一。RAG 的交付对象是整条证据链：资料可用、候选可找、证据可编排、回答可核验、变化可撤回。</p></aside>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用采用问题建立基线与责任，再沿离线和在线生命周期逐段定义产物、失败、指标和验收；只有出现真实错误时才增加复杂度。</p><nav aria-label="RAG 深入阅读"><a href="#evidence-contract">定义证据契约</a><a href="#model-selection">准备模型选型</a><a href="#production">决定是否上线</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>先用采用问题建立基线与责任，再沿离线和在线生命周期逐段定义产物、失败、指标和验收；只有出现真实错误时才增加复杂度。</p><nav aria-label="RAG 深入阅读"><a href="#evidence-contract">定义证据契约</a><a href="#model-selection">准备模型选型</a><a href="#production">决定是否上线</a></nav></footer>
     </section>
   );
 }
@@ -149,7 +149,7 @@ export function AgentControlPrimer() {
       <AgentAuthorityExplorer steps={agentLoopSteps} />
       <TermHintRow label="Agent 控制缩写" termIds={["ai-agent", "api", "iam", "hitl", "mcp"]} />
       <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>本手册把 Agent 定义为受应用控制的 Run：模型可以根据当前状态选择下一步，但应用始终拥有身份、授权、执行、业务成功与停止权。</p></aside>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>用同一任务、工具、权限和终态比较 Workflow 与单 Agent；只有独立并行、上下文隔离或权限隔离被数据证明时，才讨论多 Agent。</p><nav aria-label="Agent 深入阅读"><a href="#agent-principle">查看工作循环</a><a href="#memory-interaction">查看状态与互操作</a><a href="#poc">验证 PoC 与 ROI</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>用同一任务、工具、权限和终态比较 Workflow 与单 Agent；只有独立并行、上下文隔离或权限隔离被数据证明时，才讨论多 Agent。</p><nav aria-label="Agent 深入阅读"><a href="#agent-principle">查看工作循环</a><a href="#memory-interaction">查看状态与互操作</a><a href="#poc">验证 PoC 与 ROI</a></nav></footer>
     </section>
   );
 }
@@ -173,7 +173,7 @@ export function LlmTheoryPrimer() {
       <LlmGenerationExplorer stages={llmGenerationStages} />
       <TermHintRow label="LLM 原理缩写" termIds={["llm", "qkv", "kv-cache", "ttft", "tpot", "moe"]} />
       <p className="visualEvidenceLink"><Link href="/references#source-transformer-2017">原始 Transformer 论文与证据边界 ↗</Link></p>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>固定用户问题、实际上下文、模型与采样配置、运行指标和外部调用；每次只改变一个变量，区分“基础能力不足”“证据没给对”“生成控制漂移”“推理服务变慢”和“模型外动作错误”。</p><nav aria-label="LLM 原理深入阅读"><a href="#curriculum">查看理论地图</a><a href="#deep-dive">完成故障归因</a><a href="#decisions">查看责任转交</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>固定用户问题、实际上下文、模型与采样配置、运行指标和外部调用；每次只改变一个变量，区分“基础能力不足”“证据没给对”“生成控制漂移”“推理服务变慢”和“模型外动作错误”。</p><nav aria-label="LLM 原理深入阅读"><a href="#curriculum">查看理论地图</a><a href="#deep-dive">完成故障归因</a><a href="#decisions">查看责任转交</a></nav></footer>
     </section>
   );
 }
@@ -246,7 +246,7 @@ export function SolutionPatternPrimer({ brief, showCriticalBoundary = true }: { 
             {decisionRows.map((item, index) => (
               <article role="listitem" key={item.question}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <div><p className="miniLabel">客户问题</p><h4>{item.question}</h4><p>{item.signal}</p></div>
+                <div><p className="miniLabel">问答</p><h4>{item.question}</h4><p>{item.signal}</p></div>
                 <div><p className="miniLabel">建议与证伪</p><strong>{item.recommendation}</strong><small>{item.boundary}</small></div>
               </article>
             ))}
@@ -261,7 +261,7 @@ export function SolutionPatternPrimer({ brief, showCriticalBoundary = true }: { 
         </div>
       </div>
       {brief && showCriticalBoundary ? <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside> : null}
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先用六道决策门把模糊需求缩成一个可验证闭环，再沿八层责任架构逐项检查必要性、Owner、证据、失败响应和退出条件；技术越复杂，证明责任越重。</p><nav aria-label="场景解决方案深入阅读"><a href="#deep-dive">检查生产边界</a><a href="#evidence">核对证据</a><a href="#cloud">对应云服务</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>先用六道决策门把模糊需求缩成一个可验证闭环，再沿八层责任架构逐项检查必要性、Owner、证据、失败响应和退出条件；技术越复杂，证明责任越重。</p><nav aria-label="场景解决方案深入阅读"><a href="#deep-dive">检查生产边界</a><a href="#evidence">核对证据</a><a href="#cloud">对应云服务</a></nav></footer>
     </section>
   );
 }
@@ -305,7 +305,7 @@ function McpFocusedPrimer({ brief, view = requireModuleExtensionView("mcp") as E
         </div>
       </section>
       <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先比较直接 API / Function Calling 与薄 MCP 适配，再沿“发现—选择—授权—执行—回读”确认主体、错误语义和证据；复用价值或责任归属任一项说不清，就不进入生产。</p><nav aria-label="MCP 深入阅读"><a href="#deep-dive">原语、部署与长任务</a><a href="#evidence">协议证据</a><a href="#cloud">平台连接</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>先比较直接 API / Function Calling 与薄 MCP 适配，再沿“发现—选择—授权—执行—回读”确认主体、错误语义和证据；复用价值或责任归属任一项说不清，就不进入生产。</p><nav aria-label="MCP 深入阅读"><a href="#deep-dive">原语、部署与长任务</a><a href="#evidence">协议证据</a><a href="#cloud">平台连接</a></nav></footer>
     </section>
   );
 }
@@ -333,7 +333,7 @@ function InferenceFocusedPrimer({ brief, view = requireModuleExtensionView("llm-
         </div>
       </section>
       <aside className="focusedBoundary" aria-label="重要边界" data-importance="critical"><span>CRITICAL BOUNDARY</span><p>{brief.criticalBoundary}</p></aside>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>带着真实输入长度、输出长度、并发、SLO 与硬件组合做负载测试；分别记录 TTFT、TPOT、吞吐、显存和失败率，再决定优化顺序。</p><nav aria-label="推理优化深入阅读"><a href="#deep-dive">诊断生产瓶颈</a><a href="#evidence">核对测量边界</a><a href="#cloud">容量与服务</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>带着真实输入长度、输出长度、并发、SLO 与硬件组合做负载测试；分别记录 TTFT、TPOT、吞吐、显存和失败率，再决定优化顺序。</p><nav aria-label="推理优化深入阅读"><a href="#deep-dive">诊断生产瓶颈</a><a href="#evidence">核对测量边界</a><a href="#cloud">容量与服务</a></nav></footer>
     </section>
   );
 }
@@ -362,7 +362,7 @@ export function SecurityThreatPrimer() {
       </header>
       <SecurityBarrierExplorer threats={securityThreatSteps} defenses={securityDefenseLayers} />
       <TermHintRow label="安全架构常用缩写" termIds={["iam", "acl", "dlp", "hitl", "api"]} />
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先选一条最危险的 Source → Sink 路径，逐步说明内容从哪里来、会影响什么、谁负责授权、怎样留下证据；不要用一个 Guardrail 产品代替完整威胁模型。</p><nav aria-label="AI 安全深入阅读"><a href="#principle">查看分层威胁</a><a href="#deep-dive">查看事件处理</a><a href="#cloud">对应安全服务</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>先选一条最危险的 Source → Sink 路径，逐步说明内容从哪里来、会影响什么、谁负责授权、怎样留下证据；不要用一个 Guardrail 产品代替完整威胁模型。</p><nav aria-label="AI 安全深入阅读"><a href="#principle">查看分层威胁</a><a href="#deep-dive">查看事件处理</a><a href="#cloud">对应安全服务</a></nav></footer>
     </section>
   );
 }
@@ -412,7 +412,7 @@ export function FineTuningPrimer() {
           <article><span>04</span><h3>服务</h3><p>显存、时延、吞吐、成本、灰度与回滚</p></article>
         </div>
       </div>
-      <footer className="pilotPrimerActions"><strong>技术售前用法</strong><p>先按失败类型比较五条路线，再把训练数据、冻结评估集、基座、Adapter、Tokenizer、Chat Template、Runtime、Policy、单位经济和停止条件作为一个发布单元共同验收。</p><nav aria-label="微调深入阅读"><a href="#decisions">查看方法选择</a><a href="#curriculum">查看训练方法</a><a href="#cloud">查看训练与部署</a></nav></footer>
+      <footer className="pilotPrimerActions"><strong>实战用法</strong><p>先按失败类型比较五条路线，再把训练数据、冻结评估集、基座、Adapter、Tokenizer、Chat Template、Runtime、Policy、单位经济和停止条件作为一个发布单元共同验收。</p><nav aria-label="微调深入阅读"><a href="#decisions">查看方法选择</a><a href="#curriculum">查看训练方法</a><a href="#cloud">查看训练与部署</a></nav></footer>
     </section>
   );
 }

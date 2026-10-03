@@ -11,7 +11,7 @@ const slug = "veadk";
 
 export default Object.freeze({
   slug,
-  zh: "VeADK",
+  zh: "VeADK 智能体开发套件",
   en: "Volcengine Agent Development Kit",
   titleId: "veadk-title",
   layerNo: "04",

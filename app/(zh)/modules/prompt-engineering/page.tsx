@@ -17,8 +17,8 @@ import type { PromptModuleBrief } from "../../../content-types";
 import { UnifiedModuleScaffold } from "../../../unified-module-hero";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "提示词工程 · Prompt Engineering | 云计算 × AI 平台售前知识库",
-  description: "提示词与上下文工程的基础机制、核心模式、版本治理、云服务连接、PoC 评估及售前深度问答。",
+  title: "提示词工程 · Prompt Engineering | AI 学习手册",
+  description: "提示词与上下文工程的基础机制、核心模式、版本治理、云服务连接、PoC 评估及深度问答。",
   path: "/modules/prompt-engineering",
   enPath: "/en/modules/prompt-engineering",
 });
@@ -55,7 +55,7 @@ export default function PromptEngineeringModulePage() {
               readerId="module-reading"
               quick={(
                 <><div id="context-assembly"><ModuleExtensionPrimer slug="prompt-engineering" view={promptExtensionView} /></div>
-                  <div className="decisionBanner"><p className="kicker">PRESALES POSITION</p><h3>Prompt 的发布范围</h3><p>生产级提示工程把提示、模型、上下文和工具作为同一发布单元，持续完成测试、审计、回滚和运营。</p></div>
+                  <div className="decisionBanner"><p className="kicker">KEY POSITION</p><h3>Prompt 的发布范围</h3><p>生产级提示工程把提示、模型、上下文和工具作为同一发布单元，持续完成测试、审计、回滚和运营。</p></div>
                   <div className="subsection" id="quick-triage" data-quality-section="decisions">
                     <div className="subHead"><span>Q1</span><div><p className="kicker">FAILURE ROUTING</p><h3>失败症状与处理层</h3></div></div>
                     <p className="sectionLead">按症状选择处理层；知识、权限、工具或基础模型的问题不应继续堆叠提示文字。</p>
@@ -78,7 +78,7 @@ export default function PromptEngineeringModulePage() {
                       </BalancedGrid>
                       <p className="paperBoundary"><strong>边界：</strong>四者不是互斥职位或成熟度等级。Prompt 与 Context 是 Harness 每次调用的重要输入；Harness 是 Agent 产品的运行与控制层；Agent Engineering 再把业务流程、用户体验和长期运营纳入交付。<Link href="/modules/ai-agent?view=learn#harness">进入 Agent 模块查看 Harness 机制与评估方法 ↗</Link></p>
                       <div className="principleDepth">
-                        <header className="principleDepthIntro"><p className="miniLabel">PRESALES MECHANISM</p><h4>从“写一句话”升级为“构造一次受控调用”</h4><p>生产请求不是单一文字，而是由不同责任方提供的多段输入。技术售前应先解释每段信息的来源、信任级别和生命周期，再讨论措辞优化。</p></header>
+                        <header className="principleDepthIntro"><p className="miniLabel">CORE MECHANISM</p><h4>从“写一句话”升级为“构造一次受控调用”</h4><p>生产请求不是单一文字，而是由不同责任方提供的多段输入。应先解释每段信息的来源、信任级别和生命周期，再讨论措辞优化。</p></header>
                         <div className="ragMechanism" aria-label="提示调用的三类输入">
                           <article><span>01</span><h5>明确且稳定的指令 · Instructions</h5><p>应用目标、行为边界、语气和输出契约；由产品与工程维护，并进入版本、审批和回归流程。</p></article>
                           <article><span>02</span><h5>动态上下文 · Context</h5><p>用户问题、身份、会话、检索证据和业务状态；每次调用都可能不同，必须做权限、长度和来源控制。</p></article>
@@ -112,10 +112,10 @@ export default function PromptEngineeringModulePage() {
                       <div className="tableWrap" role="region" aria-label="提示词技术选择诊断表" tabIndex={0}><table><caption className="srOnly">失败症状、优先技术、改变内容与选择边界</caption><thead><tr><th scope="col">失败症状</th><th scope="col">优先技术</th><th scope="col">实际改变什么</th><th scope="col">选择边界</th></tr></thead><tbody>{techniqueLadder.map((item) => <tr key={item.technique}><th scope="row">{item.symptom}</th><td>{item.technique}</td><td>{item.change}</td><td>{item.boundary}</td></tr>)}</tbody></table></div>
                       <div className="tableWrap" role="region" aria-label="上下文预算分区与治理方式" style={{ marginTop: 18 }} tabIndex={0}><table><caption className="srOnly">上下文预算区、内容与治理方式</caption><thead><tr><th scope="col">上下文预算区</th><th scope="col">放什么</th><th scope="col">治理方式</th></tr></thead><tbody>{contextBudgetZones.map((item) => <tr key={item.en}><th scope="row">{item.zone}<small>{item.en}</small></th><td>{item.content}</td><td>{item.control}</td></tr>)}</tbody></table></div>
                       <div className="tableWrap" role="region" aria-label="提示词安全威胁与控制" style={{ marginTop: 18 }} tabIndex={0}><table><caption className="srOnly">提示词安全威胁、进入来源与主要控制</caption><thead><tr><th scope="col">威胁</th><th scope="col">从哪里进入</th><th scope="col">主要控制</th></tr></thead><tbody>{promptSecurityScenarios.map((item) => <tr key={item.threat}><th scope="row">{item.threat}</th><td>{item.source}</td><td>{item.control}</td></tr>)}</tbody></table></div>
-                      <CriticalBoundary>Prompt Chaining、ReAct 与工具循环一旦涉及外部状态、重试和停止，就应进入工作流或 Agent 编排层。推理模型也不需要售前人员要求公开完整思维链；应评估的是可验证答案、证据、工具轨迹与业务终态。</CriticalBoundary>
+                      <CriticalBoundary>Prompt Chaining、ReAct 与工具循环一旦涉及外部状态、重试和停止，就应进入工作流或 Agent 编排层。推理模型也不需要要求公开完整思维链；应评估的是可验证答案、证据、工具轨迹与业务终态。</CriticalBoundary>
                     </div>
                     <div className="subsection" id="templates"><div className="subHead"><span>5.6</span><div><p className="kicker">TEMPLATES &amp; VARIABLES</p><h3>可维护的提示模板 · Prompt Template</h3></div></div>
-                      <div className="tableWrap" role="region" aria-label="提示模板组成与治理方式" tabIndex={0}><table><caption className="srOnly">提示模板组成、内容边界、治理方式与售前发现问题</caption><thead><tr><th scope="col">组成</th><th scope="col">放什么</th><th scope="col">不要放什么</th><th scope="col">治理方式</th><th scope="col">售前发现问题</th></tr></thead><tbody>
+                      <div className="tableWrap" role="region" aria-label="提示模板组成与治理方式" tabIndex={0}><table><caption className="srOnly">提示模板组成、内容边界、治理方式与需要追问</caption><thead><tr><th scope="col">组成</th><th scope="col">放什么</th><th scope="col">不要放什么</th><th scope="col">治理方式</th><th scope="col">需要追问</th></tr></thead><tbody>
                         <tr><th scope="row">目标 / Task</th><td>单一可验证任务与成功定义</td><td>多个互相冲突的目标</td><td>任务 ID + 负责人</td><td>成功由谁判断？</td></tr>
                         <tr><th scope="row">约束 / Constraints</th><td>适用范围、拒答和输出规则</td><td>真正的授权或密钥</td><td>策略版本 + 安全评审</td><td>哪些规则必须硬执行？</td></tr>
                         <tr><th scope="row">变量 / Variables</th><td>已校验输入、身份与业务状态</td><td>未分隔的不可信字符串</td><td>类型、长度、来源、脱敏</td><td>变量来自谁？能否被篡改？</td></tr>
@@ -158,7 +158,7 @@ export default function PromptEngineeringModulePage() {
                         <article><span>RELEASE BUNDLE</span><h4>完整配置比较</h4><p>把模型、Prompt、Context 组装、工具、Schema 与安全策略作为发布包，比较任务质量、P95、token 和成功成本。</p></article>
                         <article><span>CANARY</span><h4>安全与灰度</h4><p>测试冲突指令、Source–Sink 注入、敏感数据、错误工具参数和回滚；达到当前门禁后再放量，周期由风险决定。</p></article>
                       </div>
-                      <div className="gates"><h4>建议的 Go / No-Go 门槛结构</h4><div className="gateList"><span>任务成功率</span><span>关键字段正确率</span><span>Schema 通过率</span><span>拒答正确率</span><span>工具选择 / 参数</span><span>注入与越权</span><span>P95 / token</span><span>单次成功成本</span></div><p>具体阈值由客户风险、现有基线和候选云服务实测共同确定；平均分不能掩盖高风险场景失败。</p></div>
+                      <div className="gates"><h4>建议的 Go / No-Go 门槛结构</h4><div className="gateList"><span>任务成功率</span><span>关键字段正确率</span><span>Schema 通过率</span><span>拒答正确率</span><span>工具选择 / 参数</span><span>注入与越权</span><span>P95 / token</span><span>单次成功成本</span></div><p>具体阈值由实际风险、现有基线和候选云服务实测共同确定；平均分不能掩盖高风险场景失败。</p></div>
                     </div>
                     <div className="subsection" id="concept-map" data-quality-section="related-modules"><div className="subHead"><span>L3.4</span><div><p className="kicker">KNOWLEDGE CONNECTIONS</p><h3>提示词工程在知识地图中的位置与相关模块</h3></div></div>
                       <p className="sectionLead">本模块聚焦“如何表达任务并治理模型输入”。知识检索、Agent 规划、API 授权、模型推理和评估各有独立主模块；这里给出必要连接，避免把整个 AI 应用都误称为 Prompt Engineering。</p>
@@ -175,18 +175,18 @@ export default function PromptEngineeringModulePage() {
               field={(
                 <><div className="subsection" id="evidence" data-quality-section="evidence"><div className="subHead"><span>F1</span><div><p className="kicker">EVIDENCE WITH BOUNDARIES</p><h3>可引用事实及适用边界</h3></div></div><ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} maxColumns={3} /></div>
                   <div className="subsection cloudSection" id="cloud-opportunities" data-quality-section="cloud"><div className="subHead"><span>F2</span><div><p className="kicker">CLOUD OPPORTUNITY MAP</p><h3>提示词工程与云服务机会</h3></div></div>
-                    <div className="cloudIntro"><p>Prompt 是整体方案中的一个配置面。真正可销售、可验收的能力来自模型接入、上下文供给、工具编排、安全、发布和持续运营的组合。</p><span>能力先于产品名</span><span>模型与提示共同验收</span><span>当期规格单独核验</span></div>
-                    <div className="cloudTable tableWrap" role="region" aria-label="提示词工程云能力与客户价值" tabIndex={0}><table><caption className="srOnly">交付环节、可连接的云服务、客户价值与售前发现问题</caption><thead><tr><th scope="col">环节</th><th scope="col">可连接的云服务</th><th scope="col">客户价值</th><th scope="col">售前发现问题</th></tr></thead><tbody>{cloudHooks.map((item) => <tr key={item.stage}><th scope="row">{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}</tbody></table></div>
+                    <div className="cloudIntro"><p>Prompt 是整体方案中的一个配置面。真正可验收、可复用的能力来自模型接入、上下文供给、工具编排、安全、发布和持续运营的组合。</p><span>能力先于产品名</span><span>模型与提示共同验收</span><span>当期规格单独核验</span></div>
+                    <div className="cloudTable tableWrap" role="region" aria-label="提示词工程云能力与交付价值" tabIndex={0}><table><caption className="srOnly">交付环节、可连接的云服务、价值与需要追问</caption><thead><tr><th scope="col">环节</th><th scope="col">可连接的云服务</th><th scope="col">价值</th><th scope="col">需要追问</th></tr></thead><tbody>{cloudHooks.map((item) => <tr key={item.stage}><th scope="row">{item.stage}</th><td>{item.services}</td><td>{item.value}</td><td>{item.discover}</td></tr>)}</tbody></table></div>
                     <BalancedGrid className="solutionBundles" maxColumns={3}>
-                      <article><p className="miniLabel">BUNDLE A</p><h4>生产级模型接入</h4><p>模型服务 + AI 网关 + Prompt / 配置管理 + 密钥 + 限流 + Tracing。</p><small>购买角色：应用平台、云平台、安全与架构团队</small></article>
-                      <article><p className="miniLabel">BUNDLE B</p><h4>可评估发布流水线</h4><p>评估集 + CI/CD + 模型 / Prompt 注册 + 灰度 + 回滚 + 质量告警。</p><small>购买角色：AI 平台、测试、产品与业务负责人</small></article>
-                      <article><p className="miniLabel">BUNDLE C</p><h4>安全工具与数据连接</h4><p>API 网关 + IAM + 工作流 / 函数 + DLP + 审批 + 审计 + 私网连接。</p><small>购买角色：集成团队、安全、数据与业务系统负责人</small></article>
+                      <article><p className="miniLabel">BUNDLE A</p><h4>生产级模型接入</h4><p>模型服务 + AI 网关 + Prompt / 配置管理 + 密钥 + 限流 + Tracing。</p><small>面向：应用平台、云平台、安全与架构团队</small></article>
+                      <article><p className="miniLabel">BUNDLE B</p><h4>可评估发布流水线</h4><p>评估集 + CI/CD + 模型 / Prompt 注册 + 灰度 + 回滚 + 质量告警。</p><small>面向：AI 平台、测试、产品与业务负责人</small></article>
+                      <article><p className="miniLabel">BUNDLE C</p><h4>安全工具与数据连接</h4><p>API 网关 + IAM + 工作流 / 函数 + DLP + 审批 + 审计 + 私网连接。</p><small>面向：集成团队、安全、数据与业务系统负责人</small></article>
                     </BalancedGrid>
                   </div>
-                  <div className="subsection qaSection" id="qa" data-quality-section="qa"><div className="subHead"><span>F3</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div><ModuleQaList items={qa} sourceLedger={sourceLedger} directoryHref="/questions?module=prompt-engineering" /></div></>
+                  <div className="subsection qaSection" id="qa" data-quality-section="qa"><div className="subHead"><span>F3</span><div><p className="kicker">QUESTION PACK</p><h3>高频问答与深度回答</h3></div></div><ModuleQaList items={qa} sourceLedger={sourceLedger} directoryHref="/questions?module=prompt-engineering" /></div></>
               )}
             /></div></section></div>
-      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>提示词工程独立模块<ModuleUpdatedAt value={promptPublication?.updatedAt ?? undefined} /></p><a href="#prompt-engineering">返回顶部 ↑</a></footer>
+      <footer><div><strong>AI 学习手册</strong></div><p>提示词工程独立模块<ModuleUpdatedAt value={promptPublication?.updatedAt ?? undefined} /></p><a href="#prompt-engineering">返回顶部 ↑</a></footer>
     </UnifiedModuleScaffold>
   );
 }

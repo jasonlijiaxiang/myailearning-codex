@@ -621,7 +621,7 @@ function FieldView({
     <div className={styles.fieldView}>
       <section className={styles.fieldLead}>
         <div>
-          <p>FIELD VERIFICATION · 会前与会中核对</p>
+          <p>FIELD VERIFICATION · 练习前核对</p>
           <h2>先辨认“声明、官方规范、运行证据、边界说明”，再回答客户</h2>
         </div>
       </section>
@@ -639,7 +639,7 @@ function FieldView({
           </section>
 
           <section className={styles.fieldQuestions} id="qa" aria-labelledby="field-questions-title" data-quality-section="qa">
-            <header className={styles.compactHeader}><span>FIELD QUESTIONS</span><h2 id="field-questions-title">客户问题 · 现场入口</h2><p>每道题都带“怎么核验”和“什么算证据”。</p></header>
+            <header className={styles.compactHeader}><span>FIELD QUESTIONS</span><h2 id="field-questions-title">问答 · 练习入口</h2><p>每道题都带“怎么核验”和“什么算证据”。</p></header>
             {questionGroups.map((group) => (
               <section key={group.code}>
                 <header><span>{group.code}</span><h3>{group.title}</h3></header>
@@ -669,7 +669,7 @@ function FieldView({
             <ul><li>Artifact 可选。</li><li>CancelTask 不证明副作用已回滚。</li><li>COMPLETED ≠ 产物通过 ≠ 业务接受。</li></ul>
           </section>
           <nav aria-label="A2A 现场相关入口">
-            <Link href="/questions?module=a2a">搜索客户问题</Link>
+            <Link href="/questions?module=a2a">搜索问答</Link>
             <Link href="/references#module-a2a">打开来源资料库</Link>
           </nav>
         </aside>
@@ -781,7 +781,7 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
           learn: chapters,
           field: [
             { id: "field-checklist-title", label: "现场核验顺序", eyebrow: "可执行 Runbook" },
-            { id: "qa", label: `${sourceContent.qa.length} 题客户问题`, eyebrow: "按主题核验" },
+            { id: "qa", label: `${sourceContent.qa.length} 题问答`, eyebrow: "按主题核验" },
             { id: "evidence", label: `${sourceContent.evidenceCards.length} 张证据卡`, eyebrow: "来源与范围" },
             { id: "cloud", label: "云能力与责任", eyebrow: "交付矩阵" },
             { id: "related-modules", label: "相关模块", eyebrow: "责任连接" },

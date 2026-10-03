@@ -16,7 +16,7 @@ import {
 import { SiteFooter, SiteNav } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "大模型能力快照 · 20 个配置 | 云计算 × AI 平台售前知识库",
+  title: "大模型能力快照 · 20 个配置 | AI 学习手册",
   description: "用官方 Intelligence Index 与透明复算的 Coding、Agentic Composite 比较默认视图捕获的 20 个模型配置，并查看每项分数的组成与边界。",
   path: "/model-radar",
   enPath: "/en/model-radar",
@@ -47,9 +47,9 @@ export default function ModelRadarPage() {
         <SiteNav
           locale="zh"
           ariaLabel="模型对比导航"
-          brandAriaLabel="返回云与 AI 售前知识库首页"
+          brandAriaLabel="返回 AI 学习手册首页"
           links={[
-            { href: "/", label: "知识库首页" },
+            { href: "/", label: "首页" },
             { href: "/modules/model-landscape", label: "模型格局模块" },
             { href: "/coding-agents", label: "Coding Agent" },
             { href: "/references", label: "来源与证据" },
@@ -70,7 +70,7 @@ export default function ModelRadarPage() {
         </div>
       </section>
 
-      <SiteFooter locale="zh" brand="云计算 × AI 平台售前知识库" note={`Model Landscape · ${modelRadarPolicy.retention} · 缺失数据不补值`} />
+      <SiteFooter locale="zh" brand="AI 学习手册" note={`Model Landscape · ${modelRadarPolicy.retention} · 缺失数据不补值`} />
     </main>
   );
 }

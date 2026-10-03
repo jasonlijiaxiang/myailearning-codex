@@ -14,8 +14,8 @@ import HomeStyles from "../home-styles";
 import { SiteFooter, SiteNav } from "../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "云计算 × AI 平台售前知识库",
-  description: "面向售前人员的云计算与 AI 平台知识地图、实战模块与客户问答手册。",
+  title: "AI 学习手册",
+  description: "从模块与场景出发的 AI 学习手册：知识地图、实战练习与问答。",
   path: "/",
   enPath: "/en",
 });
@@ -99,13 +99,13 @@ export default function Home() {
       <HomeStyles />
       <ReadingProgress />
       <header className="hero heroV2" id="top">
-        <SiteNav locale="zh" brandAriaLabel="云与 AI 售前知识库首页" />
+        <SiteNav locale="zh" brandAriaLabel="AI 学习手册首页" />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="heroGrid heroGridV2 heroGridWithArtwork">
           <div className="heroCopy">
             <h1><span>理解 AI 原理，</span><span>做出有依据的方案</span></h1>
-            <p className="heroLead">理解方案背后的原理和适用限制，用它们回答客户追问。</p>
+            <p className="heroLead">理解方案背后的原理和适用限制，用它们回答追问。</p>
             <KnowledgeSearchLaunch />
             <div className="heroActions">
               <a className="homePrimaryAction" href="#learning-paths">按任务开始 <span>→</span></a>
@@ -132,7 +132,7 @@ export default function Home() {
             <ol>
               <li><span>快速了解</span><div><strong>先看结论与边界</strong><p>快速确认这是什么、何时适用，以及下一步该问什么。</p></div></li>
               <li><span>深入理解</span><div><strong>理清系统机制</strong><p>沿处理流程理解机制和责任边界。</p></div></li>
-              <li><span>现场查证</span><div><strong>搜索问题与来源</strong><p>从客户问题进入短答、追问和一手来源。</p></div></li>
+              <li><span>查证</span><div><strong>搜索问题与来源</strong><p>从问答进入短答、追问和一手来源。</p></div></li>
             </ol>
           </aside>
         </div>
@@ -174,7 +174,7 @@ export default function Home() {
           structureGuide={{
             badge: `${layerCount} 层 · ${moduleCount} 个模块`,
             title: "先从问题搜，需要时按层缩小范围",
-            body: "筛选项已按知识层排列；客户问题还不清晰时，先选一层缩小范围。需要看模块关系，再进入动态探索。",
+            body: "筛选项已按知识层排列；问题还不清晰时，先选一层缩小范围。需要看模块关系，再进入动态探索。",
             href: "/knowledge-graph",
             link: "查看模块关系",
           }}
@@ -184,7 +184,7 @@ export default function Home() {
       <section className="timeBudgetPathsV2" id="time-budget-paths" aria-labelledby="time-budget-paths-title">
         <header>
           <h2 id="time-budget-paths-title">从时间开始</h2>
-          <p>按手头时间选择入口：会前先找到问题和边界，时间充裕时沿场景读透机制并完成练习。</p>
+          <p>按手头时间选择入口：先快速找到问题和边界，时间充裕时沿场景读透机制并完成练习。</p>
         </header>
         <div className="timeBudgetPathList">
           {timeBudgetPaths.map((path) => (
@@ -216,7 +216,7 @@ export default function Home() {
         <TermHintGroups groups={homepageTermGroups} total={glossaryTermIds.length} />
       </section>
 
-      <SiteFooter locale="zh"><span>Cloud × AI Presales Fieldbook</span><span>{moduleCount} 模块阅读版</span></SiteFooter>
+      <SiteFooter locale="zh"><span>AI Fieldbook</span><span>{moduleCount} 模块学习版</span></SiteFooter>
     </main>
   );
 }

@@ -393,7 +393,7 @@ test("homepage leads from scenario to questions with links to every independent 
 
   assert.match(html, /<html lang="zh-CN">/i);
   assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1"\/>/i);
-  assert.match(html, /<title>云计算 × AI 平台售前知识库<\/title>/i);
+  assert.match(html, /<title>AI 学习手册<\/title>/i);
   assert.match(html, /<meta property="og:image" content="https:\/\/cloud-ai-presales-fieldbook\.lijx\.chatgpt\.site\/social-card\.png"\/>/i);
   assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/i);
   assert.match(html, /href="\/references"/);
@@ -919,7 +919,10 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   for (const [index, html] of htmlByPath.entries()) {
     assert.match(html, /data-module-hero="unified"/, `${paths[index]} is missing the shared Hero`);
     assert.match(html, /data-module-reader="unified"/, `${paths[index]} is missing the shared reading controller`);
-    assert.match(html, /Cloud × AI \/ Presales Fieldbook/, `${paths[index]} must use the unified brand`);
+    assert.match(html, /AI Fieldbook/, `${paths[index]} must use the unified brand`);
+    const h1Match = html.match(/<h1[^>]*>\s*<span>([^<]+)<\/span><small>/);
+    assert.ok(h1Match, `${paths[index]} H1 must lead with the full Chinese module name`);
+    assert.ok(/[一-鿿]/.test(h1Match[1]), `${paths[index]} H1 primary text must be Chinese, got: ${h1Match[1]}`);
     assert.match(html, /<nav[^>]*aria-label="[^"]+"/);
     assert.match(html, new RegExp(`href="/"[^>]*>[^<]*<\\/a>`));
     assert.match(html, /href="#qa"[^>]*>[^<]*<\/a>/);
@@ -982,7 +985,7 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
   assert.match(readerSource, /count === 1 \? "entry" : "entries"/, "English directory counts must handle singular and plural");
   assert.match(heroSource, /mobileMenu:\s*"/, "the Chinese mobile menu name must stay in the localized contract");
   assert.match(heroSource, /aria-label=\{copy\.mobileMenu\}/, "the mobile menu name must not bind to one open state");
-  assert.match(heroSource, /<em lang="en"> · \{enTitle\}<\/em>/, "the Chinese Hero English subtitle must declare its language");
+  assert.match(heroSource, /<em lang="en">\{enTitle\}<\/em>/, "the Chinese Hero English subtitle must declare its language");
   assert.match(relationSource, /className="relationMatrixScroll" role="region" aria-label=\{block\.title\} tabIndex=\{0\}/, "relation matrices must be focusable with an accessible name");
   assert.match(relationSource, /<caption className="srOnly">\{block\.title\}<\/caption>/, "relation matrices must declare a hidden caption");
   assert.equal((relationSource.match(/scope="col"/g) ?? []).length, 4, "all four relation-matrix columns must declare column headers");
@@ -1828,7 +1831,7 @@ test("English pages publish route-specific English sharing metadata", async () =
     assert.match(html, new RegExp(`<link rel="canonical" href="${escapeRegExp(`${site}${englishPath}`)}"/>`), `${route} needs its own canonical URL`);
     assert.match(html, new RegExp(`<link rel="alternate" hrefLang="en" href="${escapeRegExp(`${site}${englishPath}`)}"/>`), `${route} needs an English alternate`);
     assert.match(html, new RegExp(`<link rel="alternate" hrefLang="zh-CN" href="${escapeRegExp(`${site}${chinesePath}`)}"/>`), `${route} needs its Chinese counterpart`);
-    assert.doesNotMatch(html, /<meta name="twitter:title" content="云计算 × AI 平台售前知识库"\/>/);
+    assert.doesNotMatch(html, /<meta name="twitter:title" content="AI 学习手册"\/>/);
     assert.doesNotMatch(html, /social-card\.png/, `${route} must not inherit the Chinese social card`);
     assert.doesNotMatch(html, /summary_large_image/i, `${route} must not claim an absent social image`);
     assert.doesNotMatch(html, /<meta\b(?=[^>]*\bname="robots")(?=[^>]*\bcontent="[^"]*(?:noindex|nofollow))[^>]*>/i, `${route} must remain indexable`);
@@ -1933,7 +1936,7 @@ test("RAG route follows one evidence decision from adoption through production",
   assertValidGridSpans(html, "/modules/rag");
 
   const ragBrief = /** @type {any} */ (requireModuleContent("rag"));
-  assert.match(html, new RegExp(`<small>${escapeRegExp(terminology.rag.zh)}<em lang="en"> · (?:<!-- -->)?Retrieval-Augmented Generation<\\/em><\\/small>`));
+  assert.match(html, new RegExp(`<span>${escapeRegExp(terminology.rag.zh)}<\\/span><small><em>RAG<!-- --> · <\\/em><em lang="en">Retrieval-Augmented Generation<\\/em><\\/small>`));
   assert.match(html, new RegExp(renderTextPattern(ragBrief.definition)));
   assert.match(html, new RegExp(renderTextPattern(ragBrief.principleTitle)));
   assert.match(html, new RegExp(renderTextPattern(ragBrief.criticalBoundary)));
@@ -2453,7 +2456,7 @@ test("every published module passes the shared reader, terminology, and depth co
     assert.match(html, /class="moduleReadingExperience"/, `${publishedModule.slug} is missing the task reader`);
     assert.match(html, /class="moduleModeTabs"[^>]*aria-label="[^"]+"/, `${publishedModule.slug} is missing the accessible reading-task choice`);
     assert.match(html, /INTERACTIVE SYSTEM VIEW|data-knowledge-explorer="interactive"/, `${publishedModule.slug} is missing a mechanism or decision view`);
-    assert.match(html, />现场查证</, `${publishedModule.slug} is missing the on-demand field task that owns the searchable practice pack`);
+    assert.match(html, />查证</, `${publishedModule.slug} is missing the on-demand field task that owns the searchable practice pack`);
     assert.match(html, /href="(?:\/questions(?:\?[^\"]*)?|#qa)"/, `${publishedModule.slug} is missing the question directory entry`);
     assert.match(html, /href="\/references(?:#[^"]+)?"/);
 
@@ -2607,7 +2610,7 @@ test("legacy module addresses resolve to the current published knowledge base", 
     const canonicalModule = getPublishedModule(canonicalSlug);
     assert.match(html, new RegExp(`<h1[^>]*id="${escapeRegExp(canonicalModule.titleId)}"`));
     assert.match(html, /data-module-reader="unified"/, `${legacySlug} must resolve to the shared reader`);
-    assert.match(html, />现场查证</, `${legacySlug} must keep the on-demand field task for its questions`);
+    assert.match(html, />查证</, `${legacySlug} must keep the on-demand field task for its questions`);
     assert.doesNotMatch(html, /正文建设中|CONTENT STATUS|后续版本将补齐|模块依赖/);
   }
 });
@@ -3206,7 +3209,7 @@ test("project docs require independent routes, one reference page, and main-only
   ]);
   const kbConfig = JSON.parse(kbConfigText);
 
-  assert.match(standard, /每个模块使用独立页面|所有来源集中在独立|动态均衡卡片|相关模块|仅当公式直接帮助售前做架构、选型或风险判断时展示|MODULE-BUILD-STANDARD\.md/);
+  assert.match(standard, /每个模块独立维护和分享|所有来源集中在可搜索|可筛选实战练习|相关模块|MODULE-BUILD-STANDARD\.md/);
   assert.match(standard, /\/references/);
   assert.match(moduleStandard, /机制与组件完整性|每个关键动作和组件都必须分别讲清|定义.*机制.*边界.*判断.*证据|不为图、卡片、案例、问答或来源设置数量指标|页面统一使用“相关模块”，不用“模块依赖”|技术环节—云能力—客户价值—发现问题—验收指标|每道问题至少包含|公式必须同时满足以下条件|balanceGridRows\(items, maxColumns\)/);
   assert.match(moduleStandard, /内部巡检流程、责任人、字段 schema、发布步骤和构建状态不得公开|MODULE-QUALITY-GATES\.md|发布注册|面向读者的中文优先使用具体名词和日常动词|首次出现必须先给普通中文解释/);

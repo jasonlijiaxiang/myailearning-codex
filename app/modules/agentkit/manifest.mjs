@@ -11,7 +11,7 @@ const slug = "agentkit";
 
 export default Object.freeze({
   slug,
-  zh: "AgentKit",
+  zh: "AgentKit 智能体平台",
   en: "AgentKit",
   titleId: "agentkit-title",
   layerNo: "04",

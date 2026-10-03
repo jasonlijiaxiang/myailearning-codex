@@ -167,7 +167,7 @@ const retrievalScenarios: RetrievalScenario[] = [
           { id: "OPS-063", title: "模型版本升级手册", signal: "命中：版本、升级，但对象错误" },
         ],
         failure: "正确文档使用“版本生效”和“撤回”，与客户口语重合少，因此未进入 Top-3。",
-        conclusion: "口语化问题不能只靠词面匹配；售前 PoC 应专门准备同义改写测试集。",
+        conclusion: "口语化问题不能只靠词面匹配；PoC 应专门准备同义改写测试集。",
       },
       vector: {
         candidates: [
@@ -246,7 +246,7 @@ const retrievalScenarios: RetrievalScenario[] = [
 ];
 
 /**
- * 对比不同检索链如何改变同一客户问题的证据排名。
+ * 对比不同检索链如何改变同一问题的证据排名。
  */
 export function RagRetrievalLab() {
   const uid = useId();
@@ -339,7 +339,7 @@ export function RagRetrievalLab() {
 
         <div className="flagshipLab__insights">
           <article><p className="flagshipLab__label">何时会失败 Failure boundary</p><p>{result.failure}</p></article>
-          <article><p className="flagshipLab__label">售前结论 Presales takeaway</p><p>{result.conclusion}</p></article>
+          <article><p className="flagshipLab__label">结论 Takeaway</p><p>{result.conclusion}</p></article>
         </div>
       </div>
     </section>
@@ -714,7 +714,7 @@ export function PromptAssemblyLab() {
         <div className="flagshipLab__outcomes">
           <article><p className="flagshipLab__label">预期输出（教学假设）</p><p>{profile.expected}</p></article>
           <article><p className="flagshipLab__label">主要风险 Risk</p><p>{profile.risk}</p></article>
-          <article><p className="flagshipLab__label">售前结论 Presales takeaway</p><p>{profile.takeaway}</p></article>
+          <article><p className="flagshipLab__label">结论 Takeaway</p><p>{profile.takeaway}</p></article>
         </div>
         <WorkedExample example={{
           premise: '模型返回合法JSON：{"claim_id":"C-17","amount":10000,"approved":true}。本轮任务只授权生成初审草稿，材料没有支持这个金额。',

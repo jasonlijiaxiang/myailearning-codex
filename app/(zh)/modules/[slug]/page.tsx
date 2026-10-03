@@ -123,8 +123,8 @@ export async function generateMetadata({ params }: ModulePageProps): Promise<Met
   const currentModule = getModuleBySlug(slug);
   if (!currentModule) return {};
   return chinesePageMetadata({
-    title: `${currentModule.zh} | 云计算 × AI 平台售前知识库`,
-    description: `${currentModule.zh}（${currentModule.en}）的核心原理、选型边界、云服务连接与客户深度问答。`,
+    title: `${currentModule.zh} | AI 学习手册`,
+    description: `${currentModule.zh}（${currentModule.en}）的核心原理、选型边界、云服务连接与深度问答。`,
     path: `/modules/${currentModule.slug}`,
     enPath: englishModulePath(currentModule.slug),
   });
@@ -262,7 +262,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       </section>
 
       <section className="subsection moduleBriefSection qaSection" id="qa" data-quality-section="qa">
-        <div className="subHead"><span>问答</span><div><h2>客户问题</h2></div></div>
+        <div className="subHead"><span>问答</span><div><h2>学习问答</h2></div></div>
         <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} directoryHref={`/questions?module=${currentModule.canonicalSlug}`} />
       </section>
 
@@ -278,7 +278,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
       </section>
     </>
   );
-  const pageFooter = <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>{currentModule.zh}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>;
+  const pageFooter = <footer><div><strong>AI 学习手册</strong></div><p>{currentModule.zh}<ModuleUpdatedAt value={publication.updatedAt ?? undefined} /></p><a href="#top">返回顶部 ↑</a></footer>;
 
   return (
     <UnifiedBriefModulePage

@@ -8,21 +8,21 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://cloud-ai-presales-fieldbook.lijx.chatgpt.site"),
-  title: "云计算 × AI 平台售前知识库",
-  description: "面向售前人员的云计算与 AI 平台知识地图、实战模块与客户问答手册。",
+  title: "AI 学习手册",
+  description: "从模块与场景出发的 AI 学习手册：知识地图、实战练习与问答。",
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   openGraph: {
     type: "website",
     locale: "zh_CN",
-    siteName: "云计算 × AI 平台售前知识库",
-    title: "云计算 × AI 平台售前知识库",
-    description: "面向售前人员的云计算与 AI 平台知识地图、实战模块与客户问答手册。",
-    images: [{ url: "/social-card.png", width: 1731, height: 909, alt: "云计算与 AI 平台知识、证据和决策路径组成的技术地图" }],
+    siteName: "AI 学习手册",
+    title: "AI 学习手册",
+    description: "从模块与场景出发的 AI 学习手册：知识地图、实战练习与问答。",
+    images: [{ url: "/social-card.png", width: 1731, height: 909, alt: "AI 知识、证据和判断路径组成的学习地图" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "云计算 × AI 平台售前知识库",
-    description: "面向售前人员的云计算与 AI 平台知识地图、实战模块与客户问答手册。",
+    title: "AI 学习手册",
+    description: "从模块与场景出发的 AI 学习手册：知识地图、实战练习与问答。",
     images: ["/social-card.png"],
   },
 };

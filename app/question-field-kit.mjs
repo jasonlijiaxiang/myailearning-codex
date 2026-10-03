@@ -481,7 +481,7 @@ export const fallbackScripts = Object.freeze([
   Object.freeze({
     id: "fallback-scope",
     title: "场景与规模不足",
-    trigger: "客户直接问能不能做、多少钱、要多少卡，但还没有任务、数据、规模和 SLO。",
+    trigger: "问题直接问能不能做、多少钱、要多少卡，但还没有任务、数据、规模和 SLO。",
     script: "这个判断需要先确认业务结果、数据来源、用户并发、输入输出分布、责任主体和验收条件；我们先把这些写成一页约束，再给出范围和量级。",
     need: "业务结果、数据可及性、并发与规模、责任主体、验收条件。",
     boundary: "不给固定周数、价格区间或卡数承诺。",
@@ -489,7 +489,7 @@ export const fallbackScripts = Object.freeze([
   Object.freeze({
     id: "fallback-dynamic",
     title: "动态事实待核验",
-    trigger: "客户问价格、版本、区域、配额、平台能力或法规状态，且未绑定当前官方来源。",
+    trigger: "问题涉及价格、版本、区域、配额、平台能力或法规状态，且未绑定当前官方来源。",
     script: "这些是时效性事实，我不能凭记忆给当前值；先确认要核验的地域、版本和产品面，我从官方来源核对后再给结论。",
     need: "地域、产品/版本、用途、核验日期和来源。",
     boundary: "稳定方法与当前快照分开；过期的价格或版本不能作为报价依据。",

@@ -406,7 +406,7 @@ function buildDocument(markdown) {
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#top">云与 AI 售前知识库<small>Cloud × AI Presales Fieldbook</small></a>
+    <a class="brand" href="#top">AI 学习手册<small>AI Fieldbook</small></a>
     <div class="top-actions"><button type="button" class="print-button" id="print-guide">打印 / 保存 PDF</button></div>
   </header>
 

@@ -46,7 +46,7 @@ const brief = {
     { id: "memory-interaction", label: "状态、记忆与互操作", eyebrow: "恢复边界" },
     { id: "architecture", label: "架构与生产托管", eyebrow: "上线设计" },
     { id: "poc", label: "PoC、评估与上线门", eyebrow: "验收证据" },
-    { id: "evidence", label: "现场证据与问答", eyebrow: "客户查证" },
+    { id: "evidence", label: "证据与问答", eyebrow: "查证" },
   ],
   designChain: [
     { zh: "任务与最终状态", en: "Task & Outcome" },
@@ -89,7 +89,7 @@ const brief = {
       failure: "常见失败：误解目标、忽略附件或权限、把不可信内容当指令、上下文过载、引用了过期状态。",
       control: "工程控制：输入 Schema、来源标记、Prompt Injection 隔离、时效检查、缺失字段追问。",
       cloud: "云服务连接：多模态模型、文档解析 / OCR、托管搜索、事件总线、API 网关、身份服务。",
-      presales: "售前判断：客户的任务入口有哪些？哪套系统是事实源？输入是否跨模态、跨租户或有实时性要求？",
+      takeaway: "任务入口有哪些？哪套系统是事实源？输入是否跨模态、跨租户或有实时性要求？",
     },
     {
       code: "02",
@@ -100,7 +100,7 @@ const brief = {
       failure: "常见失败：凭空假设、目标漂移、选择错误工具、反复规划不行动、忽略业务规则或把不确定判断说成事实。",
       control: "工程控制：限定动作空间、结构化输出、风险规则、轮次 / token 预算、检查点、低置信度接管。",
       cloud: "云服务连接：模型服务与路由、AI 网关、内容安全、策略引擎、评估平台、Prompt 版本管理。",
-      presales: "售前判断：哪些决策确实需要模型？正确性如何验证？是否允许模型在多个工具之间自主选择？",
+      takeaway: "哪些决策确实需要模型？正确性如何验证？是否允许模型在多个工具之间自主选择？",
     },
     {
       code: "03",
@@ -111,7 +111,7 @@ const brief = {
       failure: "常见失败：选错 API、参数越界、重复扣款 / 重复建单、超时后误重试、越权调用、部分成功未补偿。",
       control: "工程控制：最小权限、参数白名单、幂等键、预览与审批、超时重试、事务 / 补偿、沙箱与审计。",
       cloud: "云服务连接：API / MCP Gateway、函数计算、工作流、IAM、密钥管理、沙箱、私网连接与消息队列。",
-      presales: "售前判断：哪些动作只读、可逆或高风险？现有 API 是否稳定？失败后能否回滚、补偿和追责？",
+      takeaway: "哪些动作只读、可逆或高风险？现有 API 是否稳定？失败后能否回滚、补偿和追责？",
     },
     {
       code: "04",
@@ -122,7 +122,7 @@ const brief = {
       failure: "常见失败：把 HTTP 200 当业务成功、忽略异步状态、相信模型生成的成功描述、未发现部分失败、旧结果污染下一轮。",
       control: "工程控制：后置条件、Read-after-Write、来源与时间戳、Checkpoint、异常分类、最终状态检查和人工复核。",
       cloud: "云服务连接：数据库 / 缓存、事件总线、Tracing、日志与指标、评估平台、告警和状态存储。",
-      presales: "售前判断：客户用哪个系统状态证明任务完成？异步结果多久可见？失败和人工接管由谁运营？",
+      takeaway: "用哪个系统状态证明任务完成？异步结果多久可见？失败和人工接管由谁运营？",
     },
   ],
   engineeringScopes: [
@@ -172,7 +172,7 @@ const brief = {
       failure: "常见失败：过度规划、遗漏前置条件、计划与工具不匹配、环境变化后仍照旧执行、拆分过细导致成本激增。",
       control: "工程控制：计划 Schema、最大深度 / 轮次、预算、关键里程碑审批、每次观察后重规划、最终状态检查。",
       cloud: "云服务连接：Agent Runtime、工作流 / 任务编排、模型路由、队列、分布式任务、评估与 Trace。",
-      presales: "售前判断：路径为什么不可预先确定？任务最长多久？哪些里程碑必须人工确认？并行带来的收益是否覆盖成本？",
+      takeaway: "路径为什么不可预先确定？任务最长多久？哪些里程碑必须人工确认？并行带来的收益是否覆盖成本？",
     },
     {
       code: "M",
@@ -183,7 +183,7 @@ const brief = {
       failure: "常见失败：错误总结被永久化、跨用户串记忆、旧偏好覆盖新事实、敏感信息过度保留、检索到记忆却忽略适用范围。",
       control: "工程控制：命名空间、来源、TTL、版本、用户确认、访问控制、加密、纠正 / 删除、写入与读取评估。",
       cloud: "云服务连接：会话存储、数据库、向量检索、对象存储、缓存、KMS、数据治理与生命周期管理。",
-      presales: "售前判断：要记住什么、为谁记、保存多久？谁能纠正和删除？哪些事实必须每次回到权威系统读取？",
+      takeaway: "要记住什么、为谁记、保存多久？谁能纠正和删除？哪些事实必须每次回到权威系统读取？",
     },
     {
       code: "T",
@@ -194,7 +194,7 @@ const brief = {
       failure: "常见失败：工具职责重叠、描述含糊、参数幻觉、返回内容注入、读写权限混放、错误语义不足导致无限重试。",
       control: "工程控制：清晰 Tool Contract、最小工具集、读写分级、Schema、IAM、幂等、超时、限流、审批、审计与沙箱。",
       cloud: "云服务连接：API Gateway、MCP Gateway、函数计算、SaaS 连接器、服务目录、IAM、密钥、工作流与服务网格。",
-      presales: "售前判断：工具是否已有 API？模型能否清楚区分？谁是调用主体？哪些写操作需要预览、审批和补偿？",
+      takeaway: "工具是否已有 API？模型能否清楚区分？谁是调用主体？哪些写操作需要预览、审批和补偿？",
     },
   ],
   memoryLayers: [
@@ -281,7 +281,7 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "53b2a8990c5769cdddd525727b6135d534dd4bbadc5501fa4fc32555e85bf114",
-  contentContract: deepFreeze({"principle":["Agent 的基础概念与工作循环"],"mechanism":["感知—思考—行动—观察","规划、记忆与工具"],"boundary":["模型会调用 API，不等于模型拥有 API 权限"],"cloud":["Agent 技术环节与云服务机会"],"customer":["客户高频问题与深度回答"]}),
+  contentContract: deepFreeze({"principle":["Agent 的基础概念与工作循环"],"mechanism":["感知—思考—行动—观察","规划、记忆与工具"],"boundary":["模型会调用 API，不等于模型拥有 API 权限"],"cloud":["Agent 技术环节与云服务机会"],"customer":["高频问答与深度回答"]}),
   brief,
   curriculum: null,
   learning: null,

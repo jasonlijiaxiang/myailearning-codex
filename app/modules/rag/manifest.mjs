@@ -55,7 +55,7 @@ const brief = {
   fieldDirectory: [
     { id: "cloud", label: "云能力与责任", eyebrow: "交付边界" },
     { id: "evidence", label: "证据与范围", eyebrow: "来源核验" },
-    { id: "qa", label: "客户问题", eyebrow: "现场回答" },
+    { id: "qa", label: "问答", eyebrow: "按需展开" },
     { id: "related-modules", label: "相关模块", eyebrow: "责任连接" },
   ],
   conceptLinks: [
@@ -166,7 +166,7 @@ export default Object.freeze({
   readingProfile: "focused",
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "dc2edf09ae4b7d8dc60c0ad568d78b0fd4aed3847021103310769e23e46cd746",
-  contentContract: deepFreeze({"principle":["回答证据的成立条件"],"mechanism":["离线证据与在线回答生命周期","RAG 组件选型"],"boundary":["检索到不等于回答正确"],"cloud":["云能力、验收与责任映射"],"customer":["客户高频问题与深度回答"]}),
+  contentContract: deepFreeze({"principle":["回答证据的成立条件"],"mechanism":["离线证据与在线回答生命周期","RAG 组件选型"],"boundary":["检索到不等于回答正确"],"cloud":["云能力、验收与责任映射"],"customer":["高频问答与深度回答"]}),
   brief,
   curriculum: null,
   learning: ragLearningContent,

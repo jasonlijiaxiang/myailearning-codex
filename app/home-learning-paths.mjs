@@ -1,20 +1,20 @@
 /**
  * 中文首页学习入口数据。
  *
- * 场景路径按客户任务组织；时间预算路径按可用时间组织。所有目标必须
- * 能解析到正式模块、问题现场锚点或实战入口，不保存第二份答案内容。
+ * 场景路径按学习任务组织；时间预算路径按可用时间组织。所有目标必须
+ * 能解析到正式模块、问答锚点或实战入口，不保存第二份答案内容。
  */
 import { moduleManifests } from "./modules/index.mjs";
 
 export const timeBudgetPaths = Object.freeze([
   Object.freeze({
     id: "time-10min",
-    label: "10 分钟现场速查",
-    duration: "会前或客户现场",
+    label: "10 分钟速查",
+    duration: "碎片时间",
     focus: "找到相关核心问题，准备结论、关键边界和下一问。",
     href: "/questions?view=field-kit",
     steps: Object.freeze([
-      Object.freeze({ type: "field-kit", label: "打开现场精选题" }),
+      Object.freeze({ type: "field-kit", label: "打开精选题" }),
       Object.freeze({ type: "question", label: "锁定 1 个核心判断" }),
       Object.freeze({ type: "fallback", label: "准备兜底话术" }),
     ]),
@@ -22,21 +22,21 @@ export const timeBudgetPaths = Object.freeze([
   }),
   Object.freeze({
     id: "time-30min",
-    label: "30 分钟会前准备",
-    duration: "第一次客户会议前",
-    focus: "形成客户目标、三个关键问题、一个主要风险和一个下一步验证动作。",
+    label: "30 分钟快速复习",
+    duration: "开始一个新主题时",
+    focus: "形成学习目标、三个关键问题、一个主要风险和一个下一步验证动作。",
     href: "/questions?view=field-kit",
     steps: Object.freeze([
       Object.freeze({ type: "module", label: "进入方案与选型层", slug: "solution-patterns" }),
-      Object.freeze({ type: "question", label: "选 3 道客户意图题" }),
+      Object.freeze({ type: "question", label: "选 3 道意图题" }),
       Object.freeze({ type: "module", label: "沿相关模块读边界", slug: "evaluation" }),
     ]),
-    deliverable: "会议准备单：目标、三个问题、主要风险和验证动作。",
+    deliverable: "复习清单：目标、三个问题、主要风险和验证动作。",
   }),
   Object.freeze({
     id: "time-2h",
-    label: "2 小时重点备战",
-    duration: "方案设计或竞标前",
+    label: "2 小时重点学习",
+    duration: "深入一个模块时",
     focus: "沿一个场景阅读机制、边界、评估和运营内容，形成方案假设与未知清单。",
     href: "/modules/solution-patterns",
     steps: Object.freeze([
@@ -69,11 +69,11 @@ export const scenarioDefinitionsForHome = Object.freeze([
     title: manifest.zh,
     href: `/modules/${manifest.slug}`,
   })),
-  Object.freeze({ id: "scenario-first", title: "第一次与客户聊 AI 平台", href: "/questions?view=field-kit" }),
+  Object.freeze({ id: "scenario-first", title: "第一次接触 AI 平台", href: "/questions?view=field-kit" }),
   Object.freeze({ id: "scenario-knowledge", title: "正在设计企业知识助手", href: "/questions?module=rag" }),
-  Object.freeze({ id: "scenario-agent", title: "客户希望 AI 执行业务任务", href: "/questions?module=ai-agent" }),
-  Object.freeze({ id: "scenario-infra", title: "准备规划私有化 AI 基础设施", href: "/questions?module=ai-infra-compute" }),
-  Object.freeze({ id: "scenario-china", title: "中国交付与合规分诊", href: "/modules/ai-governance" }),
+  Object.freeze({ id: "scenario-agent", title: "学习 AI 如何执行业务任务", href: "/questions?module=ai-agent" }),
+  Object.freeze({ id: "scenario-infra", title: "规划私有化 AI 基础设施", href: "/questions?module=ai-infra-compute" }),
+  Object.freeze({ id: "scenario-china", title: "合规分诊", href: "/modules/ai-governance" }),
   Object.freeze({ id: "scenario-multimodal", title: "多模态体验与内容交付", href: "/modules/multimodal" }),
   Object.freeze({ id: "scenario-blueprint", title: "跨行业迁移蓝图", href: "/modules/solution-patterns" }),
 ]);

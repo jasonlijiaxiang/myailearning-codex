@@ -9,7 +9,7 @@ import { sourceLedger } from "../../reference-content.mjs";
 import { SiteFooter, SiteNav } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "Coding Agent 产品与 Harness 选型雷达 | 云计算 × AI 平台售前知识库",
+  title: "Coding Agent 产品与 Harness 选型雷达 | AI 学习手册",
   description: "按官方资料、独立基准、产品形态和 Harness 能力持续更新的 Coding Agent 选型与比较入口。",
   path: "/coding-agents",
   enPath: "/en/coding-agents",
@@ -36,7 +36,7 @@ export default function CodingAgentsPage() {
           ariaLabel="Coding Agent 选型页导航"
           brand="presales"
           links={[
-            { href: "/", label: "知识库首页" },
+            { href: "/", label: "首页" },
             { href: "/modules/ai-agent?view=learn#harness", label: "Harness 章节" },
             { href: "#products", label: "产品雷达" },
             { href: "/references", label: "Reference" },
@@ -45,7 +45,7 @@ export default function CodingAgentsPage() {
         />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="codingAgentHeroGrid">
-          <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {codingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>产品与 Harness 选型雷达</span></h1><p>这里不发布一个永久的“谁最好”总榜。我们把<strong>官方产品事实</strong>、<strong>独立 Benchmark</strong>和<strong>客户自己的 PoC</strong>分开，让模型、Harness、任务与环境的影响可以被逐层判断。</p></div>
+          <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {codingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>产品与 Harness 选型雷达</span></h1><p>这里不发布一个永久的“谁最好”总榜。我们把<strong>官方产品事实</strong>、<strong>独立 Benchmark</strong>和<strong>自己的 PoC</strong>分开，让模型、Harness、任务与环境的影响可以被逐层判断。</p></div>
           <aside><strong>{codingAgentLandscapePolicy.productCount}</strong><span>个已核验产品入口</span><strong>30 天</strong><span>动态事实最长复核周期</span><strong>0</strong><span>个脱离任务的永久总冠军</span></aside>
         </div>
       </header>
@@ -75,12 +75,12 @@ export default function CodingAgentsPage() {
       <section className="section codingAgentFreshness" aria-labelledby="freshness-title">
         <div className="sectionNumber">04</div><div className="sectionBody">
           <div className="sectionIntro splitIntro"><div><p className="kicker">FRESHNESS CONTRACT</p><h2 id="freshness-title">怎样让这张雷达不过期</h2></div><p>产品、价格、规格、模型与 Benchmark 条目最长 30 天复核一次；稳定平台文档 90 天，方法论 180 天。发布、弃用、迁移或安全事件出现时立即复核。</p></div>
-          <div className="codingFreshnessFlow"><article><span>01</span><h3>官方事实</h3><p>产品形态、模型策略、部署、权限和生命周期只由官方资料确认。</p></article><article><span>02</span><h3>独立证据</h3><p>榜单与研究记录具体配置、日期、任务和不可外推边界。</p></article><article><span>03</span><h3>状态管理</h3><p>每条动态事实保留核验日、下次复核日和 active / watch / replaced 状态。</p></article><article><span>04</span><h3>客户复测</h3><p>候选产品用同一真实仓库、权限、任务和验收门槛重新运行。</p></article></div>
+          <div className="codingFreshnessFlow"><article><span>01</span><h3>官方事实</h3><p>产品形态、模型策略、部署、权限和生命周期只由官方资料确认。</p></article><article><span>02</span><h3>独立证据</h3><p>榜单与研究记录具体配置、日期、任务和不可外推边界。</p></article><article><span>03</span><h3>状态管理</h3><p>每条动态事实保留核验日、下次复核日和 active / watch / replaced 状态。</p></article><article><span>04</span><h3>复测</h3><p>候选产品用同一真实仓库、权限、任务和验收门槛重新运行。</p></article></div>
           <p className="paperBoundary"><strong>当前重点复核：</strong>Gemini CLI 的个人账户请求已迁到 Antigravity CLI，但企业许可证、Google Cloud 与付费 API key 路径仍继续支持，因此相关条目标记为 watch。查看<Link href="/references#source-product-gemini-cli-individual-transition">官方状态说明与适用边界 ↗</Link></p>
         </div>
       </section>
 
-      <SiteFooter locale="zh" brand="云计算 × AI 平台售前知识库" note={<>Coding Agent &amp; Harness Landscape · 核验于 {codingAgentLandscapePolicy.verifiedAt}</>} />
+      <SiteFooter locale="zh" brand="AI 学习手册" note={<>Coding Agent &amp; Harness Landscape · 核验于 {codingAgentLandscapePolicy.verifiedAt}</>} />
     </main>
   );
 }

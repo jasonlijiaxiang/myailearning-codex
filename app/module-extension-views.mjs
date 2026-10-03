@@ -27,8 +27,8 @@ export const moduleExtensionViews = Object.freeze({
       Object.freeze({ title: "模型组合", detail: "只有任务切片长期存在可解释差异时，才增加路由和回退路径。" }),
       Object.freeze({ title: "失败归属", detail: "硬能力或交付硬门失败时回到模型选型并重新验收；基座达标后，采集、解析、跨模态对齐和证据坐标归 Multimodal，稳定残余行为适配归 Fine-tuning，运行时路由执行归 AI Gateway。" }),
     ]),
-    application: "售前交付理赔初审任务契约、候选身份与硬门矩阵，再用同条件 PoC 决定单模型、受控路由或人工升级；模型始终不拥有赔付批准权。",
-    links: Object.freeze([{ href: "#curriculum", label: "查看模型知识地图" }, { href: "#decisions", label: "查看选型条件" }, { href: "#qa", label: "准备客户问答" }]),
+    application: "交付理赔初审任务契约、候选身份与硬门矩阵，再用同条件 PoC 决定单模型、受控路由或人工升级；模型始终不拥有赔付批准权。",
+    links: Object.freeze([{ href: "#curriculum", label: "查看模型知识地图" }, { href: "#decisions", label: "查看选型条件" }, { href: "#qa", label: "准备自测问答" }]),
   }),
   multimodal: Object.freeze({
     id: "multimodal-evidence-pipeline",
@@ -289,7 +289,7 @@ export const moduleExtensionViews = Object.freeze({
       Object.freeze({ title: "系统证据", detail: "Goodput、恢复、网络与存储长跑证明可持续。" }),
       Object.freeze({ title: "发布证据", detail: "模型、Tokenizer、模板、数据与评估能够共同回滚。" }),
     ]),
-    application: "售前先确认客户究竟需要训练新能力、稳定行为还是补充知识，再决定从数据、微调还是完整训练路线切入。",
+    application: "先确认究竟需要训练新能力、稳定行为还是补充知识，再决定从数据、微调还是完整训练路线切入。",
     links: Object.freeze([{ href: "#curriculum", label: "查看训练全景" }, { href: "#deep-dive", label: "查看扩展与恢复" }, { href: "#qa", label: "准备训练问答" }]),
   }),
   "llm-inference": Object.freeze({

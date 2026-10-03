@@ -66,10 +66,10 @@ type Workload = {
 const metricDefinitions: Array<{ id: MetricId; label: string; color: string; detail: string }> = [
   { id: "input", label: "输入长度", color: "#153047", detail: "输入越长，Prefill 计算和每个活跃请求的 KV Cache 通常越大。" },
   { id: "concurrency", label: "并发", color: "#339fe3", detail: "并发会增加排队与动态显存压力；可服务并发不是一张卡的固定常数。" },
-  { id: "ttft", label: "TTFT", color: "#aa91e5", detail: "本页服务端 TTFT 包含排队与 Prefill；用户端口径还要加入口和首包网络。" },
+  { id: "ttft", label: "TTFT", color: "#aa91e5", detail: "本页服务端 TTFT 包含排队、少量输入处理与 Prefill；用户端口径还要加入口和首包网络。" },
   { id: "tpot", label: "TPOT", color: "#58c7b4", detail: "每输出 Token 时间反映持续生成速度，单位应为 ms/token。" },
   { id: "goodput", label: "Goodput", color: "#f49a28", detail: "本图按达标请求的输出 Token 计有效吞吐，单位 token/s；按请求计数则用请求/s。分子都只取质量与时延同时合格的请求。" },
-  { id: "oom", label: "OOM", color: "#ef5b50", detail: "权重可加载不代表容量安全；KV Cache、工作区、碎片和运行余量都要入账。" },
+  { id: "oom", label: "超预算", color: "#ef5b50", detail: "权重可加载不代表容量安全；KV Cache、工作区、碎片和运行余量都要入账。预算超限不等于精确 OOM 点。" },
 ];
 
 const inputOptions = [
@@ -106,7 +106,7 @@ const inferenceDirectories = {
     { id: "deep-dive", label: "容量诊断", eyebrow: "定位瓶颈与失败" },
     { id: "evidence", label: "证据与边界", eyebrow: "说明测量条件" },
     { id: "cloud", label: "云能力与责任", eyebrow: "连接交付与验收" },
-    { id: "qa", label: "客户问题", eyebrow: "带边界回答" },
+    { id: "qa", label: "问答", eyebrow: "带边界回答" },
     { id: "related-modules", label: "相关模块", eyebrow: "继续上下游主题" },
   ],
 } satisfies Record<"quick" | "learn" | "field", readonly DenseChapterLink[]>;
@@ -244,7 +244,7 @@ function Heatmap({
                     tabIndex={isSelected ? 0 : -1}
                     type="button"
                   >
-                    {isSelected ? (metrics.oom ? "OOM" : metrics.total.toFixed(2)) : null}
+                    {isSelected ? (metrics.oom ? "超预算" : metrics.total.toFixed(2)) : null}
                   </button>
                 );
               })}
@@ -255,7 +255,7 @@ function Heatmap({
             {inputOptions.map((input) => <strong className={selected.inputTokens === input.tokens ? "isActive" : undefined} key={input.label}>{input.label}</strong>)}
           </div>
           <p className="heatmapAxisTitle">输入长度（Token）</p>
-          <div className="heatmapRiskLabel" aria-hidden="true">OOM 风险区</div>
+          <div className="heatmapRiskLabel" aria-hidden="true">超预算风险区</div>
         </div>
         <div className="heatmapLegend" aria-hidden="true">
           <span>延迟（秒）</span>
@@ -305,7 +305,7 @@ function RequestTimeline({ workload }: { workload: Workload }) {
         ))}
       </div>
       <div className="timelineTotal"><span>总时延（示例）</span><strong>{formatSeconds(metrics.total)}</strong></div>
-      <p className="inferenceFigureNote">服务端 TTFT = 排队 + Prefill；用户端还要加入口与首包网络。流式输出随生成传输，两段会重叠，不能把整段网络耗时再串行相加。TTFT 已包含首 Token，剩余生成时间按（输出数 − 1）× TPOT 计算，另加 0.03 秒结束处理和 0.1 秒链路尾延迟。时间来自假设的服务曲线，没有请求样本，不能计算 P95 或 P99。</p>
+      <p className="inferenceFigureNote">服务端 TTFT = 排队 + 少量输入处理 + Prefill；用户端还要加入口与首包网络。流式输出随生成传输，两段会重叠，不能把整段网络耗时再串行相加。TTFT 已包含首 Token，剩余生成时间按（输出数 − 1）× TPOT 计算，另加 0.03 秒结束处理和 0.1 秒链路尾延迟。时间来自假设的服务曲线，没有请求样本，不能计算 P95 或 P99。</p>
     </section>
   );
 }
@@ -703,7 +703,7 @@ export function InferenceStudio({ criticalBoundary, curriculum, field, learningL
         depthStudy={depthStudy}
         field={<div className="inferenceStudio inferenceContentScope inferenceFieldPanel">{field}</div>}
       />
-      <footer className="inferenceStudio inferenceContentScope inferenceFooter"><strong>Cloud × AI Presales Fieldbook</strong><span>大模型推理</span>{updatedAt ? <span className="moduleUpdatedAt">最近更新于 {updatedAt}</span> : null}<a href="#top">返回顶部 ↑</a></footer>
+      <footer className="inferenceStudio inferenceContentScope inferenceFooter"><strong>AI Fieldbook</strong><span>大模型推理</span>{updatedAt ? <span className="moduleUpdatedAt">最近更新于 {updatedAt}</span> : null}<a href="#top">返回顶部 ↑</a></footer>
     </>
   );
 }

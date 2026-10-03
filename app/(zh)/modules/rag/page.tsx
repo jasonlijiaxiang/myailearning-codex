@@ -17,7 +17,7 @@ import type { RagModuleBrief } from "../../../content-types";
 import { UnifiedModuleScaffold } from "../../../unified-module-hero";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "RAG · 检索增强生成 | 云计算 × AI 平台售前知识库",
+  title: "RAG · 检索增强生成 | AI 学习手册",
   description: "从适用性、证据契约、离线与在线生命周期、模型选型、评估、生产控制和经济性系统理解 RAG。",
   path: "/modules/rag",
   enPath: "/en/modules/rag",
@@ -166,7 +166,7 @@ export default function RagModulePage() {
                     <ModuleEvidenceGrid cards={evidenceCards} sourceLedger={sourceLedger} />
                   </div>
                   <div className="subsection qaSection" id="qa" data-quality-section="qa">
-                    <div className="subHead"><span>F3</span><div><p className="kicker">CUSTOMER QUESTION PACK</p><h3>客户高频问题与深度回答</h3></div></div>
+                    <div className="subHead"><span>F3</span><div><p className="kicker">QUESTION PACK</p><h3>高频问答与深度回答</h3></div></div>
                     <ModuleQaList items={qa} sourceLedger={sourceLedger} directoryHref="/questions?module=rag" />
                   </div>
                   <div className="subsection focusedRelated" id="related-modules" data-quality-section="related-modules">
@@ -186,7 +186,7 @@ export default function RagModulePage() {
           </div>
         </section>
       </div>
-      <footer><div><strong>云计算 × AI 平台售前知识库</strong></div><p>RAG 深度模块<ModuleUpdatedAt value={ragPublication?.updatedAt ?? undefined} /></p><a href="#rag">返回顶部 ↑</a></footer>
+      <footer><div><strong>AI 学习手册</strong></div><p>RAG 深度模块<ModuleUpdatedAt value={ragPublication?.updatedAt ?? undefined} /></p><a href="#rag">返回顶部 ↑</a></footer>
     </UnifiedModuleScaffold>
   );
 }

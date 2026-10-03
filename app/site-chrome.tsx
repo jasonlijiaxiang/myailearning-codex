@@ -132,10 +132,10 @@ export function SiteNav({
         prefetch={brandPrefetch}
       >
         {brand === "presales"
-          ? <span>Cloud × AI / Presales Fieldbook</span>
+          ? <span>{isEn ? "Cloud × AI / Presales Fieldbook" : "AI Fieldbook"}</span>
           : isEn
             ? <span><strong>Cloud × AI Presales Fieldbook</strong><small>Evidence-backed technical field guide</small></span>
-            : <span><strong>云与 AI 售前知识库</strong><small>Cloud × AI Presales Fieldbook</small></span>}
+            : <span><strong>AI 学习手册</strong><small>AI Fieldbook</small></span>}
       </Link>
       <div className="toplinks">
         {toplinks.map((item, index) => (

@@ -28,8 +28,8 @@ function DetailPanel({ item, mode, locale }: { item: RelationItem; mode: Relatio
     ? mode === "diagnostic" ? "Possible mechanism" : mode === "scenario" ? "Scenario mechanism" : "How it works"
     : mode === "diagnostic" ? "可能机制" : mode === "scenario" ? "场景机制" : "工作机制";
   const decisionLabel = locale === "en"
-    ? mode === "diagnostic" ? "Verify and respond" : "Presales decision"
-    : mode === "diagnostic" ? "验证与处理" : "售前判断";
+    ? mode === "diagnostic" ? "Verify and respond" : "Decision"
+    : mode === "diagnostic" ? "验证与处理" : "判断";
 
   return (
     <section className="relationDetail" aria-live="polite">
@@ -89,7 +89,7 @@ function MatrixView({ block, active, onSelect }: { block: RelationBlock; active:
   const labels = block.columnLabels ?? {
     name: "对象",
     mechanism: "工作机制",
-    decision: "售前判断",
+    decision: "判断",
     boundary: "适用边界",
   };
 

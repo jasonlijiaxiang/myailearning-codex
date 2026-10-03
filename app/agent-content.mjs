@@ -19,7 +19,7 @@ export const agentDeepDives = [
     eyebrow: "ACTION CONTRACT",
     title: "Schema 通过了，工具就能安全执行吗",
     intro: "把 API 包成工具只是完成发现和参数生成。生产动作还要定义权限、副作用、幂等、错误和后置验证。",
-    columnLabels: { name: "契约面", mechanism: "必须声明", decision: "售前验收", boundary: "常见误区" },
+    columnLabels: { name: "契约面", mechanism: "必须声明", decision: "验收", boundary: "常见误区" },
     items: [
       { name: "前置条件与身份", en: "Preconditions & Identity", mechanism: "声明 user subject、agent actor、应用身份、租户、scope、资源版本和必要审批。", decision: "真实执行前是否重新鉴权，而不是沿用规划阶段判断？", boundary: "工具目录里的能力声明不是权限，Prompt 更不能赋权。" },
       { name: "副作用与幂等", en: "Side Effects & Idempotency", mechanism: "区分只读、可逆写入和不可逆写入；为写操作定义幂等键、重复调用与并发冲突规则。", decision: "API 超时后，系统如何确认是否已经执行？", boundary: "HTTP 方法语义不等于跨队列、模型和业务系统的端到端仅执行一次。" },
@@ -78,7 +78,7 @@ export const agentDeepDives = [
     title: "低代码与 Code-first 的决策维度",
     intro: "选择 Agent 平台或自建栈时，不按「开源/低代码」标签定论，而按六个决策维度判断。",
     maxColumns: 2,
-    columnLabels: { name: "决策维度", mechanism: "判断内容", decision: "售前问题", boundary: "常见误区" },
+    columnLabels: { name: "决策维度", mechanism: "判断内容", decision: "关键问题", boundary: "常见误区" },
     items: [
       { name: "状态与分支复杂度", en: "State & Branching", mechanism: "流程分支数、状态机、超时、重试和人工介入是否超出低代码表达范围。", decision: "当前业务逻辑能否在平台内完整表达并测试？", boundary: "Demo 里画得出来不等于生产状态机正确。" },
       { name: "自定义工具与协议深度", en: "Tool & Protocol Depth", mechanism: "需要自研 MCP Server、协议扩展、流式编排或深度工具契约时的改造能力。", decision: "平台能否承载自定义工具、协议版本和部署方式？", boundary: "拖拽接入一个 API 不等于生产工具契约。" },
@@ -452,7 +452,7 @@ const agentQaCandidates = [
   },
   {
     q: "ReAct 是否意味着 Agent 必须严格按“感知—思考—行动—观察”四步循环？",
-    a: "不是。ReAct 的核心是让推理、行动和环境观察交替发生；“感知”是为了售前教学而单独强调的输入标准化步骤，四动作不是要求每轮机械执行一次的产品规范。",
+    a: "不是。ReAct 的核心是让推理、行动和环境观察交替发生；“感知”是为教学清晰而单独强调的输入标准化步骤，四动作不是要求每轮机械执行一次的产品规范。",
     depth: "真实运行中，Agent 可能连续读取多个输入后再行动，也可能在观察到工具错误后直接停止、补充信息或交还人工。关键因果是：外部环境会改变，所以下一步必须依据最新状态，而不能只依据初始计划。云上运行时应把每轮输入、动作、观察和停止原因写入同一 Run / Trace，并由应用设置最大轮次、超时和业务终态。边界是不能把自然语言“思考”当成真实执行证据，也不能为了符合四步图而增加无效模型调用。",
     ask: "哪些环境反馈会改变下一步？哪些状态必须从工具或业务系统回读？循环在什么条件下停止或转人工？",
     tag: "动作循环",

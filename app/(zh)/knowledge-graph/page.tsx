@@ -15,14 +15,14 @@ import styles from "../../knowledge-graph/design-2/knowledge-constellation.modul
 import { SiteFooter, SiteNav, type SiteNavItem } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "动态探索 | 云计算 × AI 平台售前知识库",
-  description: "从模块进入知识点，以动态聚焦、语义缩放和一跳关系探索云计算与 AI 平台知识。",
+  title: "动态探索 | AI 学习手册",
+  description: "从模块进入知识点，以动态聚焦、语义缩放和一跳关系探索 AI 知识。",
   path: "/knowledge-graph",
   enPath: "/en/knowledge-graph",
 });
 
 const graphNavLinks: readonly SiteNavItem[] = [
-  { href: "/", label: "知识库首页" },
+  { href: "/", label: "首页" },
   { href: "/questions", label: "问题查询" },
   { href: "/glossary", label: "术语库" },
   { href: "/#available-modules", label: "从问题开始" },
@@ -34,7 +34,7 @@ export default function KnowledgeGraphPage() {
     <main className={`${styles.page} fieldbookTheme fieldbookGraphTheme`}>
       <ReadingProgress />
       <header className={styles.siteHeader}>
-        <SiteNav locale="zh" ariaLabel="动态探索导航" brandAriaLabel="返回云与 AI 售前知识库首页" links={graphNavLinks} />
+        <SiteNav locale="zh" ariaLabel="动态探索导航" brandAriaLabel="返回 AI 学习手册首页" links={graphNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
       </header>
 

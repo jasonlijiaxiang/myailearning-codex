@@ -9,8 +9,8 @@ import { chineseReferenceModules, sourceLedger } from "../../reference-content.m
 import { SiteFooter, SiteNav, type SiteNavItem } from "../../site-chrome";
 
 export const metadata: Metadata = chinesePageMetadata({
-  title: "来源与证据 | 云计算 × AI 平台售前知识库",
-  description: "集中整理云计算与 AI 平台售前知识库的一手来源、证据类别、适用条件与核验日期。",
+  title: "来源与证据 | AI 学习手册",
+  description: "全站一手来源、证据类别、适用条件与核验日期。",
   path: "/references",
   enPath: "/en/references",
 });
@@ -68,9 +68,9 @@ const referenceFilterItems: ReferenceFilterItem[] = chineseReferenceModules.flat
 }));
 
 const referenceNavLinks: readonly SiteNavItem[] = [
-  { href: "/", label: "知识库首页 / Home" },
+  { href: "/", label: "首页" },
   { href: "/glossary", label: "专业术语库" },
-  { href: "/questions", label: "客户问题查询" },
+  { href: "/questions", label: "问答查询" },
   { href: "#reference-modules", label: "模块来源目录 / Modules" },
   { href: "/en/references", label: "English", hrefLang: "en", lang: "en", prefetch: false },
 ];
@@ -80,7 +80,7 @@ export default function ReferencesPage() {
     <main className="fieldbookTheme referencePage">
       <ReadingProgress />
       <header className="hero referenceHero" id="top">
-        <SiteNav locale="zh" ariaLabel="来源页导航" brand="presales" brandAriaLabel="返回云与 AI 售前知识库首页" links={referenceNavLinks} />
+        <SiteNav locale="zh" ariaLabel="来源页导航" brand="presales" brandAriaLabel="返回 AI 学习手册首页" links={referenceNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="heroGrid referenceHeroGrid">
@@ -173,7 +173,7 @@ export default function ReferencesPage() {
                 <p>
                   {module.en} · 当前收录 {module.sourceIds.length} 条已核验来源。
                   <br />
-                  <Link href={module.href}>进入 {module.shortTitle} 模块，查看这些来源支撑的原理、判断与客户回答 ↗</Link>
+                  <Link href={module.href}>进入 {module.shortTitle} 模块，查看这些来源支撑的原理、判断与问答 ↗</Link>
                 </p>
               </div>
 
@@ -210,7 +210,7 @@ export default function ReferencesPage() {
         ))}
       </ReferenceFilterShell>
 
-      <SiteFooter locale="zh" brand="云计算 × AI 平台售前知识库" note="来源与证据 / Reference Library" />
+      <SiteFooter locale="zh" brand="AI 学习手册" note="来源与证据 / Reference Library" />
     </main>
   );
 }

@@ -45,7 +45,7 @@ export function buildBriefModuleDirectories({
     field: [
       { id: "evidence", label: "证据与边界", eyebrow: "说明来源能证明什么" },
       { id: "cloud", label: "云能力与责任", eyebrow: "连接交付与验收" },
-      { id: "qa", label: "客户问题", eyebrow: "带边界回答" },
+      { id: "qa", label: "问答", eyebrow: "带边界回答" },
       { id: "related-modules", label: "相关模块", eyebrow: "查看上下游主题" },
     ],
   };

@@ -105,7 +105,7 @@ export function InferenceModulePage() {
   const field = (
     <div className="inferenceFieldContent" id="field-guide">
       <header className="inferenceFieldIntro">
-        <p>现场查证</p>
+        <p>查证</p>
         <h2>先写清测量条件，再给容量结论</h2>
         <span>这里放证据、适用范围，以及还需要补做的验证。</span>
       </header>
@@ -144,7 +144,7 @@ export function InferenceModulePage() {
       </section>
 
       <section className="inferenceFieldSection" id="qa" data-quality-section="qa">
-        <header><span>F5</span><div><h2>客户问题</h2><p>回答里写清依据和前提，也列出需要向客户补问的信息。</p></div></header>
+        <header><span>F5</span><div><h2>问答</h2><p>回答里写清依据和前提，也列出需要进一步追问的信息。</p></div></header>
         <ModuleQaList items={brief.qa} sourceLedger={sourceLedger} directoryHref="/questions?module=llm-inference"/>
       </section>
 

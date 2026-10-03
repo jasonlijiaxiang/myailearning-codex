@@ -52,7 +52,7 @@ const brief = {
     field: [
       { id: "evidence", label: "证据与边界", eyebrow: "说明来源能证明什么" },
       { id: "cloud-opportunities", label: "云能力与责任", eyebrow: "连接交付与验收" },
-      { id: "qa", label: "客户问题", eyebrow: "带边界回答" },
+      { id: "qa", label: "问答", eyebrow: "带边界回答" },
     ],
   },
   conceptLinks: [
@@ -160,7 +160,7 @@ export default Object.freeze({
   readingProfile: null,
   visualProfile: "dense-reading",
   legacyUndatedQuestionSetSha256: "35e50b6873227dc90cb62668e2b8edcb00349dfa8994853eebb437fd08bf634d",
-  contentContract: deepFreeze({"principle":["Prompt 是什么，以及 Context Engineering 的边界"],"mechanism":["明确且稳定的指令","动态上下文","能力接口"],"boundary":["必须执行的规则应落在模型外"],"cloud":["提示词工程与云服务机会"],"customer":["客户高频问题与深度回答"]}),
+  contentContract: deepFreeze({"principle":["Prompt 是什么，以及 Context Engineering 的边界"],"mechanism":["明确且稳定的指令","动态上下文","能力接口"],"boundary":["必须执行的规则应落在模型外"],"cloud":["提示词工程与云服务机会"],"customer":["高频问答与深度回答"]}),
   brief,
   curriculum: null,
   learning: null,
