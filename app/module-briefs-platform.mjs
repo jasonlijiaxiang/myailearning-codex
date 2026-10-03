@@ -2404,7 +2404,7 @@ export const dataEngineeringBrief = {
     {
       "metric": "可度量",
       "title": "数据质量应按用途报告",
-      "finding": "ISO/IEC 5259-2:2024 为分析与机器学习数据定义质量模型和可度量特性。",
+      "finding": "ISO/IEC TS 5259-2:2024 为分析与机器学习数据定义质量模型和可度量特性。",
       "boundary": "标准不提供统一 RAG 门槛；指标、样本和通过线仍要按客户用途与风险定义。",
       "sourceId": "iso-iec-5259-2"
     },
