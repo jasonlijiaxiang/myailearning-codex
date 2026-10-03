@@ -476,7 +476,7 @@ export const moduleCurriculumContent = Object.freeze({
         "en": "Digital Human",
         "explanation": "离线内容工厂关注脚本、声音、形象、渲染、审核和发布；实时数字人还包含语音识别、对话、语音合成、口型渲染、打断和人工接管。两类架构的时延、成本、同意和风险完全不同。",
         "decision": "先判断是批量生产资产，还是实时完成服务任务。",
-        "boundary": "形象和声音授权、生成内容标识及高风险话术需要单独审查。",
+        "boundary": "形象和声音授权、生成内容标识及高风险表述需要单独审查。",
         "sourceIds": [
           "nist-genai-profile"
         ]

@@ -16,7 +16,7 @@ export const timeBudgetPaths = Object.freeze([
     steps: Object.freeze([
       Object.freeze({ type: "field-kit", label: "打开精选题" }),
       Object.freeze({ type: "question", label: "锁定 1 个核心判断" }),
-      Object.freeze({ type: "fallback", label: "准备兜底话术" }),
+      Object.freeze({ type: "fallback", label: "准备诚实回应" }),
     ]),
     deliverable: "一页问题卡：结论、边界、下一问、需要核验的事实。",
   }),
