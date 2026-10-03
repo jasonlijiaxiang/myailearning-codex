@@ -4057,6 +4057,13 @@ html { scroll-padding-top: 22px; }body { background: var(--paper); color: var(--
   border-color: var(--fb-guide);
   background: var(--fb-mint);
   color: var(--fb-ink);
+}.fieldbookTheme :where(
+  .questionDirectoryToolbar input,
+  .referenceToolbar input,
+  .glossarySearch input
+):focus-visible {
+  outline: 3px solid var(--fb-focus);
+  outline-offset: 3px;
 }.fieldbookTheme .questionDirectoryList { gap: 0; border-top: 1px solid var(--fb-line); }.fieldbookTheme.questionDirectoryPage :where(
   .questionDirectoryShell,
   .questionDirectoryList,
