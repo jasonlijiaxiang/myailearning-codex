@@ -1,3 +1,4 @@
+import { scenarioContent } from "./scenario-content.mjs";
 /**
  * 其余正式模块的首屏知识视图。
  *
@@ -7,6 +8,7 @@
  */
 /** @type {Record<string, any>} */
 export const moduleExtensionViews = Object.freeze({
+  ...Object.fromEntries(Object.entries(scenarioContent).map(([slug, content]) => [slug, content.extensionViews])),
   "model-landscape": Object.freeze({
     id: "selection-coordinate",
     layout: "spectrum",

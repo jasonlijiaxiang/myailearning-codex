@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import styles from "./dense-module-reading-modes.module.css";
 import type { UnifiedModuleLocale } from "./unified-module-hero";
+import { ModuleDepthStudy, type DepthStudyContent } from "./module-depth-study";
 
 export type ReadingModeId = string;
 
@@ -162,6 +163,7 @@ export function DenseModuleReadingModes({
   readerId = "module-reading",
   modeDescriptions,
   locale = "zh-CN",
+  depthStudy,
 }: {
   moduleName: string;
   chapters: readonly DenseChapterLink[];
@@ -182,6 +184,7 @@ export function DenseModuleReadingModes({
   readerId?: string;
   modeDescriptions?: ModeMap<string>;
   locale?: UnifiedModuleLocale;
+  depthStudy?: DepthStudyContent;
 }) {
   const enhanced = useSyncExternalStore(subscribeToHydration, clientIsEnhanced, serverIsEnhanced);
   const copy = readerCopyByLocale[locale];
@@ -208,8 +211,11 @@ export function DenseModuleReadingModes({
   const tabsRef = useRef<Array<HTMLAnchorElement | null>>([]);
   const hashRevealRequestRef = useRef(0);
   const directoryByMode = useMemo<ModeMap<readonly DenseChapterLink[]>>(() => Object.fromEntries(
-    readingModes.map((mode) => [mode.id, directories?.[mode.id] ?? chapters]),
-  ), [chapters, directories, readingModes]);
+    readingModes.map((mode) => [mode.id, [
+      ...(directories?.[mode.id] ?? chapters),
+      ...(mode.id === "learn" && depthStudy ? [{ id: "depth-study", label: depthStudy.title, eyebrow: "机制与案例推演" }] : []),
+    ]]),
+  ), [chapters, directories, readingModes, depthStudy]);
   // A reader may receive a revised task declaration during client navigation.
   // Keep the requested choice in state, but always render a declared task;
   // this avoids a corrective effect (and a transient empty tab state).
@@ -338,7 +344,10 @@ export function DenseModuleReadingModes({
     tabsRef.current[nextIndex]?.focus();
   }
 
-  const panels: ModeMap<ReactNode> = modePanels ?? { quick, learn, field };
+  const basePanels: ModeMap<ReactNode> = modePanels ?? { quick, learn, field };
+  const panels: ModeMap<ReactNode> = depthStudy
+    ? { ...basePanels, learn: <>{basePanels.learn}<ModuleDepthStudy study={depthStudy} /></> }
+    : basePanels;
   const missingPanelIds = readingModes
     .filter((mode) => !Object.prototype.hasOwnProperty.call(panels, mode.id) || panels[mode.id] === undefined)
     .map((mode) => mode.id);

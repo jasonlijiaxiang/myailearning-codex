@@ -7,6 +7,7 @@ import { requireModuleContent } from "../app/module-content-registry.mjs";
 import { publishedModuleSlugs, getPublishedModule } from "../app/module-publication.mjs";
 import { sourceLedger } from "../app/reference-content.mjs";
 import { terminology } from "../app/terminology.mjs";
+import { englishModuleSlugs } from "../app/i18n/locale-config.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const modulesDirectory = path.join(root, "app", "i18n", "en", "modules");
@@ -91,7 +92,7 @@ const unknownSlugs = discoveredSlugs.filter((slug) => !publishedModuleSlugs.incl
 assert.deepEqual(unknownSlugs, [], `Unknown English module files: ${unknownSlugs.join(", ")}`);
 
 if (requireAll) {
-  assert.deepEqual([...discoveredSlugs].sort(), [...publishedModuleSlugs].sort(), "English edition must cover every published module");
+  assert.deepEqual([...discoveredSlugs].sort(), [...englishModuleSlugs].sort(), "English edition must cover every module declared for English publication");
 }
 
 for (const file of files) {
@@ -161,16 +162,17 @@ for (const file of files) {
   console.log(`${deferredSlugs.has(slug) ? "DEFERRED/NOT_ALIGNED" : "PASS"} ${slug}: ${englishModule.sections.length} sections, ${englishModule.qa.length} questions, ${englishModule.evidenceCards.length} evidence cards`);
 }
 
-console.log(`English structural audit passed for ${files.length}/${publishedModuleSlugs.length} modules${requireAll ? " (complete edition)" : ""}.`);
+console.log(`English structural audit passed for ${files.length}/${publishedModuleSlugs.length} modules${requireAll ? " (declared English modules complete)" : ""}.`);
 
 const deferredModuleSlugs = [...deferredSlugs].sort();
-const alignedModuleCount = publishedModuleSlugs.length - deferredModuleSlugs.length;
-if (deferredModuleSlugs.length === 0) {
+const notStartedSlugs = Object.entries(localizationStatus.modules).filter(([, record]) => record.status === "not-started").map(([slug]) => slug);
+const alignedModuleCount = publishedModuleSlugs.length - deferredModuleSlugs.length - notStartedSlugs.length;
+if (deferredModuleSlugs.length === 0 && notStartedSlugs.length === 0) {
   console.log(`English localization alignment passed for ${alignedModuleCount}/${publishedModuleSlugs.length} modules.`);
 } else {
-  const alignmentSummary = `English localization alignment: ${alignedModuleCount}/${publishedModuleSlugs.length} aligned; ${deferredModuleSlugs.length} deferred/not aligned (${deferredModuleSlugs.join(", ")}).`;
+  const alignmentSummary = `English localization alignment: ${alignedModuleCount}/${publishedModuleSlugs.length} aligned; ${deferredModuleSlugs.length} deferred/not aligned (${deferredModuleSlugs.join(", ")}); ${notStartedSlugs.length} not started (${notStartedSlugs.join(", ")}).`;
   if (requireAligned) {
-    console.error(`${alignmentSummary} English release audit failed: close every active localization deferment before releasing an English update.`);
+    console.error(`${alignmentSummary} English release audit failed: align every published module before releasing a complete English edition.`);
     process.exitCode = 1;
   } else {
     console.log(`${alignmentSummary} This structural audit does not certify bilingual alignment.`);

@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { getModuleDepthStudy } from "./module-depth-projection";
 
 import "./inference-studio.css";
 
@@ -183,6 +184,7 @@ export function InferenceModulePage() {
       }}
     >
       <InferenceStudio
+        depthStudy={getModuleDepthStudy("llm-inference")}
         curriculum={curriculum}
         criticalBoundary="模型能加载不等于能以目标并发稳定服务。图中数值只解释指标怎样联动，不是容量承诺；采购和上线前仍要用目标模型、硬件与真实请求分布重跑。"
         field={field}

@@ -279,24 +279,24 @@ function assertCompleteIdProjection(label, englishItems, canonicalItems, project
   return new Map(projectedIds.map((id) => [id, canonicalByKey.get(projection[id])]));
 }
 
-test("English edition registers every published module", () => {
-  assert.deepEqual([...englishModuleSlugs], [...publishedModuleSlugs]);
-  assert.deepEqual(Object.keys(englishModuleRegistry).sort(), [...publishedModuleSlugs].sort());
-  const expectedEnglishTotal = publishedModuleSlugs.reduce((total, slug) => {
+test("English edition registers every module declared for English publication", () => {
+  assert.ok(englishModuleSlugs.every((slug) => publishedModuleSlugs.includes(slug)));
+  assert.deepEqual(Object.keys(englishModuleRegistry).sort(), [...englishModuleSlugs].sort());
+  const expectedEnglishTotal = englishModuleSlugs.reduce((total, slug) => {
     if (deferredSlugs.has(slug)) return total + englishModuleRegistry[slug].qa.length;
     return total + requireModuleContent(slug).qa.length;
   }, 0);
   assert.equal(englishQuestions.length, expectedEnglishTotal);
 });
 
-test("English release audit refuses active localization deferments", () => {
+test("English release audit refuses deferred and unstarted localization", () => {
   const result = spawnSync(process.execPath, ["scripts/audit-english-modules.mjs", "--require-all", "--require-aligned"], {
     cwd: fileURLToPath(new URL("..", import.meta.url)),
     encoding: "utf8",
   });
   const output = `${result.stdout}${result.stderr}`;
-  if (deferredSlugs.size) {
-    assert.notEqual(result.status, 0, "English release audit must fail while localization deferments are active");
+  if (deferredSlugs.size || Object.values(statusBySlug).some((record) => record.status === "not-started")) {
+    assert.notEqual(result.status, 0, "English release audit must fail while any module is deferred or not started");
     assert.match(output, /English localization alignment:/);
     assert.match(output, /English release audit failed/);
   } else {
@@ -318,6 +318,10 @@ test("shared English modules preserve canonical related-module routes and order"
   for (const [slug, canonical] of Object.entries(moduleBriefs)) {
     assert.equal(canonical.relatedSlugs.includes(slug), false, `${slug} relatedSlugs must not link to itself`);
     assert.equal(new Set(canonical.relatedSlugs).size, canonical.relatedSlugs.length, `${slug} relatedSlugs must be unique`);
+    if (!englishModuleSlugs.includes(slug)) {
+      assert.equal(statusBySlug[slug].status, "not-started", `${slug} must honestly declare no English baseline`);
+      continue;
+    }
     if (deferredSlugs.has(slug)) {
       assert.equal(statusBySlug[slug].status, "deferred", `${slug} deferred module must carry a status entry`);
       continue;

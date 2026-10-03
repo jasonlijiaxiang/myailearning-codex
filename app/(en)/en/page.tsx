@@ -6,8 +6,8 @@ import { KnowledgeSearchLaunch, ModuleExplorer, ReadingProgress, type ExplorerMo
 import { englishPageMetadata } from "../../i18n/english-page-metadata";
 import { englishModuleRegistry, englishTermCopy } from "../../i18n/en/registry.mjs";
 import { balanceGridRows, gridSpan } from "../../layout-utils.mjs";
-import { layers, moduleList } from "../../knowledge-map.mjs";
-import { publishedModuleSlugs } from "../../module-publication.mjs";
+import { layers as canonicalLayers, moduleList } from "../../knowledge-map.mjs";
+import { englishModuleSlugs } from "../../i18n/locale-config.mjs";
 import { homepageTermGroups } from "../../terminology.mjs";
 import HomeStyles from "../../home-styles";
 import { SiteFooter, SiteNav } from "../../site-chrome";
@@ -20,12 +20,13 @@ export const metadata: Metadata = englishPageMetadata({
 });
 
 const englishModuleCount = Object.keys(englishModuleRegistry).length;
+const layers = canonicalLayers.filter((layer) => layer.modules.some((module) => englishModuleRegistry[module.slug]));
 const totalModuleCount = moduleList.length;
 const layerCount = layers.length;
 const editionComplete = englishModuleCount === totalModuleCount;
 const layerNames = new Map(layers.map((layer) => [layer.no, layer.en]));
 
-const explorerModules: ExplorerModule[] = publishedModuleSlugs.map((slug) => {
+const explorerModules: ExplorerModule[] = englishModuleSlugs.map((slug) => {
   const canonical = moduleList.find((module) => module.slug === slug);
   const localized = englishModuleRegistry[slug as string];
   if (!canonical || !localized) throw new Error(`English module discovery data is incomplete: ${slug}`);

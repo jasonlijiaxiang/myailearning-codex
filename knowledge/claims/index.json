@@ -578,6 +578,62 @@
       "claim": "截至 2026-09-24，阿里云原“智能编码助手通义灵码”（Lingma）已更名为 Qoder CN 系列；其编码桌面应用现名 Qoder CN IDE，并继续提供 JetBrains 插件，官方文档明确 VS Code 插件已停止维护。",
       "scope": "这里只描述品牌与客户端生命周期；Qoder CN IDE、JetBrains 插件、Qoder CN CLI 与 Cloud Agents 是不同产品面，模型、credits、套餐、企业控制和数据策略须分别核验。",
       "sourceIds": ["product-qoder-cn-series", "product-qoder-cn-ide", "product-qoder-cn-ide-changelog"], "evidenceGrade": "A", "verifiedAt": "2026-09-24", "reviewBy": "2026-10-24", "reviewCadenceDays": 30, "owner": "knowledge-curation", "status": "active", "supersedes": "coding-agent.tongyi-lingma-active-2026-07-23"
+    },
+    {
+      "id": "ai-video.sora-api-shutdown-2026-09-24",
+      "claim": "OpenAI官方停用台账列明，Sora 2模型及Videos API于2026-09-24移除，未列推荐替代。",
+      "scope": "仅描述已核验的API生命周期；历史教程不能作为当前可运行接入方式，不推断其他视频服务可用性。",
+      "sourceIds": [
+        "openai-video-api-deprecation-2026-09-24"
+      ],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-10-03",
+      "reviewBy": "2026-11-02",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "ai-video.veo-gemini-scope-2026-10-03",
+      "claim": "核验时Gemini API的Veo 3.1系列列为Preview；官方列明英语支持，其他语言尚未评估，seed不保证确定性。",
+      "scope": "只描述该Gemini API文档与相应模型；不推广到Vertex AI或其他厂商，不承诺中文对白、物理动作、跨镜头身份或商业交付。",
+      "sourceIds": [
+        "google-veo-gemini-api-2026-10-03"
+      ],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-10-03",
+      "reviewBy": "2026-11-02",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "document-processing.textract-language-scope-2026-10-03",
+      "claim": "核验时Textract官方文字检测语言列表不含中文，查询与手写仅列英语范围。",
+      "scope": "是当前公布的支持范围，不以合成教学例子断言任何客户数据准确率；供应商能力变化需使用时再核对。",
+      "sourceIds": [
+        "aws-textract-limits"
+      ],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-10-03",
+      "reviewBy": "2026-11-02",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
+    },
+    {
+      "id": "document-processing.document-ai-hitl-deprecation-2024-01-16",
+      "claim": "Document AI官方弃用台账记录Human-in-the-Loop于2024-01-16弃用。",
+      "scope": "不继续将该旧托管入口作为新方案默认；不推断其他审阅产品或应用自建审阅能力。",
+      "sourceIds": [
+        "google-document-ai-deprecations"
+      ],
+      "evidenceGrade": "A",
+      "verifiedAt": "2026-10-03",
+      "reviewBy": "2026-11-02",
+      "reviewCadenceDays": 30,
+      "owner": "knowledge-curation",
+      "status": "watch"
     }
   ]
 }

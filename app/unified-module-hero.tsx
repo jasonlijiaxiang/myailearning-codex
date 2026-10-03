@@ -65,6 +65,7 @@ export type UnifiedModuleHeroProps = {
   evidenceCount: number;
   facts: readonly UnifiedModuleFact[];
   locale?: UnifiedModuleLocale;
+  alternateLanguagePath?: string | null;
 };
 
 export function UnifiedModuleHero({
@@ -80,11 +81,14 @@ export function UnifiedModuleHero({
   evidenceCount,
   facts,
   locale = "zh-CN",
+  alternateLanguagePath,
 }: UnifiedModuleHeroProps) {
   const copy = heroCopyByLocale[locale];
   const isEnglish = locale === "en";
   // 直接拼路径，避免把发布注册表（locale-config → module-publication → manifests）拉进客户端图。
-  const languagePath = isEnglish ? `/modules/${slug}` : `/en/modules/${slug}`;
+  const languagePath = alternateLanguagePath === undefined
+    ? (isEnglish ? `/modules/${slug}` : `/en/modules/${slug}`)
+    : alternateLanguagePath;
   const homePath = isEnglish ? "/en" : "/";
   const sourcesPath = isEnglish ? `/en/references?module=${slug}` : `/references#module-${slug}`;
   const glossaryPath = isEnglish ? "/en/glossary" : "/glossary";

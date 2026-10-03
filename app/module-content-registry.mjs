@@ -1,4 +1,5 @@
 import { moduleManifests } from "./modules/index.mjs";
+import { moduleDepthContent } from "./module-depth-content.mjs";
 import { agentDeepDives, agentEvidenceCards, agentQa } from "./agent-content.mjs";
 import { promptDecisionCase, promptDeepDives, promptEvidenceCards, promptQa } from "./prompt-content.mjs";
 import { evidenceCards, ragDeepDives, ragLearningContent, ragQa } from "./rag-content.mjs";
@@ -34,13 +35,14 @@ function briefPresentationFields(brief) {
 export const moduleContentRegistry = Object.freeze(Object.fromEntries(moduleManifests.map((manifest) => {
   const dedicated = dedicatedContent[manifest.slug];
   if (manifest.brief && dedicated) {
-    return [manifest.slug, Object.freeze({ ...dedicated, ...briefPresentationFields(manifest.brief) })];
+    return [manifest.slug, Object.freeze({ ...dedicated, ...briefPresentationFields(manifest.brief), depthStudy: moduleDepthContent[manifest.slug] ?? null })];
   }
   if (manifest.brief) {
     return [manifest.slug, Object.freeze({
       qa: manifest.brief.qa,
       evidenceCards: manifest.brief.evidenceCards,
       deepDives: manifest.brief.deepDives ?? [],
+      depthStudy: moduleDepthContent[manifest.slug] ?? null,
     })];
   }
   if (!dedicated) throw new Error(`Unknown published module content: ${manifest.slug}`);

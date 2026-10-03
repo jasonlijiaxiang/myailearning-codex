@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
 import Link from "next/link";
+import { getModuleDepthStudy } from "../../../module-depth-projection";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList, ModuleUpdatedAt } from "../../../module-content-components";
 import { SystemLens } from "../../../fieldbook-interactions";
@@ -56,6 +57,7 @@ export default function AgentModulePage() {
               directories={{ quick: [{ id: "agent-principle", label: "是否需要 Agent", eyebrow: "采用边界" }], learn: chapters.filter((chapter) => chapter.id !== "agent-principle"), field: [{ id: "cloud-opportunities", label: "云能力与责任", eyebrow: "交付边界" }, { id: "evidence", label: "证据与适用范围", eyebrow: "来源核验" }, { id: "qa", label: "客户问题", eyebrow: "现场回答" }] }}
               hashGroups={{ quick: ["agent-principle"], learn: ["learn-run", "concept-map", "agent-loop", "learn-harness", "harness", "boundaries", "capabilities", "memory-interaction", "learn-release", "patterns", "architecture", "agent-independent-depth", "poc"], field: ["cloud-opportunities", "evidence", "qa"] }}
               readerId="agent-reading"
+              depthStudy={getModuleDepthStudy("ai-agent")}
               quick={(
                 <><div className="decisionBanner"><p className="kicker">PRESALES POSITION</p><h2>Agent 的采用条件</h2><p>Agent 的采购价值来自受控的动态决策：确定性流程承载业务基线，只有确实依赖新证据选择下一步的局部才交给 Agent。</p></div><div id="agent-principle"><AgentControlPrimer /></div></>
               )}

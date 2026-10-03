@@ -1,4 +1,8 @@
-// 23 个正式模块 manifest 的统一注册表。
+import documentProcessingManifest from "./document-processing/manifest.mjs";
+import voiceServiceManifest from "./voice-service/manifest.mjs";
+import aiShortDramaManifest from "./ai-short-drama/manifest.mjs";
+import aiVideoManifest from "./ai-video/manifest.mjs";
+// 正式模块 manifest 的统一注册表。
 // 顺序与发布注册表一致：新增模块 = 新建 manifest + 在这里登记一行 import。
 import solutionPatternsManifest from "./solution-patterns/manifest.mjs";
 import modelLandscapeManifest from "./model-landscape/manifest.mjs";
@@ -26,6 +30,11 @@ import aiInfraComputeManifest from "./ai-infra-compute/manifest.mjs";
 
 /** @type {readonly import("./types.mjs").ModuleManifest[]} */
 export const moduleManifests = Object.freeze([
+  aiVideoManifest,
+  aiShortDramaManifest,
+  voiceServiceManifest,
+  documentProcessingManifest,
+
   solutionPatternsManifest,
   modelLandscapeManifest,
   ragManifest,

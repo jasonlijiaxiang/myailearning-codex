@@ -7,6 +7,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { publishedModuleSlugs } from "../app/module-publication.mjs";
+import { englishModuleSlugs, englishModulePath } from "../app/i18n/locale-config.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const status = JSON.parse(readFileSync(new URL("../knowledge/localization/status.json", import.meta.url), "utf8"));
@@ -17,6 +18,15 @@ test("localization status covers every published module exactly once with valid 
   assert.deepEqual(Object.keys(status.modules).sort(), [...publishedModuleSlugs].sort());
 
   for (const [slug, record] of Object.entries(status.modules)) {
+    if (record.status === "not-started") {
+      assert.deepEqual(Object.keys(record).sort(), ["enSyncedCommit", "reason", "status"], `${slug} unpublished locale keys`);
+      assert.equal(record.enSyncedCommit, null, `${slug} has no fabricated English baseline`);
+      assert.ok(record.reason?.trim());
+      assert.equal(englishModuleSlugs.includes(slug), false, `${slug} cannot declare English publication`);
+      assert.equal(englishModulePath(slug), null, `${slug} cannot have a public English link`);
+      continue;
+    }
+    assert.ok(englishModuleSlugs.includes(slug), `${slug} existing English edition must remain declared`);
     const expectedKeys = record.status === "aligned"
       ? ["enSyncedCommit", "status"]
       : ["enSyncedCommit", "expiresAt", "openedAt", "reason", "status"];

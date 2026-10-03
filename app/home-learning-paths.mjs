@@ -4,6 +4,7 @@
  * 场景路径按客户任务组织；时间预算路径按可用时间组织。所有目标必须
  * 能解析到正式模块、问题现场锚点或实战入口，不保存第二份答案内容。
  */
+import { moduleManifests } from "./modules/index.mjs";
 
 export const timeBudgetPaths = Object.freeze([
   Object.freeze({
@@ -63,6 +64,11 @@ export const timeBudgetPaths = Object.freeze([
 ]);
 
 export const scenarioDefinitionsForHome = Object.freeze([
+  ...moduleManifests.filter((manifest) => manifest.category === "scenario").map((manifest) => Object.freeze({
+    id: `scenario-${manifest.slug}`,
+    title: manifest.zh,
+    href: `/modules/${manifest.slug}`,
+  })),
   Object.freeze({ id: "scenario-first", title: "第一次与客户聊 AI 平台", href: "/questions?view=field-kit" }),
   Object.freeze({ id: "scenario-knowledge", title: "正在设计企业知识助手", href: "/questions?module=rag" }),
   Object.freeze({ id: "scenario-agent", title: "客户希望 AI 执行业务任务", href: "/questions?module=ai-agent" }),

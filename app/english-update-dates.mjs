@@ -12,7 +12,7 @@ import { moduleManifests } from "./modules/index.mjs";
 
 /** @type {Record<string, string>} */
 const englishUpdatedDates = Object.freeze(Object.fromEntries(
-  moduleManifests.map((manifest) => [manifest.slug, manifest.englishUpdatedAt]),
+  moduleManifests.flatMap((manifest) => typeof manifest.englishUpdatedAt === "string" ? [[manifest.slug, manifest.englishUpdatedAt]] : []),
 ));
 
 /** @param {string} slug */

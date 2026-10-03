@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
 import Link from "next/link";
+import { getModuleDepthStudy } from "../../../module-depth-projection";
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleQaList, ModuleUpdatedAt } from "../../../module-content-components";
 import { SystemLens } from "../../../fieldbook-interactions";
@@ -41,6 +42,7 @@ export default function PromptEngineeringModulePage() {
           <div className="sectionNumber">05</div>
           <div className="sectionBody">
             <DenseModuleReadingModes
+              depthStudy={getModuleDepthStudy("prompt-engineering")}
               moduleName="提示词工程"
               chapters={chapters}
               criticalBoundary={brief.criticalBoundary}

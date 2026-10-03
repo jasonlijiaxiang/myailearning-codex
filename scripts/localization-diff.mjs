@@ -31,6 +31,8 @@ const CANDIDATE_FILES = [
   /^rag-content\.mjs$/,
   /^agent-content\.mjs$/,
   /^prompt-content\.mjs$/,
+  /^module-depth-content\.mjs$/,
+  /^scenario-content\.mjs$/,
 ];
 
 const appDirectory = path.join(root, "app");
@@ -54,6 +56,11 @@ try {
 }
 
 console.log(`# ${slug} 状态：${record.status}（enSyncedCommit ${record.enSyncedCommit}）`);
+if (record.status === "not-started") {
+  console.log(`# 英文尚未撰写：${record.reason}`);
+  console.log(matches.join("\n"));
+  process.exit(0);
+}
 if (record.status === "deferred") console.log(`# 延期原因：${record.reason}`);
 console.log(`# 中文内容源文件（${matches.length} 个命中）`);
 if (matches.length === 0) {

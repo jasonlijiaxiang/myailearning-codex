@@ -1,6 +1,10 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
+import { englishModulePath } from "../../../i18n/locale-config.mjs";
+import { getModuleDepthStudy } from "../../../module-depth-projection";
+import { hasScenarioProductionExample, ScenarioProductionExample } from "../../../scenario-production-example";
+import { ScenarioWorkbench, type ScenarioKind } from "../../../scenario-workbench";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -122,7 +126,7 @@ export async function generateMetadata({ params }: ModulePageProps): Promise<Met
     title: `${currentModule.zh} | 云计算 × AI 平台售前知识库`,
     description: `${currentModule.zh}（${currentModule.en}）的核心原理、选型边界、云服务连接与客户深度问答。`,
     path: `/modules/${currentModule.slug}`,
-    enPath: `/en/modules/${currentModule.slug}`,
+    enPath: englishModulePath(currentModule.slug),
   });
 }
 
@@ -204,6 +208,8 @@ export default async function ModulePage({ params }: ModulePageProps) {
     hasDeepDives,
     mechanismId: unifiedConfig.mechanismId,
     primer: unifiedConfig.primer,
+    productionExample: hasScenarioProductionExample(currentModule.canonicalSlug) ? { id: "scenario-production-example", label: "制作实例", eyebrow: "镜头、状态与版本数据" } : undefined,
+    workshop: unifiedConfig.scenarioKind ? { id: "scenario-workshop", label: "场景推演", eyebrow: "改变条件观察结果" } : undefined,
   });
   const primer = <SharedModulePrimer slug={currentModule.canonicalSlug} knowledgeView={publication.knowledgeView} brief={brief} extensionView={extensionView} showCriticalBoundary={false} />;
   const decisionSection = remainingDecisions.length ? (
@@ -219,6 +225,7 @@ export default async function ModulePage({ params }: ModulePageProps) {
         <div className="termStrip" aria-label="核心术语">{terms.map((term) => <span key={term.en}><strong>{term.zh}</strong><small>{term.en}</small></span>)}</div>
         <PrincipleView brief={brief} />
       </section>
+      {unifiedConfig.scenarioKind ? <><ScenarioWorkbench kind={unifiedConfig.scenarioKind as ScenarioKind} /><ScenarioProductionExample slug={currentModule.canonicalSlug} /></> : null}
 
       <section className="subsection moduleBriefSection curriculumSection" id="curriculum" data-quality-section="curriculum">
         <div className="subHead"><span>主题</span><div><h2>主题地图</h2></div></div>
@@ -294,11 +301,13 @@ export default async function ModulePage({ params }: ModulePageProps) {
         definition: brief.definition,
         position: brief.position,
         slug: currentModule.canonicalSlug,
+        alternateLanguagePath: englishModulePath(currentModule.canonicalSlug),
         questionCount: brief.qa.length,
         evidenceCount: brief.evidenceCards.length,
         facts: unifiedConfig.facts,
       }}
       learn={learnContent}
+      depthStudy={getModuleDepthStudy(currentModule.canonicalSlug)}
       moduleName={currentModule.zh}
       quick={<>{primer}{decisionSection}</>}
     />

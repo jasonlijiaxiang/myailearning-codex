@@ -3,6 +3,7 @@
 // .tsx 页面删除各自的重复声明，从这里 import。
 import type { DeepDiveBlock as ComponentDeepDiveBlock, ModuleLearningContent } from "./module-content-components";
 import type { LensPanel } from "./fieldbook-interactions";
+import type { DepthStudyContent } from "./module-depth-study";
 
 export type Principle = {
   zh: string;
@@ -73,6 +74,7 @@ export type QaItem = {
 };
 
 export type ModuleBrief = {
+  depthStudy?: (Omit<DepthStudyContent, "sourceLinks"> & { sourceIds: readonly string[] }) | null;
   slug: string;
   definition: string;
   position: string;

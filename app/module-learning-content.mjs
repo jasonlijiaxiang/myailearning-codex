@@ -1,3 +1,4 @@
+import { scenarioContent } from "./scenario-content.mjs";
 /**
  * 20 个共享模块的网页原生学习路线与实战任务。
  *
@@ -7,6 +8,7 @@
  */
 /** @type {Record<string, any>} */
 export const moduleLearningContent = Object.freeze({
+  ...Object.fromEntries(Object.entries(scenarioContent).map(([slug, content]) => [slug, content.learning])),
   "predictive-ai-mlops": {
     "outcomes": [
       "把业务决策写成可验证预测任务",

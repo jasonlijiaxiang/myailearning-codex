@@ -133,6 +133,20 @@
         "veadk",
         "agentkit"
       ]
+    },
+    {
+      "id": "batch-11-scenario-applications",
+      "order": 11,
+      "title": "场景应用后续打磨",
+      "dependsOn": [
+        "batch-10-agent-framework-runtime"
+      ],
+      "modules": [
+        "ai-video",
+        "ai-short-drama",
+        "voice-service",
+        "document-processing"
+      ]
     }
   ]
 }

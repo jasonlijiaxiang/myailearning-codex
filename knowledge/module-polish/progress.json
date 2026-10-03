@@ -194,6 +194,33 @@
           "note": "Runtime 生命周期、状态资源与上云验收清单及双语审校已完成。"
         }
       ]
+    },
+    {
+      "id": "batch-11-scenario-applications",
+      "status": "pending",
+      "note": "中文场景已在独立维护任务建设；用户暂不做英文，尚未执行批次冻结、英文审查或seal，后续按调度器流程准备。",
+      "modules": [
+        {
+          "slug": "ai-video",
+          "status": "pending",
+          "note": "中文已建设；英文与批次打磨未启动。"
+        },
+        {
+          "slug": "ai-short-drama",
+          "status": "pending",
+          "note": "中文已建设；英文与批次打磨未启动。"
+        },
+        {
+          "slug": "voice-service",
+          "status": "pending",
+          "note": "中文已建设；英文与批次打磨未启动。"
+        },
+        {
+          "slug": "document-processing",
+          "status": "pending",
+          "note": "中文已建设；英文与批次打磨未启动。"
+        }
+      ]
     }
   ]
 }

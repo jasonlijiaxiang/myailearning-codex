@@ -733,3 +733,27 @@ footer p, footer a, footer > span:last-child { font-size: 11px; color: var(--mut
 .mechanismCalculator ol { list-style: none; padding: 0; }
 .mechanismCalculator li { display: grid; grid-template-columns: 1fr auto; gap: 6px; padding: 8px 0; }
 .mechanismCalculator li i { grid-column: 1 / -1; height: 6px; background: var(--fb-accent); }
+/* 机制推演按论证连续阅读，案例在需要时展开。 */
+.moduleDepthStudy { max-width: 90ch; margin-inline: auto; }
+.moduleDepthStudy > p, .moduleDepthStudy dd { font-size: 1rem; line-height: 1.85; }
+.moduleDepthStudy dl { display: grid; gap: 1.25rem; margin-block: 1.6rem; }
+.moduleDepthStudy dl > div { border-top: 1px solid #d9dee3; padding-top: 1rem; }
+.moduleDepthStudy dt { font-size: 1rem; font-weight: 700; margin-bottom: .45rem; }
+.moduleDepthStudy dd { margin: 0; }
+.depthStudySources { display: flex; flex-wrap: wrap; gap: .7rem 1.4rem; margin-top: 1.4rem; font-size: .875rem; }
+
+.scenarioProductionExample { max-width: 90ch; margin-inline: auto; }
+.scenarioShotList { list-style: none; margin: 1.5rem 0; padding: 0; }
+.scenarioShotList > li { padding-block: 1.25rem; border-top: 1px solid var(--fb-line); }
+.scenarioShotList h3 { font-size: 1.125rem; line-height: 1.5; margin-block: 0 .5rem; }
+.scenarioShotList dl { display: grid; gap: .5rem; margin-block: 1rem; }
+.scenarioShotList dl > div { display: grid; grid-template-columns: 7em minmax(0, 1fr); gap: 1rem; }
+.scenarioShotList dt { color: #526a75; }
+.scenarioShotList dd { margin: 0; overflow-wrap: anywhere; }
+.scenarioProductionData { margin-block: 1.5rem; border-top: 1px solid #cbd4d9; padding-block: 1rem; }
+.scenarioProductionData summary { cursor: pointer; font-weight: 650; min-height: 44px; line-height: 1.8; }
+.scenarioProductionData pre { max-height: 28rem; max-width: 100%; overflow: auto; padding: 1rem; background: #f1f4f2; font-size: .875rem; line-height: 1.7; }
+.scenarioProductionData pre:focus-visible { outline: 3px solid #51788c; outline-offset: 3px; }
+@media (max-width: 600px) { .scenarioShotList dl > div { grid-template-columns: minmax(0, 1fr); gap: .15rem; } }
+
+.questionPage .questionDirectoryItem > p { max-width: 90ch; margin-block: .5rem 1rem; font-size: 1rem; line-height: 1.8; overflow-wrap: anywhere; }

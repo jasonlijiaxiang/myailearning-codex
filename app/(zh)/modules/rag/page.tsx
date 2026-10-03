@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { chinesePageMetadata } from "../../../i18n/chinese-page-metadata";
 import Link from "next/link";
+import { getModuleDepthStudy } from "../../../module-depth-projection";
 
 import { balanceGridRows, gridSpan } from "../../../layout-utils.mjs";
 import { BalancedGrid, CriticalBoundary, ModuleDeepDiveBlocks, ModuleEvidenceGrid, ModuleLearningStudio, ModuleQaList, ModuleUpdatedAt } from "../../../module-content-components";
@@ -52,6 +53,7 @@ export default function RagModulePage() {
           <div className="sectionNumber">02</div>
           <div className="sectionBody">
             <DenseModuleReadingModes
+              depthStudy={getModuleDepthStudy("rag")}
               chapters={chapters}
               criticalBoundary={brief.criticalBoundary}
               directories={{ quick: quickDirectory, learn: learnDirectory, field: fieldDirectory }}

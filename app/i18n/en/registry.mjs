@@ -61,7 +61,7 @@ for (const localizedModule of [
 }
 Object.freeze(englishModuleBySlug);
 
-const localizedModules = moduleManifests.map((manifest) => {
+const localizedModules = moduleManifests.filter((manifest) => englishModuleSlugs.includes(manifest.slug)).map((manifest) => {
   const localizedModule = englishModuleBySlug[manifest.slug];
   if (!localizedModule) throw new Error(`English module missing for published module: ${manifest.slug}`);
   return localizedModule;

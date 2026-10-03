@@ -1,5 +1,5 @@
 /**
- * 23 个正式模块的发布注册表。
+ * 正式模块的发布注册表。
  *
  * 本文件不再保存任何每模块配置：publishedModules 全部从
  * app/modules/<slug>/manifest.mjs 派生，正文与其余注册表同理。

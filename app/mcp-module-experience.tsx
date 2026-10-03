@@ -1,4 +1,5 @@
 import { getModuleBySlug } from "./knowledge-map.mjs";
+import { getModuleDepthStudy } from "./module-depth-projection";
 import { requireModuleBrief } from "./module-brief-content.mjs";
 import { requireModuleContent } from "./module-content-registry.mjs";
 import { requireModuleCurriculum } from "./module-curriculum-content.mjs";
@@ -70,6 +71,7 @@ export function McpModuleExperience() {
   );
 
   const data: McpExperienceData = {
+    depthStudy: getModuleDepthStudy("mcp"),
     module: {
       zh: knowledgeModule.zh.replace(/^MCP\s*·\s*/, ""),
       en: knowledgeModule.en,

@@ -5,6 +5,8 @@
  * @property {string} slug 稳定模块 slug，等于目录名。
  * @property {string} zh 中文模块名（知识地图显示名）。
  * @property {string} en 英文模块名。
+ * @property {readonly ("zh-CN" | "en")[]} [locales] 已有正式正文的语言；省略时兼容现有双语模块。
+ * @property {"scenario"} [category] 以完整业务或制作流程组织的场景模块。
  * @property {string} titleId 模块页主标题的稳定 ID。
  * @property {string} layerNo 知识地图层编号。
  * @property {"brief" | "dedicated"} routeKind 路由形态。
@@ -23,7 +25,7 @@
  * @property {{ summary: string; cue: string }} discovery 首页检索文案。
  * @property {string | null} referenceShortTitle Reference 分组短标题。
  * @property {readonly string[]} additionalSourceIds Reference 补充来源 ID。
- * @property {string} englishUpdatedAt 英文模块最后同步日期。
+ * @property {string | null} englishUpdatedAt 英文模块最后同步日期。
  * @property {any} englishReaderConfig 英文统一 reader 配置。
  * @property {any} unifiedBriefConfig 中文统一简报 reader 配置。
  * @property {readonly any[]} fieldKitEntries 现场备战条目引用。

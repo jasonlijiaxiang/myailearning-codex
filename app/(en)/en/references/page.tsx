@@ -33,7 +33,7 @@ const allItems = Object.keys(sourceLedger).flatMap((sourceId) => {
   const item = itemsBySourceId.get(sourceId);
   return item ? [item] : [];
 });
-const referenceSourceIdsByModule = new Map(referenceModules.map((module) => {
+const referenceSourceIdsByModule = new Map(referenceModules.filter((module) => englishModuleRegistry[module.id]).map((module) => {
   if (!englishModuleRegistry[module.id]) throw new Error(`Reference group has no English module: ${module.id}`);
   return [module.id, module.sourceIds.filter((sourceId) => itemsBySourceId.has(sourceId))] as const;
 }));

@@ -1,0 +1,17 @@
+.workbench { border: 1px solid #cbd4d9; background: #f7f8f5; border-radius: 12px; padding: clamp(1.2rem, 3vw, 2.2rem); margin-block: 2rem; color: #21323b; }
+.workbench h2 { font-size: clamp(1.35rem, 2.4vw, 1.8rem); line-height: 1.4; margin-block: .4rem 1.2rem; }
+.workbench p, .records, .controls, .workbench output { font-size: 1rem; line-height: 1.8; }
+.label { font-size: .875rem !important; color: #546a73; margin: 0; }
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem 2rem; margin-block: 1.3rem; }
+.controls label { display: grid; gap: .5rem; flex: 1 1 220px; }
+.controls select { min-height: 44px; width: 100%; font: inherit; padding: .5rem; background: white; border: 1px solid #879ca5; border-radius: 5px; }
+.controls .check { display: flex; align-items: center; min-height: 44px; gap: .65rem; }
+.check input { width: 22px; height: 22px; flex-shrink: 0; }
+.records { list-style: none; margin: 1.5rem 0; padding: 0; }
+.records li { padding-block: 1rem; border-top: 1px solid #ced9dc; }
+.records strong { display: block; }
+.records p { margin: .45rem 0; }
+.records span { font-size: .875rem; line-height: 1.7; display: block; }
+.workbench output { display: block; padding: 1rem; background: #e8efed; border-left: 3px solid #42665e; font-weight: 600; }
+.workbench :focus-visible { outline: 3px solid #51788c; outline-offset: 3px; }
+@media (max-width: 600px) { .controls { display: grid; grid-template-columns: minmax(0, 1fr); } .workbench { border-radius: 8px; } }

@@ -16,6 +16,7 @@ import { DenseModuleReadingModes, type DenseChapterLink } from "./dense-module-r
 import { learningLabAnchor } from "./knowledge-anchor.mjs";
 import { estimateTeachingMemory } from "./inference-teaching-model.mjs";
 import { WorkedExample, type WorkedExampleContent } from "./worked-example";
+import type { DepthStudyContent } from "./module-depth-study";
 
 type MetricId = "input" | "concurrency" | "ttft" | "tpot" | "goodput" | "oom";
 
@@ -45,6 +46,7 @@ type LearningLab = {
 };
 
 type InferenceStudioProps = {
+  depthStudy?: DepthStudyContent;
   curriculum: { lead: string; chapters: readonly CurriculumChapter[] };
   criticalBoundary: string;
   field: ReactNode;
@@ -619,7 +621,7 @@ function LearningPanel({
   );
 }
 
-export function InferenceStudio({ criticalBoundary, curriculum, field, learningLabs, learningOutcomes, learningRoute, sourceTitles, updatedAt }: InferenceStudioProps) {
+export function InferenceStudio({ criticalBoundary, curriculum, field, learningLabs, learningOutcomes, learningRoute, sourceTitles, updatedAt, depthStudy }: InferenceStudioProps) {
   const [activeMetric, setActiveMetric] = useState<MetricId>("input");
   const [workload, setWorkload] = useState<Workload>({ inputLabel: "8K", inputTokens: 8192, concurrency: 32 });
   const [inspectorOpen, setInspectorOpen] = useState(true);
@@ -698,6 +700,7 @@ export function InferenceStudio({ criticalBoundary, curriculum, field, learningL
         readerId="module-reading"
         quick={<div className="inferenceStudio inferenceContentScope">{quick}</div>}
         learn={<div className="inferenceStudio inferenceContentScope"><LearningPanel curriculum={curriculum} learningLabs={learningLabs} learningOutcomes={learningOutcomes} learningRoute={learningRoute} sourceTitles={sourceTitles}/></div>}
+        depthStudy={depthStudy}
         field={<div className="inferenceStudio inferenceContentScope inferenceFieldPanel">{field}</div>}
       />
       <footer className="inferenceStudio inferenceContentScope inferenceFooter"><strong>Cloud × AI Presales Fieldbook</strong><span>大模型推理</span>{updatedAt ? <span className="moduleUpdatedAt">最近更新于 {updatedAt}</span> : null}<a href="#top">返回顶部 ↑</a></footer>

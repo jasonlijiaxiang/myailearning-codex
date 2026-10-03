@@ -13,6 +13,231 @@ import { moduleLearningContent } from "./module-learning-content.mjs";
 
 /** @type {Record<string, import("./content-types").Source>} */
 export const sourceLedger = {
+  "google-veo-gemini-api-2026-10-03": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Veo 视频输入与任务",
+    "title": "Gemini API: Generate videos with Veo",
+    "note": "核验该入口的输入组合、长任务轮询、视频取回及版本限制。参数组合与状态须按具体模型核对；视频内容合格、中文对白可靠性与素材权利不能由 API 成功返回推定。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://ai.google.dev/gemini-api/docs/veo"
+  },
+  "cogvideox-paper": {
+    "grade": "A",
+    "kind": "论文",
+    "shortTitle": "CogVideoX 时空潜空间",
+    "title": "CogVideoX: Text-to-Video Diffusion Models with An Expert Transformer",
+    "note": "以公开架构说明视频可在压缩的时空潜空间内进行扩散建模，3D VAE 和专家 Transformer 分别处理压缩与文本融合。仅代表该论文架构，不能据此断言所有闭源产品采用同一实现。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://arxiv.org/abs/2408.06072v3"
+  },
+  "vbench-official": {
+    "grade": "P",
+    "kind": "官方源码",
+    "shortTitle": "VBench 视频质量维度",
+    "title": "VBench official repository",
+    "note": "VBench 作者仓库把视频质量拆为主体、背景、时序、动作、画质与内容匹配等维度，支持按失败类型组织评测；基础视频维度不能覆盖短剧叙事、素材权利或完整音画验收。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://github.com/Vchitect/VBench"
+  },
+  "vbench-2-paper": {
+    "grade": "A",
+    "kind": "论文",
+    "shortTitle": "VBench 2.0 物理与常识",
+    "title": "VBench-2.0: Advancing Video Generation Benchmark Suite for Intrinsic Faithfulness",
+    "note": "提出人类保真、可控性、创造性、物理和常识等内在可信度维度，说明视觉流畅之外还需检查对象与事件是否合理；论文评分不替代客户镜头验收。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://arxiv.org/abs/2503.21755v2"
+  },
+  "vabench-paper": {
+    "grade": "A",
+    "kind": "论文",
+    "shortTitle": "VABench 音画关系",
+    "title": "VABench: A Comprehensive Benchmark for Audio-Video Generation",
+    "note": "将文本—画面、文本—音频、画面—音频关系及同步等拆开评估，支持分别检查声音内容、事件同步和口型；结果不构成所有中文对白的可靠性证明。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://arxiv.org/abs/2512.09299v2"
+  },
+  "openai-video-api-deprecation-2026-09-24": {
+    "grade": "P",
+    "kind": "官方公告",
+    "shortTitle": "Sora / Videos API 停服",
+    "title": "OpenAI API deprecations: Sora 2 video generation models and Videos API",
+    "note": "OpenAI官方停服台账注明 Sora 2 模型与 Videos API 于2026-09-24移除，官方台账未列推荐替代；历史视频生成指南不能用作当前可运行接入教程。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://developers.openai.com/api/docs/deprecations#2026-03-24-sora-2-video-generation-models-and-videos-api"
+  },
+  "opentimelineio-timeline-0-18": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "OTIO 时间线与素材区间",
+    "title": "OpenTimelineIO 0.18.0: Timeline Structure",
+    "note": "支持用 Timeline、Track、Clip、MediaReference 和有帧率的时间区间描述剪辑；文档明确 source_range 可越过 available_range 且 OTIO 不自动校验，交付方必须检查素材区间和转场余量。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://opentimelineio.readthedocs.io/en/v0.18.0/tutorials/otio-timeline-structure.html"
+  },
+  "adobe-premiere-sync": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Premiere 音视频对齐",
+    "title": "Adobe Premiere: Synchronize clips in the Timeline panel",
+    "note": "官方流程支持按开始/结束、时间码、标记或音轨对齐独立媒体，解释剪辑软件中的对齐控制；平移音轨不能修复错误语音内容或不匹配的生成口型。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://helpx.adobe.com/be_en/premiere/desktop/add-audio-effects/basic-audio-editing/synchronize-clips-in-the-timeline-panel.html"
+  },
+  "cn-civil-code-likeness-voice": {
+    "grade": "P",
+    "kind": "法规标准",
+    "shortTitle": "肖像与声音权益",
+    "title": "中华人民共和国民法典：人格权编",
+    "note": "第1018、1019、1020条规定肖像相关权利、许可与法定例外边界，第1023条规定自然人声音参照肖像权保护。用于识别真人资产的权利审核面，不能替代具体合同或司法判断。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://www.cac.gov.cn/2020-06/01/c_15925617772683193.htm"
+  },
+  "usco-ai-copyrightability-2025": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "美国 AI 作品版权判断",
+    "title": "U.S. Copyright Office: Copyright and Artificial Intelligence, Part 2",
+    "note": "美国版权局说明，保护取决于充分的人类表达贡献；单独提示词通常不足，人类选择、编排或修改可涉及受保护表达。结论限于该美国报告，不直接判断中国作品归属或所有素材使用许可。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://www.copyright.gov/newsnet/2025/1060.html"
+  },
+  "openai-realtime-vad": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "OpenAI Realtime VAD",
+    "title": "Voice activity detection — OpenAI API",
+    "note": "说明 server_vad 基于静音、semantic_vad 基于话语完整性判断的不同机制，以及阈值、静音长度、前置保留和自动响应/中断配置。配置路径与支持范围按当前会话、模型及模式核对；不能外推所有实时转写模型或提供中文最优参数。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://developers.openai.com/api/docs/guides/realtime-vad"
+  },
+  "openai-realtime-transcription": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "OpenAI Realtime Transcription",
+    "title": "Realtime transcription — OpenAI API",
+    "note": "说明流式转写的片段、增量、提交与完成事件，以及不同模型支持的延迟、VAD 和输出字段。跨片段完成顺序不保证，需按 item_id 关联。并非每个模型都有词级时间戳、说话人标签或置信度，文档不能证明完整电话或客户号码质量。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://developers.openai.com/api/docs/guides/realtime-transcription"
+  },
+  "google-speech-v2-streaming-results": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Google Speech-to-Text V2",
+    "title": "Cloud Speech-to-Text V2 RPC reference",
+    "note": "StreamingRecognitionResult 定义 interim/final、stability、confidence、result_end_offset 和 channel_tag 等字段。stability 描述中间结果还会不会变化，不是正确率；final 固定对应片段，不是整通电话结束，也不授予业务权限。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.cloud.google.com/speech-to-text/docs/reference/rpc/google.cloud.speech.v2"
+  },
+  "google-dialogflow-cx-advanced-speech": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Dialogflow CX Speech",
+    "title": "Advanced speech settings — Dialogflow CX",
+    "note": "说明电话集成的高级语音设置、插话、结束点与无输入超时，以及不同层级配置覆盖关系。Smart Endpointing 当前列出 en-US 范围；不能作为中文已有能力或端到端时延保证。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.cloud.google.com/dialogflow/cx/docs/concept/advanced-speech"
+  },
+  "twilio-media-stream-messages": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Twilio Media Streams",
+    "title": "WebSocket Messages — Twilio Media Streams",
+    "note": "定义双向媒体流的 media、mark 与 clear 事件。正常播放完成返回 mark，clear 清空缓冲也会返回未播批次的 mark；需结合事件状态解释。它不证明用户听懂、坐席接听、账户授权或最终业务解决。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://www.twilio.com/docs/voice/media-streams/websocket-messages"
+  },
+  "google-document-ai-response": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Document AI Response",
+    "title": "Handle the processing response — Document AI",
+    "note": "说明 Document.text、textAnchor、页面布局位置、实体、normalizedValue 与 enrichment；规范化与外部补全不同，输出实体可能包含原文未写的值。原页坐标依赖页与版本，值和位置仍须验证；不证明文档真实、支付资格或入账获批。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.cloud.google.com/document-ai/docs/handle-response"
+  },
+  "google-document-ai-evaluation": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Document AI Evaluation",
+    "title": "Evaluate processor performance — Document AI",
+    "note": "说明字段/表格匹配、精确率、召回率、F1 与置信阈值；阈值可能抑制正确字段，最佳阈值以 F1 为目标。普通字段匹配不使用 bounding box 定位，因此须另测定位；不优化客户业务损失、整单可用率或审阅容量。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.cloud.google.com/document-ai/docs/evaluate"
+  },
+  "google-document-ai-layout-parser": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Document AI Layout Parser",
+    "title": "Process documents with Gemini layout parser — Document AI",
+    "note": "说明按文档布局组织文本、表格、列表与标题，用于保留检索和理解上下文；官方限制包括 PDF 跨页表格可能拆开。不能推导复杂续表与行列关联自动正确，也不能把可检索块当成可入账字段。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.cloud.google.com/document-ai/docs/layout-parse-chunk"
+  },
+  "google-document-ai-processors": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Document AI Processors",
+    "title": "Processor list — Document AI",
+    "note": "按处理器列类型、语言与能力。OCR 与布局处理器列有中文，但不同预训练票据、表单、版本和字段能力有独立范围；必须按使用时点核对，不能外推所有处理器或保证客户准确率。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.cloud.google.com/document-ai/docs/processors-list"
+  },
+  "aws-textract-blocks": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Textract Document Layout",
+    "title": "Document layout — Amazon Textract",
+    "note": "说明 PAGE、LINE、WORD、表格和键值等 Blocks 及 Relationships、Geometry、Confidence 的结构；部分 API 的几何输出有独立范围。结构可用于字段定位与关系检查，不证明复杂表格正确或业务已通过。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.aws.amazon.com/textract/latest/dg/how-it-works-document-layout.html"
+  },
+  "aws-textract-limits": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Textract Language Scope",
+    "title": "Hard quotas — Amazon Textract",
+    "note": "记录当前官方文字检测语言、查询、手写与竖排等支持边界。文字检测语言不含中文，查询与手写仅有特定语言范围；本模块只使用能力边界，不固化文件配额、价格或吞吐数字。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.aws.amazon.com/textract/latest/dg/limits-document.html"
+  },
+  "aws-a2i-textract-review-conditions": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "A2I Textract Review",
+    "title": "Human task activation conditions — Amazon A2I with Textract",
+    "note": "说明特定 Textract 表单集成可按重要键缺失、字段/词置信区间和抽样触发人工任务。不是任意表格或任意模型的通用审阅，也不承诺审阅后自动训练或人工零错误。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.aws.amazon.com/sagemaker/latest/dg/a2i-json-humantaskactivationconditions-textract-example.html"
+  },
+  "google-document-ai-deprecations": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Document AI Deprecations",
+    "title": "Deprecations — Document AI",
+    "note": "记录 Document AI Human-in-the-Loop 于 2024-01-16 弃用；用于避免把旧托管审阅当成新方案默认。新的应用审阅队列或其他服务仍需按当前能力与生命周期独立验证。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://docs.cloud.google.com/document-ai/docs/deprecation"
+  },
+  "hf-transformers-gradient-accumulation-2026-10-03": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "Transformers 梯度累积",
+    "title": "Hugging Face Transformers — Gradient accumulation",
+    "note": "说明多个小批次累积梯度后再更新，扩大有效 batch；当前 Trainer 的自定义损失可按整次累积的有效预测目标数归一化。实现与文档版本需绑定；累积不直接提升吞吐，不保证不同随机行为、浮点顺序或模型结构下与真实大批次逐位一致。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://huggingface.co/docs/transformers/grad_accumulation"
+  },
+  "sklearn-threshold-tuning-2026-10-03": {
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "分类阈值与动作",
+    "title": "scikit-learn — Tuning the decision threshold for class prediction",
+    "note": "区分概率/分数估计与基于分数作出的具体分类动作，说明改变阈值可在相同概率输出上改变预测标签；阈值应优化适用业务指标，并避免使用同一数据训练模型和调阈值。文档不提供统一业务阈值、成本矩阵或干预因果收益。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://scikit-learn.org/stable/modules/classification_threshold.html"
+  },
   "hf-peft-methods": {
     grade: "P", kind: "官方文档", shortTitle: "PEFT 方法分类",
     title: "Hugging Face PEFT: parameter efficient fine-tuning methods",
@@ -366,7 +591,7 @@ export const sourceLedger = {
     kind: "论文",
     shortTitle: "Reciprocal Rank Fusion",
     title: "Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods",
-    note: "提出以各排序器中的名次倒数融合结果，不要求不同检索分数处于同一量纲；原论文的比较结果只适用于其测试集合与候选排序，不能证明 RRF 在所有语料、语言或检索器组合上都更优。",
+    note: "提出以各排序器中的名次倒数融合结果，不要求不同检索分数处于同一量纲；原论文的比较结果只适用于其测试集合与候选排序，不能证明 RRF 在所有语料、语言或检索器组合上都更优。 教学公式与名次从 1 起的过程另经 Azure AI Search 官方 RRF 文档核对；融合常数与向量近邻 k 不同。得分不表示证据权威或正确概率。",
     verifiedAt: "2026-07-29",
     href: "https://research.google/pubs/reciprocal-rank-fusion-outperforms-condorcet-and-individual-rank-learning-methods/",
   },
@@ -835,8 +1060,8 @@ export const sourceLedger = {
     kind: "官方文档",
     shortTitle: "TRL SFTTrainer",
     title: "Hugging Face TRL — SFT Trainer",
-    note: "说明监督微调训练器支持的数据类型、训练与评估配置及模型模板处理；工具能力不等于训练结果有效，仍需独立任务评估。",
-    verifiedAt: "2026-07-30",
+    note: "说明监督微调训练器支持的数据类型、训练与评估配置及模型模板处理；工具能力不等于训练结果有效，仍需独立任务评估。 当前官方文档支持 assistant_only_loss 只对助手响应计损失，并要求模板提供助手 generation 区域；prompt-completion 可只对 completion 计损失。被掩码内容仍作为输入条件，配置和模板能力依具体版本。",
+    verifiedAt: "2026-10-03",
     href: "https://huggingface.co/docs/trl/en/sft_trainer",
   },
   "hf-trl-dpo-trainer": {
@@ -1295,8 +1520,8 @@ export const sourceLedger = {
   "mcp-mrtr-2026-07-28": {
     grade: "O", kind: "协议规范", shortTitle: "MCP Multi Round-Trip Requests",
     title: "Multi Round-Trip Requests — Model Context Protocol 2026-07-28",
-    note: "定义 prompts/get、resources/read 与 tools/call 的多轮补参模式：Server 返回 input_required；inputRequests 与不透明 requestState 各自可选，但每个 InputRequiredResult 至少必须包含其中一项。Client 以新的 JSON-RPC id 重试原操作，只对收到的 inputRequests 提交相应 inputResponses；仅在收到 requestState 时原样回传，未收到时不得自行添加。它不是协议会话、授权或持久 Task。",
-    verifiedAt: "2026-09-04", href: "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr",
+    note: "定义 prompts/get、resources/read 与 tools/call 的多轮补参模式：Server 返回 input_required；inputRequests 与不透明 requestState 各自可选，但每个 InputRequiredResult 至少必须包含其中一项。Client 以新的 JSON-RPC id 重试原操作，只对收到的 inputRequests 提交相应 inputResponses；仅在收到 requestState 时原样回传，未收到时不得自行添加。它不是协议会话、授权或持久 Task。 Server Requirements 4–6：requestState 影响授权、资源或业务逻辑时 MUST 完整性保护且拒绝验证失败；SHOULD 绑定认证主体、短 TTL 与原请求身份。上述措施不保证单次消费，要求最多一次的业务 MUST 在服务端落实。",
+    verifiedAt: "2026-10-03", href: "https://modelcontextprotocol.io/specification/2026-07-28/basic/patterns/mrtr",
   },
   "mcp-list-cache-2026-07-28": {
     grade: "O", kind: "协议规范", shortTitle: "MCP Result Caching",
@@ -1419,10 +1644,13 @@ export const sourceLedger = {
     verifiedAt: "2026-09-24", href: "https://developers.openai.com/api/docs/guides/reasoning",
   },
   "openai-realtime-conversations": {
-    grade: "P", kind: "官方文档", shortTitle: "OpenAI Realtime Conversations",
-    title: "Realtime conversations — OpenAI API",
-    note: "VAD 启用且 interrupt_response=true 时，WebRTC/SIP 自动截断，WebSocket 客户端按已播位置截断；关闭 VAD 或自动打断时，客户端须主动取消旧响应，并清理输出缓冲或本地播放。音频截断不产生精确对齐的转写。",
-    verifiedAt: "2026-09-30", href: "https://developers.openai.com/api/docs/guides/realtime-conversations",
+    "grade": "P",
+    "kind": "官方文档",
+    "shortTitle": "OpenAI Realtime Conversations",
+    "title": "Realtime conversations — OpenAI API",
+    "note": "说明实时对话输出缓冲、中断和截断职责；VAD 与 interrupt_response 配置影响自动处理，WebRTC/SIP 与 WebSocket 的缓冲维护责任不同。截断移除未播音频与相应转写，不提供精确逐词对齐；也不撤销外部业务动作或证明用户听懂。",
+    "verifiedAt": "2026-10-03",
+    "href": "https://developers.openai.com/api/docs/guides/realtime-conversations"
   },
   "google-gemini-thinking": {
     grade: "P", kind: "官方文档", shortTitle: "Gemini Thinking",
@@ -1673,7 +1901,7 @@ export const sourceLedger = {
   "opensearch-alias-atomic": {
     grade: "P", kind: "官方文档", shortTitle: "OpenSearch 原子别名切换",
     title: "Manage Aliases API — OpenSearch Documentation",
-    note: "OpenSearch 可在单次原子事务中执行多个索引别名操作，包括从旧索引切到新索引；该保证不覆盖缓存、在途请求、撤权与删除传播，也不能外推到其他后端。",
+    note: "OpenSearch 可在单次原子事务中执行多个索引别名操作，包括从旧索引切到新索引；该保证不覆盖缓存、在途请求、撤权与删除传播，也不能外推到其他后端。 原子别名切换不证明新索引已追平源快照与增量事件；发布前需对象版本与事件覆盖对账。",
     verifiedAt: "2026-09-24", href: "https://docs.opensearch.org/latest/api-reference/alias/aliases-api/",
   },
   "azure-search-index-alias": {
@@ -2199,6 +2427,7 @@ function contentSourceIds(slug) {
     ...content.evidenceCards.map((card) => card.sourceId),
     ...content.qa.flatMap((item) => item.evidence.map((reference) => reference.sourceId)),
     ...(content.deepDives ?? []).flatMap((block) => block.sourceIds ?? []),
+    ...(content.depthStudy?.sourceIds ?? []),
   ];
 }
 

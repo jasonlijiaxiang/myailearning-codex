@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getModuleDepthStudy } from "./module-depth-projection";
 import { WorkedExample, type WorkedExampleContent } from "./worked-example";
 
 import { DenseModuleReadingModes, type DenseChapterLink, type ReadingModeId } from "./dense-module-reading-modes";
@@ -795,6 +796,7 @@ export function A2AModuleExperience({ initialMode = "quick", className }: A2AMod
           field: ["field-checklist-title", "qa", "evidence", "cloud", "related-modules"],
         }}
         learn={<LearnView curriculum={sourceContent.curriculum} learning={sourceContent.learning} />}
+        depthStudy={getModuleDepthStudy("a2a")}
         moduleName="A2A · 智能体间协议"
         quick={<QuickView knowledgeView={publication.knowledgeView ?? "delegated-task-lifecycle"} terms={terms} />}
         readerId="a2a-reading"

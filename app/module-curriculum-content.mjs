@@ -1,3 +1,4 @@
+import { scenarioContent } from "./scenario-content.mjs";
 /**
  * 共享模块的课程地图。
  *
@@ -7,6 +8,7 @@
  */
 /** @type {Record<string, any>} */
 export const moduleCurriculumContent = Object.freeze({
+  ...Object.fromEntries(Object.entries(scenarioContent).map(([slug, content]) => [slug, content.curriculum])),
   "predictive-ai-mlops": {
     "lead": "学习主线是一条可重放证据链：业务目标、时间正确的数据、可复现实验、受控发布、生产预测和成熟真值。",
     "chapters": [

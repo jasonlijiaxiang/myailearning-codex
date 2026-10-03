@@ -23,6 +23,7 @@ import {
   selectVisibleEnglishSectionGroups,
 } from "../app/i18n/english-section-outline.mjs";
 import { getEnglishUpdatedAt } from "../app/english-update-dates.mjs";
+import { englishModuleSlugs } from "../app/i18n/locale-config.mjs";
 import { agentQa } from "../app/agent-content.mjs";
 import { moduleContentRegistry, requireModuleContent } from "../app/module-content-registry.mjs";
 import { moduleManifests } from "../app/modules/index.mjs";
@@ -333,6 +334,7 @@ test("module updates and newly added questions use distinct, non-repeating date 
       assert.match(html, /<footer\b[^>]*>[\s\S]*?class="moduleUpdatedAt"[\s\S]*?<\/footer>/, `${publication.slug} module update date must sit in the page footer`);
     }
 
+    if (!englishModuleSlugs.includes(publication.slug)) continue;
     const englishHtml = await renderHtml(`/en${publication.path}`);
     const englishModuleDateCount = (englishHtml.match(/class="moduleUpdatedAt"/g) ?? []).length;
     assert.equal(englishModuleDateCount, publication.updatedAt ? 1 : 0, `${publication.slug} English module update date must render exactly once`);
@@ -923,7 +925,9 @@ test("migrated Chinese modules share one header, hero, and task-led reader contr
     assert.match(html, /href="#qa"[^>]*>[^<]*<\/a>/);
     assert.match(html, new RegExp(`href="/references#module-${escapeRegExp(publishedModules[index].slug)}"[^>]*>[^<]*<\\/a>`));
     assert.match(html, /href="\/glossary"[^>]*>[^<]*<\/a>/);
-    assert.match(html, new RegExp(`href="/en${escapeRegExp(paths[index])}"[^>]*>[^<]*<\\/a>`));
+    if (englishModuleSlugs.includes(publishedModules[index].slug)) {
+      assert.match(html, new RegExp(`href="/en${escapeRegExp(paths[index])}"[^>]*>[^<]*<\\/a>`));
+    } else assert.ok(!html.includes(`href="/en${paths[index]}"`));
     assert.match(html, /<summary aria-label="[^"]+"><span><\/span><span><\/span><span><\/span><\/summary>/, `${paths[index]} is missing the mobile menu`);
     assert.match(html, /aria-label="[^"]+"[^>]*data-importance="critical"/);
     serverRenderedReadingPanels(html, paths[index]);
@@ -1780,8 +1784,9 @@ test("English RAG renders its complete dedicated reader and its source ledger ca
 });
 
 test("English Reference scopes preserve the canonical module-ledger source order", async () => {
-  const pages = await Promise.all(referenceModules.map((module) => renderHtml(`/en/references?module=${module.id}`)));
-  for (const [index, module] of referenceModules.entries()) {
+  const localizedReferenceModules = referenceModules.filter((item) => englishModuleSlugs.includes(item.id));
+  const pages = await Promise.all(localizedReferenceModules.map((module) => renderHtml(`/en/references?module=${module.id}`)));
+  for (const [index, module] of localizedReferenceModules.entries()) {
     const renderedSourceIds = [...pages[index].matchAll(/<article class="questionDirectoryItem" id="source-([^"]+)"/g)].map((match) => match[1]);
     assert.deepEqual(renderedSourceIds, module.sourceIds.filter((sourceId) => Object.hasOwn(englishSourceCopy, sourceId)), `${module.id} must render every independently localized source in canonical order`);
   }
@@ -2622,7 +2627,7 @@ test("every public knowledge route is anonymously readable and directly shareabl
     "/en/questions",
     "/en/references",
     "/en/knowledge-graph",
-    ...publishedModuleSlugs.map((slug) => `/en/modules/${slug}`),
+    ...englishModuleSlugs.map((slug) => `/en/modules/${slug}`),
     ...moduleList.map((knowledgeModule) => knowledgeModule.href),
     ...Object.keys(legacyModuleAliases).map((slug) => `/modules/${slug}`),
   ];
@@ -3054,7 +3059,7 @@ test("public page shells expose one real skip target after navigation without de
     ]),
     ...publishedModuleRegistry.flatMap((module) => [
       { id: `zh:module:${module.slug}`, locale: "zh", path: module.path },
-      { id: `en:module:${module.slug}`, locale: "en", path: `/en${module.path}` },
+      ...(englishModuleSlugs.includes(module.slug) ? [{ id: `en:module:${module.slug}`, locale: "en", path: `/en${module.path}` }] : []),
     ]),
   ];
   const skipLinkContracts = {
@@ -3225,4 +3230,28 @@ test("project docs require independent routes, one reference page, and main-only
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.match(packageJson, /--ignore-pattern outputs/, "release and portable outputs must not re-enter source lint");
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
+});
+
+
+test("scene modules render a readable native demo and omit unavailable English alternates", async () => {
+  for (const manifest of moduleManifests.filter((item) => item.category === "scenario")) {
+    const html = await renderHtml(`/modules/${manifest.slug}?view=learn#scenario-workshop`);
+    assert.match(html, new RegExp(`data-scenario-demo="${manifest.slug}"`));
+    assert.match(html, /离线教学演示/);
+    assert.match(html, /<noscript>/);
+    assert.match(html, /<select[^>]*disabled/);
+    assert.ok(!html.includes(`href="/en/modules/${manifest.slug}"`));
+    assert.ok(!html.includes('hrefLang="en"') && !html.includes('hreflang="en"'));
+    assert.match(html, /id="study-guide"/);
+    assert.match(html, /id="curriculum"/);
+  }
+});
+
+test("mechanism studies remain visible in direct native learning routes with central source links", async () => {
+  for (const manifest of moduleManifests.filter((item) => item.category !== "scenario")) {
+    const html = await renderHtml(`/modules/${manifest.slug}?view=learn#depth-study`);
+    assert.match(html, /id="depth-study"/);
+    assert.match(html, /aria-labelledby="depth-study-title"/);
+    assert.match(html, /href="\/references#source-/);
+  }
 });

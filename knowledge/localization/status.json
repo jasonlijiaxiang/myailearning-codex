@@ -161,6 +161,26 @@
       "openedAt": "2026-08-24",
       "expiresAt": "2026-12-31",
       "reason": "中文模块正文与任务式阅读呈现已刷新；英文保持最后真实同步基线，等待独立英文撰写与专业审校。"
+    },
+    "ai-video": {
+      "status": "not-started",
+      "enSyncedCommit": null,
+      "reason": "用户明确本轮仅建设中文场景模块；尚无英文正文或同步基线，待独立英文撰写与专业审校。"
+    },
+    "ai-short-drama": {
+      "status": "not-started",
+      "enSyncedCommit": null,
+      "reason": "用户明确本轮仅建设中文场景模块；尚无英文正文或同步基线，待独立英文撰写与专业审校。"
+    },
+    "voice-service": {
+      "status": "not-started",
+      "enSyncedCommit": null,
+      "reason": "用户明确本轮仅建设中文场景模块；尚无英文正文或同步基线，待独立英文撰写与专业审校。"
+    },
+    "document-processing": {
+      "status": "not-started",
+      "enSyncedCommit": null,
+      "reason": "用户明确本轮仅建设中文场景模块；尚无英文正文或同步基线，待独立英文撰写与专业审校。"
     }
   }
 }

@@ -7,12 +7,12 @@ import {
 } from "../../knowledge-graph/graph-data.mjs";
 import { englishModuleRegistry, englishTermCopy } from "./registry.mjs";
 
-export const englishGraphLayers = Object.freeze(canonicalLayers.map((layer) => Object.freeze({
+export const englishGraphLayers = Object.freeze(canonicalLayers.filter((layer) => canonicalModules.some((module) => module.layerNo === layer.no && englishModuleRegistry[module.id])).map((layer) => Object.freeze({
   ...layer,
   name: layer.en,
 })));
 
-export const englishGraphModules = Object.freeze(canonicalModules.map((module) => {
+export const englishGraphModules = Object.freeze(canonicalModules.filter((module) => englishModuleRegistry[module.id]).map((module) => {
   const localized = englishModuleRegistry[module.id];
   if (!localized) throw new Error(`Knowledge graph is missing module copy: ${module.id}`);
   return Object.freeze({
@@ -25,7 +25,7 @@ export const englishGraphModules = Object.freeze(canonicalModules.map((module) =
   });
 }));
 
-export const englishGraphTerms = Object.freeze(canonicalTerms.map((term) => {
+export const englishGraphTerms = Object.freeze(canonicalTerms.filter((term) => englishTermCopy[term.id]).map((term) => {
   const localized = englishTermCopy[term.id];
   if (!localized) throw new Error(`Knowledge graph is missing term copy: ${term.id}`);
   return Object.freeze({
@@ -34,6 +34,7 @@ export const englishGraphTerms = Object.freeze(canonicalTerms.map((term) => {
     en: localized.abbr ?? "",
     abbr: localized.abbr,
     description: localized.definition,
+    moduleIds: term.moduleIds.filter((slug) => englishModuleRegistry[slug]),
   });
 }));
 
@@ -46,4 +47,6 @@ export const englishGraphRelationTypes = Object.freeze({
   metric: Object.freeze({ label: "Metric", description: "The first concept measures or evaluates the second concept's behavior." }),
 });
 
-export { graphRelations as englishGraphRelations, graphScalePolicy as englishGraphScalePolicy };
+const englishNodeIds = new Set([...englishGraphModules, ...englishGraphTerms].map((node) => node.id));
+export const englishGraphRelations = Object.freeze(graphRelations.filter((relation) => englishNodeIds.has(relation.from) && englishNodeIds.has(relation.to)));
+export { graphScalePolicy as englishGraphScalePolicy };

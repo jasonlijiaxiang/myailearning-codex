@@ -1,3 +1,4 @@
+import { scenarioContent } from "./scenario-content.mjs";
 import {
   a2aBrief,
   evaluationBrief,
@@ -20,6 +21,7 @@ import {
 
 /** @type {Record<string, any>} */
 export const moduleBriefs = Object.freeze({
+  ...Object.fromEntries(Object.entries(scenarioContent).map(([slug, content]) => [slug, content.brief])),
   [solutionPatternsBrief.slug]: solutionPatternsBrief,
   [modelLandscape.slug]: modelLandscape,
   [multimodalBrief.slug]: multimodalBrief,

@@ -4,7 +4,7 @@ type ChinesePageMetadataInput = {
   title: string;
   description: string;
   path: string;
-  enPath: string;
+  enPath: string | null;
 };
 
 // 中文页面元数据：与 englishPageMetadata 对称，输出 canonical 与 hreflang 双语交替链接。
@@ -15,7 +15,7 @@ export function chinesePageMetadata({ title, description, path, enPath }: Chines
     description,
     alternates: {
       canonical: path,
-      languages: { "zh-CN": path, en: enPath },
+      languages: { "zh-CN": path, ...(enPath ? { en: enPath } : {}) },
     },
   };
 }

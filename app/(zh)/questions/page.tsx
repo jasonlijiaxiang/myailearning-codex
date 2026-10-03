@@ -55,7 +55,7 @@ type QuestionDirectoryEntry = {
   originalHref: string;
 };
 
-// 问题条目列表以静态 HTML 字符串整体输出（dangerouslySetInnerHTML），避免 355 个条目在
+// 问题条目列表以静态 HTML 字符串整体输出（dangerouslySetInnerHTML），避免每个条目在
 // RSC flight 载荷中再次按元素树序列化。每个模块是一个原生 <details>：无 JS 时全部问题的
 // 结论短答可见可到达；深答、下一问与证据由客户端在模块展开时按需注入
 // （/search/question-directory.zh.json），不进入初始 HTML。
@@ -68,7 +68,7 @@ function buildQuestionDirectoryListHtml() {
     const entries = items.map((item) => (
       `<article class="questionDirectoryItem" data-question-key="${item.key}">` +
       `<h3><a href="${item.originalHref}">${escapeHtml(item.question)}</a></h3>` +
-      `<p class="questionDirectoryShort"><span>结论短答</span>${escapeHtml(item.answer)}</p>` +
+      `<p>${escapeHtml(item.answer)}</p>` +
       `</article>`
     )).join("");
     return (

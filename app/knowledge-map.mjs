@@ -1,5 +1,5 @@
 /**
- * 面向读者的 23 模块知识地图。
+ * 面向读者的模块知识地图。
  *
  * 层结构（编号、名称、说明与层内展示顺序）是地图自身的视觉结构；
  * 每个模块的条目（中英文名、slug、href、层级归属）全部从
@@ -13,6 +13,13 @@
 import { moduleManifests } from "./modules/index.mjs";
 
 const layerDefinitions = [
+  {
+    no: "10",
+    name: "场景应用层",
+    en: "Scenario Applications",
+    purpose: "从制作或业务任务出发，把模型、数据、人工协作与交付标准组合成完整方案。",
+    moduleSlugs: [],
+  },
   {
     no: "01",
     name: "方案与选型层",

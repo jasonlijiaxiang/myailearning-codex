@@ -416,6 +416,15 @@ test("every consumed token is declared in globals.css", async () => {
   }
 });
 
+test("unified Hero metrics allocate columns to the actual visible statistics", async () => {
+  const css = await readFile(sharedHeroUrl, "utf8");
+  const rule = cssRules(css).find((item) => item.selector === ".hero .summary :global(.moduleHeroMetrics)");
+  assert.ok(rule, "shared Hero owns its metric layout");
+  assert.deepEqual(rule.declarations.get("grid-template-columns"), ["none"]);
+  assert.deepEqual(rule.declarations.get("grid-auto-flow"), ["column"]);
+  assert.deepEqual(rule.declarations.get("grid-auto-columns"), ["minmax(0, 1fr)"]);
+});
+
 test("the unified Hero desktop typography roles follow the contract", async () => {
   const css = await readFile(sharedHeroUrl, "utf8");
   const rules = cssRules(css);

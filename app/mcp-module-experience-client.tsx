@@ -3,6 +3,7 @@
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { WorkedExample, type WorkedExampleContent } from "./worked-example";
+import type { DepthStudyContent } from "./module-depth-study";
 
 import { formatModuleUpdatedAt, formatQuestionAddedAt } from "./content-update-metadata.mjs";
 import { DenseModuleReadingModes } from "./dense-module-reading-modes";
@@ -57,6 +58,7 @@ type DeepDiveBlock = {
 };
 
 export type McpExperienceData = {
+  depthStudy?: DepthStudyContent;
   module: { zh: string; en: string; layerName: string; titleId: string; updatedAt: string | null; knowledgeView: string };
   terms: ReadonlyArray<{ id: string; zh: string; en: string; description: string }>;
   definition: string;
@@ -602,6 +604,7 @@ export function McpModuleExperienceClient({ data }: { data: McpExperienceData })
           field: ["qa", "mcp-field-qa", "evidence", "mcp-field-evidence", "cloud", "mcp-field-cloud", "related-modules"],
         }}
         learn={<LearnView data={data} />}
+        depthStudy={data.depthStudy}
         moduleName="MCP · 模型上下文协议"
         quick={<QuickView data={data} />}
         readerId="mcp-reading"

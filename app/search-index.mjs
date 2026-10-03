@@ -6,6 +6,8 @@ import { englishModuleRegistry, englishQuestions, englishSourceCopy, englishTerm
 import { moduleContentRegistry } from "./module-content-registry.mjs";
 import { moduleCurriculumContent } from "./module-curriculum-content.mjs";
 import { moduleLearningContent } from "./module-learning-content.mjs";
+import { scenarioContent } from "./scenario-content.mjs";
+import { moduleManifests } from "./modules/index.mjs";
 import { moduleList } from "./knowledge-map.mjs";
 import { sourceLedger, referenceModules } from "./reference-content.mjs";
 import { terminology } from "./terminology.mjs";
@@ -27,6 +29,12 @@ referenceModules.forEach((module) => module.sourceIds.forEach((sourceId) => {
 function buildChineseEntries() {
   const entries = [];
 
+  for (const manifest of moduleManifests.filter((item) => item.category === "scenario")) {
+    const productionExample = scenarioContent[manifest.slug]?.productionExample;
+    if (productionExample) entries.push({ id: `scenario-production-${manifest.slug}`, moduleSlugs: [manifest.slug], type: "制作实例", title: productionExample.title, subtitle: `${manifest.zh} · 教学制作数据`, href: `/modules/${manifest.slug}?view=learn#scenario-production-example`, keywords: JSON.stringify(productionExample) });
+    entries.push({ id: `scenario-workshop-${manifest.slug}`, moduleSlugs: [manifest.slug], type: "交互推演", title: `${manifest.zh}：改变条件观察结果`, subtitle: "离线教学演示 · 预设数据", href: `/modules/${manifest.slug}?view=learn#scenario-workshop`, keywords: `${manifest.zh} ${manifest.discovery.summary} ${manifest.discovery.cue} 演示 demo 验收` });
+  }
+
   for (const [termId, term] of Object.entries(terminology)) {
     const relatedNames = term.moduleSlugs.map((slug) => moduleNames.get(slug)).filter(Boolean);
     entries.push({
@@ -41,6 +49,17 @@ function buildChineseEntries() {
   }
 
   for (const [slug, content] of Object.entries(moduleContentRegistry)) {
+    if (content.depthStudy) {
+      entries.push({
+        id: `depth-study-${slug}`,
+        moduleSlugs: [slug],
+        type: "机制推演",
+        title: content.depthStudy.title,
+        subtitle: `${moduleNames.get(slug)} · 机制与案例`,
+        href: `/modules/${slug}?view=learn#depth-study`,
+        keywords: JSON.stringify(content.depthStudy),
+      });
+    }
     content.qa.forEach((item, index) => {
       entries.push({
         id: `qa-${slug}-${index + 1}`,

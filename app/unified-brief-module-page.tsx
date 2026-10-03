@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { DepthStudyContent } from "./module-depth-study";
 
 import {
   DenseModuleReadingModes,
@@ -19,10 +20,14 @@ export function buildBriefModuleDirectories({
   hasDeepDives,
   mechanismId = "principle",
   primer,
+  workshop,
+  productionExample,
 }: {
   hasDeepDives: boolean;
   mechanismId?: string;
   primer?: DenseChapterLink;
+  workshop?: DenseChapterLink;
+  productionExample?: DenseChapterLink;
 }): DirectorySet {
   return {
     quick: [
@@ -31,6 +36,8 @@ export function buildBriefModuleDirectories({
     ],
     learn: [
       { id: mechanismId, label: "工作机制", eyebrow: "建立工作模型" },
+      ...(workshop ? [workshop] : []),
+      ...(productionExample ? [productionExample] : []),
       { id: "curriculum", label: "主题地图", eyebrow: "解释判断与边界" },
       { id: "study-guide", label: "可复核练习", eyebrow: "形成评审产物" },
       ...(hasDeepDives ? [{ id: "deep-dive", label: "工程深挖", eyebrow: "定位失败与边界" }] : []),
@@ -59,6 +66,7 @@ export function UnifiedBriefModulePage({
   modePanels,
   moduleName,
   quick,
+  depthStudy,
 }: {
   className: string;
   contentAriaLabel: string;
@@ -74,6 +82,7 @@ export function UnifiedBriefModulePage({
   modePanels?: Partial<Record<ReadingModeId, ReactNode>>;
   moduleName: string;
   quick?: ReactNode;
+  depthStudy?: DepthStudyContent;
 }) {
   const chapters = Object.values(directories).flatMap((directory) => directory ?? []);
 
@@ -91,6 +100,7 @@ export function UnifiedBriefModulePage({
               field={field}
               hashGroups={hashGroups}
               learn={learn}
+              depthStudy={depthStudy}
               modeDefinitions={modeDefinitions}
               modePanels={modePanels}
               moduleName={moduleName}
