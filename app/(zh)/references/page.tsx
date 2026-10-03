@@ -80,7 +80,7 @@ export default function ReferencesPage() {
     <main className="fieldbookTheme referencePage">
       <ReadingProgress />
       <header className="hero referenceHero" id="top">
-        <SiteNav locale="zh" ariaLabel="来源页导航" brand="presales" brandAriaLabel="返回 AI 学习手册首页" links={referenceNavLinks} />
+        <SiteNav locale="zh" ariaLabel="来源页导航" brandAriaLabel="返回 AI 学习手册首页" links={referenceNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="heroGrid referenceHeroGrid">

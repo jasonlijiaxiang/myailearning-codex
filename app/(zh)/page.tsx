@@ -105,7 +105,7 @@ export default function Home() {
         <div className="heroGrid heroGridV2 heroGridWithArtwork">
           <div className="heroCopy">
             <h1><span>理解 AI 原理，</span><span>做出有依据的方案</span></h1>
-            <p className="heroLead">理解方案背后的原理和适用限制，用它们回答追问。</p>
+            <p className="heroLead">理解方案背后的原理和适用限制，知道每个结论从哪来、到哪为止。</p>
             <KnowledgeSearchLaunch />
             <div className="heroActions">
               <a className="homePrimaryAction" href="#learning-paths">按任务开始 <span>→</span></a>

@@ -97,7 +97,7 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
     <main className="fieldbookTheme questionPage">
       <ReadingProgress />
       <header className="hero questionHero" id="top">
-        <SiteNav locale="zh" ariaLabel="问答查询页导航" brand="presales" brandAriaLabel="返回 AI 学习手册首页" links={questionsNavLinks} />
+        <SiteNav locale="zh" ariaLabel="问答查询页导航" brandAriaLabel="返回 AI 学习手册首页" links={questionsNavLinks} />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
 
         <div className="questionHeroGrid">
@@ -114,15 +114,15 @@ export default async function QuestionsPage({ searchParams }: { searchParams?: P
             <div><strong>{questionDirectoryItems.length}</strong><span>个问答</span></div>
             <div><strong>{questionDirectoryModules.length}</strong><span>个正式模块</span></div>
             <div><strong>{uniqueTagCount}</strong><span>个问题类别</span></div>
-            <p>覆盖概念边界、方案选择、工程风险、上线运营与常见反对意见，可从问题直接进入完整回答；精选题不复制答案，仍指向正式问答。</p>
+            <p>覆盖概念边界、方案选择、工程风险、上线运营与常见误区，可从问题直接进入完整回答；精选题不复制答案，仍指向正式问答。</p>
           </aside>
         </div>
       </header>
 
       <section className="questionFieldKit" id="field-kit" aria-labelledby="field-kit-title">
         <div className="questionFieldKitIntro">
-          <div><p className="kicker">FIELD KIT · 速查复习层</p><h2 id="field-kit-title">先看精选题，答不上来时用兜底话术</h2></div>
-          <p>精选直接绑定正式问答，不建立第二份答案。按问题意图缩小范围，或用通俗说法搜索；遇到信息不足、动态事实、法律安全和业务状态未知时，使用下方四类兜底话术。</p>
+          <div><p className="kicker">FIELD KIT · 速查复习层</p><h2 id="field-kit-title">先看精选题，答不上来时怎么诚实回应</h2></div>
+          <p>精选直接绑定正式问答，不建立第二份答案。按问题意图缩小范围，或用通俗说法搜索；遇到信息不足、动态事实、法律安全和业务状态未知时，参考下方四类回应方式：先说清缺什么、要核验什么，再给结论。</p>
         </div>
         <div className="questionIntentStrip">
           {intentDefinitions.map((intent) => <span key={intent.id}><strong>{intent.zh}</strong><small>{intent.scope}</small></span>)}

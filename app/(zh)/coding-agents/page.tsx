@@ -34,7 +34,6 @@ export default function CodingAgentsPage() {
         <SiteNav
           locale="zh"
           ariaLabel="Coding Agent 选型页导航"
-          brand="presales"
           links={[
             { href: "/", label: "首页" },
             { href: "/modules/ai-agent?view=learn#harness", label: "Harness 章节" },
