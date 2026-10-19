@@ -60,7 +60,7 @@ export default function ModelRadarPage() {
 
         <div className="modelPosterHeroInner">
           <h1>AI 大模型 <span>能力快照 · 20 个配置</span></h1>
-          <p className="modelPosterHeroLead">同一批公开模型快照，切换官方 Intelligence Index 与本页透明复算的 Coding、Agentic Composite；分数口径分开标注，找不到同版本公开数据就留空，不跨版本拼接。</p>
+          <p className="modelPosterHeroLead">这是 {modelRadarPolicy.verifiedAt} 的历史快照，用于练习比较分数及其组成。它保留当时捕获的 20 个模型配置，不代表当前型号或排名。切换 Intelligence Index 与本页复算的 Coding、Agentic Composite 时，请同时查看方法版本；缺少同版本数据的项目留空。</p>
         </div>
       </header>
 

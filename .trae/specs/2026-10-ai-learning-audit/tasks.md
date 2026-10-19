@@ -61,7 +61,8 @@
 - **Notes**：英文文件一律不改
 
 ## Task 4: 模块页 H1 语义归位
-- **Status** `pending`
+- **Status** `completed`
+- **Completion Evidence（2026-10-20 补核）**：既有实现已完成标题语义归位；27 个中文模块均通过单一 H1 的真实 Chrome 检查，1440 / 1024 / 390 三宽度无全局横向溢出。标题结构契约与代表页面截图复核通过。本次补齐记录，不把既有实现记作新增改动。
 - **Priority** high
 - **Depends On** Task 3
 - **Description**：调整 unified-module-hero（及专用 rag/agent/prompt/mcp/a2a/inference 页）标题结构：H1 第一文本为完整中文模块名，缩写与英文为副级；保留大号编辑级标题视觉力但消除倒置。同步更新设计契约测试。
@@ -114,6 +115,7 @@
   - TR-7.1：`npm run check` 全绿——33（unit）+31（bilingual）+98（render/design contract）共 162 项；含 lint/typecheck/build/bundle budget；sources:report 0 过期（含在 check 链路中）
   - TR-7.2：真实 Chrome（1470×836）首页截图核查通过：品牌「AI 学习手册 / AI Fieldbook」、Hero、搜索、三任务卡均正常，无错位/控制台错误（截图存档于 trae-browser-screenshots）
   - TR-7.3：外部 Chrome 桥接在首次截图后持续超时（扩展侧无响应，内置桥接同时受阻），其余页面的视觉核查改为由 Node 侧 SSR 渲染测试覆盖（全部路由+27 模块）；建议用户人工快速浏览确认
+  - **2026-10-20 补核**：Browser plugin 不可用，使用已安装 Chrome 与 Playwright 完成 102 项路由／三宽度基线检查，以及更新后 123 项阅读任务、筛选、键盘、场景控件、来源深链与无脚本检查，全部通过。补足此前桥接失败留下的浏览器覆盖缺口；不把当时的 SSR 检查追记为视觉检查。完整范围与限制见 `docs/KNOWLEDGE-REVIEW-2026-10-20.md`。
   - 全仓 grep：中文页面旧身份词零残留（英文页面按冻结保留）
 - **Priority** high
 - **Depends On** Task 6

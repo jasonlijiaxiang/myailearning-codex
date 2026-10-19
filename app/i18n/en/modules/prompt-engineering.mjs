@@ -508,7 +508,7 @@ const deepDiveEnglishItems = sections
   .filter((block) => deepDiveEnglishBlocksByTitle.has(block.title))
   .map((block) => ({ id: deepDiveEnglishBlocksByTitle.get(block.title).id }));
 resolveCompleteProjection({
-  canonicalItems: canonicalDeepDives,
+  canonicalItems: canonicalDeepDives.filter((block) => !("localeScope" in block && block.localeScope === "zh-CN")),
   canonicalKey: "title",
   englishItems: deepDiveEnglishItems,
   englishKey: "id",

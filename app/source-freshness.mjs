@@ -1,8 +1,16 @@
 const DAY_MS = 24 * 60 * 60 * 1000;
+export const SOURCE_REVIEW_TIME_ZONE = "Asia/Singapore";
 
-// S2-T6：来源 kind 收敛为 15 个枚举（app/reference-content.mjs 的 sourceLedger
-// 与 /tmp/s6/kind-map.mjs 的 ENUM_TO_DAYS 保持一致），复核周期直接查表，
-// 不再用正则匹配细分类目。
+// 核验日期是编辑日历日，统一采用 UTC+8，避免跨设备和 UTC 午夜前后漂移。
+export function sourceReviewDate(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: SOURCE_REVIEW_TIME_ZONE, year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(now);
+  const value = (/** @type {string} */ type) => Number(parts.find((part) => part.type === type)?.value);
+  return new Date(Date.UTC(value("year"), value("month") - 1, value("day")));
+}
+
+// 来源 kind 与 Reference 台账一致；按事实变化速度确定复核周期。
 const ENUM_TO_DAYS = Object.freeze({
   "产品规格": 30,
   "官方公告": 30,
@@ -46,7 +54,7 @@ export function reviewCycleDaysFor(source) {
 }
 
 /** @param {any} source */
-export function sourceFreshness(source, now = new Date()) {
+export function sourceFreshness(source, now = sourceReviewDate()) {
   const verifiedAt = parseIsoDate(source.verifiedAt);
   if (!verifiedAt) return { status: "invalid", reviewCycleDays: null, ageDays: null };
 

@@ -2203,7 +2203,7 @@ export const moduleCurriculumContent = Object.freeze({
       {
         "title": "DRA、Device Plugin 与设备运行栈",
         "en": "Device Resource Stack",
-        "explanation": "Device Plugin 暴露传统扩展资源；DRA 核心 API 在 1.34 稳定，1.37 的扩展资源兼容能力进入 GA，现有资源请求可由 DRA 驱动承接。其他可选特性仍须按版本核验；GPU Operator 管理特定厂商驱动、插件与监控。",
+        "explanation": "Device Plugin 暴露传统扩展资源；DRA 核心 API 在 1.34 稳定，1.37 的扩展资源兼容能力进入 GA，现有资源请求可由支持相应映射的 DRA 驱动承接；API 兼容不保证旧集群可原地迁移。其他可选特性仍须按版本核验；GPU Operator 管理特定厂商驱动、插件与监控。",
         "decision": "只为已确认的资源表达或生命周期缺口采用 DRA，并按集群、驱动、可选特性和工作负载分层迁移。",
         "boundary": "核心 API GA 不表示所有能力和驱动 GA，也不替代队列、训练编排、模型服务或业务授权。",
         "sourceIds": [

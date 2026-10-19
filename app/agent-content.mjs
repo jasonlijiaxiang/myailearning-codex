@@ -10,7 +10,7 @@ export const agentDeepDives = [
       { name: "等待输入或审批", en: "Waiting", mechanism: "缺少信息、等待外部事件或高风险动作审批时持久暂停，并记录恢复条件和超时策略。", decision: "暂停后是否释放计算资源，并在恢复时重新校验权限与参数？", boundary: "审批期间目标资源和授权都可能发生变化。" },
       { name: "重试或人工接管", en: "Retry / Handoff", mechanism: "按错误类别决定自动重试、补偿、人工修复或创建关联 Run，不让模型自由猜测。", decision: "哪些错误可安全重试，哪些必须先查询权威系统状态？", boundary: "跨第三方系统通常只能做到可去重、可检测和可补偿，不能轻率承诺 exactly-once。" },
       { name: "验证业务终态", en: "Verify Outcome", mechanism: "回读订单、工单、资源或测试等权威系统，以预定义后置条件确认真实结果。", decision: "谁定义成功，使用哪套系统作为 ground truth？", boundary: "“模型说完成”不能把 Run 置为业务成功。" },
-      { name: "进入不可变终态", en: "Terminal State", mechanism: "Completed、Failed、Canceled、Expired 等终态不可原地改写；修订或重跑创建新 Run 并保留关联。", decision: "是否能解释每次终止的触发事件、责任主体和最终证据？", boundary: "内部状态机与 A2A Task 状态是不同层次，不能混为同一实现。" },
+      { name: "进入不可变终态", en: "Terminal State", mechanism: "Completed、Failed、Canceled、Expired 等终态不可原地改写；修订或重跑创建新 Run 并保留关联。", decision: "是否能解释每次终止的触发事件、责任主体和最终证据？", boundary: "内部业务终态、A2A Task 与 SDK 执行状态需分别建模。OpenAI Agents SDK 的 cancel(after_turn) 可从 RunState 恢复，不能直接映射为不可变业务终态。" },
     ],
     sourceIds: ["openai-agents-run-loop", "a2a-task-lifecycle", "azure-durable-orchestration"],
   },
@@ -117,9 +117,44 @@ export const agentDeepDives = [
     ],
     sourceIds: ["openai-hugging-face-incident-technical-report-2026", "metr-openai-hf-incident-2026", "ncsc-agentic-ai-risk-interim-2026", "openai-source-sink-injection", "nist-zero-trust"],
   },
+  {
+    "kind": "sequence",
+    "eyebrow": "APPROVAL SCOPE",
+    "localeScope": "zh-CN",
+    "title": "测试环境的一次批准，怎样被生产执行器沿用",
+    "intro": "按 OpenAI Agents SDK 当前文档推演：同一运行先交给 Agent A，之后 handoff 到 Agent B；两者均配置 SDK 的本地 ShellTool（默认名 shell），却连接不同环境。这里只推演审批匹配规则，没有执行真实命令。",
+    "items": [
+      {
+        "name": "在测试环境批准",
+        "en": "Sticky Approval",
+        "mechanism": "A 的工具调用获得 always_approve=True，审批状态按工具类型与名称保留。",
+        "decision": "确认批准究竟覆盖一次调用，还是后续同名工具。",
+        "boundary": "审批界面只显示测试环境，不代表框架把该环境绑定进匹配条件。"
+      },
+      {
+        "name": "移交给另一个执行器",
+        "en": "Handoff",
+        "mechanism": "B 的 shell 连接生产环境；同类型同名的 sticky 决策可能直接匹配，不重新调用目标 needs_approval 或 on_approval。",
+        "decision": "把执行器身份、环境、参数和资源范围放进执行边界的确定性校验。",
+        "boundary": "这条规则针对本地 ShellTool / ApplyPatchTool。自定义 function tool 即使同名，也不按此规则跨 Agent 继承。"
+      },
+      {
+        "name": "收窄并检查恢复状态",
+        "en": "Per-call Control",
+        "mechanism": "高风险动作采用逐调用批准；不同权限的新运行使用独立 RunContextWrapper，恢复既有 RunState 时检查其中保留的审批。",
+        "decision": "测试跨 Agent、跨环境与恢复后三种路径，确认每次写入都重新鉴权。",
+        "boundary": "改用 per-call 或传入新 context，本身不会清除旧 RunState 中已经存在的 sticky 批准。"
+      }
+    ],
+    "sourceIds": [
+      "openai-agents-hitl",
+      "nist-zero-trust"
+    ]
+  },
 ];
 
 export const agentEvidenceCards = [
+  { metric: "流结束 ≠ 最后 Token", title: "显示完文字后，运行器可能还在保存状态", finding: "OpenAI Agents SDK 要求消费 stream_events 直至迭代结束；会话持久化、审批记账或历史压缩可能晚于最后一个可见 Token。", boundary: "流结束后仍要检查 interruptions 并保存或恢复 RunState；框架完成也不证明下游业务成功。", sourceId: "openai-agents-streaming" },
   {
     metric: "固定 ↔ 动态",
     title: "工作流与 Agent 的关键分界",
@@ -503,12 +538,12 @@ const agentQaCandidates = [
   {
     q: "Human-in-the-Loop 审批应该批准什么？只点一次“同意”够吗？",
     a: "不够。审批应绑定具体工具、参数摘要、资源与版本、执行主体、风险说明和失效时间；其中任何关键项变化，都应重新审批。",
-    depth: "Agent 在审批前应生成可读预览，但应用保存的是不可篡改的动作快照或哈希。审批期间 Run 持久暂停并释放计算资源；恢复时重新校验令牌、策略、资源版本和审批有效期，然后才执行。云上持久编排承接等待与超时，身份平台承接短期授权，审计系统保存批准者和执行证据。边界是审批只授权该次具体动作，不代表允许 Agent 自由修改参数或把授权传给子 Agent。",
+    depth: "审批前保存不可篡改的动作快照，恢复时重新检查身份、参数、资源版本、政策和有效期。框架的“同意”未必只覆盖这组参数：OpenAI Agents SDK 可保留持续生效的批准（sticky approval）；本地 ShellTool / ApplyPatchTool 按工具类型与名称匹配，handoff 后可能沿用到另一 Agent 的执行器，不再重新运行目标审批回调。执行器权限不同时应使用逐调用决策，避免共享带审批的 RunContextWrapper；恢复 RunState 仍会保留已有批准，换 context 本身不会清空。RunState 可序列化也不等于自动耐久工作流，长时间等待与超时需外部存储或持久编排承接。",
     ask: "审批需要展示哪些业务字段？授权绑定多久？参数、政策或资源变化后由谁触发重新审批？",
     tag: "人工介入",
     basis: "Agent 暂停恢复 + 持久人工交互",
     evidence: [
-      { sourceId: "openai-agents-hitl", supports: "支持工具审批暂停 Run、保存状态并在批准或拒绝后恢复，且审批应关联具体动作。" },
+      { sourceId: "openai-agents-hitl", supports: "支持逐调用中断、RunState 序列化与恢复，并说明持续生效审批的复用作用域；动作快照、参数/资源/时效绑定与恢复前重新鉴权属于应用控制。" },
       { sourceId: "azure-durable-hitl", supports: "支持长期流程等待人工外部事件、设置超时并继续执行的耐久模式。" },
       { sourceId: "oauth-token-exchange", supports: "支持在受控条件下表达主体与执行者并交换范围受限的令牌。" },
     ],

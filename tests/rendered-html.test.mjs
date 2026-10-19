@@ -46,7 +46,7 @@ import { intentDefinitions } from "../app/question-field-kit.mjs";
 import { questionDirectoryItems, questionDirectoryModules } from "../app/question-index.mjs";
 import { evidenceCards, ragLearningContent, ragQa } from "../app/rag-content.mjs";
 import { chineseReferenceModules, referenceModules, sourceLedger } from "../app/reference-content.mjs";
-import { sourceFreshness } from "../app/source-freshness.mjs";
+import { sourceFreshness, sourceReviewDate } from "../app/source-freshness.mjs";
 import { glossaryGroups, glossaryTermIds, homepageTermGroups, requireTerm, terminology } from "../app/terminology.mjs";
 import { scenarioDefinitionsForHome, timeBudgetPaths } from "../app/home-learning-paths.mjs";
 
@@ -477,10 +477,14 @@ test("coding agent landscape separates product facts, benchmark evidence, and fr
 
   for (const item of codingAgentProducts) {
     assert.ok(claimIds.has(item.claimId), `${item.name} is missing its dynamic fact claim`);
-    assert.equal(item.verifiedAt, codingAgentLandscapePolicy.verifiedAt);
-    assert.equal(item.nextReviewAt, codingAgentLandscapePolicy.nextReviewAt);
+    const claim = claims.items.find((/** @type {any} */ claim) => claim.id === item.claimId);
+    assert.equal(item.verifiedAt, claim.verifiedAt, `${item.name}: use the verified claim date`);
+    assert.equal(item.nextReviewAt, claim.reviewBy, `${item.name}: use the claim review deadline`);
     for (const sourceId of item.sourceIds) assert.ok(sourceLedger[sourceId], `${item.name} cites an unknown source: ${sourceId}`);
   }
+
+  assert.equal(codingAgentLandscapePolicy.verifiedAt, codingAgentProducts.map((item) => item.verifiedAt).sort()[0]);
+  assert.equal(codingAgentLandscapePolicy.nextReviewAt, codingAgentProducts.map((item) => item.nextReviewAt).sort()[0]);
 
   assert.match(html, /Model × Harness × Task × Environment/);
   for (const product of codingAgentProducts) {
@@ -2800,6 +2804,17 @@ test("every published module claim resolves to a unique, grouped, and verified s
 
   assert.ok(evidenceCards.every((card) => card.title !== "种原始概率形式"));
   assert.ok(ragQa.every((item) => !/RAG-Sequence|RAG-Token/.test(item.q)));
+});
+
+test("source review dates use one editorial calendar across UTC midnight", () => {
+  const source = { kind: "官方文档", verifiedAt: "2026-10-20" };
+  const before = sourceReviewDate(new Date("2026-10-19T15:59:59Z"));
+  const after = sourceReviewDate(new Date("2026-10-19T16:00:00Z"));
+  assert.equal(before.toISOString(), "2026-10-19T00:00:00.000Z");
+  assert.equal(after.toISOString(), "2026-10-20T00:00:00.000Z");
+  assert.equal(sourceFreshness(source, before).status, "future");
+  assert.equal(sourceFreshness(source, after).status, "fresh");
+  assert.equal(sourceFreshness(source, after).ageDays, 0);
 });
 
 test("source freshness rejects impossible, future, and overdue verification dates", () => {

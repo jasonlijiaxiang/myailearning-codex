@@ -3125,7 +3125,7 @@ export const aiInfraPlatformBrief = {
     {
       "q": "Kubernetes 和 Slurm 哪个更适合 AI？",
       "a": "取决于工作负载与组织，不存在统一赢家。Slurm 擅长 HPC 批作业和成熟的队列习惯；Kubernetes 擅长容器化服务、API 生态与训练—推理一体化。",
-      "depth": "比较应覆盖 gang scheduling、队列公平、拓扑、抢占、Checkpoint、在线服务、身份网络、可观测和团队技能。研究集群可保留 Slurm，产品服务使用 Kubernetes，并通过共同数据、模型制品和成本体系连接。若双栈只是历史惯性且负载重叠，则要计算容量碎片和双重运维成本。",
+      "depth": "先区分同名机制：分布式作业常要求所需资源同时到位；Kueue 在未全部就绪时可超时重排；Slurm 的 Gang Scheduling 则是让共享资源的作业按时间片挂起和恢复。比较应覆盖实际准入、队列公平、拓扑、抢占、Checkpoint、在线服务和团队技能。研究集群可保留 Slurm，产品服务使用 Kubernetes，并通过共同数据、模型制品和成本体系连接。若双栈只是历史惯性且负载重叠，则要计算容量碎片和双重运维成本。",
       "ask": "主要是长时间分布式训练、交互开发，还是 7×24 在线推理？现有团队熟悉什么？",
       "tag": "调度选型",
       "basis": "工作负载与责任矩阵",
@@ -3134,6 +3134,7 @@ export const aiInfraPlatformBrief = {
           "sourceId": "slurm-overview",
           "supports": "支持 Slurm 作为集群资源分配、并行作业执行与队列仲裁系统，并列出拓扑、回填、Gang Scheduling、抢占和优先级插件；不证明任意站点已启用这些能力。"
         },
+        { "sourceId": "slurm-gang-scheduling", "supports": "说明 Slurm 的时间片挂起与恢复机制及内存配置约束。" },
         {
           "sourceId": "kueue-all-or-nothing",
           "supports": "支持 Kubernetes 上同步分布式作业的一种全有或全无准入与重新排队机制；不代表 Kubernetes 原生调度器自动提供完整 Gang Scheduling。"
@@ -3151,7 +3152,7 @@ export const aiInfraPlatformBrief = {
     {
       "q": "DRA 会取代 Device Plugin 吗？现在是否应该立即迁移？",
       "a": "DRA 核心 API 在 Kubernetes 1.34 稳定，1.37 又让 DRA 驱动能承接传统扩展资源请求；是否迁移仍取决于驱动和所需功能。",
-      "depth": "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化、健康或节点侧准备。1.37 的扩展资源兼容允许现有 Pod 继续使用传统资源名，不要求工作负载都改写为 ResourceClaim；但驱动是否支持、其他可选特性的成熟度仍需逐项核验。迁移测试覆盖声明生命周期、调度失败、设备准备、节点升级、配额、监控与回滚。DRA 也不替代队列和模型服务。",
+      "depth": "先列出现有 Device Plugin 无法解决的问题，例如设备属性选择、共享、参数化、健康或节点侧准备。1.37 的扩展资源兼容允许现有 Pod 继续使用传统资源名，不要求工作负载都改写为 ResourceClaim；但驱动和 DeviceClass 仍须显式提供资源名映射。NVIDIA 当前受管 DRA 路径的默认类不映射 nvidia.com/gpu，GPUCluster 与 ClusterPolicy 不能并存，也不支持从旧路径原地迁移。应先建新池运行一个现有 Pod，核对实际分配、失败与回退，再扩大范围。迁移测试覆盖声明生命周期、调度失败、设备准备、节点升级、配额、监控与回滚。DRA 也不替代队列和模型服务。",
       "ask": "现有设备分配具体卡在哪？目标 Kubernetes 版本和硬件驱动是否已支持所需功能？",
       "tag": "DRA",
       "basis": "Kubernetes 官方设备资源模型",
@@ -3171,7 +3172,8 @@ export const aiInfraPlatformBrief = {
         {
           "sourceId": "kubernetes-dra",
           "supports": "支持 DRA 使用 ResourceClaim 和驱动表达、准备与分配设备资源的官方机制。"
-        }
+        },
+        { "sourceId": "nvidia-gpu-operator-dra", "supports": "记录当前受管 DRA 路径的资源名映射、控制器互斥与迁移限制。" }
       ]
     },
     {

@@ -252,7 +252,56 @@ export const modelLandscape = {
           "boundary": "退出条款存在不等于可无痛迁移；工具协议与结构化输出差异仍需回归。"
         }
       ]
-    }
+    },
+    {
+      "kind": "matrix",
+      "eyebrow": "CATALOG TO CANDIDATE",
+      "localeScope": "zh-CN",
+      "title": "把当前模型目录变成可复测的候选清单",
+      "intro": "型号目录能回答有哪些产品入口，不能代替效果测试。下面演示如何记录本次已核验目录中的候选身份；能力、区域、配额与计价继续以对应型号页和账户为准。",
+      "columnLabels": {
+        "name": "目录入口",
+        "mechanism": "记录什么",
+        "decision": "怎样安排测试",
+        "boundary": "容易误读的地方"
+      },
+      "items": [
+        {
+          "name": "OpenAI",
+          "en": "API Catalog",
+          "mechanism": "目录区分 GPT-6 Astra、GPT-6.1 Sol 与 GPT-6 Luna；候选记录精确 ID，例如 gpt-6.1-sol，并固定端点与推理配置。",
+          "decision": "用同一组真实任务比较质量、时延、缓存写读用量与完整费用。",
+          "boundary": "厂商的能力定位不是本项目测试结果；消费端产品名称不能替代 API 型号。"
+        },
+        {
+          "name": "Google Gemini",
+          "en": "Version and Release Stage",
+          "mechanism": "目录把 Gemini 4 Argon、Gemini 3.8 Flash 等列为稳定版本，同时保留 Preview、Latest 与停用条目的区别。",
+          "decision": "记录精确模型代码和发布阶段，升级或别名切换后重跑回归。",
+          "boundary": "latest 可切换指向；Gemini 2.5 限于现有用户访问不等于已退役，新项目也不能据此假设可用。"
+        },
+        {
+          "name": "Anthropic Claude",
+          "en": "Model and Platform",
+          "mechanism": "目录列出 Fable 5.1、Opus 5.5、Sonnet 5.5 与 Haiku 5.5；候选记录如 claude-sonnet-5-5，并注明实际平台。",
+          "decision": "按自身任务建立候选，而后逐型号核对平台、区域、接口和限额。",
+          "boundary": "同一家族名称不能证明不同平台的可用性、计价和功能完全一致。"
+        },
+        {
+          "name": "公开评测快照",
+          "en": "Evaluation Version",
+          "mechanism": "本库雷达保留原有 v4.1.1 历史数据；当前 Artificial Analysis 方法已为 v4.3.2，组成与权重不同。",
+          "decision": "新评测另存日期、方法版本和模型配置；历史数据用于练习读分数，当前选型返回原榜核对。",
+          "boundary": "不能把新型号填进旧分数表，也不能把跨方法分差解释成能力涨跌。"
+        }
+      ],
+      "sourceIds": [
+        "openai-models",
+        "google-models",
+        "anthropic-models",
+        "artificial-analysis-methodology"
+      ]
+    },
   ],
   "criticalBoundary": "模型目录、价格、版本和平台能力都是高时效事实。任何对客比较都必须绑定核验日期、地域、精确候选身份与同条件试点；模型榜单、一次 Demo 和消费端产品体验都不能替代客户场景结论。",
   "cloudHooks": [

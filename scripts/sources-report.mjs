@@ -5,7 +5,7 @@
 // 永远 exit 0。
 import { readFileSync } from "node:fs";
 import { sourceLedger } from "../app/reference-content.mjs";
-import { sourceFreshness } from "../app/source-freshness.mjs";
+import { parseIsoDate, sourceFreshness, sourceReviewDate } from "../app/source-freshness.mjs";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -17,14 +17,14 @@ function parseNow() {
       console.error(`sources-report: --now 需要 YYYY-MM-DD，收到 "${raw}"`);
       process.exit(2);
     }
-    const date = new Date(`${raw}T00:00:00Z`);
-    if (Number.isNaN(date.getTime())) {
+    const date = parseIsoDate(raw);
+    if (!date) {
       console.error(`sources-report: 无法解析日期 "${raw}"`);
       process.exit(2);
     }
     return date;
   }
-  return new Date();
+  return sourceReviewDate();
 }
 
 function loadWaivers() {

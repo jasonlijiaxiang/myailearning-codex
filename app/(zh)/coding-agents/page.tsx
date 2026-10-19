@@ -44,8 +44,8 @@ export default function CodingAgentsPage() {
         />
         <div id="main-content" className="skipTarget" tabIndex={-1} />
         <div className="codingAgentHeroGrid">
-          <div><p className="eyebrow">LIVING REFERENCE · VERIFIED {codingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>产品与 Harness 选型雷达</span></h1><p>这里不发布一个永久的“谁最好”总榜。我们把<strong>官方产品事实</strong>、<strong>独立 Benchmark</strong>和<strong>自己的 PoC</strong>分开，让模型、Harness、任务与环境的影响可以被逐层判断。</p></div>
-          <aside><strong>{codingAgentLandscapePolicy.productCount}</strong><span>个已核验产品入口</span><strong>30 天</strong><span>动态事实最长复核周期</span><strong>0</strong><span>个脱离任务的永久总冠军</span></aside>
+          <div><p className="eyebrow">官方资料复核 · {codingAgentLandscapePolicy.verifiedAt}</p><h1>Coding Agent<br /><span>产品与 Harness 选型雷达</span></h1><p>先按入口和运行方式选出候选，再用同一项开发任务比较。产品卡说明<strong>在哪里运行、如何配置权限、有哪些版本限制</strong>；公开评测和自己的仓库测试分别补充效果证据。</p></div>
+          <aside><strong>{codingAgentLandscapePolicy.productCount}</strong><span>个已核验产品入口</span><strong>30 天</strong><span>动态事实最长复核周期</span><strong>同题测试</strong><span>比较结果、耗时与人工接管</span></aside>
         </div>
       </header>
 
@@ -66,7 +66,7 @@ export default function CodingAgentsPage() {
 
       <section className="section codingAgentProducts" id="products" aria-labelledby="products-title">
         <div className="sectionNumber">03</div><div className="sectionBody">
-          <div className="sectionIntro splitIntro"><div><p className="kicker">PRODUCT LANDSCAPE</p><h2 id="products-title">Coding Agent 产品对比与筛选</h2></div><p>只收录能找到当前官方资料的产品；不追求中美数量相等，也不根据一次媒体测评给出绝对优劣。筛选结果用于形成候选短名单，最后仍要进入同任务 PoC。</p></div>
+          <div className="sectionIntro splitIntro"><div><p className="kicker">PRODUCT LANDSCAPE</p><h2 id="products-title">Coding Agent 产品对比与筛选</h2></div><p>Desktop 表示桌面应用入口，IDE 表示编辑器集成，两者可同时出现；Cloud 仅指有官方托管远端任务证据的入口。能在 CI 或自建服务器运行，并不等于提供托管服务。</p></div>
           <CodingAgentExplorer products={codingAgentProducts} />
         </div>
       </section>

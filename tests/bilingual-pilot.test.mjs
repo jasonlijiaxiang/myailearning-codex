@@ -666,7 +666,8 @@ test("Batch 09 English content preserves the platform-product and minimum-suffic
   const claimItems = JSON.parse(await readFile(new URL("../knowledge/claims/index.json", import.meta.url), "utf8")).items;
   const draClaim = claimItems.find((/** @type {any} */ claim) => claim.id === "platform.kubernetes-dra-1-36-feature-maturity-2026-08-01");
   assert.equal(draClaim?.status, "watch");
-  assert.equal(draClaim?.reviewBy, "2026-10-30");
+  assert.equal(draClaim?.reviewCadenceDays, 90);
+  assert.equal(Date.parse(draClaim.reviewBy) - Date.parse(draClaim.verifiedAt), 90 * 86400000);
 });
 
 test("English sections and rendered object anchors use stable, unique IDs", () => {

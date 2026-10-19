@@ -191,7 +191,7 @@ export const terminology = Object.freeze({
 
   "ai-infra-platform": term("AI 基础设施平台", "AI Infrastructure Platform", "统一管理算力、队列、镜像、作业、模型服务和租户治理的平台层。", ["ai-infra-platform"]),
   "resource-scheduling": term("资源调度", "Resource Scheduling", "按优先级、拓扑、配额和作业需求分配稀缺计算资源。", ["ai-infra-platform"]),
-  "gang-scheduling": term("成组调度", "Gang Scheduling", "只有在分布式作业所需资源能够同时满足时才启动，避免部分占用造成空等。", ["ai-infra-platform", "llm-training"]),
+  "gang-scheduling": term("成组调度", "Gang Scheduling", "分布式训练中常指所需资源同时满足后再启动，避免部分占用空等；Slurm 的同名机制采用时间片挂起与恢复，比较时需说明具体行为。", ["ai-infra-platform", "llm-training"]),
   goodput: term("有效吞吐", "Goodput", "衡量满足质量和服务目标的已完成工作量，而不是只看设备忙碌率或原始吞吐。", ["ai-infra-platform", "llm-inference", "ai-ops"]),
   "ai-infra-compute": term("AI 算力基础设施", "AI Compute Infrastructure", "为训练与推理提供加速器、网络、存储、能源和散热能力的基础设施。", ["ai-infra-compute"]),
   "heterogeneous-compute": term("异构算力", "Heterogeneous Compute", "在不同型号或类型的 CPU、GPU 和其他加速器之间分配适合的工作负载。", ["ai-infra-compute", "ai-infra-platform"]),
@@ -211,7 +211,7 @@ export const terminology = Object.freeze({
   tco: term("总拥有成本", "Total Cost of Ownership", "把采购、运行、集成、人工维护和失败处理等完整成本一起计算。", ["solution-patterns", "model-landscape", "ai-infra-compute"], "TCO"),
   "ai-finops": term("AI FinOps 与单位经济", "AI FinOps & Unit Economics", "把跨模型、算力、数据、工具和人工的 AI 成本归因到任务、产品与成功业务结果。", ["solution-patterns", "ai-ops"]),
   finops: term("技术财务运营", "FinOps", "让工程、财务和业务共同理解并优化技术使用、单位成本、预算和价值。", ["solution-patterns", "ai-ops", "ai-infra-platform", "ai-gateway"]),
-  "unit-economics": term("单位经济", "Unit Economics", "把总成本连接到一个可验证业务单位，用于比较规模扩大后每个成功结果的经济性。", ["solution-patterns"]),
+  "unit-economics": term("单位经济", "Unit Economics", "把技术支出与资源用量或业务结果联系起来，区分资源效率单位和业务单位，用于比较成本、价值与规模变化。", ["solution-patterns"]),
   "cost-allocation": term("成本分配", "Cost Allocation", "按产品、租户、任务、模型、环境或责任中心把直接与共享费用归到可行动的消费者。", ["solution-patterns", "ai-ops"]),
   "cost-to-serve": term("服务全成本", "Cost to Serve", "完成一次服务所需的模型、算力、数据、工具、网络、保证、人工和失败处理成本。", ["solution-patterns"]),
   "cost-anomaly": term("成本异常", "Cost Anomaly", "相对任务、版本、预算或历史模式显著偏离的支出或用量变化，需要结合业务情境归因和处置。", ["solution-patterns", "ai-ops"]),

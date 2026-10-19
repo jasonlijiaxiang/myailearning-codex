@@ -53,7 +53,7 @@ const chineseLabels: CodingAgentExplorerLabels = {
   locale: "zh-CN",
   all: "全部",
   markets: ["国际", "中国"],
-  surfaces: ["CLI", "IDE", "Cloud", "Open Source"],
+  surfaces: ["CLI", "IDE", "Desktop", "Cloud", "Open Source"],
   modelPolicies: ["第一方为主", "平台托管", "可选多模型", "可接多模型", "多 Agent 入口"],
   searchLabel: "搜索产品、厂商或 Harness 能力",
   searchPlaceholder: "例如：CLI、开源、Checkpoint、腾讯……",
